@@ -25,160 +25,160 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
   # individual-patient record it is that subject's FEV1.
 
   units <- list(
-    time          = "week (weeks since randomization; the disease-progression slope and the effect-onset rates are reported per year and per week respectively -- see each label)",
-    dosing        = "ug/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; this model has no PK layer. Roflumilast, cilomilast and the two oral small molecules are also expressed as ug/day so that one unit serves every column)",
+    time = "week (weeks since randomization; the disease-progression slope and the effect-onset rates are reported per year and per week respectively -- see each label)",
+    dosing = "ug/day (per-arm TOTAL DAILY dose supplied through the CONMED_<drug>_DOSE covariate columns, NOT as rxode2 dose events; this model has no PK layer. Roflumilast, cilomilast and the two oral small molecules are also expressed as ug/day so that one unit serves every column)",
     concentration = "L (FEV1 absolute volume, observation FEV1)"
   )
 
   covariateData <- list(
     # ---- Record-type and meta-analysis bookkeeping -----------------------
     DTYPE_AGGREGATED = list(
-      description        = "Record-type indicator. 1 = an aggregated-data record (one arm-mean FEV1 from a published trial), 0 = an individual-patient-data record (one subject's FEV1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Record-type indicator. 1 = an aggregated-data record (one arm-mean FEV1 from a published trial), 0 = an individual-patient-data record (one subject's FEV1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (individual-patient record).",
-      notes              = "Source column DTYPE, coded 1 = aggregated and 2 = individual; re-coded here to a 0/1 binary so it reads as an ordinary indicator. This column switches THREE things at once and is the single most load-bearing covariate in the model: (1) the baseline uses the normal approximation to the mean of a log-normal for aggregated records and the plain log-normal for individual records (paper Section 2.3.2, Equations 1-8); (2) the residual error is additive scaled by 1/sqrt(N_ARM) for aggregated records and a power model with its own IIV for individual records (paper Equation 10); (3) the disease-progression slope and the vilanterol reference efficacy carry additional between-subject etas on individual records only. Aggregated and individual records share every structural parameter.",
-      source_name        = "DTYPE"
+      notes = "Source column DTYPE, coded 1 = aggregated and 2 = individual; re-coded here to a 0/1 binary so it reads as an ordinary indicator. This column switches THREE things at once and is the single most load-bearing covariate in the model: (1) the baseline uses the normal approximation to the mean of a log-normal for aggregated records and the plain log-normal for individual records (paper Section 2.3.2, Equations 1-8); (2) the residual error is additive scaled by 1/sqrt(N_ARM) for aggregated records and a power model with its own IIV for individual records (paper Equation 10); (3) the disease-progression slope and the vilanterol reference efficacy carry additional between-subject etas on individual records only. Aggregated and individual records share every structural parameter.",
+      source_name = "DTYPE"
     ),
     N_ARM = list(
-      description        = "Number of patients contributing to this study arm.",
-      units              = "(count of patients)",
-      type               = "continuous",
+      description = "Number of patients contributing to this study arm.",
+      units = "(count of patients)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column NTRT. Used ONLY on aggregated-data records, in two places: the residual-error weight (additive error scaled by 1/sqrt(N_ARM), paper Equation 10 'err = eps_AD / sqrt(N_ij)') and the standard deviation of the normal approximation to the arm-mean baseline (paper Equations 6-8, variance divided by N). The arm sizes in the aggregated data range from 18 to 5,724 patients (paper Section 2.3.2), which is what makes the central-limit-theorem approximation valid. Set to 1 on individual-patient records, where it is not referenced.",
-      source_name        = "NTRT"
+      notes = "Source column NTRT. Used ONLY on aggregated-data records, in two places: the residual-error weight (additive error scaled by 1/sqrt(N_ARM), paper Equation 10 'err = eps_AD / sqrt(N_ij)') and the standard deviation of the normal approximation to the arm-mean baseline (paper Equations 6-8, variance divided by N). The arm sizes in the aggregated data range from 18 to 5,724 patients (paper Section 2.3.2), which is what makes the central-limit-theorem approximation valid. Set to 1 on individual-patient records, where it is not referenced.",
+      source_name = "NTRT"
     ),
     MEAS_POSTBD = list(
-      description        = "Indicator that this FEV1 record was measured AFTER a short-acting bronchodilator. 1 = post-bronchodilator measurement, 0 = pre-bronchodilator (trough) measurement.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that this FEV1 record was measured AFTER a short-acting bronchodilator. 1 = post-bronchodilator measurement, 0 = pre-bronchodilator (trough) measurement.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pre-bronchodilator trough FEV1, the model's primary scale).",
-      notes              = "Source column POSTBD. A post-bronchodilator record is predicted from a baseline shifted upward by the median absolute reversibility of 0.18 L and from a long-acting bronchodilator effect reduced by the estimated fraction rel_postbd (paper Section 2.4 note: 'if both FEV1 baseline and FEV1 during treatment were measured post-SABD, a mean absolute reversibility of 0.18 L was added to FEV1 baseline and a fractional reduction in the overall LABD effect was estimated'). Distinct from FEV1_PBD_ANCHOR below, which handles a different set of studies.",
-      source_name        = "POSTBD"
+      notes = "Source column POSTBD. A post-bronchodilator record is predicted from a baseline shifted upward by the median absolute reversibility of 0.18 L and from a long-acting bronchodilator effect reduced by the estimated fraction rel_postbd (paper Section 2.4 note: 'if both FEV1 baseline and FEV1 during treatment were measured post-SABD, a mean absolute reversibility of 0.18 L was added to FEV1 baseline and a fractional reduction in the overall LABD effect was estimated'). Distinct from FEV1_PBD_ANCHOR below, which handles a different set of studies.",
+      source_name = "POSTBD"
     ),
     FEV1_PBD_ANCHOR = list(
-      description        = "Reported FEV1 value used by the source's post-bronchodilator baseline reconciliation term, in litres. 0 for every record to which the reconciliation does not apply -- which is every record outside six specific aggregated-data studies, and every record used for simulation.",
-      units              = "L",
-      type               = "continuous",
+      description = "Reported FEV1 value used by the source's post-bronchodilator baseline reconciliation term, in litres. 0 for every record to which the reconciliation does not apply -- which is every record outside six specific aggregated-data studies, and every record used for simulation.",
+      units = "L",
+      type = "continuous",
       reference_category = "0 (no reconciliation; the correction term vanishes).",
-      notes              = "This column exists to reproduce an ESTIMATION-TIME data-reconciliation term and MUST BE SET TO 0 FOR ALL SIMULATION. In the source control stream the term is written 'IF(REF.EQ.93.AND.POSTBD.EQ.0) POSTBDCORR = FEV1 * (1-THETA(53))' and repeated for REF 127, 169, 319, 399 and 438: six aggregated-data studies whose absolute FEV1 was reconstructed as (post-SABD baseline + change from baseline) while the model's own baseline is pre-bronchodilator. The source multiplies the record's OWN OBSERVED value by (1 - postbd_recon) and adds it to the prediction. Using the dependent variable inside the prediction cannot be expressed in rxode2 (the observation is unknown while solving) and is not meaningful for forward simulation, so the observed value is exposed here as an explicit input column instead. Setting it to 0 -- the default and the only sensible simulation choice -- reproduces the published model exactly for every record outside those six studies. The behaviour is recorded in the vignette's Assumptions and deviations section.",
-      source_name        = "FEV1 (the DV itself, for REF in {93, 127, 169, 319, 399, 438} with POSTBD = 0)"
+      notes = "This column exists to reproduce an ESTIMATION-TIME data-reconciliation term and MUST BE SET TO 0 FOR ALL SIMULATION. In the source control stream the term is written 'IF(REF.EQ.93.AND.POSTBD.EQ.0) POSTBDCORR = FEV1 * (1-THETA(53))' and repeated for REF 127, 169, 319, 399 and 438: six aggregated-data studies whose absolute FEV1 was reconstructed as (post-SABD baseline + change from baseline) while the model's own baseline is pre-bronchodilator. The source multiplies the record's OWN OBSERVED value by (1 - postbd_recon) and adds it to the prediction. Using the dependent variable inside the prediction cannot be expressed in rxode2 (the observation is unknown while solving) and is not meaningful for forward simulation, so the observed value is exposed here as an explicit input column instead. Setting it to 0 -- the default and the only sensible simulation choice -- reproduces the published model exactly for every record outside those six studies. The behaviour is recorded in the vignette's Assumptions and deviations section.",
+      source_name = "FEV1 (the DV itself, for REF in {93, 127, 169, 319, 399, 438} with POSTBD = 0)"
     ),
     OCS_NONRESPONDER = list(
-      description        = "Indicator that the study enrolled ONLY patients who had not responded to oral corticosteroids. 1 = OCS-non-responder-only study, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the study enrolled ONLY patients who had not responded to oral corticosteroids. 1 = OCS-non-responder-only study, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (an unselected study population).",
-      notes              = "Source flag OCNR, set by 'IF (REF.EQ.636) OCNR = 1' for a single aggregated-data study, with the control-stream comment 'only non-responders to OCS are included, virtually zero effect'. It zeroes the inhaled-corticosteroid component of the anti-inflammatory effect (rel_cs = 1 - OCS_NONRESPONDER) but leaves the non-steroid anti-inflammatory agents (roflumilast, cilomilast, AZD9668, PH797804) untouched. Carries no estimated parameter.",
-      source_name        = "OCNR (REF = 636)"
+      notes = "Source flag OCNR, set by 'IF (REF.EQ.636) OCNR = 1' for a single aggregated-data study, with the control-stream comment 'only non-responders to OCS are included, virtually zero effect'. It zeroes the inhaled-corticosteroid component of the anti-inflammatory effect (rel_cs = 1 - OCS_NONRESPONDER) but leaves the non-steroid anti-inflammatory agents (roflumilast, cilomilast, AZD9668, PH797804) untouched. Carries no estimated parameter.",
+      source_name = "OCNR (REF = 636)"
     ),
     INCL_EXAC_REQUIRED = list(
-      description        = "Indicator that the trial's inclusion criteria required a documented history of COPD exacerbations. 1 = exacerbation history required for enrolment, 0 = not required.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the trial's inclusion criteria required a documented history of COPD exacerbations. 1 = exacerbation history required for enrolment, 0 = not required.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no exacerbation-history entry requirement).",
-      notes              = "Source column INCL. A STUDY-LEVEL design covariate, not a patient characteristic: it marks trials that enriched for exacerbating patients, who have lower lung function. It carries an estimated effect on baseline (e_incl_exac_base = -0.0213) and additionally enters the fixed-coefficient regressions that impute missing background-therapy fractions. The paper notes this covariate 'only existed as a covariate for AD as all IPD individuals had no exacerbation history' (Section 3.3), so it is 0 on every individual-patient record. Related to but distinct from NEXAC12M, which is a patient-level count of prior exacerbations rather than a study entry criterion.",
-      source_name        = "INCL"
+      notes = "Source column INCL. A STUDY-LEVEL design covariate, not a patient characteristic: it marks trials that enriched for exacerbating patients, who have lower lung function. It carries an estimated effect on baseline (e_incl_exac_base = -0.0213) and additionally enters the fixed-coefficient regressions that impute missing background-therapy fractions. The paper notes this covariate 'only existed as a covariate for AD as all IPD individuals had no exacerbation history' (Section 3.3), so it is 0 on every individual-patient record. Related to but distinct from NEXAC12M, which is a patient-level count of prior exacerbations rather than a study entry criterion.",
+      source_name = "INCL"
     ),
 
     # ---- Patient / arm characteristics -----------------------------------
     AGE = list(
-      description        = "Subject age (individual records) or arm-mean age (aggregated records), at randomization.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (individual records) or arm-mean age (aggregated records), at randomization.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred at 63.4 years (control stream 'TVB = TVBL*(1 + THETA(33)*(IMPAGE - 63.4))'), the pooled mean across the aggregated and individual data. NOTE this differs from the sibling model Yang_2026_copd_fev1_ipd, which centres at 62 years because it pools only the two individual-patient studies; the two centrings are NOT interchangeable. Set to the sentinel -99 when the arm's mean age was not reported, which activates the source's fixed-coefficient imputation regression (see the model() code and the vignette source-trace table). In the combined model age enters the BASELINE only -- the age effect on vilanterol efficacy found in the individual-patient model was removed as redundant once the baseline-on-efficacy relationship was in place (paper Section 2.4, 'Redundant covariate relationships were removed').",
-      source_name        = "AGE"
+      notes = "Centred at 63.4 years (control stream 'TVB = TVBL*(1 + THETA(33)*(IMPAGE - 63.4))'), the pooled mean across the aggregated and individual data. NOTE this differs from the sibling model Yang_2026_copd_fev1_ipd, which centres at 62 years because it pools only the two individual-patient studies; the two centrings are NOT interchangeable. Set to the sentinel -99 when the arm's mean age was not reported, which activates the source's fixed-coefficient imputation regression (see the model() code and the vignette source-trace table). In the combined model age enters the BASELINE only -- the age effect on vilanterol efficacy found in the individual-patient model was removed as redundant once the baseline-on-efficacy relationship was in place (paper Section 2.4, 'Redundant covariate relationships were removed').",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female-sex indicator (individual records) or the arm's female fraction (aggregated records), on a 0-1 scale.",
-      units              = "(binary on individual records; fraction 0-1 on aggregated records)",
-      type               = "binary",
+      description = "Female-sex indicator (individual records) or the arm's female fraction (aggregated records), on a 0-1 scale.",
+      units = "(binary on individual records; fraction 0-1 on aggregated records)",
+      type = "binary",
       reference_category = "0 (male). The source centres the male-coded column at the pooled male fraction 0.671, so the model's typical value corresponds to a mixed-sex arm rather than to either sex.",
-      notes              = "Source column SEX is coded 1 = male and is centred at 0.671 as '(1 + THETA(62)*(SEX - 0.671))'. The canonical SEXF is its complement (SEXF = 1 - SEX), so the identical algebra is '(1 + e_sexf_base * (0.329 - SEXF))' with the published coefficient e_sexf_base = +0.276389 carried over unchanged in both value and sign. Check: a female subject gives 1 + 0.276389*(0.329 - 1) = 0.8145 and a male gives 1 + 0.276389*0.329 = 1.0909, a female/male baseline ratio of 0.747 -- matching the 0.752 ratio implied by the sibling individual-patient model's coefficient of -0.248, and the paper's repeated statement that female sex relates to a lower baseline (Abstract, Sections 3.3 and 4). On an aggregated record the column carries the arm's female FRACTION, which is the aggregation of the individual indicator and is exactly what the linear covariate form requires.",
-      source_name        = "SEX (1 = male, centred at 0.671)"
+      notes = "Source column SEX is coded 1 = male and is centred at 0.671 as '(1 + THETA(62)*(SEX - 0.671))'. The canonical SEXF is its complement (SEXF = 1 - SEX), so the identical algebra is '(1 + e_sexf_base * (0.329 - SEXF))' with the published coefficient e_sexf_base = +0.276389 carried over unchanged in both value and sign. Check: a female subject gives 1 + 0.276389*(0.329 - 1) = 0.8145 and a male gives 1 + 0.276389*0.329 = 1.0909, a female/male baseline ratio of 0.747 -- matching the 0.752 ratio implied by the sibling individual-patient model's coefficient of -0.248, and the paper's repeated statement that female sex relates to a lower baseline (Abstract, Sections 3.3 and 4). On an aggregated record the column carries the arm's female FRACTION, which is the aggregation of the individual indicator and is exactly what the linear covariate form requires.",
+      source_name = "SEX (1 = male, centred at 0.671)"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator (individual records) or the arm's current-smoker fraction (aggregated records), on a 0-1 scale.",
-      units              = "(binary on individual records; fraction 0-1 on aggregated records)",
-      type               = "binary",
+      description = "Current-smoker indicator (individual records) or the arm's current-smoker fraction (aggregated records), on a 0-1 scale.",
+      units = "(binary on individual records; fraction 0-1 on aggregated records)",
+      type = "binary",
       reference_category = "Centred at the pooled current-smoker fraction 0.463, so the typical value corresponds to a mixed arm rather than to either smoking status.",
-      notes              = "Source column FL_SMOK, coded 1 = current smoker, matching the canonical SMOKE coding exactly (no transformation). Entered as '(1 + THETA(66)*(IMPFL_SMOK - 0.463))' with e_smoke_base = +0.0365392, i.e. a current smoker has a 3.7% higher FEV1 baseline than a non-current smoker -- the paper quotes 3.6% (Section 4) and cautions explicitly that this is NOT causal: patients tend to stop smoking at more severe COPD stages. Set to the sentinel -99 when the arm's smoking fraction was not reported, which activates the source's fixed-coefficient logistic imputation (13.5% of records were missing, per Supporting Information Table S5 discussion).",
-      source_name        = "FL_SMOK"
+      notes = "Source column FL_SMOK, coded 1 = current smoker, matching the canonical SMOKE coding exactly (no transformation). Entered as '(1 + THETA(66)*(IMPFL_SMOK - 0.463))' with e_smoke_base = +0.0365392, i.e. a current smoker has a 3.7% higher FEV1 baseline than a non-current smoker -- the paper quotes 3.6% (Section 4) and cautions explicitly that this is NOT causal: patients tend to stop smoking at more severe COPD stages. Set to the sentinel -99 when the arm's smoking fraction was not reported, which activates the source's fixed-coefficient logistic imputation (13.5% of records were missing, per Supporting Information Table S5 discussion).",
+      source_name = "FL_SMOK"
     ),
     DIS_COPD_GOLD = list(
-      description        = "GOLD spirometric severity stage as an ordinal 1-4 category (1 = mild, 2 = moderate, 3 = severe, 4 = very severe). Used on INDIVIDUAL-patient records.",
-      units              = "(ordinal stage 1-4)",
-      type               = "ordinal",
+      description = "GOLD spirometric severity stage as an ordinal 1-4 category (1 = mild, 2 = moderate, 3 = severe, 4 = very severe). Used on INDIVIDUAL-patient records.",
+      units = "(ordinal stage 1-4)",
+      type = "ordinal",
       reference_category = "3 (severe), the cohort median and the model's centring constant.",
-      notes              = "Source column FL_COPD; Supporting Information Table S1 footnote 1 defines it as the '% predicted GOLD Stage Category at the screening phase'. Set to the sentinel -99 when missing, which the source replaces with the median stage 3 (0.62% of records; paper Section 2.4). On AGGREGATED records this column is not used -- the arm's severity is the midpoint of DIS_COPD_GOLD_LOW and DIS_COPD_GOLD_HIGH instead. The combined model uses a SINGLE linear slope in the stage, not the hockey-stick of the sibling individual-patient model: that linearization is deliberate and is the paper's remedy for aggregation bias (Section 2.3.1, 'the covariate effects of lowest/highest disease severity on baseline ... was revised to a single covariate (lowest+highest)/2 on baseline to keep consistent with IPD part of the model'). The source keeps the two hockey-stick slopes in the control stream as THETA(64) and THETA(65) but fixes both to zero.",
-      source_name        = "FL_COPD"
+      notes = "Source column FL_COPD; Supporting Information Table S1 footnote 1 defines it as the '% predicted GOLD Stage Category at the screening phase'. Set to the sentinel -99 when missing, which the source replaces with the median stage 3 (0.62% of records; paper Section 2.4). On AGGREGATED records this column is not used -- the arm's severity is the midpoint of DIS_COPD_GOLD_LOW and DIS_COPD_GOLD_HIGH instead. The combined model uses a SINGLE linear slope in the stage, not the hockey-stick of the sibling individual-patient model: that linearization is deliberate and is the paper's remedy for aggregation bias (Section 2.3.1, 'the covariate effects of lowest/highest disease severity on baseline ... was revised to a single covariate (lowest+highest)/2 on baseline to keep consistent with IPD part of the model'). The source keeps the two hockey-stick slopes in the control stream as THETA(64) and THETA(65) but fixes both to zero.",
+      source_name = "FL_COPD"
     ),
     DIS_COPD_GOLD_LOW = list(
-      description        = "Lowest GOLD spirometric stage admitted by the trial's inclusion criteria, as an ordinal 1-4 category. Used on AGGREGATED-data records.",
-      units              = "(ordinal stage 1-4)",
-      type               = "ordinal",
+      description = "Lowest GOLD spirometric stage admitted by the trial's inclusion criteria, as an ordinal 1-4 category. Used on AGGREGATED-data records.",
+      units = "(ordinal stage 1-4)",
+      type = "ordinal",
       reference_category = "n/a -- combined with DIS_COPD_GOLD_HIGH into the arm's mean stage, which is centred at 3.",
-      notes              = "Source column LOWDS. A published trial reports its inclusion range rather than a per-patient severity distribution, so the aggregated arm's mean severity is taken as the midpoint (DIS_COPD_GOLD_LOW + DIS_COPD_GOLD_HIGH) / 2 (control stream 'IF (DTYPE.EQ.1) IMPFL_COPD=(LOWDSact+HIGHDSact)/2'). Also enters the fixed-coefficient regressions that impute missing background-therapy fractions, where it is centred at 2.",
-      source_name        = "LOWDS"
+      notes = "Source column LOWDS. A published trial reports its inclusion range rather than a per-patient severity distribution, so the aggregated arm's mean severity is taken as the midpoint (DIS_COPD_GOLD_LOW + DIS_COPD_GOLD_HIGH) / 2 (control stream 'IF (DTYPE.EQ.1) IMPFL_COPD=(LOWDSact+HIGHDSact)/2'). Also enters the fixed-coefficient regressions that impute missing background-therapy fractions, where it is centred at 2.",
+      source_name = "LOWDS"
     ),
     DIS_COPD_GOLD_HIGH = list(
-      description        = "Highest GOLD spirometric stage admitted by the trial's inclusion criteria, as an ordinal 1-4 category. Used on AGGREGATED-data records.",
-      units              = "(ordinal stage 1-4)",
-      type               = "ordinal",
+      description = "Highest GOLD spirometric stage admitted by the trial's inclusion criteria, as an ordinal 1-4 category. Used on AGGREGATED-data records.",
+      units = "(ordinal stage 1-4)",
+      type = "ordinal",
       reference_category = "n/a -- combined with DIS_COPD_GOLD_LOW into the arm's mean stage, which is centred at 3.",
-      notes              = "Source column HIGHDS. See DIS_COPD_GOLD_LOW. In the background-therapy imputation regressions it is centred at 4.",
-      source_name        = "HIGHDS"
+      notes = "Source column HIGHDS. See DIS_COPD_GOLD_LOW. In the background-therapy imputation regressions it is centred at 4.",
+      source_name = "HIGHDS"
     ),
 
     # ---- Background (non-randomized) therapy in the arm -------------------
     BGTHER_ICS_RUNIN_PCT = list(
-      description        = "Percentage of the arm receiving background inhaled corticosteroid during the run-in period, before randomized treatment begins.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving background inhaled corticosteroid during the run-in period, before randomized treatment begins.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background inhaled corticosteroid).",
-      notes              = "Source column ICSpRUNIN. Determines the FEV1 already present at time 0 from background therapy, and also the starting point of the corticosteroid effect-onset time course (control stream 'ICSTC = ICSR/100 + (1-ICSR/100)*(1-EXP(-DSCS*TIME))'), so that an arm already on inhaled corticosteroids starts part-way up the onset curve. The background contribution is valued at the fluticasone propionate b.i.d. Emax (control stream 'ICS = DMX9 * ICSR/100 ;based on fluticasone BID'). Sentinel 9999 means completely unknown and is treated as 0; sentinel 7777 means the class was used but the fraction was not reported and activates the source's fixed-coefficient logistic imputation.",
-      source_name        = "ICSpRUNIN"
+      notes = "Source column ICSpRUNIN. Determines the FEV1 already present at time 0 from background therapy, and also the starting point of the corticosteroid effect-onset time course (control stream 'ICSTC = ICSR/100 + (1-ICSR/100)*(1-EXP(-DSCS*TIME))'), so that an arm already on inhaled corticosteroids starts part-way up the onset curve. The background contribution is valued at the fluticasone propionate b.i.d. Emax (control stream 'ICS = DMX9 * ICSR/100 ;based on fluticasone BID'). Sentinel 9999 means completely unknown and is treated as 0; sentinel 7777 means the class was used but the fraction was not reported and activates the source's fixed-coefficient logistic imputation.",
+      source_name = "ICSpRUNIN"
     ),
     BGTHER_LABA_RUNIN_PCT = list(
-      description        = "Percentage of the arm receiving a background long-acting beta-2 agonist during the run-in period.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving a background long-acting beta-2 agonist during the run-in period.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background LABA).",
-      notes              = "Source column LABApRUNIN. Valued at the salmeterol effect (control stream 'LABA = DE18 * LABAR/100 ;based on salmeterol') and sets the starting point of the once-daily beta-agonist onset curve. Sentinels 9999 (unknown, treated as 0) and 7777 (imputed) as for BGTHER_ICS_RUNIN_PCT.",
-      source_name        = "LABApRUNIN"
+      notes = "Source column LABApRUNIN. Valued at the salmeterol effect (control stream 'LABA = DE18 * LABAR/100 ;based on salmeterol') and sets the starting point of the once-daily beta-agonist onset curve. Sentinels 9999 (unknown, treated as 0) and 7777 (imputed) as for BGTHER_ICS_RUNIN_PCT.",
+      source_name = "LABApRUNIN"
     ),
     BGTHER_LAAC_RUNIN_PCT = list(
-      description        = "Percentage of the arm receiving a background long-acting anticholinergic during the run-in period.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving a background long-acting anticholinergic during the run-in period.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background LAAC).",
-      notes              = "Source column LAACpRUNIN. Valued at the tiotropium HandiHaler effect at its 18 ug/day reference dose (control stream 'LAAC = DE20CD*LAACR/100 ;based on tiotropium HandiHaler', where DE20CD carries no onset time course) and sets the starting point of the once-daily anticholinergic onset curve. Sentinels 9999 and 7777 as above.",
-      source_name        = "LAACpRUNIN"
+      notes = "Source column LAACpRUNIN. Valued at the tiotropium HandiHaler effect at its 18 ug/day reference dose (control stream 'LAAC = DE20CD*LAACR/100 ;based on tiotropium HandiHaler', where DE20CD carries no onset time course) and sets the starting point of the once-daily anticholinergic onset curve. Sentinels 9999 and 7777 as above.",
+      source_name = "LAACpRUNIN"
     ),
     BGTHER_ICS_MAINT_PCT = list(
-      description        = "Percentage of the arm receiving background inhaled corticosteroid during the randomized maintenance period.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving background inhaled corticosteroid during the randomized maintenance period.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background inhaled corticosteroid).",
-      notes              = "Source column ICSpMAINT. Replaces the run-in fraction for every record after time 0 (control stream: the run-in contributions are carried at TIME = 0 and the maintenance contributions at TIME > 0). Sentinels 9999 and 7777 as for the run-in columns; the imputation uses the same regression and the same random effect, so an arm whose run-in and maintenance fractions are both missing receives the same imputed value for both.",
-      source_name        = "ICSpMAINT"
+      notes = "Source column ICSpMAINT. Replaces the run-in fraction for every record after time 0 (control stream: the run-in contributions are carried at TIME = 0 and the maintenance contributions at TIME > 0). Sentinels 9999 and 7777 as for the run-in columns; the imputation uses the same regression and the same random effect, so an arm whose run-in and maintenance fractions are both missing receives the same imputed value for both.",
+      source_name = "ICSpMAINT"
     ),
     BGTHER_LABA_MAINT_PCT = list(
-      description        = "Percentage of the arm receiving a background long-acting beta-2 agonist during the randomized maintenance period.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving a background long-acting beta-2 agonist during the randomized maintenance period.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background LABA).",
-      notes              = "Source column LABApMAINT. See BGTHER_ICS_MAINT_PCT.",
-      source_name        = "LABApMAINT"
+      notes = "Source column LABApMAINT. See BGTHER_ICS_MAINT_PCT.",
+      source_name = "LABApMAINT"
     ),
     BGTHER_LAAC_MAINT_PCT = list(
-      description        = "Percentage of the arm receiving a background long-acting anticholinergic during the randomized maintenance period.",
-      units              = "% of patients in the arm (0-100)",
-      type               = "continuous",
+      description = "Percentage of the arm receiving a background long-acting anticholinergic during the randomized maintenance period.",
+      units = "% of patients in the arm (0-100)",
+      type = "continuous",
       reference_category = "0 (no background LAAC).",
-      notes              = "Source column LAACpMAINT. See BGTHER_ICS_MAINT_PCT.",
-      source_name        = "LAACpMAINT"
+      notes = "Source column LAACpMAINT. See BGTHER_ICS_MAINT_PCT.",
+      source_name = "LAACpMAINT"
     ),
 
     # ---- Randomized treatment: per-arm total daily dose -------------------
@@ -187,254 +187,254 @@ Yang_2026_copd_fev1_adipd_mbma <- function() {
     # only) arm. Units are ug/day of TOTAL DAILY dose throughout, matching the
     # source's avdostot data item and the unit of each drug's ED50.
     CONMED_ACLIDINIUM_DOSE = list(
-      description        = "Per-arm total daily aclidinium dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily aclidinium dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no aclidinium).",
-      notes              = "Reference doses: 200 ug/day for the once-daily regimen and 800 ug/day (400 ug b.i.d.) for the twice-daily regimen, which carry SEPARATE reference efficacies and SEPARATE ED50s selected by FORM_ACLIDINIUM_BID. The control stream comments that the q.d. regimen is 'not used clinically, but present in dataset'.",
-      source_name        = "avdostot (drgNo = 2)"
+      notes = "Reference doses: 200 ug/day for the once-daily regimen and 800 ug/day (400 ug b.i.d.) for the twice-daily regimen, which carry SEPARATE reference efficacies and SEPARATE ED50s selected by FORM_ACLIDINIUM_BID. The control stream comments that the q.d. regimen is 'not used clinically, but present in dataset'.",
+      source_name = "avdostot (drgNo = 2)"
     ),
     CONMED_ARFORMOTEROL_DOSE = list(
-      description        = "Per-arm total daily arformoterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily arformoterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no arformoterol).",
-      notes              = "Reference dose 50 ug/day. Arformoterol carries NO parameters of its own: the source assumes its Emax equals formoterol's and its ED50 is exactly half of formoterol's, because arformoterol is the single active enantiomer of racemic formoterol (control stream 'ED504 = ED5010/2 ;Arformoterol ED50 = 1/2 formoterol ED50' and 'TVDMX4 = TVDMX10 ;Emax drug 4 (Arformoterol) assume equivalent to formoterol').",
-      source_name        = "avdostot (drgNo = 4)"
+      notes = "Reference dose 50 ug/day. Arformoterol carries NO parameters of its own: the source assumes its Emax equals formoterol's and its ED50 is exactly half of formoterol's, because arformoterol is the single active enantiomer of racemic formoterol (control stream 'ED504 = ED5010/2 ;Arformoterol ED50 = 1/2 formoterol ED50' and 'TVDMX4 = TVDMX10 ;Emax drug 4 (Arformoterol) assume equivalent to formoterol').",
+      source_name = "avdostot (drgNo = 4)"
     ),
     CONMED_BECLOMETHASONE_DOSE = list(
-      description        = "Per-arm total daily beclomethasone dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily beclomethasone dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no beclomethasone).",
-      notes              = "NO dose-response was estimated: the source fits a single constant effect and the model keys it on this column being non-zero, following the idiom already recorded for CONMED_MTX_DOSE in Mandema_2011_biologicDMARDs_mbma. The column still carries the dose so the arm is self-describing; do NOT read dose-proportionality into it.",
-      source_name        = "avdostot (drgNo = 5)"
+      notes = "NO dose-response was estimated: the source fits a single constant effect and the model keys it on this column being non-zero, following the idiom already recorded for CONMED_MTX_DOSE in Mandema_2011_biologicDMARDs_mbma. The column still carries the dose so the arm is self-describing; do NOT read dose-proportionality into it.",
+      source_name = "avdostot (drgNo = 5)"
     ),
     CONMED_BUDESONIDE_DOSE = list(
-      description        = "Per-arm total daily budesonide dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily budesonide dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no budesonide).",
-      notes              = "Reference dose 320 ug/day, i.e. the 160 ug b.i.d. regimen against which Table S3 quotes the reference efficacy.",
-      source_name        = "avdostot (drgNo = 6)"
+      notes = "Reference dose 320 ug/day, i.e. the 160 ug b.i.d. regimen against which Table S3 quotes the reference efficacy.",
+      source_name = "avdostot (drgNo = 6)"
     ),
     CONMED_CILOMILAST_DOSE = list(
-      description        = "Per-arm total daily cilomilast dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily cilomilast dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no cilomilast).",
-      notes              = "Constant effect, no dose-response; keyed on the column being non-zero. Table S3 labels the estimate 'Drug7.cil.15mcg.Eff.BID', i.e. the 15 mg b.i.d. regimen. A PDE4 inhibitor, so it follows the PDE4 effect-onset time course and is NOT affected by the OCS-non-responder flag.",
-      source_name        = "avdostot (drgNo = 7)"
+      notes = "Constant effect, no dose-response; keyed on the column being non-zero. Table S3 labels the estimate 'Drug7.cil.15mcg.Eff.BID', i.e. the 15 mg b.i.d. regimen. A PDE4 inhibitor, so it follows the PDE4 effect-onset time course and is NOT affected by the OCS-non-responder flag.",
+      source_name = "avdostot (drgNo = 7)"
     ),
     CONMED_FLUTICASONEPROPIONATE_DOSE = list(
-      description        = "Per-arm total daily fluticasone propionate dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily fluticasone propionate dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no fluticasone propionate).",
-      notes              = "Constant effect for the twice-daily regimen, no dose-response; keyed on the column being non-zero. This compound is ALSO the reference against which background inhaled-corticosteroid therapy is valued (control stream 'ICS = DMX9 * ICSR/100 ;based on fluticasone BID'), so its Emax is load-bearing far beyond its own arms. Distinct from fluticasone FUROATE (CONMED_FLUTICASONEFUROATE_DOSE), a different molecule with its own dose-response.",
-      source_name        = "avdostot (drgNo = 9)"
+      notes = "Constant effect for the twice-daily regimen, no dose-response; keyed on the column being non-zero. This compound is ALSO the reference against which background inhaled-corticosteroid therapy is valued (control stream 'ICS = DMX9 * ICSR/100 ;based on fluticasone BID'), so its Emax is load-bearing far beyond its own arms. Distinct from fluticasone FUROATE (CONMED_FLUTICASONEFUROATE_DOSE), a different molecule with its own dose-response.",
+      source_name = "avdostot (drgNo = 9)"
     ),
     CONMED_FORMOTEROL_DOSE = list(
-      description        = "Per-arm total daily formoterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily formoterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no formoterol).",
-      notes              = "Reference dose 18 ug/day, i.e. the 9 ug b.i.d. regimen against which Table S3 quotes the reference efficacy. Formoterol's Emax and ED50 also determine arformoterol's (see CONMED_ARFORMOTEROL_DOSE).",
-      source_name        = "avdostot (drgNo = 10)"
+      notes = "Reference dose 18 ug/day, i.e. the 9 ug b.i.d. regimen against which Table S3 quotes the reference efficacy. Formoterol's Emax and ED50 also determine arformoterol's (see CONMED_ARFORMOTEROL_DOSE).",
+      source_name = "avdostot (drgNo = 10)"
     ),
     CONMED_INDACATEROL_DOSE = list(
-      description        = "Per-arm total daily indacaterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily indacaterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no indacaterol).",
-      notes              = "Reference dose 75 ug/day. Indacaterol is the ONLY beta-agonist that carries the once-daily beta-agonist effect-onset time course in the final model.",
-      source_name        = "avdostot (drgNo = 11)"
+      notes = "Reference dose 75 ug/day. Indacaterol is the ONLY beta-agonist that carries the once-daily beta-agonist effect-onset time course in the final model.",
+      source_name = "avdostot (drgNo = 11)"
     ),
     CONMED_MOMETASONE_DOSE = list(
-      description        = "Per-arm total daily mometasone dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily mometasone dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no mometasone).",
-      notes              = "Constant effect, no dose-response; keyed on the column being non-zero. The twice-daily regimen's effect is the once-daily effect multiplied by rel_mometasone_bid = 0.784, selected by FORM_MOMETASONE_BID.",
-      source_name        = "avdostot (drgNo = 13)"
+      notes = "Constant effect, no dose-response; keyed on the column being non-zero. The twice-daily regimen's effect is the once-daily effect multiplied by rel_mometasone_bid = 0.784, selected by FORM_MOMETASONE_BID.",
+      source_name = "avdostot (drgNo = 13)"
     ),
     CONMED_GLYCOPYRRONIUM_DOSE = list(
-      description        = "Per-arm total daily glycopyrronium dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily glycopyrronium dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no glycopyrronium).",
-      notes              = "Reference dose 100 ug/day. Carries the once-daily anticholinergic effect-onset time course.",
-      source_name        = "avdostot (drgNo = 14)"
+      notes = "Reference dose 100 ug/day. Carries the once-daily anticholinergic effect-onset time course.",
+      source_name = "avdostot (drgNo = 14)"
     ),
     CONMED_ROFLUMILAST_DOSE = list(
-      description        = "Per-arm total daily roflumilast dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily roflumilast dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no roflumilast).",
-      notes              = "Reference dose 500 ug/day. A PDE4 inhibitor: it follows the PDE4 effect-onset time course and, being a non-steroid anti-inflammatory, is NOT zeroed by the OCS-non-responder flag.",
-      source_name        = "avdostot (drgNo = 16)"
+      notes = "Reference dose 500 ug/day. A PDE4 inhibitor: it follows the PDE4 effect-onset time course and, being a non-steroid anti-inflammatory, is NOT zeroed by the OCS-non-responder flag.",
+      source_name = "avdostot (drgNo = 16)"
     ),
     CONMED_SALMETEROL_DOSE = list(
-      description        = "Per-arm total daily salmeterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily salmeterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no salmeterol).",
-      notes              = "Constant effect for the twice-daily regimen, no dose-response; keyed on the column being non-zero. Salmeterol is ALSO the reference against which background LABA therapy is valued (control stream 'LABA = DE18 * LABAR/100 ;based on salmeterol'), so its effect is load-bearing beyond its own arms.",
-      source_name        = "avdostot (drgNo = 18)"
+      notes = "Constant effect for the twice-daily regimen, no dose-response; keyed on the column being non-zero. Salmeterol is ALSO the reference against which background LABA therapy is valued (control stream 'LABA = DE18 * LABAR/100 ;based on salmeterol'), so its effect is load-bearing beyond its own arms.",
+      source_name = "avdostot (drgNo = 18)"
     ),
     CONMED_TIOTROPIUM_DOSE = list(
-      description        = "Per-arm total daily tiotropium dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily tiotropium dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no tiotropium).",
-      notes              = "Reference dose 18 ug/day for the Spiriva HandiHaler dry-powder inhaler and 5 ug/day for the Respimat soft-mist inhaler, selected by FORM_TIOTROPIUM_SMI. The two devices carry separate reference efficacies; the Respimat ED50 is DERIVED from the HandiHaler Emax and the Respimat reference efficacy rather than estimated (control stream 'ED50120 = REFDSMI*(TVDMX20/THETA(14)-1)'). Open-label administration scales the effect by rel_tiotropium_ol = 0.918, selected by FORM_TIOTROPIUM_OPENLABEL. Tiotropium at its 18 ug/day reference dose is also the reference for background LAAC therapy.",
-      source_name        = "avdostot (drgNo = 20)"
+      notes = "Reference dose 18 ug/day for the Spiriva HandiHaler dry-powder inhaler and 5 ug/day for the Respimat soft-mist inhaler, selected by FORM_TIOTROPIUM_SMI. The two devices carry separate reference efficacies; the Respimat ED50 is DERIVED from the HandiHaler Emax and the Respimat reference efficacy rather than estimated (control stream 'ED50120 = REFDSMI*(TVDMX20/THETA(14)-1)'). Open-label administration scales the effect by rel_tiotropium_ol = 0.918, selected by FORM_TIOTROPIUM_OPENLABEL. Tiotropium at its 18 ug/day reference dose is also the reference for background LAAC therapy.",
+      source_name = "avdostot (drgNo = 20)"
     ),
     CONMED_UMECLIDINIUM_DOSE = list(
-      description        = "Per-arm total daily umeclidinium dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily umeclidinium dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no umeclidinium).",
-      notes              = "Constant effect, no dose-response; keyed on the column being non-zero. The source assigns the SAME effect to the once-daily and twice-daily regimens (control stream 'TVDMX22BID = TVDMX22'), so no regimen flag is needed.",
-      source_name        = "avdostot (drgNo = 22)"
+      notes = "Constant effect, no dose-response; keyed on the column being non-zero. The source assigns the SAME effect to the once-daily and twice-daily regimens (control stream 'TVDMX22BID = TVDMX22'), so no regimen flag is needed.",
+      source_name = "avdostot (drgNo = 22)"
     ),
     CONMED_AZD9668_DOSE = list(
-      description        = "Per-arm total daily AZD9668 dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily AZD9668 dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no AZD9668).",
-      notes              = "An investigational neutrophil-elastase inhibitor identified only by its development code in the source. Constant effect, no dose-response, no effect-onset time course; keyed on the column being non-zero. The estimate is very imprecise (RSE 108.5%).",
-      source_name        = "avdostot (drgNo = 23)"
+      notes = "An investigational neutrophil-elastase inhibitor identified only by its development code in the source. Constant effect, no dose-response, no effect-onset time course; keyed on the column being non-zero. The estimate is very imprecise (RSE 108.5%).",
+      source_name = "avdostot (drgNo = 23)"
     ),
     CONMED_GSK233705_DOSE = list(
-      description        = "Per-arm total daily GSK233705 dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily GSK233705 dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no GSK233705).",
-      notes              = "An investigational long-acting anticholinergic identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero.",
-      source_name        = "avdostot (drgNo = 24)"
+      notes = "An investigational long-acting anticholinergic identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero.",
+      source_name = "avdostot (drgNo = 24)"
     ),
     CONMED_VILANTEROL_DOSE = list(
-      description        = "Per-arm total daily vilanterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily vilanterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no vilanterol).",
-      notes              = "Reference dose 25 ug/day. This is one of the two compounds present in the individual-patient data, and is the only drug effect that carries a between-subject random effect -- which the source applies on individual records only (control stream 'IF(DTYPE.EQ.2) TVDMX25 = (THETA(41)+ETA(26))/...'). That eta's variance was estimated to zero in the combined model.",
-      source_name        = "avdostot (drgNo = 25)"
+      notes = "Reference dose 25 ug/day. This is one of the two compounds present in the individual-patient data, and is the only drug effect that carries a between-subject random effect -- which the source applies on individual records only (control stream 'IF(DTYPE.EQ.2) TVDMX25 = (THETA(41)+ETA(26))/...'). That eta's variance was estimated to zero in the combined model.",
+      source_name = "avdostot (drgNo = 25)"
     ),
     CONMED_BEA2180_DOSE = list(
-      description        = "Per-arm total daily BEA2180 dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily BEA2180 dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no BEA2180).",
-      notes              = "An investigational long-acting anticholinergic identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero.",
-      source_name        = "avdostot (drgNo = 26)"
+      notes = "An investigational long-acting anticholinergic identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero.",
+      source_name = "avdostot (drgNo = 26)"
     ),
     CONMED_PH797804_DOSE = list(
-      description        = "Per-arm total daily PH797804 dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily PH797804 dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no PH797804).",
-      notes              = "An investigational p38 MAP-kinase inhibitor identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero. Grouped with the non-steroid anti-inflammatory agents, so it is NOT zeroed by the OCS-non-responder flag.",
-      source_name        = "avdostot (drgNo = 27)"
+      notes = "An investigational p38 MAP-kinase inhibitor identified only by its development code. Constant effect, no dose-response, no onset time course; keyed on the column being non-zero. Grouped with the non-steroid anti-inflammatory agents, so it is NOT zeroed by the OCS-non-responder flag.",
+      source_name = "avdostot (drgNo = 27)"
     ),
     CONMED_REVEFENACIN_DOSE = list(
-      description        = "Per-arm total daily revefenacin dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily revefenacin dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no revefenacin).",
-      notes              = "Reference dose 175 ug/day. A long-acting anticholinergic, but the source applies NO effect-onset time course to it.",
-      source_name        = "avdostot (drgNo = 29)"
+      notes = "Reference dose 175 ug/day. A long-acting anticholinergic, but the source applies NO effect-onset time course to it.",
+      source_name = "avdostot (drgNo = 29)"
     ),
     CONMED_OLODATEROL_DOSE = list(
-      description        = "Per-arm total daily olodaterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily olodaterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no olodaterol).",
-      notes              = "Reference dose 5 ug/day for the once-daily regimen, which carries an Emax dose-response. The twice-daily regimen instead carries a CONSTANT effect with no dose-response, selected by FORM_OLODATEROL_BID.",
-      source_name        = "avdostot (drgNo = 30)"
+      notes = "Reference dose 5 ug/day for the once-daily regimen, which carries an Emax dose-response. The twice-daily regimen instead carries a CONSTANT effect with no dose-response, selected by FORM_OLODATEROL_BID.",
+      source_name = "avdostot (drgNo = 30)"
     ),
     CONMED_BATEFENTEROL_DOSE = list(
-      description        = "Per-arm total daily batefenterol dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily batefenterol dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no batefenterol).",
-      notes              = "Reference dose 400 ug/day for the once-daily regimen, which carries an Emax dose-response; the twice-daily regimen carries a constant effect, selected by FORM_BATEFENTEROL_BID. Batefenterol is a dual-pharmacology muscarinic-antagonist / beta-2-agonist (MABA) and is the sole member of its own class in the bronchodilator interaction term.",
-      source_name        = "avdostot (drgNo = 31)"
+      notes = "Reference dose 400 ug/day for the once-daily regimen, which carries an Emax dose-response; the twice-daily regimen carries a constant effect, selected by FORM_BATEFENTEROL_BID. Batefenterol is a dual-pharmacology muscarinic-antagonist / beta-2-agonist (MABA) and is the sole member of its own class in the bronchodilator interaction term.",
+      source_name = "avdostot (drgNo = 31)"
     ),
     CONMED_FLUTICASONEFUROATE_DOSE = list(
-      description        = "Per-arm total daily fluticasone furoate dose.",
-      units              = "ug/day",
-      type               = "continuous",
+      description = "Per-arm total daily fluticasone furoate dose.",
+      units = "ug/day",
+      type = "continuous",
       reference_category = "0 (no fluticasone furoate).",
-      notes              = "Reference dose 100 ug/day. The second of the two compounds present in the individual-patient data. Unlike the other inhaled corticosteroids it carries NO effect-onset time course in the source control stream.",
-      source_name        = "avdostot (drgNo = 32)"
+      notes = "Reference dose 100 ug/day. The second of the two compounds present in the individual-patient data. Unlike the other inhaled corticosteroids it carries NO effect-onset time course in the source control stream.",
+      source_name = "avdostot (drgNo = 32)"
     ),
 
     # ---- Regimen and device / blinding selectors -------------------------
     FORM_ACLIDINIUM_BID = list(
-      description        = "Aclidinium twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Aclidinium twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily aclidinium).",
-      notes              = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 2. Selects the b.i.d. reference efficacy (0.0964 L at 800 ug/day) and b.i.d. ED50 in place of the q.d. pair (0.0752 L at 200 ug/day). The control stream notes the two regimens are 'never given in ambiguous combination in dataset'.",
-      source_name        = "dosfreqNo (drgNo = 2)"
+      notes = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 2. Selects the b.i.d. reference efficacy (0.0964 L at 800 ug/day) and b.i.d. ED50 in place of the q.d. pair (0.0752 L at 200 ug/day). The control stream notes the two regimens are 'never given in ambiguous combination in dataset'.",
+      source_name = "dosfreqNo (drgNo = 2)"
     ),
     FORM_MOMETASONE_BID = list(
-      description        = "Mometasone twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mometasone twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily mometasone).",
-      notes              = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 13. Multiplies the once-daily effect by rel_mometasone_bid = 0.784.",
-      source_name        = "dosfreqNo (drgNo = 13)"
+      notes = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 13. Multiplies the once-daily effect by rel_mometasone_bid = 0.784.",
+      source_name = "dosfreqNo (drgNo = 13)"
     ),
     FORM_OLODATEROL_BID = list(
-      description        = "Olodaterol twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Olodaterol twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily olodaterol).",
-      notes              = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 30. Switches from the once-daily Emax dose-response to a separate constant b.i.d. effect (0.112 L).",
-      source_name        = "dosfreqNo (drgNo = 30)"
+      notes = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 30. Switches from the once-daily Emax dose-response to a separate constant b.i.d. effect (0.112 L).",
+      source_name = "dosfreqNo (drgNo = 30)"
     ),
     FORM_BATEFENTEROL_BID = list(
-      description        = "Batefenterol twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Batefenterol twice-daily-regimen indicator. 1 = b.i.d., 0 = q.d.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (once-daily batefenterol).",
-      notes              = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 31. Switches from the once-daily Emax dose-response to a separate constant b.i.d. effect (0.203 L).",
-      source_name        = "dosfreqNo (drgNo = 31)"
+      notes = "Source flag derived from dosfreqNoN = 2 for the slot carrying drgNo 31. Switches from the once-daily Emax dose-response to a separate constant b.i.d. effect (0.203 L).",
+      source_name = "dosfreqNo (drgNo = 31)"
     ),
     FORM_TIOTROPIUM_SMI = list(
-      description        = "Tiotropium soft-mist-inhaler (Respimat) device indicator. 1 = Respimat, 0 = Spiriva HandiHaler dry-powder inhaler.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tiotropium soft-mist-inhaler (Respimat) device indicator. 1 = Respimat, 0 = Spiriva HandiHaler dry-powder inhaler.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HandiHaler dry-powder inhaler).",
-      notes              = "Source flag dosfrmNSM. Selects the 5 ug/day reference dose and the Respimat reference efficacy (0.120 L) with its DERIVED ED50, in place of the 18 ug/day HandiHaler pair (0.122 L). The control stream notes there are 'no occurances of tio being given as HandiHaler with another drug as SMI'.",
-      source_name        = "dosfrm1SM / dosfrm2SM / dosfrm3SM"
+      notes = "Source flag dosfrmNSM. Selects the 5 ug/day reference dose and the Respimat reference efficacy (0.120 L) with its DERIVED ED50, in place of the 18 ug/day HandiHaler pair (0.122 L). The control stream notes there are 'no occurances of tio being given as HandiHaler with another drug as SMI'.",
+      source_name = "dosfrm1SM / dosfrm2SM / dosfrm3SM"
     ),
     FORM_TIOTROPIUM_OPENLABEL = list(
-      description        = "Tiotropium open-label-administration indicator. 1 = open-label, 0 = blinded.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tiotropium open-label-administration indicator. 1 = open-label, 0 = blinded.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (blinded administration).",
-      notes              = "Source flag DRGOLN for the slot carrying drgNo 20. Scales the tiotropium reference efficacy by rel_tiotropium_ol = 0.918 while keeping the blinded ED50 (control stream 'ED5020OL = ED5020'), i.e. open-label tiotropium is estimated to perform about 8% WORSE than the same drug given blinded. The control stream notes that 'blinded tio never given with another drug being OL in dataset'. Strictly a trial-conduct covariate rather than a formulation, but it selects between two variants of one drug's effect in exactly the way the other FORM_ members do.",
-      source_name        = "DRGOL1 / DRGOL2 / DRGOL3 (drgNo = 20)"
+      notes = "Source flag DRGOLN for the slot carrying drgNo 20. Scales the tiotropium reference efficacy by rel_tiotropium_ol = 0.918 while keeping the blinded ED50 (control stream 'ED5020OL = ED5020'), i.e. open-label tiotropium is estimated to perform about 8% WORSE than the same drug given blinded. The control stream notes that 'blinded tio never given with another drug being OL in dataset'. Strictly a trial-conduct covariate rather than a formulation, but it selects between two variants of one drug's effect in exactly the way the other FORM_ members do.",
+      source_name = "DRGOL1 / DRGOL2 / DRGOL3 (drgNo = 20)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 252784L,
-    n_studies       = 298L,
-    age_range       = "Aggregated arm-mean ages across the published trials, pooled mean 63.4 years; the two individual-patient studies span 40-85 years with a mean of 62.",
-    age_median      = "63.4 years (the pooled mean, used as the model's centring constant)",
-    weight_range    = "not used as a model covariate",
-    sex_female_pct  = 32.9,
-    disease_state   = "Chronic obstructive pulmonary disease across the GOLD spirometric severity range, in trials of mono-, dual- and triple-therapy with bronchodilators and anti-inflammatories. Endpoint is morning trough FEV1.",
-    dose_range      = "Twenty-three compounds at their clinically studied dose ranges, given as monotherapy, dual therapy or triple therapy; see each CONMED_<drug>_DOSE covariate entry for that drug's reference dose. Placebo arms are encoded by all dose columns being zero.",
-    regions         = "Multinational; the aggregated data are all published randomized COPD trials meeting the source analysis's criteria up to 24 November 2020.",
+    species = "human",
+    n_subjects = 252784L,
+    n_studies = 298L,
+    age_range = "Aggregated arm-mean ages across the published trials, pooled mean 63.4 years; the two individual-patient studies span 40-85 years with a mean of 62.",
+    age_median = "63.4 years (the pooled mean, used as the model's centring constant)",
+    weight_range = "not used as a model covariate",
+    sex_female_pct = 32.9,
+    disease_state = "Chronic obstructive pulmonary disease across the GOLD spirometric severity range, in trials of mono-, dual- and triple-therapy with bronchodilators and anti-inflammatories. Endpoint is morning trough FEV1.",
+    dose_range = "Twenty-three compounds at their clinically studied dose ranges, given as monotherapy, dual therapy or triple therapy; see each CONMED_<drug>_DOSE covariate entry for that drug's reference dose. Placebo arms are encoded by all dose columns being zero.",
+    regions = "Multinational; the aggregated data are all published randomized COPD trials meeting the source analysis's criteria up to 24 November 2020.",
     trials_included = "298 studies in total. Aggregated data: 4,137 arm-mean trough FEV1 observations from 298 studies of 250,543 patients, inherited unchanged from the Llanos-Paez 2023 meta-analysis. Individual-patient data: NCT01053988 (n = 1025) and NCT01054885 (n = 1216), both 24-week fluticasone furoate / vilanterol trials. Those two studies were REMOVED from the aggregated data when fitting the combined model so that no observation contributes twice, leaving 296 aggregated studies alongside the 2 individual-patient studies.",
-    notes           = "n_subjects is the sum of the 250,543 aggregated patients and the 2,241 individual patients; because the two individual-patient studies are also among the 298 aggregated studies (and were excluded from the aggregated side to avoid duplication), this total counts each patient once. sex_female_pct is 1 - 0.671, using the pooled male fraction 0.671 that the source uses as its sex centring constant; the current-smoker fraction is correspondingly 0.463 and the mean GOLD stage 3. Study durations run from short trials to 19 studies longer than 52 weeks (Supporting Information Figure S4C). The paper reports a between-study shrinkage of 43.4% on the disease-progression slope random effect, so study-level disease-progression draws are weakly informed."
+    notes = "n_subjects is the sum of the 250,543 aggregated patients and the 2,241 individual patients; because the two individual-patient studies are also among the 298 aggregated studies (and were excluded from the aggregated side to avoid duplication), this total counts each patient once. sex_female_pct is 1 - 0.671, using the pooled male fraction 0.671 that the source uses as its sex centring constant; the current-smoker fraction is correspondingly 0.463 and the mean GOLD stage 3. Study durations run from short trials to 19 studies longer than 52 weeks (Supporting Information Figure S4C). The paper reports a between-study shrinkage of 43.4% on the disease-progression slope random effect, so study-level disease-progression draws are weakly informed."
   )
 
   ini({

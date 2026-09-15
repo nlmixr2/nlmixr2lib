@@ -13,8 +13,8 @@ Schoemaker_2018_levetiracetam <- function() {
   )
   vignette <- "Schoemaker_2018_levetiracetam"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "mg/L"
   )
   ddmore_id <- "DDMODEL00000239"
@@ -22,58 +22,58 @@ Schoemaker_2018_levetiracetam <- function() {
 
   covariateData <- list(
     CHILD = list(
-      description        = "Pediatric-vs-adult age-group indicator. 1 = pediatric (4-16 years, daily seizure-count records, NDAYS = 1, PDV = observed previous-day count, IIV active on overdispersion alpha and Markov amplitude); 0 = adult (>=18 years, monthly seizure-count records, NDAYS approx 28, PDV unused / sentinel -99, no IIV on overdispersion).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric-vs-adult age-group indicator. 1 = pediatric (4-16 years, daily seizure-count records, NDAYS = 1, PDV = observed previous-day count, IIV active on overdispersion alpha and Markov amplitude); 0 = adult (>=18 years, monthly seizure-count records, NDAYS approx 28, PDV unused / sentinel -99, no IIV on overdispersion).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = "Source column PED (renamed to canonical CHILD). Drives four FIXED-zero peds offsets in the published model (LS00P on log baseline rate is the only non-zero peds offset, +0.420; the peds offsets on placebo, Emax, EC50, and the mixture logit are FIXED to zero). Also gates the Markov-amplitude term and the overdispersion IIV.",
-      source_name        = "PED"
+      notes = "Source column PED (renamed to canonical CHILD). Drives four FIXED-zero peds offsets in the published model (LS00P on log baseline rate is the only non-zero peds offset, +0.420; the peds offsets on placebo, Emax, EC50, and the mixture logit are FIXED to zero). Also gates the Markov-amplitude term and the overdispersion IIV.",
+      source_name = "PED"
     ),
     TRT_PHASE = list(
-      description        = "Double-blind treatment-phase indicator. 1 = record falls within the active treatment phase (placebo and Emax drug-effect terms are switched on); 0 = baseline / run-in / off-treatment (no placebo or drug effect; only the LS0 baseline-rate term contributes).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Double-blind treatment-phase indicator. 1 = record falls within the active treatment phase (placebo and Emax drug-effect terms are switched on); 0 = baseline / run-in / off-treatment (no placebo or drug effect; only the LS0 baseline-rate term contributes).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (baseline / off-treatment)",
-      notes              = "Source column Q2 (renamed to canonical TRT_PHASE; new entry registered alongside this model in inst/references/covariate-columns.md). The .ctl computes LE = LS0 + Q2 * LTRTE, so TRT_PHASE multiplies the entire treatment effect (placebo + drug). New canonical because Q2 the column name collides with the canonical PK parameter q2 (inter-compartmental clearance to peripheral2).",
-      source_name        = "Q2"
+      notes = "Source column Q2 (renamed to canonical TRT_PHASE; new entry registered alongside this model in inst/references/covariate-columns.md). The .ctl computes LE = LS0 + Q2 * LTRTE, so TRT_PHASE multiplies the entire treatment effect (placebo + drug). New canonical because Q2 the column name collides with the canonical PK parameter q2 (inter-compartmental clearance to peripheral2).",
+      source_name = "Q2"
     ),
     PDV = list(
-      description        = "Previous-period observed seizure count, supplied per-record as a covariate input. For pediatric subjects (CHILD = 1, daily counts) PDV is the observed seizure count on the immediately preceding day. For adults (CHILD = 0, monthly counts) PDV is unused; the source dataset uses the sentinel -99 to flag this.",
-      units              = "(seizures per record interval)",
-      type               = "count",
+      description = "Previous-period observed seizure count, supplied per-record as a covariate input. For pediatric subjects (CHILD = 1, daily counts) PDV is the observed seizure count on the immediately preceding day. For adults (CHILD = 0, monthly counts) PDV is unused; the source dataset uses the sentinel -99 to flag this.",
+      units = "(seizures per record interval)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Source column PDV (canonical name same as source; new entry registered alongside this model). Per operator decision (sidecar response-001 Q2 free-text answer) the Markov dependence on the previous count is preserved in this nlmixr2lib port by representing PDV as a per-record covariate the user supplies, rather than dropping the term or attempting a state-based approximation. Markov amplitude only acts when CHILD = 1 (.ctl `LS0 = LS00 + PED*LSMAX*PDV/(ES50+PDV)`); for CHILD = 0 the value is multiplied by 0 in model() so the sentinel -99 is harmless. New canonical because the name (previous-day-value seizure count) is intrinsically tied to count / Markov-feedback PD models and unlikely to be reused outside that family.",
-      source_name        = "PDV"
+      notes = "Source column PDV (canonical name same as source; new entry registered alongside this model). Per operator decision (sidecar response-001 Q2 free-text answer) the Markov dependence on the previous count is preserved in this nlmixr2lib port by representing PDV as a per-record covariate the user supplies, rather than dropping the term or attempting a state-based approximation. Markov amplitude only acts when CHILD = 1 (.ctl `LS0 = LS00 + PED*LSMAX*PDV/(ES50+PDV)`); for CHILD = 0 the value is multiplied by 0 in model() so the sentinel -99 is harmless. New canonical because the name (previous-day-value seizure count) is intrinsically tied to count / Markov-feedback PD models and unlikely to be reused outside that family.",
+      source_name = "PDV"
     ),
     NDAYS = list(
-      description        = "Length of the count-interval window (in days) over which the observed seizure count was tabulated. Multiplies the per-day rate to give the expected count for the interval (LAMB = exp(LE) * NDAYS in the .ctl).",
-      units              = "days",
-      type               = "count",
+      description = "Length of the count-interval window (in days) over which the observed seizure count was tabulated. Multiplies the per-day rate to give the expected count for the interval (LAMB = exp(LE) * NDAYS in the .ctl).",
+      units = "days",
+      type = "count",
       reference_category = NULL,
-      notes              = "Source column NDAYS (canonical name same as source; new entry registered alongside this model). Adult records: NDAYS = 28 (approximately 4 weeks; some bundle records use 30 or 31 reflecting the actual visit interval). Pediatric records: NDAYS = 1 (daily count). New canonical because the count-interval-length concept is specific to count / TTE PD models.",
-      source_name        = "NDAYS"
+      notes = "Source column NDAYS (canonical name same as source; new entry registered alongside this model). Adult records: NDAYS = 28 (approximately 4 weeks; some bundle records use 30 or 31 reflecting the actual visit interval). Pediatric records: NDAYS = 1 (daily count). New canonical because the count-interval-length concept is specific to count / TTE PD models.",
+      source_name = "NDAYS"
     ),
     CAV = list(
-      description        = "Average levetiracetam plasma concentration (mg/L) over the count-interval window. Drives the Emax drug effect via leff = lemax * CAV / (exp(lec50) + CAV). The CAV column is set to 0 for placebo records and for baseline/run-in records.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Average levetiracetam plasma concentration (mg/L) over the count-interval window. Drives the Emax drug effect via leff = lemax * CAV / (exp(lec50) + CAV). The CAV column is set to 0 for placebo records and for baseline/run-in records.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CAV. The published model treats LEV exposure as a per-period summary; the bundle does not ship the upstream LEV popPK that produced these CAV values. For new simulations the user must supply CAV either from a LEV popPK fit they run separately or as a fixed dose-response scan. EC50 is on the LEV mg/L scale (exp(lec50) = exp(3.45) approximately 31.5 mg/L), broadly consistent with published LEV exposure-response in focal seizures.",
-      source_name        = "CAV"
+      notes = "Source column CAV. The published model treats LEV exposure as a per-period summary; the bundle does not ship the upstream LEV popPK that produced these CAV values. For new simulations the user must supply CAV either from a LEV popPK fit they run separately or as a fixed dose-response scan. EC50 is on the LEV mg/L scale (exp(lec50) = exp(3.45) approximately 31.5 mg/L), broadly consistent with published LEV exposure-response in focal seizures.",
+      source_name = "CAV"
     )
   )
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "Pooled adult and pediatric (4-16 years) levetiracetam focal-seizure trial cohorts. Exact subject counts and demographic distributions are not in the DDMORE bundle and the publication PDF was not on disk for cross-check.",
-    weight_range   = "(not extracted; bundle does not ship demographics)",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "Pooled adult and pediatric (4-16 years) levetiracetam focal-seizure trial cohorts. Exact subject counts and demographic distributions are not in the DDMORE bundle and the publication PDF was not on disk for cross-check.",
+    weight_range = "(not extracted; bundle does not ship demographics)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Focal-onset seizures (uncontrolled on stable background antiepileptic therapy; LEV was added on as monotherapy or adjunctive therapy depending on the contributing trial).",
-    dose_range     = "Levetiracetam plasma concentrations summarised as CAV per count-interval; the bundle does not document the dose levels the LEV cohorts received. Adult LEV add-on therapy is typically 1000-3000 mg/day in two divided doses.",
-    regions        = "(not reported in the DDMORE bundle)",
-    notes          = "Population field detail is intentionally sparse: the DDMORE bundle for DDMODEL00000239 ships the .ctl, the .res, and the simulated dataset (39065 rows; 6107 adult monthly-count records and 32958 pediatric daily-count records by the bundle's own PED column), but not a baseline-demographics table. The Schoemaker 2018 publication PDF was not on disk under /home/bill/github/mab_human_consensus/literature at extraction time, so subject counts, study counts, and demographic distributions are not populated. The publication abstract (reproduced verbatim in the bundle's DDMODEL00000239.rdf model-has-description block) confirms the model fit is to a combined adult + pediatric (4-16 years) LEV cohort and reports 33.5% as the mixture-responder fraction. Update population fields when the publication PDF becomes available."
+    disease_state = "Focal-onset seizures (uncontrolled on stable background antiepileptic therapy; LEV was added on as monotherapy or adjunctive therapy depending on the contributing trial).",
+    dose_range = "Levetiracetam plasma concentrations summarised as CAV per count-interval; the bundle does not document the dose levels the LEV cohorts received. Adult LEV add-on therapy is typically 1000-3000 mg/day in two divided doses.",
+    regions = "(not reported in the DDMORE bundle)",
+    notes = "Population field detail is intentionally sparse: the DDMORE bundle for DDMODEL00000239 ships the .ctl, the .res, and the simulated dataset (39065 rows; 6107 adult monthly-count records and 32958 pediatric daily-count records by the bundle's own PED column), but not a baseline-demographics table. The Schoemaker 2018 publication PDF was not on disk under /home/bill/github/mab_human_consensus/literature at extraction time, so subject counts, study counts, and demographic distributions are not populated. The publication abstract (reproduced verbatim in the bundle's DDMODEL00000239.rdf model-has-description block) confirms the model fit is to a combined adult + pediatric (4-16 years) LEV cohort and reports 33.5% as the mixture-responder fraction. Update population fields when the publication PDF becomes available."
   )
 
   ini({

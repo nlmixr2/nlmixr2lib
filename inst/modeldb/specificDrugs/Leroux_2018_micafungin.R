@@ -23,7 +23,7 @@ Leroux_2018_micafungin <- function() {
     sep = " "
   )
   vignette <- "Leroux_2018_fluconazole_micafungin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -34,11 +34,11 @@ Leroux_2018_micafungin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight at the time of dosing",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight at the time of dosing",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median 1.090 kg (range 0.640-4.615) at randomization in the",
         "micafungin arm (Table 2). Enters CL and V as a linear per-kg",
         "scalar: CL_i = TVCL * WT_i and V_i = TVV * WT_i, matching the",
@@ -49,16 +49,16 @@ Leroux_2018_micafungin <- function() {
         "not state an allometric exponent; the per-kg units in Table 3",
         "imply linear (exponent 1) scaling."
       ),
-      source_name        = "Current weight"
+      source_name = "Current weight"
     )
   )
 
   covariatesDataExcluded <- list(
     PAGE = list(
       description = "Postmenstrual age (gestational age at birth + postnatal age)",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Synonymous with the paper's 'corrected gestational age' (CGA)",
         "in the neonatal context. The Results section states 'These",
         "models included ... the impact of CGA on micafungin clearance'",
@@ -74,9 +74,9 @@ Leroux_2018_micafungin <- function() {
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Reported in Table 2 (median 26 + 6 weeks, range 23 + 4 to",
         "40 + 0 weeks). Used by the original authors to derive the",
         "corrected gestational age (CGA = GA + postnatal age); not",
@@ -86,9 +86,9 @@ Leroux_2018_micafungin <- function() {
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Reported in Table 2 in days (median 12.5, range 3.0-115.0).",
         "Used by the original authors to derive CGA; not encoded here",
         "because the maturation functional form on CL is unreported."
@@ -97,16 +97,16 @@ Leroux_2018_micafungin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
     n_observations = 81L,
-    age_range      = "postnatal 3.0-115.0 days (median 12.5)",
-    ga_range       = "23 + 4 to 40 + 0 weeks (median 26 + 6)",
-    pma_range      = "25.4-41.9 weeks at randomization (median 29.9)",
-    weight_range   = "0.640-4.615 kg current weight at randomization (median 1.090); 0.500-3.630 kg birth weight (median 0.885)",
+    age_range = "postnatal 3.0-115.0 days (median 12.5)",
+    ga_range = "23 + 4 to 40 + 0 weeks (median 26 + 6)",
+    pma_range = "25.4-41.9 weeks at randomization (median 29.9)",
+    weight_range = "0.640-4.615 kg current weight at randomization (median 1.090); 0.500-3.630 kg birth weight (median 0.885)",
     sex_female_pct = 38.9,
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm and term neonates and young infants (24-42 weeks",
       "corrected gestational age; postnatal age between 48 h and day",
       "of life 120 at culture acquisition) with suspected or",
@@ -114,7 +114,7 @@ Leroux_2018_micafungin <- function() {
       "treated in five French and one Spanish neonatal intensive care",
       "units between 2013 and 2015."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous micafungin, 2-hour infusion. Loading dose 15",
       "mg/kg/day on day 1 (cohort median 15.1 mg/kg/dose, range",
       "12.1-18.8); maintenance dose 10 mg/kg/day regardless of CGA",
@@ -122,8 +122,8 @@ Leroux_2018_micafungin <- function() {
       "reduced after day 6 to median 4.76 mg/kg/day, range 3.48-10.4).",
       "Treatment duration median 4 days (range 1-35)."
     ),
-    regions        = "France (Amiens, Lille, Paris, Saint Pierre de la Reunion) and Spain (Salamanca); FP7 TINN consortium, 2013-2015.",
-    notes          = paste(
+    regions = "France (Amiens, Lille, Paris, Saint Pierre de la Reunion) and Spain (Salamanca); FP7 TINN consortium, 2013-2015.",
+    notes = paste(
       "Randomized 1:1 to fluconazole vs micafungin; PK samples on",
       "treatment days 1 and 5 per the limited-PK schedule in Table 1",
       "(2-3 samples per occasion, 4 alternative schedules depending",

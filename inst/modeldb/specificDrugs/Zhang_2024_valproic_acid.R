@@ -7,114 +7,114 @@ Zhang_2024_valproic_acid <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = "60 kg (the cohort median; Zhang 2024 Results 3.2)",
-      notes              = "Power effect on both CL/F (exponent 0.787) and V/F (exponent 0.751), each normalised to the 60.0 kg cohort median. Cohort range 5.50-120.00 kg (Zhang 2024 Table 1). The V/F exponent is reported only in the Abstract equation and in Results 3.2 ('0.75 for Vd and BW'); it is absent from Table 3, which tabulates only the CL/F exponent.",
-      source_name        = "BW"
+      notes = "Power effect on both CL/F (exponent 0.787) and V/F (exponent 0.751), each normalised to the 60.0 kg cohort median. Cohort range 5.50-120.00 kg (Zhang 2024 Table 1). The V/F exponent is reported only in the Abstract equation and in Results 3.2 ('0.75 for Vd and BW'); it is absent from Table 3, which tabulates only the CL/F exponent.",
+      source_name = "BW"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = "50.3 umol/L (the cohort median; Zhang 2024 Results 3.2)",
-      notes              = "Power effect on CL/F with a NEGATIVE exponent (-0.253): valproic acid clearance falls as creatinine rises. Cohort range 13.00-447.60 umol/L, with 33.86% of patients outside the 44.0-132 umol/L normal range (Zhang 2024 Discussion). Reported in SI units (umol/L), not mg/dL.",
-      source_name        = "Cr"
+      notes = "Power effect on CL/F with a NEGATIVE exponent (-0.253): valproic acid clearance falls as creatinine rises. Cohort range 13.00-447.60 umol/L, with 33.86% of patients outside the 44.0-132 umol/L normal range (Zhang 2024 Discussion). Reported in SI units (umol/L), not mg/dL.",
+      source_name = "Cr"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = "39 g/L (the cohort median; Zhang 2024 Results 3.2)",
-      notes              = "Power effect on CL/F with a NEGATIVE exponent (-0.873): apparent clearance of TOTAL valproic acid falls as albumin rises. Valproic acid is 90-95% albumin-bound, so a lower albumin leaves a larger unbound fraction and raises total-drug apparent clearance (Zhang 2024 Discussion). Cohort range 23.5-51.80 g/L, with 21.90% below the 28-54 g/L reference range. Reported in SI units (g/L).",
-      source_name        = "ALB"
+      notes = "Power effect on CL/F with a NEGATIVE exponent (-0.873): apparent clearance of TOTAL valproic acid falls as albumin rises. Valproic acid is 90-95% albumin-bound, so a lower albumin leaves a larger unbound fraction and raises total-drug apparent clearance (Zhang 2024 Discussion). Cohort range 23.5-51.80 g/L, with 21.90% below the 28-54 g/L reference range. Reported in SI units (g/L).",
+      source_name = "ALB"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on CL/F: exp(0.121) = 1.129, i.e. women have 12.9% higher apparent clearance than men (Zhang 2024 Discussion states '12.9% higher'). 290 of 443 patients were female (Zhang 2024 Table 1). Note this is the OPPOSITE direction to several prior valproate studies, which the Discussion attributes to the larger median body weight of the women in this cohort (65 kg vs 57 kg).",
-      source_name        = "gender"
+      notes = "Exponential effect on CL/F: exp(0.121) = 1.129, i.e. women have 12.9% higher apparent clearance than men (Zhang 2024 Discussion states '12.9% higher'). 290 of 443 patients were female (Zhang 2024 Table 1). Note this is the OPPOSITE direction to several prior valproate studies, which the Discussion attributes to the larger median body weight of the women in this cohort (65 kg vs 57 kg).",
+      source_name = "gender"
     ),
     CONMED_CARBAPENEM = list(
-      description        = "Concomitant carbapenem antibiotic indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbapenem antibiotic indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbapenem)",
-      notes              = "Exponential effect on CL/F: exp(1.50) = 4.482, a 448.2% increase, which is this paper's headline finding and the first time carbapenem coadministration has been retained as a covariate in a valproate population PK model. 22 of 443 patients (4.9%) were coadministered a carbapenem: 18 meropenem (4.1%) and 3 ertapenem (0.6%); the paper pools both agents under the single class flag CBP. Mechanism per the Discussion: inhibition of acylpeptide hydrolase reduces deglucuronidation of valproate glucuronide.",
-      source_name        = "CBP"
+      notes = "Exponential effect on CL/F: exp(1.50) = 4.482, a 448.2% increase, which is this paper's headline finding and the first time carbapenem coadministration has been retained as a covariate in a valproate population PK model. 22 of 443 patients (4.9%) were coadministered a carbapenem: 18 meropenem (4.1%) and 3 ertapenem (0.6%); the paper pools both agents under the single class flag CBP. Mechanism per the Discussion: inhibition of acylpeptide hydrolase reduces deglucuronidation of valproate glucuronide.",
+      source_name = "CBP"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant enzyme-inducing antiepileptic drug indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant enzyme-inducing antiepileptic drug indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant enzyme-inducing antiepileptic drug)",
-      notes              = "This paper's 'enzyme inducer two (IND2)' definition: 1 = the patient takes at least one of oxcarbazepine, carbamazepine, phenobarbital or phenytoin. Note that OXCARBAZEPINE IS INCLUDED, which is wider than the classic carbamazepine / phenobarbital / phenytoin EIAED triad used by Rodrigues_2017_oxcarbazepine.R; broadening the definition to capture oxcarbazepine's modest CYP3A4 induction is an explicit contribution of this paper (Introduction). Exponential effect on CL/F: exp(0.15) = 1.162, i.e. clearance rises to 116% of the non-induced value. 91 of 443 patients (20.5%) were IND2-positive. The paper also recorded the narrow 'enzyme inducer one (IND1)' flag (carbamazepine / phenobarbital / phenytoin only, 35 patients / 7.9%; Zhang 2024 Table 1) but the final model retains IND2, not IND1; IND1 is not represented in this model file because it would collide with this same canonical column.",
-      source_name        = "IND2"
+      notes = "This paper's 'enzyme inducer two (IND2)' definition: 1 = the patient takes at least one of oxcarbazepine, carbamazepine, phenobarbital or phenytoin. Note that OXCARBAZEPINE IS INCLUDED, which is wider than the classic carbamazepine / phenobarbital / phenytoin EIAED triad used by Rodrigues_2017_oxcarbazepine.R; broadening the definition to capture oxcarbazepine's modest CYP3A4 induction is an explicit contribution of this paper (Introduction). Exponential effect on CL/F: exp(0.15) = 1.162, i.e. clearance rises to 116% of the non-induced value. 91 of 443 patients (20.5%) were IND2-positive. The paper also recorded the narrow 'enzyme inducer one (IND1)' flag (carbamazepine / phenobarbital / phenytoin only, 35 patients / 7.9%; Zhang 2024 Table 1) but the final model retains IND2, not IND1; IND1 is not represented in this model file because it would collide with this same canonical column.",
+      source_name = "IND2"
     ),
     FORM_VPA_SR = list(
-      description        = "Sustained-release valproic acid tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sustained-release valproic acid tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral solution, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h; the oral-solution reference is Ka = 2.64 1/h. Both values were fixed from Ding 2015 because the therapeutic-drug-monitoring dataset is almost entirely steady-state troughs and contains no absorption-phase data (Zhang 2024 Methods 2.4.1). This cohort has only the two levels solution and sustained-release tablet, so FORM_TABLET (the conventional immediate-release level used by Zhang_2023_valproic_acid_base.R) is not part of this model.",
-      source_name        = "Dosage form"
+      notes = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h; the oral-solution reference is Ka = 2.64 1/h. Both values were fixed from Ding 2015 because the therapeutic-drug-monitoring dataset is almost entirely steady-state troughs and contains no absorption-phase data (Zhang 2024 Methods 2.4.1). This cohort has only the two levels solution and sustained-release tablet, so FORM_TABLET (the conventional immediate-release level used by Zhang_2023_valproic_acid_base.R) is not part of this model.",
+      source_name = "Dosage form"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Recorded for every patient (median 32.74 years, range 0.27-84.38; Zhang 2024 Table 1) and used to define the typical-patient profiles simulated in Table 4, but NOT retained on CL/F or V/F in the final model. Table 2 reports the stepwise procedure only for the six retained covariates, so the paper does not state the delta-OFV at which age was rejected."
+      units = "years",
+      type = "continuous",
+      notes = "Recorded for every patient (median 32.74 years, range 0.27-84.38; Zhang 2024 Table 1) and used to define the typical-patient profiles simulated in Table 4, but NOT retained on CL/F or V/F in the final model. Table 2 reports the stepwise procedure only for the six retained covariates, so the paper does not state the delta-OFV at which age was rejected."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Recorded for every patient (median 162.00 cm, range 54.00-185.00; Zhang 2024 Table 1) but not retained in the final model and not reported in Table 2's stepwise procedure. The paper's column is spelled out as 'Height'; the canonical column is HT.",
+      units = "cm",
+      type = "continuous",
+      notes = "Recorded for every patient (median 162.00 cm, range 54.00-185.00; Zhang 2024 Table 1) but not retained in the final model and not reported in Table 2's stepwise procedure. The paper's column is spelled out as 'Height'; the canonical column is HT.",
       source_name = "Height"
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Recorded for every patient (median 16.20 U/L, range 0.00-436.20; Zhang 2024 Table 1) but not retained on CL/F. The Discussion reports that 36.4% of the carbapenem-coadministered patients had ALT above the reference range and reads this as a consequence of the interaction rather than as a clearance covariate."
+      units = "U/L",
+      type = "continuous",
+      notes = "Recorded for every patient (median 16.20 U/L, range 0.00-436.20; Zhang 2024 Table 1) but not retained on CL/F. The Discussion reports that 36.4% of the carbapenem-coadministered patients had ALT above the reference range and reads this as a consequence of the interaction rather than as a clearance covariate."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Recorded for every patient (median 29.10 U/L, range 3.10-752.10; Zhang 2024 Table 1) but not retained on CL/F and not reported in Table 2's stepwise procedure."
+      units = "U/L",
+      type = "continuous",
+      notes = "Recorded for every patient (median 29.10 U/L, range 3.10-752.10; Zhang 2024 Table 1) but not retained on CL/F and not reported in Table 2's stepwise procedure."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 443,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 443,
+    n_studies = 1,
     n_observations = 615,
-    age_range      = "0.27-84.38 years",
-    age_median     = "32.74 years",
-    weight_range   = "5.50-120.00 kg",
-    weight_median  = "60.00 kg",
+    age_range = "0.27-84.38 years",
+    age_median = "32.74 years",
+    weight_range = "5.50-120.00 kg",
+    weight_median = "60.00 kg",
     sex_female_pct = 65.5,
     race_ethnicity = "Chinese (two-centre Beijing cohort; sub-ethnicity not reported)",
-    disease_state  = "Epilepsy or post-neurosurgery seizure prophylaxis; 65.5% adults and 34.5% children",
-    dose_range     = "80-3000 mg/day (median 800); 2.79-109.09 mg/kg/day (median 14.81); oral solution or sustained-release tablet given once or twice daily",
-    regions        = "China (Beijing Tiantan Hospital and Beijing Children's Hospital, Capital Medical University; October 2016 - June 2022)",
+    disease_state = "Epilepsy or post-neurosurgery seizure prophylaxis; 65.5% adults and 34.5% children",
+    dose_range = "80-3000 mg/day (median 800); 2.79-109.09 mg/kg/day (median 14.81); oral solution or sustained-release tablet given once or twice daily",
+    regions = "China (Beijing Tiantan Hospital and Beijing Children's Hospital, Capital Medical University; October 2016 - June 2022)",
     renal_function = "Serum creatinine 13.00-447.60 umol/L (median 50.30); 33.86% of patients outside the 44.0-132 umol/L normal range",
-    co_medication  = "Only 50.11% received valproate monotherapy. Levetiracetam 137 (30.9%), oxcarbazepine 63 (14.2%), lamotrigine 28 (6.3%), clonazepam 26 (5.8%), topiramate 25 (5.6%), phenobarbital 23 (5.1%), carbamazepine 15 (3.3%), lacosamide 13 (2.9%), phenytoin 2 (0.4%), nitrazepam 2 (0.4%). Carbapenems 22 (4.9%): meropenem 18 (4.1%), ertapenem 3 (0.6%).",
-    notes          = "615 total plasma valproic acid concentrations in 443 patients (290 female / 153 male), measured by fluorescence polarization immunoassay (Centaur XP, Siemens; quantitative range 1-150 mg/L). Observed concentrations 0.00-165.05 mg/L (median 63.01); 10 records (1.6%) were below the limit of quantification. Most samples are steady-state troughs from routine therapeutic drug monitoring, with no absorption-phase sampling - this is why Ka is fixed rather than estimated and why interindividual variability on V/F could not be estimated. All patients had received valproate for at least one month before sampling. Model fitted in Phoenix NLME 8.3 with FOCE-ELS. Baseline demographics: Zhang 2024 Table 1."
+    co_medication = "Only 50.11% received valproate monotherapy. Levetiracetam 137 (30.9%), oxcarbazepine 63 (14.2%), lamotrigine 28 (6.3%), clonazepam 26 (5.8%), topiramate 25 (5.6%), phenobarbital 23 (5.1%), carbamazepine 15 (3.3%), lacosamide 13 (2.9%), phenytoin 2 (0.4%), nitrazepam 2 (0.4%). Carbapenems 22 (4.9%): meropenem 18 (4.1%), ertapenem 3 (0.6%).",
+    notes = "615 total plasma valproic acid concentrations in 443 patients (290 female / 153 male), measured by fluorescence polarization immunoassay (Centaur XP, Siemens; quantitative range 1-150 mg/L). Observed concentrations 0.00-165.05 mg/L (median 63.01); 10 records (1.6%) were below the limit of quantification. Most samples are steady-state troughs from routine therapeutic drug monitoring, with no absorption-phase sampling - this is why Ka is fixed rather than estimated and why interindividual variability on V/F could not be estimated. All patients had received valproate for at least one month before sampling. Model fitted in Phoenix NLME 8.3 with FOCE-ELS. Baseline demographics: Zhang 2024 Table 1."
   )
 
   ini({

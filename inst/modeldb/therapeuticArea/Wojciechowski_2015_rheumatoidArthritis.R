@@ -67,89 +67,89 @@ Wojciechowski_2015_rheumatoidArthritis <- function() {
   paper_specific_compartments <- c("das28_logit", "das28")
 
   units <- list(
-    time          = "week (time since initiation of triple DMARD therapy)",
-    dosing        = "(none; no PK component -- DMARD doses were titrated to disease severity in a treat-to-target protocol and were not retained as covariates)",
+    time = "week (time since initiation of triple DMARD therapy)",
+    dosing = "(none; no PK component -- DMARD doses were titrated to disease severity in a treat-to-target protocol and were not retained as covariates)",
     concentration = "(28-joint disease activity score DAS28, dimensionless 0-9.2; observation das28_logit on the logit-transformed scale per paper Equation 3, with the back-transformed das28 also emitted for visualisation)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at initiation of triple DMARD therapy.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at initiation of triple DMARD therapy.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject time-fixed (the source paper takes age at the initiation of triple therapy, not time-varying age). Centered at the median age of the cohort (57 years; Table 1) via a power function: BASE_j = TVBASE * (AGE_j / 57)^e_age_base. The continuous-covariate power-around-median form is paper Equation 5; the AGE specialisation is paper Equation 8 and the worked example in the text (BASE = 5.4 at age 40 and 5.8 at age 70 after the back-transform from the logit scale to the 0-9.2 natural-scale DAS28).",
-      source_name        = "AGE"
+      notes = "Per-subject time-fixed (the source paper takes age at the initiation of triple therapy, not time-varying age). Centered at the median age of the cohort (57 years; Table 1) via a power function: BASE_j = TVBASE * (AGE_j / 57)^e_age_base. The continuous-covariate power-around-median form is paper Equation 5; the AGE specialisation is paper Equation 8 and the worked example in the text (BASE = 5.4 at age 40 and 5.8 at age 70 after the back-transform from the logit scale to the 0-9.2 natural-scale DAS28).",
+      source_name = "AGE"
     ),
     CONMED_STEROID = list(
-      description        = "Time-varying per-record indicator for intramuscular corticosteroid administration at the current clinic visit. 1 at visits where an i.m. methylprednisolone acetate dose (40-80 mg) was administered, 0 otherwise. In the source paper this is the column CSIM (case-sensitive).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Time-varying per-record indicator for intramuscular corticosteroid administration at the current clinic visit. 1 at visits where an i.m. methylprednisolone acetate dose (40-80 mg) was administered, 0 otherwise. In the source paper this is the column CSIM (case-sensitive).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no i.m. corticosteroid administration at the current visit).",
-      notes              = "Time-varying per record. In the source paper this is the i.m.-route subset of the systemic-corticosteroid concept; oral or intra-articular corticosteroid administration does NOT set CONMED_STEROID = 1 in the Wojciechowski 2015 dataset (paper Methods 'Patient data' and Results paragraph following Eq 8: 'where CSIM = 1 ... at times where the patient received i.m. corticosteroids and CSIM = 0 ... if not'). The existing CONMED_STEROID canonical's umbrella description -- 'systemic corticosteroid administration indicator' covering 'time-varying per record, capturing acute corticosteroid pulses for relapse / flare treatment' -- already permits route-restricted i.m.-pulse encodings as a subset of systemic. Enters BASE as a multiplicative shift on the logit scale: BASE_j = TVBASE * (1 + e_conmed_steroid_base * CONMED_STEROID) * (AGE / 57)^e_age_base. Worked example from the paper text: a typical 57-year-old patient (no smoking) has BASE_logit = 0.472 (natural-scale DAS28 = 5.7) when CONMED_STEROID = 0; the same patient at a visit with i.m. corticosteroid administration has BASE_logit = 0.472 * (1 + 0.737) = 0.820, corresponding to a natural-scale DAS28 of 6.4. The route restriction is recorded here in source_name (CSIM) and in this notes block so a downstream user knows that an i.m.-only signal is the source-paper convention.",
-      source_name        = "CSIM"
+      notes = "Time-varying per record. In the source paper this is the i.m.-route subset of the systemic-corticosteroid concept; oral or intra-articular corticosteroid administration does NOT set CONMED_STEROID = 1 in the Wojciechowski 2015 dataset (paper Methods 'Patient data' and Results paragraph following Eq 8: 'where CSIM = 1 ... at times where the patient received i.m. corticosteroids and CSIM = 0 ... if not'). The existing CONMED_STEROID canonical's umbrella description -- 'systemic corticosteroid administration indicator' covering 'time-varying per record, capturing acute corticosteroid pulses for relapse / flare treatment' -- already permits route-restricted i.m.-pulse encodings as a subset of systemic. Enters BASE as a multiplicative shift on the logit scale: BASE_j = TVBASE * (1 + e_conmed_steroid_base * CONMED_STEROID) * (AGE / 57)^e_age_base. Worked example from the paper text: a typical 57-year-old patient (no smoking) has BASE_logit = 0.472 (natural-scale DAS28 = 5.7) when CONMED_STEROID = 0; the same patient at a visit with i.m. corticosteroid administration has BASE_logit = 0.472 * (1 + 0.737) = 0.820, corresponding to a natural-scale DAS28 of 6.4. The route restriction is recorded here in source_name (CSIM) and in this notes block so a downstream user knows that an i.m.-only signal is the source-paper convention.",
+      source_name = "CSIM"
     ),
     CONMED_STEROID_FU = list(
-      description        = "Per-subject time-fixed indicator equal to 1 if the subject received any systemic (i.m. or oral) corticosteroid at any time during the 60-week analysis follow-up window, 0 otherwise. In the source paper this is the column CSSYS (case-sensitive).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-subject time-fixed indicator equal to 1 if the subject received any systemic (i.m. or oral) corticosteroid at any time during the 60-week analysis follow-up window, 0 otherwise. In the source paper this is the column CSSYS (case-sensitive).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no systemic corticosteroid administration anywhere in the 60-week follow-up window).",
-      notes              = "Per-subject time-fixed (the source paper aggregates i.m. or oral corticosteroid administration across the entire 60-week follow-up into a single per-subject 0/1 indicator). New canonical entry registered alongside this model in inst/references/covariate-columns.md (Operator-approved sidecar 2026-06-19, request-001 / response-001). Distinct from the existing CONMED_STEROID canonical (which is per-record acute administration or per-subject baseline / chronic concurrent use) and from PRICORT (strictly pre-study). Enters EX1 as a multiplicative shift on the logit-domain extent-of-response: EX1_j = TVEX1 * (1 + e_conmed_steroid_fu_ex1 * CONMED_STEROID_FU). Worked example from the paper text: TVEX1 = -1.28, so for CONMED_STEROID_FU = 0 EX1 = -1.28 and for CONMED_STEROID_FU = 1 EX1 = -1.28 * (1 + (-0.237)) = -0.977 (paper Eq 8 text: 'EX1 = -0.977 if the patient received systemic (i.m./oral) corticosteroids at any time point throughout the 60 week period and EX1 = -1.28 if they did not'). The source authors interpret this as reflecting that the subset of patients who needed steroid rescue had a less favourable disease-modifying-response profile rather than as a causal pharmacological effect of corticosteroids (paper Discussion: 'within our cohort, single dose i.m. corticosteroids and low dose oral corticosteroids were usually given to individuals with high disease activity, so the improved ability of the model to describe disease activity may simply be reflecting this practice').",
-      source_name        = "CSSYS"
+      notes = "Per-subject time-fixed (the source paper aggregates i.m. or oral corticosteroid administration across the entire 60-week follow-up into a single per-subject 0/1 indicator). New canonical entry registered alongside this model in inst/references/covariate-columns.md (Operator-approved sidecar 2026-06-19, request-001 / response-001). Distinct from the existing CONMED_STEROID canonical (which is per-record acute administration or per-subject baseline / chronic concurrent use) and from PRICORT (strictly pre-study). Enters EX1 as a multiplicative shift on the logit-domain extent-of-response: EX1_j = TVEX1 * (1 + e_conmed_steroid_fu_ex1 * CONMED_STEROID_FU). Worked example from the paper text: TVEX1 = -1.28, so for CONMED_STEROID_FU = 0 EX1 = -1.28 and for CONMED_STEROID_FU = 1 EX1 = -1.28 * (1 + (-0.237)) = -0.977 (paper Eq 8 text: 'EX1 = -0.977 if the patient received systemic (i.m./oral) corticosteroids at any time point throughout the 60 week period and EX1 = -1.28 if they did not'). The source authors interpret this as reflecting that the subset of patients who needed steroid rescue had a less favourable disease-modifying-response profile rather than as a causal pharmacological effect of corticosteroids (paper Discussion: 'within our cohort, single dose i.m. corticosteroids and low dose oral corticosteroids were usually given to individuals with high disease activity, so the improved ability of the model to describe disease activity may simply be reflecting this practice').",
+      source_name = "CSSYS"
     ),
     SMOKE = list(
-      description        = "Current-smoker binary indicator at baseline. 1 = current smoker, 0 = never or past smoker.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker binary indicator at baseline. 1 = current smoker, 0 = never or past smoker.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (never or past smoker; pooled per the paper's covariate analysis 'EX2 as never/past versus current smoker').",
-      notes              = "Per-subject time-fixed (baseline smoking status at the initiation of triple therapy; Table 1 reports 47% never, 18% current, 30% past, 5% missing). The source paper's smoking covariate on EX2 collapses never and past smokers into the reference category and contrasts them against current smokers (Results paragraph 'smoking status ... as never/past versus current smoker'); this matches the SMOKE canonical (2-level current vs non-smoker) rather than the 3-level SMOKE_CURRENT + SMOKE_NEVER pair (which would split former from never). Enters EX2 as a multiplicative shift on the rate constant: EX2_j = TVEX2 * (1 + e_smoke_ex2 * SMOKE). Worked example from the paper text: TVEX2 = 0.111 /week (half-life 6.2 weeks) for non-smokers; current smokers have EX2 = 0.111 * (1 + (-0.398)) = 0.0668 /week (half-life 10.4 weeks; paper Description of the final model: 'a typical population half-life of 6.2 weeks (10.4 weeks for current smokers)').",
-      source_name        = "Smoking (current = 1)"
+      notes = "Per-subject time-fixed (baseline smoking status at the initiation of triple therapy; Table 1 reports 47% never, 18% current, 30% past, 5% missing). The source paper's smoking covariate on EX2 collapses never and past smokers into the reference category and contrasts them against current smokers (Results paragraph 'smoking status ... as never/past versus current smoker'); this matches the SMOKE canonical (2-level current vs non-smoker) rather than the 3-level SMOKE_CURRENT + SMOKE_NEVER pair (which would split former from never). Enters EX2 as a multiplicative shift on the rate constant: EX2_j = TVEX2 * (1 + e_smoke_ex2 * SMOKE). Worked example from the paper text: TVEX2 = 0.111 /week (half-life 6.2 weeks) for non-smokers; current smokers have EX2 = 0.111 * (1 + (-0.398)) = 0.0668 /week (half-life 10.4 weeks; paper Description of the final model: 'a typical population half-life of 6.2 weeks (10.4 weeks for current smokers)').",
+      source_name = "Smoking (current = 1)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested as a covariate on the EX1 / EX2 parameters during the multivariate covariate analysis but not retained in the final model (paper Methods 'Covariate analyses'). Excluded here to preserve the screening provenance without triggering an unreferenced-covariate warning."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested as a covariate on the EX1 / EX2 parameters during the multivariate covariate analysis but not retained in the final model (paper Methods 'Covariate analyses'). Excluded here to preserve the screening provenance without triggering an unreferenced-covariate warning."
     ),
     HT = list(
       description = "Standing height at baseline.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Tested but not retained in the final model (paper Methods 'Covariate analyses')."
+      units = "cm",
+      type = "continuous",
+      notes = "Tested but not retained in the final model (paper Methods 'Covariate analyses')."
     ),
     SEXF = list(
       description = "Female-sex indicator at baseline.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a covariate on BASE (the paper's example of binary-covariate encoding is the gender effect on BASE; paper Methods 'Covariate analyses' and Eq 4 example) but not retained in the final model. The source authors attribute the lack of a retained sex effect to the treat-to-target protocol's dose-titration absorbing the variability (paper Discussion 'Titrating drug doses based on disease severity could explain why gender ... did not significantly affect disease activity, as their effects were accounted for by higher doses')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a covariate on BASE (the paper's example of binary-covariate encoding is the gender effect on BASE; paper Methods 'Covariate analyses' and Eq 4 example) but not retained in the final model. The source authors attribute the lack of a retained sex effect to the treat-to-target protocol's dose-titration absorbing the variability (paper Discussion 'Titrating drug doses based on disease severity could explain why gender ... did not significantly affect disease activity, as their effects were accounted for by higher doses')."
     ),
     RHEUMATOID_FACTOR = list(
       description = "Rheumatoid factor positivity at baseline.",
-      units       = "(binary; 1 = positive)",
-      type        = "binary",
-      notes       = "Tested but not retained in the final model. Paper Discussion: 'The presence of the SE, anti-CCP antibodies, RF and female gender are documented as predictors of poorer response ... However, when added on their own, none was considered to be a significant contributor to improving the fit of the model.'"
+      units = "(binary; 1 = positive)",
+      type = "binary",
+      notes = "Tested but not retained in the final model. Paper Discussion: 'The presence of the SE, anti-CCP antibodies, RF and female gender are documented as predictors of poorer response ... However, when added on their own, none was considered to be a significant contributor to improving the fit of the model.'"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 263L,
-    n_studies      = 1L,
-    age_range      = "18-86 years (Table 1; inclusion criteria required age > 18)",
-    age_median     = "57 years (Table 1; this is also the centering value used by the AGE covariate effect on BASE)",
-    weight_range   = "40.4-143.5 kg (Table 1; 22% missing)",
-    weight_median  = "72.5 kg (Table 1)",
+    species = "human",
+    n_subjects = 263L,
+    n_studies = 1L,
+    age_range = "18-86 years (Table 1; inclusion criteria required age > 18)",
+    age_median = "57 years (Table 1; this is also the centering value used by the AGE covariate effect on BASE)",
+    weight_range = "40.4-143.5 kg (Table 1; 22% missing)",
+    weight_median = "72.5 kg (Table 1)",
     sex_female_pct = 71,
     race_ethnicity = "Predominantly Caucasian (>=91% per paper Methods 'Covariate analyses'; ethnicity not tested as a covariate due to low power)",
-    disease_state  = "Early rheumatoid arthritis, diagnosed per the 1987 Revised ACR Criteria, with no prior use of DMARDs. All subjects enrolled at the Royal Adelaide Hospital Early Arthritis Clinic between September 1998 and March 2012. Baseline DAS28 median 5.6 (range 1.8-8.5), indicating high disease activity at the initiation of triple therapy.",
-    dose_range     = "Treat-to-target triple DMARD regimen per Proudman et al. [3]: methotrexate 10 mg/week (with folic acid 0.5 mg/day) titrated up to 25 mg/week; sulfasalazine 500 mg/day titrated up to 3000 mg/day (1500 mg twice daily); hydroxychloroquine 200 mg twice daily. Intra-articular (40-80 mg methylprednisolone acetate) and intramuscular (80-120 mg methylprednisolone acetate) corticosteroid injections were administered at the physician's discretion; oral corticosteroids and NSAIDs were actively discouraged but used if deemed necessary. Doses are not retained as covariates in the final model.",
-    regions        = "Australia (single-centre, Royal Adelaide Hospital).",
+    disease_state = "Early rheumatoid arthritis, diagnosed per the 1987 Revised ACR Criteria, with no prior use of DMARDs. All subjects enrolled at the Royal Adelaide Hospital Early Arthritis Clinic between September 1998 and March 2012. Baseline DAS28 median 5.6 (range 1.8-8.5), indicating high disease activity at the initiation of triple therapy.",
+    dose_range = "Treat-to-target triple DMARD regimen per Proudman et al. [3]: methotrexate 10 mg/week (with folic acid 0.5 mg/day) titrated up to 25 mg/week; sulfasalazine 500 mg/day titrated up to 3000 mg/day (1500 mg twice daily); hydroxychloroquine 200 mg twice daily. Intra-articular (40-80 mg methylprednisolone acetate) and intramuscular (80-120 mg methylprednisolone acetate) corticosteroid injections were administered at the physician's discretion; oral corticosteroids and NSAIDs were actively discouraged but used if deemed necessary. Doses are not retained as covariates in the final model.",
+    regions = "Australia (single-centre, Royal Adelaide Hospital).",
     smoking_status = c(Never = 47, Current = 18, Past = 30, Missing = 5),
     corticosteroid_use_during_followup_pct = 48,
-    notes          = "Total of 2080 DAS28 observations across 263 patients (median 8 observations per patient, range 1-15). Visits typically occurred every 3-6 weeks until disease was stable, then every 3 months. Follow-up median 52 weeks (range 0-60); the model was fit over the 0-60-week window. Missing continuous covariate values were imputed with the median and missing categorical values with the mode prior to population modelling (paper Methods 'Patient data')."
+    notes = "Total of 2080 DAS28 observations across 263 patients (median 8 observations per patient, range 1-15). Visits typically occurred every 3-6 weeks until disease was stable, then every 3 months. Follow-up median 52 weeks (range 0-60); the model was fit over the 0-60-week window. Missing continuous covariate values were imputed with the median and missing categorical values with the mode prior to population modelling (paper Methods 'Patient data')."
   )
 
   ini({

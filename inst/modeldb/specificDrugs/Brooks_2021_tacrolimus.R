@@ -22,17 +22,17 @@ Brooks_2021_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (actual body weight, ABW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (actual body weight, ABW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Allometric power scaling on all PK parameters with reference 70 kg ",
         "(Brooks 2021 Results / final-model equation block following Figure 4). ",
         "Theoretic exponents fixed at 0.75 on CL and Q and 1.0 on V and V2; ",
@@ -41,14 +41,14 @@ Brooks_2021_tacrolimus <- function() {
         "to those values. Allometry on fat-free mass was also evaluated but did ",
         "not improve fit. Cohort median 23.9 kg (range 5.5-155.5 kg, Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_AZOLE = list(
-      description        = "Concomitant azole antifungal (voriconazole or posaconazole) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant azole antifungal (voriconazole or posaconazole) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant voriconazole or posaconazole)",
-      notes              = paste0(
+      notes = paste0(
         "Time-varying. 1 = patient coadministered voriconazole or posaconazole ",
         "during the observation, 0 = otherwise (Brooks 2021 Methods / Results). ",
         "Voriconazole and posaconazole were prescribed for prophylaxis or ",
@@ -58,30 +58,30 @@ Brooks_2021_tacrolimus <- function() {
         "multiplicative factor of 0.8 (Table 2 theta_INH = 0.8, RSE 6.97%; 20% ",
         "reduction in CL with 95% CI 10-33%)."
       ),
-      source_name        = "CYP3A4/5 inhibitor (voriconazole or posaconazole)"
+      source_name = "CYP3A4/5 inhibitor (voriconazole or posaconazole)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 111L,
-    n_studies      = 1L,
-    age_range      = "0.5-25 years",
-    age_median     = "7.3 years",
-    weight_range   = "5.5-155.5 kg",
-    weight_median  = "23.9 kg",
+    species = "human",
+    n_subjects = 111L,
+    n_studies = 1L,
+    age_range = "0.5-25 years",
+    age_median = "7.3 years",
+    weight_range = "5.5-155.5 kg",
+    weight_median = "23.9 kg",
     sex_female_pct = 39.0,
     race_ethnicity = c(
       Caucasian_NonHispanic = 34.2,
-      Caucasian_Hispanic    = 34.2,
-      Asian                 = 16.2,
-      African_American      = 5.4,
+      Caucasian_Hispanic = 34.2,
+      Asian = 16.2,
+      African_American = 5.4,
       Asian_Caucasian_Hispanic = 3.6,
-      Other_Declined        = 2.7,
+      Other_Declined = 2.7,
       American_Indian_Alaskan = 1.8,
-      Multi_ancestry        = 1.8
+      Multi_ancestry = 1.8
     ),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Pediatric and young adult patients undergoing allogeneic hematopoietic ",
       "cell transplantation (HCT) for graft-versus-host disease prophylaxis. ",
       "58.6% malignant diagnoses (acute lymphoblastic leukemia 30.6%, acute ",
@@ -96,35 +96,35 @@ Brooks_2021_tacrolimus <- function() {
       "blood 6.3%. Serotherapy: rabbit antithymocyte globulin 57.7%, alemtuzumab ",
       "37.8%, none 4.5%."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "IV continuous infusion. Recommended starting dose 1.25 mcg/kg/h with a ",
       "goal therapeutic trough range of 7-10 ng/mL; observed dosing rate range ",
       "0.45-1.25 mcg/kg/h, median 1.25 mcg/kg/h (Brooks 2021 Results). ",
       "Continuous infusions were assumed to run over exactly 24 h with samples ",
       "drawn the 15 min before the next infusion start."
     ),
-    regions        = "United States (UCSF Benioff Children's Hospital, San Francisco, CA)",
-    co_medication  = paste0(
+    regions = "United States (UCSF Benioff Children's Hospital, San Francisco, CA)",
+    co_medication = paste0(
       "Voriconazole or posaconazole concomitant with tacrolimus in 193/1648 ",
       "(11.7%) of plasma samples. Ursodeoxycholic acid was given to nearly all ",
       "patients as standard practice and was therefore not modeled as a ",
       "covariate."
     ),
     n_concentrations = 1648L,
-    sampling_design  = paste0(
+    sampling_design = paste0(
       "1,648 steady-state trough plasma concentrations over a median of 14 days ",
       "after starting tacrolimus continuous IV infusion; troughs measured every ",
       "24-48 h after initiation and every 24 h after a dosing change. Median ",
       "initial trough 10.2 ng/mL (range 1.8-24.2 ng/mL). 929 (56.4%) samples ",
       "were outside the 7-10 ng/mL target window."
     ),
-    outcomes       = paste0(
+    outcomes = paste0(
       "Acute GVHD 17.1%; chronic GVHD 14.4%; deceased at time of data collection ",
       "18.9% (Table 1). None of the transplant-specific covariates (donor source, ",
       "HLA mismatch, aGVHD, cGVHD, survival) reached significance in the ",
       "covariate analysis."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Single-center retrospective chart review (February 2016 to July 2020). ",
       "All concentrations are steady-state troughs from continuous IV infusion; ",
       "no oral / SC / IM dosing data are in the model-development dataset. ",

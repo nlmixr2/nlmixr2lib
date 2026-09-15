@@ -35,24 +35,24 @@ Subrtova_2026_daptomycin <- function() {
   )
   vignette <- "Subrtova_2026_daptomycin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate calculated with the CKD-EPI",
         "2021 (race-free) creatinine equation. Time-varying: entered the",
         "Monolix model as a regressor, so each concentration record carries",
         "the eGFR contemporaneous with that sample rather than a single",
         "baseline value."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference value 90 mL/min, described in the Results as 'normal",
         "renal function status'; the model applies (CRCL/90)^e_crcl_cl to",
         "clearance (Subrtova 2026 Table 2, Fixed effects block).",
@@ -72,16 +72,16 @@ Subrtova_2026_daptomycin <- function() {
         "for this column -- Cockcroft-Gault in particular runs roughly 30%",
         "lower in this cohort and would bias clearance downward."
       ),
-      source_name        = "eGFR CKD-EPI 2021"
+      source_name = "eGFR CKD-EPI 2021"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested as a continuous covariate on both Vd and CL and rejected;",
         "the Discussion argues explicitly that the cohort's 48-124 kg spread",
         "was wide enough to expose a clinically meaningful body-size effect",
@@ -91,21 +91,21 @@ Subrtova_2026_daptomycin <- function() {
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Tested (range 158-191 cm) and rejected (Subrtova 2026 Results, Population pharmacokinetic analysis)."
+      units = "cm",
+      type = "continuous",
+      notes = "Tested (range 158-191 cm) and rejected (Subrtova 2026 Results, Population pharmacokinetic analysis)."
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested (median 68 kg) and rejected."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested (median 68 kg) and rejected."
     ),
     ABW = list(
       description = "Adjusted body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested (median 73 kg) and rejected. No canonical entry exists in",
         "inst/references/covariate-columns.md for adjusted body weight; the",
         "key is used here as documentation of the covariate screen only and",
@@ -115,42 +115,42 @@ Subrtova_2026_daptomycin <- function() {
     ),
     LBM = list(
       description = "Lean body mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested (median 59 kg) and rejected."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested (median 59 kg) and rejected."
     ),
     BSA = list(
       description = "Body surface area (Du Bois formula)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Tested (median 1.98 m^2) and rejected."
+      units = "m^2",
+      type = "continuous",
+      notes = "Tested (median 1.98 m^2) and rejected."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested (median 63 years, range 29-93) and rejected."
+      units = "years",
+      type = "continuous",
+      notes = "Tested (median 63 years, range 29-93) and rejected."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "The only categorical covariate tested (7 of 31 patients female) and rejected."
+      units = "(binary)",
+      type = "categorical",
+      notes = "The only categorical covariate tested (7 of 31 patients female) and rejected."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Tested as a time-varying regressor (median 90 umol/L, range 36-324)",
         "and rejected in favour of CKD-EPI 2021 eGFR."
       )
     ),
     BUN = list(
       description = "Serum urea (the canonical BUN column accepts mmol/L urea; 1 mmol/L urea ~= 2.80 mg/dL BUN)",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mmol/L",
+      type = "continuous",
+      notes = paste(
         "Tested as a time-varying regressor (Table 1 median 7.1 mmol/L, IQR",
         "4.6-13.7, range 2.2-29.7) and rejected in favour of CKD-EPI 2021",
         "eGFR. Recorded under the canonical name BUN rather than the paper's",
@@ -161,46 +161,46 @@ Subrtova_2026_daptomycin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte  = "daptomycin",
-      units    = "mg",
+      analyte = "daptomycin",
+      units = "mg",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 31L,
-    n_studies        = 1L,
-    n_observations   = 143L,
-    age_range        = "29-93 years",
-    age_median       = "63 years",
-    weight_range     = "48-124 kg",
-    weight_median    = "84 kg",
-    height_range     = "158-191 cm",
-    sex_female_pct   = 22.6,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
+    n_observations = 143L,
+    age_range = "29-93 years",
+    age_median = "63 years",
+    weight_range = "48-124 kg",
+    weight_median = "84 kg",
+    height_range = "158-191 cm",
+    sex_female_pct = 22.6,
+    disease_state = paste(
       "Serious Gram-positive bacterial infection: infective endocarditis",
       "(n = 14, 45.2%), bone and joint infection (n = 6, 19.4%), sepsis",
       "(n = 3, 9.7%), catheter-associated infection (n = 3, 9.7%).",
       "Causative organisms Staphylococcus spp. (n = 21, 67.7%),",
       "Enterococcus spp. (n = 4, 12.9%), Corynebacterium spp. (n = 2, 6.5%)."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "eGFR CKD-EPI 2021 median 81.6 mL/min (IQR 58.9-98.9, range",
       "16.3-130.1); eGFR CKD-EPI 2012 median 73.5 mL/min (range 14.9-132.1);",
       "Cockcroft-Gault creatinine clearance median 54.2 mL/min (range",
       "15.2-176.0). Patients receiving renal replacement support were",
       "EXCLUDED, so the model carries no information about dialysis or CRRT."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "350-1,000 mg (median 750 mg), i.e. 5-13 mg/kg (median 10 mg/kg),",
       "every 24 or 48 h as a 30- or 60-min intravenous infusion; the initial",
       "regimen was set by the attending physician and subsequently adjusted",
       "by therapeutic drug monitoring."
     ),
-    regions          = "Czech Republic (single centre: University Hospital Hradec Kralove)",
-    notes            = paste(
+    regions = "Czech Republic (single centre: University Hospital Hradec Kralove)",
+    notes = paste(
       "Retrospective, single-centre, cross-sectional TDM study, May 2022 to",
       "July 2025. Baseline demographics in Subrtova 2026 Table 1. Sampling",
       "was routine TDM: 80 trough samples (1 h before the next dose) and 63",

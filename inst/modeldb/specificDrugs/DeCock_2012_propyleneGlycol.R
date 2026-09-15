@@ -9,7 +9,7 @@ DeCock_2012_propyleneGlycol <- function() {
     sep = " "
   )
   vignette <- "DeCock_2012_propyleneGlycol"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -20,11 +20,11 @@ DeCock_2012_propyleneGlycol <- function() {
 
   covariateData <- list(
     WT_BIRTH = list(
-      description        = "Birth weight (time-fixed per subject)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight (time-fixed per subject)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at birth. Drives an allometric power effect on CL relative to a",
         "2.72 kg (= 2720 g) reference: (WT_BIRTH / 2.72)^1.69. The source paper",
         "(Table 2 and abstract) reports the formula in grams: (bBW/2720)^1.69; the",
@@ -32,28 +32,28 @@ DeCock_2012_propyleneGlycol <- function() {
         "reference 2.72 so the dimensionless ratio is identical to the source.",
         "Distinct from WT (current bodyweight, time-varying)."
       ),
-      source_name        = "bBW (g; multiply by 1/1000 to obtain canonical WT_BIRTH in kg)"
+      source_name = "bBW (g; multiply by 1/1000 to obtain canonical WT_BIRTH in kg)"
     ),
     WT = list(
-      description        = "Current bodyweight (time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current bodyweight (time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying (weight at day of sampling). Drives an allometric power effect",
         "on V relative to a 2.72 kg reference: (WT / 2.72)^1.45. The source paper",
         "(Table 2 and abstract) reports the formula in grams: (cBW/2720)^1.45; the",
         "model retains the kg reference 2.72 so the dimensionless ratio is identical",
         "to the source. Distinct from WT_BIRTH (birth weight, time-fixed)."
       ),
-      source_name        = "cBW (g; multiply by 1/1000 to obtain canonical WT in kg)"
+      source_name = "cBW (g; multiply by 1/1000 to obtain canonical WT in kg)"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives an allometric power effect on CL relative to a 3-day",
         "reference: (PNA_days / 3)^0.201. The canonical PNA is in months (per",
         "inst/references/covariate-columns.md); the source paper reports the formula",
@@ -63,14 +63,14 @@ DeCock_2012_propyleneGlycol <- function() {
         "model is not calibrated for PNA < 1 day and supplying PNA = 0 will collapse",
         "the (PNA/3)^0.201 term to 0."
       ),
-      source_name        = "PNA (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
+      source_name = "PNA (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital coadministration indicator (1 = subject is receiving phenobarbital-PG; 0 = paracetamol-PG only)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital coadministration indicator (1 = subject is receiving phenobarbital-PG; 0 = paracetamol-PG only)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (paracetamol-PG, no phenobarbital coadministration)",
-      notes              = paste(
+      notes = paste(
         "Drives a multiplicative effect on V: V is 1.77x higher when PG is",
         "co-administered with phenobarbital compared with paracetamol (De Cock 2012,",
         "Table 2 parameter p and abstract). Encoded log-additively on lvc as",
@@ -80,30 +80,30 @@ DeCock_2012_propyleneGlycol <- function() {
         "subjects carry CONMED_PB = 1 whenever any phenobarbital-PG is in the",
         "regimen, consistent with the paper's binary stratification."
       ),
-      source_name        = "p (Table 2 multiplicative factor on V for phenobarbital-PG vs paracetamol-PG)"
+      source_name = "p (Table 2 multiplicative factor on V for phenobarbital-PG vs paracetamol-PG)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62,
-    n_studies      = 1,
-    age_range      = "Postnatal age 1-30 days; gestational age 24-41 weeks (Table 1)",
-    age_median     = "PNA 3 days (paracetamol-PG) / 2 days (phenobarbital-PG); gestational age 38 weeks (paracetamol) / 34 weeks (phenobarbital) (Table 1)",
-    weight_range   = "Birth weight 630-3980 g; current bodyweight 700-4100 g (Table 1)",
-    weight_median  = "Birth weight 2990 g (paracetamol) / 1965 g (phenobarbital); pooled cohort median 2720 g (used as the allometric reference in Table 2)",
+    species = "human",
+    n_subjects = 62,
+    n_studies = 1,
+    age_range = "Postnatal age 1-30 days; gestational age 24-41 weeks (Table 1)",
+    age_median = "PNA 3 days (paracetamol-PG) / 2 days (phenobarbital-PG); gestational age 38 weeks (paracetamol) / 34 weeks (phenobarbital) (Table 1)",
+    weight_range = "Birth weight 630-3980 g; current bodyweight 700-4100 g (Table 1)",
+    weight_median = "Birth weight 2990 g (paracetamol) / 1965 g (phenobarbital); pooled cohort median 2720 g (used as the allometric reference in Table 2)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported (single-centre Belgian cohort, University Hospitals Leuven)",
-    disease_state  = "Preterm and term neonates receiving intravenous paracetamol-PG or phenobarbital-PG for analgesia / sedation; some after perinatal asphyxia",
-    dose_range     = paste(
+    disease_state = "Preterm and term neonates receiving intravenous paracetamol-PG or phenobarbital-PG for analgesia / sedation; some after perinatal asphyxia",
+    dose_range = paste(
       "IV paracetamol 10 mg/mL containing 800 mg PG per 1000 mg paracetamol (loading",
       "20 mg/kg paracetamol then 5-10 mg/kg q6h; PG load ~16 mg/kg, PG maintenance",
       "~4-8 mg/kg q6h). IV phenobarbital 200 mg/mL containing 700 mg PG per 200 mg",
       "phenobarbital (loading 20 mg/kg phenobarbital then 5 mg/kg/day; PG load",
       "~70 mg/kg, PG maintenance ~17.5 mg/kg/day). See Table 3."
     ),
-    regions        = "Belgium (University Hospitals Leuven NICU)",
-    notes          = paste(
+    regions = "Belgium (University Hospitals Leuven NICU)",
+    notes = paste(
       "372 PG plasma concentrations from 62 (pre)term neonates; samples 1-11 per",
       "neonate collected 20 min to 20.5 h after dose. Six outliers excluded after",
       "visual inspection of individual chromatographies. Methods 'Patients' section",

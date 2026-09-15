@@ -14,26 +14,26 @@ Gilkey_2015_DiRnanoparticle <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "DiR-NPs", units = "ug", specimen = "plasma", verified = FALSE),
-    liver  = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
     spleen = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
     kidney = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
-    other  = list(analyte = "DiR-NPs", units = "ug", specimen = "administration site", verified = FALSE)
+    other = list(analyte = "DiR-NPs", units = "ug", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (BALB/c, female, 4-6 weeks old)",
-    n_subjects     = 3,
-    n_studies      = 1,
-    age_range      = "4-6 weeks",
-    weight_range   = "not reported",
+    species = "mouse (BALB/c, female, 4-6 weeks old)",
+    n_subjects = 3,
+    n_studies = 1,
+    age_range = "4-6 weeks",
+    weight_range = "not reported",
     sex_female_pct = 100,
-    disease_state  = "Healthy adult female BALB/c mice (no induced pathology). The fluorescently labeled nanoparticles are a surrogate for dexamethasone-encapsulated block-copolymer nanoparticles being developed for pediatric acute lymphoblastic leukemia (ALL) therapy.",
-    dose_range     = "100 uL IV bolus of 5 ug/mL DiR-encapsulated nanoparticles (0.5 ug total mass); single dose, submandibular blood sampling.",
-    regions        = "Single-center preclinical (University of Delaware).",
-    notes          = "Sample size n = 3 mice per time point; destructively sampled organs (liver, spleen, kidneys; heart, lungs, intestine, gonads, bladder, brain were also harvested but showed no fluorescence). Source data are reused from Krishnan et al. 2013 Mol Pharm 10:2199-2210 (reference 17 of the source paper).",
-    scope_note     = "Mechanistic PBPK simulator: no IIV, no residual error -- intended for typical-value simulation. Equations 6-10 of the source paper; parameter values from Table 1. See vignette for steady-state, mass-balance, and paper Figure 1-3 replication checks."
+    disease_state = "Healthy adult female BALB/c mice (no induced pathology). The fluorescently labeled nanoparticles are a surrogate for dexamethasone-encapsulated block-copolymer nanoparticles being developed for pediatric acute lymphoblastic leukemia (ALL) therapy.",
+    dose_range = "100 uL IV bolus of 5 ug/mL DiR-encapsulated nanoparticles (0.5 ug total mass); single dose, submandibular blood sampling.",
+    regions = "Single-center preclinical (University of Delaware).",
+    notes = "Sample size n = 3 mice per time point; destructively sampled organs (liver, spleen, kidneys; heart, lungs, intestine, gonads, bladder, brain were also harvested but showed no fluorescence). Source data are reused from Krishnan et al. 2013 Mol Pharm 10:2199-2210 (reference 17 of the source paper).",
+    scope_note = "Mechanistic PBPK simulator: no IIV, no residual error -- intended for typical-value simulation. Equations 6-10 of the source paper; parameter values from Table 1. See vignette for steady-state, mass-balance, and paper Figure 1-3 replication checks."
   )
 
   ini({

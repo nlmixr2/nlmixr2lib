@@ -38,18 +38,18 @@ Majid_2024_lecanemab_ariae <- function() {
   vignette <- "Majid_2024_lecanemab"
 
   units <- list(
-    time          = "n/a (static per-subject landmark logistic regression; the outcome is 'ARIA-E occurred at any time during the study', so the model carries no time dimension and no dosing events)",
-    dosing        = "n/a (no dose events; lecanemab exposure enters through the CMAX covariate, which an upstream population PK model supplies)",
+    time = "n/a (static per-subject landmark logistic regression; the outcome is 'ARIA-E occurred at any time during the study', so the model carries no time dimension and no dosing events)",
+    dosing = "n/a (no dose events; lecanemab exposure enters through the CMAX covariate, which an upstream population PK model supplies)",
     concentration = "prob_ariae (probability that a subject experiences ARIA-E during the study, 0-1; also logit_ariae, the untransformed linear predictor)"
   )
 
   covariateData <- list(
     CMAX = list(
-      description        = "Individual model-predicted maximum serum lecanemab concentration at steady state (Css,max).",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual model-predicted maximum serum lecanemab concentration at steady state (Css,max).",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "(a) TOTAL serum concentration, not unbound -- the IP/LC-MS/MS",
         "assay measures total lecanemab. (b) STEADY-STATE maximum over a",
         "dosing interval, not a single-dose or cycle-1 peak. (c) Derived as",
@@ -70,14 +70,14 @@ Majid_2024_lecanemab_ariae <- function() {
         "mg/kg bi-weekly (Discussion); placebo subjects contribute",
         "Css,max = 0 and so sit at the intercept."
       ),
-      source_name        = "CMAXSS (supplement Text S2 $INPUT and $PRED); Css,max (paper narrative and Table 2)"
+      source_name = "CMAXSS (supplement Text S2 $INPUT and $PRED); Css,max (paper narrative and Table 2)"
     ),
     APOE4_HET = list(
-      description        = "APOE-epsilon4 heterozygote indicator; 1 = exactly one epsilon4 allele, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "APOE-epsilon4 heterozygote indicator; 1 = exactly one epsilon4 allele, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (APOE-epsilon4 non-carrier; APOE4_HET and APOE4_HOM are mutually exclusive and a non-carrier has both set to 0)",
-      notes              = paste(
+      notes = paste(
         "Supplement Text S2 $PRED derives the pair as 'AP1=0; AP2=0; IF",
         "(APOEGEN.EQ.1) AP1=1; IF (APOEGEN.EQ.2) AP2=1', confirming the",
         "APOEGEN source alias named in the register entry and confirming",
@@ -89,14 +89,14 @@ Majid_2024_lecanemab_ariae <- function() {
         "model. ARIA-E analysis set: 1423 heterozygous carriers of 2641",
         "(non-carrier 803, homozygous 415; Table S2)."
       ),
-      source_name        = "APOEGEN == 1 (raw); AP1 (derived indicator in $PRED)"
+      source_name = "APOEGEN == 1 (raw); AP1 (derived indicator in $PRED)"
     ),
     APOE4_HOM = list(
-      description        = "APOE-epsilon4 homozygote indicator; 1 = two epsilon4 alleles, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "APOE-epsilon4 homozygote indicator; 1 = two epsilon4 alleles, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (APOE-epsilon4 non-carrier)",
-      notes              = paste(
+      notes = paste(
         "Companion to APOE4_HET; see that entry for the derivation and the",
         "non-additivity argument. This is the largest effect in the model",
         "by a wide margin (odds ratio 6.75) and is the quantitative basis",
@@ -104,16 +104,16 @@ Majid_2024_lecanemab_ariae <- function() {
         "carry the highest ARIA risk. ARIA-E analysis set: 415 homozygous",
         "carriers of 2641 (Table S2)."
       ),
-      source_name        = "APOEGEN == 2 (raw); AP2 (derived indicator in $PRED)"
+      source_name = "APOEGEN == 2 (raw); AP2 (derived indicator in $PRED)"
     )
   )
 
   covariatesDataExcluded <- list(
     CTROUGH = list(
       description = "Individual model-predicted minimum serum lecanemab concentration at steady state (Css,min).",
-      units       = "ug/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ug/mL",
+      type = "continuous",
+      notes = paste(
         "Screened as an alternative exposure metric and NOT retained. This",
         "is a discrimination result, not a null result: the Results state",
         "that 'all exposure metrics were statistically significant and",
@@ -127,9 +127,9 @@ Majid_2024_lecanemab_ariae <- function() {
     ),
     CAV = list(
       description = "Individual model-predicted average serum lecanemab concentration at steady state (Css,av).",
-      units       = "ug/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ug/mL",
+      type = "continuous",
+      notes = paste(
         "Screened as an alternative exposure metric and not retained; see",
         "the CTROUGH entry for the reasoning. Note that the sibling model",
         "Cao_2026_lecanemab drives an Alzheimer's-disease QSP model from",
@@ -140,9 +140,9 @@ Majid_2024_lecanemab_ariae <- function() {
     ),
     APOE4_CARRIER = list(
       description = "APOE-epsilon4 carrier indicator, collapsing heterozygotes and homozygotes.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Carrier-vs-non-carrier status was screened alongside the",
         "three-level genotype and the genotype won: because the homozygote",
         "effect is roughly three times the heterozygote effect, collapsing",
@@ -152,27 +152,27 @@ Majid_2024_lecanemab_ariae <- function() {
     ),
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set median 71.0 kg, range 29.2-130 (Table S2). Carried as column BWGT in supplement Text S2 $INPUT."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set median 71.0 kg, range 29.2-130 (Table S2). Carried as column BWGT in supplement Text S2 $INPUT."
     ),
     AGE = list(
       description = "Age at study entry.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set median 72 years, range 50-90 (Table S2)."
+      units = "year",
+      type = "continuous",
+      notes = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set median 72 years, range 50-90 (Table S2)."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set: 1357 females (51.4%), 1284 males (48.6%) (Table S2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a univariate predictor of ARIA-E incidence and not retained. ARIA-E analysis set: 1357 females (51.4%), 1284 males (48.6%) (Table S2)."
     ),
     ADA_POS = list(
       description = "Anti-drug antibody positive status at the SUBJECT level.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a univariate predictor of ARIA-E incidence and not",
         "retained. Note the level differs from the companion population PK",
         "model, which uses a time-varying SAMPLE-level ADA status: here it",
@@ -182,32 +182,34 @@ Majid_2024_lecanemab_ariae <- function() {
     ),
     MMSE = list(
       description = "Baseline Mini-Mental State Examination total score.",
-      units       = "(points, 0-30)",
-      type        = "continuous",
-      notes       = "Screened as a univariate predictor of ARIA-E incidence and not retained. Carried as column BMMSE in supplement Text S2 $INPUT."
+      units = "(points, 0-30)",
+      type = "continuous",
+      notes = "Screened as a univariate predictor of ARIA-E incidence and not retained. Carried as column BMMSE in supplement Text S2 $INPUT."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2641L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 2641L,
+    n_studies = 2L,
     n_observations = "2641 per-subject binary ARIA-E records (one per subject): 1789 from Study 301 Core and 852 from Study 201 Core. 177 subjects were ARIA-E positive, of whom 160 received lecanemab (129 at the approved 10 mg/kg bi-weekly regimen) and 17 received placebo",
-    age_range      = "median 72 years, range 50-90 (Table S2)",
-    weight_range   = "median 71.0 kg, range 29.2-130 (Table S2)",
+    age_range = "median 72 years, range 50-90 (Table S2)",
+    weight_range = "median 71.0 kg, range 29.2-130 (Table S2)",
     sex_female_pct = 51.4,
     race_ethnicity = c(
-      White = 81.3, Japanese = 7.0, Korean = 4.9,
+      White = 81.3,
+      Japanese = 7.0,
+      Korean = 4.9,
       `Black/African American` = 2.5,
       `Asian excluding Chinese/Japanese/Korean` = 1.0,
       Chinese = 0.5,
       `American Indian/Alaskan/Other/Missing` = 2.7
     ),
-    disease_state  = "early Alzheimer's disease with confirmed amyloid pathology: mild cognitive impairment due to AD 1654 (62.6%), mild AD dementia 987 (37.4%) (Table S2)",
-    dose_range     = "placebo 1142 subjects; lecanemab 1499 subjects -- bi-weekly 2.5 mg/kg (52), 5 mg/kg (92), 10 mg/kg (1053); monthly 5 mg/kg (51), 10 mg/kg (251) (Table S2)",
-    regions        = "multicentre international; Study 201 Core and Study 301 Core (Clarity AD, NCT03887455)",
+    disease_state = "early Alzheimer's disease with confirmed amyloid pathology: mild cognitive impairment due to AD 1654 (62.6%), mild AD dementia 987 (37.4%) (Table S2)",
+    dose_range = "placebo 1142 subjects; lecanemab 1499 subjects -- bi-weekly 2.5 mg/kg (52), 5 mg/kg (92), 10 mg/kg (1053); monthly 5 mg/kg (51), 10 mg/kg (251) (Table S2)",
+    regions = "multicentre international; Study 201 Core and Study 301 Core (Clarity AD, NCT03887455)",
     apoe4_genotype = "non-carrier 803, heterozygous carrier 1423, homozygous carrier 415 (Table S2)",
-    notes          = paste(
+    notes = paste(
       "Precision was high for the core parameters (%RSE < 9.9%) and",
       "acceptable for the covariate effects (< 36%), and bootstrap medians",
       "agree with the point estimates throughout (Table 2). The model was",

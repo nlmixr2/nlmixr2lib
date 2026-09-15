@@ -17,7 +17,8 @@ Zhang_2025_remdesivir_esrd <- function() {
     "carries. Written entirely in CONCENTRATION space: every state is a",
     "concentration in ng/mL and every parameter a first-order rate constant",
     "in 1/h, so no volume of distribution appears and a dose must be",
-    "supplied as the initial central remdesivir concentration.")
+    "supplied as the initial central remdesivir concentration."
+  )
   reference <- "Zhang S, Jeong S, Jiang B, Ho H. Pharmacokinetic simulations for remdesivir and its metabolites in healthy subjects and patients with renal impairment. Front Pharmacol. 2025;16:1488961. doi:10.3389/fphar.2025.1488961"
   vignette <- "Zhang_2025_remdesivir"
 
@@ -33,24 +34,24 @@ Zhang_2025_remdesivir_esrd <- function() {
   # them with peripheral blood mononuclear cells (Introduction and Discussion).
   # See the companion model Zhang_2025_remdesivir for the full quotation.
   compartmentData <- list(
-    central                = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1            = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "blood cell", verified = TRUE),
-    central_gs704277       = list(analyte = "GS-704277", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1_gs704277   = list(analyte = "GS-704277", units = "ng/mL", specimen = "blood cell", verified = TRUE),
-    central_gs441524       = list(analyte = "GS-441524", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1_gs441524   = list(analyte = "GS-441524", units = "ng/mL", specimen = "blood cell", verified = TRUE)
+    central = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "blood cell", verified = TRUE),
+    central_gs704277 = list(analyte = "GS-704277", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1_gs704277 = list(analyte = "GS-704277", units = "ng/mL", specimen = "blood cell", verified = TRUE),
+    central_gs441524 = list(analyte = "GS-441524", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1_gs441524 = list(analyte = "GS-441524", units = "ng/mL", specimen = "blood cell", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1L,
-    n_studies      = 1L,
-    age_range      = "A male patient in his mid-seventies (Zhang 2025 Methods 2.1; the source case report withholds the exact age).",
+    species = "human",
+    n_subjects = 1L,
+    n_studies = 1L,
+    age_range = "A male patient in his mid-seventies (Zhang 2025 Methods 2.1; the source case report withholds the exact age).",
     sex_female_pct = 0,
-    disease_state  = "A single kidney-transplant recipient in his mid-seventies with COVID-19, receiving renal replacement therapy and with an eGFR of 0 mL/min, i.e. no residual renal function. Described in the case report of Soergel F, Malin JJ, Hagmann H, et al., J Antimicrob Chemother. 2021;76:825-827, doi:10.1093/jac/dkaa500, and used by Zhang 2025 as an extreme-renal-impairment test of the model.",
+    disease_state = "A single kidney-transplant recipient in his mid-seventies with COVID-19, receiving renal replacement therapy and with an eGFR of 0 mL/min, i.e. no residual renal function. Described in the case report of Soergel F, Malin JJ, Hagmann H, et al., J Antimicrob Chemother. 2021;76:825-827, doi:10.1093/jac/dkaa500, and used by Zhang 2025 as an extreme-renal-impairment test of the model.",
     renal_function = "eGFR 0 mL/min (anuric), on intermittent haemodialysis. This is well below the eGFR 30 mL/min/1.73 m^2 threshold at which remdesivir is contraindicated in labelling.",
-    dose_range     = "Standard 5-day regimen: a 200 mg intravenous infusion on day 1 followed by 100 mg daily on each of the next 4 days. Zhang 2025 fitted and validated against DAY 1 ONLY ('For model validation, we specifically analyzed data from the first day of administration'), so the parameters describe a single 200 mg dose and the model is uninformed about accumulation over the remaining four days or about the effect of the intervening dialysis sessions.",
-    notes          = "IMPORTANT PROVENANCE LIMITATION. As for the companion cohort model, Zhang 2025 had no individual-level data: the concentration-time profiles were digitised from the published case-report figures with Engauge Digitizer 12.1 (Methods 2.1). Here that means the entire dataset is one patient's digitised curves for three analytes, so the estimates are a deterministic curve fit rather than a population analysis, and no variability of any kind is estimable. Zhang 2025 Discussion notes that no GS-443902 (triphosphate) data were reported for this patient either."
+    dose_range = "Standard 5-day regimen: a 200 mg intravenous infusion on day 1 followed by 100 mg daily on each of the next 4 days. Zhang 2025 fitted and validated against DAY 1 ONLY ('For model validation, we specifically analyzed data from the first day of administration'), so the parameters describe a single 200 mg dose and the model is uninformed about accumulation over the remaining four days or about the effect of the intervening dialysis sessions.",
+    notes = "IMPORTANT PROVENANCE LIMITATION. As for the companion cohort model, Zhang 2025 had no individual-level data: the concentration-time profiles were digitised from the published case-report figures with Engauge Digitizer 12.1 (Methods 2.1). Here that means the entire dataset is one patient's digitised curves for three analytes, so the estimates are a deterministic curve fit rather than a population analysis, and no variability of any kind is estimable. Zhang 2025 Discussion notes that no GS-443902 (triphosphate) data were reported for this patient either."
   )
 
   ini({

@@ -28,47 +28,68 @@ Leding_2026_tbaj587 <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "TBAJ-587", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "TBAJ-587",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "TBAJ-587", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "TBAJ-587", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "TBAJ-587", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m3 = list(
-      analyte = "TBAJ-587 metabolite M3", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587 metabolite M3",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_m3 = list(
-      analyte = "TBAJ-587 metabolite M3", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587 metabolite M3",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2_m3 = list(
-      analyte = "TBAJ-587 metabolite M3", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587 metabolite M3",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m2 = list(
-      analyte = "TBAJ-587 metabolite M2", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587 metabolite M2",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_m2 = list(
-      analyte = "TBAJ-587 metabolite M2", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "TBAJ-587 metabolite M2",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     DOSE_TBAJ587_MG = list(
-      description        = "Administered TBAJ-587 oral dose in mg, referenced to 200 mg",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered TBAJ-587 oral dose in mg, referenced to 200 mg",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Dose was treated as a CONTINUOUS covariate in stepwise covariate",
         "modelling (Leding 2026 Methods 2.2: 'Dose was treated as a",
         "continuous covariate and evaluated on absorption (ka and MTT),",
@@ -90,14 +111,14 @@ Leding_2026_tbaj587 <- function() {
         "period it takes the loading mg dose (Leding 2026 Methods 2.4).",
         "Member of the DOSE_<drug>_<units> canonical family."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     FED_HIGHFAT = list(
-      description        = "High-calorie high-fat meal taken with the dose (1 = fed, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-calorie high-fat meal taken with the dose (1 = fed, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; the six single-ascending-dose cohorts)",
-      notes              = paste(
+      notes = paste(
         "Leding 2026 Methods 2.1: 'Nine subjects in the food-effect cohort",
         "received a high-calorie and high-fat meal together with a single",
         "200 mg oral dose of TBAJ-587', so FED_HIGHFAT rather than the",
@@ -115,22 +136,22 @@ Leding_2026_tbaj587 <- function() {
         "fasting-derived dose dependence of apparent oral clearance also",
         "holds under fed conditions."
       ),
-      source_name        = "FED"
+      source_name = "FED"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
-    age_range      = "18-64 years",
-    bmi_range      = "15.5-32.0 kg/m^2",
-    weight_range   = "minimum 50.0 kg (no upper bound or median reported)",
-    disease_state  = "healthy volunteers",
-    dose_range     = "single oral doses of 25, 50, 100, 200, 400 or 800 mg (n = 6, 4, 5, 8, 4 and 6 respectively), plus a nine-subject food-effect cohort dosed 200 mg with a high-calorie high-fat meal",
-    trial          = "NCT04890535 Part 1; partially blinded, placebo-controlled, randomized single ascending dose with food-effect cohort",
-    regions        = "Netherlands (single site; ethics approval ID NL73973.056.20)",
-    notes          = paste(
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
+    age_range = "18-64 years",
+    bmi_range = "15.5-32.0 kg/m^2",
+    weight_range = "minimum 50.0 kg (no upper bound or median reported)",
+    disease_state = "healthy volunteers",
+    dose_range = "single oral doses of 25, 50, 100, 200, 400 or 800 mg (n = 6, 4, 5, 8, 4 and 6 respectively), plus a nine-subject food-effect cohort dosed 200 mg with a high-calorie high-fat meal",
+    trial = "NCT04890535 Part 1; partially blinded, placebo-controlled, randomized single ascending dose with food-effect cohort",
+    regions = "Netherlands (single site; ethics approval ID NL73973.056.20)",
+    notes = paste(
       "Leding 2026 Methods 2.1 and Results 3.1. Participants were male or",
       "female of non-childbearing potential; the sex split is not",
       "reported, so sex_female_pct is deliberately absent rather than",

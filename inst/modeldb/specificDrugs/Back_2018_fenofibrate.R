@@ -30,20 +30,20 @@ Back_2018_fenofibrate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    stomach       = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
-    duodenum      = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "fenofibric acid", units = "mg", specimen = "plasma", verified = FALSE),
-    stomach_food  = list(analyte = "calories", units = "mg", specimen = "not applicable", verified = FALSE),
+    stomach = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
+    duodenum = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fenofibric acid", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_food = list(analyte = "calories", units = "mg", specimen = "not applicable", verified = FALSE),
     duodenum_food = list(analyte = "calories", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate. Set FED = 1 for the standard-meal and",
         "high-fat-meal arms of the Back 2018 three-way crossover study and",
         "FED = 0 for the fasted arm. Drives (a) the additive Vc/F shift",
@@ -52,14 +52,14 @@ Back_2018_fenofibrate <- function() {
         "(b) the time-varying gastric-emptying boost on kg during the",
         "first 6.94 h after dosing."
       ),
-      source_name        = "Food / Fed indicator"
+      source_name = "Food / Fed indicator"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat meal at dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat meal at dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-high-fat meal: fasted or standard meal)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate refining FED. Set FED_HIGHFAT = 1 for",
         "the high-fat-meal arm (1280 kcal, 35.5% fat) and FED_HIGHFAT = 0",
         "for the fasted and standard-meal (686.3 kcal, 19.9% fat) arms.",
@@ -68,18 +68,18 @@ Back_2018_fenofibrate <- function() {
         "high-fat meal). Standard-meal indicator inside model() is",
         "FED * (1 - FED_HIGHFAT); high-fat-meal indicator is FED_HIGHFAT."
       ),
-      source_name        = "Meal type (Standard meal / High-fat meal)"
+      source_name = "Meal type (Standard meal / High-fat meal)"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued occasion / period indicator for inter-occasion",
         "variability (IOV). Values 1 = fasted, 2 = standard meal,",
         "3 = high-fat meal in the Back 2018 three-way crossover design."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into binary indicators oc1, oc2, oc3",
         "and multiplexed across per-occasion etas on lvc and lkel. The",
         "IOV variance for Vc/F (50.9% CV) and kel (44.9% CV) is",
@@ -89,24 +89,24 @@ Back_2018_fenofibrate <- function() {
         "period; OCC indexes the period, not the order in which periods",
         "were assigned per subject."
       ),
-      source_name        = "OCC / Period"
+      source_name = "OCC / Period"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 24L,
-    n_studies       = 1L,
-    age_range       = "mean 23 years",
-    weight_range    = "mean 68.75 kg",
-    height_range    = "mean 173.29 cm",
-    sex_female_pct  = 45.8,
-    race_ethnicity  = "Korean (24/24)",
-    disease_state   = "Healthy volunteers",
-    dose_range      = "250 mg fenofibrate (SR) capsule, single oral dose, three-way crossover (fasted, standard meal, high-fat meal)",
-    regions         = "South Korea (Chungnam National University)",
-    n_observations  = NA_integer_,
-    notes           = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "mean 23 years",
+    weight_range = "mean 68.75 kg",
+    height_range = "mean 173.29 cm",
+    sex_female_pct = 45.8,
+    race_ethnicity = "Korean (24/24)",
+    disease_state = "Healthy volunteers",
+    dose_range = "250 mg fenofibrate (SR) capsule, single oral dose, three-way crossover (fasted, standard meal, high-fat meal)",
+    regions = "South Korea (Chungnam National University)",
+    n_observations = NA_integer_,
+    notes = paste(
       "Three-way crossover food-effect study conducted April-November 2002.",
       "Each subject received a single 250 mg fenofibrate SR capsule with",
       "240 mL water 10 min after consuming no food, a standard breakfast,",

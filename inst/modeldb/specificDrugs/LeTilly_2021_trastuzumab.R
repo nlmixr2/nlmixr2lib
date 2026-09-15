@@ -10,10 +10,10 @@ LeTilly_2021_trastuzumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
-    csf     = list(analyte = "trastuzumab", units = "mg", specimen = "CSF", verified = FALSE),
-    lat0    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
-    lat1    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
-    lat2    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE)
+    csf = list(analyte = "trastuzumab", units = "mg", specimen = "CSF", verified = FALSE),
+    lat0 = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
+    lat1 = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
+    lat2 = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -25,20 +25,20 @@ LeTilly_2021_trastuzumab <- function() {
   )
 
   population <- list(
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = 304L,
-    age_range      = "24-66 years",
-    age_median     = "52 years",
-    weight_range   = "38-90 kg",
-    weight_median  = "65 kg",
+    age_range = "24-66 years",
+    age_median = "52 years",
+    weight_range = "38-90 kg",
+    weight_median = "65 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "HER2-positive breast cancer with leptomeningeal carcinomatosis (LMC).",
-    dose_range     = "Weekly intrathecal trastuzumab 30, 60, 100, or 150 mg for up to 8 doses (n=21). 13/21 (62%) also received concurrent intravenous trastuzumab 6 mg/kg every 3 weeks; the IV infusion (30 minutes) was always given after the IT dose on shared days.",
-    regions        = "Multicentric phase I/II clinical trial in France (NCT01373710).",
+    disease_state = "HER2-positive breast cancer with leptomeningeal carcinomatosis (LMC).",
+    dose_range = "Weekly intrathecal trastuzumab 30, 60, 100, or 150 mg for up to 8 doses (n=21). 13/21 (62%) also received concurrent intravenous trastuzumab 6 mg/kg every 3 weeks; the IV infusion (30 minutes) was always given after the IT dose on shared days.",
+    regions = "Multicentric phase I/II clinical trial in France (NCT01373710).",
     administration_routes = "Intrathecal route via lumbar puncture (n=7), Ommaya reservoir (n=9), or indwelling intrathecal drug delivery device (n=11); some patients used multiple routes across the 8-week treatment period (Le Tilly 2021 Table 1).",
-    samples        = "150 CSF samples and 154 serum samples; 39 CSF (26%) excluded after a Grubbs test on the CSF:serum ratio identified washout-induced overestimates from indwelling devices. Concentrations below LLOQ (0.144 mg/L CSF; 0.241 mg/L serum) were retained as censored values (Le Tilly 2021 Table 1).",
-    notes          = "21 adult patients (presumed predominantly or all female given HER2+ breast cancer LMC; sex not tabulated in Le Tilly 2021 Table 1). Baseline demographics from Le Tilly 2021 Table 1. All patients received systematic corticosteroid prophylaxis (>=20 mg/day prednisolone or equivalent for at least 3 days before each IT injection plus 25 mg IT hydrocortisone hemisuccinate immediately before each IT trastuzumab dose). Software: MONOLIX 2019R1 SAEM."
+    samples = "150 CSF samples and 154 serum samples; 39 CSF (26%) excluded after a Grubbs test on the CSF:serum ratio identified washout-induced overestimates from indwelling devices. Concentrations below LLOQ (0.144 mg/L CSF; 0.241 mg/L serum) were retained as censored values (Le Tilly 2021 Table 1).",
+    notes = "21 adult patients (presumed predominantly or all female given HER2+ breast cancer LMC; sex not tabulated in Le Tilly 2021 Table 1). Baseline demographics from Le Tilly 2021 Table 1. All patients received systematic corticosteroid prophylaxis (>=20 mg/day prednisolone or equivalent for at least 3 days before each IT injection plus 25 mg IT hydrocortisone hemisuccinate immediately before each IT trastuzumab dose). Software: MONOLIX 2019R1 SAEM."
   )
 
   ini({

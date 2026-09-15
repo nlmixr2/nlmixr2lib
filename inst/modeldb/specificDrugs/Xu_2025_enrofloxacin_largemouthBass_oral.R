@@ -55,28 +55,28 @@ Xu_2025_enrofloxacin_largemouthBass_oral <- function() {
   # rather than in covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight of the individual fish. Xu 2025 Table 3 screened body weight against Ka, V and CL in all eight on/off combinations for the oral dataset. The lowest -2LL with the fewest parameters was the V-wt scenario (-2LL 167.01, AIC 183.01, 8 parameters, versus 169.67 / 183.67 / 7 for no covariate), so V-wt was carried forward and fitted (Table 4, 'Importing covariate of wt': dVdwt = -0.39, RSE -43.90%, 95% CI -0.73 to -0.049). Section 3.3 then rejected it because the standard errors and RSEs of tvKa, tvV and tvCL were essentially unchanged relative to the covariate-free fit, so the final reported model carries no covariate.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight of the individual fish. Xu 2025 Table 3 screened body weight against Ka, V and CL in all eight on/off combinations for the oral dataset. The lowest -2LL with the fewest parameters was the V-wt scenario (-2LL 167.01, AIC 183.01, 8 parameters, versus 169.67 / 183.67 / 7 for no covariate), so V-wt was carried forward and fitted (Table 4, 'Importing covariate of wt': dVdwt = -0.39, RSE -43.90%, 95% CI -0.73 to -0.049). Section 3.3 then rejected it because the standard errors and RSEs of tvKa, tvV and tvCL were essentially unchanged relative to the covariate-free fit, so the final reported model carries no covariate.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened, fitted, and then rejected; not retained in the final model. As in the companion IV model, weight scaling is nevertheless built into the units rather than fitted: the dose is mg/kg BW and V/F and CL/F are per kg BW, i.e. exponent-1 proportionality is assumed a priori. The rejected covariate test was therefore for a DEPARTURE from that proportionality, not for the presence of any weight effect at all. The fish used were 243.11 +/- 54.86 g (Section 2.2); no per-fish weights are published, so the dVdwt centring/reference weight cannot be recovered and the covariate form is not reproducible even if a user wanted it."
+      notes = "Screened, fitted, and then rejected; not retained in the final model. As in the companion IV model, weight scaling is nevertheless built into the units rather than fitted: the dose is mg/kg BW and V/F and CL/F are per kg BW, i.e. exponent-1 proportionality is assumed a priori. The rejected covariate test was therefore for a DEPARTURE from that proportionality, not for the presence of any weight effect at all. The fish used were 243.11 +/- 54.86 g (Section 2.2); no per-fish weights are published, so the dVdwt centring/reference weight cannot be recovered and the covariate form is not reproducible even if a user wanted it."
     )
   )
 
   population <- list(
-    species            = "largemouth bass (Micropterus salmoides)",
-    n_subjects         = 24L,
-    n_studies          = 1L,
-    weight_mean        = "243.11 +/- 54.86 g (the 60-fish purchase lot from which both route cohorts were drawn; Section 2.2)",
-    dose_range         = "single 20 mg/kg body weight oral gavage (20 mg/mL enrofloxacin in pure water, delivered by plastic tube into the stomach from a 2.5 mL microinjector)",
-    disease_state      = "healthy",
-    regions            = "China (Yangtze River Fisheries Research Institute, Wuhan; fish sourced from Huazhong Agricultural University)",
-    water_temperature  = "25.0 +/- 0.5 degC (air-conditioned)",
-    water_quality      = "480 L tanks at 26 L/min; dissolved oxygen, total ammonia nitrogen, nitrite nitrogen and pH checked daily and held in the ranges of Xu 2023 (Animals 13:1749)",
-    design             = "24 fish randomised to four groups of six. Fish that regurgitated the gavage solution were removed and replaced. At least 14 days of acclimation on antibiotic-free feed before dosing (Sections 2.2 and 2.3.1).",
-    sampling           = "Sparse: each fish sampled 4 times from the caudal vessels. Four repeating schedules of four times each (Section 2.3.1): group 1 (5 min, 1, 8, 48 h), group 2 (10 min, 2, 12, 72 h), group 3 (15 min, 4, 16, 96 h), group 4 (0.5, 6, 24, 120 h), so all 16 nominal times are covered by six fish each.",
-    bioanalysis        = "HPLC with fluorescence detection (excitation 280 nm, emission 450 nm), Poroshell 120 EC-C18; LOD 0.003 ug/mL, LOQ 0.01 ug/mL; recovery 83.29-103.12%, intra-day RSD 2.07-3.21%, inter-day RSD 3.01-6.72% (Sections 2.5 and 3.1, Table 1).",
-    notes              = "The same 24-fish design was run at 10 mg/kg intravenously and fitted separately; see Xu_2025_enrofloxacin_largemouthBass_iv. Only one water temperature was studied. Xu 2025 Section 4 contrasts these estimates with a conventional (non-population) PK study of the same species at 28 degC (Shan 2019, J Vet Pharmacol Ther 43:147-152) that reported Ka 10.20 1/h, V 2.21 L/kg, CL 0.017 L/h/kg and AUC 1185.73 ug.h/mL, i.e. very different values; the parameters here should not be extrapolated to other rearing temperatures. No individual concentration or weight data are published (Data Availability Statement: available on request)."
+    species = "largemouth bass (Micropterus salmoides)",
+    n_subjects = 24L,
+    n_studies = 1L,
+    weight_mean = "243.11 +/- 54.86 g (the 60-fish purchase lot from which both route cohorts were drawn; Section 2.2)",
+    dose_range = "single 20 mg/kg body weight oral gavage (20 mg/mL enrofloxacin in pure water, delivered by plastic tube into the stomach from a 2.5 mL microinjector)",
+    disease_state = "healthy",
+    regions = "China (Yangtze River Fisheries Research Institute, Wuhan; fish sourced from Huazhong Agricultural University)",
+    water_temperature = "25.0 +/- 0.5 degC (air-conditioned)",
+    water_quality = "480 L tanks at 26 L/min; dissolved oxygen, total ammonia nitrogen, nitrite nitrogen and pH checked daily and held in the ranges of Xu 2023 (Animals 13:1749)",
+    design = "24 fish randomised to four groups of six. Fish that regurgitated the gavage solution were removed and replaced. At least 14 days of acclimation on antibiotic-free feed before dosing (Sections 2.2 and 2.3.1).",
+    sampling = "Sparse: each fish sampled 4 times from the caudal vessels. Four repeating schedules of four times each (Section 2.3.1): group 1 (5 min, 1, 8, 48 h), group 2 (10 min, 2, 12, 72 h), group 3 (15 min, 4, 16, 96 h), group 4 (0.5, 6, 24, 120 h), so all 16 nominal times are covered by six fish each.",
+    bioanalysis = "HPLC with fluorescence detection (excitation 280 nm, emission 450 nm), Poroshell 120 EC-C18; LOD 0.003 ug/mL, LOQ 0.01 ug/mL; recovery 83.29-103.12%, intra-day RSD 2.07-3.21%, inter-day RSD 3.01-6.72% (Sections 2.5 and 3.1, Table 1).",
+    notes = "The same 24-fish design was run at 10 mg/kg intravenously and fitted separately; see Xu_2025_enrofloxacin_largemouthBass_iv. Only one water temperature was studied. Xu 2025 Section 4 contrasts these estimates with a conventional (non-population) PK study of the same species at 28 degC (Shan 2019, J Vet Pharmacol Ther 43:147-152) that reported Ka 10.20 1/h, V 2.21 L/kg, CL 0.017 L/h/kg and AUC 1185.73 ug.h/mL, i.e. very different values; the parameters here should not be extrapolated to other rearing temperatures. No individual concentration or weight data are published (Data Availability Statement: available on request)."
   )
 
   ini({

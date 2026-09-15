@@ -27,8 +27,8 @@ Yamamoto_2023_tominersen <- function() {
   )
   vignette <- "Yamamoto_2023_tominersen"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -49,21 +49,21 @@ Yamamoto_2023_tominersen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    csf         = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
+    csf = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
     cns_tissue1 = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
     cns_tissue2 = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
-    central     = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling on the plasma-subsystem parameters only,",
         "normalised to a 75 kg reference (Appendix S1 $PK: `(WT/75)**THETA(1)`",
         "for CL_plasma, Q2_plasma and Q3_plasma, and `(WT/75)**THETA(2)` for",
@@ -74,14 +74,14 @@ Yamamoto_2023_tominersen <- function() {
         "(Table S1); the 5th and 95th percentiles quoted in the Results are 52",
         "and 95.5 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential (centered) covariate on CSF clearance, referenced to 49",
         "years (Appendix S1 $PK: `CLCAGE = EXP(THETA(17)*(AGE - 49))`; the",
         "49-year reference is corroborated by the Figure 5 typical-profile",
@@ -89,14 +89,14 @@ Yamamoto_2023_tominersen <- function() {
         "(Table S1); the 5th and 95th percentiles quoted in the Results are 31",
         "and 64 years."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = paste(
+      notes = paste(
         "Fractional-difference covariate on plasma clearance. Appendix S1 $PK",
         "codes `IF(SEX.EQ.0) CLSEX = 1` and `IF(SEX.EQ.1) CLSEX = (1 +",
         "THETA(19))`; THETA(19) is negative (-0.186) and the Results state that",
@@ -105,14 +105,14 @@ Yamamoto_2023_tominersen <- function() {
         "coding with no value inversion. Population 350 of 750 female (46.7%,",
         "Table S1)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody positivity, 1 = ADA-positive, 0 = ADA-negative",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody positivity, 1 = ADA-positive, 0 = ADA-negative",
+      units = "(binary)",
+      type = "binary",
       reference_category = "ADA-negative (ADA_POS = 0)",
-      notes              = paste(
+      notes = paste(
         "Time-varying fractional-difference covariate applied to BOTH CSF",
         "clearance and plasma clearance (Appendix S1 $PK: `IF(ADA.EQ.1) CLCADA",
         "= 1+THETA(16)` and `IF(ADA.EQ.1) CLADA = 1+THETA(18)`). ADA status was",
@@ -121,14 +121,14 @@ Yamamoto_2023_tominersen <- function() {
         "so those records were ADA-missing and took the ADA-negative reference",
         "multiplier of 1."
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     CSF_TPRO = list(
-      description        = "Total protein concentration in cerebrospinal fluid",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total protein concentration in cerebrospinal fluid",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential (centered) covariate on CSF clearance, referenced to",
         "0.35 g/L (Appendix S1 $PK: `CLCTPCSF = EXP(THETA(15)*(TPCSF -",
         "0.35))`; the 0.35 g/L reference is corroborated by the Figure 5",
@@ -141,7 +141,7 @@ Yamamoto_2023_tominersen <- function() {
         "GEN-EXTEND (Table S1); the 5th and 95th percentiles quoted in the",
         "Results are 0.19 and 0.54 g/L."
       ),
-      source_name        = "TPCSF"
+      source_name = "TPCSF"
     )
   )
 
@@ -158,9 +158,9 @@ Yamamoto_2023_tominersen <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened on the CSF model parameters and not retained. Range 108 to",
         "202 cm, median 170 to 173 cm (Table S1)."
       ),
@@ -168,9 +168,9 @@ Yamamoto_2023_tominersen <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened on the plasma model parameters and not retained; the",
         "Discussion notes that hepatic insufficiency is expected to have little",
         "effect on oligonucleotide clearance. Range 4.88 to 114 U/L, median",
@@ -180,9 +180,9 @@ Yamamoto_2023_tominersen <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened on the plasma model parameters and not retained. The",
         "Discussion reports the analysed range as 51 to 150 mL/min; Table S1",
         "spans 50.6 to 168.7 mL/min with medians of 98.4 to 108 mL/min. Urine",
@@ -194,22 +194,22 @@ Yamamoto_2023_tominersen <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 750L,
-    n_studies      = 5L,
-    studies        = paste(
+    species = "human",
+    n_subjects = 750L,
+    n_studies = 5L,
+    studies = paste(
       "Pooled: phase I/IIa (NCT02519036), its open-label extension",
       "(NCT03342053), GEN-PEAK (NCT04000594), GENERATION HD1 (NCT03761849),",
       "GEN-EXTEND (NCT03842969)"
     ),
-    age_range      = "25 to 66 years (5th-95th percentiles 31 to 64; reference 49)",
-    weight_range   = "40.1 to 116 kg (5th-95th percentiles 52 to 95.5; reference 75)",
+    age_range = "25 to 66 years (5th-95th percentiles 31 to 64; reference 49)",
+    weight_range = "40.1 to 116 kg (5th-95th percentiles 52 to 95.5; reference 75)",
     sex_female_pct = 46.7,
-    disease_state  = "Adults with early manifest or manifest Huntington's disease",
-    dose_range     = "10 to 120 mg intrathecal bolus, Q4W / Q8W / Q16W, for up to 25 months",
+    disease_state = "Adults with early manifest or manifest Huntington's disease",
+    dose_range = "10 to 120 mg intrathecal bolus, Q4W / Q8W / Q16W, for up to 25 months",
     administration_routes = "Intrathecal bolus, almost all by lumbar puncture (L3-L4 in 60.7 to 67.6% of doses, Table S2); the GEN-PEAK doses were given via an indwelling intrathecal catheter",
     renal_function = "Creatinine clearance 50.6 to 168.7 mL/min (Table S1); the Discussion quotes the analysed range as 51 to 150 mL/min. Renal function was not a significant covariate",
-    notes          = paste(
+    notes = paste(
       "6302 CSF and 5454 plasma concentrations (Yamamoto 2023 Table 1). 4% of",
       "CSF and 19% of plasma samples were below the limit of quantification and",
       "were excluded from the fit (the M3 method was attempted for plasma but",

@@ -13,62 +13,147 @@ Pouzin_2022_tusamitamab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    dar8_central     = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar8_peripheral1 = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar7_central     = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar7_peripheral1 = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar6_central     = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar6_peripheral1 = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar5_central     = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar5_peripheral1 = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar4_central     = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar4_peripheral1 = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar3_central     = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar3_peripheral1 = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar2_central     = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar2_peripheral1 = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar1_central     = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    dar1_peripheral1 = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_nab      = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1_nab  = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_dm4      = list(analyte = "DM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_medm4    = list(analyte = "MeDM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE)
+    dar8_central = list(
+      analyte = "tusamitamab ravtansine DAR8",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar8_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR8",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar7_central = list(
+      analyte = "tusamitamab ravtansine DAR7",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar7_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR7",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar6_central = list(
+      analyte = "tusamitamab ravtansine DAR6",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar6_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR6",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar5_central = list(
+      analyte = "tusamitamab ravtansine DAR5",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar5_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR5",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar4_central = list(
+      analyte = "tusamitamab ravtansine DAR4",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar4_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR4",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar3_central = list(
+      analyte = "tusamitamab ravtansine DAR3",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar3_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR3",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar2_central = list(
+      analyte = "tusamitamab ravtansine DAR2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar2_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar1_central = list(
+      analyte = "tusamitamab ravtansine DAR1",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar1_peripheral1 = list(
+      analyte = "tusamitamab ravtansine DAR1",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    central_nab = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_nab = list(
+      analyte = "naked antibody chain",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    central_dm4 = list(analyte = "DM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_medm4 = list(analyte = "MeDM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 254,
-    n_studies      = 1,
-    age_range      = "adults (specific range not tabulated in the modelling paper)",
-    weight_range   = "not tabulated in the modelling paper",
+    n_subjects = 254,
+    n_studies = 1,
+    age_range = "adults (specific range not tabulated in the modelling paper)",
+    weight_range = "not tabulated in the modelling paper",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Adults with advanced solid tumors expressing CEACAM5 (colorectal, gastric, NSCLC high/low CEACAM5, SCLC).",
-    dose_range     = "5-190 mg/m^2 IV in escalation cohorts (Q2W or Q3W) and 100 mg/m^2 IV Q2W in expansion cohorts; 1- to 3-h infusions.",
-    regions        = "TED13751 first-in-human Phase 1 study (NCT02187848); regions not specified in the modelling paper.",
-    study          = "TED13751 (NCT02187848) — open-label, non-randomized, multi-cohort first-in-human Phase 1 of SAR408701.",
-    analytes       = "Conjugated ADC (DAR>=1) by Gyrolab xP immunoassay (LLOQ 0.5 ug/mL); naked antibody NAB by competitive immunoenzymatic assay after anti-DM4 immunodepletion (LLOQ 1-9.6 ug/mL); DM4 and MeDM4 by LC-MS/MS in acidified plasma (LLOQ 0.2 ng/mL); per-DAR proportions by LC-HRMS in 13 patients.",
+    disease_state = "Adults with advanced solid tumors expressing CEACAM5 (colorectal, gastric, NSCLC high/low CEACAM5, SCLC).",
+    dose_range = "5-190 mg/m^2 IV in escalation cohorts (Q2W or Q3W) and 100 mg/m^2 IV Q2W in expansion cohorts; 1- to 3-h infusions.",
+    regions = "TED13751 first-in-human Phase 1 study (NCT02187848); regions not specified in the modelling paper.",
+    study = "TED13751 (NCT02187848) — open-label, non-randomized, multi-cohort first-in-human Phase 1 of SAR408701.",
+    analytes = "Conjugated ADC (DAR>=1) by Gyrolab xP immunoassay (LLOQ 0.5 ug/mL); naked antibody NAB by competitive immunoenzymatic assay after anti-DM4 immunodepletion (LLOQ 1-9.6 ug/mL); DM4 and MeDM4 by LC-MS/MS in acidified plasma (LLOQ 0.2 ng/mL); per-DAR proportions by LC-HRMS in 13 patients.",
     n_observations = "3746 ADC, 3740 DM4, 3734 MeDM4, 3734 NAB plasma concentrations across <=58 cycles (median 4 cycles per patient).",
-    notes          = "Pouzin 2022 reports the structural integrated model; baseline demographics (age/weight/sex/race) for the 254-patient analysis are not tabulated in the model paper itself. The companion covariate paper (Pouzin et al., CPT Pharmacometrics Syst Pharmacol 2022, PMID 35191618) tabulates demographics and is the basis for any subsequent covariate-aware refit; this entry packages the structural base model only.",
+    notes = "Pouzin 2022 reports the structural integrated model; baseline demographics (age/weight/sex/race) for the 254-patient analysis are not tabulated in the model paper itself. The companion covariate paper (Pouzin et al., CPT Pharmacometrics Syst Pharmacol 2022, PMID 35191618) tabulates demographics and is the basis for any subsequent covariate-aware refit; this entry packages the structural base model only.",
     dose_distribution = list(
-      note     = "DAR distribution in the administered drug solution. Pouzin 2022 Table 4 'F_DARi (%)' typical fixed-effect values; CV from Table 3 (administered batches). FNAB was estimated (the others were fixed at the median of 4 measured batches).",
-      F_DAR8   = 0.009,  # 0.9% (fixed; IIV back-calculated to keep sum=1)
-      F_DAR7   = 0.028,  # 2.8% (fixed; CV 27.2%)
-      F_DAR6   = 0.071,  # 7.1% (fixed; CV 13.2%)
-      F_DAR5   = 0.142,  # 14.2% (fixed; CV 10.2%)
-      F_DAR4   = 0.199,  # 19.9% (fixed; CV 5.9%)
-      F_DAR3   = 0.218,  # 21.8% (fixed; CV 6.6%)
-      F_DAR2   = 0.175,  # 17.5% (fixed; CV 9.1%)
-      F_DAR1   = 0.085,  # 8.5%  (fixed; CV 9.1%)
-      F_NAB    = 0.071   # 7.1%  (estimated; IIV CV 41.8%)
+      note = "DAR distribution in the administered drug solution. Pouzin 2022 Table 4 'F_DARi (%)' typical fixed-effect values; CV from Table 3 (administered batches). FNAB was estimated (the others were fixed at the median of 4 measured batches).",
+      F_DAR8 = 0.009, # 0.9% (fixed; IIV back-calculated to keep sum=1)
+      F_DAR7 = 0.028, # 2.8% (fixed; CV 27.2%)
+      F_DAR6 = 0.071, # 7.1% (fixed; CV 13.2%)
+      F_DAR5 = 0.142, # 14.2% (fixed; CV 10.2%)
+      F_DAR4 = 0.199, # 19.9% (fixed; CV 5.9%)
+      F_DAR3 = 0.218, # 21.8% (fixed; CV 6.6%)
+      F_DAR2 = 0.175, # 17.5% (fixed; CV 9.1%)
+      F_DAR1 = 0.085, # 8.5%  (fixed; CV 9.1%)
+      F_NAB = 0.071 # 7.1%  (estimated; IIV CV 41.8%)
     ),
     molecular_weights = list(
-      note    = "Pouzin 2022 Table 2. SAR408701 average MW corresponds to an ADC carrying three [linker-DM4] moieties; the model converts DM4/MeDM4/NAB observations to ADC molar equivalent by normalising with the SAR408701 MW.",
-      ADC     = 150000,  # g/mol  (average MW for DAR ~ 3 product)
-      NAB     = 144522,  # g/mol  (naked antibody)
-      DM4     = 780,     # g/mol
-      MeDM4   = 794      # g/mol
+      note = "Pouzin 2022 Table 2. SAR408701 average MW corresponds to an ADC carrying three [linker-DM4] moieties; the model converts DM4/MeDM4/NAB observations to ADC molar equivalent by normalising with the SAR408701 MW.",
+      ADC = 150000, # g/mol  (average MW for DAR ~ 3 product)
+      NAB = 144522, # g/mol  (naked antibody)
+      DM4 = 780, # g/mol
+      MeDM4 = 794 # g/mol
     )
   )
 

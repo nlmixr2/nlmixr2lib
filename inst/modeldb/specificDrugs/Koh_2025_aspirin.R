@@ -1,96 +1,108 @@
 Koh_2025_aspirin <- function() {
   description <- "Joint population PK-PD model for enteric-coated aspirin in healthy Korean adults (Koh 2025; two phase I studies, 100 mg once daily for 5 days). Parallel dual absorption -- a zero-order arm with a lag time plus a first-order arm -- delivers acetylsalicylic acid (ASA) into a pre-systemic compartment that drains by two competing first-order routes: intact ASA into the one-compartment ASA disposition, and gut-hydrolysed salicylic acid (SA) straight into the two-compartment SA disposition. Systemic ASA is eliminated entirely by conversion to SA (kmet), so apparent ASA clearance is kmet * V3/F = 69.8 L/h. Body weight enters kmet and SA clearance as power functions normalised to the 68.35 kg cohort median, and the enteric-coated capsule absorbs about four times faster than the enteric-coated tablet (ka 0.22 vs 0.053 1/h). A turnover model with an Imax function on ASA concentration inhibits serum thromboxane B2 production."
-  reference   <- "Koh JE, Khwarg J, Yu KS, Lee S, Jang IJ, Lee S. Population Pharmacokinetic and Pharmacodynamic Modeling of Enteric-Coated Aspirin Capsule and Tablet Formulations in Healthy Subjects. Drug Des Devel Ther. 2025;19:7853-7863. doi:10.2147/DDDT.S533428"
-  vignette    <- "Koh_2025_aspirin"
-  units       <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  reference <- "Koh JE, Khwarg J, Yu KS, Lee S, Jang IJ, Lee S. Population Pharmacokinetic and Pharmacodynamic Modeling of Enteric-Coated Aspirin Capsule and Tablet Formulations in Healthy Subjects. Drug Des Devel Ther. 2025;19:7853-7863. doi:10.2147/DDDT.S533428"
+  vignette <- "Koh_2025_aspirin"
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
   # Both parallel absorption arms are dosed explicitly: the first-order arm
   # through `depot` (fraction fdepot) and the zero-order arm straight into
   # `presystemic` (fraction 1 - fdepot, over `dur` = d1, after `alag` = tlag).
   # Declared because the registry's auto-detection only recognises depot and
   # central and would otherwise record `central`, which is never dosed here.
-  dosing      <- c("depot", "presystemic")
+  dosing <- c("depot", "presystemic")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight. Enters kmet and cl_sa as power functions normalised to the 68.35 kg cohort median (Koh 2025 Table S1 'Total' column, median [min-max] 68.35 [55.6-89.5] kg); the median normalisation form is Koh 2025 Covariate Analysis equation. Enrolment restricted weight to 50.0-90.0 kg and BMI to 18.0-27.0 kg/m2, so the model is not informed outside that range.",
-      source_name        = "weight"
+      notes = "Baseline body weight. Enters kmet and cl_sa as power functions normalised to the 68.35 kg cohort median (Koh 2025 Table S1 'Total' column, median [min-max] 68.35 [55.6-89.5] kg); the median normalisation form is Koh 2025 Covariate Analysis equation. Enrolment restricted weight to 50.0-90.0 kg and BMI to 18.0-27.0 kg/m2, so the model is not informed outside that range.",
+      source_name = "weight"
     ),
     FORM_CAPSULE = list(
-      description        = "Enteric-coated capsule formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Enteric-coated capsule formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = enteric-coated tablet (Aspirin Protect, Bayer, Germany)",
-      notes              = "1 = enteric-coated capsule (Astrix, Boryungbio, Korea); 0 = enteric-coated tablet (Aspirin Protect, Bayer, Germany). Unlike the bioavailability-oriented uses of this canonical elsewhere in the register, here the formulation acts only on the first-order absorption rate constant: ka = 0.22 1/h for the capsule (estimated, RSE 21.8%) versus 0.053 1/h for the tablet (fixed during covariate analysis to stabilise the model, Koh 2025 Covariate Analysis). Relative bioavailability is not estimated -- every parameter is apparent (/F) and F is common to both arms. The tablet is the reference category because it carries the fixed value. Koh 2025 Results: formulation on ka was retained with a correlation test statistic of -3.13 (p < 0.005); Tk0, Lag0 and fr were tested for the formulation difference and rejected.",
-      source_name        = "formulation"
+      notes = "1 = enteric-coated capsule (Astrix, Boryungbio, Korea); 0 = enteric-coated tablet (Aspirin Protect, Bayer, Germany). Unlike the bioavailability-oriented uses of this canonical elsewhere in the register, here the formulation acts only on the first-order absorption rate constant: ka = 0.22 1/h for the capsule (estimated, RSE 21.8%) versus 0.053 1/h for the tablet (fixed during covariate analysis to stabilise the model, Koh 2025 Covariate Analysis). Relative bioavailability is not estimated -- every parameter is apparent (/F) and F is common to both arms. The tablet is the reference category because it carries the fixed value. Koh 2025 Results: formulation on ka was retained with a correlation test statistic of -3.13 (p < 0.005); Tk0, Lag0 and fr were tested for the formulation difference and rejected.",
+      source_name = "formulation"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Koh 2025 Covariate Analysis) but not retained in the final model. Table S1 total median [min-max] 29 [20-49] years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Koh 2025 Covariate Analysis) but not retained in the final model. Table S1 total median [min-max] 29 [20-49] years."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained. Table S1 total median [min-max] 174.55 [157.7-185.5] cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained. Table S1 total median [min-max] 174.55 [157.7-185.5] cm."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m2",
-      type        = "continuous",
-      notes       = "Screened but not retained. Table S1 total median [min-max] 22.65 [19.5-26.9] kg/m2."
+      units = "kg/m2",
+      type = "continuous",
+      notes = "Screened but not retained. Table S1 total median [min-max] 22.65 [19.5-26.9] kg/m2."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "acetylsalicylic acid", units = "umol",
-      specimen = "administration site", verified = TRUE
+      analyte = "acetylsalicylic acid",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     presystemic = list(
-      analyte = "acetylsalicylic acid", units = "umol",
-      specimen = "administration site", verified = TRUE
+      analyte = "acetylsalicylic acid",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "acetylsalicylic acid", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "acetylsalicylic acid",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_sa = list(
-      analyte = "salicylic acid", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "salicylic acid",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_sa = list(
-      analyte = "salicylic acid", units = "umol",
-      specimen = "plasma", verified = TRUE
+      analyte = "salicylic acid",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     txb2 = list(
-      analyte = "thromboxane B2", units = "ug/L",
-      specimen = "serum", verified = TRUE
+      analyte = "thromboxane B2",
+      units = "ug/L",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44,
-    n_studies      = 2,
-    age_range      = "20-49 years",
-    age_median     = "29 years",
-    weight_range   = "55.6-89.5 kg",
-    weight_median  = "68.35 kg",
+    species = "human",
+    n_subjects = 44,
+    n_studies = 2,
+    age_range = "20-49 years",
+    age_median = "29 years",
+    weight_range = "55.6-89.5 kg",
+    weight_median = "68.35 kg",
     sex_female_pct = 6.8,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = "aspirin 100 mg orally once daily for 5 days (enteric-coated capsule or enteric-coated tablet)",
-    regions        = "Republic of Korea (Seoul National University Hospital)",
-    notes          = "Pooled period-1 data from two open-label, two-period, one-sequence crossover phase I aspirin-rabeprazole interaction studies (NCT05481307, NCT05699070). Only period 1 -- aspirin alone, without the rabeprazole perpetrator -- was used to build the model. 21 subjects received the enteric-coated capsule and 23 the enteric-coated tablet; 41 male / 3 female. 779 observations: 317 ASA plasma, 379 SA plasma, 83 TXB2 serum. PK sampled at 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 12 and 24 h on days 1 and 5; TXB2 only pre-dose on day 1 and 24 h after the day-5 dose. LLOQ 10.0 ng/mL (ASA) and 200 ng/mL (SA); BLQ handled by the M1 method. Estimated by SAEM in Monolix 2021R1. Demographics from Koh 2025 Table S1."
+    disease_state = "healthy volunteers",
+    dose_range = "aspirin 100 mg orally once daily for 5 days (enteric-coated capsule or enteric-coated tablet)",
+    regions = "Republic of Korea (Seoul National University Hospital)",
+    notes = "Pooled period-1 data from two open-label, two-period, one-sequence crossover phase I aspirin-rabeprazole interaction studies (NCT05481307, NCT05699070). Only period 1 -- aspirin alone, without the rabeprazole perpetrator -- was used to build the model. 21 subjects received the enteric-coated capsule and 23 the enteric-coated tablet; 41 male / 3 female. 779 observations: 317 ASA plasma, 379 SA plasma, 83 TXB2 serum. PK sampled at 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 12 and 24 h on days 1 and 5; TXB2 only pre-dose on day 1 and 24 h after the day-5 dose. LLOQ 10.0 ng/mL (ASA) and 200 ng/mL (SA); BLQ handled by the M1 method. Estimated by SAEM in Monolix 2021R1. Demographics from Koh 2025 Table S1."
   )
 
   ini({

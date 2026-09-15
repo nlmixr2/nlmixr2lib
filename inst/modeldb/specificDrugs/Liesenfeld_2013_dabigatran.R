@@ -8,51 +8,51 @@ Liesenfeld_2013_dabigatran <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dabigatran", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dabigatran", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic / no dialysis running)",
-      notes              = "Time-varying within subject. Gates the Michaels-equation apparent dialysis clearance: CLdialysis/F is added to CL/F only when RRT_HEMODIAL_ACTIVE = 1. The source paper reports four-hour intermittent hemodialysis sessions on Days 1, 3, and 5 of each study period (Methods, Study Design). For non-ESRD patients with no dialysis, set RRT_HEMODIAL_ACTIVE = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `RRT_HEMODIAL_ACTIVE` per inst/references/covariate-columns.md.",
-      source_name        = "DIAL"
+      notes = "Time-varying within subject. Gates the Michaels-equation apparent dialysis clearance: CLdialysis/F is added to CL/F only when RRT_HEMODIAL_ACTIVE = 1. The source paper reports four-hour intermittent hemodialysis sessions on Days 1, 3, and 5 of each study period (Methods, Study Design). For non-ESRD patients with no dialysis, set RRT_HEMODIAL_ACTIVE = 0 throughout. The source paper's data column was named `DIAL`; renamed to the canonical `RRT_HEMODIAL_ACTIVE` per inst/references/covariate-columns.md.",
+      source_name = "DIAL"
     ),
     BFR = list(
-      description        = "Blood flow rate during the active hemodialysis session",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate during the active hemodialysis session",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Enters the Michaels equation together with DFR and KoA to compute the apparent dialysis clearance. Values investigated in the source study were 200, 300, and 400 mL/min (Methods, Study Design; Table 1). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0 since the Michaels term is gated off.",
-      source_name        = "BFR"
+      notes = "Time-varying within subject. Enters the Michaels equation together with DFR and KoA to compute the apparent dialysis clearance. Values investigated in the source study were 200, 300, and 400 mL/min (Methods, Study Design; Table 1). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0 since the Michaels term is gated off.",
+      source_name = "BFR"
     ),
     DFR = list(
-      description        = "Dialysate flow rate during the active hemodialysis session",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Dialysate flow rate during the active hemodialysis session",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Enters the Michaels equation together with BFR and KoA. The source study fixed DFR at 700 mL/min throughout (Methods, Study Design); the simulation scenarios also examined 500 mL/min (Methods, Simulations). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0.",
-      source_name        = "DFR"
+      notes = "Time-varying within subject. Enters the Michaels equation together with BFR and KoA. The source study fixed DFR at 700 mL/min throughout (Methods, Study Design); the simulation scenarios also examined 500 mL/min (Methods, Simulations). Should be 0 (or any sentinel) when RRT_HEMODIAL_ACTIVE = 0.",
+      source_name = "DFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 7L,
-    n_studies      = 1L,
-    age_range      = "27-53 years (mean 38.3)",
-    weight_range   = "60-87 kg (mean 74.0)",
+    species = "human",
+    n_subjects = 7L,
+    n_studies = 1L,
+    age_range = "27-53 years (mean 38.3)",
+    weight_range = "60-87 kg (mean 74.0)",
     sex_female_pct = 0,
     race_ethnicity = "All seven subjects were white males (Results, Population Pharmacokinetic Model).",
-    disease_state  = "Dialysis-dependent end-stage renal disease (ESRD) without atrial fibrillation. Source paper notes that renal elimination of dabigatran in this population is negligible (< 0.04 L/h); the estimated total body clearance therefore reflects predominantly non-renal clearance.",
-    dose_range     = "Three oral doses of dabigatran etexilate per study period, separated by 21 h: 150 mg (post-dialysis on Day 1), 110 mg (Day 2), and 75 mg (Day 3, 8 h before dialysis). Repeated across two periods with different Day-3 blood flow rates (200 and 400 mL/min). Hemodialysis on Days 1, 3, and 5 of each period; DFR fixed at 700 mL/min; high-flux Polyflux PF-210H filter (Gambro).",
-    regions        = "Single-centre phase I dialysis study (Khadzhynov et al. 2013, ref [12] of the source paper).",
+    disease_state = "Dialysis-dependent end-stage renal disease (ESRD) without atrial fibrillation. Source paper notes that renal elimination of dabigatran in this population is negligible (< 0.04 L/h); the estimated total body clearance therefore reflects predominantly non-renal clearance.",
+    dose_range = "Three oral doses of dabigatran etexilate per study period, separated by 21 h: 150 mg (post-dialysis on Day 1), 110 mg (Day 2), and 75 mg (Day 3, 8 h before dialysis). Repeated across two periods with different Day-3 blood flow rates (200 and 400 mL/min). Hemodialysis on Days 1, 3, and 5 of each period; DFR fixed at 700 mL/min; high-flux Polyflux PF-210H filter (Gambro).",
+    regions = "Single-centre phase I dialysis study (Khadzhynov et al. 2013, ref [12] of the source paper).",
     n_observations = 308L,
-    notes          = "Baseline demographics from Liesenfeld 2013 Results, Population Pharmacokinetic Model. Geometric mean trough concentrations after the second dose were 140 ng/mL (CV 54.2%) in period 1 and 128 ng/mL (CV 44.5%) in period 2. The structural PK parameters reported here characterise dabigatran disposition in ESRD; the paper explicitly used parameter estimates from the RE-LY trial (Reilly et al. 2013) when simulating typical AF patients, so the ESRD-cohort parameters in ini() are not appropriate for simulating non-ESRD AF dosing scenarios -- they describe the cohort that informed the dialysis-clearance component."
+    notes = "Baseline demographics from Liesenfeld 2013 Results, Population Pharmacokinetic Model. Geometric mean trough concentrations after the second dose were 140 ng/mL (CV 54.2%) in period 1 and 128 ng/mL (CV 44.5%) in period 2. The structural PK parameters reported here characterise dabigatran disposition in ESRD; the paper explicitly used parameter estimates from the RE-LY trial (Reilly et al. 2013) when simulating typical AF patients, so the ESRD-cohort parameters in ini() are not appropriate for simulating non-ESRD AF dosing scenarios -- they describe the cohort that informed the dialysis-clearance component."
   )
 
   ini({

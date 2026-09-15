@@ -1,53 +1,53 @@
 Padari_2018_penicillin_G <- function() {
   description <- "Two-compartment IV population PK model for penicillin G (benzylpenicillin) in preterm and term neonates (Padari 2018; pooled with Metsvaht 2007 GA <=28 wk cohort). CL and Q are allometrically scaled to body weight (fixed exponent 0.75) with a fixed Rhodin-style postmenstrual-age (PMA) sigmoidal renal-maturation function on CL; Vc and Vp are allometrically scaled (fixed exponent 1.0)."
-  reference   <- "Padari H, Metsvaht T, Germovsek E, Barker CI, Kipper K, Herodes K, Standing JF, Oselin K, Tasa T, Soeorg H, Lutsar I. Pharmacokinetics of penicillin G in preterm and term neonates. Antimicrob Agents Chemother. 2018;62(5):e02238-17. doi:10.1128/AAC.02238-17"
-  vignette    <- "Padari_2018_penicillin_G"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Padari H, Metsvaht T, Germovsek E, Barker CI, Kipper K, Herodes K, Standing JF, Oselin K, Tasa T, Soeorg H, Lutsar I. Pharmacokinetics of penicillin G in preterm and term neonates. Antimicrob Agents Chemother. 2018;62(5):e02238-17. doi:10.1128/AAC.02238-17"
+  vignette <- "Padari_2018_penicillin_G"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight on the PK sampling day",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight on the PK sampling day",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used for allometric scaling on CL and Q (fixed exponent 0.75) and on Vc and Vp (fixed exponent 1) with reference 70 kg per Padari 2018 Materials and Methods 'PK analyses' (Germovsek 2017 recommendation).",
-      source_name        = "WT"
+      notes = "Time-varying. Used for allometric scaling on CL and Q (fixed exponent 0.75) and on Vc and Vp (fixed exponent 1) with reference 70 kg per Padari 2018 Materials and Methods 'PK analyses' (Germovsek 2017 recommendation).",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the fixed Rhodin-style GFR-maturation Hill function on CL (Tmat50 = 47.7 weeks PMA, Hill = 3.4) per Padari 2018 Materials and Methods reference 48 (Rhodin et al. 2009). The canonical PAGE unit in inst/references/covariate-columns.md is months; this model uses weeks because the Rhodin function is defined in weeks of PMA. Convert from months as PAGE_weeks = PAGE_months * 4.35 if the upstream cohort is in months.",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the fixed Rhodin-style GFR-maturation Hill function on CL (Tmat50 = 47.7 weeks PMA, Hill = 3.4) per Padari 2018 Materials and Methods reference 48 (Rhodin et al. 2009). The canonical PAGE unit in inst/references/covariate-columns.md is months; this model uses weeks because the Rhodin function is defined in weeks of PMA. Convert from months as PAGE_weeks = PAGE_months * 4.35 if the upstream cohort is in months.",
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
-    n_studies      = 2L,
-    age_range      = "PNA 0-3 days at PK sampling; GA 24-42 weeks (pooled across both source studies)",
-    age_median     = "PMA 32.3 weeks (popPK cohort median; Padari 2018 Results 'popPK analysis')",
-    weight_range   = "Pooled cohort spans ~0.5 to ~4 kg (Padari 2018 current cohort 2.0-3.8 kg; Metsvaht 2007 GA <=28 wk cohort included for the popPK fit)",
-    weight_median  = "1.28 kg (popPK cohort median; Padari 2018 Results 'popPK analysis')",
+    species = "human",
+    n_subjects = 35L,
+    n_studies = 2L,
+    age_range = "PNA 0-3 days at PK sampling; GA 24-42 weeks (pooled across both source studies)",
+    age_median = "PMA 32.3 weeks (popPK cohort median; Padari 2018 Results 'popPK analysis')",
+    weight_range = "Pooled cohort spans ~0.5 to ~4 kg (Padari 2018 current cohort 2.0-3.8 kg; Metsvaht 2007 GA <=28 wk cohort included for the popPK fit)",
+    weight_median = "1.28 kg (popPK cohort median; Padari 2018 Results 'popPK analysis')",
     sex_female_pct = 35.3,
     race_ethnicity = "Not reported (single-centre Tartu University Hospital cohort plus Metsvaht 2007 historical cohort)",
-    disease_state  = "Neonates of GA >=32 weeks (current study, n = 17) pooled with neonates of GA <=28 weeks from Metsvaht 2007 (n = 18), all treated for confirmed or suspected early-onset sepsis (EOS), congenital pneumonia, suspected congenital infection, or meconium aspiration syndrome",
-    dose_range     = "Penicillin G 25,000 IU/kg or 50,000 IU/kg every 12 h as a 3-minute IV infusion (1 IU = 0.6 mg; equivalent to 15 mg/kg or 30 mg/kg)",
-    regions        = "Estonia (Tartu University Hospital)",
+    disease_state = "Neonates of GA >=32 weeks (current study, n = 17) pooled with neonates of GA <=28 weeks from Metsvaht 2007 (n = 18), all treated for confirmed or suspected early-onset sepsis (EOS), congenital pneumonia, suspected congenital infection, or meconium aspiration syndrome",
+    dose_range = "Penicillin G 25,000 IU/kg or 50,000 IU/kg every 12 h as a 3-minute IV infusion (1 IU = 0.6 mg; equivalent to 15 mg/kg or 30 mg/kg)",
+    regions = "Estonia (Tartu University Hospital)",
     gestational_age_range = "24-42 weeks GA at birth (pooled across cohorts)",
     postmenstrual_age_range = "Equivalent to GA at the PK sampling day given PNA < 4 days in all subjects",
     samples_plasma = "Sparse sampling at trough, 5 min, 1 h, 3 h, 8 h, and 12 h after the steady-state dose (>= 36 h of therapy, typically after the 5th dose)",
-    notes          = "Sex split (12 of 35 female = 35.3%) inferred from Padari 2018 Table 1 demographics for the current cohort (4 + 7 = 11 male of 17 enrolled); the Metsvaht 2007 cohort sex split is not retabulated. Concomitant gentamicin 4 mg/kg q24h was administered to all current-cohort subjects; no other potentially nephrotoxic drugs on the PK sampling day. Baseline median serum creatinine 52-61 umol/L, albumin 31-32 g/L, bilirubin 131-156 umol/L (Padari 2018 Table 1). Final popPK model retained no other covariates (BW, GA, SCR, ventilation, CPAP all non-significant at p < 0.01)."
+    notes = "Sex split (12 of 35 female = 35.3%) inferred from Padari 2018 Table 1 demographics for the current cohort (4 + 7 = 11 male of 17 enrolled); the Metsvaht 2007 cohort sex split is not retabulated. Concomitant gentamicin 4 mg/kg q24h was administered to all current-cohort subjects; no other potentially nephrotoxic drugs on the PK sampling day. Baseline median serum creatinine 52-61 umol/L, albumin 31-32 g/L, bilirubin 131-156 umol/L (Padari 2018 Table 1). Final popPK model retained no other covariates (BW, GA, SCR, ventilation, CPAP all non-significant at p < 0.01)."
   )
 
   ini({

@@ -39,41 +39,53 @@ Zhang_2024_f53b_human_pbpk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c(
-    "kidney_blood", "ptc", "filtrate", "fat", "mammary", "rest",
-    "placenta", "feces", "plasma_fet", "liver_fet", "brain_fet",
-    "rest_fet", "amniotic", "trans_mf", "trans_fm"
+    "kidney_blood",
+    "ptc",
+    "filtrate",
+    "fat",
+    "mammary",
+    "rest",
+    "placenta",
+    "feces",
+    "plasma_fet",
+    "liver_fet",
+    "brain_fet",
+    "rest_fet",
+    "amniotic",
+    "trans_mf",
+    "trans_fm"
   )
 
   compartmentData <- list(
-    stomach      = list(analyte = "F-53B", units = "mg", specimen = "administration site",      verified = TRUE),
-    intestine    = list(analyte = "F-53B", units = "mg", specimen = "administration site",       verified = TRUE),
-    plasma       = list(analyte = "F-53B", units = "mg", specimen = "plasma",       verified = TRUE),
-    liver        = list(analyte = "F-53B", units = "mg", specimen = "tissue",        verified = TRUE),
-    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    ptc          = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
-    filtrate     = list(analyte = "F-53B", units = "mg", specimen = "urine",      verified = TRUE),
-    fat          = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    mammary      = list(analyte = "F-53B", units = "mg", specimen = "tissue",         verified = TRUE),
-    rest         = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
-    placenta     = list(analyte = "F-53B", units = "mg", specimen = "tissue",              verified = TRUE),
-    urine        = list(analyte = "F-53B", units = "mg", specimen = "urine",                 verified = TRUE),
-    feces        = list(analyte = "F-53B", units = "mg", specimen = "faeces",                 verified = TRUE),
-    plasma_fet   = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
-    liver_fet    = list(analyte = "F-53B", units = "mg", specimen = "tissue",           verified = TRUE),
-    brain_fet    = list(analyte = "F-53B", units = "mg", specimen = "tissue",           verified = TRUE),
-    rest_fet     = list(analyte = "F-53B", units = "mg", specimen = "tissue",    verified = TRUE),
-    amniotic     = list(analyte = "F-53B", units = "mg", specimen = "tissue",        verified = TRUE),
-    trans_mf     = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE),
-    trans_fm     = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE)
+    stomach = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    intestine = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    plasma = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    ptc = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    filtrate = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    fat = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    mammary = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    rest = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    placenta = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    feces = list(analyte = "F-53B", units = "mg", specimen = "faeces", verified = TRUE),
+    plasma_fet = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    brain_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    rest_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    amniotic = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    trans_mf = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE),
+    trans_fm = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Maternal pre-pregnancy body weight. Zhang 2024 Table S4 gives",
         "60 kg for the pregnant woman (54 kg pre-pregnant); 60 kg is the",
         "default carried in ini() and the mean of the Monte Carlo",
@@ -89,18 +101,18 @@ Zhang_2024_f53b_human_pbpk <- function() {
         "flows are absolute functions of gestational age (Table S6) and",
         "so do NOT scale with WT."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000L,
-    n_studies      = 21L,
-    age_range      = "conception assumed at age 30 years",
-    weight_range   = "60 kg pregnant (54 kg pre-pregnant); Monte Carlo 24.7-95.3 kg",
+    species = "human",
+    n_subjects = 1000L,
+    n_studies = 21L,
+    age_range = "conception assumed at age 30 years",
+    weight_range = "60 kg pregnant (54 kg pre-pregnant); Monte Carlo 24.7-95.3 kg",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy pregnant women. No clinical study was conducted: the",
       "model was extrapolated from the pregnant-mouse model and",
       "evaluated against maternal plasma and cord blood F-53B",
@@ -110,14 +122,14 @@ Zhang_2024_f53b_human_pbpk <- function() {
       "chemical-specific parameters with normalized sensitivity",
       "coefficient at or above 0.30 (Table S9)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Chronic dietary intake. Published estimated daily intakes for",
       "F-53B in China range from 0.067 to 1.87 ng/kg/day (Table S8);",
       "the paper simulates 0.122 ng/kg/day given continuously from",
       "birth to age 30 years and then through 38 weeks of pregnancy."
     ),
-    regions        = "China (biomonitoring evaluation data)",
-    notes          = paste(
+    regions = "China (biomonitoring evaluation data)",
+    notes = paste(
       "Predicted maternal plasma F-53B at 38 weeks had a median of",
       "1.43-1.44 ng/mL against an observed biomonitoring median of",
       "1.66 ng/mL (range 0.094-5.48). For cord blood the paper",

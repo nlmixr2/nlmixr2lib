@@ -15,9 +15,19 @@ AlvarezJimenez_2016_scopolamine <- function() {
   # endpoints (no canonical compartment role fits) plus the drug-reduction
   # compartments for the three N-back logit models.
   paper_specific_compartments <- c(
-    "nbRT", "sacInacc", "sacPV", "adTrack",
-    "eegAfc", "eegApo", "eegDfc", "eegDpo", "eegTfc", "eegTpo",
-    "red_nb0", "red_nb1", "red_nb2"
+    "nbRT",
+    "sacInacc",
+    "sacPV",
+    "adTrack",
+    "eegAfc",
+    "eegApo",
+    "eegDfc",
+    "eegDpo",
+    "eegTfc",
+    "eegTpo",
+    "red_nb0",
+    "red_nb1",
+    "red_nb2"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,55 +35,125 @@ AlvarezJimenez_2016_scopolamine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    nbRT     = list(analyte = "scopolamine hydrobromide concentration in plasma", units = "mg", specimen = "plasma", verified = FALSE),
-    sacInacc = list(analyte = "scopolamine hydrobromide effect on saccadic inaccuracy", units = "mg", specimen = "not applicable", verified = FALSE),
-    sacPV    = list(analyte = "scopolamine hydrobromide effect on saccadic peak velocity", units = "mg", specimen = "not applicable", verified = FALSE),
-    adTrack  = list(analyte = "scopolamine hydrobromide effect on adaptive tracker performance", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegAfc   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegApo   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegDfc   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegDpo   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegTfc   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    eegTpo   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
-    red_nb0  = list(analyte = "probability of correct answer for N-back 0 task", units = "mg", specimen = "not applicable", verified = FALSE),
-    red_nb1  = list(analyte = "probability of correct answer for N-back 1 task", units = "mg", specimen = "not applicable", verified = FALSE),
-    red_nb2  = list(analyte = "probability of correct answer for N-back 2 task", units = "mg", specimen = "not applicable", verified = FALSE),
-    central  = list(analyte = "scopolamine hydrobromide concentration in central compartment", units = "mg", specimen = "plasma", verified = FALSE)
+    nbRT = list(
+      analyte = "scopolamine hydrobromide concentration in plasma",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    sacInacc = list(
+      analyte = "scopolamine hydrobromide effect on saccadic inaccuracy",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    sacPV = list(
+      analyte = "scopolamine hydrobromide effect on saccadic peak velocity",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    adTrack = list(
+      analyte = "scopolamine hydrobromide effect on adaptive tracker performance",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegAfc = list(
+      analyte = "scopolamine hydrobromide effect on EEG alpha band power in Fz-Cz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegApo = list(
+      analyte = "scopolamine hydrobromide effect on EEG alpha band power in Pz-Oz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegDfc = list(
+      analyte = "scopolamine hydrobromide effect on EEG delta band power in Fz-Cz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegDpo = list(
+      analyte = "scopolamine hydrobromide effect on EEG delta band power in Pz-Oz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegTfc = list(
+      analyte = "scopolamine hydrobromide effect on EEG theta band power in Fz-Cz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    eegTpo = list(
+      analyte = "scopolamine hydrobromide effect on EEG theta band power in Pz-Oz lead",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    red_nb0 = list(
+      analyte = "probability of correct answer for N-back 0 task",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    red_nb1 = list(
+      analyte = "probability of correct answer for N-back 1 task",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    red_nb2 = list(
+      analyte = "probability of correct answer for N-back 2 task",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    central = list(
+      analyte = "scopolamine hydrobromide concentration in central compartment",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 78.5 kg (cohort mean). Enters as (WT/78.5)^CWC on CL and (WT/78.5)^CWV on Vp, per Supplemental Equations A.1-A.2.",
-      source_name        = "WGT"
+      notes = "Reference weight 78.5 kg (cohort mean). Enters as (WT/78.5)^CWC on CL and (WT/78.5)^CWV on Vp, per Supplemental Equations A.1-A.2.",
+      source_name = "WGT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference age 28 years. Enters as (AGE/28)^CAC on CL (Supplemental Equation A.1), exp(-AGE/CAE) on saccadic peak velocity EC50 (Eq B.1), and exp(AGE/CAB) on kIN for 0-back RT, delta Fz-Cz, delta Pz-Oz, and theta Fz-Cz EEG endpoints (Eq B.2).",
-      source_name        = "AGE"
+      notes = "Reference age 28 years. Enters as (AGE/28)^CAC on CL (Supplemental Equation A.1), exp(-AGE/CAE) on saccadic peak velocity EC50 (Eq B.1), and exp(AGE/CAB) on kIN for 0-back RT, delta Fz-Cz, delta Pz-Oz, and theta Fz-Cz EEG endpoints (Eq B.2).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 135L,
-    n_studies      = 4L,
-    age_range      = "18-78 years",
-    age_median     = "39 years",
-    weight_range   = "not reported explicitly; cohort mean 78.6 kg (SD 9.08)",
-    weight_median  = "78.6 kg",
+    species = "human",
+    n_subjects = 135L,
+    n_studies = 4L,
+    age_range = "18-78 years",
+    age_median = "39 years",
+    weight_range = "not reported explicitly; cohort mean 78.6 kg (SD 9.08)",
+    weight_median = "78.6 kg",
     sex_female_pct = 9.6,
     race_ethnicity = "not reported",
-    disease_state  = "healthy volunteers",
-    dose_range     = "0.3 mg (subjects >=65 years) or 0.5 mg (subjects <65 years) intravenous scopolamine hydrobromide infused over 15 min",
-    regions        = "Netherlands (Centre for Human Drug Research, Leiden)",
-    notes          = "Pooled analysis of four clinical studies. Three earlier studies enrolled only male subjects (drug teratogenicity constraints for parallel study arms). Study 4 (older-subject cohort, 65-78 y, n=36) enrolled 13 females (36% female in that cohort). See Table 1 of the source paper. Older subjects (>=65 y) received the 0.3 mg dose; younger subjects the 0.5 mg dose. Body weight and age summarised in Table 1."
+    disease_state = "healthy volunteers",
+    dose_range = "0.3 mg (subjects >=65 years) or 0.5 mg (subjects <65 years) intravenous scopolamine hydrobromide infused over 15 min",
+    regions = "Netherlands (Centre for Human Drug Research, Leiden)",
+    notes = "Pooled analysis of four clinical studies. Three earlier studies enrolled only male subjects (drug teratogenicity constraints for parallel study arms). Study 4 (older-subject cohort, 65-78 y, n=36) enrolled 13 females (36% female in that cohort). See Table 1 of the source paper. Older subjects (>=65 y) received the 0.3 mg dose; younger subjects the 0.5 mg dose. Body weight and age summarised in Table 1."
   )
 
   ini({

@@ -1,62 +1,62 @@
 Yu_2024_ilaprazole <- function() {
   description <- "Two-compartment population PK model with first-order elimination for ilaprazole, a proton-pump inhibitor, after 0.75 h intravenous infusion in Chinese healthy subjects and patients with duodenal ulcer (Yu 2024). Pooled analysis of 1,560 plasma concentrations from 58 subjects across four phase I studies (healthy) and one phase IIa study (duodenal ulcer), fit in Phoenix NLME 8.3 by FOCE-ELS. Female sex lowers clearance (exp(-0.213)) and duodenal-ulcer disease status raises both clearance (exp(0.290)) and peripheral volume (exp(0.356)); peripheral volume additionally scales with body weight by a power of 1.545 around a 60.6 kg median. Typical values are for a healthy male at 60.6 kg. Inter-individual variability on the inter-compartmental clearance (CLp) was fixed in the final model because of 84% eta-shrinkage and no numeric variance was reported, so it is encoded as fixed(0)."
-  reference   <- "Yu M, Liu S, Wu X, Wang H. Population pharmacokinetic modeling of ilaprazole in healthy subjects and patients with duodenal ulcer in China. Front Pharmacol. 2024 Jan 10;14:1306222. doi:10.3389/fphar.2023.1306222."
-  vignette    <- "Yu_2024_ilaprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Yu M, Liu S, Wu X, Wang H. Population pharmacokinetic modeling of ilaprazole in healthy subjects and patients with duodenal ulcer in China. Front Pharmacol. 2024 Jan 10;14:1306222. doi:10.3389/fphar.2023.1306222."
+  vignette <- "Yu_2024_ilaprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ilaprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ilaprazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ilaprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (time-fixed) body weight. Enters the final model as a power function on the peripheral volume of distribution only, normalised to the pooled-cohort median of 60.6 kg (Yu 2024 Eq. 9 and Table 2 'Total' column). Pooled-cohort median 60.6 kg with IQR 55.8-65.1 kg (Table 2). Weight was retained for covariate screening in preference to height and BMI because the WT-HT and WT-BMI correlations (R^2 = 0.810 and 0.638) exceeded the 0.5 collinearity threshold (Yu 2024 Section 3.2).",
-      source_name        = "WT"
+      notes = "Baseline (time-fixed) body weight. Enters the final model as a power function on the peripheral volume of distribution only, normalised to the pooled-cohort median of 60.6 kg (Yu 2024 Eq. 9 and Table 2 'Total' column). Pooled-cohort median 60.6 kg with IQR 55.8-65.1 kg (Table 2). Weight was retained for covariate screening in preference to height and BMI because the WT-HT and WT-BMI correlations (R^2 = 0.810 and 0.638) exceeded the 0.5 collinearity threshold (Yu 2024 Section 3.2).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "The source paper's `Sex` covariate is already coded 1 = female (Yu 2024 Table 3 footnote: 'Sex = 1 for female'), so it maps onto the canonical SEXF with no value transformation and the reported coefficient sign is carried through unchanged. Females have lower clearance (exp(-0.213) = 0.808, i.e. 19.2% lower CL), consistent with the paper's simulation result of 24.7% higher AUC0-t in females (Yu 2024 Section 3.3 and Figure 3). 48.3% of the pooled cohort was female (Table 2).",
-      source_name        = "Sex"
+      notes = "The source paper's `Sex` covariate is already coded 1 = female (Yu 2024 Table 3 footnote: 'Sex = 1 for female'), so it maps onto the canonical SEXF with no value transformation and the reported coefficient sign is carried through unchanged. Females have lower clearance (exp(-0.213) = 0.808, i.e. 19.2% lower CL), consistent with the paper's simulation result of 24.7% higher AUC0-t in females (Yu 2024 Section 3.3 and Figure 3). 48.3% of the pooled cohort was female (Table 2).",
+      source_name = "Sex"
     ),
     DIS_DUOD_ULCER = list(
-      description        = "Duodenal-ulcer disease-state indicator: 1 = patient with duodenal ulcer enrolled in the phase IIa study (CTR20132846), 0 = healthy subject enrolled in one of the four phase I studies.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Duodenal-ulcer disease-state indicator: 1 = patient with duodenal ulcer enrolled in the phase IIa study (CTR20132846), 0 = healthy subject enrolled in one of the four phase I studies.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy subject; the pooled healthy cohort across CTR20132848 / CTR20140147 / CTR20150686 / CTR20150685)",
-      notes              = "Time-fixed per subject. Maps 1:1 onto the paper's `Disease status` flag, which Yu 2024 Table 3 footnote codes as 1 = duodenal ulcer with the healthy cohort as reference, so the Table 3 coefficients and typical values are carried through unchanged with no sign flip or re-baselining. Duodenal-ulcer patients have higher clearance (exp(0.290) = 1.336) and a larger peripheral volume (exp(0.356) = 1.428) than healthy subjects, consistent with the paper's simulation result of a 26.92% lower AUC0-t in patients (Yu 2024 Section 3.3 and Figure 3). Enrolment required an ulcer diameter <= 15 mm with no combined ulcer bleeding. Cohort composition 48 healthy / 10 duodenal ulcer (Yu 2024 Section 3.1).",
-      source_name        = "Disease status"
+      notes = "Time-fixed per subject. Maps 1:1 onto the paper's `Disease status` flag, which Yu 2024 Table 3 footnote codes as 1 = duodenal ulcer with the healthy cohort as reference, so the Table 3 coefficients and typical values are carried through unchanged with no sign flip or re-baselining. Duodenal-ulcer patients have higher clearance (exp(0.290) = 1.336) and a larger peripheral volume (exp(0.356) = 1.428) than healthy subjects, consistent with the paper's simulation result of a 26.92% lower AUC0-t in patients (Yu 2024 Section 3.3 and Figure 3). Enrolment required an ulcer diameter <= 15 mm with no combined ulcer bleeding. Cohort composition 48 healthy / 10 duodenal ulcer (Yu 2024 Section 3.1).",
+      source_name = "Disease status"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 58L,
-    n_studies      = 5L,
+    species = "human",
+    n_subjects = 58L,
+    n_studies = 5L,
     n_observations = 1560L,
-    age_range      = "Pooled median 25 years (IQR 23-31); healthy-subject study medians 24-25.5 years, duodenal-ulcer study median 46 years (IQR 38.3-50.5)",
-    age_median     = "25 years",
-    weight_range   = "Pooled median 60.6 kg (IQR 55.8-65.1); per-study medians 58.1-63 kg",
-    weight_median  = "60.6 kg",
-    height_median  = "168 cm (IQR 160.5-172.3)",
-    bmi_median     = "21.6 kg/m^2 (IQR 20.8-22.7)",
+    age_range = "Pooled median 25 years (IQR 23-31); healthy-subject study medians 24-25.5 years, duodenal-ulcer study median 46 years (IQR 38.3-50.5)",
+    age_median = "25 years",
+    weight_range = "Pooled median 60.6 kg (IQR 55.8-65.1); per-study medians 58.1-63 kg",
+    weight_median = "60.6 kg",
+    height_median = "168 cm (IQR 160.5-172.3)",
+    bmi_median = "21.6 kg/m^2 (IQR 20.8-22.7)",
     sex_female_pct = 48.3,
     race_ethnicity = "Chinese (all subjects)",
-    disease_state  = "48 healthy subjects (four phase I studies: CTR20132848 single-dose 4x4 crossover, CTR20140147 multiple-dose, CTR20150686 high-dose, CTR20150685 loading-dose) and 10 patients with duodenal ulcer (phase IIa CTR20132846; ulcer diameter <= 15 mm, no combined ulcer bleeding, no history of smoking or drinking)",
+    disease_state = "48 healthy subjects (four phase I studies: CTR20132848 single-dose 4x4 crossover, CTR20140147 multiple-dose, CTR20150686 high-dose, CTR20150685 loading-dose) and 10 patients with duodenal ulcer (phase IIa CTR20132846; ulcer diameter <= 15 mm, no combined ulcer bleeding, no history of smoking or drinking)",
     renal_function = "Median creatinine clearance 118.1 mL/min (IQR 98.2-124.1) by Cockcroft-Gault; per-study medians 94.8-126 mL/min",
-    dose_range     = "5, 10, 20 and 30 mg ilaprazole as intravenous infusion over 0.75 h; single-dose and once-daily multiple-dose regimens including a 20 mg loading dose followed by 10 mg maintenance doses on days 2-3",
-    regions        = "China",
-    notes          = "Demographics from Yu 2024 Table 2 ('Total' column); study designs and sampling schedules from Table 1. A total of 1,560 valid plasma concentrations were analysed after excluding 5 below-limit-of-quantification and 7 not-detected samples; the assay was linear over 1-1,000 ng/mL with a 1 ng/mL lower limit of quantification. Only the intravenous-infusion data were modelled; oral comparator arms and positive-control drug arms were not included."
+    dose_range = "5, 10, 20 and 30 mg ilaprazole as intravenous infusion over 0.75 h; single-dose and once-daily multiple-dose regimens including a 20 mg loading dose followed by 10 mg maintenance doses on days 2-3",
+    regions = "China",
+    notes = "Demographics from Yu 2024 Table 2 ('Total' column); study designs and sampling schedules from Table 1. A total of 1,560 valid plasma concentrations were analysed after excluding 5 below-limit-of-quantification and 7 not-detected samples; the assay was linear over 1-1,000 ng/mL with a 1 ng/mL lower limit of quantification. Only the intravenous-infusion data were modelled; oral comparator arms and positive-control drug arms were not included."
   )
 
   ini({

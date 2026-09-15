@@ -8,19 +8,19 @@ Betts_2018_mAb_human <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA,
-    n_studies      = NA,
-    disease_state  = "Adult healthy volunteers or patients receiving therapeutic monoclonal antibodies with linear (non-target-mediated) clearance.",
-    dose_range     = "IV: 0.1-800 mg/kg or 22-800 mg total across the 18 mAbs (individual mAb linear dose ranges in Betts 2018 Table 1).",
-    notes          = "Class-level typical values pooled from Pfizer internal data for 18 monoclonal antibodies with linear PK in humans (single-dose IV, n=3-24 individuals per dose level per mAb). Reference body weight assumed 70 kg. Non-linear (target-mediated) doses were excluded from the source fit; see Betts 2018 Materials and methods."
+    species = "human",
+    n_subjects = NA,
+    n_studies = NA,
+    disease_state = "Adult healthy volunteers or patients receiving therapeutic monoclonal antibodies with linear (non-target-mediated) clearance.",
+    dose_range = "IV: 0.1-800 mg/kg or 22-800 mg total across the 18 mAbs (individual mAb linear dose ranges in Betts 2018 Table 1).",
+    notes = "Class-level typical values pooled from Pfizer internal data for 18 monoclonal antibodies with linear PK in humans (single-dose IV, n=3-24 individuals per dose level per mAb). Reference body weight assumed 70 kg. Non-linear (target-mediated) doses were excluded from the source fit; see Betts 2018 Materials and methods."
   )
 
   ini({

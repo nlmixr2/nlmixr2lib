@@ -8,54 +8,62 @@ deVriesSchultink_2020_zenocutuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "zenocutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "zenocutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "zenocutuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Baseline fat-free mass (Janmahasatian et al. 2005 formula, sex-specific)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline fat-free mass (Janmahasatian et al. 2005 formula, sex-specific)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on linear CL (exponent 1.19) and central volume V1 (exponent 0.71); reference 43.1 kg per the population median reported in de Vries Schultink 2020 Table 1. Computed sex-specifically from body weight, height, and sex per the Janmahasatian formulae quoted in Section 2.3.3 of the paper. After the FFM effect was retained, sex showed no further significant impact on PK and was not retained as a covariate.",
-      source_name        = "FFM"
+      notes = "Time-fixed baseline value. Power effect on linear CL (exponent 1.19) and central volume V1 (exponent 0.71); reference 43.1 kg per the population median reported in de Vries Schultink 2020 Table 1. Computed sex-specifically from body weight, height, and sex per the Janmahasatian formulae quoted in Section 2.3.3 of the paper. After the FFM effect was retained, sex showed no further significant impact on PK and was not retained as a covariate.",
+      source_name = "FFM"
     ),
     TUM_SLD = list(
-      description        = "Baseline sum of longest diameters of target lesions (RECIST 1.1)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline sum of longest diameters of target lesions (RECIST 1.1)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on the maximum non-linear (Michaelis-Menten) clearance capacity Vmax (exponent 0.447); reference 70.0 mm per the population median reported in de Vries Schultink 2020 Table 1. The paper labels this column 'Sum of lesions (SoL)'; the canonical column name is TUM_SLD (RECIST 1.1 sum of longest diameters). HER2 status was tested but not retained.",
-      source_name        = "SoL"
+      notes = "Time-fixed baseline value. Power effect on the maximum non-linear (Michaelis-Menten) clearance capacity Vmax (exponent 0.447); reference 70.0 mm per the population median reported in de Vries Schultink 2020 Table 1. The paper labels this column 'Sum of lesions (SoL)'; the canonical column name is TUM_SLD (RECIST 1.1 sum of longest diameters). HER2 status was tested but not retained.",
+      source_name = "SoL"
     )
   )
 
   population <- list(
-    n_subjects        = 116L,
-    n_studies         = 1L,
-    n_observations    = 1115L,
-    phase_mix         = "Pooled phase I dose-escalation (40-900 mg flat doses q3w, n = 23) and phase II dose-expansion (750 mg flat dose q3w, n = 93) cohorts of NCT02912949.",
-    age_median        = "59 years",
-    age_range         = "25-83 years",
-    weight_median     = "68.2 kg",
-    weight_range      = "40.2-112 kg",
-    height_median     = "164 cm",
-    height_range      = "147-199 cm",
-    bsa_median        = "1.78 m^2",
-    bsa_range         = "1.30-2.33 m^2",
-    ffm_median        = "43.1 kg",
-    ffm_range         = "28.6-72.45 kg",
-    tum_sld_median    = "70.0 mm",
-    tum_sld_range     = "12.0-266 mm",
-    sex_female_pct    = 65.5,
-    her2_status       = c(positive = 29.3, negative = 42.2, unknown = 28.5),
-    tumor_type        = c(breast = 14.7, colorectal = 7.8, endometrium = 11.2, gastric = 21.5, lung = 6.9, ovarian = 31.0, others = 6.9),
-    disease_state     = "Advanced solid tumors (HER2+ gastric, HER2+ breast, endometrium, esophagus-gastric junction, colon, NSCLC, ovarian, and other) eligible for the dose-escalation or HER2-overexpressing dose-expansion cohorts.",
-    dose_range        = "Flat IV doses of 40, 80, 160, 240, 360, 480, 600, 750, or 900 mg administered every 3 weeks (q3w). 1-h infusion at <= 360 mg, 2-h infusion at > 360 mg. Of 116 patients, 93 received the 750 mg q3w expansion-cohort dose.",
-    regions           = "Seven participating centers (NCT02912949).",
+    n_subjects = 116L,
+    n_studies = 1L,
+    n_observations = 1115L,
+    phase_mix = "Pooled phase I dose-escalation (40-900 mg flat doses q3w, n = 23) and phase II dose-expansion (750 mg flat dose q3w, n = 93) cohorts of NCT02912949.",
+    age_median = "59 years",
+    age_range = "25-83 years",
+    weight_median = "68.2 kg",
+    weight_range = "40.2-112 kg",
+    height_median = "164 cm",
+    height_range = "147-199 cm",
+    bsa_median = "1.78 m^2",
+    bsa_range = "1.30-2.33 m^2",
+    ffm_median = "43.1 kg",
+    ffm_range = "28.6-72.45 kg",
+    tum_sld_median = "70.0 mm",
+    tum_sld_range = "12.0-266 mm",
+    sex_female_pct = 65.5,
+    her2_status = c(positive = 29.3, negative = 42.2, unknown = 28.5),
+    tumor_type = c(
+      breast = 14.7,
+      colorectal = 7.8,
+      endometrium = 11.2,
+      gastric = 21.5,
+      lung = 6.9,
+      ovarian = 31.0,
+      others = 6.9
+    ),
+    disease_state = "Advanced solid tumors (HER2+ gastric, HER2+ breast, endometrium, esophagus-gastric junction, colon, NSCLC, ovarian, and other) eligible for the dose-escalation or HER2-overexpressing dose-expansion cohorts.",
+    dose_range = "Flat IV doses of 40, 80, 160, 240, 360, 480, 600, 750, or 900 mg administered every 3 weeks (q3w). 1-h infusion at <= 360 mg, 2-h infusion at > 360 mg. Of 116 patients, 93 received the 750 mg q3w expansion-cohort dose.",
+    regions = "Seven participating centers (NCT02912949).",
     reference_subject = "Population-median FFM 43.1 kg, sum of longest diameters of target lesions 70.0 mm (per de Vries Schultink 2020 Table 1).",
-    notes             = "Baseline demographics per de Vries Schultink 2020 Table 1 and Results Section 3.1. Height was missing for one female and one male patient; the population-median height (164 cm) was imputed for both. Continuous-covariate missing values were imputed by the population median. The drug is a humanized full-length bispecific IgG1 antibody (MCLA-128 / zenocutuzumab) targeting HER2 and HER3; bispecifics are previously out-of-scope in nlmixr2lib's modality table, and this model is the first bispecific in the library."
+    notes = "Baseline demographics per de Vries Schultink 2020 Table 1 and Results Section 3.1. Height was missing for one female and one male patient; the population-median height (164 cm) was imputed for both. Continuous-covariate missing values were imputed by the population median. The drug is a humanized full-length bispecific IgG1 antibody (MCLA-128 / zenocutuzumab) targeting HER2 and HER3; bispecifics are previously out-of-scope in nlmixr2lib's modality table, and this model is the first bispecific in the library."
   )
 
   ini({

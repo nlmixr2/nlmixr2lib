@@ -12,8 +12,8 @@ Mody_2023_doxorubicin_dexrazoxane_static_jimt1 <- function() {
   vignette <- "Mody_2023_doxorubicin_dexrazoxane_breast_cancer"
 
   units <- list(
-    time          = "h (the model is evaluated at the single 72 h assay endpoint)",
-    dosing        = "not applicable (drug exposure enters as the concentration covariates)",
+    time = "h (the model is evaluated at the single 72 h assay endpoint)",
+    dosing = "not applicable (drug exposure enters as the concentration covariates)",
     concentration = "uM (both drug concentration covariates); % (cell viability, the PD readout)"
   )
 
@@ -27,32 +27,32 @@ Mody_2023_doxorubicin_dexrazoxane_static_jimt1 <- function() {
 
   covariateData <- list(
     CONC_DOXORUBICIN = list(
-      description        = "Nominal doxorubicin concentration applied to the well",
-      units              = "uM",
-      type               = "continuous",
+      description = "Nominal doxorubicin concentration applied to the well",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Experimentally controlled assay input, constant over the 72 h exposure. Levels used: 0.005, 0.01, 0.05, 0.1, 0.5 and 1 uM (Figure 2A), crossed with the six DEX levels to give 36 combinations. In-vitro experimental input -- not in inst/references/covariate-columns.md, whose canonical register covers human population-PK covariates and does not apply to this in-vitro assay model (same treatment as Cnis / Cami in Landersdorfer_2013_nisin_amikacin.R).",
-      source_name        = "DOX concentration (Methods, CCK-8 cell viability assay; Figure 2A)"
+      notes = "Experimentally controlled assay input, constant over the 72 h exposure. Levels used: 0.005, 0.01, 0.05, 0.1, 0.5 and 1 uM (Figure 2A), crossed with the six DEX levels to give 36 combinations. In-vitro experimental input -- not in inst/references/covariate-columns.md, whose canonical register covers human population-PK covariates and does not apply to this in-vitro assay model (same treatment as Cnis / Cami in Landersdorfer_2013_nisin_amikacin.R).",
+      source_name = "DOX concentration (Methods, CCK-8 cell viability assay; Figure 2A)"
     ),
     CONC_DEXRAZOXANE = list(
-      description        = "Nominal dexrazoxane concentration applied to the well",
-      units              = "uM",
-      type               = "continuous",
+      description = "Nominal dexrazoxane concentration applied to the well",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Experimentally controlled assay input, constant over the 72 h exposure. Levels used: 6.25, 12.5, 25, 50, 100 and 200 uM (Figure 2A). In-vitro experimental input -- not in inst/references/covariate-columns.md (see the CONC_DOXORUBICIN note).",
-      source_name        = "DEX concentration (Methods, CCK-8 cell viability assay; Figure 2A)"
+      notes = "Experimentally controlled assay input, constant over the 72 h exposure. Levels used: 6.25, 12.5, 25, 50, 100 and 200 uM (Figure 2A). In-vitro experimental input -- not in inst/references/covariate-columns.md (see the CONC_DOXORUBICIN note).",
+      source_name = "DEX concentration (Methods, CCK-8 cell viability assay; Figure 2A)"
     )
   )
 
   population <- list(
-    species        = "in vitro (JIMT-1 human breast cancer cell line)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = "HER2-expressing, trastuzumab-resistant breast cancer. JIMT-1 cells seeded at 3 x 10^3 cells per well (100 uL) of a 96-well plate, incubated overnight, then exposed to DOX, DEX or their combination and assayed for viability with CCK-8 (absorbance 450 nm).",
-    dose_range     = "DOX 0.005-1 uM, DEX 6.25-200 uM, and 36 DOX x DEX combinations of those levels.",
-    cell_line      = "JIMT-1 (AddexBio, San Diego, CA); HER2-expressing, trastuzumab-resistant breast cancer.",
-    culture        = "DMEM with 10% sterile filtered fetal bovine serum, 1% sodium bicarbonate, 1% MEM non-essential amino acids and 1% penicillin/streptomycin; 37 C, humidified 5% CO2; passaged at confluency with 0.25% trypsin / 2.21 nM EDTA.",
-    notes          = "Static 72-h endpoint assay, at least triplicate wells per condition against matched vehicle controls. Only psi was estimated in Eq 2; every other parameter was fixed from the single-agent Eq-1 fits."
+    species = "in vitro (JIMT-1 human breast cancer cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = "HER2-expressing, trastuzumab-resistant breast cancer. JIMT-1 cells seeded at 3 x 10^3 cells per well (100 uL) of a 96-well plate, incubated overnight, then exposed to DOX, DEX or their combination and assayed for viability with CCK-8 (absorbance 450 nm).",
+    dose_range = "DOX 0.005-1 uM, DEX 6.25-200 uM, and 36 DOX x DEX combinations of those levels.",
+    cell_line = "JIMT-1 (AddexBio, San Diego, CA); HER2-expressing, trastuzumab-resistant breast cancer.",
+    culture = "DMEM with 10% sterile filtered fetal bovine serum, 1% sodium bicarbonate, 1% MEM non-essential amino acids and 1% penicillin/streptomycin; 37 C, humidified 5% CO2; passaged at confluency with 0.25% trypsin / 2.21 nM EDTA.",
+    notes = "Static 72-h endpoint assay, at least triplicate wells per condition against matched vehicle controls. Only psi was estimated in Eq 2; every other parameter was fixed from the single-agent Eq-1 fits."
   )
 
   ini({

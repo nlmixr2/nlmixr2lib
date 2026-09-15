@@ -8,71 +8,71 @@ Su_2024_tigecycline <- function() {
   # biological matrix. Verified against Su 2024 Methods (plasma sampling,
   # LC-MS/MS assay) and the two-compartment structure of Table 2.
   compartmentData <- list(
-    central     = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tigecycline", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CCr, computed by the Cockcroft-Gault equation (Su 2024 Methods, 'Patient inclusion, drug administration and sample collection'); raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper does not apply BSA normalization. Reference value 77.0 mL/min (population median, Table 1). Entered as an ADDITIVE LINEAR term with divisive normalization, matching the paper's Eq. 1 (theta_i = theta_pop + theta_cov * cov_i / cov_median): TVCL = exp(lcl) + e_crcl_cl * (CRCL / 77).",
-      source_name        = "CCr"
+      notes = "Source column CCr, computed by the Cockcroft-Gault equation (Su 2024 Methods, 'Patient inclusion, drug administration and sample collection'); raw mL/min, NOT BSA-normalized to mL/min/1.73 m^2. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper does not apply BSA normalization. Reference value 77.0 mL/min (population median, Table 1). Entered as an ADDITIVE LINEAR term with divisive normalization, matching the paper's Eq. 1 (theta_i = theta_pop + theta_cov * cov_i / cov_median): TVCL = exp(lcl) + e_crcl_cl * (CRCL / 77).",
+      source_name = "CCr"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BW. Time-fixed baseline weight. Reference value 61 kg, taken from the divisor printed in the paper's final-model equations for V1 and V2 (the population median; Table 1 reports the MEAN as 62.3 +/- 12.4 kg, range 38-92.5). Enters as a power term on both V1 (exponent 1.95) and V2 (exponent 1.61) per the paper's Eq. 3.",
-      source_name        = "BW"
+      notes = "Source column BW. Time-fixed baseline weight. Reference value 61 kg, taken from the divisor printed in the paper's final-model equations for V1 and V2 (the population median; Table 1 reports the MEAN as 62.3 +/- 12.4 kg, range 38-92.5). Enters as a power term on both V1 (exponent 1.95) and V2 (exponent 1.61) per the paper's Eq. 3.",
+      source_name = "BW"
     ),
     GGT = list(
-      description        = "Serum gamma-glutamyl transferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyl transferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column GGT. Enters Q as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(GGT) / 1.7)^0.956. The 1.7 divisor identifies the transform as base-10: log10(53) = 1.724 for the Table 1 median of 53 U/L, whereas ln(53) = 3.97. Domain restriction: the term requires GGT > 1 U/L so that log10(GGT) > 0 and the fractional power is real; the observed range was 8-1088 U/L.",
-      source_name        = "GGT"
+      notes = "Source column GGT. Enters Q as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(GGT) / 1.7)^0.956. The 1.7 divisor identifies the transform as base-10: log10(53) = 1.724 for the Table 1 median of 53 U/L, whereas ln(53) = 3.97. Domain restriction: the term requires GGT > 1 U/L so that log10(GGT) > 0 and the fractional power is real; the observed range was 8-1088 U/L.",
+      source_name = "GGT"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column TBIL, reported in SI units (umol/L) in Table 1. Enters Q as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(TBIL) / 1.2)^-0.912. The 1.2 divisor identifies the transform as base-10: log10(15.7) = 1.196 for the Table 1 median of 15.7 umol/L, whereas ln(15.7) = 2.75. Domain restriction: requires TBIL > 1 umol/L; the observed range was 4-144 umol/L. The paper also tested TBIL on CL (Table S3 step 7) but eliminated it during backward elimination (step 11).",
-      source_name        = "TBIL"
+      notes = "Source column TBIL, reported in SI units (umol/L) in Table 1. Enters Q as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(TBIL) / 1.2)^-0.912. The 1.2 divisor identifies the transform as base-10: log10(15.7) = 1.196 for the Table 1 median of 15.7 umol/L, whereas ln(15.7) = 2.75. Domain restriction: requires TBIL > 1 umol/L; the observed range was 4-144 umol/L. The paper also tested TBIL on CL (Table S3 step 7) but eliminated it during backward elimination (step 11).",
+      source_name = "TBIL"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column ALB, reported in SI units (g/L) in Table 1. Enters V2 as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(ALB) / 1.4)^4.52. The 1.4 divisor identifies the transform as base-10: log10(27.9) = 1.446 for the Table 1 median of 27.9 g/L, whereas ln(27.9) = 3.33. Domain restriction: requires ALB > 1 g/L; the observed range was 17.3-38.3 g/L. The large exponent makes V2 strongly sensitive to albumin across that range (roughly a 3-fold span), which the authors relate to the high plasma protein binding of tigecycline.",
-      source_name        = "ALB"
+      notes = "Source column ALB, reported in SI units (g/L) in Table 1. Enters V2 as a power term on the BASE-10 LOGARITHM of the covariate, normalized to the median of the log10 values: (log10(ALB) / 1.4)^4.52. The 1.4 divisor identifies the transform as base-10: log10(27.9) = 1.446 for the Table 1 median of 27.9 g/L, whereas ln(27.9) = 3.33. Domain restriction: requires ALB > 1 g/L; the observed range was 17.3-38.3 g/L. The large exponent makes V2 strongly sensitive to albumin across that range (roughly a 3-fold span), which the authors relate to the high plasma protein binding of tigecycline.",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 98L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 98L,
+    n_studies = 1L,
     n_observations = 751L,
-    age_range      = "20-92 years",
-    age_mean       = "63.4 years (SD 18.0)",
-    weight_range   = "38-92.5 kg",
-    weight_mean    = "62.3 kg (SD 12.4)",
-    weight_median  = "61 kg (the normalization constant printed in the final-model V1 / V2 equations)",
+    age_range = "20-92 years",
+    age_mean = "63.4 years (SD 18.0)",
+    weight_range = "38-92.5 kg",
+    weight_mean = "62.3 kg (SD 12.4)",
+    weight_median = "61 kg (the normalization constant printed in the final-model V1 / V2 equations)",
     sex_female_pct = 33.7,
     race_ethnicity = "Not reported (single-center Chinese ICU cohort)",
-    disease_state  = "Critically ill adults in a medical/surgical ICU receiving intermittent intravenous tigecycline. Infection site: intra-abdominal 37.8%, pulmonary 31.6%, other 22.4%, bloodstream 9.18%, trauma 7.14%, skin and soft tissue 6.12%. Predominant pathogens carbapenem-resistant A. baumannii (46.9%) and K. pneumoniae (24.5%).",
-    dose_range     = "50 or 100 mg IV every 12 h as a 30-minute infusion (100 mg/day in 92.9% of patients, 200 mg/day in 7.14%)",
-    regions        = "China (Sir Run Run Shaw Hospital, School of Medicine, Zhejiang University, Hangzhou)",
+    disease_state = "Critically ill adults in a medical/surgical ICU receiving intermittent intravenous tigecycline. Infection site: intra-abdominal 37.8%, pulmonary 31.6%, other 22.4%, bloodstream 9.18%, trauma 7.14%, skin and soft tissue 6.12%. Predominant pathogens carbapenem-resistant A. baumannii (46.9%) and K. pneumoniae (24.5%).",
+    dose_range = "50 or 100 mg IV every 12 h as a 30-minute infusion (100 mg/day in 92.9% of patients, 200 mg/day in 7.14%)",
+    regions = "China (Sir Run Run Shaw Hospital, School of Medicine, Zhejiang University, Hangzhou)",
     renal_function = "Cockcroft-Gault creatinine clearance median 77.0 mL/min (IQR 51.1-142, range 6.40-338); patients on intermittent haemodialysis, peritoneal dialysis or CRRT were excluded (Supplementary Table S2)",
     hepatic_function = "Albumin median 27.9 g/L (IQR 25.8-30.3); GGT median 53 U/L (IQR 30-103); total bilirubin median 15.7 umol/L (IQR 10.0-30.4); ALT median 19 U/L; AST median 24 U/L",
-    notes          = "Baseline demographics per Su 2024 Table 1. Single-center prospective study, July 2019 - July 2023. Intensive sampling: 8 samples per patient collected immediately before the seventh dose and at 0.5, 1, 2, 3, 4, 6 and 12 h post-dose, so every subject contributed a full steady-state dosing interval. Model built in NONMEM 7.5.0 with FOCEI; two-compartment structure selected over one-compartment on AIC (8242.914 vs 9325.681). Covariate screening (Supplementary Table S3) also tested age, BMI, sex, BUN, ALT, AST, ALP and the daily dose; DOSE on V1 and TBIL on CL entered forward inclusion but were removed during backward elimination, leaving the five covariates encoded here."
+    notes = "Baseline demographics per Su 2024 Table 1. Single-center prospective study, July 2019 - July 2023. Intensive sampling: 8 samples per patient collected immediately before the seventh dose and at 0.5, 1, 2, 3, 4, 6 and 12 h post-dose, so every subject contributed a full steady-state dosing interval. Model built in NONMEM 7.5.0 with FOCEI; two-compartment structure selected over one-compartment on AIC (8242.914 vs 9325.681). Covariate screening (Supplementary Table S3) also tested age, BMI, sex, BUN, ALT, AST, ALP and the daily dose; DOSE on V1 and TBIL on CL entered forward inclusion but were removed during backward elimination, leaving the five covariates encoded here."
   )
 
   ini({

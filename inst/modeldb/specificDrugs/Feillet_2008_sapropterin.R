@@ -8,53 +8,53 @@ Feillet_2008_sapropterin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; adolescent and adult PKU cohort).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; adolescent and adult PKU cohort).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent clearance and apparent central volume of distribution, normalized to a reference weight of 70 kg. Source: Feillet 2008 Equation 3 and Table III (CL/F reported as L/h/70 kg, V1/F as L/70 kg).",
-      source_name        = "WT"
+      notes = "Power-form effect on apparent clearance and apparent central volume of distribution, normalized to a reference weight of 70 kg. Source: Feillet 2008 Equation 3 and Table III (CL/F reported as L/h/70 kg, V1/F as L/70 kg).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76L,
-    n_studies      = 1L,
-    age_range      = "9-50 years",
-    age_mean       = "21.1 years (SD 9.64)",
-    weight_range   = "28.2-144 kg",
-    weight_mean    = "67.2 kg (SD 21.8)",
-    height_range   = "126-191 cm",
-    height_mean    = "165 cm (SD 13.3)",
+    species = "human",
+    n_subjects = 76L,
+    n_studies = 1L,
+    age_range = "9-50 years",
+    age_mean = "21.1 years (SD 9.64)",
+    weight_range = "28.2-144 kg",
+    weight_mean = "67.2 kg (SD 21.8)",
+    height_range = "126-191 cm",
+    height_mean = "165 cm (SD 13.3)",
     sex_female_pct = 42.3,
     race_ethnicity = c(White = 97, non_White = 3),
-    disease_state  = "BH4-responsive phenylketonuria (PKU); 12-week fixed-dose phase of an open-label phase III extension study following the PKU-003 placebo-controlled trial.",
-    dose_range     = "Oral once-daily sapropterin dihydrochloride 5, 10, or 20 mg/kg/day (100 mg tablets dissolved in water or juice; doses rounded up to the nearest 100 mg unit).",
-    regions        = "26 centres in North America (Canada, USA) and Europe (France, Germany, Ireland, Italy, Poland, UK).",
+    disease_state = "BH4-responsive phenylketonuria (PKU); 12-week fixed-dose phase of an open-label phase III extension study following the PKU-003 placebo-controlled trial.",
+    dose_range = "Oral once-daily sapropterin dihydrochloride 5, 10, or 20 mg/kg/day (100 mg tablets dissolved in water or juice; doses rounded up to the nearest 100 mg unit).",
+    regions = "26 centres in North America (Canada, USA) and Europe (France, Germany, Ireland, Italy, Poland, UK).",
     baseline_covariates = list(
-      bsa_range_m2          = "1.05-2.65",
-      bsa_mean_m2           = 1.72,
-      alt_range_U_L         = "11-127",
-      alt_mean_U_L          = 28.4,
-      ast_range_U_L         = "14-43",
-      ast_mean_U_L          = 25.7,
+      bsa_range_m2 = "1.05-2.65",
+      bsa_mean_m2 = 1.72,
+      alt_range_U_L = "11-127",
+      alt_mean_U_L = 28.4,
+      ast_range_U_L = "14-43",
+      ast_mean_U_L = 25.7,
       bilirubin_range_mg_dL = "0.1-1.9",
-      bilirubin_mean_mg_dL  = 0.55,
-      scr_range_mg_dL       = "0.6-1.3",
-      scr_mean_mg_dL        = 0.89,
-      crcl_range_mL_min     = "48-231",
-      crcl_mean_mL_min      = 114,
-      baseline_phe_umol_L   = "53-2190 (mean 811, SD 393)"
+      bilirubin_mean_mg_dL = 0.55,
+      scr_range_mg_dL = "0.6-1.3",
+      scr_mean_mg_dL = 0.89,
+      crcl_range_mL_min = "48-231",
+      crcl_mean_mL_min = 114,
+      baseline_phe_umol_L = "53-2190 (mean 811, SD 393)"
     ),
-    notes          = "Baseline demographics from Feillet 2008 Table II reflect all 78 enrolled patients (45 males, 33 females); the final model dataset used 265 plasma BH4 observations from 76 patients (315 observations - 38 below LLOQ - 4 unreported - 8 excluded as unreliable = 265). D-optimal sparse sampling (four samples per patient) obtained during weeks 6, 10, and 12 of the fixed-dose phase. BH4 measured indirectly via oxidation to L-biopterin and reversed-phase HPLC with tandem MS detection; nominal BH4 to L-biopterin conversion ratio was 47.3%. Bodyweight was the only covariate retained at p<0.001; sex, race, age, height, body surface area, serum creatinine, albumin, ALT, AST, total bilirubin and phenylalanine were screened but not retained."
+    notes = "Baseline demographics from Feillet 2008 Table II reflect all 78 enrolled patients (45 males, 33 females); the final model dataset used 265 plasma BH4 observations from 76 patients (315 observations - 38 below LLOQ - 4 unreported - 8 excluded as unreliable = 265). D-optimal sparse sampling (four samples per patient) obtained during weeks 6, 10, and 12 of the fixed-dose phase. BH4 measured indirectly via oxidation to L-biopterin and reversed-phase HPLC with tandem MS detection; nominal BH4 to L-biopterin conversion ratio was 47.3%. Bodyweight was the only covariate retained at p<0.001; sex, race, age, height, body surface area, serum creatinine, albumin, ALT, AST, total bilirubin and phenylalanine were screened but not retained."
   )
 
   ini({

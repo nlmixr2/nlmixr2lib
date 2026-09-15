@@ -50,8 +50,8 @@ NA_NA_lidocaine <- function() {
   ddmore_id <- "DDMODEL00000281"
   replicate_of <- NULL
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -60,81 +60,81 @@ NA_NA_lidocaine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = FALSE),
     central_megx = list(analyte = "MEGX", units = "mg", specimen = "plasma", verified = FALSE),
-    central_gx   = list(analyte = "GX", units = "mg", specimen = "plasma", verified = FALSE),
-    central_xyl  = list(analyte = "2,6-XYL", units = "mg", specimen = "plasma", verified = FALSE)
+    central_gx = list(analyte = "GX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_xyl = list(analyte = "2,6-XYL", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DLVL = list(
-      description        = "Source-protocol integer dose-level / regimen indicator (1-4 in the bundle's simulated dataset). Used as binary `DLVL_HIGH = as.integer(DLVL > 2)` per the source `.ctl` `IF(DLVL.GT.2)P1=0` line; switches typical-value baselines for the GX rate constant k_gx_elim and the lidocaine apparent central volume vc.",
-      units              = "(integer-coded categorical)",
-      type               = "categorical",
+      description = "Source-protocol integer dose-level / regimen indicator (1-4 in the bundle's simulated dataset). Used as binary `DLVL_HIGH = as.integer(DLVL > 2)` per the source `.ctl` `IF(DLVL.GT.2)P1=0` line; switches typical-value baselines for the GX rate constant k_gx_elim and the lidocaine apparent central volume vc.",
+      units = "(integer-coded categorical)",
+      type = "categorical",
       reference_category = "DLVL <= 2 (baseline regimen; `THETA(4)` for k_gx_elim base and `THETA(14)` for vc).",
-      notes              = "Carried per subject (time-fixed in the bundle's simulated dataset). `DLVL > 2` selects the higher-baseline-rate / higher-volume regimen (`THETA(5)` and `THETA(15)` respectively in the source `.ctl`). The exact biological / protocol meaning of each integer level is not recoverable from the bundle; the binary threshold matches the source.",
-      source_name        = "DLVL"
+      notes = "Carried per subject (time-fixed in the bundle's simulated dataset). `DLVL > 2` selects the higher-baseline-rate / higher-volume regimen (`THETA(5)` and `THETA(15)` respectively in the source `.ctl`). The exact biological / protocol meaning of each integer level is not recoverable from the bundle; the binary threshold matches the source.",
+      source_name = "DLVL"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin concentration. Used as binary `BIL_HIGH = as.integer(TBILI > 0.53)` per the source `.ctl` `IF(BIL.GT.0.53)P2=0` line; adds an additive linear modifier (THETA(6) = -0.529) to the typical-value GX elimination rate constant kel_gx in the elevated-bilirubin cohort.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Total serum bilirubin concentration. Used as binary `BIL_HIGH = as.integer(TBILI > 0.53)` per the source `.ctl` `IF(BIL.GT.0.53)P2=0` line; adds an additive linear modifier (THETA(6) = -0.529) to the typical-value GX elimination rate constant kel_gx in the elevated-bilirubin cohort.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = "TBILI <= 0.53 (additive modifier off; the high-bilirubin effect is +0 to kel_gx).",
-      notes              = "Source column name `BIL`; canonical name `TBILI` (the `inst/references/covariate-columns.md` `TBILI` entry registers `BIL` as an alias). Rename `BIL -> TBILI` before passing the dataset to `rxSolve`. Threshold 0.53 mg/dL is well within the clinical normal range (<=1.2 mg/dL) so the binarisation reflects a paper-specific cohort split, not a clinical hepatic-impairment cutoff.",
-      source_name        = "BIL"
+      notes = "Source column name `BIL`; canonical name `TBILI` (the `inst/references/covariate-columns.md` `TBILI` entry registers `BIL` as an alias). Rename `BIL -> TBILI` before passing the dataset to `rxSolve`. Threshold 0.53 mg/dL is well within the clinical normal range (<=1.2 mg/dL) so the binarisation reflects a paper-specific cohort split, not a clinical hepatic-impairment cutoff.",
+      source_name = "BIL"
     ),
     LDH = list(
-      description        = "Serum lactate dehydrogenase activity. Used as binary `LDH_HIGH = as.integer(LDH > 195)` per the source `.ctl` `IF(LDH.GT.195)P3=0` line; switches typical-value baseline of the 2,6-xylidide elimination rate constant kel_xyl between a low-LDH (THETA(11) = 0.667) and a high-LDH (THETA(12) = 0.410) regimen.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum lactate dehydrogenase activity. Used as binary `LDH_HIGH = as.integer(LDH > 195)` per the source `.ctl` `IF(LDH.GT.195)P3=0` line; switches typical-value baseline of the 2,6-xylidide elimination rate constant kel_xyl between a low-LDH (THETA(11) = 0.667) and a high-LDH (THETA(12) = 0.410) regimen.",
+      units = "U/L",
+      type = "continuous",
       reference_category = "LDH <= 195 (baseline rate constant THETA(11) = 0.667).",
-      notes              = "Threshold 195 U/L sits at the upper end of the clinical reference range (140-280 U/L). Binarisation rather than continuous power form, matching the source `.ctl` exactly.",
-      source_name        = "LDH"
+      notes = "Threshold 195 U/L sits at the upper end of the clinical reference range (140-280 U/L). Binarisation rather than continuous power form, matching the source `.ctl` exactly.",
+      source_name = "LDH"
     ),
     CRCL = list(
-      description        = "Creatinine-based renal function. Used as binary `CRCL_LOW = as.integer(CRCL <= 52.7)` per the source `.ctl` `IF(CRCL.LE.52.7)P4=0` line; adds an additive linear modifier (THETA(7) = -0.319) to the typical-value GX rate constant k_gx_elim in the renal-impaired cohort.",
-      units              = "mL/min (BSA-normalisation method not stated in the bundle)",
-      type               = "continuous",
+      description = "Creatinine-based renal function. Used as binary `CRCL_LOW = as.integer(CRCL <= 52.7)` per the source `.ctl` `IF(CRCL.LE.52.7)P4=0` line; adds an additive linear modifier (THETA(7) = -0.319) to the typical-value GX rate constant k_gx_elim in the renal-impaired cohort.",
+      units = "mL/min (BSA-normalisation method not stated in the bundle)",
+      type = "continuous",
       reference_category = "CRCL > 52.7 (additive modifier off).",
-      notes              = "The source `.ctl` does not specify whether CRCL is BSA-normalised or how it was estimated (Cockcroft-Gault vs MDRD vs measured). Documented as `mL/min` (raw clinical units) here; downstream re-users should consult the linked publication if a unit-normalisation question arises.",
-      source_name        = "CRCL"
+      notes = "The source `.ctl` does not specify whether CRCL is BSA-normalised or how it was estimated (Cockcroft-Gault vs MDRD vs measured). Documented as `mL/min` (raw clinical units) here; downstream re-users should consult the linked publication if a unit-normalisation question arises.",
+      source_name = "CRCL"
     ),
     S1A2 = list(
-      description        = "Source-protocol CYP1A2-modifying co-medication / phenotype categorical indicator (integer 0-3). Used as binary `S1A2_IND = as.integer(S1A2 == 3)` per the source `.ctl` `IF(S1A2.EQ.3)P5=0` line; adds an additive linear modifier (THETA(8) = +0.853) to the typical-value GX rate constant k_gx_elim in the level-3 cohort.",
-      units              = "(integer-coded categorical)",
-      type               = "categorical",
+      description = "Source-protocol CYP1A2-modifying co-medication / phenotype categorical indicator (integer 0-3). Used as binary `S1A2_IND = as.integer(S1A2 == 3)` per the source `.ctl` `IF(S1A2.EQ.3)P5=0` line; adds an additive linear modifier (THETA(8) = +0.853) to the typical-value GX rate constant k_gx_elim in the level-3 cohort.",
+      units = "(integer-coded categorical)",
+      type = "categorical",
       reference_category = "S1A2 != 3 (values 0, 1, 2 are pooled into the reference; additive modifier off).",
-      notes              = "Carried per subject (time-fixed in the bundle's simulated dataset). The natural interpretation, given the column name encodes 'CYP1A2' and the model attaches a sizeable positive K30 modifier of +0.853 to the level-3 cohort, is a CYP1A2-induction or smoking / inducer co-medication indicator. Sibling columns `D1A2` and `H1A2` are dropped in the source `.ctl`, so only the level-3 indicator is structurally identifiable. The exact biological meaning of each integer level is not fully reconstructable from the bundle.",
-      source_name        = "S1A2"
+      notes = "Carried per subject (time-fixed in the bundle's simulated dataset). The natural interpretation, given the column name encodes 'CYP1A2' and the model attaches a sizeable positive K30 modifier of +0.853 to the level-3 cohort, is a CYP1A2-induction or smoking / inducer co-medication indicator. Sibling columns `D1A2` and `H1A2` are dropped in the source `.ctl`, so only the level-3 indicator is structurally identifiable. The exact biological meaning of each integer level is not fully reconstructable from the bundle.",
+      source_name = "S1A2"
     ),
     BMI = list(
-      description        = "Body mass index. Used as binary `BMI_HIGH = as.integer(BMI > 27.93)` per the source `.ctl` `IF(BMI.GT.27.93)P7=0` line; adds an additive linear modifier (THETA(9) = +0.939) to the typical-value GX rate constant k_gx_elim in the high-BMI cohort.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index. Used as binary `BMI_HIGH = as.integer(BMI > 27.93)` per the source `.ctl` `IF(BMI.GT.27.93)P7=0` line; adds an additive linear modifier (THETA(9) = +0.939) to the typical-value GX rate constant k_gx_elim in the high-BMI cohort.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = "BMI <= 27.93 (additive modifier off).",
-      notes              = "Threshold 27.93 kg/m^2 sits between WHO overweight (>=25) and obesity (>=30) cutoffs; the value most likely reflects the source-cohort median rather than a clinical-guideline threshold. Binarisation rather than continuous power form, matching the source `.ctl` exactly.",
-      source_name        = "BMI"
+      notes = "Threshold 27.93 kg/m^2 sits between WHO overweight (>=25) and obesity (>=30) cutoffs; the value most likely reflects the source-cohort median rather than a clinical-guideline threshold. Binarisation rather than continuous power form, matching the source `.ctl` exactly.",
+      source_name = "BMI"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity. Used as binary `SGPT_HIGH = as.integer(ALT > 11)` per the source `.ctl` `IF(SGPT.GT.11)P6=0` line; adds an additive linear modifier (THETA(10) = -0.492) to the typical-value GX rate constant kel_gx AND a separate modifier (THETA(13) = +0.229) to the typical-value 2,6-xylidide rate constant kel_xyl, in the elevated-ALT cohort.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity. Used as binary `SGPT_HIGH = as.integer(ALT > 11)` per the source `.ctl` `IF(SGPT.GT.11)P6=0` line; adds an additive linear modifier (THETA(10) = -0.492) to the typical-value GX rate constant kel_gx AND a separate modifier (THETA(13) = +0.229) to the typical-value 2,6-xylidide rate constant kel_xyl, in the elevated-ALT cohort.",
+      units = "U/L",
+      type = "continuous",
       reference_category = "ALT <= 11 (additive modifiers off).",
-      notes              = "Source column name `SGPT` (legacy serum glutamic-pyruvic transaminase label); canonical name `ALT` (the `inst/references/covariate-columns.md` `ALT` entry registers `SGPT` as an alias paralleling `SGOT` -> `AST`). Rename `SGPT -> ALT` before passing the dataset to `rxSolve`. Threshold 11 U/L is below the lower end of the clinical reference range (~7-56 U/L for adults), so the binarisation almost certainly reflects a paper-specific cohort split rather than a clinical hepatic-impairment cutoff; the linked publication is not on disk to confirm.",
-      source_name        = "SGPT"
+      notes = "Source column name `SGPT` (legacy serum glutamic-pyruvic transaminase label); canonical name `ALT` (the `inst/references/covariate-columns.md` `ALT` entry registers `SGPT` as an alias paralleling `SGOT` -> `AST`). Rename `SGPT -> ALT` before passing the dataset to `rxSolve`. Threshold 11 U/L is below the lower end of the clinical reference range (~7-56 U/L for adults), so the binarisation almost certainly reflects a paper-specific cohort split rather than a clinical hepatic-impairment cutoff; the linked publication is not on disk to confirm.",
+      source_name = "SGPT"
     )
   )
 
   population <- list(
-    n_subjects     = 325L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    n_subjects = 325L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The linked publication is not on disk to confirm the indication.",
-    dose_range     = "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the operator-chosen `units$time = 'h'` interpretation each infusion runs ~12 h.",
-    regions        = NA_character_,
-    notes          = "Demographics fields marked NA because the linked publication is not on disk for this extraction. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
+    disease_state = "Patient population not stated in the DDMORE bundle. The `.res` listing reports 325 subjects contributing 1989 observations; the bundle's simulated dataset (`Simulated_Lid_B04_ddmore.csv`) has subjects receiving repeated short IV infusions of lidocaine consistent with surgical / intensive-care or anti-arrhythmic dosing. The linked publication is not on disk to confirm the indication.",
+    dose_range = "Repeated IV infusions of approximately 12 time-units' duration (AMT 21600 / RATE 1800 in the bundle's simulated dataset). Mass and time units are not declared in the source `.ctl`; under the operator-chosen `units$time = 'h'` interpretation each infusion runs ~12 h.",
+    regions = NA_character_,
+    notes = "Demographics fields marked NA because the linked publication is not on disk for this extraction. n_subjects = 325 from the `.res` listing's `TOT. NO. OF INDIVIDUALS:    325` line. The DDMORE-shipped simulated dataset (`Simulated_Lid_B04_ddmore.csv`) carries 17112 records distributed over a smaller demographic-replicated cohort and is intended only as a regression-style smoke test, not a representative clinical population."
   )
 
   ini({

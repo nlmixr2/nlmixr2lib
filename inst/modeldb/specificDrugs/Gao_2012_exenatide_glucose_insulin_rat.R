@@ -41,8 +41,8 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
   vignette <- "Gao_2012_exenatide"
 
   units <- list(
-    time          = "min",
-    dosing        = paste(
+    time = "min",
+    dosing = paste(
       "Two independent inputs. Exendin-4 is infused intravenously into",
       "`central` in nmol/min (the paper's pmol/kg/min infusion rates are",
       "converted with the animal's body weight; a 350 g rat at",
@@ -72,26 +72,26 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
   # on the insulin CONCENTRATION, so that state is nmol/L rather than an
   # amount.
   compartmentData <- list(
-    central     = list(analyte = "exenatide", units = "nmol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "exenatide", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "exenatide", units = "nmol", specimen = "tissue", verified = TRUE),
-    complex     = list(analyte = "exenatide/GLP-1R complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    glucose     = list(analyte = "glucose", units = "mmol/kg body weight", specimen = "plasma", verified = TRUE),
-    insulin     = list(analyte = "insulin", units = "nmol/L", specimen = "plasma", verified = TRUE)
+    complex = list(analyte = "exenatide/GLP-1R complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    glucose = list(analyte = "glucose", units = "mmol/kg body weight", specimen = "plasma", verified = TRUE),
+    insulin = list(analyte = "insulin", units = "nmol/L", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FPG = list(
-      description        = paste(
+      description = paste(
         "Baseline (predose) plasma glucose concentration, the paper's Gb.",
         "Sets both the glucose initial condition glucose(0) = Gb * Vg and,",
         "through kinG = koutG * Gb, the zero-order glucose production rate,",
         "and is the threshold above which the insulinotropic effect of",
         "exendin-4 switches on. Time-fixed per dose group."
       ),
-      units              = "mmol/L",
-      type               = "continuous",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Gao 2012 Methods states only that 'the baseline conditions Gb and Ib",
         "were fixed as the measured predose values' -- no numeric value for",
         "Gb appears in the text or in any table. The default carried here",
@@ -104,20 +104,20 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
         "initial condition: 5.7/0.208 + 9.60 = 37.0 mmol/L, which matches the",
         "plotted post-challenge peak of the saline panel."
       ),
-      source_name        = "Gb"
+      source_name = "Gb"
     ),
     INS_BL = list(
-      description        = paste(
+      description = paste(
         "Baseline (predose) plasma insulin concentration, the paper's Ib.",
         "Sets the insulin initial condition insulin(0) = Ib, the zero-order",
         "insulin secretion rate kinI = koutI * Ib, and the reference level",
         "from which insulin stimulates glucose disposal. Time-fixed per dose",
         "group."
       ),
-      units              = "pmol/L (divided by 1000 inside model() to the nmol/L scale on which SIns is expressed)",
-      type               = "continuous",
+      units = "pmol/L (divided by 1000 inside model() to the nmol/L scale on which SIns is expressed)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "As for FPG, Ib is not printed anywhere in Gao 2012. The default",
         "(304 pmol/L) and the per-arm values in the vignette were digitised",
         "from the pre-challenge plateau of Fig. 5 (right column): saline 304,",
@@ -127,17 +127,17 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
         "picomoles; the model divides by 1000 because SIns is reported in",
         "1/nM (Table 4)."
       ),
-      source_name        = "Ib"
+      source_name = "Ib"
     )
   )
 
   population <- list(
-    species       = "rat (male Sprague-Dawley)",
-    n_subjects    = 8L,
-    n_studies     = 1L,
-    weight_range  = "80-420 g",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    weight_range = "80-420 g",
     disease_state = "Healthy (normoglycaemic) male Sprague-Dawley rats.",
-    dose_range    = paste(
+    dose_range = paste(
       "Two-hour continuous intravenous infusion of saline or of exendin-4 at",
       "3, 30, 300 or 3000 pmol/kg/min, with an intravenous D-glucose",
       "challenge of 5.7 mmol/kg given over 2-3 min (0.5 mL/min) beginning",

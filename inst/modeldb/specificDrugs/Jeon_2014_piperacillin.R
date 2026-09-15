@@ -1,58 +1,58 @@
 Jeon_2014_piperacillin <- function() {
   description <- "Two-compartment IV population PK model for piperacillin in 50 Korean adult burn-ICU patients receiving piperacillin-tazobactam 4.5 g (4 g piperacillin + 0.5 g tazobactam) every 8 h as a 30-min infusion (Jeon 2014)"
-  reference   <- "Jeon S, Han S, Lee J, Hong T, Paek J, Woo H, Yim DS. Population pharmacokinetic analysis of piperacillin in burn patients. Antimicrob Agents Chemother. 2014;58(7):3744-3751. doi:10.1128/AAC.02089-13"
-  vignette    <- "Jeon_2014_piperacillin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Jeon S, Han S, Lee J, Hong T, Paek J, Woo H, Yim DS. Population pharmacokinetic analysis of piperacillin in burn patients. Antimicrob Agents Chemother. 2014;58(7):3744-3751. doi:10.1128/AAC.02089-13"
+  vignette <- "Jeon_2014_piperacillin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 132 mL/min (cohort mean per Jeon 2014 Table 1; rounded from 132.1 mL/min in the paper text). The effect is applied to CL as a multiplicative renal scaling on the structural intercept: TVCL = exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 132 mL/min (cohort mean per Jeon 2014 Table 1; rounded from 132.1 mL/min in the paper text). The effect is applied to CL as a multiplicative renal scaling on the structural intercept: TVCL = exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY.",
+      source_name = "CLCR"
     ),
     DIS_SEPSIS = list(
-      description        = "Active sepsis indicator at the PK-sampling window",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active sepsis indicator at the PK-sampling window",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column 'sepsis'. 1 = active sepsis at PK sampling (12 of 50 patients per Table 1), 0 = no sepsis. Time-fixed at the PK-sampling window in this paper. Jeon 2014 Methods do not name a formal sepsis diagnostic-criteria reference; the indicator reflects the attending clinician's diagnosis. Used as an additive shift on central volume: TVV1 = exp(lvc) + e_sepsis_vc * DIS_SEPSIS, so septic patients have V1 = 25.3 + 14.8 = 40.1 L versus 25.3 L in non-septic patients (capillary leakage / interstitial edema).",
-      source_name        = "sepsis"
+      notes = "Source column 'sepsis'. 1 = active sepsis at PK sampling (12 of 50 patients per Table 1), 0 = no sepsis. Time-fixed at the PK-sampling window in this paper. Jeon 2014 Methods do not name a formal sepsis diagnostic-criteria reference; the indicator reflects the attending clinician's diagnosis. Used as an additive shift on central volume: TVV1 = exp(lvc) + e_sepsis_vc * DIS_SEPSIS, so septic patients have V1 = 25.3 + 14.8 = 40.1 L versus 25.3 L in non-septic patients (capillary leakage / interstitial edema).",
+      source_name = "sepsis"
     ),
     DAY_AFTER_INJURY = list(
-      description        = "Days elapsed since burn injury at the start of PK sampling",
-      units              = "days",
-      type               = "continuous",
+      description = "Days elapsed since burn injury at the start of PK sampling",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column DAI. Continuous integer days since the burn injury (cohort mean 12.8 days, range 2-68 per Jeon 2014 Table 1). Paper-specific covariate (NOT a registered canonical in inst/references/covariate-columns.md) per the operator-resolved sidecar response (request-001 / response-001, 2026-06-07): treated as a paper-specific column inside this single model only. checkModelConventions() will note the absence of a canonical entry, which is expected. Used as an additive linear effect on CL: TVCL = exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY with e_dai_cl = -0.0874 L/h per day (CL decreases as the hypermetabolic phase resolves). A future continuous-days-since-burn covariate canonical (suggested name POSTBURN_DAYS per the Han 2013 fluconazole sibling-task sidecar) may motivate promoting this concept when a second burn-cohort extraction reuses it."
+      notes = "Source column DAI. Continuous integer days since the burn injury (cohort mean 12.8 days, range 2-68 per Jeon 2014 Table 1). Paper-specific covariate (NOT a registered canonical in inst/references/covariate-columns.md) per the operator-resolved sidecar response (request-001 / response-001, 2026-06-07): treated as a paper-specific column inside this single model only. checkModelConventions() will note the absence of a canonical entry, which is expected. Used as an additive linear effect on CL: TVCL = exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY with e_dai_cl = -0.0874 L/h per day (CL decreases as the hypermetabolic phase resolves). A future continuous-days-since-burn covariate canonical (suggested name POSTBURN_DAYS per the Han 2013 fluconazole sibling-task sidecar) may motivate promoting this concept when a second burn-cohort extraction reuses it."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "20-83 years",
-    age_median     = "50.14 years (mean per Table 1)",
-    weight_range   = "50-90 kg",
-    weight_median  = "66.9 kg (mean per Table 1)",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "20-83 years",
+    age_median = "50.14 years (mean per Table 1)",
+    weight_range = "50-90 kg",
+    weight_median = "66.9 kg (mean per Table 1)",
     sex_female_pct = 20,
     race_ethnicity = "Not reported explicitly; single Korean burn ICU cohort",
-    disease_state  = "Adult burn patients in a burn intensive care unit; total body surface area burned mean 34.56% (range 1-81%); serum albumin mean 2.58 g/dL (range 1.6-3.5); 12/50 with active sepsis; 16/50 with clinical edema (puffy face and pitting leg edema); 5/50 on continuous renal replacement therapy",
-    dose_range     = "Piperacillin-tazobactam 4.5 g (4 g piperacillin + 0.5 g tazobactam, 8:1 ratio) IV infusion over 30 minutes every 8 h. PK sampling performed at steady state after 5 or more doses",
-    regions        = "South Korea (single center: Hangang Sacred Heart Hospital, Hallym University Medical Center, Burn Intensive Care Unit)",
+    disease_state = "Adult burn patients in a burn intensive care unit; total body surface area burned mean 34.56% (range 1-81%); serum albumin mean 2.58 g/dL (range 1.6-3.5); 12/50 with active sepsis; 16/50 with clinical edema (puffy face and pitting leg edema); 5/50 on continuous renal replacement therapy",
+    dose_range = "Piperacillin-tazobactam 4.5 g (4 g piperacillin + 0.5 g tazobactam, 8:1 ratio) IV infusion over 30 minutes every 8 h. PK sampling performed at steady state after 5 or more doses",
+    regions = "South Korea (single center: Hangang Sacred Heart Hospital, Hallym University Medical Center, Burn Intensive Care Unit)",
     renal_function = "Cockcroft-Gault creatinine clearance: mean 132.1 mL/min, range 39-231.4 mL/min (raw mL/min, not BSA-normalized)",
-    notes          = "Baseline demographics per Jeon 2014 Table 1. 50 adults admitted to the Burn Intensive Care Unit between November 2011 and August 2012. Days after burn injury mean 12.8 (range 2-68). Patients excluded if pregnant, breastfeeding, < 18 years old, or allergic to penicillin."
+    notes = "Baseline demographics per Jeon 2014 Table 1. 50 adults admitted to the Burn Intensive Care Unit between November 2011 and August 2012. Days after burn injury mean 12.8 (range 2-68). Patients excluded if pregnant, breastfeeding, < 18 years old, or allergic to penicillin."
   )
 
   ini({

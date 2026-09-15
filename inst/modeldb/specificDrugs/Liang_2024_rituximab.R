@@ -14,9 +14,19 @@ Liang_2024_rituximab <- function() {
     # RTX was assayed by ELISA on blood samples and the Discussion refers to
     # "serum RTX concentration"; CD20+ B cells were counted in peripheral blood
     # (Liang 2024 Sections 2.2, 4).
-    central      = list(analyte = "rituximab (total: free + CD20-bound)", units = "umol",   specimen = "serum",       verified = TRUE),
-    peripheral1  = list(analyte = "rituximab (free)",                     units = "umol",   specimen = "tissue",      verified = TRUE),
-    total_target = list(analyte = "CD20 (total: free + rituximab-bound)", units = "umol/L", specimen = "whole blood", verified = TRUE)
+    central = list(
+      analyte = "rituximab (total: free + CD20-bound)",
+      units = "umol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    peripheral1 = list(analyte = "rituximab (free)", units = "umol", specimen = "tissue", verified = TRUE),
+    total_target = list(
+      analyte = "CD20 (total: free + rituximab-bound)",
+      units = "umol/L",
+      specimen = "whole blood",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
@@ -62,17 +72,17 @@ Liang_2024_rituximab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "19-76 years (mean 52.8 +/- 14.9)",
-    weight_range   = "50-101 kg (mean 75.4 +/- 11.3)",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "19-76 years (mean 52.8 +/- 14.9)",
+    weight_range = "50-101 kg (mean 75.4 +/- 11.3)",
     sex_female_pct = 24.4,
-    disease_state  = "Adults with primary membranous nephropathy (PMN) treated off-label with rituximab; baseline urine protein 8.0 +/- 3.6 g/day, serum albumin 25.8 +/- 5.7 g/L, anti-PLA2R antibody titer 260.3 +/- 453.2 U/mL (range 5.4-2695), 17/41 (41.5%) with high titer (>150 U/mL).",
+    disease_state = "Adults with primary membranous nephropathy (PMN) treated off-label with rituximab; baseline urine protein 8.0 +/- 3.6 g/day, serum albumin 25.8 +/- 5.7 g/L, anti-PLA2R antibody titer 260.3 +/- 453.2 U/mL (range 5.4-2695), 17/41 (41.5%) with high titer (>150 U/mL).",
     renal_function = "eGFR 92.0 +/- 24.6 mL/min/1.73 m^2 (range 32-151); eGFR remained relatively stable through 12 months of treatment.",
-    dose_range     = "Most patients received a monthly mini-dose of 100 mg IV rituximab; 10/41 received 200-500 mg for some months. Cumulative dose 578 +/- 350 mg at month 6, 923 +/- 544 mg at month 12 and 1060 +/- 705 mg at last follow-up (Table 1).",
-    regions        = "Single centre: Department of Nephrology, Peking University Third Hospital, Beijing, China; retrospective cohort treated March 2019 to December 2021. Registered as ChiCTR2200057381.",
-    notes          = paste(
+    dose_range = "Most patients received a monthly mini-dose of 100 mg IV rituximab; 10/41 received 200-500 mg for some months. Cumulative dose 578 +/- 350 mg at month 6, 923 +/- 544 mg at month 12 and 1060 +/- 705 mg at last follow-up (Table 1).",
+    regions = "Single centre: Department of Nephrology, Peking University Third Hospital, Beijing, China; retrospective cohort treated March 2019 to December 2021. Registered as ChiCTR2200057381.",
+    notes = paste(
       "Retrospective study; 171 rituximab concentrations, 220 CD20+ B cell counts and 276 anti-PLA2R titers",
       "from 41 patients (Liang 2024 Section 3.2). Median follow-up 15.9 months (range 6-44).",
       "Rituximab concentrations were measured by ELISA with a 3 ng/mL limit of quantification; observations",

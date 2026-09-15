@@ -8,89 +8,89 @@ Gandhi_2021_abatacept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 68 kg (Gandhi 2021 Figure 1 caption: reference patient weighs 68 kg). Power effect on CL (exp 0.706), VC (exp 0.603), VP (exp 0.575), and on logit-F (slope -0.506).",
-      source_name        = "BWT"
+      notes = "Reference 68 kg (Gandhi 2021 Figure 1 caption: reference patient weighs 68 kg). Power effect on CL (exp 0.706), VC (exp 0.603), VP (exp 0.575), and on logit-F (slope -0.506).",
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 49 years (Gandhi 2021 Figure 1 caption: 49-year-old reference patient). Power effect on VC (exp 0.114) and on logit-F (slope 0.487). Not retained on CL in the final model.",
-      source_name        = "AGE"
+      notes = "Reference 49 years (Gandhi 2021 Figure 1 caption: 49-year-old reference patient). Power effect on VC (exp 0.114) and on logit-F (slope 0.487). Not retained on CL in the final model.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
+      description = "Baseline serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 4.1 g/dL (Gandhi 2021 Figure 1 caption). Power effect on CL (exp -0.722).",
-      source_name        = "ALB"
+      notes = "Reference 4.1 g/dL (Gandhi 2021 Figure 1 caption). Power effect on CL (exp -0.722).",
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Calculated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Calculated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 99.18 mL/min/1.73 m^2 (Gandhi 2021 Figure 1 caption). Gandhi 2021 uses 'cGFR' (calculated GFR, BSA-normalized); mapped to the canonical CRCL (which accepts either MDRD-estimated eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.259).",
-      source_name        = "cGFR"
+      notes = "Reference 99.18 mL/min/1.73 m^2 (Gandhi 2021 Figure 1 caption). Gandhi 2021 uses 'cGFR' (calculated GFR, BSA-normalized); mapped to the canonical CRCL (which accepts either MDRD-estimated eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.259).",
+      source_name = "cGFR"
     ),
     SWOL_28JOINT = list(
-      description        = "Baseline swollen joint count (28-joint scale)",
-      units              = "count (0-28)",
-      type               = "continuous",
+      description = "Baseline swollen joint count (28-joint scale)",
+      units = "count (0-28)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 15 (Gandhi 2021 Figure 1 caption). Applied as ((SWOL_28JOINT + 1)/(15 + 1))^0.0742 on CL to avoid the zero-count edge case (matches the shifted-power form used in Li 2019 from the same author group). The paper does not explicitly state the joint-count scale; the 28-joint scale is assumed because (1) the same author group used 28-joint counts in the prior Li 2019 RA-only analysis and (2) the reference value 15 is consistent with the 28-joint scale (cap 28).",
-      source_name        = "SJC"
+      notes = "Reference 15 (Gandhi 2021 Figure 1 caption). Applied as ((SWOL_28JOINT + 1)/(15 + 1))^0.0742 on CL to avoid the zero-count edge case (matches the shifted-power form used in Li 2019 from the same author group). The paper does not explicitly state the joint-count scale; the 28-joint scale is assumed because (1) the same author group used 28-joint counts in the prior Li 2019 RA-only analysis and (2) the reference value 15 is consistent with the 28-joint scale (cap 28).",
+      source_name = "SJC"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; reference subject is male per Gandhi 2021 Methods 'except for sex, for which male was used as the reference')",
-      notes              = "Gandhi 2021 Methods: 'for sex, male was used as the reference'. SEXF = 1 for female, 0 for male; the published 'Exponent of male sex on CL = 0.0674' is applied as `exp(SEXF * 0.0674)` so females have ~7% higher CL than males in the pooled RA + pJIA dataset (sign opposite to Li 2019's RA-only -0.0722; the dataset expansion to pJIA produced the sign flip). Convention follows the existing Li 2019 implementation in nlmixr2lib.",
-      source_name        = "SEX"
+      notes = "Gandhi 2021 Methods: 'for sex, male was used as the reference'. SEXF = 1 for female, 0 for male; the published 'Exponent of male sex on CL = 0.0674' is applied as `exp(SEXF * 0.0674)` so females have ~7% higher CL than males in the pooled RA + pJIA dataset (sign opposite to Li 2019's RA-only -0.0722; the dataset expansion to pJIA produced the sign flip). Convention follows the existing Li 2019 implementation in nlmixr2lib.",
+      source_name = "SEX"
     ),
     CONMED_NSAID = list(
-      description        = "Concomitant NSAID use at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant NSAID use at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on concomitant NSAIDs; the reference subject is not on NSAIDs per Gandhi 2021 Figure 1 caption)",
-      notes              = "Exponential effect on CL: CL multiplied by exp(0.102 * CONMED_NSAID) per Gandhi 2021 Table 2 'Exponent of NSAID on CL = 0.102'. Patients on NSAIDs have ~10.7% higher CL (not clinically relevant per Gandhi 2021).",
-      source_name        = "NSAID"
+      notes = "Exponential effect on CL: CL multiplied by exp(0.102 * CONMED_NSAID) per Gandhi 2021 Table 2 'Exponent of NSAID on CL = 0.102'. Patients on NSAIDs have ~10.7% higher CL (not clinically relevant per Gandhi 2021).",
+      source_name = "NSAID"
     ),
     DIS_PJIA = list(
-      description        = "Polyarticular juvenile idiopathic arthritis disease-state indicator, 1 = pJIA, 0 = adult RA (or other non-pJIA)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Polyarticular juvenile idiopathic arthritis disease-state indicator, 1 = pJIA, 0 = adult RA (or other non-pJIA)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult RA; the typical reference subject in Gandhi 2021 is an RA patient)",
-      notes              = "Gandhi 2021 codes a pJIA-vs-RA disease indicator (JIA = 1 if pJIA, 0 if RA). The covariate enters the bioavailability model only (additive on the logit scale: `logit_F = logit_F_TV + 3.08 * DIS_PJIA + ...`); pJIA patients have substantially higher SC bioavailability than adult RA patients (logit_F shifts from 1.208 at the reference to ~4.288 in pJIA, i.e. F_abs ~ 0.770 -> ~0.987). Disease (pJIA vs RA) was tested but did NOT have a clinically relevant effect on abatacept CL (Gandhi 2021 Results paragraph 1 of Population PK Analysis section).",
-      source_name        = "JIA"
+      notes = "Gandhi 2021 codes a pJIA-vs-RA disease indicator (JIA = 1 if pJIA, 0 if RA). The covariate enters the bioavailability model only (additive on the logit scale: `logit_F = logit_F_TV + 3.08 * DIS_PJIA + ...`); pJIA patients have substantially higher SC bioavailability than adult RA patients (logit_F shifts from 1.208 at the reference to ~4.288 in pJIA, i.e. F_abs ~ 0.770 -> ~0.987). Disease (pJIA vs RA) was tested but did NOT have a clinically relevant effect on abatacept CL (Gandhi 2021 Results paragraph 1 of Population PK Analysis section).",
+      source_name = "JIA"
     )
   )
 
   population <- list(
-    n_subjects     = 2616L,
+    n_subjects = 2616L,
     n_observations = 12759L,
-    n_studies      = 13L,
-    age_range      = "2-17 years (pJIA cohort) plus adult RA cohort",
-    weight_range   = "10-100+ kg (simulated range; actual study weight range not separately tabulated in PMC text)",
-    disease_state  = "Pooled adult rheumatoid arthritis (n = 2213) and polyarticular juvenile idiopathic arthritis (pJIA; n = 403, ages 2-17 years).",
-    dose_range     = "IV abatacept 0.5-10 mg/kg Q4W and SC abatacept 75-200 mg QW (RA studies); approved IV regimen ~10 mg/kg Q4W; weight-tiered SC pJIA regimen 50 mg (<25 kg), 87.5 mg (25-<50 kg), 125 mg (>=50 kg) QW; approved adult SC regimen 125 mg QW.",
-    regions        = "Multi-regional (13 pooled phase 2/3 studies).",
+    n_studies = 13L,
+    age_range = "2-17 years (pJIA cohort) plus adult RA cohort",
+    weight_range = "10-100+ kg (simulated range; actual study weight range not separately tabulated in PMC text)",
+    disease_state = "Pooled adult rheumatoid arthritis (n = 2213) and polyarticular juvenile idiopathic arthritis (pJIA; n = 403, ages 2-17 years).",
+    dose_range = "IV abatacept 0.5-10 mg/kg Q4W and SC abatacept 75-200 mg QW (RA studies); approved IV regimen ~10 mg/kg Q4W; weight-tiered SC pJIA regimen 50 mg (<25 kg), 87.5 mg (25-<50 kg), 125 mg (>=50 kg) QW; approved adult SC regimen 125 mg QW.",
+    regions = "Multi-regional (13 pooled phase 2/3 studies).",
     reference_subject = "49-year-old female RA patient, BWT 68 kg, baseline albumin 4.1 g/dL, calculated GFR 99.18 mL/min/1.73 m^2, swollen joint count 15, not on NSAIDs (Gandhi 2021 Figure 1 caption). For the typical-value parameter values (CL_TYP, etc.), the reference is male per the Gandhi 2021 Methods text 'for sex, male was used as the reference'; the reference patient's female designation in Figure 1 is the visualization baseline used for the covariate-effect forest plot.",
-    notes          = "Pooled population PK dataset of 12 759 abatacept serum concentrations (RA, 9420; pJIA, 3339) from 2616 patients (RA, 2213; pJIA, 403) drawn from 13 phase 2/3 studies (Table S1, not embedded in PMC). Concentrations were quantified by validated ELISA (LLOQ 1.0 ng/mL); 8.7% of samples below LLOQ were excluded. The study population spans intravenous abatacept (RA + pJIA) and subcutaneous abatacept (RA + pJIA), so the analysis dataset includes mixed routes per subject in some studies. Gandhi 2021 Methods Data and Study Populations."
+    notes = "Pooled population PK dataset of 12 759 abatacept serum concentrations (RA, 9420; pJIA, 3339) from 2616 patients (RA, 2213; pJIA, 403) drawn from 13 phase 2/3 studies (Table S1, not embedded in PMC). Concentrations were quantified by validated ELISA (LLOQ 1.0 ng/mL); 8.7% of samples below LLOQ were excluded. The study population spans intravenous abatacept (RA + pJIA) and subcutaneous abatacept (RA + pJIA), so the analysis dataset includes mixed routes per subject in some studies. Gandhi 2021 Methods Data and Study Populations."
   )
 
   ini({

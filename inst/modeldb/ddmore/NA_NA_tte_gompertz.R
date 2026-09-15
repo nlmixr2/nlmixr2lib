@@ -12,12 +12,12 @@ NA_NA_tte_gompertz <- function() {
   )
   vignette <- "NA_NA_tte_gompertz"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; covariates AGE and NEUT enter as time-fixed columns)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; covariates AGE and NEUT enter as time-fixed columns)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000243"
+  ddmore_id <- "DDMODEL00000243"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,39 +25,44 @@ NA_NA_tte_gompertz <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz = list(analyte = "Event 1 cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Event 1 cumulative hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at enrolment (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at enrolment (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centred at 55 years inside the hazard via `exp((coef_age/100) * (AGE - 55))`. The bundle's Simulated_event_data.csv carries AGE for 200 hypothetical patients with range 24-84 years (mean 58.7); 55 years is approximately the cohort median rounded to the nearest 5.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Centred at 55 years inside the hazard via `exp((coef_age/100) * (AGE - 55))`. The bundle's Simulated_event_data.csv carries AGE for 200 hypothetical patients with range 24-84 years (mean 58.7); 55 years is approximately the cohort median rounded to the nearest 5.",
+      source_name = "AGE"
     ),
     NEUT = list(
-      description        = "Baseline absolute neutrophil count (cells/mm^3).",
-      units              = "cells/mm^3 (equivalent to cells/uL)",
-      type               = "continuous",
+      description = "Baseline absolute neutrophil count (cells/mm^3).",
+      units = "cells/mm^3 (equivalent to cells/uL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Centred at 4133 cells/mm^3 inside the hazard via `exp((coef_neut/10000) * (NEUT - 4133))`. The bundle's Simulated_event_data.csv carries NEUT for 200 hypothetical patients with range 1030-14,888 cells/mm^3 (mean 4424); 4133 is the cohort median used by the BAST PTTE guiding-document.",
-      source_name        = "NEUT"
+      notes = "Time-fixed per subject. Centred at 4133 cells/mm^3 inside the hazard via `exp((coef_neut/10000) * (NEUT - 4133))`. The bundle's Simulated_event_data.csv carries NEUT for 200 hypothetical patients with range 1030-14,888 cells/mm^3 (mean 4424); 4133 is the cohort median used by the BAST PTTE guiding-document.",
+      source_name = "NEUT"
     )
   )
 
   population <- list(
-    n_subjects     = 200L,
-    n_studies      = 1L,
-    age_range      = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
-    weight_range   = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
+    n_subjects = 200L,
+    n_studies = 1L,
+    age_range = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
+    weight_range = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
-    dose_range     = "Not applicable (no drug administration is modelled; covariates AGE and NEUT enter the hazard at baseline values).",
-    regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients with four timed event types (Event 1, Event 2, Competing Event 1, Competing Event 2) and six baseline covariates (AGE, NEUT, PRE_TRE, MAX_LEG, AUC, CMAX). This file extracts only the Event 1 final hazard model (runEV1_201). For the other three events see NA_NA_tte_gompertz_ev2.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf in the DDMORE bundle); guiding document Section  2.2.1, Table 2-1; covariate selection result Table 2-2; final-fit listing Output_simulated_runEV1_201.res."
+    disease_state = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
+    dose_range = "Not applicable (no drug administration is modelled; covariates AGE and NEUT enter the hazard at baseline values).",
+    regions = "Not applicable (simulated data).",
+    notes = "200 simulated patients with four timed event types (Event 1, Event 2, Competing Event 1, Competing Event 2) and six baseline covariates (AGE, NEUT, PRE_TRE, MAX_LEG, AUC, CMAX). This file extracts only the Event 1 final hazard model (runEV1_201). For the other three events see NA_NA_tte_gompertz_ev2.R, NA_NA_tte_lognormal.R, and NA_NA_tte_loglogistic.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf in the DDMORE bundle); guiding document Section  2.2.1, Table 2-1; covariate selection result Table 2-2; final-fit listing Output_simulated_runEV1_201.res."
   )
 
   ini({

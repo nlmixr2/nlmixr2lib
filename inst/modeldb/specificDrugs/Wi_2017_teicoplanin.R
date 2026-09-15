@@ -1,55 +1,55 @@
 Wi_2017_teicoplanin <- function() {
   description <- "Two-compartment IV bolus population PK model for teicoplanin in adult patients receiving venoarterial extracorporeal membrane oxygenation (VA-ECMO) for cardiogenic shock, with binary within-subject ECMO indicators on the central volume of distribution (V1) and inter-compartmental clearance (Q) and a binary CRRT indicator on the peripheral volume of distribution (V2) (Wi 2017)"
-  reference   <- "Wi J, Noh H, Min KL, Yang S, Jin BH, Hahn J, Bae SK, Kim J, Park MS, Choi D, Chang MJ. Population pharmacokinetics and dose optimization of teicoplanin during venoarterial extracorporeal membrane oxygenation. Antimicrob Agents Chemother. 2017;61(9):e01015-17. doi:10.1128/AAC.01015-17"
-  vignette    <- "Wi_2017_teicoplanin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Wi J, Noh H, Min KL, Yang S, Jin BH, Hahn J, Bae SK, Kim J, Park MS, Choi D, Chang MJ. Population pharmacokinetics and dose optimization of teicoplanin during venoarterial extracorporeal membrane oxygenation. Antimicrob Agents Chemother. 2017;61(9):e01015-17. doi:10.1128/AAC.01015-17"
+  vignette <- "Wi_2017_teicoplanin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ECMO_STATUS = list(
-      description        = "Within-subject binary indicator for active venoarterial extracorporeal membrane oxygenation (VA-ECMO) cardiopulmonary support during the modeled record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Within-subject binary indicator for active venoarterial extracorporeal membrane oxygenation (VA-ECMO) cardiopulmonary support during the modeled record",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column ECMO. 1 = record sampled while the subject was on VA-ECMO; 0 = record sampled after the subject was weaned off VA-ECMO. Naturally time-varying: 4 of 10 study subjects survived ECMO and provided paired post-weaning samples that serve as their own controls (Wi 2017 Results, 'Patient characteristics'). Stored under the canonical ECMO_STATUS column per inst/references/covariate-columns.md. The cohort is exclusively VA-ECMO; the column does not distinguish VA from VV.",
-      source_name        = "ECMO"
+      notes = "Source column ECMO. 1 = record sampled while the subject was on VA-ECMO; 0 = record sampled after the subject was weaned off VA-ECMO. Naturally time-varying: 4 of 10 study subjects survived ECMO and provided paired post-weaning samples that serve as their own controls (Wi 2017 Results, 'Patient characteristics'). Stored under the canonical ECMO_STATUS column per inst/references/covariate-columns.md. The cohort is exclusively VA-ECMO; the column does not distinguish VA from VV.",
+      source_name = "ECMO"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Subject-level binary indicator for concomitant continuous renal replacement therapy (continuous venovenous hemodiafiltration via Prismaflex) during the teicoplanin sampling period",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject-level binary indicator for concomitant continuous renal replacement therapy (continuous venovenous hemodiafiltration via Prismaflex) during the teicoplanin sampling period",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column CRRT. 1 = subject was concomitantly receiving continuous venovenous hemodiafiltration via Prismaflex; 0 = no CRRT (Wi 2017 Materials and Methods, 'Study procedures'). Treated as time-fixed at the subject level: 5 of 10 study patients received CRRT throughout the sampling window. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from RRT_HEMODIAL_STATUS which is intermittent-hemodialysis-only).",
-      source_name        = "CRRT",
-      source_alias       = "CRRT_STATUS (working column name before the 2026-06-19 canonical-register standardization; renamed to RRT_CRRT_STATUS)"
+      notes = "Source column CRRT. 1 = subject was concomitantly receiving continuous venovenous hemodiafiltration via Prismaflex; 0 = no CRRT (Wi 2017 Materials and Methods, 'Study procedures'). Treated as time-fixed at the subject level: 5 of 10 study patients received CRRT throughout the sampling window. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from RRT_HEMODIAL_STATUS which is intermittent-hemodialysis-only).",
+      source_name = "CRRT",
+      source_alias = "CRRT_STATUS (working column name before the 2026-06-19 canonical-register standardization; renamed to RRT_CRRT_STATUS)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "19-77 years (Wi 2017 Results: 'median age was 62.5 years (range, 19 to 77 years)')",
-    age_median     = "62.5 years",
-    weight_range   = "41-87 kg (Wi 2017 Results: 'median body weight was 67.5 kg (range, 41 to 87 kg)')",
-    weight_median  = "67.5 kg",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "19-77 years (Wi 2017 Results: 'median age was 62.5 years (range, 19 to 77 years)')",
+    age_median = "62.5 years",
+    weight_range = "41-87 kg (Wi 2017 Results: 'median body weight was 67.5 kg (range, 41 to 87 kg)')",
+    weight_median = "67.5 kg",
     sex_female_pct = 30,
     race_ethnicity = "Not reported (single-centre Korean tertiary referral cardiac ICU, presumed predominantly Korean)",
-    disease_state  = "Critically ill adults with refractory cardiogenic shock requiring VA-ECMO support. Indications for VA-ECMO: acute myocardial infarction (n = 7), myocarditis (n = 2), valvular heart disease (n = 1). All received teicoplanin for infection prophylaxis or treatment. Five subjects received concomitant CRRT via Prismaflex hemodiafiltration.",
-    dose_range     = "Teicoplanin IV bolus. Per-protocol regimen during the study: loading dose 400 mg q12h x 3 doses then maintenance 400 mg q24h (study regimen A in the dosing-optimization simulations). The published dosing simulations (Wi 2017 Table 3) compared eight regimens with loading doses 400-1,200 mg q12h x 3 and maintenance doses 400-1,000 mg q24h; the authors recommend higher doses (regimen B/D for mild-to-moderate infections, regimen F/H for severe infections) than the standard regimen A to achieve >50% PTA at 72 h.",
-    regions        = "Korea (Severance Hospital, Yonsei University Health System, Seoul; cardiac ICU)",
-    ecmo_circuit   = "VA-ECMO via centrifugal pump (Capiox SP-101, Terumo) and X-coated circuit (Capiox EBS, Terumo); peripheral femoral vein-femoral artery cannulation. Mean ECMO duration 6.82 days (range 1.88-12.1); mean blood flow rate 2,256 mL/min (range 1,650-2,520).",
-    crrt_modality  = "Continuous venovenous hemodiafiltration via Prismaflex (Gambro Inc., Meyzieu, France) when applied.",
+    disease_state = "Critically ill adults with refractory cardiogenic shock requiring VA-ECMO support. Indications for VA-ECMO: acute myocardial infarction (n = 7), myocarditis (n = 2), valvular heart disease (n = 1). All received teicoplanin for infection prophylaxis or treatment. Five subjects received concomitant CRRT via Prismaflex hemodiafiltration.",
+    dose_range = "Teicoplanin IV bolus. Per-protocol regimen during the study: loading dose 400 mg q12h x 3 doses then maintenance 400 mg q24h (study regimen A in the dosing-optimization simulations). The published dosing simulations (Wi 2017 Table 3) compared eight regimens with loading doses 400-1,200 mg q12h x 3 and maintenance doses 400-1,000 mg q24h; the authors recommend higher doses (regimen B/D for mild-to-moderate infections, regimen F/H for severe infections) than the standard regimen A to achieve >50% PTA at 72 h.",
+    regions = "Korea (Severance Hospital, Yonsei University Health System, Seoul; cardiac ICU)",
+    ecmo_circuit = "VA-ECMO via centrifugal pump (Capiox SP-101, Terumo) and X-coated circuit (Capiox EBS, Terumo); peripheral femoral vein-femoral artery cannulation. Mean ECMO duration 6.82 days (range 1.88-12.1); mean blood flow rate 2,256 mL/min (range 1,650-2,520).",
+    crrt_modality = "Continuous venovenous hemodiafiltration via Prismaflex (Gambro Inc., Meyzieu, France) when applied.",
     renal_function = "Serum creatinine 0.6-3.5 mg/dL across the cohort (Wi 2017 Table 1). Cockcroft-Gault CrCL was tested as a covariate on CL and not retained.",
     screened_covariates = "Tested-but-not-retained covariates (Wi 2017 Methods, 'Population pharmacokinetic analysis'): age, sex, body weight, serum albumin, serum creatinine, blood urea nitrogen, Cockcroft-Gault creatinine clearance, ECMO blood flow rate. Only the within-subject ECMO indicator (on V1 and Q) and the binary CRRT indicator (on V2) were retained in the final model.",
-    notes          = "Baseline demographics per Wi 2017 Table 1 (n = 10 adults). Study registered as ClinicalTrials.gov NCT02581280; IRB approval 4-2014-0919 (Yonsei University). Sampling: 8 timepoints per subject per crossover period (pre-dose, 5 min, 1, 2, 3, 6, 12, 24 h after teicoplanin administration on day 2 of ECMO and on day 2 after ECMO weaning when applicable); 99 total concentrations. Assay: HPLC-MS/MS (Shimadzu LCMS-8050); LLOQ 2.0 mg/L, linear range 2-150 mg/L, CV <15% at QC samples (2, 6, 12, 120 mg/L)."
+    notes = "Baseline demographics per Wi 2017 Table 1 (n = 10 adults). Study registered as ClinicalTrials.gov NCT02581280; IRB approval 4-2014-0919 (Yonsei University). Sampling: 8 timepoints per subject per crossover period (pre-dose, 5 min, 1, 2, 3, 6, 12, 24 h after teicoplanin administration on day 2 of ECMO and on day 2 after ECMO weaning when applicable); 99 total concentrations. Assay: HPLC-MS/MS (Shimadzu LCMS-8050); LLOQ 2.0 mg/L, linear range 2-150 mg/L, CV <15% at QC samples (2, 6, 12, 120 mg/L)."
   )
 
   ini({

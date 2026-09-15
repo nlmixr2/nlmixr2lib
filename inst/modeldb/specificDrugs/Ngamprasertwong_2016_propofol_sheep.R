@@ -12,43 +12,43 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
   vignette <- "Ngamprasertwong_2016_propofol_sheep"
   paper_specific_compartments <- c("fetus")
 
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
-    fetus       = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
+    fetus = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HR = list(
-      description        = "Maternal heart rate during the propofol observation window",
-      units              = "beats/min",
-      type               = "continuous",
+      description = "Maternal heart rate during the propofol observation window",
+      units = "beats/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Encoded as the per-ewe median heart rate over the propofol-infusion observation window per Ngamprasertwong 2016 Methods (no separate intra-individual HR trajectory was modelled). Power covariate effect normalised to a reference of 158 beats/min as written in the Table 2 equation CL = theta1 * (HR/158)^theta2; the paper's Results text quotes 4.17 L/min as the typical CL 'in a typical ewe with a median heart rate of 135 beats/min', so the population reference HR (158) in the equation differs from the typical-subject median HR (135) reported in the narrative -- the table equation is authoritative for the model.",
-      source_name        = "HR"
+      notes = "Time-fixed per subject. Encoded as the per-ewe median heart rate over the propofol-infusion observation window per Ngamprasertwong 2016 Methods (no separate intra-individual HR trajectory was modelled). Power covariate effect normalised to a reference of 158 beats/min as written in the Table 2 equation CL = theta1 * (HR/158)^theta2; the paper's Results text quotes 4.17 L/min as the typical CL 'in a typical ewe with a median heart rate of 135 beats/min', so the population reference HR (158) in the equation differs from the typical-subject median HR (135) reported in the narrative -- the table equation is authoritative for the model.",
+      source_name = "HR"
     )
   )
 
   population <- list(
-    species        = "sheep (pregnant Dorset ewe)",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "gestational age 110-125 days (term ~147-150 days, mid-gestation)",
-    age_median     = "gestational age 116.5 days",
-    weight_range   = "60-82 kg",
-    weight_median  = "72.5 kg",
+    species = "sheep (pregnant Dorset ewe)",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "gestational age 110-125 days (term ~147-150 days, mid-gestation)",
+    age_median = "gestational age 116.5 days",
+    weight_range = "60-82 kg",
+    weight_median = "72.5 kg",
     sex_female_pct = 100,
-    disease_state  = "Singleton pregnant Dorset ewes under general anesthesia with propofol + remifentanil + desflurane, instrumented for chronic maternal-fetal physiologic monitoring (femoral arterial / venous catheters, umbilical and bilateral uterine flow probes). Used as a mid-gestational fetal-surgery anesthesia model.",
-    dose_range     = "Induction: propofol 3 mg/kg IV bolus + succinylcholine 1.5 mg/kg via the maternal femoral vein. Anesthesia phase 1 (0-60 min): propofol 450 ug/kg/min IV continuous infusion + remifentanil 0.5 ug/kg/min. Anesthesia phase 2 (60-150 min): propofol reduced to 75 ug/kg/min + remifentanil 0.25 ug/kg/min + 1.5 MAC desflurane (10.2 percent end-tidal). Propofol infusion stopped at 150 min; final blood sample at 180 min.",
-    regions        = "United States (Cincinnati Children's Hospital Medical Center).",
+    disease_state = "Singleton pregnant Dorset ewes under general anesthesia with propofol + remifentanil + desflurane, instrumented for chronic maternal-fetal physiologic monitoring (femoral arterial / venous catheters, umbilical and bilateral uterine flow probes). Used as a mid-gestational fetal-surgery anesthesia model.",
+    dose_range = "Induction: propofol 3 mg/kg IV bolus + succinylcholine 1.5 mg/kg via the maternal femoral vein. Anesthesia phase 1 (0-60 min): propofol 450 ug/kg/min IV continuous infusion + remifentanil 0.5 ug/kg/min. Anesthesia phase 2 (60-150 min): propofol reduced to 75 ug/kg/min + remifentanil 0.25 ug/kg/min + 1.5 MAC desflurane (10.2 percent end-tidal). Propofol infusion stopped at 150 min; final blood sample at 180 min.",
+    regions = "United States (Cincinnati Children's Hospital Medical Center).",
     n_observations = "160 propofol plasma measurements (80 paired ewe-fetus simultaneous draws) at 5, 15, 25, 60, 75, 100, 110, 150, and 180 min after the start of the propofol infusion. Sampling times were derived from a D-optimal design (Ngamprasertwong 2016 Methods / Pharmacokinetics study).",
-    notes          = "Propofol was assayed by LC-MS/MS (iC42 Integrated Solutions in Clinical Research and Development, University of Colorado, Denver). LLOQ = 0.05 ng/mL; intra- and inter-assay variability < 10 percent. Anesthesia / instrumentation protocol: protocol 0D03027, Cincinnati Children's Hospital Committee for Animal Care. The data underlying the modelling are deposited under doi:10.5281/zenodo.35672 (open access). The 'typical ewe' in the Results narrative has a median heart rate of 135 beats/min and body weight 71.6 kg (mean across the cohort); the Table 2 equation uses 158 beats/min as the population-level reference for the (HR/158) normalisation."
+    notes = "Propofol was assayed by LC-MS/MS (iC42 Integrated Solutions in Clinical Research and Development, University of Colorado, Denver). LLOQ = 0.05 ng/mL; intra- and inter-assay variability < 10 percent. Anesthesia / instrumentation protocol: protocol 0D03027, Cincinnati Children's Hospital Committee for Animal Care. The data underlying the modelling are deposited under doi:10.5281/zenodo.35672 (open access). The 'typical ewe' in the Results narrative has a median heart rate of 135 beats/min and body weight 71.6 kg (mean across the cohort); the Table 2 equation uses 158 beats/min as the population-level reference for the (HR/158) normalisation."
   )
 
   ini({

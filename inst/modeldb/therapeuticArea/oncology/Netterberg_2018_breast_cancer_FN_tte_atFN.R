@@ -23,8 +23,8 @@ Netterberg_2018_breast_cancer_FN_tte_atFN <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    il6    = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
-    crp    = list(analyte = "CRP", units = NA_character_, specimen = "serum", verified = FALSE),
+    il6 = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    crp = list(analyte = "CRP", units = NA_character_, specimen = "serum", verified = FALSE),
     cumhaz = list(analyte = "hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 

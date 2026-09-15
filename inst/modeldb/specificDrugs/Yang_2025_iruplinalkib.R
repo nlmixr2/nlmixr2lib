@@ -29,18 +29,18 @@ Yang_2025_iruplinalkib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "iruplinalkib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "iruplinalkib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "iruplinalkib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "iruplinalkib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "iruplinalkib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT_BASE = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed BASELINE body weight, which is what Yang 2025 fitted",
         "(Results and Eqs. 2-3 both name the covariate 'BBWT', baseline body",
         "weight, in contrast to the three laboratory covariates on CL/F which",
@@ -54,14 +54,14 @@ Yang_2025_iruplinalkib <- function() {
         "BMI, so the two were screened separately and only weight retained",
         "(Results 'PopPK analysis')."
       ),
-      source_name        = "BBWT"
+      source_name = "BBWT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING serum albumin (Yang 2025 abstract, Results and",
         "Discussion all say 'time-varying albumin'; the Methods screened each",
         "laboratory covariate 'at baseline and at the time of measurements').",
@@ -78,14 +78,14 @@ Yang_2025_iruplinalkib <- function() {
         "metabolism rather than acting through protein binding. Iruplinalkib",
         "is 76% protein bound."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, NOT BSA-normalised",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, NOT BSA-normalised",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw (absolute) creatinine clearance in mL/min, not normalised to",
         "1.73 m^2 - the same convention as Wada_2023_sparsentan.R,",
         "Delattre_2010_amikacin.R and Chen_2023_nemonoxacin.R. Table 1 of",
@@ -103,14 +103,14 @@ Yang_2025_iruplinalkib <- function() {
         "20.23% of a dose recovered in urine. The paper does not name the",
         "estimating equation."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     LDH = list(
-      description        = "Serum lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING serum lactate dehydrogenase. Power effect on CL/F with",
         "exponent -0.225, normalised to 242.63 U/L - the typical-subject",
         "value named in Results 'Covariate effects on iruplinalkib",
@@ -122,14 +122,14 @@ Yang_2025_iruplinalkib <- function() {
         "groups it with creatinine clearance under the partial renal",
         "elimination route rather than giving it an independent mechanism."
       ),
-      source_name        = "LDH"
+      source_name = "LDH"
     ),
     FED = list(
-      description        = "Fed-versus-fasted dose-record indicator, 1 = fed",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted dose-record indicator, 1 = fed",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Two effects on absorption only, both from Yang 2025 Table 2 and",
         "Eqs. 1 and 6: the absorption rate constant is multiplied by 0.588",
         "when fed (Ka 1.06 -> 0.623 /h), and a 0.472 h absorption lag is",
@@ -146,14 +146,14 @@ Yang_2025_iruplinalkib <- function() {
         "paper does not state the meal composition, so the general FED",
         "canonical is used rather than FED_HIGHFAT."
       ),
-      source_name        = "Food"
+      source_name = "Food"
     ),
     STUDY_WX0593_002 = list(
-      description        = "WX-0593-002 study indicator: 1 = the food-effect crossover study in healthy volunteers, 0 = studies WX-0593-001, -003 and -004 in patients with solid tumors",
-      units              = "(binary)",
-      type               = "binary",
+      description = "WX-0593-002 study indicator: 1 = the food-effect crossover study in healthy volunteers, 0 = studies WX-0593-001, -003 and -004 in patients with solid tumors",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled solid-tumor studies WX-0593-001, -003 and -004)",
-      notes              = paste(
+      notes = paste(
         "Switches the proportional residual-error magnitude only; it carries",
         "no structural or covariate effect. Yang 2025 Table 2 reports",
         "'Residual proportional errors for WX-0593-001, 003 and 004' = 35.7%",
@@ -164,7 +164,7 @@ Yang_2025_iruplinalkib <- function() {
         "WX-0593-002 contributed 16 of the 392 subjects. Same construction as",
         "STUDY_NIPOCALIMAB_PHASE1 in Valenzuela_2025_nipocalimab.R."
       ),
-      source_name        = "Study"
+      source_name = "Study"
     )
   )
 
@@ -175,9 +175,9 @@ Yang_2025_iruplinalkib <- function() {
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened; strongly correlated with baseline body weight, so the two",
         "were entered separately and body weight - the greater effect - was",
         "retained (Results 'PopPK analysis'). Pooled baseline median",
@@ -186,9 +186,9 @@ Yang_2025_iruplinalkib <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened at baseline and time-varying; strongly correlated with AST",
         "and not retained. Pooled baseline median 19.4 U/L, range 2.00-172",
         "(Table 1)."
@@ -196,9 +196,9 @@ Yang_2025_iruplinalkib <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened at baseline and time-varying; strongly correlated with ALT",
         "and not retained. Pooled baseline median 21.0 U/L, range 8.00-178",
         "(Table 1)."
@@ -206,15 +206,15 @@ Yang_2025_iruplinalkib <- function() {
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened at baseline and time-varying; not retained. Pooled baseline median 10.2 umol/L, range 3.20-32.6 (Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened at baseline and time-varying; not retained. Pooled baseline median 10.2 umol/L, range 3.20-32.6 (Table 1)."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and not retained; also compared",
         "post hoc as >=65 vs <65 years with no apparent effect on exposure",
         "(Results 'Effect of other demographic factors'; Figure S3). Pooled",
@@ -224,15 +224,15 @@ Yang_2025_iruplinalkib <- function() {
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained. Cohort 52.0% female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained. Cohort 52.0% female (Table 1)."
     ),
     DIS_HEALTHY = list(
       description = "Healthy-volunteer indicator, 1 = healthy subject, 0 = patient with a solid tumor",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as the 'subject type' covariate and not retained on any",
         "structural parameter - only the residual-error magnitude differs",
         "between the healthy-volunteer study and the patient studies, and",
@@ -242,9 +242,9 @@ Yang_2025_iruplinalkib <- function() {
     ),
     WHO_PS = list(
       description = "Eastern Cooperative Oncology Group performance status",
-      units       = "(score 0-5)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(score 0-5)",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained. Pooled distribution 0: 28.1%, 1: 69.4%,",
         "2: 1.8%, missing 0.8% (Table 1); no subject scored above 2."
       )
@@ -252,17 +252,17 @@ Yang_2025_iruplinalkib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 392L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 392L,
+    n_studies = 4L,
     n_observations = 3788L,
-    age_range      = "25.0-76.0 years",
-    age_median     = "52.0 years",
-    weight_range   = "35.0-98.9 kg",
-    weight_median  = "63.0 kg",
+    age_range = "25.0-76.0 years",
+    age_median = "52.0 years",
+    weight_range = "35.0-98.9 kg",
+    weight_median = "63.0 kg",
     sex_female_pct = 52.0,
     race_ethnicity = c(Han = 95.7, Other = 4.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 376 Chinese patients with ALK/ROS1-positive advanced solid",
       "tumors (predominantly non-small-cell lung cancer) across a phase 1",
       "dose-escalation/expansion trial, a single-arm phase 2 trial and a",
@@ -282,18 +282,18 @@ Yang_2025_iruplinalkib <- function() {
       "Only normal and mild impairment (NCI-ODWG) were meaningfully",
       "represented"
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Prior ALK inhibitor: never 54.1%, crizotinib only 44.6%, other 1.3%.",
       "Crizotinib resistance: no 42.9%, yes 39.3%, missing 17.9%"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "WX-0593-001: single and once-daily oral doses of 30, 60, 90, 120,",
       "180, 240 and 300 mg. WX-0593-002: a single 120 mg dose fasted and",
       "fed. WX-0593-003 and -004: 180 mg once daily after a 7-day 60 mg",
       "lead-in (Table S1)"
     ),
-    regions        = "China",
-    notes          = paste(
+    regions = "China",
+    notes = paste(
       "Baseline demographics are Yang 2025 Table 1; the study list, dosing",
       "regimens and PK sampling schedules are Table S1. Bioanalysis was",
       "validated LC-MS/MS with a 2-800 ng/mL calibration range and",

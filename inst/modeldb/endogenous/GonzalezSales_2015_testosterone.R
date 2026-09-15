@@ -23,42 +23,42 @@ GonzalezSales_2015_testosterone <- function() {
   )
   vignette <- "GonzalezSales_2015_testosterone"
   units <- list(
-    time          = "hour (clock time; t = 0 corresponds to midnight)",
-    dosing        = "n/a (endogenous baseline model; no exogenous drug)",
+    time = "hour (clock time; t = 0 corresponds to midnight)",
+    dosing = "n/a (endogenous baseline model; no exogenous drug)",
     concentration = "ng/dL (serum testosterone)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age (years). Linear-deviation effect on Base centred on the pooled median 49.9 y; -2.40% per 10-year age increase.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (years). Linear-deviation effect on Base centred on the pooled median 49.9 y; -2.40% per 10-year age increase.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Reference 49.9 y is the overall median in Gonzalez-Sales 2015 Table I (range 21-76 y). The continuous covariate enters as `(AGE - 49.9) / 10` so the multiplier on Base reproduces the paper's '-2.40 %/10 years' linear effect.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Reference 49.9 y is the overall median in Gonzalez-Sales 2015 Table I (range 21-76 y). The continuous covariate enters as `(AGE - 49.9) / 10` so the multiplier on Base reproduces the paper's '-2.40 %/10 years' linear effect.",
+      source_name = "AGE"
     ),
     SEMESTER = list(
-      description        = "Paired-season indicator: 1 = winter or spring (December 21 to June 19), 0 = summer or fall (June 20 to December 20). Multiplicative +8.09% effect on Base.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paired-season indicator: 1 = winter or spring (December 21 to June 19), 0 = summer or fall (June 20 to December 20). Multiplicative +8.09% effect on Base.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (summer or fall)",
-      notes              = "Per Gonzalez-Sales 2015 Methods (Covariate Analysis): 'semester 1 was defined as a dichotomous variable with a value of 0, if summer or fall, and a value of 1, if winter or spring.' Time-fixed per simulation: downstream users would set this based on the calendar date at which the testosterone profile is simulated. Source-paper variable name is `SEMESTER1`; this register uses the unsuffixed `SEMESTER` as the canonical column.",
-      source_name        = "SEMESTER1"
+      notes = "Per Gonzalez-Sales 2015 Methods (Covariate Analysis): 'semester 1 was defined as a dichotomous variable with a value of 0, if summer or fall, and a value of 1, if winter or spring.' Time-fixed per simulation: downstream users would set this based on the calendar date at which the testosterone profile is simulated. Source-paper variable name is `SEMESTER1`; this register uses the unsuffixed `SEMESTER` as the canonical column.",
+      source_name = "SEMESTER1"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 859L,
-    n_studies      = 7L,
-    age_range      = "21-76 years (overall median 49.9)",
-    weight_range   = "60.0-131 kg (overall median 87.0)",
+    species = "human",
+    n_subjects = 859L,
+    n_studies = 7L,
+    age_range = "21-76 years (overall median 49.9)",
+    weight_range = "60.0-131 kg (overall median 87.0)",
     sex_female_pct = 0,
     race_ethnicity = c(White = 90.6, Black = 5.8, Asian = 1.2, Other = 2.4),
-    disease_state  = "Adult hypogonadal men (mean serum testosterone < 300 ng/dL; individual morning serum testosterone <= 350 ng/dL; BMI 18-37 kg/m^2). No other medical conditions.",
-    dose_range     = "n/a (endogenous baseline only; no testosterone replacement therapy was administered before the analysed samples)",
-    regions        = "Canada (Quebec, Montreal, Toronto), United States (North Carolina, Florida, San Antonio TX), Germany",
-    notes          = "Pooled baseline / pre-dose profiles from 7 internal hypogonadism trials at inVentiv Health (4556 testosterone observations). Sampling spanned the 24-hour clock at 2-hour intervals (Table II). 22.8% Hispanic or Latino. Race was tested as a covariate but excluded from selection because of imbalance (90.6% White). Estimation in NONMEM 7.3 via SAEM (with IMP for standard errors); 1000 non-parametric bootstrap replicates all converged."
+    disease_state = "Adult hypogonadal men (mean serum testosterone < 300 ng/dL; individual morning serum testosterone <= 350 ng/dL; BMI 18-37 kg/m^2). No other medical conditions.",
+    dose_range = "n/a (endogenous baseline only; no testosterone replacement therapy was administered before the analysed samples)",
+    regions = "Canada (Quebec, Montreal, Toronto), United States (North Carolina, Florida, San Antonio TX), Germany",
+    notes = "Pooled baseline / pre-dose profiles from 7 internal hypogonadism trials at inVentiv Health (4556 testosterone observations). Sampling spanned the 24-hour clock at 2-hour intervals (Table II). 22.8% Hispanic or Latino. Race was tested as a covariate but excluded from selection because of imbalance (90.6% White). Estimation in NONMEM 7.3 via SAEM (with IMP for standard errors); 1000 non-parametric bootstrap replicates all converged."
   )
 
   ini({

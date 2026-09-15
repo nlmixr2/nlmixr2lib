@@ -23,33 +23,38 @@ Wen_2016_enrofloxacin_MIC2p0 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact = list(analyte = "Pasteurella multocida", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+    bact = list(
+      analyte = "Pasteurella multocida",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Cenrofloxacin = list(
-      description        = "Enrofloxacin concentration in the broth",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Enrofloxacin concentration in the broth",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Static enrofloxacin concentration in BHI broth held constant for the 24 h time-kill experiment. Wen 2016 Methods (Time-kill experiments paragraph): seven concentrations per isolate normalised as 0 (control), 0.5, 0.75, 1, 2, 3, 5, and 10 multiples of the isolate's MIC. For this isolate (MIC = 2.0 ug/mL), the studied concentrations were 0, 1.0, 1.5, 2.0, 4.0, 6.0, 10.0, and 20.0 ug/mL. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Enrofloxacin concentration (Wen 2016 Methods, Time-kill experiments paragraph)"
+      notes = "Static enrofloxacin concentration in BHI broth held constant for the 24 h time-kill experiment. Wen 2016 Methods (Time-kill experiments paragraph): seven concentrations per isolate normalised as 0 (control), 0.5, 0.75, 1, 2, 3, 5, and 10 multiples of the isolate's MIC. For this isolate (MIC = 2.0 ug/mL), the studied concentrations were 0, 1.0, 1.5, 2.0, 4.0, 6.0, 10.0, and 20.0 ug/mL. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Enrofloxacin concentration (Wen 2016 Methods, Time-kill experiments paragraph)"
     )
   )
 
   population <- list(
-    species             = "in vitro (Pasteurella multocida, bovine-nasal-swab isolate)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Pasteurella multocida (bovine-nasal-swab isolate from Kansas State Veterinary Diagnostic Laboratory); enrofloxacin MIC = 2.0 ug/mL (broth microdilution per CLSI; confirmed by E-test)",
-    system              = "Static time-kill experiments at 37 C in brain heart infusion (BHI) broth with shaking (200 rpm); 20 mL cultures per concentration",
-    medium              = "BHI broth (Remel)",
-    duration            = "24 h with sampling at 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, and 24 h",
-    starting_inoculum   = "5 x 10^5 CFU/mL (1:20 dilution from a 30-min recovery sub-culture)",
-    mic                 = "2.0 ug/mL (broth microdilution per CLSI; E-test confirmed)",
-    isolate_source      = "Bovine nasal swab",
-    regimens            = "Static enrofloxacin concentrations equal to 0 (control), 0.5, 0.75, 1, 2, 3, 5, and 10 multiples of the isolate MIC = 2.0 ug/mL (i.e. 0, 1.0, 1.5, 2.0, 4.0, 6.0, 10.0, 20.0 ug/mL); two independent experiments per concentration",
-    notes               = "Least-susceptible isolate in Wen 2016 (Bovine nasal swab, MIC = 2.0 ug/mL). The PD against this isolate exhibits the most-marked time-dependent characteristics (Discussion): EC50 (1.60 ug/mL) is below the MIC, Emax is the lowest of the three isolates (0.69), and the inhibitory effect plateaus at the lowest MIC multiples with the steepest Hill coefficient (4.37) (Fig. 3e,f). The most-susceptible isolate (MIC = 0.01 ug/mL) is packaged as Wen_2016_enrofloxacin_MIC0p01; the intermediate-MIC isolate (MIC = 1.5 ug/mL) is packaged as Wen_2016_enrofloxacin_MIC1p5."
+    species = "in vitro (Pasteurella multocida, bovine-nasal-swab isolate)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Pasteurella multocida (bovine-nasal-swab isolate from Kansas State Veterinary Diagnostic Laboratory); enrofloxacin MIC = 2.0 ug/mL (broth microdilution per CLSI; confirmed by E-test)",
+    system = "Static time-kill experiments at 37 C in brain heart infusion (BHI) broth with shaking (200 rpm); 20 mL cultures per concentration",
+    medium = "BHI broth (Remel)",
+    duration = "24 h with sampling at 0, 1, 2, 3, 4, 5, 6, 7, 8, 12, and 24 h",
+    starting_inoculum = "5 x 10^5 CFU/mL (1:20 dilution from a 30-min recovery sub-culture)",
+    mic = "2.0 ug/mL (broth microdilution per CLSI; E-test confirmed)",
+    isolate_source = "Bovine nasal swab",
+    regimens = "Static enrofloxacin concentrations equal to 0 (control), 0.5, 0.75, 1, 2, 3, 5, and 10 multiples of the isolate MIC = 2.0 ug/mL (i.e. 0, 1.0, 1.5, 2.0, 4.0, 6.0, 10.0, 20.0 ug/mL); two independent experiments per concentration",
+    notes = "Least-susceptible isolate in Wen 2016 (Bovine nasal swab, MIC = 2.0 ug/mL). The PD against this isolate exhibits the most-marked time-dependent characteristics (Discussion): EC50 (1.60 ug/mL) is below the MIC, Emax is the lowest of the three isolates (0.69), and the inhibitory effect plateaus at the lowest MIC multiples with the steepest Hill coefficient (4.37) (Fig. 3e,f). The most-susceptible isolate (MIC = 0.01 ug/mL) is packaged as Wen_2016_enrofloxacin_MIC0p01; the intermediate-MIC isolate (MIC = 1.5 ug/mL) is packaged as Wen_2016_enrofloxacin_MIC1p5."
   )
 
   ini({

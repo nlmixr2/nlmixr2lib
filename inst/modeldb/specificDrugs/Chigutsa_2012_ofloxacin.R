@@ -30,24 +30,24 @@ Chigutsa_2012_ofloxacin <- function() {
     sep = " "
   )
   vignette <- "Chigutsa_2012_ofloxacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight (kg). Drives the allometric scaling of",
         "the extraglomerular clearance component (cl_nonren, exponent",
         "0.75), the peripheral volume of distribution Vp (exponent 1),",
@@ -55,14 +55,14 @@ Chigutsa_2012_ofloxacin <- function() {
         "three scalings use 70 kg as the reference total body weight.",
         "Population median 55 kg (range 39-80 kg; Chigutsa 2012 Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     LBM = list(
-      description        = "Lean body mass (lean body weight)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (lean body weight)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline lean body mass (kg). Drives the allometric scaling of",
         "the central volume of distribution Vc (exponent 1, reference",
         "46 kg LBM) and is the size descriptor in the modified",
@@ -73,14 +73,14 @@ Chigutsa_2012_ofloxacin <- function() {
         "al., Clin Pharmacokinet 2005; 44:1051-1065). Population median",
         "46 kg (range 32-54 kg; Chigutsa 2012 Table 1)."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance computed with lean body mass substituted for total body weight (raw mL/min, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance computed with lean body mass substituted for total body weight (raw mL/min, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Stored under the canonical CRCL column per",
         "inst/references/covariate-columns.md (CRCL accepts raw mL/min",
         "when the source paper does not apply BSA normalization, with",
@@ -102,14 +102,14 @@ Chigutsa_2012_ofloxacin <- function() {
         "68 mL/min reference used inside ini() is the lean-body-weight",
         "version that the final model is parameterised against)."
       ),
-      source_name        = "CrCl_LBW"
+      source_name = "CrCl_LBW"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; Durban cohort)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record fed indicator. Durban patients (FED = 0)",
         "received the daily ofloxacin dose on an empty stomach; Cape",
         "Town patients (FED = 1) received the dose after a standardised",
@@ -129,17 +129,17 @@ Chigutsa_2012_ofloxacin <- function() {
         "MTT is not an artefact of the sampling schedule (bias +0.9%,",
         "precision 13%)."
       ),
-      source_name        = "FOOD"
+      source_name = "FOOD"
     )
   )
 
   covariatesDataExcluded <- list(
     HIV_POS = list(
-      description        = "HIV-1 infection status indicator (1 = HIV-positive, 0 = HIV-negative)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 infection status indicator (1 = HIV-positive, 0 = HIV-negative)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = paste(
+      notes = paste(
         "Screened in the Chigutsa 2012 stepwise covariate analysis but",
         "not retained: 'HIV infection was not a significant covariate",
         "on ofloxacin pharmacokinetics' (Results 'Ofloxacin",
@@ -149,42 +149,42 @@ Chigutsa_2012_ofloxacin <- function() {
         "first paragraph). Documented here for provenance of the",
         "covariate screen; not referenced inside model()."
       ),
-      source_name        = "HIV"
+      source_name = "HIV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 65L,
-    n_studies      = 1L,
-    age_range      = "20-63 years (2.5th-97.5th percentile)",
-    age_median     = "34 years",
-    weight_range   = "39-80 kg (2.5th-97.5th percentile total body weight); 32-54 kg lean body weight",
-    weight_median  = "55 kg total / 46 kg lean",
+    species = "human",
+    n_subjects = 65L,
+    n_studies = 1L,
+    age_range = "20-63 years (2.5th-97.5th percentile)",
+    age_median = "34 years",
+    weight_range = "39-80 kg (2.5th-97.5th percentile total body weight); 32-54 kg lean body weight",
+    weight_median = "55 kg total / 46 kg lean",
     sex_female_pct = 100 * 13 / 65,
     race_ethnicity = "Not explicitly reported; pooled cohort from two South African MDR-TB referral hospitals (Cape Town and Durban). All 13 female patients were from the Durban site.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults newly diagnosed with multidrug-resistant tuberculosis",
       "(MDR-TB; rifampicin- and isoniazid-resistant) at two referral",
       "hospitals in South Africa. 35 / 65 (54%) were HIV-1 co-infected,",
       "29 of whom were on antiretroviral therapy (efavirenz with 2",
       "NRTIs)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Once-daily oral ofloxacin 800 mg, taken in addition to other",
       "antitubercular drugs (weight-based kanamycin or amikacin,",
       "pyrazinamide, terizidone, ethionamide). 12 / 27 Durban patients",
       "additionally received 600 mg daily linezolid as part of a",
       "concurrent clinical trial (TBTC Study 30)."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Single pharmacokinetic sampling occasion at steady state (>= 1",
       "week after starting therapy). Cape Town schedule: 0.5, 3.5,",
       "5.5, 7.5, and 12 h post-dose (after breakfast). Durban",
       "schedule: 0, 1, 2, 4, 8, 11, and 24 h post-dose (fasted)."
     ),
-    regions        = "South Africa (Cape Town, Western Cape Province; Durban, KwaZulu-Natal Province).",
-    notes          = paste(
+    regions = "South Africa (Cape Town, Western Cape Province; Durban, KwaZulu-Natal Province).",
+    notes = paste(
       "Baseline demographics per Chigutsa 2012 Table 1 (median and",
       "2.5th / 97.5th percentile). 38 patients enrolled at the Cape",
       "Town site (DP Marais Hospital) and 27 at the Durban site",

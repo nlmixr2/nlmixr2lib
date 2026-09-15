@@ -9,57 +9,57 @@ Feng_2019_ipilimumab <- function() {
     sep = " "
   )
   vignette <- "Feng_2019_ipilimumab"
-  units    <- list(time = "week", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "week", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     MIX_FAST_GROW = list(
-      description        = "Fast-tumor-growth mixture subpopulation indicator: 1 = subject belongs to the fast tumor-growth subpopulation, 0 = subject belongs to the no-growth or intermediate subpopulation. Paired with MIX_NO_GROW; both 0 denotes the intermediate tumor-growth-and-shrinkage reference class. Exactly one of MIX_FAST_GROW / MIX_NO_GROW may be 1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fast-tumor-growth mixture subpopulation indicator: 1 = subject belongs to the fast tumor-growth subpopulation, 0 = subject belongs to the no-growth or intermediate subpopulation. Paired with MIX_NO_GROW; both 0 denotes the intermediate tumor-growth-and-shrinkage reference class. Exactly one of MIX_FAST_GROW / MIX_NO_GROW may be 1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not fast-growth). The all-zero pattern MIX_FAST_GROW = 0, MIX_NO_GROW = 0 is the intermediate tumor-growth-and-shrinkage subpopulation.",
-      notes              = "Latent class, not a measured covariate: in the source it is the per-subject NONMEM $MIXTURE assignment. Estimated population probability P(fast) = TP1 / (1 + TP1 + TP2) = 1.20 / 3.078 = 0.390 (Feng 2019 Table 2 footnote e). For population simulation draw the class per subject from the categorical distribution (fast, no-growth, intermediate) = (0.390, 0.325, 0.285). Feng 2019 Table S2 instead reports the empirical per-arm posterior class assignments -- 3 mg/kg 46.9% fast / 24.2% no-growth / 28.9% intermediate; 10 mg/kg 40.9% / 28.7% / 30.4% -- which differ from the population probabilities by a few percentage points because they are per-subject maximum-posterior assignments rather than the prior class mixture; see the vignette Errata.",
-      source_name        = "MIXTURE (component 1 = fast TG)"
+      notes = "Latent class, not a measured covariate: in the source it is the per-subject NONMEM $MIXTURE assignment. Estimated population probability P(fast) = TP1 / (1 + TP1 + TP2) = 1.20 / 3.078 = 0.390 (Feng 2019 Table 2 footnote e). For population simulation draw the class per subject from the categorical distribution (fast, no-growth, intermediate) = (0.390, 0.325, 0.285). Feng 2019 Table S2 instead reports the empirical per-arm posterior class assignments -- 3 mg/kg 46.9% fast / 24.2% no-growth / 28.9% intermediate; 10 mg/kg 40.9% / 28.7% / 30.4% -- which differ from the population probabilities by a few percentage points because they are per-subject maximum-posterior assignments rather than the prior class mixture; see the vignette Errata.",
+      source_name = "MIXTURE (component 1 = fast TG)"
     ),
     MIX_NO_GROW = list(
-      description        = "No-growth mixture subpopulation indicator: 1 = subject belongs to the no-growth subpopulation, in which the linear tumor-growth term is structurally zero and tumor burden decays from baseline to the non-zero steady-state plateau TBss; 0 = subject belongs to the fast-growth or intermediate subpopulation. Paired with MIX_FAST_GROW; both 0 denotes the intermediate reference class.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "No-growth mixture subpopulation indicator: 1 = subject belongs to the no-growth subpopulation, in which the linear tumor-growth term is structurally zero and tumor burden decays from baseline to the non-zero steady-state plateau TBss; 0 = subject belongs to the fast-growth or intermediate subpopulation. Paired with MIX_FAST_GROW; both 0 denotes the intermediate reference class.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not no-growth). The all-zero pattern MIX_FAST_GROW = 0, MIX_NO_GROW = 0 is the intermediate tumor-growth-and-shrinkage subpopulation.",
-      notes              = "Latent class, not a measured covariate. Estimated population probability P(no growth) = 1 / (1 + TP1 + TP2) = 1 / 3.078 = 0.325 (Feng 2019 Table 2 footnote e). This is the class the paper added to the pre-immunotherapy Wang model specifically to capture the immunotherapy response pattern in which tumor burden asymptotically approaches a durable steady-state value rather than always eventually growing (Feng 2019 Methods, 'TGD model'). Feng 2019 Table S2 empirical per-arm assignment: 24.2% (3 mg/kg) and 28.7% (10 mg/kg).",
-      source_name        = "MIXTURE (component 2 = no growth)"
+      notes = "Latent class, not a measured covariate. Estimated population probability P(no growth) = 1 / (1 + TP1 + TP2) = 1 / 3.078 = 0.325 (Feng 2019 Table 2 footnote e). This is the class the paper added to the pre-immunotherapy Wang model specifically to capture the immunotherapy response pattern in which tumor burden asymptotically approaches a durable steady-state value rather than always eventually growing (Feng 2019 Methods, 'TGD model'). Feng 2019 Table S2 empirical per-arm assignment: 24.2% (3 mg/kg) and 28.7% (10 mg/kg).",
+      source_name = "MIXTURE (component 2 = no growth)"
     ),
     LDHR = list(
-      description        = "Baseline serum lactate dehydrogenase normalized to the reporting laboratory's upper limit of normal (unitless ratio). Enters both baseline tumor burden and the linear tumor-growth rate through the log-linear form (1 + log(LDHR) * coefficient), which is centered at exactly the ULN: a patient at LDHR = 1 gets a multiplier of exactly 1.",
-      units              = "(unitless ratio)",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase normalized to the reporting laboratory's upper limit of normal (unitless ratio). Enters both baseline tumor burden and the linear tumor-growth rate through the log-linear form (1 + log(LDHR) * coefficient), which is centered at exactly the ULN: a patient at LDHR = 1 gets a multiplier of exactly 1.",
+      units = "(unitless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Feng 2019 Table 1: median 1.0, range 0.4-40.5 across the whole 688-patient analysis population (3 mg/kg 1.0, range 0.4-29.4; 10 mg/kg 1.0, range 0.5-40.5). Table 1 footnote a: 'LDH ratio indicates patient's actual value divided by the upper limit of normal. Log-transformed LDH ratio was used in tumor growth dynamics and overall survival model development due to skewed distribution.' Note this is the ULN-normalized ratio (canonical LDHR), NOT the absolute U/L activity (canonical LDH) used by the companion ipilimumab popPK models Feng_2014_ipilimumab.R and Sanghavi_2020_ipilimumab.R -- feeding a U/L value here would be off by roughly two orders of magnitude.",
-      source_name        = "BLDHU"
+      notes = "Time-fixed baseline. Feng 2019 Table 1: median 1.0, range 0.4-40.5 across the whole 688-patient analysis population (3 mg/kg 1.0, range 0.4-29.4; 10 mg/kg 1.0, range 0.5-40.5). Table 1 footnote a: 'LDH ratio indicates patient's actual value divided by the upper limit of normal. Log-transformed LDH ratio was used in tumor growth dynamics and overall survival model development due to skewed distribution.' Note this is the ULN-normalized ratio (canonical LDHR), NOT the absolute U/L activity (canonical LDH) used by the companion ipilimumab popPK models Feng_2014_ipilimumab.R and Sanghavi_2020_ipilimumab.R -- feeding a U/L value here would be off by roughly two orders of magnitude.",
+      source_name = "BLDHU"
     ),
     CAV = list(
-      description        = "Cavg1, the time-averaged ipilimumab serum concentration over the interval after the first dose, in ug/mL. Time-fixed per subject (a single first-dose exposure summary, not a running average). Supplied by the user from an upstream population PK analysis; drives the exposure effect on the linear tumor-growth rate.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Cavg1, the time-averaged ipilimumab serum concentration over the interval after the first dose, in ug/mL. Time-fixed per subject (a single first-dose exposure summary, not a running average). Supplied by the user from an upstream population PK analysis; drives the exposure effect on the linear tumor-growth rate.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Feng 2019 Methods: 'Patient-specific values of ipilimumab CL and Cavg1 were obtained from a population pharmacokinetics analysis' (reference 22, Vezina 2018, a JPKPD conference abstract not available as a full model). IMPORTANT -- Feng 2019 never states the units of Cavg1 anywhere in the text, tables, or supplement. ug/mL is inferred and is the only dimensionally feasible reading: the Table 2 coefficient is -0.00342 per unit and enters as the linear multiplier (1 + CAV * -0.00342), which stays positive only for CAV < 292. Simulating a typical 80 kg patient through modellib('Feng_2014_ipilimumab') and averaging the concentration over the first 3-week dosing interval gives Cavg1 = 20.6 ug/mL at 3 mg/kg and 68.6 ug/mL at 10 mg/kg, hence growth multipliers of 0.930 and 0.765 -- both positive, and lower at the higher dose, matching the paper's finding of a lower tumor growth rate with 10 mg/kg. In ng/mL the same exposures would give a multiplier of about -234 (a negative tumor-growth rate of absurd magnitude); in mg/mL the covariate effect would vanish to four significant figures, contradicting its retention in the final model. The paper does not define the averaging window precisely either, but the conclusion is insensitive to that: the steady-state-equivalent Dose / (CL * tau) reading gives 31.7 and 105.8 ug/mL, which is the same order of magnitude and the same qualitative result. ug/mL is also the concentration unit used by both registry ipilimumab popPK models from the same Bristol-Myers Squibb group. Set CAV = 0 to switch the exposure effect off. See the vignette Errata.",
-      source_name        = "Cavg1"
+      notes = "Feng 2019 Methods: 'Patient-specific values of ipilimumab CL and Cavg1 were obtained from a population pharmacokinetics analysis' (reference 22, Vezina 2018, a JPKPD conference abstract not available as a full model). IMPORTANT -- Feng 2019 never states the units of Cavg1 anywhere in the text, tables, or supplement. ug/mL is inferred and is the only dimensionally feasible reading: the Table 2 coefficient is -0.00342 per unit and enters as the linear multiplier (1 + CAV * -0.00342), which stays positive only for CAV < 292. Simulating a typical 80 kg patient through modellib('Feng_2014_ipilimumab') and averaging the concentration over the first 3-week dosing interval gives Cavg1 = 20.6 ug/mL at 3 mg/kg and 68.6 ug/mL at 10 mg/kg, hence growth multipliers of 0.930 and 0.765 -- both positive, and lower at the higher dose, matching the paper's finding of a lower tumor growth rate with 10 mg/kg. In ng/mL the same exposures would give a multiplier of about -234 (a negative tumor-growth rate of absurd magnitude); in mg/mL the covariate effect would vanish to four significant figures, contradicting its retention in the final model. The paper does not define the averaging window precisely either, but the conclusion is insensitive to that: the steady-state-equivalent Dose / (CL * tau) reading gives 31.7 and 105.8 ug/mL, which is the same order of magnitude and the same qualitative result. ug/mL is also the concentration unit used by both registry ipilimumab popPK models from the same Bristol-Myers Squibb group. Set CAV = 0 to switch the exposure effect off. See the vignette Errata.",
+      source_name = "Cavg1"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 688L,
-    n_studies       = 1L,
-    age_mean        = "59.9 years (SD 14.0) overall; 60.9 (SD 13.3) in the 3 mg/kg arm and 59.0 (SD 14.6) in the 10 mg/kg arm",
-    weight_mean     = "79.9 kg (SD 17.6) overall; 79.3 (SD 17.4) at 3 mg/kg and 80.6 (SD 17.7) at 10 mg/kg",
-    sex_female_pct  = 37.4,
-    disease_state   = "Previously treated or untreated unresectable or metastatic (advanced) melanoma. M stage: M0 or M1a 17.0%, M1b 20.9%, M1c 62.1%. ECOG performance status 0 in 70.6% and >= 1 in 29.5%.",
-    dose_range      = "Ipilimumab 3 mg/kg (n = 343) or 10 mg/kg (n = 345) by 90-minute intravenous infusion every 3 weeks for four doses.",
-    regions         = "Multicentre international phase III study CA184-169 (NCT01515189).",
+    species = "human",
+    n_subjects = 688L,
+    n_studies = 1L,
+    age_mean = "59.9 years (SD 14.0) overall; 60.9 (SD 13.3) in the 3 mg/kg arm and 59.0 (SD 14.6) in the 10 mg/kg arm",
+    weight_mean = "79.9 kg (SD 17.6) overall; 79.3 (SD 17.4) at 3 mg/kg and 80.6 (SD 17.7) at 10 mg/kg",
+    sex_female_pct = 37.4,
+    disease_state = "Previously treated or untreated unresectable or metastatic (advanced) melanoma. M stage: M0 or M1a 17.0%, M1b 20.9%, M1c 62.1%. ECOG performance status 0 in 70.6% and >= 1 in 29.5%.",
+    dose_range = "Ipilimumab 3 mg/kg (n = 343) or 10 mg/kg (n = 345) by 90-minute intravenous infusion every 3 weeks for four doses.",
+    regions = "Multicentre international phase III study CA184-169 (NCT01515189).",
     sampling_window = "Protocol-specified tumor assessments at weeks 12, 16 and 24; tumor burden measured as the sum of the longest diameters of target lesions under immune-related response criteria.",
-    tumor_type      = "Cutaneous / advanced melanoma. Mean baseline tumor burden 9.6 cm (SD 8.7) overall; 10.0 cm (SD 8.5) at 3 mg/kg and 9.3 cm (SD 9.0) at 10 mg/kg.",
-    assay           = "Tumor burden = sum of the longest diameters of target lesions (cm) by immune-related response criteria.",
-    notes           = "Analysis population is the 688 of the CA184-169 randomised patients for whom tumor burden data were available. Baseline LDH ratio to ULN median 1.0 (range 0.4-40.5). The paper's final tumor-dynamics model is TGD-Model 11 (mixture with three subpopulations, Cavg1 effect on TG, LDH effect on TG and TB0; BIC 6032.321, the reference model in Table S1), and it is the model encoded here. The companion overall-survival analysis is a semiparametric Cox proportional-hazards model (OS-Model 1 / S3) that is NOT encoded in this file because its nonparametric baseline hazard is not reported."
+    tumor_type = "Cutaneous / advanced melanoma. Mean baseline tumor burden 9.6 cm (SD 8.7) overall; 10.0 cm (SD 8.5) at 3 mg/kg and 9.3 cm (SD 9.0) at 10 mg/kg.",
+    assay = "Tumor burden = sum of the longest diameters of target lesions (cm) by immune-related response criteria.",
+    notes = "Analysis population is the 688 of the CA184-169 randomised patients for whom tumor burden data were available. Baseline LDH ratio to ULN median 1.0 (range 0.4-40.5). The paper's final tumor-dynamics model is TGD-Model 11 (mixture with three subpopulations, Cavg1 effect on TG, LDH effect on TG and TB0; BIC 6032.321, the reference model in Table S1), and it is the model encoded here. The companion overall-survival analysis is a semiparametric Cox proportional-hazards model (OS-Model 1 / S3) that is NOT encoded in this file because its nonparametric baseline hazard is not reported."
   )
 
   ini({

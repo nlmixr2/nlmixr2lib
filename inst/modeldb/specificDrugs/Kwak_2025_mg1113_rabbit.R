@@ -1,39 +1,39 @@
 Kwak_2025_mg1113_rabbit <- function() {
   description <- "Preclinical (rabbit). QSP (full TMDD). Allometrically scaled rabbit projection of the refined two-target target-mediated drug disposition model for MG1113, a humanized anti-tissue-factor-pathway-inhibitor (anti-TFPI) IgG4 antibody. Structure is identical to the cynomolgus-monkey fit (explicit bimolecular binding to both soluble TFPI-alpha and membrane-bound TFPI, target turnover, complex elimination, and a transit compartment for delayed subcutaneous absorption); every parameter is a PREDICTION obtained by allometric scaling of the monkey estimates to a 2.5 kg rabbit, not a rabbit fit. Externally validated against observed rabbit MG1113 profiles (Kwak 2025 Figure 3, AAFE 1.5-1.9 in the high-dose groups)."
-  reference   <- "Kwak H, Jeong YS, Kim J, Lee M, Byoun S, Aoki Y, Chung SJ, Lee W. Refined target-mediated drug disposition modeling of the anti-tissue factor pathway inhibitor antibody MG1113 in cynomolgus monkeys and rabbits. Front Pharmacol. 2025;16:1745702. doi:10.3389/fphar.2025.1745702. PMCID PMC12819659. Model equations from the Supplementary Material section 4 (Supplementary Methods, Model equations); rabbit parameter values from Table 3 (Rabbit column). Allometric exponents (0.75 for clearance, -0.25 for rate constants, 1.0 for volumes) from Germovsek E et al. MAbs. 2021;13(1):1964935. Rabbit sTFPI-alpha baseline and KD from Kwak H et al. Res Pract Thromb Haemost. 2020;4(8):1301-1312 (doi:10.1002/rth2.12438). Monkey parameters this projection scales from: see modellib('Kwak_2025_mg1113_monkey')."
-  vignette    <- "Kwak_2025_mg1113"
+  reference <- "Kwak H, Jeong YS, Kim J, Lee M, Byoun S, Aoki Y, Chung SJ, Lee W. Refined target-mediated drug disposition modeling of the anti-tissue factor pathway inhibitor antibody MG1113 in cynomolgus monkeys and rabbits. Front Pharmacol. 2025;16:1745702. doi:10.3389/fphar.2025.1745702. PMCID PMC12819659. Model equations from the Supplementary Material section 4 (Supplementary Methods, Model equations); rabbit parameter values from Table 3 (Rabbit column). Allometric exponents (0.75 for clearance, -0.25 for rate constants, 1.0 for volumes) from Germovsek E et al. MAbs. 2021;13(1):1964935. Rabbit sTFPI-alpha baseline and KD from Kwak H et al. Res Pract Thromb Haemost. 2020;4(8):1301-1312 (doi:10.1002/rth2.12438). Monkey parameters this projection scales from: see modellib('Kwak_2025_mg1113_monkey')."
+  vignette <- "Kwak_2025_mg1113"
 
   paper_specific_compartments <- c("stfpi", "mtfpi", "astfpi", "amtfpi")
 
-  units       <- list(time = "day", dosing = "nmol", concentration = "nM")
+  units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   # Issue #482: the four TFPI-species states are carried by the paper as
   # CONCENTRATIONS (nM) in the central compartment, not as amounts.
   compartmentData <- list(
-    depot       = list(analyte = "MG1113",                                units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "MG1113",                                units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "free MG1113",                           units = "nmol", specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "free MG1113",                           units = "nmol", specimen = "plasma",              verified = TRUE),
-    stfpi       = list(analyte = "free soluble TFPI-alpha",               units = "nM",   specimen = "plasma",              verified = TRUE),
-    mtfpi       = list(analyte = "free membrane-bound TFPI",              units = "nM",   specimen = "plasma",              verified = TRUE),
-    astfpi      = list(analyte = "MG1113 / soluble TFPI-alpha complex",   units = "nM",   specimen = "plasma",              verified = TRUE),
-    amtfpi      = list(analyte = "MG1113 / membrane-bound TFPI complex",  units = "nM",   specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "MG1113", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "MG1113", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "free MG1113", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "free MG1113", units = "nmol", specimen = "plasma", verified = TRUE),
+    stfpi = list(analyte = "free soluble TFPI-alpha", units = "nM", specimen = "plasma", verified = TRUE),
+    mtfpi = list(analyte = "free membrane-bound TFPI", units = "nM", specimen = "plasma", verified = TRUE),
+    astfpi = list(analyte = "MG1113 / soluble TFPI-alpha complex", units = "nM", specimen = "plasma", verified = TRUE),
+    amtfpi = list(analyte = "MG1113 / membrane-bound TFPI complex", units = "nM", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rabbit",
-    n_subjects     = NA,
-    n_studies      = 1,
-    age_range      = "2-3 months",
-    weight_range   = "2.5 kg representative body weight (Kwak 2025 section 2.6, citing Zhao 2015)",
+    species = "rabbit",
+    n_subjects = NA,
+    n_studies = 1,
+    age_range = "2-3 months",
+    weight_range = "2.5 kg representative body weight (Kwak 2025 section 2.6, citing Zhao 2015)",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "Healthy male rabbits (Orient Bio); the 90-minute sTFPI-alpha comparison points come from a separate MG1113 efficacy study in a rabbit model of hemophilia A (Kwak 2020)",
-    dose_range     = "Single i.v. at 2.75, 17.2 or 34.4 nmol/kg; single s.c. at 17.2, 34.4, 68.8 or 137.6 nmol/kg; n = 2-10 per group",
-    regions        = "Republic of Korea",
-    notes          = paste0(
+    disease_state = "Healthy male rabbits (Orient Bio); the 90-minute sTFPI-alpha comparison points come from a separate MG1113 efficacy study in a rabbit model of hemophilia A (Kwak 2020)",
+    dose_range = "Single i.v. at 2.75, 17.2 or 34.4 nmol/kg; single s.c. at 17.2, 34.4, 68.8 or 137.6 nmol/kg; n = 2-10 per group",
+    regions = "Republic of Korea",
+    notes = paste0(
       "PREDICTION, NOT A FIT. No parameter in this file was estimated from ",
       "rabbit data: every value is the monkey rank 1 estimate scaled ",
       "allometrically to a 2.5 kg rabbit (exponents 0.75 for CLD, -0.25 for ",
@@ -49,8 +49,8 @@ Kwak_2025_mg1113_rabbit <- function() {
       "section 3.2). Typical-value simulator: no IIV and no residual-error ",
       "model are reported anywhere in the paper."
     ),
-    model_class    = "QSP / full TMDD (allometrically scaled interspecies projection)",
-    n_states       = 8
+    model_class = "QSP / full TMDD (allometrically scaled interspecies projection)",
+    n_states = 8
   )
 
   ini({

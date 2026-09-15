@@ -9,42 +9,42 @@ VasquezBahena_2009_lumiracoxib_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumiracoxib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumiracoxib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
-    cox2        = list(analyte = "COX-2", units = "mg", specimen = "tissue", verified = FALSE)
+    cox2 = list(analyte = "COX-2", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject assigned oral lumiracoxib dose level (mg/kg). Enters the dose-dependent relative-bioavailability formula Frel = 1 - IMAX * DOSE / (D50 + DOSE).",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-subject assigned oral lumiracoxib dose level (mg/kg). Enters the dose-dependent relative-bioavailability formula Frel = 1 - IMAX * DOSE / (D50 + DOSE).",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reported per-subject mg/kg dose level (Methods, Study design: 1, 3, 10 or 30 mg/kg in experiment I; 10 or 30 mg/kg in experiment II). The mg amount delivered into the depot at the dose record (`amt`) equals DOSE * body weight in kg; the mg/kg covariate is required separately because the D50 = 4.3 estimate in Table 1 is on the mg/kg scale.",
-      source_name        = "DOSE"
+      notes = "Reported per-subject mg/kg dose level (Methods, Study design: 1, 3, 10 or 30 mg/kg in experiment I; 10 or 30 mg/kg in experiment II). The mg amount delivered into the depot at the dose record (`amt`) equals DOSE * body weight in kg; the mg/kg covariate is required separately because the D50 = 4.3 estimate in Table 1 is on the mg/kg scale.",
+      source_name = "DOSE"
     ),
     CARRAGEENAN = list(
-      description        = "Binary indicator for intraplantar carrageenan injection (1) vs saline injection (0). Switches the COX-2 synthesis-rate model from a constant rate (saline) to a gamma-function time-variant rate (carrageenan).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for intraplantar carrageenan injection (1) vs saline injection (0). Switches the COX-2 synthesis-rate model from a constant rate (saline) to a gamma-function time-variant rate (carrageenan).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (saline injection / no inflammatory stimulus)",
-      notes              = "Methods, Study design: animals in groups II-IX received a single intraplantar injection of 1% carrageenan suspension (100 uL) into the right hind paw at the experiment start; group I (and group VII in experiment II for the pre-vehicle window) received saline. CARRAGEENAN = 0 selects ks_cox2 = ks_cox2_saline (Table 3 footnote a); CARRAGEENAN = 1 selects the time-variant gamma function ks_cox2(t) = A * t^alpha * exp(-beta * t) (paper Eq. 3, Table 3 'Experiment I and II').",
-      source_name        = "CARRAGEENAN"
+      notes = "Methods, Study design: animals in groups II-IX received a single intraplantar injection of 1% carrageenan suspension (100 uL) into the right hind paw at the experiment start; group I (and group VII in experiment II for the pre-vehicle window) received saline. CARRAGEENAN = 0 selects ks_cox2 = ks_cox2_saline (Table 3 footnote a); CARRAGEENAN = 1 selects the time-variant gamma function ks_cox2(t) = A * t^alpha * exp(-beta * t) (paper Eq. 3, Table 3 'Experiment I and II').",
+      source_name = "CARRAGEENAN"
     )
   )
 
   population <- list(
-    species         = "rat (Wistar, female, fasted)",
-    n_subjects      = 80L,
-    n_studies       = 2L,
-    age_range       = "Not reported",
-    weight_range    = "0.180-0.200 kg",
-    sex_female_pct  = 100,
-    disease_state   = "Carrageenan-induced thermal hyperalgesia in the right hind paw (1% carrageenan suspension, 100 uL intraplantar) assessed by the Hargreaves plantar test",
-    dose_range      = "0, 1, 3, 10 or 30 mg/kg oral lumiracoxib (single dose; 0.5% carboxymethylcellulose / Tween 80 suspension, 4 mL/kg)",
-    regions         = "Mexico (Centro de Investigacion y de Estudios Avanzados del Instituto Politecnico Nacional, Mexico City)",
-    notes           = "Methods, Animals + Study design. Experiment I: 60 female Wistar rats randomly allocated to six groups (I = saline; II = carrageenan only; III-VI = carrageenan + lumiracoxib 1/3/10/30 mg/kg co-administered with carrageenan). Experiment II: 20 female rats randomly allocated to three groups (VII = carrageenan + vehicle; VIII = carrageenan + 10 mg/kg lumiracoxib at 4 h post-carrageenan; IX = carrageenan + 30 mg/kg lumiracoxib at 4 h post-carrageenan). PK sampling was performed only in experiment I (13 nominal time points between 0.083 and 10 h after lumiracoxib). Latency-time PD measurements were collected in both experiments (9 time points in experiment I covering 1-10 h, 16 time points in experiment II covering 1-24 h after carrageenan)."
+    species = "rat (Wistar, female, fasted)",
+    n_subjects = 80L,
+    n_studies = 2L,
+    age_range = "Not reported",
+    weight_range = "0.180-0.200 kg",
+    sex_female_pct = 100,
+    disease_state = "Carrageenan-induced thermal hyperalgesia in the right hind paw (1% carrageenan suspension, 100 uL intraplantar) assessed by the Hargreaves plantar test",
+    dose_range = "0, 1, 3, 10 or 30 mg/kg oral lumiracoxib (single dose; 0.5% carboxymethylcellulose / Tween 80 suspension, 4 mL/kg)",
+    regions = "Mexico (Centro de Investigacion y de Estudios Avanzados del Instituto Politecnico Nacional, Mexico City)",
+    notes = "Methods, Animals + Study design. Experiment I: 60 female Wistar rats randomly allocated to six groups (I = saline; II = carrageenan only; III-VI = carrageenan + lumiracoxib 1/3/10/30 mg/kg co-administered with carrageenan). Experiment II: 20 female rats randomly allocated to three groups (VII = carrageenan + vehicle; VIII = carrageenan + 10 mg/kg lumiracoxib at 4 h post-carrageenan; IX = carrageenan + 30 mg/kg lumiracoxib at 4 h post-carrageenan). PK sampling was performed only in experiment I (13 nominal time points between 0.083 and 10 h after lumiracoxib). Latency-time PD measurements were collected in both experiments (9 time points in experiment I covering 1-10 h, 16 time points in experiment II covering 1-24 h after carrageenan)."
   )
 
   ini({

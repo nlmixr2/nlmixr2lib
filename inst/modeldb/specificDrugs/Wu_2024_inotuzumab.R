@@ -8,73 +8,88 @@ Wu_2024_inotuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "inotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "inotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "inotuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Baseline lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on CL_SS (exponent 1.05), Vc (0.977), and CL_TIME (0.687) with reference 52.7 kg (population median; Wu 2024 Table 3 footnote). Estimated by Boer's equations for adults and the Peters et al. equation for children (Wu 2024 Table 2 footnote b).",
-      source_name        = "LBM"
+      notes = "Time-fixed baseline. Power effect on CL_SS (exponent 1.05), Vc (0.977), and CL_TIME (0.687) with reference 52.7 kg (population median; Wu 2024 Table 3 footnote). Estimated by Boer's equations for adults and the Peters et al. equation for children (Wu 2024 Table 2 footnote b).",
+      source_name = "LBM"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.296) for BCP-ALL patients only, with reference 60 years (per Wu 2024 Table 3). For NHL patients the AGE effect is gated off via DIS_BCPALL.",
-      source_name        = "AGE"
+      notes = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.296) for BCP-ALL patients only, with reference 60 years (per Wu 2024 Table 3). For NHL patients the AGE effect is gated off via DIS_BCPALL.",
+      source_name = "AGE"
     ),
     DIS_BCPALL = list(
-      description        = "B-cell precursor acute lymphoblastic leukemia disease-state indicator (1 = BCP-ALL, 0 = B-cell non-Hodgkin's lymphoma)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "B-cell precursor acute lymphoblastic leukemia disease-state indicator (1 = BCP-ALL, 0 = B-cell non-Hodgkin's lymphoma)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (B-cell NHL)",
-      notes              = "Wu 2024 calls this the 'ALL effect' and notes it accounts for both disease type (NHL vs ALL) and the corresponding bioanalytical analysis method (ELISA for adult NHL vs HPLC-MS for ALL). Fractional-change (dummy-variable) effects on CL_SS (-0.767) and CL_TIME (-0.362), and gates the BLSTABL and AGE effects on cl_exp_kdes (cl_exp_kdes itself also takes a -0.924 fractional change for BCP-ALL). Source column 'ALL'; renamed to canonical DIS_BCPALL per inst/references/covariate-columns.md.",
-      source_name        = "ALL"
+      notes = "Wu 2024 calls this the 'ALL effect' and notes it accounts for both disease type (NHL vs ALL) and the corresponding bioanalytical analysis method (ELISA for adult NHL vs HPLC-MS for ALL). Fractional-change (dummy-variable) effects on CL_SS (-0.767) and CL_TIME (-0.362), and gates the BLSTABL and AGE effects on cl_exp_kdes (cl_exp_kdes itself also takes a -0.924 fractional change for BCP-ALL). Source column 'ALL'; renamed to canonical DIS_BCPALL per inst/references/covariate-columns.md.",
+      source_name = "ALL"
     ),
     CONMED_RITUX = list(
-      description        = "Concomitant rituximab combination-therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rituximab combination-therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant rituximab)",
-      notes              = "Wu 2024 Table 3 footnote b: in the ITCC-059 reanalysis the reference category is 'without rituximab' (RITUX = 0); the original adult Garrett 2019 model used 'with rituximab' as reference. Fractional change on CL_SS: -0.132 (i.e., CL_SS is ~13% lower with concomitant rituximab). Source column 'RITUX'.",
-      source_name        = "RITUX"
+      notes = "Wu 2024 Table 3 footnote b: in the ITCC-059 reanalysis the reference category is 'without rituximab' (RITUX = 0); the original adult Garrett 2019 model used 'with rituximab' as reference. Fractional change on CL_SS: -0.132 (i.e., CL_SS is ~13% lower with concomitant rituximab). Source column 'RITUX'.",
+      source_name = "RITUX"
     ),
     BLSTABL = list(
-      description        = "Baseline absolute blast counts in peripheral blood",
-      units              = "10^9 counts/L",
-      type               = "continuous",
+      description = "Baseline absolute blast counts in peripheral blood",
+      units = "10^9 counts/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.0484) for BCP-ALL patients only, with reference 0.352 x 10^9 counts (population median for BCP-ALL; Wu 2024 Table 3). Not applicable to NHL patients (the BLSTABL effect is gated off via DIS_BCPALL); when simulating an NHL patient supply BLSTABL = 0.352 (the reference) so the gated power term evaluates to 1.",
-      source_name        = "BLSTABL"
+      notes = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.0484) for BCP-ALL patients only, with reference 0.352 x 10^9 counts (population median for BCP-ALL; Wu 2024 Table 3). Not applicable to NHL patients (the BLSTABL effect is gated off via DIS_BCPALL); when simulating an NHL patient supply BLSTABL = 0.352 (the reference) so the gated power term evaluates to 1.",
+      source_name = "BLSTABL"
     )
   )
 
   population <- list(
-    n_subjects     = 818L,
-    n_studies      = 12L,
-    cohorts        = list(
-      adult_NHL          = list(n = 531L, observations = 5609L, age_median = "65 years (range 18-92)", LBM_median = "53.6 kg (range 24.4-87.4)"),
-      adult_BCP_ALL      = list(n = 234L, observations = 2752L, age_median = "46 years (range 20-79)", LBM_median = "54.4 kg (range 29.4-95.9)"),
-      pediatric_BCP_ALL  = list(n = 53L,  observations = 563L,  age_median = "9 years (range 1-17)",   LBM_median = "29.5 kg (range 10.9-69.0)")
+    n_subjects = 818L,
+    n_studies = 12L,
+    cohorts = list(
+      adult_NHL = list(
+        n = 531L,
+        observations = 5609L,
+        age_median = "65 years (range 18-92)",
+        LBM_median = "53.6 kg (range 24.4-87.4)"
+      ),
+      adult_BCP_ALL = list(
+        n = 234L,
+        observations = 2752L,
+        age_median = "46 years (range 20-79)",
+        LBM_median = "54.4 kg (range 29.4-95.9)"
+      ),
+      pediatric_BCP_ALL = list(
+        n = 53L,
+        observations = 563L,
+        age_median = "9 years (range 1-17)",
+        LBM_median = "29.5 kg (range 10.9-69.0)"
+      )
     ),
-    age_range      = "1-92 years overall (adult NHL 18-92; adult BCP-ALL 20-79; pediatric BCP-ALL 1-17)",
-    age_median     = "Adult NHL 65 y; adult BCP-ALL 46 y; pediatric BCP-ALL 9 y (Wu 2024 Table 2)",
-    weight_range   = "12.7-154 kg (Wu 2024 Table 2)",
-    weight_median  = "73.2 kg (adult NHL); 74.0 kg (adult BCP-ALL); 34.3 kg (pediatric BCP-ALL)",
+    age_range = "1-92 years overall (adult NHL 18-92; adult BCP-ALL 20-79; pediatric BCP-ALL 1-17)",
+    age_median = "Adult NHL 65 y; adult BCP-ALL 46 y; pediatric BCP-ALL 9 y (Wu 2024 Table 2)",
+    weight_range = "12.7-154 kg (Wu 2024 Table 2)",
+    weight_median = "73.2 kg (adult NHL); 74.0 kg (adult BCP-ALL); 34.3 kg (pediatric BCP-ALL)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in detail in Wu 2024 main text.",
-    disease_state  = "Relapsed/refractory CD22+ B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and relapsed/refractory B-cell non-Hodgkin's lymphoma (NHL).",
-    dose_range     = "Adult approved regimen: 1.8 mg/m^2/cycle (cycle 1) then 1.5 mg/m^2/cycle (subsequent cycles) IV, fractionated weekly on days 1, 8, 15. Pediatric RP2D matches the adult regimen (1.8 mg/m^2/cycle in cycle 1: 0.8 + 0.5 + 0.5 mg/m^2; 1.5 mg/m^2/cycle thereafter: 0.5 + 0.5 + 0.5 mg/m^2). Phase IA pediatric dose level 1 was 1.4 mg/m^2/cycle (0.6 + 0.4 + 0.4) then 1.2 mg/m^2/cycle (0.4 + 0.4 + 0.4).",
-    regions        = "Multi-regional (US adult studies via Pfizer; ITCC-059 pediatric study spanned European centers and additional sites internationally).",
+    disease_state = "Relapsed/refractory CD22+ B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and relapsed/refractory B-cell non-Hodgkin's lymphoma (NHL).",
+    dose_range = "Adult approved regimen: 1.8 mg/m^2/cycle (cycle 1) then 1.5 mg/m^2/cycle (subsequent cycles) IV, fractionated weekly on days 1, 8, 15. Pediatric RP2D matches the adult regimen (1.8 mg/m^2/cycle in cycle 1: 0.8 + 0.5 + 0.5 mg/m^2; 1.5 mg/m^2/cycle thereafter: 0.5 + 0.5 + 0.5 mg/m^2). Phase IA pediatric dose level 1 was 1.4 mg/m^2/cycle (0.6 + 0.4 + 0.4) then 1.2 mg/m^2/cycle (0.4 + 0.4 + 0.4).",
+    regions = "Multi-regional (US adult studies via Pfizer; ITCC-059 pediatric study spanned European centers and additional sites internationally).",
     n_observations = 8924L,
     bioanalytic_methods = "Adult NHL: validated ELISA (direct measurement of N-acetyl-gamma-calicheamicin dimethyl hydrazide linked to the InO antibody). Adult BCP-ALL and pediatric BCP-ALL: HPLC-MS/MS for the conjugated calicheamicin released from the ADC, with InO quantitation based on the average drug-to-antibody ratio of the dosing standard. Three separate residual error magnitudes were estimated to capture the assay differences (Wu 2024 Table 3, footnote d).",
-    notes          = "Final population PK model from the Wu 2024 (PMID 38907948) reanalysis of the Garrett 2019 adult model, refit on pooled adult + pediatric data and extended with ALL-effect on CL_TIME and AGE-effect on cl_exp_kdes. Used to evaluate exposure at the pediatric RP2D and to support 'no further dose adjustment required' for pediatric BCP-ALL. NONMEM 7.5.0 (SAEM + IMP); Pearl-speaks-NONMEM 5.3.0; SIR for parameter precision."
+    notes = "Final population PK model from the Wu 2024 (PMID 38907948) reanalysis of the Garrett 2019 adult model, refit on pooled adult + pediatric data and extended with ALL-effect on CL_TIME and AGE-effect on cl_exp_kdes. Used to evaluate exposure at the pediatric RP2D and to support 'no further dose adjustment required' for pediatric BCP-ALL. NONMEM 7.5.0 (SAEM + IMP); Pearl-speaks-NONMEM 5.3.0; SIR for parameter precision."
   )
 
   ini({

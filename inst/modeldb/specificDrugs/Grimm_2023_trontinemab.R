@@ -13,38 +13,38 @@ Grimm_2023_trontinemab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central              = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1          = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    brain_cerebellum     = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_hippocampus    = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_striatum       = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    brain_cortex         = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    central = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trontinemab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_cerebellum = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_hippocampus = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_striatum = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_cortex = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
     brain_choroid_plexus = list(analyte = "trontinemab", units = NA_character_, specimen = "tissue", verified = FALSE),
-    csf                  = list(analyte = "trontinemab", units = NA_character_, specimen = "CSF", verified = FALSE)
+    csf = list(analyte = "trontinemab", units = NA_character_, specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling; reference weight 5 kg (cynomolgus monkey). Allometric exponent 0.85 on clearances, 1 on volumes.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling; reference weight 5 kg (cynomolgus monkey). Allometric exponent 0.85 on clearances, 1 on volumes.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
+    n_subjects = "TODO: from source paper",
+    n_studies = "TODO: from source paper",
+    age_range = "TODO: from source paper",
+    weight_range = "TODO: from source paper",
     sex_female_pct = "TODO: from source paper",
-    species        = "Cynomolgus monkey (Macaca fascicularis)",
-    disease_state  = "Healthy non-human primates (no amyloid pathology)",
-    dose_range     = "TODO: from source paper (intravenous dosing, mg/kg)",
-    regions        = "Preclinical (non-human primate study)",
-    notes          = "Non-human primate (NHP) dataset used to characterize plasma PK and brain-region distribution of trontinemab. Reference body weight 5 kg. Demographic details (exact N, age, weight, sex distribution) TODO: extract from Grimm 2023 methods / supplement."
+    species = "Cynomolgus monkey (Macaca fascicularis)",
+    disease_state = "Healthy non-human primates (no amyloid pathology)",
+    dose_range = "TODO: from source paper (intravenous dosing, mg/kg)",
+    regions = "Preclinical (non-human primate study)",
+    notes = "Non-human primate (NHP) dataset used to characterize plasma PK and brain-region distribution of trontinemab. Reference body weight 5 kg. Demographic details (exact N, age, weight, sex distribution) TODO: extract from Grimm 2023 methods / supplement."
   )
 
   ini({

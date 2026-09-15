@@ -24,8 +24,8 @@ Sharma_2018_SHetA2_rat <- function() {
   )
   vignette <- "Sharma_2018_SHetA2"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -33,22 +33,22 @@ Sharma_2018_SHetA2_rat <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Crl:CD Sprague-Dawley)",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "(not reported in the source publication)",
-    weight_range   = "260-347 g",
+    species = "rat (Crl:CD Sprague-Dawley)",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "(not reported in the source publication)",
+    weight_range = "260-347 g",
     sex_female_pct = NA,
-    disease_state  = "healthy; not fasted",
-    dose_range     = paste(
+    disease_state = "healthy; not fasted",
+    dose_range = paste(
       "IV: single 5 mg/kg dose in PEG400:Ethanol:Saline",
       "(57.1%:14.3%:28.6%). PO: 100, 500, or 2000 mg/kg/day in 1%",
       "methylcellulose / 0.2% Tween 80 by gavage at 10 mL/kg/day for 28",
@@ -56,8 +56,8 @@ Sharma_2018_SHetA2_rat <- function() {
       "and on week 4/5 for the oral arm. Reference [11] = the underlying",
       "preclinical 28-day toxicology study."
     ),
-    regions        = "USA",
-    notes          = paste(
+    regions = "USA",
+    notes = paste(
       "Crl:CD (SD) rats (260-347 g). Serial blood by retro-orbital",
       "puncture at 0, 0.08, 0.25, 0.5, 1, 2, 4, 6 h after IV dosing and",
       "at 0, 0.5, 1, 2, 4, 6, 8, 24 h after oral dosing on week 4 or 5.",

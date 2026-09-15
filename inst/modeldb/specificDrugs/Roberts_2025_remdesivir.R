@@ -24,7 +24,8 @@ Roberts_2025_remdesivir <- function() {
     "either remdesivir parameter. Between-subject variability was estimated",
     "on the clearance and volume of both compounds. Residual error is",
     "combined proportional-plus-additive for remdesivir and proportional",
-    "for GS-441524.")
+    "for GS-441524."
+  )
   reference <- "Roberts DM, Liu X, Parker SL, Burke A, Peek J, Carland JE, et al. Population Pharmacokinetic Modelling of Remdesivir and Its Metabolite GS-441524 in Hospitalised Patients with COVID-19. Clin Pharmacokinet. 2025;64(5):723-735. doi:10.1007/s40262-025-01496-2"
   vignette <- "Roberts_2025_remdesivir"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
@@ -38,45 +39,45 @@ Roberts_2025_remdesivir <- function() {
   # Verified against the MLXTRAN source listing in the Supplementary
   # Material ("MONOLIX model file", states A1 and A2).
   compartmentData <- list(
-    central          = list(analyte = "remdesivir", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "remdesivir", units = "umol", specimen = "plasma", verified = TRUE),
     central_gs441524 = list(analyte = "GS-441524", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated from serum creatinine with the CKD-EPI equation, BSA-normalised.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated from serum creatinine with the CKD-EPI equation, BSA-normalised.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roberts 2025 Methods 2.1: 'Estimated glomerular filtration rate (eGFR) was calculated on the basis of serum creatinine concentrations using the chronic kidney disease epidemiology collaboration formula (CKD-EPI) formula', with caution applied in patients with significant acute kidney injury. Patients with eGFR < 30 mL/min/1.73 m^2 were excluded, so the model is not informed below that value. Enters as a power effect on GS-441524 apparent clearance only, normalised to 80 mL/min/1.73 m^2 (the whole-cohort median): (CL/fm)_i = 15.9 * (eGFR_i / 80)^1.12. Baseline (not time-varying) eGFR was used.",
-      source_name        = "eGFR"
+      notes = "Roberts 2025 Methods 2.1: 'Estimated glomerular filtration rate (eGFR) was calculated on the basis of serum creatinine concentrations using the chronic kidney disease epidemiology collaboration formula (CKD-EPI) formula', with caution applied in patients with significant acute kidney injury. Patients with eGFR < 30 mL/min/1.73 m^2 were excluded, so the model is not informed below that value. Enters as a power effect on GS-441524 apparent clearance only, normalised to 80 mL/min/1.73 m^2 (the whole-cohort median): (CL/fm)_i = 15.9 * (eGFR_i / 80)^1.12. Baseline (not time-varying) eGFR was used.",
+      source_name = "eGFR"
     ),
     AGE = list(
-      description        = "Age at enrolment.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roberts 2025 Results 3.2 covariate equation: (V/fm)_i = 429 * (Age_i / 68.5)^-1.15. Note the normalising constant is 68.5 years, which is NOT the median age quoted elsewhere in the paper (70 years for the whole cohort, 69 years for the model-building subset); 68.5 is the value printed in the covariate equation and is what reproduces the reported typical volume, so it is used here verbatim. Cohort age range 25-97 years.",
-      source_name        = "Age"
+      notes = "Roberts 2025 Results 3.2 covariate equation: (V/fm)_i = 429 * (Age_i / 68.5)^-1.15. Note the normalising constant is 68.5 years, which is NOT the median age quoted elsewhere in the paper (70 years for the whole cohort, 69 years for the model-building subset); 68.5 is the value printed in the covariate equation and is what reproduces the reported typical volume, so it is used here verbatim. Cohort age range 25-97 years.",
+      source_name = "Age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
     n_observations = "Model-building dataset: 49 remdesivir plasma concentrations from 12 patients and 153 GS-441524 plasma concentrations from 25 patients (Roberts 2025 Results 3.2). The 8 remaining patients formed an external-validation set used only to assess predictive performance (GS-441524 concentrations only).",
-    age_range      = "25-97 years (whole cohort; median 70, IQR 60-77). Model-building subset median 69 years (IQR 60-73; range 25-97); external-validation subset median 78 years (IQR 64-80; range 25-86).",
-    age_median     = "70 years",
-    weight_range   = "44-132 kg (model-building subset; median 92 kg, IQR 65-104). Weight was not recorded for the external-validation subset.",
-    weight_median  = "92 kg",
+    age_range = "25-97 years (whole cohort; median 70, IQR 60-77). Model-building subset median 69 years (IQR 60-73; range 25-97); external-validation subset median 78 years (IQR 64-80; range 25-86).",
+    age_median = "70 years",
+    weight_range = "44-132 kg (model-building subset; median 92 kg, IQR 65-104). Weight was not recorded for the external-validation subset.",
+    weight_median = "92 kg",
     sex_female_pct = 36.4,
-    disease_state  = "Adults (>18 years) admitted to hospital with SARS-CoV-2 infection confirmed by nucleic acid amplification test within 14 days of symptom onset, prescribed remdesivir for treatment of COVID-19. Worst disease severity in model-building survivors: mild 20%, moderate 16%, severe 40%, critical 20%. 72% received oxygen therapy, 30% were admitted to intensive care and 12% received ventilatory support. No patient had pre-existing chronic liver disease or received kidney replacement or vasopressor therapy.",
+    disease_state = "Adults (>18 years) admitted to hospital with SARS-CoV-2 infection confirmed by nucleic acid amplification test within 14 days of symptom onset, prescribed remdesivir for treatment of COVID-19. Worst disease severity in model-building survivors: mild 20%, moderate 16%, severe 40%, critical 20%. 72% received oxygen therapy, 30% were admitted to intensive care and 12% received ventilatory support. No patient had pre-existing chronic liver disease or received kidney replacement or vasopressor therapy.",
     renal_function = "Median baseline eGFR 80 mL/min/1.73 m^2 (range 33-124) in the whole cohort; model-building subset median 72 (IQR 59-87; range 34-124). Chronic kidney disease (eGFR 30-60) in 40% of the model-building subset. Patients with eGFR < 30 mL/min/1.73 m^2 were excluded from the study, so the model is uninformed below that value.",
-    co_medication  = "Corticosteroids (mostly dexamethasone) 88%, baricitinib 48%, tocilizumab 8%, sotrovimab 8%, antibiotics 24% (model-building subset; Table 1).",
-    dose_range     = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily from day 2 up to day 5 or day 10, each administered as a 60-minute infusion. No alternative regimen was studied clinically; the alternative regimens explored in the paper are simulation only.",
-    regions        = "Four hospitals in Australia (St Vincent's Hospital Sydney, The University of Queensland, Royal Brisbane and Women's Hospital and one further site), July 2021 to August 2022.",
-    notes          = "Prospective, open-label, multi-centre, observational study. Covariates tested but not retained: gender, height, body weight, BMI, SOFA score, serum albumin, bilirubin, ALT, AST, ALP and GGT (Roberts 2025 Methods 2.4). Baseline demographics are in Roberts 2025 Table 1. Estimation was by SAEM in Monolix 2021R2; the final model was checked by a 1000-run bootstrap (Rsmlx 4.0.2) and externally validated against the held-out 8 patients (median prediction error -15.2%, mean -19.5%, RMSE 30.5%)."
+    co_medication = "Corticosteroids (mostly dexamethasone) 88%, baricitinib 48%, tocilizumab 8%, sotrovimab 8%, antibiotics 24% (model-building subset; Table 1).",
+    dose_range = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily from day 2 up to day 5 or day 10, each administered as a 60-minute infusion. No alternative regimen was studied clinically; the alternative regimens explored in the paper are simulation only.",
+    regions = "Four hospitals in Australia (St Vincent's Hospital Sydney, The University of Queensland, Royal Brisbane and Women's Hospital and one further site), July 2021 to August 2022.",
+    notes = "Prospective, open-label, multi-centre, observational study. Covariates tested but not retained: gender, height, body weight, BMI, SOFA score, serum albumin, bilirubin, ALT, AST, ALP and GGT (Roberts 2025 Methods 2.4). Baseline demographics are in Roberts 2025 Table 1. Estimation was by SAEM in Monolix 2021R2; the final model was checked by a 1000-run bootstrap (Rsmlx 4.0.2) and externally validated against the held-out 8 patients (median prediction error -15.2%, mean -19.5%, RMSE 30.5%)."
   )
 
   ini({

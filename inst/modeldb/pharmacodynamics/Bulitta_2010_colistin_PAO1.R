@@ -9,7 +9,11 @@ Bulitta_2010_colistin_PAO1 <- function() {
     sep = " "
   )
   vignette <- "Bulitta_2010_colistin"
-  units <- list(time = "h", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (colistin in broth)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)"
+  )
 
   # Ccolistin and Ccations are experimentally-controlled in-vitro inputs
   # (static colistin concentration in broth + sum of Mg2+ and Ca2+ molar
@@ -28,44 +32,69 @@ Bulitta_2010_colistin_PAO1 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_slag = list(analyte = "Pseudomonas aeruginosa PAO1 cells", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_s    = list(analyte = "Pseudomonas aeruginosa PAO1 cells", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_i    = list(analyte = "Pseudomonas aeruginosa PAO1 cells", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    bact_r    = list(analyte = "Pseudomonas aeruginosa PAO1 cells", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
-    signal    = list(analyte = "colistin signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    bact_slag = list(
+      analyte = "Pseudomonas aeruginosa PAO1 cells",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_s = list(
+      analyte = "Pseudomonas aeruginosa PAO1 cells",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_i = list(
+      analyte = "Pseudomonas aeruginosa PAO1 cells",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    bact_r = list(
+      analyte = "Pseudomonas aeruginosa PAO1 cells",
+      units = NA_character_,
+      specimen = "bronchoalveolar lavage",
+      verified = FALSE
+    ),
+    signal = list(
+      analyte = "colistin signal molecule",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Ccolistin = list(
-      description        = "Colistin concentration in growth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Colistin concentration in growth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Static concentration in supplemented LB broth held constant over the 24 h experiment (the in vitro PD design supplies colistin once at t = 0 and replication of the experiments confirmed negligible degradation; the paper's Discussion notes 'drug degradation was not the primary reason for the inoculum effect of colistin'). PAO1 was studied at 11 colistin concentrations up to 256 mg/L (64x the LB-broth MIC of 4 mg/L). In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
-      source_name        = "Ccolistin (Bulitta 2010 Methods, paragraph on Time-kill experiments)"
+      notes = "Static concentration in supplemented LB broth held constant over the 24 h experiment (the in vitro PD design supplies colistin once at t = 0 and replication of the experiments confirmed negligible degradation; the paper's Discussion notes 'drug degradation was not the primary reason for the inoculum effect of colistin'). PAO1 was studied at 11 colistin concentrations up to 256 mg/L (64x the LB-broth MIC of 4 mg/L). In-vitro experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vitro PD model).",
+      source_name = "Ccolistin (Bulitta 2010 Methods, paragraph on Time-kill experiments)"
     ),
     Ccations = list(
-      description        = "Sum of Mg2+ and Ca2+ molar concentration in the growth medium",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Sum of Mg2+ and Ca2+ molar concentration in the growth medium",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sum of the supplemented Mg2+ and Ca2+ concentrations in LB broth. Per Bulitta 2010 Table 1 footnote (f) the supplemented concentrations were 0.514 mmol/L Mg2+ and 0.624 mmol/L Ca2+ (sum 1.138 mmol/L = 1138 umol/L), and the sum was used in the receptor-occupancy model. Set to 1138 by default to recover the published fits; set to a smaller value (e.g. the EDTA-derived free-ion estimate of 0.06 mmol/L = 60 umol/L, paper Results paragraph 5) to simulate cation-chelated conditions. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Ccations (Bulitta 2010 Methods receptor-occupancy paragraph + Table 1 footnote f)"
+      notes = "Sum of the supplemented Mg2+ and Ca2+ concentrations in LB broth. Per Bulitta 2010 Table 1 footnote (f) the supplemented concentrations were 0.514 mmol/L Mg2+ and 0.624 mmol/L Ca2+ (sum 1.138 mmol/L = 1138 umol/L), and the sum was used in the receptor-occupancy model. Set to 1138 by default to recover the published fits; set to a smaller value (e.g. the EDTA-derived free-ion estimate of 0.06 mmol/L = 60 umol/L, paper Results paragraph 5) to simulate cation-chelated conditions. In-vitro experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Ccations (Bulitta 2010 Methods receptor-occupancy paragraph + Table 1 footnote f)"
     )
   )
 
   population <- list(
-    species             = "in vitro (Pseudomonas aeruginosa, PAO1 reference strain)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Pseudomonas aeruginosa PAO1 (genetically characterised reference strain from the R.E.W. Hancock Laboratory, University of British Columbia; LB-broth MIC 4.0 mg/L, MHB MIC 2.0 mg/L; LB agar MIC 2 mg/L)",
-    system              = "Static time-kill experiments at 37 C in supplemented cation-adjusted LB broth (25 mg/L Ca2+, 12.5 mg/L Mg2+); 20 mL cultures in constant shaking water bath",
-    medium              = "Supplemented LB broth (cation-adjusted)",
-    duration            = "24 h with sampling at 0, 0.25, 0.5, 1, 2, 3, 4, 8, 12, 16, 24 h",
-    inoculum_range      = "10^4, 10^6, 10^8, and 10^9 CFU/mL",
-    mic_values          = c(colistin_LB_broth = "4.0 mg/L", colistin_MHB = "2.0 mg/L", colistin_LB_agar = "2 mg/L"),
-    regimens            = "11 colistin concentrations up to 256 mg/L (64x MIC in LB broth) at each initial inoculum; antibiotic-free growth controls; replicate viable counts on drug-free and drug-containing LB agar plates (0, 2, 4, 8, 16 mg/L)",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. The model was fit simultaneously in NONMEM VI (results shown in the paper main text and figures) and S-ADAPT (results in Table 1 for cross-method comparison) using the first-order conditional estimation method with interaction in NONMEM and importance-sampling Monte-Carlo expectation-maximization (pmethod = 4 or 8) in S-ADAPT. PAO1 estimates packaged here are the NONMEM VI fit (Table 1, NONMEM column). The paper reports CV 24% inter-experiment variability on the three growth half-lives parameterised as a difference in VGmax (Table 1 footnote b); the packaged model omits these etas and provides typical-value simulation -- see vignette Assumptions and deviations. The same structural model was also fit to two clinical strains URMC1 and URMC2 with strain-specific S-ADAPT parameter estimates; those fits are packaged separately as Bulitta_2010_colistin_URMC1 and Bulitta_2010_colistin_URMC2."
+    species = "in vitro (Pseudomonas aeruginosa, PAO1 reference strain)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Pseudomonas aeruginosa PAO1 (genetically characterised reference strain from the R.E.W. Hancock Laboratory, University of British Columbia; LB-broth MIC 4.0 mg/L, MHB MIC 2.0 mg/L; LB agar MIC 2 mg/L)",
+    system = "Static time-kill experiments at 37 C in supplemented cation-adjusted LB broth (25 mg/L Ca2+, 12.5 mg/L Mg2+); 20 mL cultures in constant shaking water bath",
+    medium = "Supplemented LB broth (cation-adjusted)",
+    duration = "24 h with sampling at 0, 0.25, 0.5, 1, 2, 3, 4, 8, 12, 16, 24 h",
+    inoculum_range = "10^4, 10^6, 10^8, and 10^9 CFU/mL",
+    mic_values = c(colistin_LB_broth = "4.0 mg/L", colistin_MHB = "2.0 mg/L", colistin_LB_agar = "2 mg/L"),
+    regimens = "11 colistin concentrations up to 256 mg/L (64x MIC in LB broth) at each initial inoculum; antibiotic-free growth controls; replicate viable counts on drug-free and drug-containing LB agar plates (0, 2, 4, 8, 16 mg/L)",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. The model was fit simultaneously in NONMEM VI (results shown in the paper main text and figures) and S-ADAPT (results in Table 1 for cross-method comparison) using the first-order conditional estimation method with interaction in NONMEM and importance-sampling Monte-Carlo expectation-maximization (pmethod = 4 or 8) in S-ADAPT. PAO1 estimates packaged here are the NONMEM VI fit (Table 1, NONMEM column). The paper reports CV 24% inter-experiment variability on the three growth half-lives parameterised as a difference in VGmax (Table 1 footnote b); the packaged model omits these etas and provides typical-value simulation -- see vignette Assumptions and deviations. The same structural model was also fit to two clinical strains URMC1 and URMC2 with strain-specific S-ADAPT parameter estimates; those fits are packaged separately as Bulitta_2010_colistin_URMC1 and Bulitta_2010_colistin_URMC2."
   )
 
   ini({

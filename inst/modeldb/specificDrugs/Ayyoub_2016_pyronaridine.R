@@ -23,9 +23,9 @@ Ayyoub_2016_pyronaridine <- function() {
     "doi:10.1128/AAC.02004-15"
   )
   vignette <- "Ayyoub_2016_pyronaridine"
-  units    <- list(
-    time          = "day",
-    dosing        = "mg",
+  units <- list(
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -33,18 +33,18 @@ Ayyoub_2016_pyronaridine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "pyronaridine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "pyronaridine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pyronaridine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pyronaridine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pyronaridine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in the source analysis (paper does not state",
         "time-varying weight). Used for fixed-exponent allometric scaling",
         "centred on the 20 kg cohort-median reference: cl_typ = exp(lcl) *",
@@ -54,27 +54,27 @@ Ayyoub_2016_pyronaridine <- function() {
         "analysis (Ayyoub 2016 Methods 'Base model development' p. 1453,",
         "Results 'Population pharmacokinetic model' p. 1454)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Power covariate on the peripheral volume",
         "V3/F centred on the 7 yr cohort-median reference: vp_typ = exp(lvp)",
         "* (WT/20) * (AGE/7)^0.624 (Ayyoub 2016 Results p. 1454 'V3/F (liters)",
         "= [3,230 * (weight/20) * (age/7)^0.624] * exp(eta)')."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     FORM_GRANULE = list(
-      description        = "Pediatric granule-for-oral-suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric granule-for-oral-suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = paste(
+      notes = paste(
         "1 = subject received the pediatric granule (sachet) formulation of",
         "pyronaridine-artesunate, 0 = tablet (the reference). 67.0% of subjects",
         "received the tablet (Ayyoub 2016 Results p. 1454). Per-subject",
@@ -90,23 +90,23 @@ Ayyoub_2016_pyronaridine <- function() {
         "headline 'Ka (hours)' is a typesetting error -- the structural value",
         "is 17.9 day^-1, matching Table 2 'K_a (day^-1) 17.9')."
       ),
-      source_name        = "FORM"
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 349L,
-    n_observations  = 1085L,
-    n_studies       = 6L,
-    age_range       = "0.51-15 years (median 7)",
-    age_median      = "7 years",
-    weight_range    = "6.8-56.2 kg (median 20)",
-    weight_median   = "20 kg",
-    sex_female_pct  = 52.4,
-    race_ethnicity  = "Predominantly African (Gabon, Mali, and other African sites in the phase II / III trials); race not used as a model covariate.",
-    disease_state   = "Acute uncomplicated Plasmodium falciparum or Plasmodium vivax malaria.",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 349L,
+    n_observations = 1085L,
+    n_studies = 6L,
+    age_range = "0.51-15 years (median 7)",
+    age_median = "7 years",
+    weight_range = "6.8-56.2 kg (median 20)",
+    weight_median = "20 kg",
+    sex_female_pct = 52.4,
+    race_ethnicity = "Predominantly African (Gabon, Mali, and other African sites in the phase II / III trials); race not used as a model covariate.",
+    disease_state = "Acute uncomplicated Plasmodium falciparum or Plasmodium vivax malaria.",
+    dose_range = paste(
       "Pyronaridine-artesunate (PA) 6:2 mg/kg to 12:4 mg/kg once daily for 3",
       "days. Tablet PA 180:60 mg dosed by weight band (1-4 tablets across",
       "20-90 kg); pediatric granule PA 60:20 mg per sachet dosed by weight",
@@ -115,12 +115,12 @@ Ayyoub_2016_pyronaridine <- function() {
       "modeling (Ayyoub 2016 Methods 'Population pharmacokinetic and",
       "statistical analyses' p. 1452)."
     ),
-    regions         = "Sub-Saharan Africa (Gabon and Mali phase II / III sites) and Southeast Asia (phase III studies).",
+    regions = "Sub-Saharan Africa (Gabon and Mali phase II / III sites) and Southeast Asia (phase III studies).",
     n_studies_detail = "Phase II SP-C-003-05 (tablet + granule, n=57); phase III SP-C-004-06 (tablet, n=40); SP-C-005-06 (tablet, n=143); SP-C-006-06 (tablet, n=9); SP-C-007-07 (granule, n=83); SP-C-013-11 (granule, n=17). Two SP-C-013-11 subjects vomited and were excluded.",
     formulation_split_pct = "67.0% tablet, 33.0% granule (Ayyoub 2016 Results p. 1454).",
-    sampling        = "Phase II: rich sampling, predose and 0.5, 1, 1.5, 2.5, 4, 8, 12 h plus 3, 7, 14, 21 days after the first dose. Phase III: sparse sampling, one to two samples per subject across the day-0-to-day-3 and day-4-to-day-42 windows.",
-    bloq_handling   = "165/1252 raw observations (13.2%) below the 5.7 ng/mL assay LOQ were excluded from the analysis; 3 observations (0.24%) were excluded as outliers (Ayyoub 2016 Results p. 1454, Table 1).",
-    notes           = "Demographics summarised from Ayyoub 2016 Table 1 (pooled row across 6 studies)."
+    sampling = "Phase II: rich sampling, predose and 0.5, 1, 1.5, 2.5, 4, 8, 12 h plus 3, 7, 14, 21 days after the first dose. Phase III: sparse sampling, one to two samples per subject across the day-0-to-day-3 and day-4-to-day-42 windows.",
+    bloq_handling = "165/1252 raw observations (13.2%) below the 5.7 ng/mL assay LOQ were excluded from the analysis; 3 observations (0.24%) were excluded as outliers (Ayyoub 2016 Results p. 1454, Table 1).",
+    notes = "Demographics summarised from Ayyoub 2016 Table 1 (pooled row across 6 studies)."
   )
 
   ini({

@@ -50,18 +50,18 @@ Fimbo_2023_ivermectin <- function() {
   )
   vignette <- "Fimbo_2023_ivermectin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed (single-dose study). Allometric scaling is applied to",
         "CL/F (exponent 0.75) and Vc/F (exponent 1) ONLY, both referenced to",
         "70 kg; Q/F and Vp/F carry no weight effect. Both exponents were",
@@ -78,18 +78,18 @@ Fimbo_2023_ivermectin <- function() {
         "are strongly confounded by construction of the height-based dosing",
         "poles."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_3MG = list(
-      description        = paste(
+      description = paste(
         "1 = the subject is in the 3 mg ivermectin dose pool (height 90-119",
         "cm); 0 = the subject is in the 6, 9, or 12 mg pool. Subject-level",
         "(single-dose study, one dose pool per subject)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled 6, 9, and 12 mg dose pools, 456 of the 468 subjects)",
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Relative",
         "bioavailability is 48.22% higher in the 3 mg pool:",
         "F = (1 + 0.4822)^DOSE_3MG (Fimbo 2023 Table 2 row 'Proportional",
@@ -105,18 +105,18 @@ Fimbo_2023_ivermectin <- function() {
         "MDA population set DOSE_3MG = 0 unless the 3 mg (smallest-children)",
         "pool is specifically being reproduced."
       ),
-      source_name        = "DOSE3MG (derived in the control stream from DOSEGRP == 3)"
+      source_name = "DOSE3MG (derived in the control stream from DOSEGRP == 3)"
     ),
     MIX_LONG_MTT = list(
-      description        = paste(
+      description = paste(
         "1 = the subject is classified to the long-mean-transit-time",
         "subpopulation (MTT 97.0% longer than the rest of the population);",
         "0 = the subject is classified to the reference MTT subpopulation."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the reference-MTT majority class, 83.9% of the source cohort)",
-      notes              = paste(
+      notes = paste(
         "Not a measured clinical covariate -- this is the per-subject latent",
         "class index from Fimbo 2023's NONMEM $MIX block (Data S3 control",
         "stream: 'NSPOP=2 / P(1) = THETA(11) / P(2) = 1 - P(1)', then",
@@ -134,7 +134,7 @@ Fimbo_2023_ivermectin <- function() {
         "Results and Table S3 run15 vs run11). Fimbo 2023 offers no",
         "mechanistic explanation for the two classes; the label is latent."
       ),
-      source_name        = "MIXNUM / MIXEST (NONMEM $MIX class index; MIX_LONG_MTT = as.integer(MIXNUM == 1))"
+      source_name = "MIXNUM / MIXEST (NONMEM $MIX class index; MIX_LONG_MTT = as.integer(MIXNUM == 1))"
     )
   )
 
@@ -144,9 +144,9 @@ Fimbo_2023_ivermectin <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened via covariate-vs-eta plots (Fimbo 2023 Table 1 lists sex",
         "among the tested covariates) and not retained. Fimbo 2023",
         "Discussion: 'Baseline characteristics did not show significant",
@@ -155,15 +155,15 @@ Fimbo_2023_ivermectin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Fimbo 2023 Table 1) and not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Fimbo 2023 Table 1) and not retained."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Fimbo 2023 Table 1 'eGFR category'; control-stream $INPUT",
         "columns EGFRMD / EGFRKD / EGFR) and not retained. Ivermectin is",
         "hepatically cleared, so a renal effect was not expected."
@@ -171,21 +171,21 @@ Fimbo_2023_ivermectin <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "units/L",
-      type        = "continuous",
-      notes       = "Screened (Fimbo 2023 Table 1 'ALT category') and not retained."
+      units = "units/L",
+      type = "continuous",
+      notes = "Screened (Fimbo 2023 Table 1 'ALT category') and not retained."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "units/L",
-      type        = "continuous",
-      notes       = "Screened (Fimbo 2023 Table 1 'AST category') and not retained."
+      units = "units/L",
+      type = "continuous",
+      notes = "Screened (Fimbo 2023 Table 1 'AST category') and not retained."
     ),
     SNP_ABCB1_RS1045642 = list(
       description = "ABCB1 c.3435C>T genotype",
-      units       = "(count of variant alleles)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(count of variant alleles)",
+      type = "categorical",
+      notes = paste(
         "Formally tested on F1 in Fimbo 2023 Table S3 run17: coefficient",
         "-0.1741 with RSE 89%, dOFV = -1.03 vs run15, not significant and",
         "not retained."
@@ -193,9 +193,9 @@ Fimbo_2023_ivermectin <- function() {
     ),
     SNP_ABCB1_RS3842 = list(
       description = "ABCB1 rs3842 genotype",
-      units       = "(count of variant alleles)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(count of variant alleles)",
+      type = "categorical",
+      notes = paste(
         "Formally tested on F1 in Fimbo 2023 Table S3 run19: coefficient",
         "0.05182 with RSE 156%, dOFV = -0.44 vs run15, not significant and",
         "not retained."
@@ -203,9 +203,9 @@ Fimbo_2023_ivermectin <- function() {
     ),
     SNP_CYP2C9 = list(
       description = "CYP2C9 *2 / *3 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Formally tested on F1 in Fimbo 2023 Table S3 run16: coefficient",
         "0.1828 with RSE 121%, dOFV = -0.81 vs run15, not significant and",
         "not retained."
@@ -213,9 +213,9 @@ Fimbo_2023_ivermectin <- function() {
     ),
     SNP_CYP2J2 = list(
       description = "CYP2J2 *7 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Formally tested on MTT in Fimbo 2023 Table S3 run18: coefficient",
         "-0.2425 with RSE 53%, dOFV = -3.27 vs run15 -- short of the 3.84",
         "retention threshold, so not retained."
@@ -225,35 +225,35 @@ Fimbo_2023_ivermectin <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte  = "ivermectin",
-      units    = "mg",
+      analyte = "ivermectin",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "ivermectin",
-      units    = "mg",
+      analyte = "ivermectin",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "ivermectin",
-      units    = "mg",
+      analyte = "ivermectin",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 468,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 468,
+    n_studies = 1,
     n_observations = 1404,
-    age_range      = "5-78 years",
-    weight_range   = "roughly 15-90 kg (individuals below 15 kg are excluded from the MDA programme)",
+    age_range = "5-78 years",
+    weight_range = "roughly 15-90 kg (individuals below 15 kg are excluded from the MDA programme)",
     sex_female_pct = 40.1,
     race_ethnicity = c(Black = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "MDA-eligible residents of lymphatic filariasis endemic communities;",
       "participants were prescreened for circulating filarial antigen and",
       "microfilaraemia but were treated regardless of infection status, so",
@@ -261,13 +261,13 @@ Fimbo_2023_ivermectin <- function() {
       "confirmed-infected one. Pregnant women and children under 5 years were",
       "excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "single oral ivermectin 3, 6, 9, or 12 mg assigned by height pole",
       "(90-119, 119-139, 139-159, and >159 cm respectively; roughly 150-200",
       "ug/kg), co-administered with albendazole 400 mg"
     ),
-    regions        = "Mkinga district, Tanga region, north-eastern Tanzania",
-    notes          = paste(
+    regions = "Mkinga district, Tanga region, north-eastern Tanzania",
+    notes = paste(
       "Baseline demographic, clinical and biochemical characteristics are in",
       "Fimbo 2023 Table 1, stratified by dose pool (3 mg n = 12, 6 mg n = 49,",
       "9 mg n = 159, 12 mg n = 248); genotype characteristics are in Table",

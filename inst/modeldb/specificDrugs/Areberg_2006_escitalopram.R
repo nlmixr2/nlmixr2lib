@@ -8,44 +8,44 @@ Areberg_2006_escitalopram <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "escitalopram", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "escitalopram", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the single-dose Areberg 2006 study. Linear-additive deviation effect on apparent central volume V/F centered on the pooled cohort mean (~79 kg from Table 1).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject in the single-dose Areberg 2006 study. Linear-additive deviation effect on apparent central volume V/F centered on the pooled cohort mean (~79 kg from Table 1).",
+      source_name = "WT"
     ),
     CYP2C19 = list(
-      description        = "CYP2C19 metabolic-activity proxy (urinary S/R-mephenytoin ratio after a single 100 mg dose of racemic mephenytoin; Methods 'CYP2C19 Phenotyping')",
-      units              = "(unitless ratio)",
-      type               = "continuous",
+      description = "CYP2C19 metabolic-activity proxy (urinary S/R-mephenytoin ratio after a single 100 mg dose of racemic mephenytoin; Methods 'CYP2C19 Phenotyping')",
+      units = "(unitless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (one-time probe-substrate assay). Higher S/R ratio indicates LOWER CYP2C19 activity because high CYP2C19 activity selectively metabolizes S-mephenytoin and lowers the residual S enantiomer in urine; the model uses a linear-additive deviation form centered on the population mean ratio of 0.769, and a NEGATIVE coefficient on the (CYP2C19 - 0.769) deviation so that subjects with higher S/R ratio have lower apparent escitalopram clearance. This orientation is the OPPOSITE of the dextromethorphan-probe CYP2D6 / CYP3A4 columns (where higher value = higher activity); see covariate-columns.md CYP2C19 entry Notes.",
-      source_name        = "CYP2C19"
+      notes = "Time-fixed per subject (one-time probe-substrate assay). Higher S/R ratio indicates LOWER CYP2C19 activity because high CYP2C19 activity selectively metabolizes S-mephenytoin and lowers the residual S enantiomer in urine; the model uses a linear-additive deviation form centered on the population mean ratio of 0.769, and a NEGATIVE coefficient on the (CYP2C19 - 0.769) deviation so that subjects with higher S/R ratio have lower apparent escitalopram clearance. This orientation is the OPPOSITE of the dextromethorphan-probe CYP2D6 / CYP3A4 columns (where higher value = higher activity); see covariate-columns.md CYP2C19 entry Notes.",
+      source_name = "CYP2C19"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 24,
-    n_studies       = 1,
-    age_range       = "43-69 years",
-    age_median      = "58 years (group-mean range 57.6-59.0; Table 1)",
-    weight_range    = "63-101 kg",
-    weight_median   = "~79 kg (pooled-cohort mean; group-mean range 76.3-83.9; Table 1)",
-    sex_female_pct  = 25,
-    race_ethnicity  = c(White = 100),
-    disease_state   = "Stratified Child-Pugh classification: 8 with normal hepatic function, 8 with mild hepatic impairment (Child-Pugh 5-6), 8 with moderate hepatic impairment (Child-Pugh 7-9; alcohol-induced cirrhosis).",
-    dose_range      = "20 mg single oral dose",
-    regions         = "Single site, Munich, Germany",
-    notes           = "All Caucasian; no clinically meaningful differences between groups in age, body weight, or creatinine clearance (all CrCL > 80 mL/min). Concomitant CYP2C19 / CYP2D6 inhibitors and inducers excluded for 6 weeks prior to dosing. Baseline demographics per Areberg 2006 Table 1."
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
+    age_range = "43-69 years",
+    age_median = "58 years (group-mean range 57.6-59.0; Table 1)",
+    weight_range = "63-101 kg",
+    weight_median = "~79 kg (pooled-cohort mean; group-mean range 76.3-83.9; Table 1)",
+    sex_female_pct = 25,
+    race_ethnicity = c(White = 100),
+    disease_state = "Stratified Child-Pugh classification: 8 with normal hepatic function, 8 with mild hepatic impairment (Child-Pugh 5-6), 8 with moderate hepatic impairment (Child-Pugh 7-9; alcohol-induced cirrhosis).",
+    dose_range = "20 mg single oral dose",
+    regions = "Single site, Munich, Germany",
+    notes = "All Caucasian; no clinically meaningful differences between groups in age, body weight, or creatinine clearance (all CrCL > 80 mL/min). Concomitant CYP2C19 / CYP2D6 inhibitors and inducers excluded for 6 weeks prior to dosing. Baseline demographics per Areberg 2006 Table 1."
   )
 
   ini({

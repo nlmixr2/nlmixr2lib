@@ -38,18 +38,18 @@ Sun_2025_maribavir <- function() {
   # compartment is in mg and central/vc is mg/L = ug/mL, matching the
   # ug/mL and ug*h/mL units of Table 3.
   compartmentData <- list(
-    depot       = list(analyte = "maribavir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "maribavir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling with a 70 kg reference on all four",
         "disposition parameters. Unlike the earlier Sun 2023 analysis, which",
         "fixed the exponents at 0.75 and 1, this model ESTIMATED them, because",
@@ -66,14 +66,14 @@ Sun_2025_maribavir <- function() {
         "two that happen to agree. The model file therefore carries two weight",
         "exponents, not four. Overall median 73.0 kg (range 36.1-141), Table 1."
       ),
-      source_name        = "WTBL"
+      source_name = "WTBL"
     ),
     DOSE = list(
-      description        = "Administered maribavir dose per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered maribavir dose per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) of the DOSE canonical: the per-administration assigned",
         "dose level entering a power-form covariate effect on the first-order",
         "absorption rate, Ka = 0.697 * (DOSE/800)^-1.02, normalised at 800 mg.",
@@ -84,14 +84,14 @@ Sun_2025_maribavir <- function() {
         "twice-daily regimens up to 1200 mg; the recommended clinical dose is",
         "400 mg twice daily."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     DIS_CMV = list(
-      description        = "Transplant recipient with cytomegalovirus infection/disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Transplant recipient with cytomegalovirus infection/disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer / non-CMV phase 1 participant)",
-      notes              = paste(
+      notes = paste(
         "1 = HCT or SOT recipient with CMV infection (the phase 2/3 and AURORA",
         "populations, n = 724); 0 = healthy volunteer or phase 1 participant",
         "without CMV, including the renal- and hepatic-impairment cohorts",
@@ -105,14 +105,14 @@ Sun_2025_maribavir <- function() {
         "and was NOT a significant predictor, so this covariate carries the",
         "whole patient-vs-healthy contrast."
       ),
-      source_name        = "HSCMV"
+      source_name = "HSCMV"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant strong CYP3A4 inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A4 inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no strong CYP3A4 inhibitor coadministration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per record (Table 1 footnote b: the same individual may",
         "appear as both No and Yes). Multiplicative power-form effect on CL/F:",
         "0.709^CONMED_CYP3A4_INH_STRONG, a 29% reduction in CL/F, which the",
@@ -125,14 +125,14 @@ Sun_2025_maribavir <- function() {
         "'(1) FIX' in the control stream, i.e. no effect. See",
         "covariatesDataExcluded$CONMED_CYP3A4_INH_MOD."
       ),
-      source_name        = "CYP3AINH"
+      source_name = "CYP3AINH"
     ),
     CONMED_CYP3A4_IND = list(
-      description        = "Concomitant strong CYP3A4 inducer coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A4 inducer coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inducer coadministration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per record. Multiplicative power-form effect on CL/F:",
         "2.27^CONMED_CYP3A4_IND, a 2.27-fold increase in CL/F, which the authors",
         "note is consistent with the 2.5-fold increase seen in the dedicated",
@@ -142,14 +142,14 @@ Sun_2025_maribavir <- function() {
         "evaluate their effect, so no strength-stratified inducer canonical is",
         "used and the class-level column carries the strong-inducer effect."
       ),
-      source_name        = "CYP3AIND"
+      source_name = "CYP3AIND"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant proton-pump inhibitor use indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant proton-pump inhibitor use indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no proton-pump inhibitor coadministration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per record (Table 1 footnote b). New in this analysis",
         "relative to the earlier Sun 2023 model. Carries TWO effects, both",
         "multiplicative on the natural scale and both entered in the control",
@@ -162,14 +162,14 @@ Sun_2025_maribavir <- function() {
         "flat exposure-response. 529 of 973 records-level classifications (54%)",
         "were PPI-exposed, the most prevalent co-medication in the analysis."
       ),
-      source_name        = "PPI"
+      source_name = "PPI"
     ),
     STUDY_MARIBAVIR_PHASE1 = list(
-      description        = "Phase 1 study cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 1 study cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 2/3 study: SHP620-202, -203, -302, -303 and AURORA)",
-      notes              = paste(
+      notes = paste(
         "1 = the concentration record originates from a phase 1 study (n = 206",
         "individuals, 4231 records); 0 = a phase 2/3 study. Used ONLY to switch",
         "the proportional residual-error magnitude, exactly as in the control",
@@ -179,7 +179,7 @@ Sun_2025_maribavir <- function() {
         "used in the phase 1 versus the phase 2/3 studies. This column has no",
         "structural effect: it does not enter any PK parameter."
       ),
-      source_name        = "STUDY"
+      source_name = "STUDY"
     )
   )
 
@@ -191,11 +191,11 @@ Sun_2025_maribavir <- function() {
   # contributes nothing.
   covariatesDataExcluded <- list(
     CONMED_CYP3A4_INH_MOD = list(
-      description        = "Concomitant moderate CYP3A4 inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate CYP3A4 inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no moderate CYP3A4 inhibitor coadministration)",
-      notes              = paste(
+      notes = paste(
         "Screened as a multiplicative effect on CL/F via THETA(20), labelled",
         "'[CL~CYPMOD]', but the coefficient is '(1) FIX' -- a multiplier of",
         "exactly 1, i.e. no effect. The control-stream header line ';; 1. Based",
@@ -203,14 +203,14 @@ Sun_2025_maribavir <- function() {
         "moderate-CYP-inhibitor effect on CL. 103 of 930 individuals (11%) had",
         "moderate-inhibitor exposure (Table 1). Not reported in Table 2."
       ),
-      source_name        = "CYP3AIHM"
+      source_name = "CYP3AIHM"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened as an effect on both CL/F (THETA(14)) and Vc/F (THETA(15)) in",
         "the final control stream, but both coefficients are '(0) FIX'. The",
         "Discussion states there was no evidence that sex affected maribavir PK.",
@@ -219,14 +219,14 @@ Sun_2025_maribavir <- function() {
         "propagated through the allometric terms, not a separate sex effect.",
         "930 individuals were 41% female (Table 1)."
       ),
-      source_name        = "SEXN"
+      source_name = "SEXN"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment (Child-Pugh class B) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment (Child-Pugh class B) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no moderate hepatic impairment)",
-      notes              = paste(
+      notes = paste(
         "Screened as an effect on Vc/F (THETA(13), labelled",
         "'[Vc~Child-Pugh Class B]') and derived in the control stream as",
         "HEPN2 = 1 when HEPN equals 2, but the coefficient is '(0) FIX'. 18 of",
@@ -234,24 +234,24 @@ Sun_2025_maribavir <- function() {
         "lists hepatic impairment among the covariates with no evidence of an",
         "effect on maribavir PK."
       ),
-      source_name        = "HEPN2"
+      source_name = "HEPN2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 930L,
-    n_studies      = "Not stated as a single count. The pooled dataset spans phase 1 (n = 206), phase 2/3 (n = 724, which includes SOLSTICE), and AURORA (n = 238, a subset of the phase 2/3 group), plus a phase 1 study in Japanese-descended and non-Hispanic Caucasian individuals (NCT05319353) newly added in this update.",
+    species = "human",
+    n_subjects = 930L,
+    n_studies = "Not stated as a single count. The pooled dataset spans phase 1 (n = 206), phase 2/3 (n = 724, which includes SOLSTICE), and AURORA (n = 238, a subset of the phase 2/3 group), plus a phase 1 study in Japanese-descended and non-Hispanic Caucasian individuals (NCT05319353) newly added in this update.",
     n_observations = 7431L,
-    age_range      = "12 to <18 years: 1 (<1%); 18 to <65 years: 761 (82%); 65 to <80 years: 168 (18%) (Table 1). The single individual under 18 is the reason the allometric exponents were estimated rather than fixed.",
-    weight_range   = "36.1-141 kg; median 73.0 kg, mean 74.2 kg (SD 17.4) (Table 1). AURORA weights not reported.",
+    age_range = "12 to <18 years: 1 (<1%); 18 to <65 years: 761 (82%); 65 to <80 years: 168 (18%) (Table 1). The single individual under 18 is the reason the allometric exponents were estimated rather than fixed.",
+    weight_range = "36.1-141 kg; median 73.0 kg, mean 74.2 kg (SD 17.4) (Table 1). AURORA weights not reported.",
     sex_female_pct = 41,
     race_ethnicity = c(Caucasian = 77, Black = 13, Asian = 7, Other = 3),
-    disease_state  = "Pooled analysis of healthy volunteers (157), phase 1 participants with hepatic impairment (10), renal impairment (19) or stable renal transplant (20), and HCT or SOT recipients with CMV infection (724). CMV category: no infection 206, asymptomatic infection 644, symptomatic infection 44, CMV organ disease 36. Transplant type: none 186, SOT 304, HCT 440.",
-    dose_range     = "Single doses of 50-1600 mg and multiple doses up to 2400 mg/day across the pooled phase 1-3 dataset; the recommended and most-represented regimen is 400 mg twice daily.",
-    regions        = "North America, Europe and Asia Pacific (region proportions reported only for the 238-patient AURORA exposure-response subset: North America 24.8%, Europe 58.0%, Asia Pacific 17.2%, Table S2).",
-    co_medication  = "Proton-pump inhibitors 54%, strong CYP3A4 inhibitors 13%, moderate CYP3A4 inhibitors 11%, histamine H2 blockers 10%, antacids 8%, weak CYP3A4 inhibitors 6%, strong CYP3A4 inducers 2% (Table 1 and Table S1).",
-    notes          = paste(
+    disease_state = "Pooled analysis of healthy volunteers (157), phase 1 participants with hepatic impairment (10), renal impairment (19) or stable renal transplant (20), and HCT or SOT recipients with CMV infection (724). CMV category: no infection 206, asymptomatic infection 644, symptomatic infection 44, CMV organ disease 36. Transplant type: none 186, SOT 304, HCT 440.",
+    dose_range = "Single doses of 50-1600 mg and multiple doses up to 2400 mg/day across the pooled phase 1-3 dataset; the recommended and most-represented regimen is 400 mg twice daily.",
+    regions = "North America, Europe and Asia Pacific (region proportions reported only for the 238-patient AURORA exposure-response subset: North America 24.8%, Europe 58.0%, Asia Pacific 17.2%, Table S2).",
+    co_medication = "Proton-pump inhibitors 54%, strong CYP3A4 inhibitors 13%, moderate CYP3A4 inhibitors 11%, histamine H2 blockers 10%, antacids 8%, weak CYP3A4 inhibitors 6%, strong CYP3A4 inducers 2% (Table 1 and Table S1).",
+    notes = paste(
       "Below-limit-of-quantification data were handled by method M1 (all 297 BLQ",
       "records, 3.5% of post-dose values, excluded). Parameters were estimated in",
       "NONMEM 7.5.1 with IMPMAP; standard errors and 95% non-parametric",

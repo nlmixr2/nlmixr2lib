@@ -43,76 +43,76 @@ Baklouti_2026_amoxicillin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Maternal age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by the forward-addition / backward-elimination covariate search and not retained (Baklouti 2026 Methods section 2.3 and Results section 3.2). Cohort mean 35 years, SD 4, CV 11% (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by the forward-addition / backward-elimination covariate search and not retained (Baklouti 2026 Methods section 2.3 and Results section 3.2). Cohort mean 35 years, SD 4, CV 11% (Table 1)."
     ),
     WT = list(
       description = "Maternal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3; Discussion section 4.1, 'The final model did not retain any of the documented variables'). Cohort mean 64.9 kg, SD 12.1, CV 18.6% (Table 1). Still needed OUTSIDE the PK model to compute the relative infant dose, which normalises the maternal dose per kg of maternal body weight; the simulations of Table 4 assume 65 kg (SD 12)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3; Discussion section 4.1, 'The final model did not retain any of the documented variables'). Cohort mean 64.9 kg, SD 12.1, CV 18.6% (Table 1). Still needed OUTSIDE the PK model to compute the relative infant dose, which normalises the maternal dose per kg of maternal body weight; the simulations of Table 4 assume 65 kg (SD 12)."
     ),
     HT = list(
       description = "Maternal body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3). Cohort mean 164.5 cm, SD 5.9, CV 3.6% (Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3). Cohort mean 164.5 cm, SD 5.9, CV 3.6% (Table 1)."
     ),
     CRCL = list(
       description = "Maternal glomerular filtration rate, estimated with the CKD-EPI equation and BSA-normalised",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3, 'maternal glomerular filtration rate (estimated GFR using CKD-EPI formula)'). Cohort mean 114.7 mL/min/1.73 m^2, SD 8.5, CV 7.4% (Table 1). The Discussion (section 4.1) attributes the null result to insufficient covariate spread rather than to absence of a relationship: 'This is typically the case for amoxicillin elimination clearance, which is primarily governed by renal function, given the low eGFR IIV (CV = 7.5%) in our study.' Source column eGFR."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3, 'maternal glomerular filtration rate (estimated GFR using CKD-EPI formula)'). Cohort mean 114.7 mL/min/1.73 m^2, SD 8.5, CV 7.4% (Table 1). The Discussion (section 4.1) attributes the null result to insufficient covariate spread rather than to absence of a relationship: 'This is typically the case for amoxicillin elimination clearance, which is primarily governed by renal function, given the low eGFR IIV (CV = 7.5%) in our study.' Source column eGFR."
     ),
     ALB = list(
       description = "Maternal serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3, 'maternal albuminemia (g/L, continuous variable)'). No cohort summary is reported in Table 1."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3, 'maternal albuminemia (g/L, continuous variable)'). No cohort summary is reported in Table 1."
     ),
     BREASTFEED_EXCLUSIVE = list(
       description = "Whether the mother was breastfeeding exclusively",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened and not retained (Methods section 2.3, 'breastfeeding exclusivity (yes/no, categorical variable)'). The per-category counts are not reported. Reference category 0 (not exclusive)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened and not retained (Methods section 2.3, 'breastfeeding exclusivity (yes/no, categorical variable)'). The per-category counts are not reported. Reference category 0 (not exclusive)."
     ),
     AGE_INFANT = list(
       description = "Postnatal age of the breastfed infant, screened as a proxy for milk maturity",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3: 'Since the infant's age reflects milk maturity - which can influence its composition and consequently amoxicillin concentrations - the infant's age (in months), body weight (kg) and height (cm) were recorded on the day of the study'). Cohort mean 5.5 months, SD 4.9, CV 89% (Table 2). Enrolment required the infant to be over 4 weeks old and breastfeeding to have started at least 2 weeks after birth, so all milk sampled was mature milk."
+      units = "months",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3: 'Since the infant's age reflects milk maturity - which can influence its composition and consequently amoxicillin concentrations - the infant's age (in months), body weight (kg) and height (cm) were recorded on the day of the study'). Cohort mean 5.5 months, SD 4.9, CV 89% (Table 2). Enrolment required the infant to be over 4 weeks old and breastfeeding to have started at least 2 weeks after birth, so all milk sampled was mature milk."
     ),
     WT_INFANT = list(
       description = "Body weight of the breastfed infant",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods section 2.3). Cohort mean 6.7 kg, SD 2.7, CV 40.2% (Table 2). Used outside the PK model in the relative-infant-dose calculation via the assumed daily milk intake of 150 mL per kg of infant body weight (Methods section 2.4). Infant HEIGHT (mean 62.0 cm, SD 8.9, Table 2) was screened alongside it and likewise not retained; it is recorded here rather than under a canonical of its own because no model in the library references it."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Methods section 2.3). Cohort mean 6.7 kg, SD 2.7, CV 40.2% (Table 2). Used outside the PK model in the relative-infant-dose calculation via the assumed daily milk intake of 150 mL per kg of infant body weight (Methods section 2.4). Infant HEIGHT (mean 62.0 cm, SD 8.9, Table 2) was screened alongside it and likewise not retained; it is recorded here rather than under a canonical of its own because no model in the library references it."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "amoxicillin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "amoxicillin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = TRUE),
-    milk    = list(analyte = "amoxicillin", units = "mg", specimen = "milk", verified = TRUE)
+    milk = list(analyte = "amoxicillin", units = "mg", specimen = "milk", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 25,
+    n_studies = 1,
     n_observations = 150,
-    age_mean       = "35 years",
-    weight_mean    = "64.9 kg",
-    height_mean    = "164.5 cm",
+    age_mean = "35 years",
+    weight_mean = "64.9 kg",
+    height_mean = "164.5 cm",
     sex_female_pct = 100,
     renal_function = "Normal; CKD-EPI eGFR mean 114.7 mL/min/1.73 m^2 (SD 8.5, CV 7.4%). The narrow spread is why no renal covariate could be identified.",
-    disease_state  = "Breastfeeding women treated with oral immediate-release amoxicillin, with or without clavulanic acid, for at least 2 days for an approved indication prescribed in routine community care. Mothers of preterm infants (gestational age under 34 weeks), of twins, or requiring specialised medical supervision were excluded.",
-    dose_range     = "Oral immediate-release amoxicillin 1 g twice daily (n = 6) or 1 g three times daily (n = 19); mean total daily dose 2760 mg (SD 436). No specific brand was mandated. Sampling was at steady state after at least 2 days of treatment.",
-    regions        = "France (recruited from the lactarium of Necker-Enfants Malades Hospital, Paris). EudraCT 2021-002247-30; French ethics approval 21.01446.000014.",
+    disease_state = "Breastfeeding women treated with oral immediate-release amoxicillin, with or without clavulanic acid, for at least 2 days for an approved indication prescribed in routine community care. Mothers of preterm infants (gestational age under 34 weeks), of twins, or requiring specialised medical supervision were excluded.",
+    dose_range = "Oral immediate-release amoxicillin 1 g twice daily (n = 6) or 1 g three times daily (n = 19); mean total daily dose 2760 mg (SD 436). No specific brand was mandated. Sampling was at steady state after at least 2 days of treatment.",
+    regions = "France (recruited from the lactarium of Necker-Enfants Malades Hospital, Paris). EudraCT 2021-002247-30; French ethics approval 21.01446.000014.",
     infant_partner = "One breastfed infant per mother, all over 4 weeks old: 12 male / 13 female, mean postnatal age 5.5 months (SD 4.9), mean weight 6.7 kg (SD 2.7), mean height 62.0 cm (SD 8.9). Infant characteristics enter the relative-infant-dose calculation, not the PK model. No adverse events were observed in any breastfed infant.",
     feeding_pattern = "Mothers reported a mean of 9 breastfeeds per day (SD 4, CV 47%; Table 1). The steady-state Monte Carlo simulations of Table 4 instead draw a feeding frequency per woman with mean 11 per day over the range 6-18, holding total daily milk intake constant, and the relative infant dose assumes a daily milk intake of 150 mL per kg of infant body weight (Methods section 2.4).",
-    notes          = "Baseline demographics from Baklouti 2026 Tables 1 and 2. Three blood and three milk samples per mother (75 + 75 = 150 observations), all drawn at home within one dosing interval: nominally 15-30 min, 1-2 h and 3-4 h post-dose. Blood and milk could not be drawn at exactly the same minute, so pairs are near-simultaneous rather than synchronous. Milk was collected with an electric breast pump, about 20 mL of FOREMILK per sample without emptying the breast; because amoxicillin is water-soluble and concentrates in the low-fat foremilk, the authors describe this as a deliberate worst-case sampling scheme for milk exposure. Assay LC-MS/MS with LLOQ 0.2 mg/L (plasma) and 0.01 mg/L (milk); no sample fell below either limit and no data were missing. Three mothers took other drugs (one antihypertensive, one anti-inflammatory, one another antibiotic); one had a history of hypertension; none smoked or drank alcohol."
+    notes = "Baseline demographics from Baklouti 2026 Tables 1 and 2. Three blood and three milk samples per mother (75 + 75 = 150 observations), all drawn at home within one dosing interval: nominally 15-30 min, 1-2 h and 3-4 h post-dose. Blood and milk could not be drawn at exactly the same minute, so pairs are near-simultaneous rather than synchronous. Milk was collected with an electric breast pump, about 20 mL of FOREMILK per sample without emptying the breast; because amoxicillin is water-soluble and concentrates in the low-fat foremilk, the authors describe this as a deliberate worst-case sampling scheme for milk exposure. Assay LC-MS/MS with LLOQ 0.2 mg/L (plasma) and 0.01 mg/L (milk); no sample fell below either limit and no data were missing. Three mothers took other drugs (one antihypertensive, one anti-inflammatory, one another antibiotic); one had a history of hypertension; none smoked or drank alcohol."
   )
 
   ini({

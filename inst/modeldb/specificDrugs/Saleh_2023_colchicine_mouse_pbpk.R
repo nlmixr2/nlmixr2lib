@@ -40,24 +40,24 @@ Saleh_2023_colchicine_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    central              = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "colchicine", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE)
+    central = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "colchicine", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "colchicine", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "colchicine", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "colchicine", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (NMRI)",
+    species = "mouse (NMRI)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "1.5 mg/kg IV (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "1.5 mg/kg IV (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for colchicine came from ref [20]",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -256,4 +256,3 @@ Saleh_2023_colchicine_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

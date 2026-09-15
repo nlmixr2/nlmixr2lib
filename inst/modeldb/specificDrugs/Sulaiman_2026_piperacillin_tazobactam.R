@@ -25,22 +25,22 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Sulaiman_2026_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
-    central_taz = list(analyte = "tazobactam",   units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central_taz = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   dosing <- c("central", "central_taz")
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalised)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, NOT BSA-normalised)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model. Enters the",
         "clearance of BOTH drugs as a power term normalised to the",
         "population median, exactly as printed in the two display",
@@ -69,14 +69,14 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
         "AbdulAziz_2016_doripenem.R precedent from the same senior",
         "authors and the same Malaysian ICU network."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     OCC = list(
-      description        = "Sampling-occasion index for between-occasion variability",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion index for between-occasion variability",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two occasions: OCC = 1 is day 1 of piperacillin/tazobactam",
         "therapy and OCC = 2 is day 3 (Sulaiman 2026 Methods, 'Drug dosing",
         "and sample collection'; up to seven blood samples per patient per",
@@ -95,17 +95,17 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
         "occasion only (Results, 'Plasma concentrations'), 381 samples in",
         "total."
       ),
-      source_name        = "Occasion"
+      source_name = "Occasion"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded at baseline (mean 64 kg, SD 16; median 65, range 31-114;",
         "Table 1) and screened during covariate testing, but NOT retained:",
         "Sulaiman 2026 reports Cockcroft-Gault CLcr on clearance as the",
@@ -117,11 +117,11 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
       )
     ),
     ALB = list(
-      description        = "Serum albumin on ICU admission",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin on ICU admission",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Collected as part of the baseline biochemistry (Methods, 'Data",
         "collection'); mean 24 g/L (SD 5), median 24, range 15-36, with",
         "hypoalbuminaemia (< 25 g/L) in 24/45 (53%) patients (Table 1).",
@@ -132,11 +132,11 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
       )
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mean 55 years (SD 21), median 61, range 18-88 (Table 1). Age",
         "separates the target-attainment groups strongly -- patients with",
         "therapeutic concentrations on occasion 1 had a median age of 66",
@@ -150,16 +150,16 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = "18-88 years (median 61, IQR 36-72; mean 55, SD 21)",
-    age_median     = "61 years",
-    weight_range   = "31-114 kg (median 65; mean 64, SD 16)",
-    weight_median  = "65 kg",
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = "18-88 years (median 61, IQR 36-72; mean 55, SD 21)",
+    age_median = "61 years",
+    weight_range = "31-114 kg (median 65; mean 64, SD 16)",
+    weight_median = "65 kg",
     sex_female_pct = 44,
     race_ethnicity = "Malaysian; the source paper reports no race / ethnicity breakdown",
-    disease_state  = paste(
+    disease_state = paste(
       "Sepsis or septic shock by the Sepsis-3 criteria with confirmed or",
       "suspected bacterial infection, in adults admitted to an intensive",
       "care unit. Primary infection site was lung in 32 (71%), blood in 7",
@@ -179,7 +179,7 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
       "preserved to augmented renal function and the model carries no",
       "information about renal impairment or dialysis."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Piperacillin/tazobactam at the discretion of the treating",
       "physician: 4.5 g every 6 h in 37 (82%), 4.5 g every 8 h in 7 (16%)",
       "and 2.25 g every 6 h in 1 (2%). Administration was by intermittent",
@@ -189,12 +189,12 @@ Sulaiman_2026_piperacillin_tazobactam <- function() {
       "piperacillin plus 0.5 g tazobactam (the clinical 8:1 ratio), which",
       "is how the two central compartments must be dosed (Table 1)."
     ),
-    regions        = paste(
+    regions = paste(
       "Malaysia -- three intensive care units: Sultan Ahmad Shah Medical",
       "Centre, Hospital Universiti Sains Malaysia and University of Malaya",
       "Medical Centre"
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective multicentre pharmacokinetic study conducted March 2017",
       "to March 2018 (NMRR-16237231675). 381 plasma samples were collected",
       "across two sampling occasions (day 1 and day 3 of therapy), 26",

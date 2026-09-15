@@ -1,6 +1,6 @@
 Gibiansky_2005_fospropofol <- function() {
   description <- "Joint two-compartment fospropofol (GPI 15715, AQUAVAN) prodrug + intermediate delay compartment + two-compartment propofol active-metabolite population PK model in adults receiving IV bolus AQUAVAN for procedural sedation (Gibiansky 2005, ASCPT poster, colonoscopy sedation Phase II study). The model assumes complete metabolism of GPI 15715 to propofol via systemic alkaline-phosphatase hydrolysis; the intermediate compartment captures the appearance delay between GPI 15715 elimination from plasma and the corresponding rise in propofol concentration. Lean body mass (LBM, reference 55 kg) was retained as a linear-fractional covariate on GPI 15715 central volume Vc_GPI, GPI 15715 metabolic clearance CL_GPI, and propofol central volume Vc_PR; fentanyl premedication exposure, age, sex, and other demographics/laboratory covariates were tested but not retained. Propofol Vc_PR (6.91 L) was fixed as the data were insufficient for joint estimation with CL_PR (the model is identifiable on CL_PR = K10_PR * Vc_PR = 4.53 L/min)."
-  reference   <- paste(
+  reference <- paste(
     "Gibiansky E, Gibiansky L, Enriquez J.",
     "Population pharmacokinetic model of sedative doses of GPI 15715 and propofol",
     "liberated from GPI 15715. Clin Pharmacol Ther. 2005;77(2):P32 (PII-87, ASCPT",
@@ -8,74 +8,74 @@ Gibiansky_2005_fospropofol <- function() {
     "Poster PDF hosted at https://metrumrg.com/wp-content/uploads/2018/08/ascpt_2005_ppkmodelgpi.pdf",
     sep = " "
   )
-  vignette    <- "Gibiansky_2005_fospropofol"
+  vignette <- "Gibiansky_2005_fospropofol"
   paper_specific_compartments <- "delay"
 
-  units       <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
-    delay           = list(analyte = "propofol", units = "mg", specimen = "administration site", verified = FALSE),
-    central_ppf     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    delay = list(analyte = "propofol", units = "mg", specimen = "administration site", verified = FALSE),
+    central_ppf = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_ppf = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass (lean body weight) at study entry.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (lean body weight) at study entry.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-fractional effect on GPI 15715 central volume Vc_GPI, GPI 15715 metabolic clearance CL_GPI, and propofol central volume Vc_PR, centered at LBM = 55 kg per the poster Results section ('for each kilogram of LBW (from 55 kg)'). LBM range in the study population was 37-81 kg.",
-      source_name        = "LBW"
+      notes = "Linear-fractional effect on GPI 15715 central volume Vc_GPI, GPI 15715 metabolic clearance CL_GPI, and propofol central volume Vc_PR, centered at LBM = 55 kg per the poster Results section ('for each kilogram of LBW (from 55 kg)'). LBM range in the study population was 37-81 kg.",
+      source_name = "LBW"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight at study entry (range 45-140 kg).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested in covariate screening; not retained in the final model because LBM was the better predictor and WT, LBM, and BMI were highly co-linear (poster Modeling Steps step 5)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested in covariate screening; not retained in the final model because LBM was the better predictor and WT, LBM, and BMI were highly co-linear (poster Modeling Steps step 5)."
     ),
     BMI = list(
       description = "Body mass index at study entry.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Tested in covariate screening; not retained (co-linear with WT and LBM)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Tested in covariate screening; not retained (co-linear with WT and LBM)."
     ),
     AGE = list(
       description = "Age at study entry (range 20-85 years; 18 patients > 65 y).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested; no association with GPI 15715 or propofol PK detected (poster Covariate Effects section: 'Older age (>65 y) was not associated with changes in the PK of either GPI 15715 or propofol')."
+      units = "years",
+      type = "continuous",
+      notes = "Tested; no association with GPI 15715 or propofol PK detected (poster Covariate Effects section: 'Older age (>65 y) was not associated with changes in the PK of either GPI 15715 or propofol')."
     ),
     SEXF = list(
       description = "Biological sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested; effect on PK was fully explained by LBM (poster: 'gender was strongly correlated with WT and LBW. After accounting for LBW, no additional dependencies on gender were evident')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested; effect on PK was fully explained by LBM (poster: 'gender was strongly correlated with WT and LBW. After accounting for LBW, no additional dependencies on gender were evident')."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 158L,
-    n_studies      = 1L,
-    age_range      = "20-85 years; 18 patients (about 11%) older than 65 y",
-    weight_range   = "WT 45-140 kg; LBM 37-81 kg",
+    species = "human",
+    n_subjects = 158L,
+    n_studies = 1L,
+    age_range = "20-85 years; 18 patients (about 11%) older than 65 y",
+    weight_range = "WT 45-140 kg; LBM 37-81 kg",
     sex_female_pct = 100 * 89 / 158,
     race_ethnicity = "Tested in covariate screening; not retained in the final model. Per-stratum percentages not reported in the poster.",
-    disease_state  = "Adults undergoing elective colonoscopy receiving procedural sedation with AQUAVAN (GPI 15715, water-soluble prodrug of propofol) following premedication with IV fentanyl citrate.",
-    dose_range     = "AQUAVAN initial IV bolus 7.5 to 12.5 mg/kg, with up to 4 supplemental doses (each ~25% of the initial bolus, occasional 50%) at intervals > 3 min; total cumulative dose 495 to 1,680 mg. Fentanyl citrate premedication 0.5 to 1.5 ug/kg given 5 minutes before the AQUAVAN bolus (cumulative fentanyl 11-201 ug).",
-    regions        = "Phase II colonoscopy sedation study; specific countries / centres not enumerated in the poster.",
+    disease_state = "Adults undergoing elective colonoscopy receiving procedural sedation with AQUAVAN (GPI 15715, water-soluble prodrug of propofol) following premedication with IV fentanyl citrate.",
+    dose_range = "AQUAVAN initial IV bolus 7.5 to 12.5 mg/kg, with up to 4 supplemental doses (each ~25% of the initial bolus, occasional 50%) at intervals > 3 min; total cumulative dose 495 to 1,680 mg. Fentanyl citrate premedication 0.5 to 1.5 ug/kg given 5 minutes before the AQUAVAN bolus (cumulative fentanyl 11-201 ug).",
+    regions = "Phase II colonoscopy sedation study; specific countries / centres not enumerated in the poster.",
     n_observations = "597 GPI 15715 and 599 propofol plasma concentrations; 282 AQUAVAN doses administered.",
-    notes          = "Randomized, open-label, dose-ranging, adaptive-dose Phase II trial. Source: ASCPT 2005 Annual Meeting poster (PII-87) authored by Gibiansky, Gibiansky, and Enriquez of Guilford Pharmaceuticals and Metrum Research Group. The poster is the only published account of the model; no peer-reviewed journal article expands on the results. Detailed demographic breakdowns (race/ethnicity stratification, weight medians, regional distribution) are not in the poster."
+    notes = "Randomized, open-label, dose-ranging, adaptive-dose Phase II trial. Source: ASCPT 2005 Annual Meeting poster (PII-87) authored by Gibiansky, Gibiansky, and Enriquez of Guilford Pharmaceuticals and Metrum Research Group. The poster is the only published account of the model; no peer-reviewed journal article expands on the results. Detailed demographic breakdowns (race/ethnicity stratification, weight medians, regional distribution) are not in the poster."
   )
 
   ini({

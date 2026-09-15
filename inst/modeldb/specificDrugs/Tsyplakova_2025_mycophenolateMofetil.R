@@ -12,11 +12,11 @@ Tsyplakova_2025_mycophenolateMofetil <- function() {
 
   covariateData <- list(
     POD = list(
-      description        = "Post-transplant time (days elapsed since renal transplantation)",
-      units              = "days",
-      type               = "continuous",
+      description = "Post-transplant time (days elapsed since renal transplantation)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 reports this covariate in MONTHS ('Diff_in_months' in Eq. 11; 'PTP',",
         "post-transplant time). The canonical POD column is in DAYS, so model() divides by",
         "30.4375 days/month before forming the paper's ratio. The MMF normalisation constant is",
@@ -30,14 +30,14 @@ Tsyplakova_2025_mycophenolateMofetil <- function() {
         "transplantation.",
         sep = " "
       ),
-      source_name        = "Diff_in_months / PTP"
+      source_name = "Diff_in_months / PTP"
     ),
     DOSE_MPA_MGD = list(
-      description        = "Total daily dose of mycophenolic acid, on the MPA-equivalent mass scale",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Total daily dose of mycophenolic acid, on the MPA-equivalent mass scale",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 Eq. 11 'TDD', normalised to 1500 mg/day -- the SAME constant the EC-MPS",
         "model uses (Eq. 8), which is why the constant is read as an MPA-equivalent cohort mean",
         "rather than a per-formulation one. MMF doses in this study were 500-2000 mg/day given",
@@ -49,14 +49,14 @@ Tsyplakova_2025_mycophenolateMofetil <- function() {
         "clearance, and that TDD may partly proxy for body weight, which was not recorded.",
         sep = " "
       ),
-      source_name        = "TDD"
+      source_name = "TDD"
     ),
     OCC = list(
-      description        = "Occasion index; each monthly follow-up visit is a separate occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index; each monthly follow-up visit is a separate occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tsyplakova 2025 Section 2.3: 'Inter-occasion variability (IOV) was also incorporated,",
         "treating each subsequent visit as a separate occasion.' Section 2.2: patients were",
         "monitored for six months with MPA measured monthly, so occasions run 1..6; the paper does",
@@ -66,25 +66,25 @@ Tsyplakova_2025_mycophenolateMofetil <- function() {
         "across occasions (Table 3 gamma), so occasions 2-6 are fixed to the occasion-1 variance.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13,
-    n_studies      = 1,
-    age_median     = "51 years (IQR 14; whole 76-patient cohort)",
+    species = "human",
+    n_subjects = 13,
+    n_studies = 1,
+    age_median = "51 years (IQR 14; whole 76-patient cohort)",
     sex_female_pct = 34.2,
-    disease_state  = "adult renal transplant recipients, at least 3 months post-transplant with stable graft function, on mycophenolate + tacrolimus + low-dose prednisone",
-    dose_range     = "500-2000 mg/day mycophenolate mofetil, given twice daily (360-1440 mg/day MPA-equivalent after the 0.72 conversion)",
-    regions        = "Serbia (University Clinical Centre of Nis)",
-    notes          = paste(
+    disease_state = "adult renal transplant recipients, at least 3 months post-transplant with stable graft function, on mycophenolate + tacrolimus + low-dose prednisone",
+    dose_range = "500-2000 mg/day mycophenolate mofetil, given twice daily (360-1440 mg/day MPA-equivalent after the 0.72 conversion)",
+    regions = "Serbia (University Clinical Centre of Nis)",
+    notes = paste(
       "Tsyplakova 2025 Table 1: 76 patients total contributed 209 MPA plasma samples and 65 saliva",
       "samples; 13 (17.1%) received MMF and 63 (82.9%) received EC-MPS, so this MMF model is based",
       "on the 13-patient subgroup and is the smaller and less precisely estimated of the two",

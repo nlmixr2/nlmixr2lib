@@ -8,52 +8,52 @@ Sarashina_2005_epinastine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "epinastine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "epinastine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "epinastine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "epinastine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "epinastine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Sarashina 2005 enters WT linearly into CL/F and V1/F: CL/F = (theta1 + WT * theta10) * food * form and V1/F = (theta2 + WT * theta11) * food. The y-intercept (theta1, theta2) and per-kg slope (theta10, theta11) are both estimated.",
-      source_name        = "WT"
+      notes = "Time-fixed. Sarashina 2005 enters WT linearly into CL/F and V1/F: CL/F = (theta1 + WT * theta10) * food * form and V1/F = (theta2 + WT * theta11) * food. The y-intercept (theta1, theta2) and per-kg slope (theta10, theta11) are both estimated.",
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (1 = fed at dosing, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (1 = fed at dosing, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-record covariate. Adults: 607 fasted vs 724 non-fasted observations (Table 2). Paediatric: 10 fasting vs 169 non-fasting observations. Fed reduces Cmax and AUC (food/fasted ratios 0.67 and 0.62 respectively per the Discussion), and introduces an absorption lag.",
-      source_name        = "FOOD"
+      notes = "Per-record covariate. Adults: 607 fasted vs 724 non-fasted observations (Table 2). Paediatric: 10 fasting vs 169 non-fasting observations. Fed reduces Cmax and AUC (food/fasted ratios 0.67 and 0.62 respectively per the Discussion), and introduces an absorption lag.",
+      source_name = "FOOD"
     ),
     FORM_SYRUP = list(
-      description        = "Dry-syrup vs tablet formulation indicator (1 = dry syrup, 0 = tablet reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dry-syrup vs tablet formulation indicator (1 = dry syrup, 0 = tablet reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = "Per-subject formulation. Tablet is the reference (theta9 multiplier = 1); dry syrup increases CL/F by a factor of 1.06 (theta9). The covariate-columns register names tablet as one common comparator; document the reference here. Paediatric patients all received dry syrup; healthy adults received either tablet or dry syrup depending on the trial.",
-      source_name        = "FORM"
+      notes = "Per-subject formulation. Tablet is the reference (theta9 multiplier = 1); dry syrup increases CL/F by a factor of 1.06 (theta9). The covariate-columns register names tablet as one common comparator; document the reference here. Paediatric patients all received dry syrup; healthy adults received either tablet or dry syrup depending on the trial.",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 124,
-    n_studies      = 6,
-    age_range      = "2-26 years (paediatric 2-15 years; adult 20-26 years)",
-    age_median     = "adult 22.3 years (mean); paediatric 10.2 years (mean)",
-    weight_range   = "14.1-82 kg (paediatric 14.1-68 kg; adult 50-82 kg)",
-    weight_median  = "adult 63.0 kg (mean); paediatric 36.9 kg (mean)",
+    species = "human",
+    n_subjects = 124,
+    n_studies = 6,
+    age_range = "2-26 years (paediatric 2-15 years; adult 20-26 years)",
+    age_median = "adult 22.3 years (mean); paediatric 10.2 years (mean)",
+    weight_range = "14.1-82 kg (paediatric 14.1-68 kg; adult 50-82 kg)",
+    weight_median = "adult 63.0 kg (mean); paediatric 36.9 kg (mean)",
     sex_female_pct = 19.4,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "62 healthy adult volunteers (all male) plus 62 paediatric atopic dermatitis patients (38 male, 24 female).",
-    dose_range     = "10, 20, or 40 mg oral epinastine once daily (paediatric: 10 mg if 14 kg to <24 kg, 20 mg if 24 kg or more).",
-    regions        = "Japan",
-    notes          = "Six clinical trials pooled (Table 1). 1510 plasma observations: 1331 from adults, 179 from paediatric atopic dermatitis patients. Adult sampling was rich after first dose; paediatric sampling was sparse (3 trough samples per patient at 2-6, 6-10, and 10-14 weeks of daily dosing). See Table 2 for full demographics."
+    disease_state = "62 healthy adult volunteers (all male) plus 62 paediatric atopic dermatitis patients (38 male, 24 female).",
+    dose_range = "10, 20, or 40 mg oral epinastine once daily (paediatric: 10 mg if 14 kg to <24 kg, 20 mg if 24 kg or more).",
+    regions = "Japan",
+    notes = "Six clinical trials pooled (Table 1). 1510 plasma observations: 1331 from adults, 179 from paediatric atopic dermatitis patients. Adult sampling was rich after first dose; paediatric sampling was sparse (3 trough samples per patient at 2-6, 6-10, and 10-14 weeks of daily dosing). See Table 2 for full demographics."
   )
 
   ini({

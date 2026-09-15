@@ -8,45 +8,45 @@ Vos_2025_iminobiotin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate (eGFR) on admission",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate (eGFR) on admission",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (admission eGFR; clinical-laboratory creatinine-based MDRD estimate per standard Dutch hospital practice). Power-form effect on CL with reference 90 mL/min/1.73 m^2: cl = exp(lcl) * (1 + e_alteplase_cl * CONMED_ALTEPLASE) * (CRCL / 90)^e_crcl_cl. Vos 2025 Supplemental Table S8 reports the covariate as 'COVeGFR0 CL' (baseline eGFR effect on CL) with estimate 0.817 (17.2% RSE). The eGFR reference value of 90 mL/min/1.73 m^2 is the canonical adult reference (sidecar Q4 operator decision; the paper does not state the reference explicitly).",
-      source_name        = "eGFR0"
+      notes = "Time-fixed per subject (admission eGFR; clinical-laboratory creatinine-based MDRD estimate per standard Dutch hospital practice). Power-form effect on CL with reference 90 mL/min/1.73 m^2: cl = exp(lcl) * (1 + e_alteplase_cl * CONMED_ALTEPLASE) * (CRCL / 90)^e_crcl_cl. Vos 2025 Supplemental Table S8 reports the covariate as 'COVeGFR0 CL' (baseline eGFR effect on CL) with estimate 0.817 (17.2% RSE). The eGFR reference value of 90 mL/min/1.73 m^2 is the canonical adult reference (sidecar Q4 operator decision; the paper does not state the reference explicitly).",
+      source_name = "eGFR0"
     ),
     CONMED_ALTEPLASE = list(
-      description        = "Concomitant intravenous alteplase (recombinant tissue plasminogen activator, r-tPA) coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant intravenous alteplase (recombinant tissue plasminogen activator, r-tPA) coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant alteplase / IVT)",
-      notes              = "1 = subject received concomitant intravenous thrombolysis with alteplase before / concurrent with 2-IB infusion; 0 = no IVT. In Vos 2025 the cohort prevalence was 65% (13 of 20 in the 2-IB arm; 11 of 18 in the PK-evaluable subset). The +65% multiplicative increase in clearance (TVCL 9.29 L/h no-IVT vs 15.3 L/h with IVT; Vos 2025 Supplemental Table S8 'CL (L/h) + IVT') has no firmly established mechanism: the Vos 2025 Discussion ruled out plasmin-mediated cleavage because 2-IB is a small molecule rather than a peptide (unlike nerinetide in the ESCAPE-NA1 trial). Source column 'IVT' in the Vos 2025 NONMEM dataset.",
-      source_name        = "IVT"
+      notes = "1 = subject received concomitant intravenous thrombolysis with alteplase before / concurrent with 2-IB infusion; 0 = no IVT. In Vos 2025 the cohort prevalence was 65% (13 of 20 in the 2-IB arm; 11 of 18 in the PK-evaluable subset). The +65% multiplicative increase in clearance (TVCL 9.29 L/h no-IVT vs 15.3 L/h with IVT; Vos 2025 Supplemental Table S8 'CL (L/h) + IVT') has no firmly established mechanism: the Vos 2025 Discussion ruled out plasmin-mediated cleavage because 2-IB is a small molecule rather than a peptide (unlike nerinetide in the ESCAPE-NA1 trial). Source column 'IVT' in the Vos 2025 NONMEM dataset.",
+      source_name = "IVT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "47-89 years (mITT 2-IB arm: median 78, IQR 70-82; overall median 76, IQR 66-82)",
-    age_median     = "78 years (2-IB arm; 76 across the mITT pool)",
-    weight_range   = "not reported in Vos 2025",
-    weight_median  = "not reported in Vos 2025",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "47-89 years (mITT 2-IB arm: median 78, IQR 70-82; overall median 76, IQR 66-82)",
+    age_median = "78 years (2-IB arm; 76 across the mITT pool)",
+    weight_range = "not reported in Vos 2025",
+    weight_median = "not reported in Vos 2025",
     sex_female_pct = 50,
     race_ethnicity = "not reported (single-center Dutch trial; cohort predominantly Northern European)",
-    disease_state  = "Acute ischemic stroke due to large-vessel occlusion of the anterior circulation (MCA-M1, proximal MCA-M2, or internal carotid artery), treated with endovascular thrombectomy with or without intravenous alteplase (IVT) within 6 hours of stroke onset",
-    dose_range     = "Intravenous loading dose of 3 mL (2.25 mg) of 0.75 mg/mL 2-IB solution over 1 minute (groups A, B intravenously; group C intra-arterially), followed by 1.3 mL/h (0.975 mg/h) intravenous continuous infusion for 4 h (phase 2), followed by an eGFR-adjusted intravenous continuous infusion for 20 h (phase 3) per Vos 2025 Supplemental Table S2 dosing scheme. Pump speeds in phase 3 range from 0.45 mL/h (eGFR 20-29) to 3.5 mL/h (eGFR 200-220), targeting AUC_avg_4h ~ 365 ng*h/mL across the eGFR strata.",
-    regions        = "the Netherlands (single-center: Haaglanden Medical Center, The Hague)",
-    trial_design   = "Single-center, randomized, double-blind, placebo-controlled phase 2a trial (EudraCT 2021-002162-40 / Dutch trial register 51194). n=20 patients per arm in the mITT population; 18 evaluable for PK in the 2-IB arm (2 missing). Randomization 1:1 across three timing-of-start treatment groups (A: study drug at admission intravenously; B: study drug after reperfusion intravenously; C: study drug after reperfusion intra-arterially).",
-    co_medication  = "Concomitant intravenous thrombolysis (alteplase / r-tPA) administered in 65% (13/20) of 2-IB-arm patients per the standard-of-care window; encoded as the CONMED_ALTEPLASE binary covariate.",
-    notes          = "Severe renal impairment excluded (eGFR <= 20 mL/min/1.73 m^2 or requiring dialysis). Median NIHSS at admission 19 (IQR 14-21) in the 2-IB arm. Baseline demographics from Vos 2025 Table 1 (mITT) and Supplemental Table S4 (ITT). The cohort age skew (median 78 years, IQR 70-82) reflects the LVO-eligible-for-EVT population which is enriched for elderly patients with atrial fibrillation; ~10-30% prevalence of hypertension / cardiovascular co-morbidities."
+    disease_state = "Acute ischemic stroke due to large-vessel occlusion of the anterior circulation (MCA-M1, proximal MCA-M2, or internal carotid artery), treated with endovascular thrombectomy with or without intravenous alteplase (IVT) within 6 hours of stroke onset",
+    dose_range = "Intravenous loading dose of 3 mL (2.25 mg) of 0.75 mg/mL 2-IB solution over 1 minute (groups A, B intravenously; group C intra-arterially), followed by 1.3 mL/h (0.975 mg/h) intravenous continuous infusion for 4 h (phase 2), followed by an eGFR-adjusted intravenous continuous infusion for 20 h (phase 3) per Vos 2025 Supplemental Table S2 dosing scheme. Pump speeds in phase 3 range from 0.45 mL/h (eGFR 20-29) to 3.5 mL/h (eGFR 200-220), targeting AUC_avg_4h ~ 365 ng*h/mL across the eGFR strata.",
+    regions = "the Netherlands (single-center: Haaglanden Medical Center, The Hague)",
+    trial_design = "Single-center, randomized, double-blind, placebo-controlled phase 2a trial (EudraCT 2021-002162-40 / Dutch trial register 51194). n=20 patients per arm in the mITT population; 18 evaluable for PK in the 2-IB arm (2 missing). Randomization 1:1 across three timing-of-start treatment groups (A: study drug at admission intravenously; B: study drug after reperfusion intravenously; C: study drug after reperfusion intra-arterially).",
+    co_medication = "Concomitant intravenous thrombolysis (alteplase / r-tPA) administered in 65% (13/20) of 2-IB-arm patients per the standard-of-care window; encoded as the CONMED_ALTEPLASE binary covariate.",
+    notes = "Severe renal impairment excluded (eGFR <= 20 mL/min/1.73 m^2 or requiring dialysis). Median NIHSS at admission 19 (IQR 14-21) in the 2-IB arm. Baseline demographics from Vos 2025 Table 1 (mITT) and Supplemental Table S4 (ITT). The cohort age skew (median 78 years, IQR 70-82) reflects the LVO-eligible-for-EVT population which is enriched for elderly patients with atrial fibrillation; ~10-30% prevalence of hypertension / cardiovascular co-morbidities."
   )
 
   ini({

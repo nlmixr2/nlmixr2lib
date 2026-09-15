@@ -30,8 +30,8 @@ Pierre_2017_morphine <- function() {
   )
   vignette <- "Pierre_2017_morphine"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -40,22 +40,22 @@ Pierre_2017_morphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central        = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
-    transit1       = list(analyte = "morphine", units = "nmol", specimen = "administration site", verified = FALSE),
-    central_m3g    = list(analyte = "M3G", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "morphine", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_m3g = list(analyte = "M3G", units = "nmol", specimen = "plasma", verified = FALSE),
     urine_morphine = list(analyte = "morphine", units = "nmol", specimen = "urine", verified = FALSE),
-    urine_m3g      = list(analyte = "M3G", units = "nmol", specimen = "urine", verified = FALSE)
+    urine_m3g = list(analyte = "M3G", units = "nmol", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters all morphine and M3G CL/Q and V",
         "parameters a priori via the allometric relationships CL_i =",
         "CL_70kg * (WT / 70)^0.75 and V_i = V_70kg * (WT / 70)^1.0 (paper",
@@ -63,17 +63,17 @@ Pierre_2017_morphine <- function() {
         "Allometric exponents are fixed at the canonical values 0.75 (CL/Q)",
         "and 1 (V) and are not estimated."
       ),
-      source_name        = "weight (paper Methods 'Covariate analysis', Eqs. 1-2)"
+      source_name = "weight (paper Methods 'Covariate analysis', Eqs. 1-2)"
     ),
     NASF = list(
-      description        = paste(
+      description = paste(
         "NASH severity score (NAFLD activity score plus fibrosis",
         "staging; integer 0-12)."
       ),
-      units              = "(count, 0-12)",
-      type               = "count",
+      units = "(count, 0-12)",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The NAFLD activity score (NAS) sums",
         "steatosis (0-3), hepatocyte ballooning (0-2), and lobular",
         "inflammation (0-3) for 0-8 points; the fibrosis staging score",
@@ -87,21 +87,21 @@ Pierre_2017_morphine <- function() {
         "typical value. Source: paper Methods 'Covariate analysis' and",
         "references 31, 32."
       ),
-      source_name        = "NASF (paper Methods 'Covariate analysis')"
+      source_name = "NASF (paper Methods 'Covariate analysis')"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21,
-    n_studies      = 1,
-    age_range      = "20-63 years",
-    age_median     = "45 years",
-    weight_range   = "52-128 kg",
-    weight_median  = "78 kg",
+    species = "human",
+    n_subjects = 21,
+    n_studies = 1,
+    age_range = "20-63 years",
+    age_median = "45 years",
+    weight_range = "52-128 kg",
+    weight_median = "78 kg",
     sex_female_pct = 52.4,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "14 healthy adults and 7 adults with biopsy-confirmed",
       "nonalcoholic steatohepatitis (NASH). All NASH subjects had",
       "total body weight > 70 kg and 4/7 had BMI > 30 kg/m^2;",
@@ -110,7 +110,7 @@ Pierre_2017_morphine <- function() {
       "the participants exhibited overt renal dysfunction (median",
       "creatinine clearance 118 mL/min in healthy, 141 mL/min in NASH)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 5 mg morphine sulfate IV infused over 5 min, administered",
       "2 hr after a standardized 23.9 g fat meal consumed over 30 min.",
       "Doses were converted to nanomoles of morphine free base for",
@@ -118,8 +118,8 @@ Pierre_2017_morphine <- function() {
       "(approximately 13,178 nmol free base) infused over 10 min every",
       "4 hr for 24 hr."
     ),
-    regions        = "United States (University of North Carolina at Chapel Hill)",
-    notes          = paste(
+    regions = "United States (University of North Carolina at Chapel Hill)",
+    notes = paste(
       "Demographics from Pierre 2017 Table 1. NONMEM 7.3 with ADVAN13",
       "(stiff ODE solver), iterative two-stage followed by Monte Carlo",
       "importance sampling with Laplacian g-eta interaction. Serum samples",

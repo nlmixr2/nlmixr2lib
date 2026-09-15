@@ -33,14 +33,14 @@ Marsot_2017_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_FUSIDIC = list(
-      description        = paste(
+      description = paste(
         "1 = patient is coadministered oral fusidic acid (500 mg",
         "three times daily) alongside rifampicin during the",
         "observation interval; 0 = no concomitant fusidic acid.",
@@ -48,10 +48,10 @@ Marsot_2017_rifampicin <- function() {
         "patient's antibiotic regimen was stable across the",
         "steady-state sampling window)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant fusidic acid)",
-      notes              = paste(
+      notes = paste(
         "Marsot 2017 Table 2 encodes fusidic acid coadministration",
         "as separate typical values for CL/F and V/F rather than as",
         "a multiplicative theta: CL/F = 5.1 L/h with fusidic acid,",
@@ -68,47 +68,47 @@ Marsot_2017_rifampicin <- function() {
         "rifampicin from plasma protein binding sites, but the",
         "exact mechanism remains uncertain."
       ),
-      source_name        = "fusidic acid (Table 1 / Table 2)"
+      source_name = "fusidic acid (Table 1 / Table 2)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry (years). Tested in the covariate screen but not retained in the final model.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Marsot 2017 Results paragraph 3: 'The other covariables tested on the model, including gender, age, height and body weight, did not improve the pharmacokinetic model.' Cohort age range 20-89 years, mean 57.4 (Table 1)."
+      units = "year",
+      type = "continuous",
+      notes = "Marsot 2017 Results paragraph 3: 'The other covariables tested on the model, including gender, age, height and body weight, did not improve the pharmacokinetic model.' Cohort age range 20-89 years, mean 57.4 (Table 1)."
     ),
     WT = list(
       description = "Total body weight at study entry (kg). Tested in the covariate screen but not retained in the final model.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Marsot 2017 Results paragraph 3 (see AGE notes). Cohort weight range 46-119 kg, mean 72.3 (Table 1). No allometric scaling in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Marsot 2017 Results paragraph 3 (see AGE notes). Cohort weight range 46-119 kg, mean 72.3 (Table 1). No allometric scaling in the final model."
     ),
     HT = list(
       description = "Height at study entry (cm). Tested in the covariate screen but not retained in the final model.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Marsot 2017 Results paragraph 3 (see AGE notes)."
+      units = "cm",
+      type = "continuous",
+      notes = "Marsot 2017 Results paragraph 3 (see AGE notes)."
     ),
     SEXF = list(
       description = "1 = female, 0 = male. Tested in the covariate screen but not retained in the final model.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Marsot 2017 Results paragraph 3 (see AGE notes). Female proportion 16 / 62 = 25.8 % (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Marsot 2017 Results paragraph 3 (see AGE notes). Female proportion 16 / 62 = 25.8 % (Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 1L,
     n_observations = 103L,
-    age_range      = "20-89 years; mean 57.4 (Table 1)",
-    weight_range   = "46-119 kg; mean 72.3 (Table 1)",
+    age_range = "20-89 years; mean 57.4 (Table 1)",
+    weight_range = "46-119 kg; mean 72.3 (Table 1)",
     sex_female_pct = 25.8,
     race_ethnicity = "not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Adult outpatients with staphylococcal osteoarticular",
       "infections (OAI) followed at the Infectious and Tropical",
       "Diseases Unit of Conception Hospital (Marseille, France).",
@@ -119,14 +119,14 @@ Marsot_2017_rifampicin <- function() {
       "Streptococcus spp. (6.5 %). Only steady-state samples",
       "(less than 4 weeks after treatment start) were analysed."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral rifampicin 300 mg three times daily (median 12.4",
       "mg/kg). Treatment duration: 3 months (no prosthetic",
       "material) or 6 months (prosthetic material) per Marsot 2017",
       "Materials and method 'Data sources'."
     ),
-    regions        = "France (Marseille)",
-    notes          = paste(
+    regions = "France (Marseille)",
+    notes = paste(
       "Retrospective TDM cohort (August 2012-August 2015). Plasma",
       "rifampicin quantified by HPLC-UV (LLOQ 0.5 mg/L, linear",
       "range 0.5-20 mg/L). Concomitant antibiotics beyond",

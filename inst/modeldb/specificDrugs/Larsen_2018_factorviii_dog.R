@@ -25,8 +25,8 @@ Larsen_2018_factorviii_dog <- function() {
   )
   vignette <- "Larsen_2018_haemophilia_animal_popPK"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -34,37 +34,37 @@ Larsen_2018_factorviii_dog <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (haemophilia A dog)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (haemophilia A dog)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal body weight. Used for within-species",
         "allometric scaling around the dog median weight of",
         "19.55 kg (Larsen 2018 Table 1). Range 19.55-19.8 kg",
         "(very narrow, n=3)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "dog (haemophilia A)",
-    n_subjects     = 3L,
-    n_studies      = NA_integer_,
-    weight_range   = "19.55-19.8 kg",
-    weight_median  = "19.55 kg",
+    species = "dog (haemophilia A)",
+    n_subjects = 3L,
+    n_studies = NA_integer_,
+    weight_range = "19.55-19.8 kg",
+    weight_median = "19.55 kg",
     sex_female_pct = 66.7,
-    disease_state  = "haemophilia A (endogenous FVIII absent)",
-    dose_range     = "single IV bolus, 100 IU/kg rFVIII",
-    regions        = "Denmark / United States (Novo Nordisk in-house and Agerso 2012)",
-    notes          = paste(
+    disease_state = "haemophilia A (endogenous FVIII absent)",
+    dose_range = "single IV bolus, 100 IU/kg rFVIII",
+    regions = "Denmark / United States (Novo Nordisk in-house and Agerso 2012)",
+    notes = paste(
       "3 haemophilia A dogs (1 M, 2 F). Sampling up to 80 h",
       "post-dose. Endogenous FVIII is absent by disease.",
       "Data sources: Agerso 2012 (rFVIII in dogs). See Larsen",

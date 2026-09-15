@@ -20,22 +20,22 @@ Straube_2025_omalizumab_1cmt <- function() {
   # for the circulating states. The depot is verified because the source
   # states the route explicitly ("single dose of subcutaneous injection").
   compartmentData <- list(
-    depot   = list(analyte = "omalizumab",             units = "nmol", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "omalizumab",             units = "nmol", specimen = "plasma",              verified = FALSE),
-    target  = list(analyte = "IgE",                    units = "nmol", specimen = "plasma",              verified = FALSE),
-    complex = list(analyte = "omalizumab-IgE complex", units = "nmol", specimen = "plasma",              verified = FALSE)
+    depot = list(analyte = "omalizumab", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "omalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "IgE", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "omalizumab-IgE complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 2L,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = 2L,
+    n_studies = 1L,
     disease_state = "Atopic disease; omalizumab is a monoclonal antibody against IgE used to treat atopic diseases (Straube 2025 section 3.2).",
-    dose_range    = "Single subcutaneous dose. 90 mg for the Figure 5a patient encoded here; the second patient (Table 2 'Figure S2a' column) received 270 mg.",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single subcutaneous dose. 90 mg for the Figure 5a patient encoded here; the second patient (Table 2 'Figure S2a' column) received 270 mg.",
+    regions = NA_character_,
+    notes = paste(
       "Phase I data for two patients, digitised by Straube from Meno-Tetang and Lowe (2005) and",
       "re-fitted with the one-compartment TMDD model of Equation (2). Table 2 footnote: Vc, CL and Rb",
       "were estimated patient-specific and the remaining parameters are pooled estimates across the two",

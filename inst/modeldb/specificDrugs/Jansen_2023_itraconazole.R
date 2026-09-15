@@ -1,47 +1,52 @@
 Jansen_2023_itraconazole <- function() {
   description <- "Semi-mechanistic population PK model for intravenous itraconazole nanocrystal formulation (NCF) and its active metabolite hydroxy-itraconazole in allogeneic haematopoietic cell transplant recipients (Jansen 2023). A nanocrystal-bound itraconazole compartment receives the infusion and dissolves by a fixed first-order rate constant into a two-compartment dissolved-itraconazole disposition model; all eliminated itraconazole (fraction metabolised fixed to 1) enters a one-compartment hydroxy-itraconazole model. Observed itraconazole is the sum of nanocrystal-bound and dissolved concentrations. Allometric weight scaling with fixed exponents 0.75 on clearances and 1 on volumes. All amounts and concentrations are molar, as the source data were converted to molar equivalents before fitting."
-  reference   <- "Jansen AME, Ter Heine R, Donnelly JP, Blijlevens N, Bruggemann RJM. Repurposing antifungals: population pharmacokinetics of itraconazole and hydroxy-itraconazole following administration of a nanocrystal formulation. J Antimicrob Chemother. 2023;78(5):1172-1178. doi:10.1093/jac/dkad072"
-  vignette    <- "Jansen_2023_itraconazole"
-  units       <- list(time = "h", dosing = "mmol", concentration = "mmol/L")
+  reference <- "Jansen AME, Ter Heine R, Donnelly JP, Blijlevens N, Bruggemann RJM. Repurposing antifungals: population pharmacokinetics of itraconazole and hydroxy-itraconazole following administration of a nanocrystal formulation. J Antimicrob Chemother. 2023;78(5):1172-1178. doi:10.1093/jac/dkad072"
+  vignette <- "Jansen_2023_itraconazole"
+  units <- list(time = "h", dosing = "mmol", concentration = "mmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the supplementary final model control
   # stream ($MODEL block: CEN / PERI / MET / NANO) and the Methods paragraph
   # describing the nanocrystal dissolution compartment.
   compartmentData <- list(
-    central_np   = list(analyte = "itraconazole (nanocrystal-bound)", units = "mmol", specimen = "plasma", verified = TRUE),
-    central      = list(analyte = "itraconazole (dissolved)",         units = "mmol", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "itraconazole (dissolved)",         units = "mmol", specimen = "plasma", verified = TRUE),
-    central_ohi  = list(analyte = "hydroxy-itraconazole",             units = "mmol", specimen = "plasma", verified = TRUE)
+    central_np = list(
+      analyte = "itraconazole (nanocrystal-bound)",
+      units = "mmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central = list(analyte = "itraconazole (dissolved)", units = "mmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "itraconazole (dissolved)", units = "mmol", specimen = "plasma", verified = TRUE),
+    central_ohi = list(analyte = "hydroxy-itraconazole", units = "mmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight recorded at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight recorded at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A priori allometric scaling to a 70 kg reference: (WT/70)^0.75 on itraconazole CL, intercompartmental Q and hydroxy-itraconazole CL; (WT/70)^1 on every volume, including the nanocrystal-bound volume, which the control stream sets equal to the itraconazole central volume. Exponents were fixed, not estimated. Body weight is the only covariate in the model; the study was explicitly not powered to screen covariates.",
-      source_name        = "WT"
+      notes = "A priori allometric scaling to a 70 kg reference: (WT/70)^0.75 on itraconazole CL, intercompartmental Q and hydroxy-itraconazole CL; (WT/70)^1 on every volume, including the nanocrystal-bound volume, which the control stream sets equal to the itraconazole central volume. Exponents were fixed, not estimated. Body weight is the only covariate in the model; the study was explicitly not powered to screen covariates.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10,
-    n_studies      = 1,
-    age_range      = "22.0-59.0 years",
-    age_median     = "47.5 years",
-    weight_range   = "60.0-92.5 kg",
-    weight_median  = "78.3 kg",
-    height_range   = "164-190 cm",
-    bmi_range      = "20.6-29.4 kg/m2",
+    species = "human",
+    n_subjects = 10,
+    n_studies = 1,
+    age_range = "22.0-59.0 years",
+    age_median = "47.5 years",
+    weight_range = "60.0-92.5 kg",
+    weight_median = "78.3 kg",
+    height_range = "164-190 cm",
+    bmi_range = "20.6-29.4 kg/m2",
     sex_female_pct = 50,
-    disease_state  = "Adults (18-65 years) receiving a matched allogeneic bone marrow transplant after conditioning with idarubicin, cyclophosphamide and total body irradiation; underlying disease acute lymphatic leukaemia (30%), acute myeloid leukaemia (20%), chronic myelomonocytic leukaemia (20%), non-Hodgkin lymphoma (20%), myelofibrosis (10%). No signs or symptoms of fungal infection at inclusion.",
-    dose_range     = "Itraconazole nanocrystal formulation 200 mg IV as a 2 h infusion twice daily for 2 days, then 200 mg once daily until day 14.",
-    regions        = "The Netherlands (Radboud University Medical Center, Nijmegen).",
+    disease_state = "Adults (18-65 years) receiving a matched allogeneic bone marrow transplant after conditioning with idarubicin, cyclophosphamide and total body irradiation; underlying disease acute lymphatic leukaemia (30%), acute myeloid leukaemia (20%), chronic myelomonocytic leukaemia (20%), non-Hodgkin lymphoma (20%), myelofibrosis (10%). No signs or symptoms of fungal infection at inclusion.",
+    dose_range = "Itraconazole nanocrystal formulation 200 mg IV as a 2 h infusion twice daily for 2 days, then 200 mg once daily until day 14.",
+    regions = "The Netherlands (Radboud University Medical Center, Nijmegen).",
     n_observations = "471 itraconazole and 471 paired hydroxy-itraconazole plasma concentrations, all above the LLOQ (0.002 mg/L itraconazole, 0.005 mg/L hydroxy-itraconazole). Observed ranges 0.06-6.96 mg/L (itraconazole) and 0.09-1.86 mg/L (hydroxy-itraconazole).",
-    notes          = "Baseline characteristics from Jansen 2023 Table 1. Prospective open-label Phase II study; identification of covariates was not part of the study design. Full PK curves on days 7 and 14, pre- and post-infusion samples until day 6, pre-infusion on days 10 and 12, and washout samples on days 16, 17, 18, 19 and 28."
+    notes = "Baseline characteristics from Jansen 2023 Table 1. Prospective open-label Phase II study; identification of covariates was not part of the study design. Full PK curves on days 7 and 14, pre- and post-infusion samples until day 6, pre-infusion on days 10 and 12, and washout samples on days 16, 17, 18, 19 and 28."
   )
 
   ini({

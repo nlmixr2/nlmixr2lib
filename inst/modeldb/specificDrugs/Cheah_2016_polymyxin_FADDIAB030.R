@@ -10,8 +10,8 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
   )
   vignette <- "Cheah_2016_polymyxin_Abaumannii_dynamics"
   units <- list(
-    time          = "h",
-    dosing        = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
+    time = "h",
+    dosing = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
     concentration = "log10 CFU/mL (log_cfu, observed viable count on drug-free agar)"
   )
 
@@ -22,25 +22,45 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_s  = list(analyte = "Acinetobacter baumannii susceptible subpopulation", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_r  = list(analyte = "Acinetobacter baumannii resistant subpopulation", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_d  = list(analyte = "Acinetobacter baumannii dormant subpopulation", units = NA_character_, specimen = "bile", verified = FALSE),
-    r_adapt = list(analyte = "resistant subpopulation adaptation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_s = list(
+      analyte = "Acinetobacter baumannii susceptible subpopulation",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_r = list(
+      analyte = "Acinetobacter baumannii resistant subpopulation",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_d = list(
+      analyte = "Acinetobacter baumannii dormant subpopulation",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    r_adapt = list(
+      analyte = "resistant subpopulation adaptation",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
     central = list(analyte = "polymyxin B or colistin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "in vitro (Acinetobacter baumannii FADDI-AB030)",
-    n_subjects      = NA_integer_,
-    n_studies       = 1L,
-    organism        = "A. baumannii FADDI-AB030 (clinical polymyxin-susceptible isolate without heteroresistance; described in reference 20 as strain 248-01-C.248; polymyxin B and colistin MIC 0.5 mg/L; population-analysis profile showed no evidence of heteroresistance)",
-    system          = "Dynamic one-compartment in vitro infection model (IVM), 80 mL central reservoir, 37 C, CAMHB circulated at 4.8 mL/h to simulate elimination half-life 11.6 h and average steady-state polymyxin concentration 3 mg/L",
-    duration        = "96 h with viable counting at 0, 0.5, 1, 2, 4, 8, 11, 13, 23, 25, 26, 28, 47, 49, 50, 52, 71, 73, 74, 76, and 96 h on drug-free and drug-containing (6.6 mg/L polymyxin B base) plates; PAPs at 0, 23, 47, 71, and 96 h",
+    species = "in vitro (Acinetobacter baumannii FADDI-AB030)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "A. baumannii FADDI-AB030 (clinical polymyxin-susceptible isolate without heteroresistance; described in reference 20 as strain 248-01-C.248; polymyxin B and colistin MIC 0.5 mg/L; population-analysis profile showed no evidence of heteroresistance)",
+    system = "Dynamic one-compartment in vitro infection model (IVM), 80 mL central reservoir, 37 C, CAMHB circulated at 4.8 mL/h to simulate elimination half-life 11.6 h and average steady-state polymyxin concentration 3 mg/L",
+    duration = "96 h with viable counting at 0, 0.5, 1, 2, 4, 8, 11, 13, 23, 25, 26, 28, 47, 49, 50, 52, 71, 73, 74, 76, and 96 h on drug-free and drug-containing (6.6 mg/L polymyxin B base) plates; PAPs at 0, 23, 47, 71, and 96 h",
     inoculum_target = "approximately 10^6 CFU/mL (Table 1: log10 CFU_total,0 = 6.17)",
-    regimens        = "R1 (gradual rise of colistin), R2 (polymyxin B 1-h infusion every 12 h, no loading dose), R3 (R2 + conventional loading dose), R4 (R2 + augmented loading dose attaining initial peak 6 mg/L)",
-    notes           = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (etas) are not included (typical-value fit per strain). For FADDI-AB030 both conventional (R3) and augmented (R4) loading doses delayed bacterial regrowth (Cheah 2016 Discussion paragraph 5). The unusually long MGT_R = 313 min (Table 1) reflects the long mean generation time of the very small constitutively-resistant subpopulation in this otherwise-susceptible strain. The very steep Hill_killing = 19.5 (Table 1) reflects near-switchlike polymyxin killing in this strain."
+    regimens = "R1 (gradual rise of colistin), R2 (polymyxin B 1-h infusion every 12 h, no loading dose), R3 (R2 + conventional loading dose), R4 (R2 + augmented loading dose attaining initial peak 6 mg/L)",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (etas) are not included (typical-value fit per strain). For FADDI-AB030 both conventional (R3) and augmented (R4) loading doses delayed bacterial regrowth (Cheah 2016 Discussion paragraph 5). The unusually long MGT_R = 313 min (Table 1) reflects the long mean generation time of the very small constitutively-resistant subpopulation in this otherwise-susceptible strain. The very steep Hill_killing = 19.5 (Table 1) reflects near-switchlike polymyxin killing in this strain."
   )
 
   ini({

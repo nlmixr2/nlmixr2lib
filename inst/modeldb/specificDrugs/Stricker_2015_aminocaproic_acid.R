@@ -8,56 +8,56 @@ Stricker_2015_aminocaproic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "aminocaproic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "aminocaproic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "aminocaproic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Fixed allometric scaling with 70 kg reference; exponent 0.75 on CL and Q, 1.0 on V1 and V2 (Stricker 2015 Methods 'Full covariate model' and Table 5 caption).",
-      source_name        = "WT"
+      notes = "Fixed allometric scaling with 70 kg reference; exponent 0.75 on CL and Q, 1.0 on V1 and V2 (Stricker 2015 Methods 'Full covariate model' and Table 5 caption).",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the Emax-type CL maturation `PNA / (1.53 + PNA)` (Stricker 2015 Table 5 caption). Adolescent PSF cohort 158-211 months (~13-17.5 years); infant craniofacial cohort 6-25 months. Convert source ages from years/weeks to months before assignment. Effectively time-fixed within a single surgical observation window.",
-      source_name        = "AGE"
+      notes = "Drives the Emax-type CL maturation `PNA / (1.53 + PNA)` (Stricker 2015 Table 5 caption). Adolescent PSF cohort 158-211 months (~13-17.5 years); infant craniofacial cohort 6-25 months. Convert source ages from years/weeks to months before assignment. Effectively time-fixed within a single surgical observation window.",
+      source_name = "AGE"
     ),
     DIS_SCOL_IDIO = list(
-      description        = "Idiopathic-scoliosis aetiology indicator (1 = idiopathic scoliosis or idiopathic kyphoscoliosis, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Idiopathic-scoliosis aetiology indicator (1 = idiopathic scoliosis or idiopathic kyphoscoliosis, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not idiopathic-scoliosis; the reference complement here is the infant craniofacial-reconstruction cohort)",
-      notes              = "Decomposed with DIS_SCOL_NONIDIO from a 3-level diagnosis / surgery-type categorical {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both indicators = 0 selects the craniofacial reference. Stricker 2015 Table 5 caption and Results p.694.",
-      source_name        = "diagnosis"
+      notes = "Decomposed with DIS_SCOL_NONIDIO from a 3-level diagnosis / surgery-type categorical {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both indicators = 0 selects the craniofacial reference. Stricker 2015 Table 5 caption and Results p.694.",
+      source_name = "diagnosis"
     ),
     DIS_SCOL_NONIDIO = list(
-      description        = "Non-idiopathic / syndromic scoliosis aetiology indicator (1 = non-idiopathic scoliosis: cerebral palsy, Marfan, Ehlers-Danlos, neurofibromatosis, spina bifida, congenital neuromuscular scoliosis, syringomyelia, 22q deletion, cortical dysgenesis; 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-idiopathic / syndromic scoliosis aetiology indicator (1 = non-idiopathic scoliosis: cerebral palsy, Marfan, Ehlers-Danlos, neurofibromatosis, spina bifida, congenital neuromuscular scoliosis, syringomyelia, 22q deletion, cortical dysgenesis; 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not non-idiopathic-scoliosis; the reference complement here is the infant craniofacial-reconstruction cohort)",
-      notes              = "Decomposed with DIS_SCOL_IDIO from a 3-level diagnosis / surgery-type categorical {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both indicators = 0 selects the craniofacial reference. Stricker 2015 Table 5 caption and Table 1.",
-      source_name        = "diagnosis"
+      notes = "Decomposed with DIS_SCOL_IDIO from a 3-level diagnosis / surgery-type categorical {craniofacial reference, idiopathic scoliosis, non-idiopathic scoliosis}; both indicators = 0 selects the craniofacial reference. Stricker 2015 Table 5 caption and Table 1.",
+      source_name = "diagnosis"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38,
-    n_studies      = 2,
-    age_range      = "6 months - 17.6 years (infant craniofacial cohort 27-107 weeks; adolescent PSF cohort 12-17 years)",
-    weight_range   = "6.7-66.7 kg (infant cohort 6.7-11.8 kg; adolescent cohort 29.8-66.7 kg)",
+    species = "human",
+    n_subjects = 38,
+    n_studies = 2,
+    age_range = "6 months - 17.6 years (infant craniofacial cohort 27-107 weeks; adolescent PSF cohort 12-17 years)",
+    weight_range = "6.7-66.7 kg (infant cohort 6.7-11.8 kg; adolescent cohort 29.8-66.7 kg)",
     sex_female_pct = NA_real_,
-    disease_state  = "Children undergoing major surgery with risk of significant blood loss: 18 infants undergoing craniofacial reconstruction for cranial synostosis, 10 adolescents with idiopathic scoliosis undergoing posterior spinal fusion, and 10 adolescents with non-idiopathic (syndromic) scoliosis undergoing posterior spinal fusion",
-    dose_range     = "Craniofacial: 25 / 50 / 100 mg/kg IV loading bolus over 10 min followed by continuous IV infusion (CIVI) at 10 / 20 / 40 mg/kg/h. Adolescent PSF: 100 mg/kg IV loading bolus over 10 min followed by CIVI at 10 mg/kg/h until skin closure",
-    regions        = "United States (Children's Hospital of Philadelphia)",
-    notes          = "Pooled cohort: 20 adolescents from the PSF trial (NCT01408823, Stricker 2015) plus 18 infants from the earlier craniofacial reconstruction dose-escalation PK trial (Stricker 2013 BJA, Stricker 2015 reference 15). See Stricker 2015 Tables 1-3 for per-subject demographics. Race / ethnicity and sex distributions are not reported in the published tables."
+    disease_state = "Children undergoing major surgery with risk of significant blood loss: 18 infants undergoing craniofacial reconstruction for cranial synostosis, 10 adolescents with idiopathic scoliosis undergoing posterior spinal fusion, and 10 adolescents with non-idiopathic (syndromic) scoliosis undergoing posterior spinal fusion",
+    dose_range = "Craniofacial: 25 / 50 / 100 mg/kg IV loading bolus over 10 min followed by continuous IV infusion (CIVI) at 10 / 20 / 40 mg/kg/h. Adolescent PSF: 100 mg/kg IV loading bolus over 10 min followed by CIVI at 10 mg/kg/h until skin closure",
+    regions = "United States (Children's Hospital of Philadelphia)",
+    notes = "Pooled cohort: 20 adolescents from the PSF trial (NCT01408823, Stricker 2015) plus 18 infants from the earlier craniofacial reconstruction dose-escalation PK trial (Stricker 2013 BJA, Stricker 2015 reference 15). See Stricker 2015 Tables 1-3 for per-subject demographics. Race / ethnicity and sex distributions are not reported in the published tables."
   )
 
   ini({

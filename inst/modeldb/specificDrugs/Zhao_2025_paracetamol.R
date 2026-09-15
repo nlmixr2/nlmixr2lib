@@ -35,45 +35,50 @@ Zhao_2025_paracetamol <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot          = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
-    central_gluc   = list(analyte = "paracetamol-glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
-    central_sulf   = list(analyte = "paracetamol-sulphate", units = "umol", specimen = "plasma", verified = TRUE),
-    central_cysmer = list(analyte = "paracetamol oxidative metabolites (cysteine + mercapturate)", units = "umol", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "paracetamol", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "paracetamol", units = "umol", specimen = "plasma", verified = TRUE),
+    central_gluc = list(analyte = "paracetamol-glucuronide", units = "umol", specimen = "plasma", verified = TRUE),
+    central_sulf = list(analyte = "paracetamol-sulphate", units = "umol", specimen = "plasma", verified = TRUE),
+    central_cysmer = list(
+      analyte = "paracetamol oxidative metabolites (cysteine + mercapturate)",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor with reference weight 70 kg. Exponent fixed at 0.75 on every clearance and at 1 on every volume (Zhao 2025 Results section 3.2 and Table 2 caption: 'the exponent of body weight allometric scaling was fixed at 0.75 for clearance parameters and 1 for volume of distribution'). Estimating the exponent did not improve the fit, and fat-free mass performed worse than total body weight (section 3.2).",
-      source_name        = "body weight"
+      notes = "Allometric size descriptor with reference weight 70 kg. Exponent fixed at 0.75 on every clearance and at 1 on every volume (Zhao 2025 Results section 3.2 and Table 2 caption: 'the exponent of body weight allometric scaling was fixed at 0.75 for clearance parameters and 1 for volume of distribution'). Estimating the exponent did not improve the fit, and fat-free mass performed worse than total body weight (section 3.2).",
+      source_name = "body weight"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-control indicator (1 = healthy control, 0 = patient with spinal muscular atrophy).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-control indicator (1 = healthy control, 0 = patient with spinal muscular atrophy).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with spinal muscular atrophy)",
-      notes              = "Zhao 2025's source column is the reverse-coded 'disease' indicator (1 = SMA), entered on the paracetamol volume of distribution as the proportional form of supplementary Eq. 1 (Pi = theta_pop * theta_cov * exp(eta), theta_cov = 1 for the reference group). Table 2 gives theta_cov = 1.58 for SMA (bootstrap median 1.62, 95% CI 1.20-2.30) with the healthy controls as the paper's reference, and Results section 3.3 reports dOFV = 11.5. This file re-expresses the indicator on the canonical DIS_HEALTHY orientation (reference category 0 = patient), following Chen_2023_nemonoxacin.R and Cleary_2023_risdiplam.R -- the latter is the same SMA-vs-healthy contrast in a risdiplam popPK model. The structural typical is therefore shifted to the SMA state, lvc = log(63.5 * 1.58), and the effect parameter 1 / 1.58 restores the printed healthy-control typical of 63.5 L/70 kg at DIS_HEALTHY = 1. Because every metabolite volume is fixed at 0.18 * V_paracetamol, the same factor propagates to the glucuronide, sulphate and oxidative-metabolite volumes -- exactly as the abstract states ('SMA disease resulted in a 58% increase in the volume of distribution for paracetamol and its metabolites') and as Table 3's post-hoc medians confirm (V_glu HC 13.21 = 0.18 * 73.40; SMA 17.08 = 0.18 * 94.90).",
-      source_name        = "disease"
+      notes = "Zhao 2025's source column is the reverse-coded 'disease' indicator (1 = SMA), entered on the paracetamol volume of distribution as the proportional form of supplementary Eq. 1 (Pi = theta_pop * theta_cov * exp(eta), theta_cov = 1 for the reference group). Table 2 gives theta_cov = 1.58 for SMA (bootstrap median 1.62, 95% CI 1.20-2.30) with the healthy controls as the paper's reference, and Results section 3.3 reports dOFV = 11.5. This file re-expresses the indicator on the canonical DIS_HEALTHY orientation (reference category 0 = patient), following Chen_2023_nemonoxacin.R and Cleary_2023_risdiplam.R -- the latter is the same SMA-vs-healthy contrast in a risdiplam popPK model. The structural typical is therefore shifted to the SMA state, lvc = log(63.5 * 1.58), and the effect parameter 1 / 1.58 restores the printed healthy-control typical of 63.5 L/70 kg at DIS_HEALTHY = 1. Because every metabolite volume is fixed at 0.18 * V_paracetamol, the same factor propagates to the glucuronide, sulphate and oxidative-metabolite volumes -- exactly as the abstract states ('SMA disease resulted in a 58% increase in the volume of distribution for paracetamol and its metabolites') and as Table 3's post-hoc medians confirm (V_glu HC 13.21 = 0.18 * 73.40; SMA 17.08 = 0.18 * 94.90).",
+      source_name = "disease"
     ),
     MYO = list(
-      description        = "Plasma myoglobin concentration.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Plasma myoglobin concentration.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-model covariate on the paracetamol leftover clearance, normalised to the pooled population median of 25 ng/mL (Zhao 2025 Table 2 row label 'Myoglobin (mean 25 ng/mL)'; supplementary Eq. 2 gives the power form Pi = theta_pop * (COV_i / COV_median)^theta_cov * exp(eta)). Exponent -1.10 (bootstrap median -1.14, 95% CI -3.07 to -0.49); Results section 3.3 records dOFV = 18.5 and states the correlation is negative. Baseline medians: healthy controls 34 ng/mL, SMA 17 ng/mL (Table 1). Myoglobin is a skeletal-muscle protein used clinically as a muscle-damage marker; the authors interpret the effect as an indirect glutathione-availability / muscle-mass signal (Discussion).",
-      source_name        = "myoglobin"
+      notes = "Power-model covariate on the paracetamol leftover clearance, normalised to the pooled population median of 25 ng/mL (Zhao 2025 Table 2 row label 'Myoglobin (mean 25 ng/mL)'; supplementary Eq. 2 gives the power form Pi = theta_pop * (COV_i / COV_median)^theta_cov * exp(eta)). Exponent -1.10 (bootstrap median -1.14, 95% CI -3.07 to -0.49); Results section 3.3 records dOFV = 18.5 and states the correlation is negative. Baseline medians: healthy controls 34 ng/mL, SMA 17 ng/mL (Table 1). Myoglobin is a skeletal-muscle protein used clinically as a muscle-damage marker; the authors interpret the effect as an indirect glutathione-availability / muscle-mass signal (Discussion).",
+      source_name = "myoglobin"
     ),
     TBILI = list(
-      description        = "Plasma total bilirubin concentration.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Plasma total bilirubin concentration.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-model covariate (supplementary Eq. 2) normalised to the pooled population median of 6 umol/L (Zhao 2025 Table 2 row label 'Bilirubin (mean 6 umol/L)'). Two separate effects: +0.18 on the sulphate-formation clearance (bootstrap median 0.16, 95% CI -0.02 to 0.39; positive correlation) and -0.177 on the oxidative-metabolite elimination clearance (bootstrap median -0.176, 95% CI -0.45 to -0.03; negative correlation). Both entered with dOFV = 7.3 (Results section 3.3). Baseline medians: healthy controls 7 umol/L, SMA 4 umol/L (Table 1); values were within the normal range in both groups.",
-      source_name        = "bilirubin"
+      notes = "Power-model covariate (supplementary Eq. 2) normalised to the pooled population median of 6 umol/L (Zhao 2025 Table 2 row label 'Bilirubin (mean 6 umol/L)'). Two separate effects: +0.18 on the sulphate-formation clearance (bootstrap median 0.16, 95% CI -0.02 to 0.39; positive correlation) and -0.177 on the oxidative-metabolite elimination clearance (bootstrap median -0.176, 95% CI -0.45 to -0.03; negative correlation). Both entered with dOFV = 7.3 (Results section 3.3). Baseline medians: healthy controls 7 umol/L, SMA 4 umol/L (Table 1); values were within the normal range in both groups.",
+      source_name = "bilirubin"
     )
   )
 
@@ -85,34 +90,84 @@ Zhao_2025_paracetamol <- function() {
   # inst/references/covariate-columns.md and are recorded in population$notes
   # instead.
   covariatesDataExcluded <- list(
-    SEXF  = list(description = "Sex (female indicator)", units = "(binary)", type = "binary", notes = "Screened as a categorical covariate; not significant."),
-    AGE   = list(description = "Age", units = "years", type = "continuous", notes = "Screened; not retained. The authors note myoglobin is itself age- and disease-dependent, so age may be a confounder of the retained myoglobin effect (Discussion)."),
-    BMI   = list(description = "Body mass index", units = "kg/m^2", type = "continuous", notes = "Screened as an alternative size descriptor; 'BMI and FFM failed to become significant covariates' (Results section 3.3)."),
-    LBM   = list(description = "Fat-free mass", units = "kg", type = "continuous", notes = "Tested both as an allometric size descriptor and as a covariate; 'using fat free mass (FFM) as an allometric scaling factor resulted in a less optimal model performance compared to using body weight' (Results section 3.2)."),
-    ALT   = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous", notes = "Screened as a hepatic-function marker; not retained."),
-    AST   = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous", notes = "Screened as a hepatic-function marker; not retained."),
-    ALP   = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous", notes = "Screened; not retained."),
-    LDH   = list(description = "Lactate dehydrogenase", units = "U/L", type = "continuous", notes = "Screened; not retained."),
-    CPK   = list(description = "Creatine kinase", units = "U/L", type = "continuous", notes = "Screened as a muscle-damage marker alongside myoglobin; not retained."),
-    CREAT = list(description = "Serum creatinine", units = "umol/L", type = "continuous", notes = "Screened; not retained. Median 79 umol/L in healthy controls vs 9 umol/L in SMA patients (Table 1)."),
-    POT   = list(description = "Potassium", units = "mmol/L", type = "continuous", notes = "Screened; not retained."),
-    SOD   = list(description = "Sodium", units = "mmol/L", type = "continuous", notes = "Screened; not retained.")
+    SEXF = list(
+      description = "Sex (female indicator)",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate; not significant."
+    ),
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. The authors note myoglobin is itself age- and disease-dependent, so age may be a confounder of the retained myoglobin effect (Discussion)."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as an alternative size descriptor; 'BMI and FFM failed to become significant covariates' (Results section 3.3)."
+    ),
+    LBM = list(
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
+      notes = "Tested both as an allometric size descriptor and as a covariate; 'using fat free mass (FFM) as an allometric scaling factor resulted in a less optimal model performance compared to using body weight' (Results section 3.2)."
+    ),
+    ALT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker; not retained."
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker; not retained."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained."
+    ),
+    LDH = list(
+      description = "Lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained."
+    ),
+    CPK = list(
+      description = "Creatine kinase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a muscle-damage marker alongside myoglobin; not retained."
+    ),
+    CREAT = list(
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 79 umol/L in healthy controls vs 9 umol/L in SMA patients (Table 1)."
+    ),
+    POT = list(description = "Potassium", units = "mmol/L", type = "continuous", notes = "Screened; not retained."),
+    SOD = list(description = "Sodium", units = "mmol/L", type = "continuous", notes = "Screened; not retained.")
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_studies      = 1L,
-    age_range      = "SMA patients 6-37 years (median 17); healthy controls 20-36 years (median 25)",
-    age_median     = "17 years (SMA) / 25 years (healthy controls)",
-    weight_range   = "SMA patients 22-57 kg (median 30.5); healthy controls 51-103 kg (median 78.0)",
-    weight_median  = "30.5 kg (SMA) / 78.0 kg (healthy controls)",
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 1L,
+    age_range = "SMA patients 6-37 years (median 17); healthy controls 20-36 years (median 25)",
+    age_median = "17 years (SMA) / 25 years (healthy controls)",
+    weight_range = "SMA patients 22-57 kg (median 30.5); healthy controls 51-103 kg (median 78.0)",
+    weight_median = "30.5 kg (SMA) / 78.0 kg (healthy controls)",
     sex_female_pct = 43.5,
     race_ethnicity = NA_character_,
-    disease_state  = "Six adults with spinal muscular atrophy, six children with spinal muscular atrophy, and 11 healthy controls (Zhao 2025 Methods section 2.1 and Results section 3.1). SMA is an inherited neuromuscular disorder caused by SMN1 mutations, giving progressive motor-neuron degeneration, muscle weakness and markedly reduced skeletal muscle mass. Baseline myoglobin and total bilirubin were both significantly lower in SMA patients than in healthy controls (Table 1).",
-    dose_range     = "Oral paracetamol 15 mg/kg every 6 h for 3 days, capped at a maximum single dose of 1 g (Methods section 2.1). Blood samples hourly for 6-8 h on Days 1 and 3 after a pre-treatment baseline sample; 294 plasma samples per analyte entered the model.",
-    regions        = "Denmark (Copenhagen University Hospital Rigshospitalet and Bispebjerg Hospital)",
-    notes          = "Sex split 7 male / 5 female among SMA patients and 6 male / 5 female among healthy controls, i.e. 10 of 23 (43.5%) female. Baseline (pre-dose) samples were below the lower limit of quantification in most subjects and were fixed to their observed values during base-model building, so the model carries no baseline variability (Results section 3.2). Three cysteine (1.1%) and four mercapturic-acid (1.5%) on-treatment samples below the LLOQ were censored. Screened-but-not-retained covariates additionally included urea and glomerular filtration rate (supplementary Methods, Covariate Analysis); both are omitted from covariatesDataExcluded because neither has an unambiguous canonical column in the register (GFR was reported only as the interval '87 - >90 mL/min' for both groups). Missing covariate values were imputed by last observation carried forward. EudraCT 2018-002295-40; ethics approval H-18032928."
+    disease_state = "Six adults with spinal muscular atrophy, six children with spinal muscular atrophy, and 11 healthy controls (Zhao 2025 Methods section 2.1 and Results section 3.1). SMA is an inherited neuromuscular disorder caused by SMN1 mutations, giving progressive motor-neuron degeneration, muscle weakness and markedly reduced skeletal muscle mass. Baseline myoglobin and total bilirubin were both significantly lower in SMA patients than in healthy controls (Table 1).",
+    dose_range = "Oral paracetamol 15 mg/kg every 6 h for 3 days, capped at a maximum single dose of 1 g (Methods section 2.1). Blood samples hourly for 6-8 h on Days 1 and 3 after a pre-treatment baseline sample; 294 plasma samples per analyte entered the model.",
+    regions = "Denmark (Copenhagen University Hospital Rigshospitalet and Bispebjerg Hospital)",
+    notes = "Sex split 7 male / 5 female among SMA patients and 6 male / 5 female among healthy controls, i.e. 10 of 23 (43.5%) female. Baseline (pre-dose) samples were below the lower limit of quantification in most subjects and were fixed to their observed values during base-model building, so the model carries no baseline variability (Results section 3.2). Three cysteine (1.1%) and four mercapturic-acid (1.5%) on-treatment samples below the LLOQ were censored. Screened-but-not-retained covariates additionally included urea and glomerular filtration rate (supplementary Methods, Covariate Analysis); both are omitted from covariatesDataExcluded because neither has an unambiguous canonical column in the register (GFR was reported only as the interval '87 - >90 mL/min' for both groups). Missing covariate values were imputed by last observation carried forward. EudraCT 2018-002295-40; ethics approval H-18032928."
   )
 
   ini({

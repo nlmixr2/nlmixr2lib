@@ -2,7 +2,24 @@ FehlingKaschek_2019_trastuzumab_skbr3 <- function() {
   description <- "In vitro (SKBR3 cell line). Mechanistic ODE model of trastuzumab-induced HER2 receptor internalization with two cell-membrane phenotypes (ruffled vs flat); Model B of Fehling-Kaschek 2019, no recycling or degradation."
   reference <- "Fehling-Kaschek M, Peckys DB, Kaschek D, Timmer J, de Jonge N. Mathematical modeling of drug-induced receptor internalization in the HER2-positive SKBR3 breast cancer cell-line. Sci Rep. 2019 Sep 5;9(1):12709. doi:10.1038/s41598-019-49019-x. PMID: 31488874; PMCID: PMC6728336."
   vignette <- "FehlingKaschek_2019_trastuzumab_skbr3"
-  paper_specific_compartments <- c("nm_r", "nmt_r", "nma_r", "nmta_r", "nm_f", "nmt_f", "nma_f", "nmta_f", "ni_r", "nit_r", "nia_r", "nita_r", "ni_f", "nit_f", "nia_f", "nita_f")
+  paper_specific_compartments <- c(
+    "nm_r",
+    "nmt_r",
+    "nma_r",
+    "nmta_r",
+    "nm_f",
+    "nmt_f",
+    "nma_f",
+    "nmta_f",
+    "ni_r",
+    "nit_r",
+    "nia_r",
+    "nita_r",
+    "ni_f",
+    "nit_f",
+    "nia_f",
+    "nita_f"
+  )
 
   units <- list(
     time = "min",
@@ -15,22 +32,102 @@ FehlingKaschek_2019_trastuzumab_skbr3 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    nm_r   = list(analyte = "HER2 (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nmt_r  = list(analyte = "Trastuzumab (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nma_r  = list(analyte = "HER2-Trastuzumab complex (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nmta_r = list(analyte = "Trastuzumab-bound HER2 (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nm_f   = list(analyte = "HER2 (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nmt_f  = list(analyte = "Trastuzumab (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nma_f  = list(analyte = "HER2-Trastuzumab complex (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nmta_f = list(analyte = "Trastuzumab-bound HER2 (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ni_r   = list(analyte = "Internalized HER2 (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nit_r  = list(analyte = "Internalized Trastuzumab (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nia_r  = list(analyte = "HER2-Trastuzumab complex internalized (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nita_r = list(analyte = "Trastuzumab-bound HER2 internalized (ruffled membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ni_f   = list(analyte = "Internalized HER2 (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nit_f  = list(analyte = "Internalized Trastuzumab (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nia_f  = list(analyte = "HER2-Trastuzumab complex internalized (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    nita_f = list(analyte = "Trastuzumab-bound HER2 internalized (flat membrane)", units = NA_character_, specimen = "administration site", verified = FALSE)
+    nm_r = list(
+      analyte = "HER2 (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nmt_r = list(
+      analyte = "Trastuzumab (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nma_r = list(
+      analyte = "HER2-Trastuzumab complex (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nmta_r = list(
+      analyte = "Trastuzumab-bound HER2 (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nm_f = list(
+      analyte = "HER2 (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nmt_f = list(
+      analyte = "Trastuzumab (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nma_f = list(
+      analyte = "HER2-Trastuzumab complex (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nmta_f = list(
+      analyte = "Trastuzumab-bound HER2 (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    ni_r = list(
+      analyte = "Internalized HER2 (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nit_r = list(
+      analyte = "Internalized Trastuzumab (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nia_r = list(
+      analyte = "HER2-Trastuzumab complex internalized (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nita_r = list(
+      analyte = "Trastuzumab-bound HER2 internalized (ruffled membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    ni_f = list(
+      analyte = "Internalized HER2 (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nit_f = list(
+      analyte = "Internalized Trastuzumab (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nia_f = list(
+      analyte = "HER2-Trastuzumab complex internalized (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    nita_f = list(
+      analyte = "Trastuzumab-bound HER2 internalized (flat membrane)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()

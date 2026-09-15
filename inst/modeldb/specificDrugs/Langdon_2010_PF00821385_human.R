@@ -30,8 +30,8 @@ Langdon_2010_PF00821385_human <- function() {
   )
   vignette <- "Langdon_2010_PF00821385"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -39,23 +39,23 @@ Langdon_2010_PF00821385_human <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "21 - 55 years",
-    weight_range   = "> 50 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "21 - 55 years",
+    weight_range = "> 50 kg",
     sex_female_pct = 0.0,
     race_ethnicity = NULL,
-    disease_state  = "Healthy adult male volunteers (no diagnosed condition).",
-    dose_range     = paste(
+    disease_state = "Healthy adult male volunteers (no diagnosed condition).",
+    dose_range = paste(
       "Single ascending oral suspension doses, two cohorts of 12 volunteers",
       "each. Cohort 1 (fasted): 3, 10, 30, 100 mg in dose escalation, one",
       "placebo. Cohort 2 (fasted): 250, 500, 1000, 1300 mg in dose escalation,",
@@ -63,8 +63,8 @@ Langdon_2010_PF00821385_human <- function() {
       "state. 7-day washout between treatments.",
       sep = " "
     ),
-    regions        = "Singapore (Singapore General Hospital).",
-    notes          = paste(
+    regions = "Singapore (Singapore General Hospital).",
+    notes = paste(
       "Body mass index approximately 18 - 30 kg/m^2 per inclusion criteria.",
       "Plasma PK samples at predose and 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16,",
       "24, 36 h post dose (and 48 h for PD). Supine pulse rate was recorded",

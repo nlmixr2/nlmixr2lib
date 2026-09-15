@@ -34,33 +34,33 @@ Zou_2025_edoxaban <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit6    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit7    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit8    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit9    = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit10   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit11   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit12   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit13   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit14   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    transit15   = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit6 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit7 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit8 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit9 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit10 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit11 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit12 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit13 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit14 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    transit15 = list(analyte = "edoxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "edoxaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at the corresponding visit",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at the corresponding visit",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with reference 70 kg. Supplement NONMEM $PK block:",
         "TVBW = 70; ALLMCL_BW = (BW/TVBW)**THETA(9) with THETA(9) = 0.75 FIX,",
         "applied to CL and Q; ALLMV_BW = (BW/TVBW)**THETA(10) with",
@@ -72,14 +72,14 @@ Zou_2025_edoxaban <- function() {
         "to 0.75.' Cohort median 21.1 kg (range 2.60-157; Table S6).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WEEKS, not the register-default months: the Rhodin 2009 maturation",
         "constants this model uses (TM50 = 47.7, Hill = 3.40) are only",
         "meaningful on the week scale, matching the Germovsek_2018_meropenem",
@@ -91,14 +91,14 @@ Zou_2025_edoxaban <- function() {
         "Cohort median 353 weeks (range 38.6-970; Table S6).",
         sep = " "
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     CRCL = list(
-      description        = "Bedside-Schwartz estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Bedside-Schwartz estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Bedside Schwartz formula, given in Table S3 footnote a as",
         "eGFR (mL/min/1.73 m^2) = 0.413 x height (cm) / serum creatinine (mg/dL);",
         "Zou 2025 Methods 'Renal function measure' cites it as Equation 1 and",
@@ -112,7 +112,7 @@ Zou_2025_edoxaban <- function() {
         "Discussion, and is not a model covariate.",
         sep = " "
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     )
   )
 
@@ -121,60 +121,60 @@ Zou_2025_edoxaban <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at the corresponding visit",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on volume and clearance (Table S3) and on PD baseline / slope / maximum effect (Table S4); not retained. Body size and postmenstrual age carry the age signal in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on volume and clearance (Table S3) and on PD baseline / slope / maximum effect (Table S4); not retained. Body size and postmenstrual age carry the age signal in the final model."
     ),
     SEXF = list(
       description = "Biological sex indicator (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Paper covariate 'Gender', tested on volume, clearance, bioavailability (Table S3) and on the PD parameters (Table S4); not retained. Cohort 39.9% female (Table S5)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Paper covariate 'Gender', tested on volume, clearance, bioavailability (Table S3) and on the PD parameters (Table S4); not retained. Cohort 39.9% female (Table S5)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "ukat/L",
-      type        = "continuous",
-      notes       = "Tested on clearance (Table S3); not retained."
+      units = "ukat/L",
+      type = "continuous",
+      notes = "Tested on clearance (Table S3); not retained."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "ukat/L",
-      type        = "continuous",
-      notes       = "Tested on clearance (Table S3); not retained."
+      units = "ukat/L",
+      type = "continuous",
+      notes = "Tested on clearance (Table S3); not retained."
     ),
     BILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested on clearance (Table S3); not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested on clearance (Table S3); not retained."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Tested on volume (Table S3); not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Tested on volume (Table S3); not retained."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "(fraction)",
-      type        = "continuous",
-      notes       = "Tested on volume (Table S3); not retained."
+      units = "(fraction)",
+      type = "continuous",
+      notes = "Tested on volume (Table S3); not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 208L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 208L,
+    n_studies = 3L,
     n_observations = 589L,
-    age_range      = "0.011-17.9 years (postmenstrual age 38.6-970 weeks)",
-    age_median     = "6.06 years (postmenstrual age 353 weeks)",
-    weight_range   = "2.60-157 kg",
-    weight_median  = "21.1 kg",
+    age_range = "0.011-17.9 years (postmenstrual age 38.6-970 weeks)",
+    age_median = "6.06 years (postmenstrual age 353 weeks)",
+    weight_range = "2.60-157 kg",
+    weight_median = "21.1 kg",
     sex_female_pct = 39.9,
     race_ethnicity = c(White = 60.6, Asian = 13.5, Black = 9.6, Other = 10.6, Unknown = 5.8),
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric patients 0 to <18 years who required or were on anticoagulant",
       "therapy: confirmed venous thromboembolism (Hokusai-VTE PEDIATRICS,",
       "N = 69) or cardiac disease at risk of thromboembolic events",
@@ -182,7 +182,7 @@ Zou_2025_edoxaban <- function() {
       "children requiring anticoagulation (N = 66).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral once daily, age- weight- and renal-function-banded (Table S2).",
       "Tablet for 12 to <18 years: 60 mg (>=60 kg), 45 mg (30 to <60 kg),",
       "30 mg (<30 kg). Oral suspension below 12 years: 60 mg (>=60 kg) or",
@@ -195,8 +195,8 @@ Zou_2025_edoxaban <- function() {
       sep = " "
     ),
     renal_function = "eGFR (bedside Schwartz) median 111 mL/min/1.73 m^2, range 29.5-774 (Table S6). Renal function skews supranormal relative to the adult reference cohort.",
-    regions        = "Multinational (NCT02303431 phase 1 PK/PD, NCT02798471 Hokusai-VTE PEDIATRICS, NCT03395639 ENNOBLE-ATE).",
-    notes          = paste(
+    regions = "Multinational (NCT02303431 phase 1 PK/PD, NCT02798471 Hokusai-VTE PEDIATRICS, NCT03395639 ENNOBLE-ATE).",
+    notes = paste(
       "Demographics from Zou 2025 Tables S5 and S6. Of 605 plasma",
       "concentrations from 208 subjects, 7 (1.1%) were excluded as",
       "unrealistically high or low and 9 (1.5%) as below the 0.764 ng/mL",

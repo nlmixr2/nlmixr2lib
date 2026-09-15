@@ -9,68 +9,68 @@ Bajaj_2017_nivolumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference weight 80 kg (Bajaj 2017 Table 1 footnote and Eqs. 7 and 10).",
-      source_name        = "WT"
+      notes = "Power scaling on CL and Vc with reference weight 80 kg (Bajaj 2017 Table 1 footnote and Eqs. 7 and 10).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Baseline CKD-EPI estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline CKD-EPI estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Bajaj 2017 Table 1 footnote and Eq. 7). Source column name in Bajaj 2017 is eGFR; stored under the canonical CRCL. Bajaj 2017 Methods states eGFR was estimated using the CKD-EPI equation.",
-      source_name        = "eGFR"
+      notes = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Bajaj 2017 Table 1 footnote and Eq. 7). Source column name in Bajaj 2017 is eGFR; stored under the canonical CRCL. Bajaj 2017 Methods states eGFR was estimated using the CKD-EPI equation.",
+      source_name = "eGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The paper's own reference category is female (see notes).",
-      notes              = "Bajaj 2017 encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Table 1 footnote: 'white female reference'). To store under the canonical SEXF (1 = female, 0 = male) while preserving Bajaj's female-reference CL_REF and VC_REF, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)) and exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the paper's male-vs-female exp-coefficient.",
-      source_name        = "SEX"
+      notes = "Bajaj 2017 encodes sex as a male-indicator (1 = male, 0 = female) with female as the reference category (Table 1 footnote: 'white female reference'). To store under the canonical SEXF (1 = female, 0 = male) while preserving Bajaj's female-reference CL_REF and VC_REF, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)) and exp(e_sex_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the paper's male-vs-female exp-coefficient.",
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Indicator for Asian race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Asian race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; pooled White, Black / African American, and Other)",
-      notes              = "Exponential effect on CL for Asian race (Bajaj 2017 Table 1 row CL_RAAS and Eq. 7). Renamed from the source column RAAS to the canonical RACE_ASIAN per covariate-columns.md.",
-      source_name        = "RAAS"
+      notes = "Exponential effect on CL for Asian race (Bajaj 2017 Table 1 row CL_RAAS and Eq. 7). Renamed from the source column RAAS to the canonical RACE_ASIAN per covariate-columns.md.",
+      source_name = "RAAS"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator (1 if ECOG >= 1, else 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline Eastern Cooperative Oncology Group (ECOG) performance-status indicator (1 if ECOG >= 1, else 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status = 0, i.e., fully active)",
-      notes              = "Exponential effect on CL for patients with ECOG >= 1 (Bajaj 2017 Table 1 row CL_BPS and Eq. 7). Bajaj 2017 ECOG values came directly from each study except CA209025, which collected Karnofsky Performance Status (KPS) and was mapped to ECOG via the Oken 1982 crosswalk before binarization. Renamed from the source column PS to the canonical ECOG_GE1 per covariate-columns.md.",
-      source_name        = "PS"
+      notes = "Exponential effect on CL for patients with ECOG >= 1 (Bajaj 2017 Table 1 row CL_BPS and Eq. 7). Bajaj 2017 ECOG values came directly from each study except CA209025, which collected Karnofsky Performance Status (KPS) and was mapped to ECOG via the Oken 1982 crosswalk before binarization. Renamed from the source column PS to the canonical ECOG_GE1 per covariate-columns.md.",
+      source_name = "PS"
     )
   )
 
   population <- list(
-    n_subjects     = 1895L,
-    n_studies      = 11L,
-    age_range      = "mean 61.1 years (SD 11.1)",
-    age_median     = "not reported (mean reported instead)",
-    weight_range   = "mean 79.1 kg (SD 19.3); model-application range 34.1 - 168.2 kg",
-    weight_median  = "not reported (mean reported instead)",
+    n_subjects = 1895L,
+    n_studies = 11L,
+    age_range = "mean 61.1 years (SD 11.1)",
+    age_median = "not reported (mean reported instead)",
+    weight_range = "mean 79.1 kg (SD 19.3); model-application range 34.1 - 168.2 kg",
+    weight_median = "not reported (mean reported instead)",
     sex_female_pct = 33.3,
     race_ethnicity = c(White = 88.92, Asian = 6.44, `Black/African American` = 2.8, Other = 1.74),
-    disease_state  = "Advanced / metastatic solid tumors (melanoma 29.82%, NSCLC 34.78%, RCC 31.93%, other 3.48%)",
-    dose_range     = "0.3 - 10.0 mg/kg IV infusion (1-hour) Q2W or Q3W across 11 trials",
-    regions        = "Global (US, EU, Japan) across phase I / II / III studies",
+    disease_state = "Advanced / metastatic solid tumors (melanoma 29.82%, NSCLC 34.78%, RCC 31.93%, other 3.48%)",
+    dose_range = "0.3 - 10.0 mg/kg IV infusion (1-hour) Q2W or Q3W across 11 trials",
+    regions = "Global (US, EU, Japan) across phase I / II / III studies",
     ecog_distribution = "ECOG 0 38.73%, ECOG 1 58.52%, ECOG 2 2.74%",
     renal_function = "Baseline CKD-EPI eGFR mean 78.5 (SD 21.6) mL/min/1.73 m^2",
-    notes          = "Baseline demographics per Bajaj 2017 Table 3 (N = 1,895). Studies pooled: MDX1106-01, ONO-4538-01, MDX1106-03, CA209010, CA209063, ONO-4538-02, CA209017, CA209037, CA209025, CA209057, CA209066 (Bajaj 2017 Table 2). Baseline lactate dehydrogenase mean 350.9 (SD 397.6) U/L. Liver-dysfunction groups: normal 89.08%, mild 9.82%, moderate 0.11%, severe 0.05%, missing 0.95%."
+    notes = "Baseline demographics per Bajaj 2017 Table 3 (N = 1,895). Studies pooled: MDX1106-01, ONO-4538-01, MDX1106-03, CA209010, CA209063, ONO-4538-02, CA209017, CA209037, CA209025, CA209057, CA209066 (Bajaj 2017 Table 2). Baseline lactate dehydrogenase mean 350.9 (SD 397.6) U/L. Liver-dysfunction groups: normal 89.08%, mild 9.82%, moderate 0.11%, severe 0.05%, missing 0.95%."
   )
 
   ini({

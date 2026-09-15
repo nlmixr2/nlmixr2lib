@@ -10,40 +10,40 @@ Aregbe_2012_alvespimycin <- function() {
     sep = " "
   )
   vignette <- "Aregbe_2012_alvespimycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "alvespimycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for between-occasion variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for between-occasion variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4, 5 identify the daily 1 h infusion occasion within subject (the Pittsburgh schedule A used 5 daily doses, schedule B used 3, and the MSKCC cohort used a single dose, so OCC ranges 1-5 across the pooled dataset). Decomposed inside `model()` into binary indicators `oc1` .. `oc5` that multiplex the BOV etas on log-Q (NONMEM Q2) and log-Vc (NONMEM V1).",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4, 5 identify the daily 1 h infusion occasion within subject (the Pittsburgh schedule A used 5 daily doses, schedule B used 3, and the MSKCC cohort used a single dose, so OCC ranges 1-5 across the pooled dataset). Decomposed inside `model()` into binary indicators `oc1` .. `oc5` that multiplex the BOV etas on log-Q (NONMEM Q2) and log-Vc (NONMEM V1).",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    n_subjects     = 67L,
-    n_studies      = 2L,
-    age_range      = "28-82 years (median 63)",
-    age_median     = "63 years",
-    weight_range   = "48.2-136.5 kg (median 80.3)",
-    weight_median  = "80.3 kg",
+    n_subjects = 67L,
+    n_studies = 2L,
+    age_range = "28-82 years (median 63)",
+    age_median = "63 years",
+    weight_range = "48.2-136.5 kg (median 80.3)",
+    weight_median = "80.3 kg",
     sex_female_pct = 37,
-    disease_state  = "Adult patients with histologically confirmed advanced solid tumors not curable by standard therapies; required adequate hepatic, renal, and cardiac function (ALT/AST <= 1.5 x ULN, normal BUN and creatinine, ECOG <= 2, no QTc prolongation or cardiac comorbidity per the strict 17-AAG-derived exclusion criteria).",
-    dose_range     = "1 h IV infusion of 17-DMAG; per-dose range 2.2-413 mg/m^2 (median 36 mg/m^2). Pittsburgh patients followed schedule A (5 daily doses) or schedule B (3 daily doses) under an accelerated dose-titration design; MSKCC patients received a single pre-specified dose.",
-    regions        = "United States (University of Pittsburgh Cancer Institute, n = 48; Memorial Sloan-Kettering Cancer Center, n = 19).",
-    notes          = "Demographics from Aregbe 2012 Table 1; the cohort was 63% male / 37% female with a median ECOG performance status compatible with phase II eligibility. Baseline laboratory medians: albumin 3.8 g/dL (range 2.6-5.1, missing in 6 subjects), ALT 22 U/L (10-106), AST 25 U/L (12-75), bilirubin 0.5 mg/dL (0.1-3.0), BUN 15 mg/dL (5-70, missing in 2 subjects), creatinine 1.0 mg/dL (0.6-1.8), BSA 1.9 m^2 (1.5-2.6); 1 subject missing demographics other than centre. The paper screened age, albumin, ALT, AST, bilirubin, BUN, BSA, creatinine, weight, and sex by stepwise forward addition / backward elimination but retained no covariate effects in the final model (Aregbe 2012 Results, page 203)."
+    disease_state = "Adult patients with histologically confirmed advanced solid tumors not curable by standard therapies; required adequate hepatic, renal, and cardiac function (ALT/AST <= 1.5 x ULN, normal BUN and creatinine, ECOG <= 2, no QTc prolongation or cardiac comorbidity per the strict 17-AAG-derived exclusion criteria).",
+    dose_range = "1 h IV infusion of 17-DMAG; per-dose range 2.2-413 mg/m^2 (median 36 mg/m^2). Pittsburgh patients followed schedule A (5 daily doses) or schedule B (3 daily doses) under an accelerated dose-titration design; MSKCC patients received a single pre-specified dose.",
+    regions = "United States (University of Pittsburgh Cancer Institute, n = 48; Memorial Sloan-Kettering Cancer Center, n = 19).",
+    notes = "Demographics from Aregbe 2012 Table 1; the cohort was 63% male / 37% female with a median ECOG performance status compatible with phase II eligibility. Baseline laboratory medians: albumin 3.8 g/dL (range 2.6-5.1, missing in 6 subjects), ALT 22 U/L (10-106), AST 25 U/L (12-75), bilirubin 0.5 mg/dL (0.1-3.0), BUN 15 mg/dL (5-70, missing in 2 subjects), creatinine 1.0 mg/dL (0.6-1.8), BSA 1.9 m^2 (1.5-2.6); 1 subject missing demographics other than centre. The paper screened age, albumin, ALT, AST, bilirubin, BUN, BSA, creatinine, weight, and sex by stepwise forward addition / backward elimination but retained no covariate effects in the final model (Aregbe 2012 Results, page 203)."
   )
 
   ini({

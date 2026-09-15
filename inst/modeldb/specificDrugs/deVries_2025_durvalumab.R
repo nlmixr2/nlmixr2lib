@@ -23,91 +23,91 @@ deVries_2025_durvalumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power allometric effects on CL (exponent 0.389) and Vc (exponent 0.406), both normalized to the Baverel 2018 reference weight of 69.8 kg. Baseline (time-fixed) in the de Vries 2025 simulation. The simulated cohort median is 64.0 kg (ESM 4 Table S1), which is NOT the allometric reference; do not conflate the two.",
-      source_name        = "WT"
+      notes = "Power allometric effects on CL (exponent 0.389) and Vc (exponent 0.406), both normalized to the Baverel 2018 reference weight of 69.8 kg. Baseline (time-fixed) in the de Vries 2025 simulation. The simulated cohort median is 64.0 kg (ESM 4 Table S1), which is NOT the allometric reference; do not conflate the two.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effects for females on CL (0.857), Vc (0.835) and Vp (0.795). The ESM 3 control stream derives the indicator as FLASEX = 1 when the source SEX column equals 0, i.e. the source encodes SEX = 0 as female; SEXF = 1 - SEX under that encoding. The direction (female lowers CL and both volumes after weight allometry) is corroborated by the sibling durvalumab model Ogasawara_2020_durvalumab.R (female CL 0.791, Vc 0.790). See the vignette Assumptions section.",
-      source_name        = "SEX"
+      notes = "Multiplicative effects for females on CL (0.857), Vc (0.835) and Vp (0.795). The ESM 3 control stream derives the indicator as FLASEX = 1 when the source SEX column equals 0, i.e. the source encodes SEX = 0 as female; SEXF = 1 - SEX under that encoding. The direction (female lowers CL and both volumes after weight allometry) is corroborated by the sibling durvalumab model Ogasawara_2020_durvalumab.R (female CL 0.791, Vc 0.790). See the vignette Assumptions section.",
+      source_name = "SEX"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred linear effect on CL: (1 - 0.035 * (ALB - 38)). Reported and used in SI g/L, so no g/dL conversion is applied. Centring constant 38 g/L is the Baverel 2018 reference; the simulated cohort median is 39.27 g/L (ESM 4 Table S1).",
-      source_name        = "ALB"
+      notes = "Centred linear effect on CL: (1 - 0.035 * (ALB - 38)). Reported and used in SI g/L, so no g/dL conversion is applied. Centring constant 38 g/L is the Baverel 2018 reference; the simulated cohort median is 39.27 g/L (ESM 4 Table S1).",
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred linear effect on CL: (1 + 0.00149 * (CRCL - 85.65)). ESM 4 Table S1 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register's default mL/min/1.73 m^2 (same precedent as Delattre_2010_amikacin.R). Centring constant 85.65 mL/min is the Baverel 2018 reference; the simulated cohort median is 86.43 mL/min.",
-      source_name        = "CRCL"
+      notes = "Centred linear effect on CL: (1 + 0.00149 * (CRCL - 85.65)). ESM 4 Table S1 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register's default mL/min/1.73 m^2 (same precedent as Delattre_2010_amikacin.R). Centring constant 85.65 mL/min is the Baverel 2018 reference; the simulated cohort median is 86.43 mL/min.",
+      source_name = "CRCL"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status 0)",
-      notes              = "Power form on CL: 0.937^ECOG_GE1, i.e. a 6.3 percent lower CL for ECOG >= 1. The ESM 3 control stream generates the flag with a $MIX block (P(1) = 0.75 for ECOG 0, P(2) = 0.25 for ECOG 1); that mixture is a simulation device for drawing the covariate, not a mixture PK model, and the cohort proportions it produces are reproduced exactly in ESM 4 Table S1 (750 / 250). Only ECOG 0 and 1 occur, so the ordinal WHO_PS column collapses to this binary indicator.",
-      source_name        = "FLAECOG"
+      notes = "Power form on CL: 0.937^ECOG_GE1, i.e. a 6.3 percent lower CL for ECOG >= 1. The ESM 3 control stream generates the flag with a $MIX block (P(1) = 0.75 for ECOG 0, P(2) = 0.25 for ECOG 1); that mixture is a simulation device for drawing the covariate, not a mixture PK model, and the cohort proportions it produces are reproduced exactly in ESM 4 Table S1 (750 / 250). Only ECOG 0 and 1 occur, so the ordinal WHO_PS column collapses to this binary indicator.",
+      source_name = "FLAECOG"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size (sum of target-lesion diameters)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size (sum of target-lesion diameters)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred linear effect on CL: (1 + 0.00178 * (TUMSZ - 74.8)). Centring constant 74.8 mm is the Baverel 2018 reference; the simulated cohort median is 50.09 mm (ESM 4 Table S1), so the typical simulated patient sits below the centring value and the term reduces CL.",
-      source_name        = "TUMORSIZE"
+      notes = "Centred linear effect on CL: (1 + 0.00178 * (TUMSZ - 74.8)). Centring constant 74.8 mm is the Baverel 2018 reference; the simulated cohort median is 50.09 mm (ESM 4 Table S1), so the typical simulated patient sits below the centring value and the term reduces CL.",
+      source_name = "TUMORSIZE"
     ),
     SPDL1 = list(
-      description        = "Baseline soluble PD-L1",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Baseline soluble PD-L1",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred linear effect on the Michaelis-Menten Vmax only (not on linear CL): (1 + 0.00336 * (SPDL1 - 124.8)). Centring constant 124.8 pg/mL is the Baverel 2018 reference; the simulated cohort median is 138.34 pg/mL (ESM 4 Table S1).",
-      source_name        = "SPDL1"
+      notes = "Centred linear effect on the Michaelis-Menten Vmax only (not on linear CL): (1 + 0.00336 * (SPDL1 - 124.8)). Centring constant 124.8 pg/mL is the Baverel 2018 reference; the simulated cohort median is 138.34 pg/mL (ESM 4 Table S1).",
+      source_name = "SPDL1"
     )
   )
 
   covariatesDataExcluded <- list(
     ADA_POS = list(
       description = "Anti-drug-antibody positivity",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The ESM 3 control stream sets ADA = 0 ('NO ADA') for every simulated subject and then never references ADA in any CL / V / Vmax expression, and ESM 4 Table S1 reports anti-drug antibodies as 0 for the whole cohort. The covariate is therefore documented for provenance only and is deliberately absent from model()."
+      units = "(binary)",
+      type = "binary",
+      notes = "The ESM 3 control stream sets ADA = 0 ('NO ADA') for every simulated subject and then never references ADA in any CL / V / Vmax expression, and ESM 4 Table S1 reports anti-drug antibodies as 0 for the whole cohort. The covariate is therefore documented for provenance only and is deliberately absent from model()."
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    cohort_type    = "virtual (Monte-Carlo simulated, not an observed patient cohort)",
-    n_subjects     = 1000,
-    n_studies      = 0,
-    age_range      = "50-80 years",
-    age_median     = "63.14 years",
-    weight_range   = "40.6-89.4 kg",
-    weight_median  = "64.0 kg",
+    species = "human",
+    cohort_type = "virtual (Monte-Carlo simulated, not an observed patient cohort)",
+    n_subjects = 1000,
+    n_studies = 0,
+    age_range = "50-80 years",
+    age_median = "63.14 years",
+    weight_range = "40.6-89.4 kg",
+    weight_median = "64.0 kg",
     sex_female_pct = 50.5,
-    disease_state  = "non-small cell lung cancer (ECOG performance status 0 in 75 percent, 1 in 25 percent)",
-    dose_range     = "10 mg/kg IV Q2W and 1500 mg IV Q4W (approved regimens), plus TDM-tailored doses (1000-1740 mg) and TDM-tailored intervals (4-8 weeks); all administered as 1 h infusions",
-    regions        = "the Netherlands (simulated cohort intended to represent Dutch NSCLC practice)",
-    notes          = "Baseline characteristics are the simulated virtual population of ESM 4 Table S1 (N = 1000), not an enrolled cohort: albumin median 39.27 g/L [27.2-55.3], creatinine clearance median 86.43 mL/min [43.2-179.1], tumor size median 50.09 mm [8.14-305.24], soluble PD-L1 median 138.34 pg/mL [10.42-1478.7], anti-drug antibodies 0 for all subjects, height median 167.45 cm [143.5-198]. The underlying PK parameters were estimated by Baverel 2018 in a pooled oncology population (see the reference field)."
+    disease_state = "non-small cell lung cancer (ECOG performance status 0 in 75 percent, 1 in 25 percent)",
+    dose_range = "10 mg/kg IV Q2W and 1500 mg IV Q4W (approved regimens), plus TDM-tailored doses (1000-1740 mg) and TDM-tailored intervals (4-8 weeks); all administered as 1 h infusions",
+    regions = "the Netherlands (simulated cohort intended to represent Dutch NSCLC practice)",
+    notes = "Baseline characteristics are the simulated virtual population of ESM 4 Table S1 (N = 1000), not an enrolled cohort: albumin median 39.27 g/L [27.2-55.3], creatinine clearance median 86.43 mL/min [43.2-179.1], tumor size median 50.09 mm [8.14-305.24], soluble PD-L1 median 138.34 pg/mL [10.42-1478.7], anti-drug antibodies 0 for all subjects, height median 167.45 cm [143.5-198]. The underlying PK parameters were estimated by Baverel 2018 in a pooled oncology population (see the reference field)."
   )
 
   ini({

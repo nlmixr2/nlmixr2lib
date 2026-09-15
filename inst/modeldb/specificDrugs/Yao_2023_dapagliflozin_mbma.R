@@ -27,11 +27,11 @@ Yao_2023_dapagliflozin_mbma <- function() {
 
   covariateData <- list(
     FED = list(
-      description        = "Fed-versus-fasted state at the time of dosing.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted state at the time of dosing.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level indicator in this MBMA (a pooled study arm was ",
         "dosed either fed or fasted). Multiplicative effect on the transit ",
         "rate constant, kt * 0.254^FED, i.e. food cuts Kt to about a ",
@@ -45,35 +45,35 @@ Yao_2023_dapagliflozin_mbma <- function() {
         "under fed condition'. See the vignette Assumptions and deviations ",
         "section."
       ),
-      source_name        = "Fed"
+      source_name = "Fed"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 201L,
-    n_studies      = 8L,
-    age_range      = "mean 38.1 years (SD 9.78)",
-    weight_range   = "mean 76.38 kg (SD 14.58)",
+    species = "human",
+    n_subjects = 201L,
+    n_studies = 8L,
+    age_range = "mean 38.1 years (SD 9.78)",
+    weight_range = "mean 76.38 kg (SD 14.58)",
     sex_female_pct = 25.68,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Pooled healthy subjects and patients with type 2 diabetes mellitus ",
       "(177 of 201 healthy). Studies in patients with moderate or severe ",
       "renal impairment or hepatic insufficiency were excluded; the PK/PD ",
       "data come from subjects with glomerular filtration rate above ",
       "60 mL/min/1.73 m2."
     ),
-    dose_range     = "2.5, 5, 10, 20, 50, 100, 250 mg oral",
-    regions        = "International (published clinical trials indexed on PubMed to July 2016)",
-    notes          = paste0(
+    dose_range = "2.5, 5, 10, 20, 50, 100, 250 mg oral",
+    regions = "International (published clinical trials indexed on PubMed to July 2016)",
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "summary-level (study-arm mean) plasma concentration, not an ",
       "individual measurement. Demographics from Yao 2023 Table S2 (PK ",

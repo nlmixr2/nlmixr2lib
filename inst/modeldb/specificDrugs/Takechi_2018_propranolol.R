@@ -8,43 +8,43 @@ Takechi_2018_propranolol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "propranolol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg), time-varying. Used for fixed-exponent allometric scaling on CL (0.75) and V (1) normalized to the study median 6.115 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg), time-varying. Used for fixed-exponent allometric scaling on CL (0.75) and V (1) normalized to the study median 6.115 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Median 6.115 kg (range 3.15-8.71) at study start (Table 1). The paper centres the allometric power function on this median.",
-      source_name        = "body weight"
+      notes = "Median 6.115 kg (range 3.15-8.71) at study start (Table 1). The paper centres the allometric power function on this median.",
+      source_name = "body weight"
     ),
     PNA = list(
-      description        = "Postnatal age (days), time-varying. Power effect on apparent oral clearance normalized to the study median 113 days, with fixed exponent 1 (Table 2 reports 'PowerAGE for CL/F = 1 fixed').",
-      units              = "days",
-      type               = "continuous",
+      description = "Postnatal age (days), time-varying. Power effect on apparent oral clearance normalized to the study median 113 days, with fixed exponent 1 (Table 2 reports 'PowerAGE for CL/F = 1 fixed').",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Median 113 days (range 53-150) at study start (Table 1). Interpreted to capture postnatal maturation of CYP1A2 / CYP2D6 / CYP2C19 / UGT pathways relevant to propranolol metabolism. The paper says 'The effect of postnatal age on CL/F was fixed at 1 through a backward elimination step' (Results, page 1365).",
-      source_name        = "postnatal age"
+      notes = "Median 113 days (range 53-150) at study start (Table 1). Interpreted to capture postnatal maturation of CYP1A2 / CYP2D6 / CYP2C19 / UGT pathways relevant to propranolol metabolism. The paper says 'The effect of postnatal age on CL/F was fixed at 1 through a backward elimination step' (Results, page 1365).",
+      source_name = "postnatal age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "53-150 days postnatal (35-150 days at enrollment per inclusion criteria)",
-    age_median     = "113 days postnatal",
-    weight_range   = "3.15-8.71 kg",
-    weight_median  = "6.115 kg",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "53-150 days postnatal (35-150 days at enrollment per inclusion criteria)",
+    age_median = "113 days postnatal",
+    weight_range = "3.15-8.71 kg",
+    weight_median = "6.115 kg",
     sex_female_pct = 71.9,
-    disease_state  = "infantile hemangioma (proliferating target lesion minimum diameter 1.5 cm)",
-    dose_range     = "3 mg/kg/day oral propranolol solution (3.75 mg/mL base) divided into 2 administrations, after a 1-1-1 mg/kg titration during the first days (titration to 3 mg/kg in 1-mg/kg increments every other day); treatment 24 weeks",
-    regions        = "Japan (multicenter open-label phase 3 across 13 sites)",
+    disease_state = "infantile hemangioma (proliferating target lesion minimum diameter 1.5 cm)",
+    dose_range = "3 mg/kg/day oral propranolol solution (3.75 mg/mL base) divided into 2 administrations, after a 1-1-1 mg/kg titration during the first days (titration to 3 mg/kg in 1-mg/kg increments every other day); treatment 24 weeks",
+    regions = "Japan (multicenter open-label phase 3 across 13 sites)",
     n_observations = 63L,
-    notes          = "PK dataset: 63 plasma propranolol concentration-time records from 32 patients during the first 12 weeks (sparse: first sample 1/2/3/4/6 h after day-1 maintenance morning dose; second sample 2 h after morning intake at week 12). PD dataset: 64 success/failure assessments at weeks 12 and 24 (success rates 43.8% at week 12, 78.1% at week 24). Gestational age at birth (median 272 days, range 213-293; 4/32 preterm) enters the companion PD logistic-regression model reproduced in the validation vignette but is not used by the PK structural model. Demographics from Table 1."
+    notes = "PK dataset: 63 plasma propranolol concentration-time records from 32 patients during the first 12 weeks (sparse: first sample 1/2/3/4/6 h after day-1 maintenance morning dose; second sample 2 h after morning intake at week 12). PD dataset: 64 success/failure assessments at weeks 12 and 24 (success rates 43.8% at week 12, 78.1% at week 24). Gestational age at birth (median 272 days, range 213-293; 4/32 preterm) enters the companion PD logistic-regression model reproduced in the validation vignette but is not used by the PK structural model. Demographics from Table 1."
   )
 
   ini({

@@ -30,14 +30,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
     sep = " "
   )
   vignette <- "Cammarata_2024_sulbactam_durlobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Durlobactam plasma residual variability is stratified by study phase
   # (Phase 1 / 2 / 3), so the canonical propSd / addSd used by the error model
   # are derived inside model() from three phase-specific ini() magnitudes. Same
   # construction as Valenzuela_2025_nipocalimab and vanIersel_2018_posaconazole.
   paper_specific_residual_sds <- c(
-    "propSdPhase1", "propSdPhase2", "propSdPhase3", "addSdPhase1"
+    "propSdPhase1",
+    "propSdPhase2",
+    "propSdPhase3",
+    "addSdPhase1"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -45,19 +48,19 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
-    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power function on total CL and on central volume Vc of BOTH drugs",
         "(Cammarata 2024 Results, 'Population pharmacokinetic model",
         "development': 'All parameter-covariate relationships were described",
@@ -72,17 +75,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "Pooled cohort median 75 kg (range 35.8-150 kg; Table S3).",
         "Baseline (time-fixed) per subject."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline Cockcroft-Gault creatinine clearance, normalized to body",
         "surface area"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Results, 'Data': CLcr 'was calculated using the",
         "Cockcroft-Gault equation (19) and normalized to the body surface",
         "area'. BSA normalization was applied deliberately 'in order to avoid",
@@ -97,17 +100,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "function (CLcr of 100 mL/min/1.73 m^2)'). Pooled cohort median",
         "91.5 mL/min/1.73 m^2 (range 5.61-364; Table S3)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     RENALIMP_SEV = list(
-      description        = paste(
+      description = paste(
         "Severe renal impairment indicator",
         "(1 = baseline CLcr < 30 mL/min/1.73 m^2; 0 otherwise)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (baseline CLcr >= 30 mL/min/1.73 m^2)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Results: 'For both the durlobactam and sulbactam",
         "models, patients with CLcr < 30 mL/min/1.73 m^2 were found to",
         "produce significantly different results from other patients with",
@@ -120,17 +123,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "renal-impairment convention noted in the canonical register.",
         "Derived from CRCL; supply as 1 * (CRCL < 30)."
       ),
-      source_name        = "BCLCRNLT30"
+      source_name = "BCLCRNLT30"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = paste(
+      description = paste(
         "Hemodialysis-session gate",
         "(1 while an intermittent hemodialysis session is running; 0 otherwise)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic interval, or a non-dialysed subject)",
-      notes              = paste(
+      notes = paste(
         "Time-varying WITHIN subject. Cammarata 2024 Results, 'Hemodialysis",
         "sub-models': 'an HD effect (HDEFFECT) term with IIV was applied to",
         "CL for each of the two analyte sub-models ... The CL-HDEFFECT",
@@ -150,17 +153,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "indicator and RRT_HEMODIAL_ACTIVE for exactly this per-session gate,",
         "so RRT_HEMODIAL_ACTIVE is used here to match the ratified semantics."
       ),
-      source_name        = "HD (on/off during a session)"
+      source_name = "HD (on/off during a session)"
     ),
     REGION_EASTASIA = list(
-      description        = paste(
+      description = paste(
         "East Asian region of origin indicator",
         "(1 = enrolled in China, Taiwan, or South Korea; 0 otherwise)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-East-Asian region)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Discussion / Results: 'the East Asian region was",
         "identified as a statistically significant predictor of the",
         "variability in CL and Vc for durlobactam (but not sulbactam)', with",
@@ -172,14 +175,14 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "identified as a statistically significant predictor'. 45 of 373",
         "pooled subjects (12.1%) were East Asian (Table S3, 'Region')."
       ),
-      source_name        = "EASIAFL"
+      source_name = "EASIAFL"
     ),
     DIS_HABP = list(
-      description        = "Hospital-acquired bacterial pneumonia cohort indicator (1 = HABP)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hospital-acquired bacterial pneumonia cohort indicator (1 = HABP)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled healthy-volunteer / non-infected Phase 1 cohort)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Table 1 level INFTYPN1. Proportional shift on",
         "sulbactam CL (CLINFTYPN1 = -0.424) and sulbactam Vc",
         "(V3INFTYPN1 = 0.836). For durlobactam the HABP and VABP Vc terms",
@@ -191,28 +194,28 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "is the uninfected Phase 1 healthy-subject / renal-impairment cohort.",
         "38 subjects in the pooled data set had HABP (Table S12)."
       ),
-      source_name        = "INFTYPN = 1"
+      source_name = "INFTYPN = 1"
     ),
     DIS_VABP = list(
-      description        = "Ventilator-associated bacterial pneumonia cohort indicator (1 = VABP)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ventilator-associated bacterial pneumonia cohort indicator (1 = VABP)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled healthy-volunteer / non-infected Phase 1 cohort)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Table 1 level INFTYPN2. Proportional shift on",
         "sulbactam CL (CLINFTYPN2 = -0.298) and sulbactam Vc",
         "(V3INFTYPN2 = 1.43). For durlobactam Vc it shares the merged",
         "HABP-and-VABP coefficient V1INFTYPN1&2 = 1.52. 56 subjects in the",
         "pooled data set had VABP (Table S12)."
       ),
-      source_name        = "INFTYPN = 2"
+      source_name = "INFTYPN = 2"
     ),
     DIS_CUTI = list(
-      description        = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled healthy-volunteer / non-infected Phase 1 cohort)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Table 1 level INFTYPN3. Proportional shift on",
         "durlobactam Vc (V1INFTYPN3 = 0.343), sulbactam CL",
         "(CLINFTYPN3 = -0.157), and sulbactam Vc (V3INFTYPN3 = 0.17).",
@@ -221,14 +224,14 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "infection-type level. 35 subjects in the pooled data set had cUTI",
         "(Table S12)."
       ),
-      source_name        = "INFTYPN = 3"
+      source_name = "INFTYPN = 3"
     ),
     DIS_BACTEREMIA = list(
-      description        = "Bacteremia / bloodstream-infection cohort indicator (1 = bacteremia)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Bacteremia / bloodstream-infection cohort indicator (1 = bacteremia)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled healthy-volunteer / non-infected Phase 1 cohort)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Table 1 level INFTYPN4. Proportional shift on",
         "durlobactam Vc (V1INFTYPN4 = 3.32, the largest single covariate",
         "effect in the model), sulbactam CL (CLINFTYPN4 = -0.444), and",
@@ -237,14 +240,14 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "(CS2514-2017-0004) enrollment categories; 16 subjects in the pooled",
         "data set had bacteremia (Table S12)."
       ),
-      source_name        = "INFTYPN = 4"
+      source_name = "INFTYPN = 4"
     ),
     DIS_AP = list(
-      description        = "Acute pyelonephritis cohort indicator (1 = AP)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute pyelonephritis cohort indicator (1 = AP)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled healthy-volunteer / non-infected Phase 1 cohort)",
-      notes              = paste(
+      notes = paste(
         "Cammarata 2024 Table 1 level INFTYPN5 (table footnote 'AP, acute",
         "pyelonephritis'). Proportional shift on sulbactam CL",
         "(CLINFTYPN5 = -0.382) and sulbactam Vc (V3INFTYPN5 = -0.704).",
@@ -254,14 +257,14 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "cUTI/AP study CS2514-2017-0003; 17 subjects in the pooled data set",
         "had AP (Table S12)."
       ),
-      source_name        = "INFTYPN = 5"
+      source_name = "INFTYPN = 5"
     ),
     STUDY_SULDUR_PHASE2 = list(
-      description        = "Phase 2 study cohort indicator (1 = Study CS2514-2017-0003)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2 study cohort indicator (1 = Study CS2514-2017-0003)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 studies, when STUDY_SULDUR_PHASE3 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the durlobactam Phase 2 proportional residual magnitude.",
         "Cammarata 2024 Results: 'Residual variability was described for",
         "durlobactam as a series of proportional and additive error models",
@@ -276,38 +279,41 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
         "term per analyte; Table S6). Paired with STUDY_SULDUR_PHASE3; both 0",
         "selects Phase 1."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     ),
     STUDY_SULDUR_PHASE3 = list(
-      description        = "Phase 3 study cohort indicator (1 = Study CS2514-2017-0004)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 study cohort indicator (1 = Study CS2514-2017-0004)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 studies, when STUDY_SULDUR_PHASE2 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the durlobactam Phase 3 proportional residual magnitude",
         "(Cammarata 2024 Table 1, 'sigma^2 plasma, Proportional Phase 3' =",
         "0.203, 45.0 %CV). No additive term applies to Phase 3 data. See the",
         "STUDY_SULDUR_PHASE2 notes for the full residual-error rationale."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 373L,
-    n_studies        = 8L,
+    species = "human",
+    n_subjects = 373L,
+    n_studies = 8L,
     n_concentrations = 5188L,
-    age_range        = "18-91 years",
-    age_median       = "46 years",
-    weight_range     = "35.8-150 kg",
-    weight_median    = "75 kg",
-    sex_female_pct   = 37.5,
-    race_ethnicity   = c(
-      White = 65.4, Black = 13.1, Asian = 16.1,
-      `American Indian/Alaska Native` = 1.88, Other = 3.49
+    age_range = "18-91 years",
+    age_median = "46 years",
+    weight_range = "35.8-150 kg",
+    weight_median = "75 kg",
+    sex_female_pct = 37.5,
+    race_ethnicity = c(
+      White = 65.4,
+      Black = 13.1,
+      Asian = 16.1,
+      `American Indian/Alaska Native` = 1.88,
+      Other = 3.49
     ),
-    disease_state    = paste(
+    disease_state = paste(
       "Pooled healthy adults (six Phase 1 studies including a dedicated",
       "renal-impairment study spanning normal renal function to end-stage",
       "renal disease on hemodialysis), adults with complicated urinary tract",
@@ -318,7 +324,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
       "Infection-type counts in the pooled data set (Table S12): HABP 38,",
       "VABP 56, cUTI 35, AP 17, bacteremia 16."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Durlobactam single doses 0.25-8 g and 0.25-2 g q6h; combination",
       "dosing 0.5 g or 1 g sulbactam with 0.5 g or 1 g durlobactam, given as",
       "3-hour intravenous infusions every 6 hours (one Phase 1 cohort",
@@ -327,16 +333,16 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
       "augmented renal function (CLcr > 130 mL/min/1.73 m^2) received",
       "1.5 g/1.5 g q6h. Study details in Table S1."
     ),
-    regions          = "United States and other non-East-Asian sites; China (Studies ZL-2402-001 and part of CS2514-2017-0004), Taiwan, and South Korea",
-    renal_function   = paste(
+    regions = "United States and other non-East-Asian sites; China (Studies ZL-2402-001 and part of CS2514-2017-0004), Taiwan, and South Korea",
+    renal_function = paste(
       "Baseline BSA-normalized Cockcroft-Gault CLcr 5.61-364 mL/min/1.73 m^2",
       "(pooled median 91.5). The renal-impairment study CS2514-2017-0002",
       "enrolled cohorts spanning normal renal function, mild, moderate, and",
       "severe impairment, plus an end-stage renal disease hemodialysis",
       "cohort (Table S1 footnote d)."
     ),
-    bmi_range        = "11-52.1 kg/m^2 (pooled median 25.7)",
-    notes            = paste(
+    bmi_range = "11-52.1 kg/m^2 (pooled median 25.7)",
+    notes = paste(
       "Baseline demographics from Cammarata 2024 Table S3 (pooled dataset,",
       "n = 373). 432 subjects and 8,100 plasma concentrations entered the",
       "analysis data set; after exclusion of records with missing dose or",

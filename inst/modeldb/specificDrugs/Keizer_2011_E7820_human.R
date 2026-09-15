@@ -28,8 +28,8 @@ Keizer_2011_E7820_human <- function() {
   )
   vignette <- "Keizer_2011_E7820"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ng/mL (E7820 plasma concentration); integrin expression in MESF (molecules of equivalent soluble fluorochrome)"
   )
 
@@ -38,29 +38,29 @@ Keizer_2011_E7820_human <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "E7820", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "E7820", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "E7820", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "E7820", units = "mg", specimen = "plasma", verified = FALSE),
     integrin = list(analyte = "alpha2-integrin on platelets", units = "mg", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "40.0-82.0 years",
-    age_median     = "64.8 years (mean)",
-    weight_range   = "43.2-113.6 kg",
-    weight_median  = "70.9 kg (mean)",
-    height_range   = "150.5-182.9 cm",
-    bsa_range      = "1.375-2.402 m^2 (mean 1.805)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "40.0-82.0 years",
+    age_median = "64.8 years (mean)",
+    weight_range = "43.2-113.6 kg",
+    weight_median = "70.9 kg (mean)",
+    height_range = "150.5-182.9 cm",
+    bsa_range = "1.375-2.402 m^2 (mean 1.805)",
     sex_female_pct = round(16 / 36 * 100, 1),
     race_ethnicity = c(Caucasian = 86.1, Black = 2.8, Hispanic = 11.1),
-    disease_state  = "advanced solid tumors or lymphoma (phase I oncology dose-escalation)",
-    dose_range     = "10, 20, 40, 70, 100, or 200 mg E7820 once daily for 28 days, followed by 7-day washout, repeated up to 9 cycles",
-    regions        = "(not reported in the modelling paper)",
-    notes          = paste(
+    disease_state = "advanced solid tumors or lymphoma (phase I oncology dose-escalation)",
+    dose_range = "10, 20, 40, 70, 100, or 200 mg E7820 once daily for 28 days, followed by 7-day washout, repeated up to 9 cycles",
+    regions = "(not reported in the modelling paper)",
+    notes = paste(
       "Table I of Keizer 2011 lists 36 patients enrolled across the six dose levels (3, 4, 3, 3,",
       "17, 6 at 10, 20, 40, 70, 100, 200 mg respectively). The PD analysis used 462 alpha2-integrin",
       "measurements at 209 unique timepoints from 29 of the 36 patients. Blood samples for",

@@ -9,37 +9,42 @@ Paule_2011_hydroxyurea <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
-    effect1     = list(analyte = "HbF percentage", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect2     = list(analyte = "mean corpuscular volume (MCV)", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect1 = list(analyte = "HbF percentage", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2 = list(
+      analyte = "mean corpuscular volume (MCV)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling reference 70 kg; exponent 0.75 on CL/F and 1.00 on Vc/F (Paule 2011 Methods, Population pharmacokinetic model section).",
-      source_name        = "WT"
+      notes = "Allometric scaling reference 70 kg; exponent 0.75 on CL/F and 1.00 on Vc/F (Paule 2011 Methods, Population pharmacokinetic model section).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 97L,
-    n_studies      = 2L,
-    age_range      = "18-54 years (sparse PK/PD cohort) and 24-52 years (rich PK cohort)",
-    age_median     = "30 years (sparse), 32 years (rich)",
-    weight_range   = "45-163 kg (sparse) and 42-71 kg (rich)",
-    weight_median  = "60 kg (sparse), 63 kg (rich)",
+    species = "human",
+    n_subjects = 97L,
+    n_studies = 2L,
+    age_range = "18-54 years (sparse PK/PD cohort) and 24-52 years (rich PK cohort)",
+    age_median = "30 years (sparse), 32 years (rich)",
+    weight_range = "45-163 kg (sparse) and 42-71 kg (rich)",
+    weight_median = "60 kg (sparse), 63 kg (rich)",
     sex_female_pct = 70.1,
-    disease_state  = "Adult homozygous (HbSS) sickle cell anemia",
-    dose_range     = "Oral hydroxyurea 500-2000 mg once daily; initial dose 20 mg/kg (10-15 mg/kg in renal insufficiency); titrated to maintain neutrophils > 3e9/L, final dose typically <= 30 mg/kg",
-    regions        = "France (single center: AP-HP, GH H. Mondor, Universite Paris Est-Creteil)",
-    notes          = "Two pooled datasets: a 30-month sparse-sampling observational PK/PD study (n=81, up to 9 samples/patient, baseline + every 15 days or month) and a 24-hour bioequivalence rich-sampling PK study (n=16, 10 samples/patient). Females 57/81 (sparse) and 11/16 (rich); combined 68/97 (70.1%). Baseline demographics from Paule 2011 Table 1. HbF/MCV summary statistics from Table 3."
+    disease_state = "Adult homozygous (HbSS) sickle cell anemia",
+    dose_range = "Oral hydroxyurea 500-2000 mg once daily; initial dose 20 mg/kg (10-15 mg/kg in renal insufficiency); titrated to maintain neutrophils > 3e9/L, final dose typically <= 30 mg/kg",
+    regions = "France (single center: AP-HP, GH H. Mondor, Universite Paris Est-Creteil)",
+    notes = "Two pooled datasets: a 30-month sparse-sampling observational PK/PD study (n=81, up to 9 samples/patient, baseline + every 15 days or month) and a 24-hour bioequivalence rich-sampling PK study (n=16, 10 samples/patient). Females 57/81 (sparse) and 11/16 (rich); combined 68/97 (70.1%). Baseline demographics from Paule 2011 Table 1. HbF/MCV summary statistics from Table 3."
   )
 
   ini({

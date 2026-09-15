@@ -45,41 +45,53 @@ Zhang_2024_f53b_mouse_pbpk <- function() {
   # vignette can run an exact maternal/fetal mass-balance gate; they do not
   # feed back into the dynamics.
   paper_specific_compartments <- c(
-    "kidney_blood", "ptc", "filtrate", "fat", "mammary", "rest",
-    "placenta", "feces", "plasma_fet", "liver_fet", "brain_fet",
-    "rest_fet", "amniotic", "trans_mf", "trans_fm"
+    "kidney_blood",
+    "ptc",
+    "filtrate",
+    "fat",
+    "mammary",
+    "rest",
+    "placenta",
+    "feces",
+    "plasma_fet",
+    "liver_fet",
+    "brain_fet",
+    "rest_fet",
+    "amniotic",
+    "trans_mf",
+    "trans_fm"
   )
 
   compartmentData <- list(
-    stomach      = list(analyte = "F-53B", units = "mg", specimen = "administration site",     verified = TRUE),
-    intestine    = list(analyte = "F-53B", units = "mg", specimen = "administration site",      verified = TRUE),
-    plasma       = list(analyte = "F-53B", units = "mg", specimen = "plasma",      verified = TRUE),
-    liver        = list(analyte = "F-53B", units = "mg", specimen = "tissue",       verified = TRUE),
-    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue",         verified = TRUE),
-    ptc          = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
-    filtrate     = list(analyte = "F-53B", units = "mg", specimen = "urine",     verified = TRUE),
-    fat          = list(analyte = "F-53B", units = "mg", specimen = "tissue",         verified = TRUE),
-    mammary      = list(analyte = "F-53B", units = "mg", specimen = "tissue",        verified = TRUE),
-    rest         = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
-    placenta     = list(analyte = "F-53B", units = "mg", specimen = "tissue",             verified = TRUE),
-    urine        = list(analyte = "F-53B", units = "mg", specimen = "urine",                verified = TRUE),
-    feces        = list(analyte = "F-53B", units = "mg", specimen = "faeces",                verified = TRUE),
-    plasma_fet   = list(analyte = "F-53B", units = "mg", specimen = "plasma",         verified = TRUE),
-    liver_fet    = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    brain_fet    = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    rest_fet     = list(analyte = "F-53B", units = "mg", specimen = "tissue",   verified = TRUE),
-    amniotic     = list(analyte = "F-53B", units = "mg", specimen = "tissue",       verified = TRUE),
-    trans_mf     = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE),
-    trans_fm     = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE)
+    stomach = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    intestine = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    plasma = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    ptc = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    filtrate = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    fat = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    mammary = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    rest = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    placenta = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    feces = list(analyte = "F-53B", units = "mg", specimen = "faeces", verified = TRUE),
+    plasma_fet = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    brain_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    rest_fet = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    amniotic = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    trans_mf = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE),
+    trans_fm = list(analyte = "F-53B", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Maternal pre-gestational body weight. Zhang 2024 Table S4 gives",
         "0.025 kg for the pregnant C57BL/6J dams (in-house TK study);",
         "that is the default carried in ini(). Every maternal tissue",
@@ -93,18 +105,18 @@ Zhang_2024_f53b_mouse_pbpk <- function() {
         "physiological parameter varied in the Monte Carlo analysis",
         "(Table S9, normal, CV 30%)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "mouse (C57BL/6J, pregnant)",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "adult, gestation day 13 at dosing",
-    weight_range   = "0.025 kg (Table S4)",
+    species = "mouse (C57BL/6J, pregnant)",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "adult, gestation day 13 at dosing",
+    weight_range = "0.025 kg (Table S4)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy pregnant C57BL/6J dams. Eighty females and males were",
       "mated 1:1; pregnant dams were split into an oral group (n = 20)",
       "and an intravenous group (n = 20). Maternal plasma, liver,",
@@ -114,13 +126,13 @@ Zhang_2024_f53b_mouse_pbpk <- function() {
       "Mean litter size was 8 fetuses. Approved by the ethics committee",
       "of Sun Yat-sen University (SYSUIACUC-2022-001602)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 80 ug/kg body weight dose of F-53B on gestation day 13,",
       "given either orally or by lateral tail vein injection. At the",
       "0.025 kg reference weight that is 0.002 mg."
     ),
-    regions        = "Sun Yat-sen University, Guangzhou, China",
-    notes          = paste(
+    regions = "Sun Yat-sen University, Guangzhou, China",
+    notes = paste(
       "F-53B was measured by UPLC-MS/MS. Plasma protein binding was",
       "98.70% (oral) and 99.54% (IV) by ultrafiltration (Table S11);",
       "the model's calibrated free fraction is 0.067. The PBPK model was",

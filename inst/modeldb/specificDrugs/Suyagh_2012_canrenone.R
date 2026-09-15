@@ -33,56 +33,56 @@ Suyagh_2012_canrenone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "canrenone", units = "umol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "canrenone", units = "umol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "canrenone", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight used in the allometric covariate model on",
         "CL/F and V/F with fixed exponents 0.75 (CL) and 1.0 (V), scaled to",
         "a reference weight of 70 kg (Suyagh 2012 Methods + Table 3).",
         "Cohort median 4 kg (range 2.16-28.0 kg)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age at birth (weeks)",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened on CL/F and V/F (Suyagh 2012 Step 2-3 forward inclusion / backward elimination); not retained in the final model."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened on CL/F and V/F (Suyagh 2012 Step 2-3 forward inclusion / backward elimination); not retained in the final model."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained. Co-linear with weight per Methods discussion."
+      units = "days",
+      type = "continuous",
+      notes = "Screened (Suyagh 2012 covariate screening); not retained. Co-linear with weight per Methods discussion."
     ),
     PMA = list(
       description = "Postmenstrual age (= GA + PNA + 2 weeks)",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained. Co-linear with weight."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened (Suyagh 2012 covariate screening); not retained. Co-linear with weight."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained in the final model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened (Suyagh 2012 covariate screening); not retained in the final model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened (Suyagh 2012 covariate screening); not retained in the",
         "final model. Canonical units standardized to SI g/L per the",
         "2026-06-19 canonical-register audit. The prior covariateData entry",
@@ -96,43 +96,43 @@ Suyagh_2012_canrenone <- function() {
     ),
     HCT = list(
       description = "Haematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained in the final model."
+      units = "%",
+      type = "continuous",
+      notes = "Screened (Suyagh 2012 covariate screening); not retained in the final model."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Suyagh 2012 covariate screening); not retained in the final model. Cohort 15 male : 8 female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Suyagh 2012 covariate screening); not retained in the final model. Cohort 15 male : 8 female."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_studies      = 1L,
-    age_range      = "2 days to 10 years (postnatal); PMA 37.3-574.0 weeks",
-    age_median     = "PNA median 71 days (range 2-3738 days); 20 of 23 subjects were younger than 1 year (the other three were 2, 6 and 10 years).",
-    weight_range   = "2.16-28.0 kg",
-    weight_median  = "4 kg",
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 1L,
+    age_range = "2 days to 10 years (postnatal); PMA 37.3-574.0 weeks",
+    age_median = "PNA median 71 days (range 2-3738 days); 20 of 23 subjects were younger than 1 year (the other three were 2, 6 and 10 years).",
+    weight_range = "2.16-28.0 kg",
+    weight_median = "4 kg",
     sex_female_pct = 8 / 23 * 100,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric patients in the NICU at the Royal Jubilee Maternity",
       "Service, Belfast or the medical and intensive care wards at the",
       "Royal Belfast Hospital for Sick Children. Indications: congestive",
       "heart failure (8/23, 34.8%) or PICU treatment of retained fluids,",
       "e.g. pulmonary oedema due to chronic lung disease (15/23, 65.2%)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous potassium canrenoate (K-canrenoate). Median dose 10.06",
       "umol (range 3.77-70.43 umol) per dose, given at clinician",
       "discretion. K-canrenoate molar mass 396.6 g/mol; the equivalent mass",
       "dose range is 1.50-27.93 mg per administration."
     ),
-    regions        = "Northern Ireland (Belfast), UK",
-    notes          = paste(
+    regions = "Northern Ireland (Belfast), UK",
+    notes = paste(
       "Demographics from Suyagh 2012 Table 1 (n = 23 patients; 101 plasma",
       "canrenone samples; 1-8 samples per patient, median 4). GA at birth",
       "median 37 weeks (range 25-41); GA group: 2 very preterm (< 32 wk),",

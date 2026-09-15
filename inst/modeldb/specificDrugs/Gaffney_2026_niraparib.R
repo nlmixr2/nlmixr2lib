@@ -24,11 +24,11 @@ Gaffney_2026_niraparib <- function() {
 
   covariateData <- list(
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value (source column ALBBL). Power effects on",
         "three parameters, all normalised to the same reference: CL/F",
         "exponent 0.742, Vc/F exponent 0.363 and Vp1/F exponent 1.02",
@@ -46,14 +46,14 @@ Gaffney_2026_niraparib <- function() {
         "Model' section). Analysis-population range 1.7 to 7.9 g/dL",
         "(17 to 79 g/L)."
       ),
-      source_name        = "ALBBL"
+      source_name = "ALBBL"
     ),
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value (source column ALPBL); the paper reports",
         "it in IU/L, which is interchangeable with the canonical U/L. Power",
         "effect on CL/F with exponent -0.074 normalised to 83 U/L (Table 3;",
@@ -66,14 +66,14 @@ Gaffney_2026_niraparib <- function() {
         "0.715 vs 0.72; (1814/83)^0.074 = 1.256 vs 1.25. Analysis-population",
         "range 0.9 to 1814 IU/L."
       ),
-      source_name        = "ALPBL"
+      source_name = "ALPBL"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance",
-      units              = "mL/min (not BSA-normalized)",
-      type               = "continuous",
+      description = "Baseline creatinine clearance",
+      units = "mL/min (not BSA-normalized)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value (source column CrCLBL), reported in raw",
         "mL/min rather than the canonical column's BSA-normalized",
         "mL/min/1.73 m^2; the paper does not name the estimating equation.",
@@ -87,14 +87,14 @@ Gaffney_2026_niraparib <- function() {
         "impairment (30 to 59 mL/min) and only 4 (0.2%) were below",
         "30 mL/min."
       ),
-      source_name        = "CrCLBL"
+      source_name = "CrCLBL"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value (source column WTBL). Power effect on",
         "Vc/F only, exponent 0.577 normalised to 70 kg (Table 3). The 70 kg",
         "reference is stated twice in the Results: 'Typical values of CL/F",
@@ -103,14 +103,14 @@ Gaffney_2026_niraparib <- function() {
         "rejected on Vp1/F, Vp2/F and F1 (Table 2), so there is no effect of",
         "weight on AUC - the paper makes this point explicitly."
       ),
-      source_name        = "WTBL"
+      source_name = "WTBL"
     ),
     FED = list(
-      description        = "Fed state at the time of the dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of the dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted or unknown prandial state)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. The reference level pools the fasted and",
         "the unknown prandial states: the Covariate Analysis section states",
         "that 'the unknown prandial state was grouped with the reference",
@@ -126,14 +126,14 @@ Gaffney_2026_niraparib <- function() {
         "record outside that arm is fasted or unknown), so the general FED",
         "canonical applies rather than FED_HIGHFAT."
       ),
-      source_name        = "prandial state"
+      source_name = "prandial state"
     ),
     STUDY_NOVA = list(
-      description        = "NOVA (NCT01847274) study-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NOVA (NCT01847274) study-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not NOVA; PN001 when all five study indicators are 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the NOVA study-specific residual-error magnitude (0.350;",
         "Table 3). Phase 3, recurrent ovarian cancer, 405 patients, 2054",
         "included observations (Table 1). A separate additive residual error",
@@ -142,38 +142,38 @@ Gaffney_2026_niraparib <- function() {
         "exactly one of the five study indicators is 1 per record and all",
         "five are 0 for a PN001 record."
       ),
-      source_name        = "study"
+      source_name = "study"
     ),
     STUDY_QUADRA = list(
-      description        = "QUADRA (NCT02354586) study-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "QUADRA (NCT02354586) study-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not QUADRA; PN001 when all five study indicators are 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the QUADRA study-specific residual-error magnitude (0.381;",
         "Table 3). Phase 2, advanced relapsed ovarian cancer, 455 patients,",
         "1410 included observations (Table 1)."
       ),
-      source_name        = "study"
+      source_name = "study"
     ),
     STUDY_PRIMA = list(
-      description        = "PRIMA (NCT02655016) study-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PRIMA (NCT02655016) study-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not PRIMA; PN001 when all five study indicators are 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the PRIMA study-specific residual-error magnitude (0.451;",
         "Table 3). Phase 3, first-line advanced ovarian cancer, 480",
         "patients, 1856 included observations (Table 1)."
       ),
-      source_name        = "study"
+      source_name = "study"
     ),
     STUDY_TABLET = list(
-      description        = "TABLET (NCT03329001) study-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "TABLET (NCT03329001) study-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not TABLET; PN001 when all five study indicators are 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the TABLET study-specific residual-error magnitude (0.324;",
         "Table 3). Phase 1 tablet-versus-capsule bioequivalence and food",
         "effect study in advanced solid tumours, 225 patients, 6487 included",
@@ -181,14 +181,14 @@ Gaffney_2026_niraparib <- function() {
         "intensively sampled studies added in this analysis, and the source",
         "of essentially all the fed records."
       ),
-      source_name        = "study"
+      source_name = "study"
     ),
     STUDY_HEPATIC = list(
-      description        = "HEPATIC (NCT03359850) study-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HEPATIC (NCT03359850) study-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not HEPATIC; PN001 when all five study indicators are 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the HEPATIC study-specific residual-error magnitude (0.146;",
         "Table 3). Phase 1 hepatic-impairment study in advanced solid",
         "tumours, 17 patients (8 with moderate hepatic impairment, 9 with",
@@ -199,16 +199,16 @@ Gaffney_2026_niraparib <- function() {
         "limited by the 8-patient moderate-impairment subgroup, so the study",
         "enters the model only through its residual-error magnitude."
       ),
-      source_name        = "study"
+      source_name = "study"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F, Vc/F, Vp1/F and Vp2/F in the stepwise covariate",
         "analysis and rejected on all four (Table 2). Not retained in the",
         "final model and no point estimate is reported."
@@ -216,9 +216,9 @@ Gaffney_2026_niraparib <- function() {
     ),
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and Vc/F and rejected on both (Table 2), even",
         "though age had been identified as a covariate on CL/F in the",
         "previous niraparib population PK model. No point estimate is",
@@ -227,9 +227,9 @@ Gaffney_2026_niraparib <- function() {
     ),
     PLT = list(
       description = "Baseline platelet count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "10^9/L",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and rejected (Table 2). Tested because baseline",
         "platelet count is used in determining the niraparib starting dose.",
         "No point estimate is reported."
@@ -237,9 +237,9 @@ Gaffney_2026_niraparib <- function() {
     ),
     ECOG = list(
       description = "Baseline ECOG performance status",
-      units       = "(ordinal 0-4)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(ordinal 0-4)",
+      type = "categorical",
+      notes = paste(
         "Screened on CL/F and rejected (Table 2). No point estimate is",
         "reported."
       )
@@ -248,39 +248,51 @@ Gaffney_2026_niraparib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "niraparib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "niraparib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1686,
-    n_studies      = 6,
+    species = "human",
+    n_subjects = 1686,
+    n_studies = 6,
     n_observations = 14106,
     sex_female_pct = 91.6,
     race_ethnicity = c(White = 86.4),
-    disease_state  = paste(
+    disease_state = paste(
       "Advanced solid tumours or haematologic malignancies (PN001),",
       "platinum-sensitive ovarian cancer (NOVA, PRIMA), relapsed high-grade",
       "serous ovarian cancer (QUADRA), and advanced solid tumours with",
@@ -289,7 +301,7 @@ Gaffney_2026_niraparib <- function() {
       "(TABLET). 83.6% of the pooled analysis population had ovarian cancer",
       "and 86.5% had normal hepatic function."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral niraparib. HEPATIC and TABLET each administered a single 300 mg",
       "dose; the remaining four studies were the monotherapy dose-escalation",
       "(PN001) and once-daily maintenance (NOVA, QUADRA, PRIMA) programmes",
@@ -304,7 +316,7 @@ Gaffney_2026_niraparib <- function() {
       "(19.7%) had moderate renal impairment (30 to 59 mL/min) and 4 (0.2%)",
       "were below 30 mL/min."
     ),
-    notes          = paste(
+    notes = paste(
       "Six pooled studies: PN001 (NCT00749502), NOVA (NCT01847274), QUADRA",
       "(NCT02354586), PRIMA (NCT02655016), HEPATIC (NCT03359850) and TABLET",
       "(NCT03329001); per-study patient and observation counts in Table 1.",

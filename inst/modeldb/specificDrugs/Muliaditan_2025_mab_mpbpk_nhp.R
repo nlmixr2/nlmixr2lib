@@ -44,8 +44,8 @@ Muliaditan_2025_mab_mpbpk_nhp <- function() {
   )
   vignette <- "Muliaditan_2025_mab_mpbpk"
   units <- list(
-    time          = "h",
-    dosing        = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
+    time = "h",
+    dosing = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
     concentration = "nmol/L"
   )
 
@@ -54,47 +54,92 @@ Muliaditan_2025_mab_mpbpk_nhp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central           = list(analyte = "mAb", units = NA_character_, specimen = "plasma", verified = FALSE),
-    tissue_vasc       = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_endo_u     = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_endo_b     = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tissue_isf        = list(analyte = "mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
-    brain_vascular    = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bbb_endo_u        = list(analyte = "unbound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
-    bbb_endo_b        = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
-    brain_isf         = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bcsfb_endo_u      = list(analyte = "unbound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
-    bcsfb_endo_b      = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
-    csf               = list(analyte = "mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
-    lymph             = list(analyte = "mAb", units = NA_character_, specimen = "lymph", verified = FALSE),
-    tissue_fcrn       = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bbb_fcrn          = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
-    bcsfb_fcrn        = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
-    complex_plasma    = list(analyte = "mAb-TfR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    delta_utfr_bbb    = list(analyte = "unbound TfR on BBB", units = NA_character_, specimen = "administration site", verified = FALSE),
-    complex_bbb_lum   = list(analyte = "luminal mAb-TfR complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    complex_bbb_abl   = list(analyte = "abluminal mAb-TfR complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    utfr_bbb_abl      = list(analyte = "unbound TfR on abluminal BBB", units = NA_character_, specimen = "administration site", verified = FALSE),
-    delta_utfr_bcsfb  = list(analyte = "unbound TfR on BCSFB", units = NA_character_, specimen = "administration site", verified = FALSE),
-    complex_bcsfb_lum = list(analyte = "luminal mAb-TfR complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    complex_bcsfb_abl = list(analyte = "abluminal mAb-TfR complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    utfr_bcsfb_abl    = list(analyte = "unbound TfR on abluminal BCSFB", units = NA_character_, specimen = "administration site", verified = FALSE),
-    complex_neuron    = list(analyte = "neuronal mAb-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE)
+    central = list(analyte = "mAb", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tissue_vasc = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_u = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_b = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_isf = list(analyte = "mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    brain_vascular = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_endo_u = list(analyte = "unbound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    bbb_endo_b = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    brain_isf = list(analyte = "mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_endo_u = list(analyte = "unbound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
+    bcsfb_endo_b = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
+    csf = list(analyte = "mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
+    lymph = list(analyte = "mAb", units = NA_character_, specimen = "lymph", verified = FALSE),
+    tissue_fcrn = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_fcrn = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    bcsfb_fcrn = list(analyte = "FcRn-bound mAb", units = NA_character_, specimen = "CSF", verified = FALSE),
+    complex_plasma = list(analyte = "mAb-TfR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    delta_utfr_bbb = list(
+      analyte = "unbound TfR on BBB",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    complex_bbb_lum = list(
+      analyte = "luminal mAb-TfR complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    complex_bbb_abl = list(
+      analyte = "abluminal mAb-TfR complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    utfr_bbb_abl = list(
+      analyte = "unbound TfR on abluminal BBB",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    delta_utfr_bcsfb = list(
+      analyte = "unbound TfR on BCSFB",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    complex_bcsfb_lum = list(
+      analyte = "luminal mAb-TfR complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    complex_bcsfb_abl = list(
+      analyte = "abluminal mAb-TfR complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    utfr_bcsfb_abl = list(
+      analyte = "unbound TfR on abluminal BCSFB",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    complex_neuron = list(
+      analyte = "neuronal mAb-TfR complex",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     MIX_FAST_ELIM = list(
-      description        = paste(
+      description = paste(
         "Mixture-model class indicator for fast vs slow bsAb-TfR complex",
         "internalization rate (kint). 1 = POP1 fast eliminator",
         "(kint = 0.0329 h^-1); 0 = POP2 slow eliminator (kint =",
         "0.0125 h^-1). Not a measured covariate - this is the",
         "$MIXTURE class assignment from the Muliaditan 2025 NONMEM run."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Population probability of MIX_FAST_ELIM = 1 (POP1, fast",
         "internalization) is 0.437 per Muliaditan 2025 Table 2",
         "(Fraction POP1, RSE 30%, 95% CI 0.180-0.695). For typical-",
@@ -104,22 +149,22 @@ Muliaditan_2025_mab_mpbpk_nhp <- function() {
         "populations were not correlated with KD,TfR or data source",
         "in the original fit (paper Discussion)."
       ),
-      source_name        = "MIXTURE"
+      source_name = "MIXTURE"
     )
   )
 
   population <- list(
-    species         = "cynomolgus monkey",
-    n_subjects      = NA_integer_,
-    n_studies       = 8L,
-    n_compounds     = 17L,
-    n_plasma_obs    = 395L,
-    n_csf_obs       = 81L,
-    n_brain_obs     = 102L,
-    weight_range    = "Bloomingdale 2017 6.2-kg cynomolgus reference subject for the physiology",
-    disease_state   = "healthy non-human primate (cynomolgus monkey)",
-    dose_range      = "1-100 mg/kg IV bolus or IV infusion (training data: 2, 10, 30, 50 mg/kg single IV; Edavettal 2022 also includes a weekly RD regimen)",
-    notes           = paste(
+    species = "cynomolgus monkey",
+    n_subjects = NA_integer_,
+    n_studies = 8L,
+    n_compounds = 17L,
+    n_plasma_obs = 395L,
+    n_csf_obs = 81L,
+    n_brain_obs = 102L,
+    weight_range = "Bloomingdale 2017 6.2-kg cynomolgus reference subject for the physiology",
+    disease_state = "healthy non-human primate (cynomolgus monkey)",
+    dose_range = "1-100 mg/kg IV bolus or IV infusion (training data: 2, 10, 30, 50 mg/kg single IV; Edavettal 2022 also includes a weekly RD regimen)",
+    notes = paste(
       "Training dataset (paper Table 1) covers 7 non-TfR mAbs (Control",
       "IgG, anti-Tau-IgG, Lu-AF82422, gantenerumab, anti-BACE1, Yu 2014",
       "Control IgG, Kariolis 2020 Control IgG) and 10 anti-TfR bsAbs",

@@ -40,25 +40,25 @@ Saleh_2023_prexasertib_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot                = list(analyte = "prexasertib", units = "ng", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "prexasertib", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE)
+    depot = list(analyte = "prexasertib", units = "ng", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "prexasertib", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "prexasertib", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "prexasertib", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "prexasertib", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (CD1 nude)",
+    species = "mouse (CD1 nude)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "10 mg/kg SC (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "10 mg/kg SC (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for prexasertib came from ref [22]",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -261,4 +261,3 @@ Saleh_2023_prexasertib_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

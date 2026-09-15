@@ -30,15 +30,15 @@ Leegwater_2025_trimethoprim <- function() {
     sep = " "
   )
   vignette <- "Leegwater_2025_cotrimoxazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the CKD-EPI equation and reported BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the CKD-EPI equation and reported BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters apparent clearance as the power function (CRCL/68)^e_crcl_cl",
         "(Table 2 footnote a: 'in case of no CRRT = 4.21 x (EGFR/68)^0.317').",
         "The normalizing value is 68 mL/min/1.73 m^2 as printed in the",
@@ -60,14 +60,14 @@ Leegwater_2025_trimethoprim <- function() {
         "corrected for.",
         sep = " "
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy during cotrimoxazole treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy during cotrimoxazole treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CRRT)",
-      notes              = paste(
+      notes = paste(
         "1 = concomitant CRRT, 0 = no CRRT. Called 'rel' in the NONMEM",
         "control stream and 'CRRT' in Table 2. Subject-level and time-fixed:",
         "patients treated with intermittent hemodialysis or ECMO were",
@@ -80,24 +80,24 @@ Leegwater_2025_trimethoprim <- function() {
         "of the two estimated clearance etas applies to the subject.",
         sep = " "
       ),
-      source_name        = "rel"
+      source_name = "rel"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "trimethoprim", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "trimethoprim", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "trimethoprim", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 52,
-    n_studies      = 1,
-    age_mean       = "60.3 years (SD 11.9)",
-    weight_mean    = "80.6 kg (SD 18.5)",
+    species = "human",
+    n_subjects = 52,
+    n_studies = 1,
+    age_mean = "60.3 years (SD 11.9)",
+    weight_mean = "80.6 kg (SD 18.5)",
     sex_female_pct = 36.6,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) treated with therapeutic doses of",
       "oral or intravenous cotrimoxazole, sampled as part of routine",
       "therapeutic drug monitoring. Indications include Pneumocystis",
@@ -116,16 +116,16 @@ Leegwater_2025_trimethoprim <- function() {
       "ECMO were excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Routine care rather than protocol-assigned. Daily cotrimoxazole",
       "starting doses in the trimethoprim subset: <= 960 mg 11.5%,",
       "1,920-2,400 mg 36.6%, 2,880 mg 11.5%, 3,840-4,800 mg 13.5%,",
       "5,760 mg 27.0%. 42.3% started oral, 57.7% intravenous.",
       sep = " "
     ),
-    regions        = "The Netherlands (Leiden University Medical Center and University Medical Center Groningen; trimethoprim was assayed in only two of the three participating centers).",
+    regions = "The Netherlands (Leiden University Medical Center and University Medical Center Groningen; trimethoprim was assayed in only two of the three participating centers).",
     n_observations = "137 trimethoprim plasma concentrations from 52 patients, peaks and troughs, ranging 0.2-15.6 mg/L.",
-    notes          = paste(
+    notes = paste(
       "Retrospective multicenter observational cohort, January 2016 to",
       "December 2021 (Methods, 'Study design' and 'Participants and data",
       "collection'); demographics from Table 1, right-hand column. The",

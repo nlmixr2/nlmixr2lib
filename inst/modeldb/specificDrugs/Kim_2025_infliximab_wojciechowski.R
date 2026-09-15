@@ -22,49 +22,49 @@ Kim_2025_infliximab_wojciechowski <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on all four disposition parameters, normalized to a 70 kg reference: CL *= (WT/70)^0.614, Vc *= (WT/70)^0.691, Vp *= (WT/70)^0.59 and Q *= (WT/70)^1.1. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
-      source_name        = "WGT"
+      notes = "Power effect on all four disposition parameters, normalized to a 70 kg reference: CL *= (WT/70)^0.614, Vc *= (WT/70)^0.691, Vp *= (WT/70)^0.59 and Q *= (WT/70)^1.1. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
+      source_name = "WGT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, normalized to a 4 g/dL reference: CL *= (ALB/4)^(-1.17), i.e. lower albumin gives higher clearance. The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ALB"
+      notes = "Power effect on CL, normalized to a 4 g/dL reference: CL *= (ALB/4)^(-1.17), i.e. lower albumin gives higher clearance. The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies toward infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies toward infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Exponential effect on CL: CL *= exp(0.257 * ADA_POS), i.e. a 1.293-fold (+29.3%) increase in clearance when ADA-positive. Note this is an exponential form, unlike the linear (1 + theta) form used by the Dubinsky and Fasanmade models. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ATI"
+      notes = "Exponential effect on CL: CL *= exp(0.257 * ADA_POS), i.e. a 1.293-fold (+29.3%) increase in clearance when ADA-positive. Note this is an exponential form, unlike the linear (1 + theta) form used by the Dubinsky and Fasanmade models. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ATI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 655L,
-    n_studies      = 1L,
-    age_range      = "Pooled paediatric and adult cohort; age not specified in Kim 2025 Table S1 for this model.",
-    weight_range   = "Not reported; median body weight 70 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
+    species = "human",
+    n_subjects = 655L,
+    n_studies = 1L,
+    age_range = "Pooled paediatric and adult cohort; age not specified in Kim 2025 Table S1 for this model.",
+    weight_range = "Not reported; median body weight 70 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not specified.",
-    disease_state  = "Inflammatory bowel disease: Crohn's disease (n = 112) and ulcerative colitis (n = 543).",
-    dose_range     = "Intravenous infliximab; treatment phase and sampling times not specified in Kim 2025 Table S1.",
-    regions        = "Not specified.",
-    notes          = paste(
+    disease_state = "Inflammatory bowel disease: Crohn's disease (n = 112) and ulcerative colitis (n = 543).",
+    dose_range = "Intravenous infliximab; treatment phase and sampling times not specified in Kim 2025 Table S1.",
+    regions = "Not specified.",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Wojciechowski model: Crohn's disease (n = 112) and",
       "ulcerative colitis (n = 543), pooled paediatric and adult patients,",

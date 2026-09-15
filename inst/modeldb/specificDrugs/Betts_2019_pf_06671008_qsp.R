@@ -7,46 +7,75 @@ Betts_2019_pf_06671008_qsp <- function() {
   # peripheral1 and tumor carry concentrations (nM) to match Betts 2019 Eqs 1-4;
   # entering an evid=1 amt corresponds to the C1(0) = dose/V1 step of a bolus.
   # The vignette shows the mg/kg -> nM conversion for a 0.025 kg mouse.
-  units <- list(time = "day", dosing = "nM (central-compartment concentration equivalent for IV bolus)", concentration = "nM")
+  units <- list(
+    time = "day",
+    dosing = "nM (central-compartment concentration equivalent for IV bolus)",
+    concentration = "nM"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
-    tumor           = list(analyte = "PF-06671008", units = NA_character_, specimen = "tumor", verified = FALSE),
-    drug_cd3_tumor  = list(analyte = "CD3", units = NA_character_, specimen = "tumor", verified = FALSE),
+    central = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tumor = list(analyte = "PF-06671008", units = NA_character_, specimen = "tumor", verified = FALSE),
+    drug_cd3_tumor = list(analyte = "CD3", units = NA_character_, specimen = "tumor", verified = FALSE),
     drug_pcad_tumor = list(analyte = "P-cadherin", units = NA_character_, specimen = "tumor", verified = FALSE),
-    trimer          = list(analyte = "PF-06671008-CD3-P-cadherin trimer", units = NA_character_, specimen = "tissue", verified = FALSE),
-    cycling_cells   = list(analyte = "cycling cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    damaged_cells1  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    damaged_cells2  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    damaged_cells3  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    trimer = list(
+      analyte = "PF-06671008-CD3-P-cadherin trimer",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cycling_cells = list(
+      analyte = "cycling cells",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    damaged_cells1 = list(
+      analyte = "damaged cells",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    damaged_cells2 = list(
+      analyte = "damaged cells",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    damaged_cells3 = list(
+      analyte = "damaged cells",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. V1, V2, CL and CLd (reported in Table II mL/kg / mL/h/kg) are scaled by WT to convert to per-mouse L and L/day.",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. V1, V2, CL and CLd (reported in Table II mL/kg / mL/h/kg) are scaled by WT to convert to per-mouse L and L/day.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "mouse (female NSG NOD-scid IL-2rg-null; HCT-116 colorectal xenograft with human PBMC engraftment)",
-    n_subjects     = "PK study n = 3/timepoint/dose; TGI n = 10/dose",
-    n_studies      = 1,
-    age_range      = "6-8 weeks at implantation",
-    weight_median  = "0.025 kg (typical NSG mouse; used as ref for volume/CL scaling)",
+    species = "mouse (female NSG NOD-scid IL-2rg-null; HCT-116 colorectal xenograft with human PBMC engraftment)",
+    n_subjects = "PK study n = 3/timepoint/dose; TGI n = 10/dose",
+    n_studies = 1,
+    age_range = "6-8 weeks at implantation",
+    weight_median = "0.025 kg (typical NSG mouse; used as ref for volume/CL scaling)",
     sex_female_pct = 100,
-    disease_state  = "Established subcutaneous HCT-116 colorectal xenografts (~0.5 g at randomization for PK; ~7 days established for TGI). Human PBMCs inoculated 7 days prior to randomization (5e6 or 2.5e6 cells IP).",
-    dose_range     = "IV bolus 0.05 and 0.5 mg/kg (PK study); 0.01-0.5 mg/kg q7d x 2 (T cell engrafted TGI). MW PF-06671008 = 105 kDa.",
-    notes          = "Primary fit parameters (kmax, kc50, tau, kg0, kg, Mmax; Table II p6-7) are from HCT-116 T cell engrafted model (footnote a in Table II). Companion cell-line fits reported by the paper: HCT-116 adoptive transfer (kmax 1.32 /day, kc50 6.9e-5 nM, tau 3.99 d, TSC 0.011 pM) and SUM-149 adoptive transfer (kmax 0.74 /day, kc50 1.0e-4 nM, tau 4.78 d, TSC 0.0092 pM); see vignette narrative."
+    disease_state = "Established subcutaneous HCT-116 colorectal xenografts (~0.5 g at randomization for PK; ~7 days established for TGI). Human PBMCs inoculated 7 days prior to randomization (5e6 or 2.5e6 cells IP).",
+    dose_range = "IV bolus 0.05 and 0.5 mg/kg (PK study); 0.01-0.5 mg/kg q7d x 2 (T cell engrafted TGI). MW PF-06671008 = 105 kDa.",
+    notes = "Primary fit parameters (kmax, kc50, tau, kg0, kg, Mmax; Table II p6-7) are from HCT-116 T cell engrafted model (footnote a in Table II). Companion cell-line fits reported by the paper: HCT-116 adoptive transfer (kmax 1.32 /day, kc50 6.9e-5 nM, tau 3.99 d, TSC 0.011 pM) and SUM-149 adoptive transfer (kmax 0.74 /day, kc50 1.0e-4 nM, tau 4.78 d, TSC 0.0092 pM); see vignette narrative."
   )
 
   ini({

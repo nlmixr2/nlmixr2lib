@@ -31,8 +31,8 @@ Kim_2023_camostat <- function() {
   )
   vignette <- "Kim_2023_camostat"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -46,16 +46,22 @@ Kim_2023_camostat <- function() {
   # GBPA and GBA plasma concentrations.
   compartmentData <- list(
     depot = list(
-      analyte = "camostat mesylate", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "camostat mesylate",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "GBPA (FOY-251)", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "GBPA (FOY-251)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_gba = list(
-      analyte = "GBA (4-guanidinobenzoic acid)", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "GBA (4-guanidinobenzoic acid)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -70,9 +76,9 @@ Kim_2023_camostat <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 70.1 (10.9), 68.5 (10.9) and",
         "74.5 (16.0) kg; overall median 66.5 kg. Enrolment required 55.0-90.0",
         "kg. Screened and not retained; the model carries no allometric",
@@ -81,18 +87,18 @@ Kim_2023_camostat <- function() {
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 173.1 (7.19), 172.8 (5.53) and",
         "175.4 (6.97) cm; overall mean 174.2 cm. Screened and not retained."
       )
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 23.3 (2.60), 22.9 (2.93) and",
         "24.0 (3.96) kg/m^2. Enrolment required 18.0-29.9 kg/m^2. Reported",
         "as a baseline demographic; not retained."
@@ -100,9 +106,9 @@ Kim_2023_camostat <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 26.8 (6.34), 29.0 (5.56) and",
         "28.0 (5.34) years; overall median 26 years. Enrolment required",
         "19-55 years. Screened and not retained."
@@ -110,9 +116,9 @@ Kim_2023_camostat <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 17.4 (4.56), 16.6 (4.72) and",
         "13.6 (6.27) IU/L. An AST above the upper limit of normal was an",
         "exclusion criterion. Screened and not retained."
@@ -120,9 +126,9 @@ Kim_2023_camostat <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 24.2 (8.76), 24.8 (12.5) and",
         "21.8 (12.3) IU/L. An ALT above the upper limit of normal was an",
         "exclusion criterion. Screened and not retained."
@@ -130,9 +136,9 @@ Kim_2023_camostat <- function() {
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (BSA-normalised)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 99.2 (10.7), 113.8 (31.8) and",
         "93.8 (15.3) mL/min/1.73 m^2. An eGFR below 60 was an exclusion",
         "criterion. Screened and not retained."
@@ -140,9 +146,9 @@ Kim_2023_camostat <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Table 1 means (SD) by dose group: 4.42 (0.21), 4.50 (0.12) and",
         "4.58 (0.29) g/dL, i.e. 44.2, 45.0 and 45.8 g/L. Screened and not",
         "retained."
@@ -151,20 +157,20 @@ Kim_2023_camostat <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 15,
+    n_studies = 1,
     n_observations = 360,
-    age_range      = "19-55 years by protocol; group means 26.8-29.0, overall median 26 years",
-    weight_range   = "55.0-90.0 kg by protocol; group means 68.5-74.5 kg, overall median 66.5 kg",
-    height_mean    = "174.2 cm",
+    age_range = "19-55 years by protocol; group means 26.8-29.0, overall median 26 years",
+    weight_range = "55.0-90.0 kg by protocol; group means 68.5-74.5 kg, overall median 66.5 kg",
+    height_mean = "174.2 cm",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = "single oral 100, 200 or 300 mg camostat mesylate tablet under fasting conditions (n = 5 per dose)",
-    regions        = "Republic of Korea (Chungnam National University Hospital)",
+    disease_state = "healthy volunteers",
+    dose_range = "single oral 100, 200 or 300 mg camostat mesylate tablet under fasting conditions (n = 5 per dose)",
+    regions = "Republic of Korea (Chungnam National University Hospital)",
     renal_function = "eGFR at or above 60 mL/min/1.73 m^2 required for enrolment",
-    notes          = paste(
+    notes = paste(
       "Parallel-group, open-label single-dose Phase 1 study",
       "(ClinicalTrials.gov NCT04782505; IRB CNUH2021-02-018-016). Plasma",
       "sampled at 0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5 and 6 h after",

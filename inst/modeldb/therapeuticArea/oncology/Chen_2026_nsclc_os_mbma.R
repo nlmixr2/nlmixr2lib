@@ -73,19 +73,19 @@ Chen_2026_nsclc_os_mbma <- function() {
   # descriptive label trips the dimensional-compatibility check. Same device as
   # Volkova_2023_lipidLowering_mace_mbma and Yoshioka_2018_FXa_inhibitors_mbma.
   units <- list(
-    time          = "month",
-    dosing        = "probability",
+    time = "month",
+    dosing = "probability",
     concentration = "probability/probability"
   )
 
   covariateData <- list(
     PS_ECOG_1_PCT = list(
-      description        = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 1 at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 1 at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = "0% (no ECOG-1 patients). The model's reference arm is PS_ECOG_1_PCT = PS_ECOG_2_PCT = PS_ECOG_3_PCT = 0, i.e. an all-ECOG-0 arm.",
-      source_name        = "PS1 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.1' (Chen 2026 Tables S5 and S6); 'ECOG PS 1 (%)' (Chen 2026 Table 2)",
-      notes              = paste(
+      source_name = "PS1 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.1' (Chen 2026 Tables S5 and S6); 'ECOG PS 1 (%)' (Chen 2026 Table 2)",
+      notes = paste(
         "MBMA study-arm-level covariate, scaled in PERCENT (0-100), not a fraction -- the model divides by 100 internally, matching ECOGEFF = COVECOG1*PS1/100 in the source control stream.",
         "Enters log(HR) with coefficient e_ecog1 = 0.004, i.e. hazard ratio exp(0.004) = 1.004 for an arm that is 100% ECOG 1 relative to an all-ECOG-0 arm (Chen 2026 Table 3, Model 010, ECOG1HR column).",
         "The estimate is essentially null and very imprecisely determined (RSE 11922%, 95% CI 0.412-2.443), which the paper reports as-is; it is retained because Model 010 estimates the ECOG effects from the MBMA data rather than fixing them.",
@@ -97,12 +97,12 @@ Chen_2026_nsclc_os_mbma <- function() {
       )
     ),
     PS_ECOG_2_PCT = list(
-      description        = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 2 at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 2 at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = "0% (no ECOG-2 patients); ECOG 0 is the model's reference performance-status level.",
-      source_name        = "PS2 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.2' (Chen 2026 Tables S5 and S6)",
-      notes              = paste(
+      source_name = "PS2 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.2' (Chen 2026 Tables S5 and S6)",
+      notes = paste(
         "MBMA study-arm-level covariate, scaled in PERCENT (0-100).",
         "PS_ECOG_2_PCT and PS_ECOG_3_PCT SHARE a single coefficient in this model: the source control stream computes ECOGEFF using COVECOG2*(PS2+PS3)/100, so ECOG 2 and ECOG 3 are pooled into one composite effect (e_ecog23 = 0.769, hazard ratio 2.158; Chen 2026 Table 3 Model 010 ECOG2,3HR column).",
         "They are kept as two separate columns rather than a single pooled PS_ECOG_23_PCT because the source dataset carries them separately and because Chen 2026 Table 2 reports them pooled while Tables S5/S6 report them apart.",
@@ -113,12 +113,12 @@ Chen_2026_nsclc_os_mbma <- function() {
       )
     ),
     PS_ECOG_3_PCT = list(
-      description        = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 3 at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm-level percentage (0-100) of the enrolled cohort with an ECOG performance status of 3 at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = "0% (no ECOG-3 patients); ECOG 0 is the model's reference performance-status level.",
-      source_name        = "PS3 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.3' (Chen 2026 Tables S5 and S6)",
-      notes              = paste(
+      source_name = "PS3 (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv $INPUT); 'PS.3' (Chen 2026 Tables S5 and S6)",
+      notes = paste(
         "MBMA study-arm-level covariate, scaled in PERCENT (0-100).",
         "Shares the coefficient e_ecog23 with PS_ECOG_2_PCT -- see the PS_ECOG_2_PCT notes for why the two are pooled and why they are nevertheless carried as separate columns.",
         "ECOG 3 is rare in this database: it is non-zero in only four of the 41 arms (Chen 2026 Table S6), the largest being the IPSOS trial arms (10.6% in the control arm).",
@@ -126,12 +126,12 @@ Chen_2026_nsclc_os_mbma <- function() {
       )
     ),
     TRT_IPSOS_CONTROL = list(
-      description        = "Indicator that the study arm is the control arm of the phase III IPSOS trial (NCT03191786, reported as Lee 2023), in which investigators chose single-agent gemcitabine or vinorelbine.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the study arm is the control arm of the phase III IPSOS trial (NCT03191786, reported as Lee 2023), in which investigators chose single-agent gemcitabine or vinorelbine.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a historical single-agent-chemotherapy control arm from the published literature -- the model's reference treatment)",
-      source_name        = "ID == 15 with the atezolizumab arm excluded (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv; the source control stream selects the trial arm with IF (ID.EQ.15))",
-      notes              = paste(
+      source_name = "ID == 15 with the atezolizumab arm excluded (Chen 2026 NONMEM dataset psp470197-sup-0001-Supinfo1.csv; the source control stream selects the trial arm with IF (ID.EQ.15))",
+      notes = paste(
         "MBMA trial-arm indicator, NOT a patient characteristic. 1 = the IPSOS control arm (Lee 2023, ID 15, ARM 2, n = 151, drug code 3 = 'gemcitabine or vinorelbine'); 0 = any of the 39 historical control arms.",
         "Enters log(HR) with coefficient e_ipsosctl = -0.633, i.e. hazard ratio exp(-0.633) = 0.531 (95% CI 0.424-0.664), reproducing the IPSOSHR column of Chen 2026 Table 3 for Model 010.",
         "Model 010 is fitted with the IPSOS ATEZOLIZUMAB arm EXCLUDED from the dataset (Chen 2026 Table 5, Data column), so within this model the IPSOS trial identifier and the IPSOS control arm are the same thing. Do NOT set this flag on an atezolizumab arm: the atezolizumab effect belongs to Model 041, whose reference survival curve Chen 2026 does not publish (see vignette Errata).",
@@ -150,72 +150,72 @@ Chen_2026_nsclc_os_mbma <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Median age of the patients in the study arm.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate on log(HR) (tested as an age category) and not retained. Median across arms 74.0 years, range 61.0-79.0 (Chen 2026 Table 2). Source column 'Age' (Table S1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate on log(HR) (tested as an age category) and not retained. Median across arms 74.0 years, range 61.0-79.0 (Chen 2026 Table 2). Source column 'Age' (Table S1)."
     ),
     SEXM_PCT = list(
       description = "Percentage (0-100) of the study arm who are male.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained; Model 012 gave a covariate HR of 1.070 (95% CI 0.387-2.954) with dOBJ = +0.0 versus Model 008 (Chen 2026 Table S7). Median across arms 74.7%, range 38.9-94.2 (Table 2). Source column 'MaleP' (Table S1). Recorded as a male percentage because that is the direction the source reports; the individual-level canonical SEXF is coded 1 = female."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained; Model 012 gave a covariate HR of 1.070 (95% CI 0.387-2.954) with dOBJ = +0.0 versus Model 008 (Chen 2026 Table S7). Median across arms 74.7%, range 38.9-94.2 (Table 2). Source column 'MaleP' (Table S1). Recorded as a male percentage because that is the direction the source reports; the individual-level canonical SEXF is coded 1 = female."
     ),
     DIS_STAGE4_PCT = list(
       description = "Percentage (0-100) of the study arm with Stage IV (metastatic) disease.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained; Model 011 gave a covariate HR of 0.624 (95% CI 0.210-1.852) (Chen 2026 Table S7). Median across arms 73.1%, range 41.3-88.9 (Table 2). Source column 'Stage4' (Tables S5 and S6)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained; Model 011 gave a covariate HR of 0.624 (95% CI 0.210-1.852) (Chen 2026 Table S7). Median across arms 73.1%, range 41.3-88.9 (Table 2). Source column 'Stage4' (Tables S5 and S6)."
     ),
     TUMTP_SQUAM_PCT = list(
       description = "Percentage (0-100) of the study arm with squamous-cell histology.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained; Model 013 gave a covariate HR of 1.125 (95% CI 0.454-2.788) (Chen 2026 Table S7). Median across arms 39.3%, range 0.0-54.4 (Table 2). Three squamous percentages were imputed (Chen 2026 Section 3.1.2). Source column 'SquamousP' (Table S1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained; Model 013 gave a covariate HR of 1.125 (95% CI 0.454-2.788) (Chen 2026 Table S7). Median across arms 39.3%, range 0.0-54.4 (Table 2). Three squamous percentages were imputed (Chen 2026 Section 3.1.2). Source column 'SquamousP' (Table S1)."
     ),
     TUMTP_ADENO_PCT = list(
       description = "Percentage (0-100) of the study arm with adenocarcinoma histology.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained; Model 014 gave a covariate HR of 0.625 (95% CI 0.250-1.560) (Chen 2026 Table S7). Median across arms 39.3%, range 14.0-87.0 (Table 2). Five adenocarcinoma percentages were imputed (Chen 2026 Section 3.1.2). Source column 'AdenoP' (Table S1)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained; Model 014 gave a covariate HR of 0.625 (95% CI 0.250-1.560) (Chen 2026 Table S7). Median across arms 39.3%, range 14.0-87.0 (Table 2). Five adenocarcinoma percentages were imputed (Chen 2026 Section 3.1.2). Source column 'AdenoP' (Table S1)."
     ),
     RACE_ASIAN_PCT = list(
       description = "Percentage (0-100) of the study arm enrolled in Asia.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened and not retained; Model 015 gave a covariate HR of 0.817 (95% CI 0.658-1.015) (Chen 2026 Table S7). Bimodal across arms -- median 0.0% with range 0.0-100.0 (Table 2), because trials were either wholly Asian or wholly non-Asian. Tested because Asian patients may survive longer on immune-checkpoint-inhibitor therapy (Chen 2026 Section 2.2). Source column 'Asia' (Tables S5 and S6)."
+      units = "%",
+      type = "continuous",
+      notes = "Screened and not retained; Model 015 gave a covariate HR of 0.817 (95% CI 0.658-1.015) (Chen 2026 Table S7). Bimodal across arms -- median 0.0% with range 0.0-100.0 (Table 2), because trials were either wholly Asian or wholly non-Asian. Tested because Asian patients may survive longer on immune-checkpoint-inhibitor therapy (Chen 2026 Section 2.2). Source column 'Asia' (Tables S5 and S6)."
     ),
     YEAR_PUBLICATION = list(
       description = "Calendar year in which the trial was published.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened as a time-trend covariate and not retained: Model 049 reduced the objective function by only 3.3 points against the 6.635 required (Chen 2026 Table 5). The coefficient was negative (more recent publication associated with lower hazard), consistent with medical practice improving over time, and including it widened the IPSOS hazard ratio to 0.780 (95% CI 0.479-1.269), a CI that includes 1. Source column 'YEAR' (NONMEM dataset)."
+      units = "year",
+      type = "continuous",
+      notes = "Screened as a time-trend covariate and not retained: Model 049 reduced the objective function by only 3.3 points against the 6.635 required (Chen 2026 Table 5). The coefficient was negative (more recent publication associated with lower hazard), consistent with medical practice improving over time, and including it widened the IPSOS hazard ratio to 0.780 (95% CI 0.479-1.269), a CI that includes 1. Source column 'YEAR' (NONMEM dataset)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3637L,
-    n_studies      = 26L,
-    n_arms         = 41L,
-    age_range      = "Arm-level median age 74.0 years, range across arms 61.0-79.0 (Chen 2026 Table 2). Individual ages are not available: this is a summary-level meta-analysis.",
-    weight_range   = "Not collected. Body weight is not a covariate in any Chen 2026 model and is not reported in the analysis database.",
+    species = "human",
+    n_subjects = 3637L,
+    n_studies = 26L,
+    n_arms = 41L,
+    age_range = "Arm-level median age 74.0 years, range across arms 61.0-79.0 (Chen 2026 Table 2). Individual ages are not available: this is a summary-level meta-analysis.",
+    weight_range = "Not collected. Body weight is not a covariate in any Chen 2026 model and is not reported in the analysis database.",
     sex_female_pct = 25.3,
-    disease_state  = paste(
+    disease_state = paste(
       "Treatment-naive, locally advanced or metastatic non-small cell lung cancer in patients unsuitable for platinum-doublet chemotherapy.",
       "Eligibility for the literature database required ECOG performance status >= 2, or age >= 70 years, or platinum ineligibility as defined by the respective published study.",
       "Arm-level medians (range) across the 41 arms: ECOG PS 0 14.7% (0.0-57.4), ECOG PS 1 42.9% (0.0-69.6), ECOG PS 2 or 3 28.8% (0.0-100.0), Stage IV disease 73.1% (41.3-88.9), squamous histology 39.3% (0.0-54.4), adenocarcinoma histology 39.3% (14.0-87.0) (Chen 2026 Table 2).",
       sep = " "
     ),
-    dose_range     = "Not modelled. Chen 2026 carries treatment identity, not dose: no dose, schedule or exposure metric enters any model.",
-    regions        = "Multinational. Arm-level percentage enrolled in Asia has median 0.0% and range 0.0-100.0 (Chen 2026 Table 2) -- the constituent trials were each wholly Asian or wholly non-Asian.",
-    treatments     = paste(
+    dose_range = "Not modelled. Chen 2026 carries treatment identity, not dose: no dose, schedule or exposure metric enters any model.",
+    regions = "Multinational. Arm-level percentage enrolled in Asia has median 0.0% and range 0.0-100.0 (Chen 2026 Table 2) -- the constituent trials were each wholly Asian or wholly non-Asian.",
+    treatments = paste(
       "Single-agent chemotherapy by drug (Chen 2026 Table 1, studies / arms / n):",
       "docetaxel 7 / 11 / 711; gemcitabine 10 / 12 / 969; gemcitabine or vinorelbine 2 / 2 / 341;",
       "paclitaxel 3 / 3 / 311; pemetrexed 2 / 2 / 90; vinorelbine 9 / 10 / 913; atezolizumab 1 / 1 / 302.",
       "Studies sum to more than 26 because some trials contributed more than one drug.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "SUMMARY-LEVEL meta-analysis. Each 'subject' in nlmixr2 corresponds to one study-strata-arm, carrying that arm's mean covariate values and its digitised Kaplan-Meier overall-survival curve; the random effect eta_study is BETWEEN-TRIAL, not between-subject.",
       "sex_female_pct is DERIVED as 100 minus the arm-level MEDIAN male percentage of 74.7% (Chen 2026 Table 2); it is a median across arms rather than a participant-weighted pooled percentage, which the paper does not report.",
       "Data were obtained by digitising published Kaplan-Meier curves at monthly intervals with Engauge Digitizer 12.1 (Chen 2026 Section 2.2); censoring tick marks could not be recovered, so the analysis is of conditional death probabilities per interval rather than of individual event times.",

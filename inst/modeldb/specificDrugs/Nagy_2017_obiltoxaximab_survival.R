@@ -38,11 +38,11 @@ Nagy_2017_obiltoxaximab_survival <- function() {
 
   covariateData <- list(
     DOSE_OBILTOXAXIMAB_MGKG = list(
-      description        = "Administered obiltoxaximab dose level, in mg/kg, as a per-subject constant",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered obiltoxaximab dose level, in mg/kg, as a per-subject constant",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the Emax term Emax * dose / (ED50 + dose) on logit(psurv).",
         "Set to 0 for placebo animals, which reduces the survival model to its",
         "untreated baseline. Dose levels in the survival data set were 0 (placebo),",
@@ -53,14 +53,14 @@ Nagy_2017_obiltoxaximab_survival <- function() {
         "This is a covariate carrying the assigned DOSE LEVEL, not the rxode2 event",
         "column `amt` -- the model has no PK compartment."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     BACT_PTT_LOG10CFU = list(
-      description        = "Prior-to-treatment (PTT) quantitative bacteremia, expressed as log10 colony-forming units per mL of blood",
-      units              = "log10 CFU/mL",
-      type               = "continuous",
+      description = "Prior-to-treatment (PTT) quantitative bacteremia, expressed as log10 colony-forming units per mL of blood",
+      units = "log10 CFU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The paper's disease-severity covariate. Enters logit(psurv) through the",
         "exponential penalty exp((theta1 * BACT_PTT_LOG10CFU)^theta2) and enters the",
         "Weibull death rate through log(lambda) = lambda0 + lambda1 * BACT_PTT_LOG10CFU.",
@@ -72,15 +72,15 @@ Nagy_2017_obiltoxaximab_survival <- function() {
         "describes ~5 log10 CFU/mL as a 'point of no return' beyond which survival",
         "probability is near zero regardless of dose."
       ),
-      source_name        = "PTT"
+      source_name = "PTT"
     )
   )
 
   population <- list(
-    species        = "rabbit (New Zealand White) + cynomolgus macaque",
-    n_subjects     = 261L,
-    n_studies      = 5L,
-    disease_state  = paste(
+    species = "rabbit (New Zealand White) + cynomolgus macaque",
+    n_subjects = 261L,
+    n_studies = 5L,
+    disease_state = paste(
       "Inhalational anthrax following aerosol challenge with a target 200 LD50 of",
       "Bacillus anthracis (Ames strain) spores. Randomized, blinded, parallel-group,",
       "placebo-controlled trigger-to-treat studies conducted under GLP.",
@@ -89,8 +89,8 @@ Nagy_2017_obiltoxaximab_survival <- function() {
       "obiltoxaximab was given at a predetermined time (rabbits 72 h, macaques 54 h",
       "post-challenge)."
     ),
-    dose_range     = "Placebo, 1, 4, 8, 16, or 32 mg/kg obiltoxaximab as a single i.v. dose",
-    notes          = paste(
+    dose_range = "Placebo, 1, 4, 8, 16, or 32 mg/kg obiltoxaximab as a single i.v. dose",
+    notes = paste(
       "Survival analyses used infected rabbit Study 2 (N = 70) and infected cynomolgus",
       "macaque Studies 2-5 (N = 44 + 48 + 48 + 51), giving n_subjects = 261 from the",
       "Table 1 enrolment counts; the paper does not report a pooled analysis-set size.",

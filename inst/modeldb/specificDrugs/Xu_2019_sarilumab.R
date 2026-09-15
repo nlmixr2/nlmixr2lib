@@ -8,84 +8,84 @@ Xu_2019_sarilumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CLO/F and on Vm, each normalized as WT/71 kg per Xu 2019 Table 3 and the final-model equations for CLO/F and Vm.",
-      source_name        = "WT"
+      notes = "Power effect on CLO/F and on Vm, each normalized as WT/71 kg per Xu 2019 Table 3 and the final-model equations for CLO/F and Vm.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; SEXF term evaluates to 1 and has no effect)",
-      notes              = "Xu 2019 codes SEX=1 for female in the final-model equation for CLO/F. This encoding was operator-confirmed (see model extraction task 003 stop-and-ask) based on the paper's narrative that male patients have higher apparent clearance and lower AUC0-14d than female patients.",
-      source_name        = "SEX"
+      notes = "Xu 2019 codes SEX=1 for female in the final-model equation for CLO/F. This encoding was operator-confirmed (see model extraction task 003 stop-and-ask) based on the paper's narrative that male patients have higher apparent clearance and lower AUC0-14d than female patients.",
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (time-varying in final model)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (time-varying in final model)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative; typical patient)",
-      notes              = "Time-varying ADA indicator on CLO/F (primary covariate assessment in Xu 2019). The typical patient is ADA-negative.",
-      source_name        = "ADA"
+      notes = "Time-varying ADA indicator on CLO/F (primary covariate assessment in Xu 2019). The typical patient is ADA-negative.",
+      source_name = "ADA"
     ),
     FORM_SAR_DP2 = list(
-      description        = "Sarilumab drug product 2 indicator (DP2 formulation)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sarilumab drug product 2 indicator (DP2 formulation)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (DP1 or DP3; DP3 is the commercial product)",
-      notes              = "DP2 was used in some phase I studies and the dose-ranging phase II study; it is not the marketed formulation. Affects both Ka and CLO/F. Set to 0 for routine commercial-formulation simulation.",
-      source_name        = "DP2"
+      notes = "DP2 was used in some phase I studies and the dose-ranging phase II study; it is not the marketed formulation. Affects both Ka and CLO/F. Set to 0 for routine commercial-formulation simulation.",
+      source_name = "DP2"
     ),
     ALBR = list(
-      description        = "Serum albumin normalized to the laboratory upper limit of normal",
-      units              = "(unitless ratio)",
-      type               = "continuous",
+      description = "Serum albumin normalized to the laboratory upper limit of normal",
+      units = "(unitless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Applied as (ALBR / 0.78)^e_albr_vmax on Vmax. Reference 0.78 corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L per Xu 2019 final-model narrative.",
-      source_name        = "ALBR"
+      notes = "Applied as (ALBR / 0.78)^e_albr_vmax on Vmax. Reference 0.78 corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L per Xu 2019 final-model narrative.",
+      source_name = "ALBR"
     ),
     CRCL = list(
-      description        = "Body-surface-area-normalized creatinine clearance (measured CrCl; CRCL = 1.73 * CrCl / BSA)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Body-surface-area-normalized creatinine clearance (measured CrCl; CRCL = 1.73 * CrCl / BSA)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Xu 2019 defines the Vm covariate term as (1.73 * CrCl / BSA / 100)^theta13 where CrCl is in mL/min and BSA in m^2; this canonical column carries the precomputed 1.73*CrCl/BSA value with reference 100 mL/min/1.73 m^2. Mapped to the canonical general-scope CRCL covariate (which also accepts MDRD-estimated eGFR in the same units); the measured-CrCl vs estimated-eGFR distinction is documented here in the description.",
-      source_name        = "1.73*CrCl/BSA"
+      notes = "Xu 2019 defines the Vm covariate term as (1.73 * CrCl / BSA / 100)^theta13 where CrCl is in mL/min and BSA in m^2; this canonical column carries the precomputed 1.73*CrCl/BSA value with reference 100 mL/min/1.73 m^2. Mapped to the canonical general-scope CRCL covariate (which also accepts MDRD-estimated eGFR in the same units); the measured-CrCl vs estimated-eGFR distinction is documented here in the description.",
+      source_name = "1.73*CrCl/BSA"
     ),
     CRP = list(
-      description        = "Baseline (pre-treatment) C-reactive protein; time-fixed per subject",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) C-reactive protein; time-fixed per subject",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Applied as (CRP / 14.2)^e_crp_vmax on Vmax per Xu 2019 Table 3 and the Vmax equation. Reference 14.2 mg/L is the median of the Pop-PK dataset. Source column 'BLCRP' (baseline CRP) maps to the canonical general-scope CRP covariate; the baseline-only semantics are documented here in the covariateData entry.",
-      source_name        = "BLCRP"
+      notes = "Applied as (CRP / 14.2)^e_crp_vmax on Vmax per Xu 2019 Table 3 and the Vmax equation. Reference 14.2 mg/L is the median of the Pop-PK dataset. Source column 'BLCRP' (baseline CRP) maps to the canonical general-scope CRP covariate; the baseline-only semantics are documented here in the covariateData entry.",
+      source_name = "BLCRP"
     )
   )
 
   population <- list(
-    n_subjects     = 1770L,
+    n_subjects = 1770L,
     n_observations = 7676L,
-    n_studies      = 12L,
-    age_range      = "18-87 years",
-    age_median     = "53 years",
-    weight_range   = "31.5-176.9 kg",
-    weight_median  = "71.0 kg",
+    n_studies = 12L,
+    age_range = "18-87 years",
+    age_median = "53 years",
+    weight_range = "31.5-176.9 kg",
+    weight_median = "71.0 kg",
     sex_female_pct = 83,
     race_ethnicity = c(White = 88, Black = 3, Asian = 6, Other = 3),
-    disease_state  = "Moderate-to-severe rheumatoid arthritis (adults) with inadequate response to methotrexate, TNF inhibitors, or other DMARDs.",
-    dose_range     = "50-200 mg SC as single or repeated doses (qw or q2w) across 7 phase I, 1 phase II, and 4 phase III studies. The marketed regimen is 200 mg SC q2w, reducible to 150 mg SC q2w for safety management.",
-    regions        = "Multi-regional (North America, EU, Latin America, Japan, and other regions represented across the 12 pooled studies).",
-    notes          = "Baseline demographics from Xu 2019 Table 2 (final Pop-PK dataset of 1770 patients and 7676 concentration-time points). Concomitant methotrexate 91%; prior biologics 22% (with 26% unknown); ADA-positive 18%; sarilumab drug product DP1 4%, DP2 20%, DP3 76%. Baseline albumin median 38 g/L, CrCl median 104.8 mL/min, baseline CRP median 14.2 mg/L."
+    disease_state = "Moderate-to-severe rheumatoid arthritis (adults) with inadequate response to methotrexate, TNF inhibitors, or other DMARDs.",
+    dose_range = "50-200 mg SC as single or repeated doses (qw or q2w) across 7 phase I, 1 phase II, and 4 phase III studies. The marketed regimen is 200 mg SC q2w, reducible to 150 mg SC q2w for safety management.",
+    regions = "Multi-regional (North America, EU, Latin America, Japan, and other regions represented across the 12 pooled studies).",
+    notes = "Baseline demographics from Xu 2019 Table 2 (final Pop-PK dataset of 1770 patients and 7676 concentration-time points). Concomitant methotrexate 91%; prior biologics 22% (with 26% unknown); ADA-positive 18%; sarilumab drug product DP1 4%, DP2 20%, DP3 76%. Baseline albumin median 38 g/L, CrCl median 104.8 mL/min, baseline CRP median 14.2 mg/L."
   )
 
   ini({

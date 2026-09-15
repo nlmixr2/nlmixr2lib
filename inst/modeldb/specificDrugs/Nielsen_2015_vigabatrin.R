@@ -28,18 +28,18 @@ Nielsen_2015_vigabatrin <- function() {
   )
   vignette <- "Nielsen_2015_vigabatrin"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "seizures/day (the model output is a mean daily seizure rate, not a drug concentration)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Patient age at study entry.",
-      units              = "years",
-      type               = "continuous",
+      description = "Patient age at study entry.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the log baseline seizure rate as",
         "e_age_rbase * (log(AGE) - log(24)), i.e. a power model on age centred at the pooled median",
         "of 24 years (Nielsen 2015 Table 2; Equation 10b). The coefficient is negative, so younger",
@@ -48,14 +48,14 @@ Nielsen_2015_vigabatrin <- function() {
         "analysis because pediatric-only and adult-only enrolment made study and age collinear",
         "(Nielsen 2015 Results, Covariate Model). Pooled range 3-63 years."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline weight). Sole covariate on normalized dosage:",
         "dosenorm = DOSE_VGB_MGD * (WT/60)^e_wt_dosenorm with e_wt_dosenorm = -0.608 and a 60 kg",
         "reference (Nielsen 2015 Equation 10e). Creatinine clearance was also tested on normalized",
@@ -64,14 +64,14 @@ Nielsen_2015_vigabatrin <- function() {
         "filtration in a cohort without significant renal impairment. Pooled range 12-136 kg,",
         "median 62 kg (Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_VGB_MGD = list(
-      description        = "Total daily vigabatrin dosage.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Total daily vigabatrin dosage.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-record (time-varying) covariate: dosage was titrated in all five studies and given as a",
         "twice-daily regimen, so this column carries the SUM across the day and is updated as the",
         "patient escalates. Set to 0 mg/day during the baseline run-in and for placebo subjects, which",
@@ -81,14 +81,14 @@ Nielsen_2015_vigabatrin <- function() {
         "60 kg received their mg/kg dosage as if they weighed 60 kg, a correction the authors applied",
         "to the analysis dataset before the final model run (Results, Covariate Model)."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     STUDY_118 = list(
-      description        = "1 = subject enrolled in pediatric Study 118; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in pediatric Study 118; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled adult studies 24 and 25 are the reference)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Shifts BOTH the log overdispersion (e_study_118_ovdp) and the",
         "asymptotic time effect (e_study_118_astime), and scales the baseline-rate IIV SD",
         "(e_study_118_sd_rbase). n = 125; placebo or vigabatrin 20/60/100 mg/kg/day (Table 1).",
@@ -96,42 +96,42 @@ Nielsen_2015_vigabatrin <- function() {
         "maximum time effect is SMALLER than adults' -- the paper flags this as unexplained",
         "(Results, Vigabatrin Treatment Effects; Discussion)."
       ),
-      source_name        = "ST118"
+      source_name = "ST118"
     ),
     STUDY_192 = list(
-      description        = "1 = subject enrolled in pediatric Study 192; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in pediatric Study 192; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled adult studies 24 and 25 are the reference)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Shifts the log overdispersion (e_study_192_ovdp) and the asymptotic",
         "time effect (e_study_192_astime), and scales the baseline-rate IIV SD (e_study_192_sd_rbase).",
         "n = 55; placebo or weight-banded vigabatrin 0.5-4 g/day (Table 1). Study 192's placebo arm is",
         "the one group whose observed seizure rate fell outside the final model's 90% prediction",
         "interval in the VPC (Results, Model Diagnostics; Figure 2)."
       ),
-      source_name        = "ST192"
+      source_name = "ST192"
     ),
     STUDY_221 = list(
-      description        = "1 = subject enrolled in pediatric Study 221; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in pediatric Study 221; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled adult studies 24 and 25 are the reference)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Shifts the log overdispersion (e_study_221_ovdp) and the asymptotic",
         "time effect (e_study_221_astime), and scales the baseline-rate IIV SD (e_study_221_sd_rbase).",
         "n = 85; placebo or weight-banded vigabatrin 0.5-4 g/day (Table 1)."
       ),
-      source_name        = "ST221"
+      source_name = "ST221"
     )
   )
 
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Baseline creatinine clearance (mL/min).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened as a covariate on normalized dosage in the full model but NOT retained: the effect",
         "was 'small and imprecisely estimated' and removing it (with age on AS and age on b) raised",
         "the objective function by only 0.435 units (Nielsen 2015 Results, Covariate Model). No point",
@@ -141,9 +141,9 @@ Nielsen_2015_vigabatrin <- function() {
     ),
     CONMED_AED = list(
       description = "Concomitant antiepileptic drug use (carbamazepine, valproic acid, lamotrigine, hydantoins, gabapentin, barbiturates, benzodiazepines, methsuximide).",
-      units       = "(binary, one indicator per drug class)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary, one indicator per drug class)",
+      type = "binary",
+      notes = paste(
         "Screened in the second stage of covariate analysis as a shift in ln(lambda), as eight",
         "additional parameters. Not retained: inclusion reduced the objective function by only 5.4",
         "units for 8 parameters, so concomitant AEDs were not predictive of baseline seizure rate",
@@ -154,34 +154,34 @@ Nielsen_2015_vigabatrin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 621L,
-    n_studies      = 5L,
-    age_range      = "3-63 years (median 24; pediatric median 11, adult median 33)",
-    weight_range   = "12-136 kg (median 62; pediatric median 44, adult median 70)",
+    species = "human",
+    n_subjects = 621L,
+    n_studies = 5L,
+    age_range = "3-63 years (median 24; pediatric median 11, adult median 33)",
+    weight_range = "12-136 kg (median 62; pediatric median 44, adult median 70)",
     sex_female_pct = 53.6,
     race_ethnicity = c(White = 91.5, Black = 5.5, Asian = 0.6, Other = 2.4),
-    disease_state  = paste(
+    disease_state = paste(
       "Refractory complex partial seizures (rCPS), with or without secondary generalization, on a",
       "stable regimen of one or two background antiepileptic drugs. Patients with generalized",
       "epilepsy, progressive neurological disorders, treatable causes of seizures or non-epileptic",
       "seizures were excluded (Nielsen 2015 Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Adults (studies 24, 25): placebo or vigabatrin 1, 3 or 6 g/day. Pediatrics (study 118):",
       "placebo or 20, 60 or 100 mg/kg/day, with the dosing weight capped at 60 kg. Pediatrics",
       "(studies 192, 221): placebo or weight-banded 0.5-1.5 g/day (10-15 kg), 0.5-2.0 g/day",
       "(16-30 kg), 1.0-3.0 g/day (31-50 kg), 1.0-4.0 g/day (over 50 kg). Twice-daily and titrated",
       "in all five studies."
     ),
-    regions        = "not reported",
-    biomarkers     = paste(
+    regions = "not reported",
+    biomarkers = paste(
       "Daily seizure count from patient diaries. 41,282 daily records from 356 adults and 70,886",
       "daily records from 265 pediatric patients (112,168 records total). Study phases: baseline",
       "run-in 6-10 weeks (pediatric) or 10 weeks (adult); dosage titration 6-10 weeks (pediatric) or",
       "4-6 weeks (adult); maintenance 7-8 weeks (pediatric) or 12 weeks (adult)."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Nielsen 2015 Table 2 (pooled column); study designs and enrolment from",
       "Table 1. The three pediatric studies were suspended before completing planned enrolment for",
       "administrative reasons and were individually underpowered for dose response, which is the",

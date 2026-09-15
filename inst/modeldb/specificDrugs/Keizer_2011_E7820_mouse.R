@@ -21,8 +21,8 @@ Keizer_2011_E7820_mouse <- function() {
   )
   vignette <- "Keizer_2011_E7820"
   units <- list(
-    time          = "day",
-    dosing        = "mg/kg",
+    time = "day",
+    dosing = "mg/kg",
     concentration = "ng/mL (E7820 plasma concentration); integrin expression in arbitrary % units (platelet flow-cytometry signal); tumor size in mm (longest caliper diameter)"
   )
 
@@ -31,26 +31,31 @@ Keizer_2011_E7820_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "E7820", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "E7820", units = NA_character_, specimen = "plasma", verified = FALSE),
-    integrin   = list(analyte = "alpha2-integrin on platelets", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    depot = list(analyte = "E7820", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "E7820", units = NA_character_, specimen = "plasma", verified = FALSE),
+    integrin = list(
+      analyte = "alpha2-integrin on platelets",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
     tumor_size = list(analyte = "tumor size", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (female nude / female KSN Slc; PK was elucidated in KSN Slc mice, tumor-growth experiments used 7-week-old female nude mice transplanted subcutaneously with KP-1 human pancreatic-carcinoma cells)",
-    n_subjects     = 42L,
-    n_studies      = 2L,
-    age_range      = "6-8 weeks at start of PK studies; 7 weeks at tumor implantation",
-    weight_range   = "(not reported in the modelling paper; per-kg parameterisation throughout)",
+    species = "mouse (female nude / female KSN Slc; PK was elucidated in KSN Slc mice, tumor-growth experiments used 7-week-old female nude mice transplanted subcutaneously with KP-1 human pancreatic-carcinoma cells)",
+    n_subjects = 42L,
+    n_studies = 2L,
+    age_range = "6-8 weeks at start of PK studies; 7 weeks at tumor implantation",
+    weight_range = "(not reported in the modelling paper; per-kg parameterisation throughout)",
     sex_female_pct = 100,
     race_ethnicity = NA,
-    disease_state  = "subcutaneous KP-1 human pancreatic-carcinoma xenograft (5e6 cells/head); tumor-growth experiments only",
-    dose_range     = "PK: single IV 25 mg/kg, single oral 25-100 mg/kg, repeated oral 50 mg/kg (12 h interval). Tumor: vehicle, 12.5, 25, 50, 100, or 200 mg/kg oral gavage twice daily for 21 days starting 1 week after implantation.",
-    regions        = "preclinical (in-vivo xenograft)",
-    notes          = paste(
+    disease_state = "subcutaneous KP-1 human pancreatic-carcinoma xenograft (5e6 cells/head); tumor-growth experiments only",
+    dose_range = "PK: single IV 25 mg/kg, single oral 25-100 mg/kg, repeated oral 50 mg/kg (12 h interval). Tumor: vehicle, 12.5, 25, 50, 100, or 200 mg/kg oral gavage twice daily for 21 days starting 1 week after implantation.",
+    regions = "preclinical (in-vivo xenograft)",
+    notes = paste(
       "PK cohort: roughly 3 mice IV 25 mg/kg + 4 mice each at oral 25/50/100 mg/kg + 4 mice repeated 50 mg/kg.",
       "Tumor cohort: 7-week old female nude mice transplanted subcutaneously with KP-1 cells; treatment with",
       "E7820 or vehicle started 1 week after transplantation. 119 alpha2-integrin measurements and 210 tumor",

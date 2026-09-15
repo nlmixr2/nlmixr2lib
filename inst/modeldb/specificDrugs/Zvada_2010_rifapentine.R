@@ -26,64 +26,74 @@ Zvada_2010_rifapentine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_desrpt     = list(analyte = "25-O-desacetyl rifapentine (25-DRFP)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_desrpt = list(analyte = "25-O-desacetyl rifapentine (25-DRFP)", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desrpt = list(
+      analyte = "25-O-desacetyl rifapentine (25-DRFP)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_desrpt = list(
+      analyte = "25-O-desacetyl rifapentine (25-DRFP)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     MEAL_A = list(
-      description        = "Binary indicator for meal A administered 30 min before the oral rifapentine dose (1 = meal A, 0 = otherwise). Meal A is a high-fat English breakfast (Zvada 2010 Table 1: 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for meal A administered 30 min before the oral rifapentine dose (1 = meal A, 0 = otherwise). Meal A is a high-fat English breakfast (Zvada 2010 Table 1: 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted = meal E, 200 ml of water)",
-      notes              = "Mutually exclusive with MEAL_B, MEAL_C, and MEAL_D - at most one of the four meal indicators can be 1 on any single dosing record; the fasted reference is encoded as all four = 0. Per Zvada 2010 Table 3 meal A produced the largest food effect, increasing RFP oral bioavailability by 85.7% (RSE 20.1%) relative to fasting.",
-      source_name        = "meal A (Zvada 2010 Table 1 / Table 3)"
+      notes = "Mutually exclusive with MEAL_B, MEAL_C, and MEAL_D - at most one of the four meal indicators can be 1 on any single dosing record; the fasted reference is encoded as all four = 0. Per Zvada 2010 Table 3 meal A produced the largest food effect, increasing RFP oral bioavailability by 85.7% (RSE 20.1%) relative to fasting.",
+      source_name = "meal A (Zvada 2010 Table 1 / Table 3)"
     ),
     MEAL_B = list(
-      description        = "Binary indicator for meal B administered 30 min before the oral rifapentine dose (1 = meal B, 0 = otherwise). Meal B is a low-fat bulky maize-meal porridge breakfast (Zvada 2010 Table 1: 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 3 g fat, 66 g carbohydrate, 1,285 kJ, 645 g total weight).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for meal B administered 30 min before the oral rifapentine dose (1 = meal B, 0 = otherwise). Meal B is a low-fat bulky maize-meal porridge breakfast (Zvada 2010 Table 1: 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 3 g fat, 66 g carbohydrate, 1,285 kJ, 645 g total weight).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted = meal E)",
-      notes              = "Mutually exclusive with MEAL_A, MEAL_C, MEAL_D. Zvada 2010 Table 3 reports a +32.7% (RSE 40.4%) increase in RFP oral bioavailability under meal B relative to fasting.",
-      source_name        = "meal B (Zvada 2010 Table 1 / Table 3)"
+      notes = "Mutually exclusive with MEAL_A, MEAL_C, MEAL_D. Zvada 2010 Table 3 reports a +32.7% (RSE 40.4%) increase in RFP oral bioavailability under meal B relative to fasting.",
+      source_name = "meal B (Zvada 2010 Table 1 / Table 3)"
     ),
     MEAL_C = list(
-      description        = "Binary indicator for meal C administered 30 min before the oral rifapentine dose (1 = meal C, 0 = otherwise). Meal C is a high-fat bulky maize-meal porridge breakfast (Zvada 2010 Table 1: 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g) and 5 teaspoons of lard (25 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 28 g fat, 66 g carbohydrate, 2,229 kJ, 670 g total weight).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for meal C administered 30 min before the oral rifapentine dose (1 = meal C, 0 = otherwise). Meal C is a high-fat bulky maize-meal porridge breakfast (Zvada 2010 Table 1: 1.5 cups soft maize meal porridge (375 g cooked) with 3 teaspoons sugar (15 g) and 5 teaspoons of lard (25 g), 1 cup decaffeinated coffee (200 ml) with full-cream milk (50 ml) and 1 teaspoon sugar (5 g); 6 g protein, 28 g fat, 66 g carbohydrate, 2,229 kJ, 670 g total weight).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted = meal E)",
-      notes              = "Mutually exclusive with MEAL_A, MEAL_B, MEAL_D. Zvada 2010 Table 3 reports a +45.7% (RSE 29.3%) increase in RFP oral bioavailability under meal C relative to fasting; the paper Discussion notes this is smaller than meal A's +85.7% despite similar total fat content, supporting the authors' hypothesis that eggs in meal A are independently relevant.",
-      source_name        = "meal C (Zvada 2010 Table 1 / Table 3)"
+      notes = "Mutually exclusive with MEAL_A, MEAL_B, MEAL_D. Zvada 2010 Table 3 reports a +45.7% (RSE 29.3%) increase in RFP oral bioavailability under meal C relative to fasting; the paper Discussion notes this is smaller than meal A's +85.7% despite similar total fat content, supporting the authors' hypothesis that eggs in meal A are independently relevant.",
+      source_name = "meal C (Zvada 2010 Table 1 / Table 3)"
     ),
     MEAL_D = list(
-      description        = "Binary indicator for meal D administered 30 min before the oral rifapentine dose (1 = meal D, 0 = otherwise). Meal D is a low-fat high-fluid chicken noodle soup breakfast (Zvada 2010 Table 1: 2 cups reconstituted powdered chicken noodle soup (400 ml), 1 cup decaffeinated coffee (200 ml) with skim milk (50 ml) and 1 teaspoon sugar (5 g); 9 g protein, 4 g fat, 28 g carbohydrate, 774 kJ, 660 g total weight).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for meal D administered 30 min before the oral rifapentine dose (1 = meal D, 0 = otherwise). Meal D is a low-fat high-fluid chicken noodle soup breakfast (Zvada 2010 Table 1: 2 cups reconstituted powdered chicken noodle soup (400 ml), 1 cup decaffeinated coffee (200 ml) with skim milk (50 ml) and 1 teaspoon sugar (5 g); 9 g protein, 4 g fat, 28 g carbohydrate, 774 kJ, 660 g total weight).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted = meal E)",
-      notes              = "Mutually exclusive with MEAL_A, MEAL_B, MEAL_C. Zvada 2010 Table 3 reports a +48.9% (RSE 30.7%) increase in RFP oral bioavailability under meal D relative to fasting; the paper Discussion attributes part of this effect to monosodium glutamate (MSG) in the soup accelerating gastric emptying.",
-      source_name        = "meal D (Zvada 2010 Table 1 / Table 3)"
+      notes = "Mutually exclusive with MEAL_A, MEAL_B, MEAL_C. Zvada 2010 Table 3 reports a +48.9% (RSE 30.7%) increase in RFP oral bioavailability under meal D relative to fasting; the paper Discussion attributes part of this effect to monosodium glutamate (MSG) in the soup accelerating gastric emptying.",
+      source_name = "meal D (Zvada 2010 Table 1 / Table 3)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "23.9 (4.82) years (mean (SD))",
-    age_median     = NULL,
-    weight_range   = "74.4 (12.3) kg (mean (SD))",
-    weight_median  = NULL,
-    height_mean    = "177.2 (7.33) cm",
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "23.9 (4.82) years (mean (SD))",
+    age_median = NULL,
+    weight_range = "74.4 (12.3) kg (mean (SD))",
+    weight_median = NULL,
+    height_mean = "177.2 (7.33) cm",
     sex_female_pct = 0,
     race_ethnicity = "not specified; the study was conducted in Cape Town, South Africa.",
-    disease_state  = "Healthy adult male volunteers (no TB; HIV- and HBV-negative; no clinically relevant cardiovascular, hepatic, neurologic, endocrine, or other major systemic disease).",
-    dose_range     = "Single 900 mg oral rifapentine (6 x 150 mg Priftin tablets; Hoechst Marion Roussel, Italy) with 200 ml of water, given 30 min after each of five test meals (A, B, C, D) or fasted (E) in a five-way crossover with a 14-day washout between occasions.",
-    regions        = "Cape Town, South Africa (Groote Schuur Hospital).",
+    disease_state = "Healthy adult male volunteers (no TB; HIV- and HBV-negative; no clinically relevant cardiovascular, hepatic, neurologic, endocrine, or other major systemic disease).",
+    dose_range = "Single 900 mg oral rifapentine (6 x 150 mg Priftin tablets; Hoechst Marion Roussel, Italy) with 200 ml of water, given 30 min after each of five test meals (A, B, C, D) or fasted (E) in a five-way crossover with a 14-day washout between occasions.",
+    regions = "Cape Town, South Africa (Groote Schuur Hospital).",
     sampling_design = "Open-label, randomized, sequential, five-way crossover. At each visit a 20-ml predose sample was collected and 10-ml samples were drawn at 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 24, 36, 48, and 72 h after the dose. Each dose was separated by a 14-day washout period. Seven participants were randomized to each of five different meal sequences. 2,272 RFP and 25-DRFP plasma concentration samples available from 34 participants (one withdrew after a single visit). Less than 1% of concentration-time data were below the limit of quantification.",
-    assay          = "Validated tandem HPLC method (Division of Clinical Pharmacology, Cape Town) over the concentration range 0.5 to 30 ug/ml; calibration curve linearity r^2 = 0.9975 for RFP and r^2 = 0.9946 for 25-DRFP.",
-    notes          = paste(
+    assay = "Validated tandem HPLC method (Division of Clinical Pharmacology, Cape Town) over the concentration range 0.5 to 30 ug/ml; calibration curve linearity r^2 = 0.9975 for RFP and r^2 = 0.9946 for 25-DRFP.",
+    notes = paste(
       "Inclusion criteria: weight >= 50 kg, normal physical examination and",
       "baseline laboratory evaluation, nonsmoker. Exclusion criteria: history of TB,",
       "active allergies, excessive coffee or alcohol consumption, recent blood",

@@ -39,24 +39,29 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
   vignette <- "Hartmann_2026_nintedanib"
 
   units <- list(
-    time          = "year",
-    dosing        = "(no dose events; nintedanib exposure enters through the CTROUGH covariate column, in nM)",
+    time = "year",
+    dosing = "(no dose events; nintedanib exposure enters through the CTROUGH covariate column, in nM)",
     concentration = "% predicted (FVC percent predicted; the modelled state is a spirometric endpoint expressed as a percentage of a reference-equation predicted value, not a drug concentration, so the dosing-versus-concentration dimensional check is not applicable and the dosing string is parenthesised to skip it)"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    fvcpp = list(analyte = "forced vital capacity, percent of predicted", units = "% predicted", specimen = "not applicable", verified = TRUE)
+    fvcpp = list(
+      analyte = "forced vital capacity, percent of predicted",
+      units = "% predicted",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual model-predicted steady-state nintedanib plasma trough concentration, the exposure driver of the Emax disease-modifying effect.",
-      units              = "nM",
-      type               = "continuous",
+      description = "Individual model-predicted steady-state nintedanib plasma trough concentration, the exposure driver of the Emax disease-modifying effect.",
+      units = "nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration, at STEADY STATE, and an",
         "EMPIRICAL-BAYES prediction rather than an observed trough.",
         "Hartmann 2026 Section 2.2: Individual PK model predicted",
@@ -92,14 +97,14 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
         "of the curve; the paper states that most pediatric patients",
         "exceeded the EC50 and some reached the EC80."
       ),
-      source_name        = "CPREPRED (the control stream $INPUT column; CPREPREDN is its dose-normalised companion used only for visual predictive checks)"
+      source_name = "CPREPRED (the control stream $INPUT column; CPREPREDN is its dose-normalised companion used only for visual predictive checks)"
     ),
     CHILD = list(
-      description        = "Pediatric-versus-adult indicator (1 = pediatric patient, under 18 years of age; 0 = adult). Additive offset on the annual rate of change in FVC percent predicted.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric-versus-adult indicator (1 = pediatric patient, under 18 years of age; 0 = adult). Additive offset on the annual rate of change in FVC percent predicted.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult), the level the adult prior describes.",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Effect on the annual rate of change:",
         "slope = slope_placebo + e_child_slope_placebo * CHILD, i.e. an",
         "ADDITIVE offset in percent predicted per year, from the final",
@@ -126,16 +131,16 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
         "year for the adult-versus-pediatric comparison the paper draws in",
         "Figures 2 to 4."
       ),
-      source_name        = "STUDYN337 (the InPedILD study indicator, which in the pooled analysis data set is the pediatric-patient flag)"
+      source_name = "STUDYN337 (the InPedILD study indicator, which in the pooled analysis data set is the pediatric-patient flag)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age, screened on baseline, slope, Emax and the inter-individual variability on slope",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate search (Hartmann 2026",
         "Table S3) as continuous with a cut-off at 18 years, and as two",
         "dichotomous contrasts. Only the dichotomous",
@@ -146,9 +151,9 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
     ),
     DIS_SSC_ILD = list(
       description = "Systemic-sclerosis-associated ILD indicator, carried by the adult model as a study effect on baseline and slope",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Hartmann 2026 Section 2.4: the adult FVC percent predicted model",
         "retained a study effect for SENSCIS, an SSc-ILD population, on",
         "slope and on baseline. It was NOT retained in the pediatric model",
@@ -160,9 +165,9 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
     ),
     RACE_JAPANESE = list(
       description = "Japanese-heritage race indicator, carried by the adult model on baseline and on slope",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Hartmann 2026 Section 2.4 lists Chinese, Korean, Indian or",
         "Japanese ethnicity on baseline and Japanese ethnicity on slope",
         "among the covariates identified for the ADULT FVC percent",
@@ -176,22 +181,27 @@ Hartmann_2026_nintedanib_fvcpp <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 53L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 2L,
     n_observations = "517 FVC observations",
-    age_range      = "6 to less than 18 years (trial eligibility); cohort mean 13.2 years (SD 3.27)",
-    age_median     = "mean 13.2 years (SD 3.27); no median reported",
-    weight_range   = "13.5 kg lower eligibility bound; cohort mean 43.1 kg (SD 18.3)",
-    weight_median  = "mean 43.1 kg (SD 18.3); no median reported",
+    age_range = "6 to less than 18 years (trial eligibility); cohort mean 13.2 years (SD 3.27)",
+    age_median = "mean 13.2 years (SD 3.27); no median reported",
+    weight_range = "13.5 kg lower eligibility bound; cohort mean 43.1 kg (SD 18.3)",
+    weight_median = "mean 43.1 kg (SD 18.3); no median reported",
     sex_female_pct = 60.4,
     race_ethnicity = "Not tabulated for the 53-patient FVC set. The overlapping 44-patient PK set was 77% Caucasian, 9.1% Black, 6.8% American Indian/Alaska Native, 4.5% Other Asian and 2.3% missing (Hartmann 2026 Table S4). No patient was Chinese, Korean, Indian or Japanese.",
-    disease_state  = "Clinically significant fibrosing interstitial lung disease of mixed aetiology: pediatric autoimmune ILD 32%, surfactant protein deficiency 26%, other ILDs 25%, toxic/radiation/drug-induced pneumonitis 11%, chronic hypersensitivity pneumonia 3.8%, post-HSCT fibrosis 1.9%. Systemic sclerosis-associated ILD in 17%.",
-    dose_range     = "Oral nintedanib twice daily, dosed by body-weight bin (50, 75, 100 or 150 mg BID; Hartmann 2026 Table S1), or matching placebo. InPedILD randomised 2:1 nintedanib to placebo over 24 weeks; the extension is open-label active treatment.",
-    regions        = "Multinational; the InPedILD trial and the InPedILD-ON open-label extension",
+    disease_state = "Clinically significant fibrosing interstitial lung disease of mixed aetiology: pediatric autoimmune ILD 32%, surfactant protein deficiency 26%, other ILDs 25%, toxic/radiation/drug-induced pneumonitis 11%, chronic hypersensitivity pneumonia 3.8%, post-HSCT fibrosis 1.9%. Systemic sclerosis-associated ILD in 17%.",
+    dose_range = "Oral nintedanib twice daily, dosed by body-weight bin (50, 75, 100 or 150 mg BID; Hartmann 2026 Table S1), or matching placebo. InPedILD randomised 2:1 nintedanib to placebo over 24 weeks; the extension is open-label active treatment.",
+    regions = "Multinational; the InPedILD trial and the InPedILD-ON open-label extension",
     baseline_endpoint = "FVC percent predicted at baseline: mean 59.3% (SD 21.2) overall; 64.7% (SD 17.2) placebo and 52.9% (SD 20.6) active in the 6 to less than 12 year group, 62.1% (SD 25.6) placebo and 60.7% (SD 20.9) active in the 12 to less than 18 year group (Hartmann 2026 Table 1).",
-    treatment_arm_breakdown = c(`6_to_lt12_placebo_n` = 4, `6_to_lt12_active_n` = 13, `12_to_lt18_placebo_n` = 9, `12_to_lt18_active_n` = 27),
-    notes          = paste0(
+    treatment_arm_breakdown = c(
+      `6_to_lt12_placebo_n` = 4,
+      `6_to_lt12_active_n` = 13,
+      `12_to_lt18_placebo_n` = 9,
+      `12_to_lt18_active_n` = 27
+    ),
+    notes = paste0(
       "Exposure-response analysis set: all 53 patients enrolled in ",
       "InPedILD and its open-label extension InPedILD-ON, nine more than ",
       "contributed to the companion population PK model. Baseline ",

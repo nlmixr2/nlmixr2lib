@@ -8,51 +8,51 @@ Chen_2020_luspatercept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "luspatercept", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "luspatercept", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "luspatercept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg per Chen 2020 final-model covariate equations for CL/F and V1/F. Power exponents 0.769 (CL/F) and 0.877 (V1/F) per Table 2.",
-      source_name        = "Weight"
+      notes = "Reference 70 kg per Chen 2020 final-model covariate equations for CL/F and V1/F. Power exponents 0.769 (CL/F) and 0.877 (V1/F) per Table 2.",
+      source_name = "Weight"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 72 years (the dataset median) per Chen 2020 final-model CL/F equation. Power exponent -0.534 per Table 2.",
-      source_name        = "Age"
+      notes = "Reference 72 years (the dataset median) per Chen 2020 final-model CL/F equation. Power exponent -0.534 per Table 2.",
+      source_name = "Age"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 44 g/L (the dataset median) per Chen 2020 final-model equations for CL/F and V1/F. Power exponents -1.17 (CL/F) and -0.610 (V1/F) per Table 2.",
-      source_name        = "Albumin"
+      notes = "Reference 44 g/L (the dataset median) per Chen 2020 final-model equations for CL/F and V1/F. Power exponents -1.17 (CL/F) and -0.610 (V1/F) per Table 2.",
+      source_name = "Albumin"
     )
   )
 
   population <- list(
-    n_subjects     = 260L,
+    n_subjects = 260L,
     n_observations = 2403L,
-    n_studies      = 2L,
-    age_range      = "27-95 years",
-    age_median     = "72 years",
-    weight_range   = "46-124 kg",
-    weight_median  = "76.3 kg",
+    n_studies = 2L,
+    age_range = "27-95 years",
+    age_median = "72 years",
+    weight_range = "46-124 kg",
+    weight_median = "76.3 kg",
     sex_female_pct = 38.8,
     race_ethnicity = c(White = 82.3),
-    disease_state  = "Anemia due to lower-risk myelodysplastic syndromes (adults). 72.7% Very-low/Low IPSS-R risk, 23.1% Intermediate, 4.2% High/Very-high. 83.1% with positive ring sideroblasts.",
-    dose_range     = "Subcutaneous luspatercept 0.125-1.75 mg/kg every 3 weeks (q3w). 91.0% of patients started at 1.0 mg/kg with stepwise titration to 1.33 or 1.75 mg/kg as needed; the remaining 9.0% received a constant 0.125-0.75 mg/kg.",
-    regions        = "Multinational pooled data from a phase II dose-finding/expansion study (A536-03 'PACE-MDS', NCT01749514, n=107) and a pivotal phase III study (ACE-536-MDS-001 'MEDALIST', NCT02631070, n=153).",
-    notes          = "Baseline demographics from Chen 2020 Table 1. Renal: 26.9% no impairment, 51.5% mild (eGFR 60-89), 21.5% moderate (eGFR 30-59); none severe. Hepatic: 59.2% none, 31.5% mild, 8.8% moderate, 0.4% severe. Albumin median 44 g/L (31.0-52.6). eGFR median 73.1 mL/min/1.73 m^2 (29.6-150). 38.5% on concurrent iron chelation therapy. 2,403 quantifiable luspatercept concentrations collected 4-784 days after the first dose; ELISA range 50-600 ng/mL; 0.6% of postdose samples were below the limit of quantitation and excluded."
+    disease_state = "Anemia due to lower-risk myelodysplastic syndromes (adults). 72.7% Very-low/Low IPSS-R risk, 23.1% Intermediate, 4.2% High/Very-high. 83.1% with positive ring sideroblasts.",
+    dose_range = "Subcutaneous luspatercept 0.125-1.75 mg/kg every 3 weeks (q3w). 91.0% of patients started at 1.0 mg/kg with stepwise titration to 1.33 or 1.75 mg/kg as needed; the remaining 9.0% received a constant 0.125-0.75 mg/kg.",
+    regions = "Multinational pooled data from a phase II dose-finding/expansion study (A536-03 'PACE-MDS', NCT01749514, n=107) and a pivotal phase III study (ACE-536-MDS-001 'MEDALIST', NCT02631070, n=153).",
+    notes = "Baseline demographics from Chen 2020 Table 1. Renal: 26.9% no impairment, 51.5% mild (eGFR 60-89), 21.5% moderate (eGFR 30-59); none severe. Hepatic: 59.2% none, 31.5% mild, 8.8% moderate, 0.4% severe. Albumin median 44 g/L (31.0-52.6). eGFR median 73.1 mL/min/1.73 m^2 (29.6-150). 38.5% on concurrent iron chelation therapy. 2,403 quantifiable luspatercept concentrations collected 4-784 days after the first dose; ELISA range 50-600 ng/mL; 0.6% of postdose samples were below the limit of quantitation and excluded."
   )
 
   ini({

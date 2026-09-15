@@ -13,51 +13,51 @@ Faelens_2021_infliximab <- function() {
 
   covariateData <- list(
     SCORE_MAYO_E = list(
-      description        = "Mayo endoscopic subscore at baseline (1, 2, or 3)",
-      units              = "(score, 1-3)",
-      type               = "categorical",
+      description = "Mayo endoscopic subscore at baseline (1, 2, or 3)",
+      units = "(score, 1-3)",
+      type = "categorical",
       reference_category = "2 (moderate active UC)",
-      notes              = "Categorical effect on the elimination rate constant KE: typical KE values are 0.0422 /day for Mayo 1, 0.0463 /day for Mayo 2 (reference), and 0.0570 /day for Mayo 3 per Faelens 2021 supplement Table S1 (Adapted Model column). The original NONMEM dataset uses source column MPRE and additionally codes a sentinel `MPRE = -99` for missing values whose typical KE was carried over from the original Dreesen 2019 model with an unconverged initial estimate; that level is out-of-domain for this library implementation, which only supports Mayo 1/2/3.",
-      source_name        = "MPRE"
+      notes = "Categorical effect on the elimination rate constant KE: typical KE values are 0.0422 /day for Mayo 1, 0.0463 /day for Mayo 2 (reference), and 0.0570 /day for Mayo 3 per Faelens 2021 supplement Table S1 (Adapted Model column). The original NONMEM dataset uses source column MPRE and additionally codes a sentinel `MPRE = -99` for missing values whose typical KE was carried over from the original Dreesen 2019 model with an unconverged initial estimate; that level is out-of-domain for this library implementation, which only supports Mayo 1/2/3.",
+      source_name = "MPRE"
     ),
     CONMED_STEROID = list(
-      description        = "Baseline corticosteroid use (binary indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline corticosteroid use (binary indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no baseline corticosteroid use)",
-      notes              = "Multiplicative fold-change on V (and therefore on CL since CL = KE * V): V is multiplied by 1.30 when CONMED_STEROID = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(5) in the NONMEM control stream). Source column name `CS`; renamed to canonical CONMED_STEROID per inst/references/covariate-columns.md.",
-      source_name        = "CS"
+      notes = "Multiplicative fold-change on V (and therefore on CL since CL = KE * V): V is multiplied by 1.30 when CONMED_STEROID = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(5) in the NONMEM control stream). Source column name `CS`; renamed to canonical CONMED_STEROID per inst/references/covariate-columns.md.",
+      source_name = "CS"
     ),
     DISEXT_EP = list(
-      description        = "Extensive colitis at baseline (binary indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extensive colitis at baseline (binary indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not extensive colitis)",
-      notes              = "Multiplicative fold-change on V (and therefore on CL): V is multiplied by 1.25 when DISEXT_EP = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(8) in the NONMEM control stream). Source column name `EXTCOL`; renamed to canonical DISEXT_EP per inst/references/covariate-columns.md. The Faelens 2021 dataset uses a binary EXTCOL indicator (presence of extensive colitis) without a separate `other` category, so the paired DISEXT_OTHER canonical does not apply.",
-      source_name        = "EXTCOL"
+      notes = "Multiplicative fold-change on V (and therefore on CL): V is multiplied by 1.25 when DISEXT_EP = 1 per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(8) in the NONMEM control stream). Source column name `EXTCOL`; renamed to canonical DISEXT_EP per inst/references/covariate-columns.md. The Faelens 2021 dataset uses a binary EXTCOL indicator (presence of extensive colitis) without a separate `other` category, so the paired DISEXT_OTHER canonical does not apply.",
+      source_name = "EXTCOL"
     ),
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula from WT, HT, SEX)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula from WT, HT, SEX)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V with reference 52 kg per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(7) = 0.517 in the NONMEM control stream). FFM is computed in the NONMEM $PK block via the Janmahasatian (2005) formula: FFM_male = 9.27e3 * WT / (6.68e3 + 216 * BMI), FFM_female = 9.27e3 * WT / (8.78e3 + 244 * BMI), with BMI = WT / HT^2 (HT in metres). Reference 52 kg corresponds to the cohort-typical FFM in the original Dreesen 2019 dataset.",
-      source_name        = "FFM"
+      notes = "Power scaling on V with reference 52 kg per Faelens 2021 supplement Table S1 (Adapted Model column; THETA(7) = 0.517 in the NONMEM control stream). FFM is computed in the NONMEM $PK block via the Janmahasatian (2005) formula: FFM_male = 9.27e3 * WT / (6.68e3 + 216 * BMI), FFM_female = 9.27e3 * WT / (8.78e3 + 244 * BMI), with BMI = WT / HT^2 (HT in metres). Reference 52 kg corresponds to the cohort-typical FFM in the original Dreesen 2019 dataset.",
+      source_name = "FFM"
     )
   )
 
   population <- list(
-    n_subjects     = 204L,
-    n_studies      = 1L,
-    age_range      = "Adults; full demographics in source paper Dreesen 2019 (BJCP 85:782-795).",
-    weight_range   = "Adults; full demographics in source paper Dreesen 2019.",
+    n_subjects = 204L,
+    n_studies = 1L,
+    age_range = "Adults; full demographics in source paper Dreesen 2019 (BJCP 85:782-795).",
+    weight_range = "Adults; full demographics in source paper Dreesen 2019.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in Faelens 2021; single-center cohort (KU Leuven IBD Biobank, Belgium).",
-    disease_state  = "Adults with moderate-to-severe ulcerative colitis (baseline Mayo endoscopic subscore typically 2 or 3).",
-    dose_range     = "5 mg/kg or 10 mg/kg IV infliximab induction at days 0, 14, and 42 (label dosing or escalated dosing scenarios in the simulation paper).",
-    regions        = "Single-center cohort, Leuven, Belgium (IBD Biobank B322201213950/S53684).",
-    n_pk_samples   = 583L,
-    notes          = "Model fit to 583 PK samples from 204 patients with UC (Faelens 2021 Section 2.1; original cohort in Dreesen 2019). The Faelens 2021 'Adapted Model' is a re-fit of the Dreesen 2019 popPK model that drops time-varying covariates (CRP, serum albumin) so that simulations of higher-than-observed doses are not biased by dose-dependent feedback through acute-phase proteins; the baseline covariates (Mayo endoscopic subscore, corticosteroid use, extensive colitis, FFM) are retained. Excluded interoccasion variability on KE (6.70% CV per occasion in the source) for nlmixr2lib portability; see vignette Assumptions section."
+    disease_state = "Adults with moderate-to-severe ulcerative colitis (baseline Mayo endoscopic subscore typically 2 or 3).",
+    dose_range = "5 mg/kg or 10 mg/kg IV infliximab induction at days 0, 14, and 42 (label dosing or escalated dosing scenarios in the simulation paper).",
+    regions = "Single-center cohort, Leuven, Belgium (IBD Biobank B322201213950/S53684).",
+    n_pk_samples = 583L,
+    notes = "Model fit to 583 PK samples from 204 patients with UC (Faelens 2021 Section 2.1; original cohort in Dreesen 2019). The Faelens 2021 'Adapted Model' is a re-fit of the Dreesen 2019 popPK model that drops time-varying covariates (CRP, serum albumin) so that simulations of higher-than-observed doses are not biased by dose-dependent feedback through acute-phase proteins; the baseline covariates (Mayo endoscopic subscore, corticosteroid use, extensive colitis, FFM) are retained. Excluded interoccasion variability on KE (6.70% CV per occasion in the source) for nlmixr2lib portability; see vignette Assumptions section."
   )
 
   ini({

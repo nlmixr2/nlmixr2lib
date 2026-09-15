@@ -28,27 +28,32 @@ Xia_2025_pfuroylamphenmulin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "p-furoylamphenmulin", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "p-furoylamphenmulin", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "p-furoylamphenmulin", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "p-furoylamphenmulin", units = "mg/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "p-furoylamphenmulin", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    auc_0_24    = list(analyte = "p-furoylamphenmulin", units = "ug*h/mL", specimen = "plasma", verified = TRUE),
-    bact        = list(analyte = "Mycoplasma gallisepticum strain S6 (ATCC 15302)", units = "CFU/mL", specimen = "tissue", verified = TRUE)
+    auc_0_24 = list(analyte = "p-furoylamphenmulin", units = "ug*h/mL", specimen = "plasma", verified = TRUE),
+    bact = list(
+      analyte = "Mycoplasma gallisepticum strain S6 (ATCC 15302)",
+      units = "CFU/mL",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "chicken (specific-pathogen-free, 1 day old at purchase, 35-45 g)",
-    n_subjects     = 368L,
-    n_studies      = 1L,
-    age_range      = "6 days old at the start of the pharmacokinetic study (3 days acclimatisation, then 3 daily intratracheal inoculations)",
-    weight_range   = "35-45 g at one day of age",
-    organism       = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control). p-furoylamphenmulin MIC = 0.001953125 ug/mL by broth microdilution at a 10^6 CFU/mL inoculum; tiamulin MIC against the same strain = 0.0078125 ug/mL",
-    system         = "In vivo M. gallisepticum respiratory-infection model: 0.2 mL of a 10^9 CFU/mL suspension inoculated intratracheally once daily for three consecutive days through a sterile gavage needle. Lung colonisation at 0 h was 5.88 +/- 0.03 log10 CFU/mL in the infection-model validation cohort and 6.13 log10 CFU/mL in the efficacy cohort",
-    disease_state  = "Experimental chronic respiratory disease (pneumonia and air sacculitis) from intratracheal M. gallisepticum challenge; air-sac lesion score 2.25 +/- 0.25 in the untreated infected control",
-    dose_range     = "PK: single intramuscular injections of 5, 40 and 80 mg/kg (288 infected chickens, n = 8 per time point per dose). PD: intramuscular injections of 0, 5, 10, 20, 30, 40, 50, 60, 70 or 80 mg/kg once daily for 3 consecutive days (80 infected chickens, 8 per group), plus tiamulin fumarate 40 mg/kg comparator arms given orally and intramuscularly",
-    design         = "Vehicle 10% DMSO / 10% Tween 80 / 80% saline. Blood was drawn once per chicken only (0.5 mL by cardiac puncture), so the plasma PK is a destructive-sampling naive-pooled design with 8 chickens contributing at each nominal time",
-    sampling       = "PK: plasma at 0.083, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 10, 12 and 24 h after the single dose (n = 8 per time point). PD: lungs collected, homogenised and plated 24 h after the last of three daily administrations, i.e. 72 h after the first dose",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Animal Ethics Committee of South China Agricultural University approval 2024c019. Xia 2025 fitted each dose group separately in WinNonlin 5.2.1 and reported a Mean +/- SEM column; the packaged values are that mean column, which is also the parameter set the paper's own dose calculation uses (Cl/F = 3.87 L/h/kg -> 62.64 mg/kg). The per-dose-group parameter sets, at the full precision of supplementary file mmc5.xlsx, are (5 / 40 / 80 mg/kg): T1/2kel 4.205003 / 3.607271 / 4.871964 h; T1/2ka 0.08902 / 0.124374 / 0.074923 h; V1/F 7.392317 / 4.855187 / 6.780696 L/kg; V2/F 1.488610 / 2.113411 / 3.119444 L/kg; Cl/F 3.354635 / 3.941475 / 4.311523 L/h/kg; giving derived Q/F of 0.27723 / 0.46947 / 0.51166 L/h/kg (mean 0.41945, against 0.42210 derived from the mean column). Cl/F rises and AUC24h therefore falls short of dose proportionality across this range, so a mean-parameter model over-predicts AUC24h at 80 mg/kg by about 11% and under-predicts it at 5 mg/kg by about 13%; see the vignette. Xia 2025 Table 2 also reports the same exposure-response fitted against Cmax/MIC (zero-exposure effect 1.09, maximum 4.24 log10 CFU/mL, EC50 3945.62, Hill N 5.09, R^2 0.84, 3 log10 CFU/mL target 4299.30); AUC24h/MIC (R^2 0.83) is the index the paper designates as most important and the one packaged here. Xia 2025 deliberately did not use %T>MIC because it was 89.53% at 5 mg/kg and 100% at every higher dose and so could not discriminate the observed effects."
+    species = "chicken (specific-pathogen-free, 1 day old at purchase, 35-45 g)",
+    n_subjects = 368L,
+    n_studies = 1L,
+    age_range = "6 days old at the start of the pharmacokinetic study (3 days acclimatisation, then 3 daily intratracheal inoculations)",
+    weight_range = "35-45 g at one day of age",
+    organism = "Mycoplasma gallisepticum standard strain S6 (ATCC 15302; China Institute of Veterinary Drug Control). p-furoylamphenmulin MIC = 0.001953125 ug/mL by broth microdilution at a 10^6 CFU/mL inoculum; tiamulin MIC against the same strain = 0.0078125 ug/mL",
+    system = "In vivo M. gallisepticum respiratory-infection model: 0.2 mL of a 10^9 CFU/mL suspension inoculated intratracheally once daily for three consecutive days through a sterile gavage needle. Lung colonisation at 0 h was 5.88 +/- 0.03 log10 CFU/mL in the infection-model validation cohort and 6.13 log10 CFU/mL in the efficacy cohort",
+    disease_state = "Experimental chronic respiratory disease (pneumonia and air sacculitis) from intratracheal M. gallisepticum challenge; air-sac lesion score 2.25 +/- 0.25 in the untreated infected control",
+    dose_range = "PK: single intramuscular injections of 5, 40 and 80 mg/kg (288 infected chickens, n = 8 per time point per dose). PD: intramuscular injections of 0, 5, 10, 20, 30, 40, 50, 60, 70 or 80 mg/kg once daily for 3 consecutive days (80 infected chickens, 8 per group), plus tiamulin fumarate 40 mg/kg comparator arms given orally and intramuscularly",
+    design = "Vehicle 10% DMSO / 10% Tween 80 / 80% saline. Blood was drawn once per chicken only (0.5 mL by cardiac puncture), so the plasma PK is a destructive-sampling naive-pooled design with 8 chickens contributing at each nominal time",
+    sampling = "PK: plasma at 0.083, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 10, 12 and 24 h after the single dose (n = 8 per time point). PD: lungs collected, homogenised and plated 24 h after the last of three daily administrations, i.e. 72 h after the first dose",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Animal Ethics Committee of South China Agricultural University approval 2024c019. Xia 2025 fitted each dose group separately in WinNonlin 5.2.1 and reported a Mean +/- SEM column; the packaged values are that mean column, which is also the parameter set the paper's own dose calculation uses (Cl/F = 3.87 L/h/kg -> 62.64 mg/kg). The per-dose-group parameter sets, at the full precision of supplementary file mmc5.xlsx, are (5 / 40 / 80 mg/kg): T1/2kel 4.205003 / 3.607271 / 4.871964 h; T1/2ka 0.08902 / 0.124374 / 0.074923 h; V1/F 7.392317 / 4.855187 / 6.780696 L/kg; V2/F 1.488610 / 2.113411 / 3.119444 L/kg; Cl/F 3.354635 / 3.941475 / 4.311523 L/h/kg; giving derived Q/F of 0.27723 / 0.46947 / 0.51166 L/h/kg (mean 0.41945, against 0.42210 derived from the mean column). Cl/F rises and AUC24h therefore falls short of dose proportionality across this range, so a mean-parameter model over-predicts AUC24h at 80 mg/kg by about 11% and under-predicts it at 5 mg/kg by about 13%; see the vignette. Xia 2025 Table 2 also reports the same exposure-response fitted against Cmax/MIC (zero-exposure effect 1.09, maximum 4.24 log10 CFU/mL, EC50 3945.62, Hill N 5.09, R^2 0.84, 3 log10 CFU/mL target 4299.30); AUC24h/MIC (R^2 0.83) is the index the paper designates as most important and the one packaged here. Xia 2025 deliberately did not use %T>MIC because it was 89.53% at 5 mg/kg and 100% at every higher dose and so could not discriminate the observed effects."
   )
 
   ini({

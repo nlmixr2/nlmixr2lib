@@ -1,23 +1,23 @@
 Shu_2024_posaconazole <- function() {
   description <- "Population PK model for posaconazole oral suspension (Noxafil) in Chinese hematopoietic stem cell transplantation (HSCT) recipients (Shu 2024). One-compartment disposition with first-order absorption and first-order elimination, parameterised on the apparent (oral) scale as CL/F and V/F because the therapeutic-drug-monitoring data were oral-only and bioavailability was not identifiable. The absorption rate constant Ka was fixed to 0.4 1/h from earlier posaconazole-suspension popPK studies, because almost every sample was a pre-dose trough and the absorption phase could not support an estimate. Creatinine clearance enters apparent clearance as a power function centred on the cohort median 103.81 mL/min; body weight enters apparent volume as a power function centred on the cohort median 45.85 kg; and concomitant proton-pump-inhibitor use multiplies apparent volume by 3.83. Inter-individual variability is exponential on CL/F and V/F and is very large (omega 1.118 and 0.826 on the log scale). Residual variability is proportional. The model was used for Monte Carlo dose optimisation of weight-banded BID and TID regimens against steady-state trough targets of 0.7 ug/mL for prophylaxis and 1.0 ug/mL for treatment of invasive fungal disease."
-  reference   <- "Shu YS, Dong ZH, Yang YL, Li SW, Yi QY, Wang P, Shi YP, Zhang YY, Shi HY. Individualized regimen of Posaconazole oral suspension in Chinese HSCT patients based on population pharmacokinetic model. Sci Rep. 2024;14:20288. doi:10.1038/s41598-024-70955-w."
-  vignette    <- "Shu_2024_posaconazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  reference <- "Shu YS, Dong ZH, Yang YL, Li SW, Yi QY, Wang P, Shi YP, Zhang YY, Shi HY. Individualized regimen of Posaconazole oral suspension in Chinese HSCT patients based on population pharmacokinetic model. Sci Rep. 2024;14:20288. doi:10.1038/s41598-024-70955-w."
+  vignette <- "Shu_2024_posaconazole"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "posaconazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated with the Cockcroft-Gault equation. NOT body-surface-area normalised: the source reports raw Cockcroft-Gault mL/min (Shu 2024 Materials and methods, 'Study design and patients': 'Ccr was calculated using the Cockcroft-Gault equation'). The paper separately tabulates a CKD-EPI eGFR column, which was screened but not retained in the final model.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance calculated with the Cockcroft-Gault equation. NOT body-surface-area normalised: the source reports raw Cockcroft-Gault mL/min (Shu 2024 Materials and methods, 'Study design and patients': 'Ccr was calculated using the Cockcroft-Gault equation'). The paper separately tabulates a CKD-EPI eGFR column, which was screened but not retained in the final model.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the source analysis. Retained on apparent clearance in the final model",
         "as a power function centred on the cohort median: CL/F = 11.5 * (CCR / 103.81)^0.68",
         "(Shu 2024 Table 2 footnote). Cohort median 103.81 mL/min, range 14.44-240.64 mL/min",
@@ -30,14 +30,14 @@ Shu_2024_posaconazole <- function() {
         "than a mechanistic renal-elimination pathway.",
         sep = " "
       ),
-      source_name        = "CCR"
+      source_name = "CCR"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject in the source analysis. Retained on apparent volume of distribution",
         "in the final model as a power function centred on the cohort median:",
         "V/F proportional to (WT / 45.85)^1.78 (Shu 2024 Table 2 footnote).",
@@ -48,14 +48,14 @@ Shu_2024_posaconazole <- function() {
         "in oral-only data. Do not extrapolate outside the observed weight range.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant proton-pump-inhibitor use (1 = patient co-administered a PPI, 0 = no PPI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant proton-pump-inhibitor use (1 = patient co-administered a PPI, 0 = no PPI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant PPI; 51 of 62 patients, Shu 2024 Table 1 'Proton pump inhibitor (No. of patients) 11')",
-      notes              = paste(
+      notes = paste(
         "Subject-level ever-versus-never indicator as reported in Shu 2024 Table 1; the paper does not",
         "define a per-record time-varying flag or a minimum-duration threshold, so the operational",
         "definition is looser than the Goel 2016 sonidegib precedent (>= 80 percent of the PK assessment phase).",
@@ -68,103 +68,103 @@ Shu_2024_posaconazole <- function() {
         "arithmetic used to encode the two-level Vppi.",
         sep = " "
       ),
-      source_name        = "PPI"
+      source_name = "PPI"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search but not retained in the final model (Shu 2024 Results, 'Model building'). Cohort median 20.5 years, range 3-65 (Shu 2024 Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search but not retained in the final model (Shu 2024 Results, 'Model building'). Cohort median 20.5 years, range 3-65 (Shu 2024 Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). 30 of 62 patients were male (Shu 2024 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). 30 of 62 patients were male (Shu 2024 Table 1)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 19.17 kg/m^2, range 10.74-28.34 (Shu 2024 Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 19.17 kg/m^2, range 10.74-28.34 (Shu 2024 Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 27.15 U/L, range 2.7-188.3 (Shu 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 27.15 U/L, range 2.7-188.3 (Shu 2024 Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 19.2 U/L, range 2.5-234.1 (Shu 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 19.2 U/L, range 2.5-234.1 (Shu 2024 Table 1)."
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 107 U/L, range 45-243 (Shu 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 107 U/L, range 45-243 (Shu 2024 Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 40.1 g/L, range 5.1-49.3 (Shu 2024 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 40.1 g/L, range 5.1-49.3 (Shu 2024 Table 1)."
     ),
     GGT = list(
       description = "Gamma-glutamyltransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 32.2 U/L, range 9-327 (Shu 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 32.2 U/L, range 9-327 (Shu 2024 Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 11 umol/L, range 4.00-134.7 (Shu 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 11 umol/L, range 4.00-134.7 (Shu 2024 Table 1)."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 4.9 umol/L, range 1.37-114.9 (Shu 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). Cohort median 4.9 umol/L, range 1.37-114.9 (Shu 2024 Table 1)."
     ),
     CONMED_PHENYTOIN = list(
       description = "Concomitant phenytoin sodium use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). 12 of 62 patients (Shu 2024 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). 12 of 62 patients (Shu 2024 Table 1)."
     ),
     CONMED_METOCLOPRAMIDE = list(
       description = "Concomitant metoclopramide use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Shu 2024 Results, 'Model building'). 7 of 62 patients (Shu 2024 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Shu 2024 Results, 'Model building'). 7 of 62 patients (Shu 2024 Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62L,
-    n_studies      = 1L,
-    age_range      = "3-65 years (median 20.5; Shu 2024 Table 1)",
-    age_median     = "20.5 years",
-    weight_range   = "13.65-80 kg (median 45.85; Shu 2024 Table 1)",
-    weight_median  = "45.85 kg",
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 1L,
+    age_range = "3-65 years (median 20.5; Shu 2024 Table 1)",
+    age_median = "20.5 years",
+    weight_range = "13.65-80 kg (median 45.85; Shu 2024 Table 1)",
+    weight_median = "45.85 kg",
     sex_female_pct = 51.6,
     race_ethnicity = "Chinese (single-centre cohort at the First Affiliated Hospital of Shandong First Medical University, Jinan)",
-    disease_state  = "Patients undergoing hematopoietic stem cell transplantation (HSCT) receiving posaconazole oral suspension for prophylaxis or treatment of invasive fungal disease, for at least 7 days before sampling.",
-    dose_range     = "150-600 mg/day posaconazole oral suspension (Noxafil), given twice daily (BID) or three times daily (TID), usually with meals at approximately 08:00, 11:30 and 18:30.",
-    regions        = "China (Jinan, Shandong), October 2021 to April 2023",
+    disease_state = "Patients undergoing hematopoietic stem cell transplantation (HSCT) receiving posaconazole oral suspension for prophylaxis or treatment of invasive fungal disease, for at least 7 days before sampling.",
+    dose_range = "150-600 mg/day posaconazole oral suspension (Noxafil), given twice daily (BID) or three times daily (TID), usually with meals at approximately 08:00, 11:30 and 18:30.",
+    regions = "China (Jinan, Shandong), October 2021 to April 2023",
     n_observations = "103 posaconazole plasma concentrations from 62 patients (1-3 samples per patient, at least one trough each). Samples were drawn 0.5 h before the first dose of the day (defined as Cmin) and 2 or 4 h after that dose; 98 of the 103 points were predominantly Cmin. Observed concentrations 0.1-4.03 ug/mL, median 0.706 ug/mL (Shu 2024 Results, 'Demographic characteristics').",
     renal_function = "Cockcroft-Gault creatinine clearance median 103.81 mL/min (range 14.44-240.64); CKD-EPI eGFR median 129.98 mL/min (range 33.38-282.08) (Shu 2024 Table 1).",
     hepatic_function = "ALT median 27.15 U/L (2.7-188.3), AST median 19.2 U/L (2.5-234.1), ALP median 107 U/L (45-243), GGT median 32.2 U/L (9-327), total bilirubin median 11 umol/L (4.00-134.7), direct bilirubin median 4.9 umol/L (1.37-114.9), albumin median 40.1 g/L (5.1-49.3) (Shu 2024 Table 1).",
-    co_medication  = "Proton pump inhibitor 11 of 62 patients; phenytoin sodium 12 of 62; metoclopramide 7 of 62 (Shu 2024 Table 1). Only PPI was retained as a covariate.",
-    notes          = paste(
+    co_medication = "Proton pump inhibitor 11 of 62 patients; phenytoin sodium 12 of 62; metoclopramide 7 of 62 (Shu 2024 Table 1). Only PPI was retained as a covariate.",
+    notes = paste(
       "Retrospective, single-centre, therapeutic-drug-monitoring study (Ethics approval R202312200209).",
       "Posaconazole was quantified by a validated HPLC-UV assay (261 nm) with a calibration range of",
       "0.1-10 ug/mL and a lower limit of quantification of 0.1 ug/mL (Shu 2024 Materials and methods).",

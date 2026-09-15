@@ -24,30 +24,30 @@ Yao_2023_empagliflozin_mbma <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 204L,
-    n_studies      = 7L,
-    age_range      = "mean 43.52 years (SD 15.0)",
-    weight_range   = "mean 73.3 kg (SD 9.18)",
+    species = "human",
+    n_subjects = 204L,
+    n_studies = 7L,
+    age_range = "mean 43.52 years (SD 15.0)",
+    weight_range = "mean 73.3 kg (SD 9.18)",
     sex_female_pct = 36.84,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Pooled healthy subjects and patients with type 2 diabetes mellitus ",
       "(122 of 204 healthy). Studies in patients with moderate or severe ",
       "renal impairment or hepatic insufficiency were excluded; the PK/PD ",
       "data come from subjects with glomerular filtration rate above ",
       "60 mL/min/1.73 m2."
     ),
-    dose_range     = "1, 5, 10, 25, 50, 100 mg oral",
-    regions        = "International (published clinical trials indexed on PubMed to July 2016)",
-    notes          = paste0(
+    dose_range = "1, 5, 10, 25, 50, 100 mg oral",
+    regions = "International (published clinical trials indexed on PubMed to July 2016)",
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "summary-level (study-arm mean) plasma concentration, not an ",
       "individual measurement. Demographics from Yao 2023 Table S2 (PK row ",

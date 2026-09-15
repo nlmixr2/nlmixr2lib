@@ -41,20 +41,20 @@ Ousey_2026_plozasiran <- function() {
 
   compartmentData <- list(
     depot_kpd = list(
-      analyte  = "plozasiran",
-      units    = "mg",
+      analyte = "plozasiran",
+      units = "mg",
       specimen = "not applicable",
       verified = TRUE
     ),
     apoc3 = list(
-      analyte  = "apolipoprotein C-III",
-      units    = "mg/dL",
+      analyte = "apolipoprotein C-III",
+      units = "mg/dL",
       specimen = "serum",
       verified = TRUE
     ),
     tg = list(
-      analyte  = "triglycerides",
-      units    = "mg/dL",
+      analyte = "triglycerides",
+      units = "mg/dL",
       specimen = "serum",
       verified = TRUE
     )
@@ -62,11 +62,11 @@ Ousey_2026_plozasiran <- function() {
 
   covariateData <- list(
     APOC3 = list(
-      description        = "Baseline (pre-first-dose) fasting serum apolipoprotein C-III concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline (pre-first-dose) fasting serum apolipoprotein C-III concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (the pre-dose measurement), used as an",
         "a-priori continuous covariate on the estimated APOC3 baseline:",
         "(APOC3 / 34)^e_apoc3_rbase_apoc3. Ousey 2026 Methods: 'The",
@@ -79,14 +79,14 @@ Ousey_2026_plozasiran <- function() {
         "Assay LLOQ 0.94 mg/dL, ULOQ 88 mg/dL; BLQ imputed as LLOQ/2 and AQL",
         "imputed as ULOQ in the analysis dataset."
       ),
-      source_name        = "Baseline APOC3"
+      source_name = "Baseline APOC3"
     ),
     TRIG = list(
-      description        = "Baseline (pre-first-dose) fasting serum triglyceride concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline (pre-first-dose) fasting serum triglyceride concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject, used as an a-priori continuous covariate on",
         "the estimated triglyceride baseline: (TRIG / 2048)^e_trig_rbase_tg.",
         "The centring value printed in Table 2 is 2048 mg/dL versus a Table 1",
@@ -94,14 +94,14 @@ Ousey_2026_plozasiran <- function() {
         "vignette Errata). Cohort median 2044 mg/dL [747, 6597] (Table 1).",
         "Units are mg/dL in this model, NOT mmol/L."
       ),
-      source_name        = "Baseline TG"
+      source_name = "Baseline TG"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The only demographic covariate retained in",
         "the final model, acting on TWO parameters in opposing directions:",
         "(BMI / 25)^1.39 on kel (higher BMI implies faster biophase",
@@ -113,14 +113,14 @@ Ousey_2026_plozasiran <- function() {
         "Centring value 25 kg/m^2 equals the Table 1 cohort median.",
         "Cohort median 25.0 kg/m^2 [18.5, 35.9] (Table 1)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     CONMED_TGLOWER = list(
-      description        = "Indicator of one or more stable background triglyceride-lowering therapies",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator of one or more stable background triglyceride-lowering therapies",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no background triglyceride-lowering therapy)",
-      notes              = paste(
+      notes = paste(
         "Ousey 2026 Table 1 footnote a: 'Background TG-lowering therapies are",
         "defined as one or any combination of: fibrates, Vascepa or omega-3",
         "fatty acids or fish oil, and statins.' 55/75 patients (73.3%) were on",
@@ -137,87 +137,87 @@ Ousey_2026_plozasiran <- function() {
         "primarily responsible'. Per-model class composition is documented here",
         "rather than in the canonical register."
       ),
-      source_name        = "TG-lowering therapy"
+      source_name = "TG-lowering therapy"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search but not retained; highly correlated with the retained BMI. Cohort median 70.2 kg [43.5, 118] (Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search but not retained; highly correlated with the retained BMI. Cohort median 70.2 kg [43.5, 118] (Table 1)."
     ),
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (including a geriatric vs non-geriatric < 65 / >= 65 split) but not retained. Cohort median 44.0 years [22, 76] (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (including a geriatric vs non-geriatric < 65 / >= 65 split) but not retained. Cohort median 44.0 years [22, 76] (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 38/75 (50.7%) female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 38/75 (50.7%) female (Table 1)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (White vs non-White and Asian vs non-Asian) but not retained. Cohort 16/75 (21.3%) Asian (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (White vs non-White and Asian vs non-Asian) but not retained. Cohort 16/75 (21.3%) Asian (Table 1)."
     ),
     EGFR = list(
       description = "Baseline estimated glomerular filtration rate",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened, together with a categorical normal/mild/moderate renal-impairment classification, but not retained. Cohort median 113 mL/min [43.0, 640] (Table 1)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened, together with a categorical normal/mild/moderate renal-impairment classification, but not retained. Cohort median 113 mL/min [43.0, 640] (Table 1)."
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as part of the liver-function panel but not retained. Cohort median 0.530 mg/dL [0.240, 1.17] (Table 1). All 75 patients had normal hepatic function by Child-Pugh and NCI-ODWG criteria, so hepatic impairment could not be evaluated."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as part of the liver-function panel but not retained. Cohort median 0.530 mg/dL [0.240, 1.17] (Table 1). All 75 patients had normal hepatic function by Child-Pugh and NCI-ODWG criteria, so hepatic impairment could not be evaluated."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as part of the liver-function panel but not retained. Cohort median 22.0 U/L [12.0, 43.0] (Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as part of the liver-function panel but not retained. Cohort median 22.0 U/L [12.0, 43.0] (Table 1)."
     ),
     HBA1C = list(
       description = "Baseline hemoglobin A1c",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened as a < 6.5% vs >= 6.5% split but not retained. Values not tabulated in Table 1."
+      units = "%",
+      type = "continuous",
+      notes = "Screened as a < 6.5% vs >= 6.5% split but not retained. Values not tabulated in Table 1."
     ),
     DIS_FCS_GENETIC = list(
       description = "Genetically confirmed (vs clinically diagnosed) FCS indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained -- a headline negative finding of the paper, supporting plozasiran use in both genetically confirmed and clinically diagnosed FCS. Cohort 41/75 (54.7%) genetically confirmed (Table 1). Not a registered canonical covariate; documented here only as part of the covariate screen."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained -- a headline negative finding of the paper, supporting plozasiran use in both genetically confirmed and clinically diagnosed FCS. Cohort 41/75 (54.7%) genetically confirmed (Table 1). Not a registered canonical covariate; documented here only as part of the covariate screen."
     ),
     COUNTRY_JAPAN = list(
       description = "Study conducted in Japan (vs ex-Japan) indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "The only extrinsic factor screened; not retained. Only 3 Japanese subjects were in the active-treatment posterior analysis. Not a registered canonical covariate; documented here only as part of the covariate screen."
+      units = "(binary)",
+      type = "binary",
+      notes = "The only extrinsic factor screened; not retained. Only 3 Japanese subjects were in the active-treatment posterior analysis. Not a registered canonical covariate; documented here only as part of the covariate screen."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 75L,
+    n_studies = 1L,
     n_observations = 2106L,
-    age_range      = "22-76 years",
-    age_median     = "44.0 years",
-    weight_range   = "43.5-118 kg",
-    weight_median  = "70.2 kg",
-    bmi_range      = "18.5-35.9 kg/m^2",
-    bmi_median     = "25.0 kg/m^2",
+    age_range = "22-76 years",
+    age_median = "44.0 years",
+    weight_range = "43.5-118 kg",
+    weight_median = "70.2 kg",
+    bmi_range = "18.5-35.9 kg/m^2",
+    bmi_median = "25.0 kg/m^2",
     sex_female_pct = 50.7,
     race_ethnicity = c(White = 73.3, Asian = 21.3, `American Indian or Alaska Native` = 1.3, Other = 4.0),
-    disease_state  = paste(
+    disease_state = paste(
       "Familial chylomicronemia syndrome (FCS) in adults: 41/75 (54.7%)",
       "genetically confirmed and 34/75 (45.3%) clinically diagnosed.",
       "Median baseline fasting serum APOC3 35.4 mg/dL and triglycerides",
@@ -228,7 +228,7 @@ Ousey_2026_plozasiran <- function() {
       "triglyceride-lowering therapy (fibrates, omega-3 fatty acids / fish",
       "oil, statins)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Four Q3M subcutaneous doses of 25 mg (n = 26, 35%) or 50 mg (n = 24,",
       "32%) plozasiran, or volume-matched placebo (n = 25, 33%), over the",
       "12-month double-blinded period. Vial formulation (200 mg/mL) was used",
@@ -236,10 +236,10 @@ Ousey_2026_plozasiran <- function() {
       "up to 22% higher relative bioavailability, i.e. an effective 30.5 mg",
       "for a nominal 25 mg dose."
     ),
-    regions        = "Multinational (PALISADE, NCT05089084), including Japan.",
+    regions = "Multinational (PALISADE, NCT05089084), including Japan.",
     renal_function = "Normal 59 (78.7%), mild 12 (16.0%), moderate 4 (5.3%) by eGFR (normal >= 90, mild 60-90, moderate 30-60 mL/min).",
     hepatic_function = "Normal in all 75 patients by Child-Pugh and NCI-ODWG criteria; hepatic impairment therefore not evaluable as a PD covariate.",
-    notes          = paste(
+    notes = paste(
       "Demographics from Ousey 2026 Table 1. Only the 12-month randomized,",
       "double-blinded period of PALISADE was used for model development; the",
       "open-label extension was excluded. 1044 serum APOC3 observations",

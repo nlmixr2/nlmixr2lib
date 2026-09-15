@@ -61,11 +61,11 @@ Feng_2026_imipenem_pbpk <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales the volume of distribution in every stratum and, in the pediatric",
         "strata only, the clearance. Adult clearance is deliberately NOT scaled by",
         "body weight: Supplementary Table S3 reports 10.726-11.262 L/h across adult",
@@ -77,14 +77,14 @@ Feng_2026_imipenem_pbpk <- function() {
         "that value is inconsistent with the subject the paper actually simulated.",
         sep = " "
       ),
-      source_name        = "Weight, kg"
+      source_name = "Weight, kg"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Selects the population stratum via the WHO age bands the paper adopts in",
         "Methods 'Prediction of imipenem exposures in pediatric patients with RI':",
         "preschool 3-6 years, school-age 6-12 years, adolescent 12-18 years, adult",
@@ -96,14 +96,14 @@ Feng_2026_imipenem_pbpk <- function() {
         "zero rather than an error, so callers must screen for it.",
         sep = " "
       ),
-      source_name        = "Age, years"
+      source_name = "Age, years"
     ),
     RENALIMP_MILD = list(
-      description        = "Mild renal impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild renal impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = paste(
+      notes = paste(
         "1 = mild renal impairment, 0 = normal renal function or any non-mild",
         "category. The paper classifies renal function by GFR per FDA guidance",
         "(Methods 'Model for adult patients with RI'): normal >= 90, mild 60-89,",
@@ -116,27 +116,27 @@ Feng_2026_imipenem_pbpk <- function() {
         "renal-impairment PK data exist.",
         sep = " "
       ),
-      source_name        = "Mild RI"
+      source_name = "Mild RI"
     ),
     RENALIMP_MOD = list(
-      description        = "Moderate renal impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate renal impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = paste(
+      notes = paste(
         "1 = moderate renal impairment (GFR 30-59 mL/min/1.73 m^2 per the FDA",
         "classification the paper adopts in Methods 'Model for adult patients with",
         "RI'), 0 otherwise. Mutually exclusive with RENALIMP_MILD and RENALIMP_SEV.",
         sep = " "
       ),
-      source_name        = "Moderate RI"
+      source_name = "Moderate RI"
     ),
     RENALIMP_SEV = list(
-      description        = "Severe renal impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe renal impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = paste(
+      notes = paste(
         "1 = severe renal impairment (GFR 15-29 mL/min/1.73 m^2 per the FDA",
         "classification the paper adopts in Methods 'Model for adult patients with",
         "RI'), 0 otherwise. Mutually exclusive with RENALIMP_MILD and RENALIMP_MOD.",
@@ -145,7 +145,7 @@ Feng_2026_imipenem_pbpk <- function() {
         "15-29 mL/min band the paper's own classification assigns to severe RI.",
         sep = " "
       ),
-      source_name        = "Severe RI"
+      source_name = "Severe RI"
     )
   )
 
@@ -154,16 +154,16 @@ Feng_2026_imipenem_pbpk <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76,
-    n_studies      = 8,
-    age_range      = paste(
+    species = "human",
+    n_subjects = 76,
+    n_studies = 8,
+    age_range = paste(
       "Adults 18-68 years (study means 25-60.8 years, Supplementary Table S1);",
       "children 2-12 years (Supplementary Table S2). Simulated pediatric",
       "representatives were 3, 8 and 16 years old.",
       sep = " "
     ),
-    weight_range   = paste(
+    weight_range = paste(
       "Adult study means 58.75-86.6 kg (individual range 51-116 kg,",
       "Supplementary Table S1); Bradley 2023 pediatric cohort mean 15.4 kg",
       "(range 12-19), Claesson 1992 weights not reported (Supplementary Table S2).",
@@ -171,7 +171,7 @@ Feng_2026_imipenem_pbpk <- function() {
     ),
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers; adults with mild, moderate or severe renal",
       "insufficiency (Gibson 1985); children with peritonitis (Claesson 1992) and",
       "children with confirmed or suspected gram-negative bacterial infections",
@@ -180,7 +180,7 @@ Feng_2026_imipenem_pbpk <- function() {
       "in Limitations.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Adults 0.25-1.0 g as an intravenous bolus or a 0.15, 0.5 or 2.0 h infusion,",
       "single dose and q6h; children 15 and 25 mg/kg as a 0.5 or 1.0 h infusion.",
       "Proposed pediatric regimens are 15 mg/kg q6h (normal renal function and mild",
@@ -188,14 +188,14 @@ Feng_2026_imipenem_pbpk <- function() {
       "infusion (Table 4 and Results 'Pharmacodynamic evaluation of imipenem').",
       sep = " "
     ),
-    regions        = "China, Thailand, Sweden, United States",
+    regions = "China, Thailand, Sweden, United States",
     renal_function = paste(
       "Normal (GFR >= 90), mild (60-89), moderate (30-59) and severe (15-29)",
       "renal impairment per the FDA classification, in mL/min/1.73 m^2",
       "(Methods 'Model for adult patients with RI').",
       sep = " "
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "All included clinical studies administered imipenem with cilastatin or with",
       "another enzyme inhibitor, and all reported imipenem concentrations measured",
       "during that co-administration (Methods 'Model development and evaluation').",
@@ -203,7 +203,7 @@ Feng_2026_imipenem_pbpk <- function() {
       "value, as Table 1's footnote states explicitly.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Eight clinical studies pooled from the literature and digitized with GetData",
       "Graph Digitizer 2.26: six adult (Wang 2021, Jaruratanasirikul 2005, Nilsson",
       "1991, Norrby 1983, Drusano 1984, Gibson 1985) in Supplementary Table S1 and",

@@ -44,18 +44,18 @@ Chan_2025_atezolizumab_isr <- function() {
   )
   vignette <- "Chan_2025_atezolizumab_sc_nsclc"
   units <- list(
-    time          = "n/a (static Cycle-1 landmark safety regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
+    time = "n/a (static Cycle-1 landmark safety regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
     concentration = "prob_isr (probability of an injection site reaction, 0-1; also logit_isr)"
   )
 
   covariateData <- list(
     AUC_ATEZO = list(
-      description        = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
-      units              = "ug*day/mL",
-      type               = "continuous",
+      description = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
+      units = "ug*day/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 1000, not centred: Chan 2025",
         "Table S10G labels the row 'AUC0-21d (Increase of 1000",
         "ug*day/mL)', so the coefficient 0.581 is the log-odds per 1000",
@@ -69,14 +69,14 @@ Chan_2025_atezolizumab_isr <- function() {
         "geometric mean 2907 ug*day/mL (geoCV 35.9 percent), median 2974,",
         "range 666-6572."
       ),
-      source_name        = "AUC0-21d"
+      source_name = "AUC0-21d"
     ),
     RACE_HISPANIC = list(
-      description        = "Hispanic or Latino ethnicity indicator (1 = Hispanic or Latino, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hispanic or Latino ethnicity indicator (1 = Hispanic or Latino, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Hispanic or Latino, the model's reference level)",
-      notes              = paste(
+      notes = paste(
         "The non-reference level of a THREE-level ethnicity factor whose",
         "levels are not-Hispanic-or-Latino (reference), Hispanic or",
         "Latino, and Unknown. Chan 2025 Table S10G prints rows for only",
@@ -96,14 +96,14 @@ Chan_2025_atezolizumab_isr <- function() {
         "and was NOT retained there (control-stream block F1ETHN, $THETA",
         "0 FIX)."
       ),
-      source_name        = "ethnic: Hispanic or Latino"
+      source_name = "ethnic: Hispanic or Latino"
     ),
     RACE_HISPANIC_MISSING = list(
-      description        = "Ethnicity recorded as Unknown indicator (1 = ethnicity unknown / not reported, 0 = ethnicity recorded)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ethnicity recorded as Unknown indicator (1 = ethnicity unknown / not reported, 0 = ethnicity recorded)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ethnicity recorded; mutually exclusive with RACE_HISPANIC)",
-      notes              = paste(
+      notes = paste(
         "The third level of the ethnicity factor, carried as its own",
         "indicator rather than collapsed onto the not-Hispanic reference,",
         "exactly as ADA_MISSING is carried alongside ADA_POS in",
@@ -118,18 +118,18 @@ Chan_2025_atezolizumab_isr <- function() {
         "downstream user reproduces. Interpret with caution: the",
         "missingness mechanism is not stated."
       ),
-      source_name        = "ethnic: Unknown"
+      source_name = "ethnic: Unknown"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246,
-    n_studies      = 1,
-    disease_state  = "locally advanced or metastatic non-small cell lung cancer",
+    species = "human",
+    n_subjects = 246,
+    n_studies = 1,
+    disease_state = "locally advanced or metastatic non-small cell lung cancer",
     race_ethnicity = "61 of 246 patients (24.8 percent) are Hispanic or Latino (Chan 2025 Discussion); the remainder are not-Hispanic-or-Latino or Unknown",
-    dose_range     = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
-    notes          = paste(
+    dose_range = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
+    notes = paste(
       "Cohort 5 of the phase III (part 2) portion of IMscin001",
       "(NCT03735121). This endpoint exists only in the subcutaneous arm.",
       "Chan 2025 Results records that 'No patient who received",

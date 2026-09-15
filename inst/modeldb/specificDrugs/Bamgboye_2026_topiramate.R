@@ -15,77 +15,77 @@ Bamgboye_2026_topiramate <- function() {
   # biological matrix. The model is intravenous-only (no depot); doses land
   # directly in `central` as a 10-minute infusion.
   compartmentData <- list(
-    central     = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling referenced to 70 kg, applied to every disposition parameter: exponent fixed at 0.75 for the clearances (CL, Q2, Q3) and at 1 for the volumes (V1, V2, V3). Bamgboye 2026 Methods states the exponents were fixed a priori 'to balance model complexity with physiological plausibility'; Table 2 prints the scaling inline in each parameter row (e.g. 'CL (L/h) 1.31 x (WT/70)^0.75'). Weight is time-fixed in the source analysis (single-dose study).",
-      source_name        = "WT"
+      notes = "Allometric scaling referenced to 70 kg, applied to every disposition parameter: exponent fixed at 0.75 for the clearances (CL, Q2, Q3) and at 1 for the volumes (V1, V2, V3). Bamgboye 2026 Methods states the exponents were fixed a priori 'to balance model complexity with physiological plausibility'; Table 2 prints the scaling inline in each parameter row (e.g. 'CL (L/h) 1.31 x (WT/70)^0.75'). Weight is time-fixed in the source analysis (single-dose study).",
+      source_name = "WT"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant enzyme-inducing antiepileptic drug indicator; 1 = the patient was receiving an enzyme-inducing comedication, 0 = not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant enzyme-inducing antiepileptic drug indicator; 1 = the patient was receiving an enzyme-inducing comedication, 0 = not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no enzyme-inducing comedication)",
-      notes              = "The 7 of 20 patients (35%) coded 1 were taking carbamazepine (n = 4), phenytoin (n = 1), oxcarbazepine (n = 1), or both carbamazepine and phenytoin (n = 1) (Bamgboye 2026 Methods, Study Population). The source deliberately collapses all inducing comedications into a single binary covariate rather than per-drug terms because of the small sample size (Bamgboye 2026 Discussion, limitations). Effect is multiplicative on CL in power form: CL is multiplied by 1.63^CONMED_EIAED, i.e. 63% higher clearance on an inducer. Note this cohort's inducer list includes oxcarbazepine, which is a weaker inducer than carbamazepine or phenytoin; the source acknowledges the uniform-effect assumption as a limitation.",
-      source_name        = "Inducer"
+      notes = "The 7 of 20 patients (35%) coded 1 were taking carbamazepine (n = 4), phenytoin (n = 1), oxcarbazepine (n = 1), or both carbamazepine and phenytoin (n = 1) (Bamgboye 2026 Methods, Study Population). The source deliberately collapses all inducing comedications into a single binary covariate rather than per-drug terms because of the small sample size (Bamgboye 2026 Discussion, limitations). Effect is multiplicative on CL in power form: CL is multiplied by 1.63^CONMED_EIAED, i.e. 63% higher clearance on an inducer. Note this cohort's inducer list includes oxcarbazepine, which is a weaker inducer than carbamazepine or phenytoin; the source acknowledges the uniform-effect assumption as a limitation.",
+      source_name = "Inducer"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years; screened as a covariate on CL and V1 in the forward-inclusion step and not retained (dOFV = -0.95, below the 3.84 threshold).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not retained (Bamgboye 2026 Table S3 model 3; Discussion). Cohort age 26-74 years, mean 39.8."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained (Bamgboye 2026 Table S3 model 3; Discussion). Cohort age 26-74 years, mean 39.8."
     ),
     HT = list(
       description = "Body height at baseline; screened as a covariate on CL and V1 in the forward-inclusion step and not retained (dOFV = -1.53, below the 3.84 threshold).",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not retained (Bamgboye 2026 Table S3 model 4). Cohort height 155-182 cm, mean 169."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not retained (Bamgboye 2026 Table S3 model 4). Cohort height 155-182 cm, mean 169."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault equation; screened on CL in addition to the retained inducer effect and not retained (dOFV = -1.84, below the 3.84 threshold).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened; not retained (Bamgboye 2026 Table S3 model 6; Discussion). The source attributes the absent effect to the near-normal renal function of the cohort (46-206 mL/min, median 102.5) and states the model may not generalize to renal impairment.",
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened; not retained (Bamgboye 2026 Table S3 model 6; Discussion). The source attributes the absent effect to the near-normal renal function of the cohort (46-206 mL/min, median 102.5) and states the model may not generalize to renal impairment.",
       source_name = "CrCL"
     ),
     SEXF = list(
       description = "Female-sex indicator; listed among the tested covariates in Methods and not retained in the final model.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained (Bamgboye 2026 Methods, covariate analysis; Discussion). Cohort 13 female (65%) / 7 male (35%). Sex does not appear as a numbered row in Table S3, so no dOFV is reported for it."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained (Bamgboye 2026 Methods, covariate analysis; Discussion). Cohort 13 female (65%) / 7 male (35%). Sex does not appear as a numbered row in Table S3, so no dOFV is reported for it."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = 246L,
-    age_range      = "26-74 years",
-    age_median     = "41.5 years",
-    weight_range   = "54.5-150.3 kg",
-    weight_median  = "85.2 kg",
-    height_range   = "155-182 cm",
-    height_median  = "170 cm",
+    age_range = "26-74 years",
+    age_median = "41.5 years",
+    weight_range = "54.5-150.3 kg",
+    weight_median = "85.2 kg",
+    height_range = "155-182 cm",
+    height_median = "170 cm",
     sex_female_pct = 65,
     race_ethnicity = c(White = 100),
-    disease_state  = "Adults on maintenance oral topiramate therapy for epilepsy or migraine. Pregnant or breastfeeding individuals, and those with a history of intolerance to intravenous administration or known topiramate hypersensitivity, were excluded.",
-    dose_range     = "Single 25 mg dose of stable-isotope-labeled intravenous topiramate (10 mg/mL in 10% sulfobutyl ether beta-cyclodextrin), infused over 10 minutes, given alongside the patient's usual morning oral topiramate dose.",
+    disease_state = "Adults on maintenance oral topiramate therapy for epilepsy or migraine. Pregnant or breastfeeding individuals, and those with a history of intolerance to intravenous administration or known topiramate hypersensitivity, were excluded.",
+    dose_range = "Single 25 mg dose of stable-isotope-labeled intravenous topiramate (10 mg/mL in 10% sulfobutyl ether beta-cyclodextrin), infused over 10 minutes, given alongside the patient's usual morning oral topiramate dose.",
     renal_function = "Creatinine clearance (Cockcroft-Gault) 46-206 mL/min, median 102.5 (mean 106.7, SD 34.69). No patients with clinically important renal impairment.",
-    co_medication  = "7 of 20 patients (35%) on enzyme-inducing comedications: carbamazepine (n = 4), phenytoin (n = 1), oxcarbazepine (n = 1), carbamazepine + phenytoin (n = 1). All patients were on maintenance oral topiramate, which the stable-isotope label allows to be quantified separately from the IV dose (distinct m/z 338 vs 344 transitions), so no oral washout was required.",
-    regions        = "Single centre, United States (University of Minnesota; IND #78993).",
-    notes          = "Demographics from Bamgboye 2026 Table 1. Rich sampling: predose and 5, 15, 30 min and 1, 2, 4, 6, 12, 24, 48, 72, 96 h post-dose. The source attributes its three-compartment structure (versus the one- or two-compartment models typical of oral topiramate analyses) to this early-time-point-dense sampling; see modellib('Ahmed_2015_topiramate') for the two-compartment IV + oral model in healthy volunteers that this paper cites as reference 21."
+    co_medication = "7 of 20 patients (35%) on enzyme-inducing comedications: carbamazepine (n = 4), phenytoin (n = 1), oxcarbazepine (n = 1), carbamazepine + phenytoin (n = 1). All patients were on maintenance oral topiramate, which the stable-isotope label allows to be quantified separately from the IV dose (distinct m/z 338 vs 344 transitions), so no oral washout was required.",
+    regions = "Single centre, United States (University of Minnesota; IND #78993).",
+    notes = "Demographics from Bamgboye 2026 Table 1. Rich sampling: predose and 5, 15, 30 min and 1, 2, 4, 6, 12, 24, 48, 72, 96 h post-dose. The source attributes its three-compartment structure (versus the one- or two-compartment models typical of oral topiramate analyses) to this early-time-point-dense sampling; see modellib('Ahmed_2015_topiramate') for the two-compartment IV + oral model in healthy volunteers that this paper cites as reference 21."
   )
 
   ini({

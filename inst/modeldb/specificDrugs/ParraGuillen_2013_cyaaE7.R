@@ -16,23 +16,37 @@ ParraGuillen_2013_cyaaE7 <- function() {
   )
   vignette <- "ParraGuillen_2013_tumor_immunotherapy"
   paper_specific_compartments <- c("vac", "tran", "svac", "reg", "tumor_size")
-  units <- list(time = "day", dosing = "(arbitrary unit, set to 1 at vaccine injection)", concentration = "(K-PD, no PK)")
+  units <- list(
+    time = "day",
+    dosing = "(arbitrary unit, set to 1 at vaccine injection)",
+    concentration = "(K-PD, no PK)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    vac        = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
-    tran       = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
-    svac       = list(analyte = "SVAC (vaccine-elicited inhibitory signal)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    vac = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tran = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    svac = list(
+      analyte = "SVAC (vaccine-elicited inhibitory signal)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
     tumor_size = list(analyte = "TC1 tumor size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    reg        = list(analyte = "REG (Hill-function regulator)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    reg = list(
+      analyte = "REG (Hill-function regulator)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     MIX_VAC_RELAPSE = list(
-      description        = paste(
+      description = paste(
         "Per-subject binary mixture-model class indicator. 1 = relapser",
         "subpopulation (transient vaccine-elicited inhibitory signal, SVAC",
         "degradation rate k2 = k1; tumor regrowth observed after initial",
@@ -40,10 +54,10 @@ ParraGuillen_2013_cyaaE7 <- function() {
         "(permanent vaccine-elicited inhibitory signal, k2 = 0 FIX; complete",
         "tumor regression maintained; 84.4 % of mice). Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (responder / cure subpopulation; majority class at 84.4 %)",
-      notes              = paste(
+      notes = paste(
         "Latent class from a NONMEM $MIXTURE block in Parra-Guillen 2013",
         "(Methods Data Evaluation bullet (e); Discussion p. 803). Population",
         "probability of relapse 1 - P(1) = 0.156 was obtained from a",
@@ -55,33 +69,33 @@ ParraGuillen_2013_cyaaE7 <- function() {
         "For population simulation, draw MIX_VAC_RELAPSE ~ Bernoulli(0.156)",
         "per subject."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment; component 2 = relapser)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment; component 2 = relapser)"
     )
   )
 
   population <- list(
-    species        = "mouse (female C57BL/6, 5 weeks old; subcutaneous TC1 tumor expressing HPV E7)",
-    n_subjects     = 93L,
-    n_studies      = 1L,
-    age_range      = "5 weeks at tumor cell inoculation",
-    weight_range   = NA_character_,
+    species = "mouse (female C57BL/6, 5 weeks old; subcutaneous TC1 tumor expressing HPV E7)",
+    n_subjects = 93L,
+    n_studies = 1L,
+    age_range = "5 weeks at tumor cell inoculation",
+    weight_range = NA_character_,
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Subcutaneous TC1 tumor model (5 x 10^5 cells injected into the shaved",
       "back on day 0; TC1 = mouse lung-epithelial cell line transformed with",
       "HPV-16 E6 / E7 and activated H-Ras). Tumor size measured as the mean",
       "of two perpendicular diameters; limit of quantification 2 mm (61.6 %",
       "of all tumor-size observations were BQL)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single IV dose of 50 ug CyaA-E7 vaccine on one of day 4 (n = 15), 7",
       "(n = 16), 11 (n = 14), 18 (n = 15), 25 (n = 14), or 30 (n = 15) after",
       "tumor cell inoculation. Vehicle (PBS) control n = 19 on day 4. CyaA-E7",
       "= fusion of the adenylate cyclase of Bordetella pertussis to the HPV E7",
       "oncoprotein, targeting antigen to dendritic cell CD11b receptors."
     ),
-    regions        = "Preclinical (Berraondo et al. 2007 dataset; Centre for Applied Medical Research / CIMA, Pamplona, Spain)",
-    notes          = paste(
+    regions = "Preclinical (Berraondo et al. 2007 dataset; Centre for Applied Medical Research / CIMA, Pamplona, Spain)",
+    notes = paste(
       "Training (model-building) dataset: 93 mice (6 vaccine-arm groups + 1",
       "control). External validation dataset (Parra-Guillen 2013 Figure 1",
       "but not used in this model fit): 34 additional mice (n = 23 PBS day 4,",

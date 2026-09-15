@@ -8,84 +8,84 @@ Tikiso_2021_abacavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used for allometric scaling with reference weight 70 kg (exponent 0.75 on CL and Q; exponent 1 on Vc and Vp); see Tikiso 2021 Section 2.4 and Table 3.",
-      source_name        = "WT"
+      notes = "Time-varying. Used for allometric scaling with reference weight 70 kg (exponent 0.75 on CL and Q; exponent 1 on Vc and Vp); see Tikiso 2021 Section 2.4 and Table 3.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (postnatal age + assumed gestational age of 9 months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (postnatal age + assumed gestational age of 9 months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the sigmoidal Hill maturation function on CL (Tikiso 2021 Eq. 1). Tikiso 2021 lacked subject-level gestational ages and assumed 9 months for every subject; for new simulations, supply PAGE = postnatal_age_months + 9 unless a real gestational age is available.",
-      source_name        = "PMAGE"
+      notes = "Time-varying. Drives the sigmoidal Hill maturation function on CL (Tikiso 2021 Eq. 1). Tikiso 2021 lacked subject-level gestational ages and assumed 9 months for every subject; for new simulations, supply PAGE = postnatal_age_months + 9 unless a real gestational age is available.",
+      source_name = "PMAGE"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz indicator (1 = on EFV-based ART, 0 = on standard LPV/r 4:1 reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz indicator (1 = on EFV-based ART, 0 = on standard LPV/r 4:1 reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (standard LPV/r 4:1)",
-      notes              = "Multiplicative effect on CL relative to the LPV/r 4:1 reference; +12% in Tikiso 2021 Table 4 (efavirenz is a known UGT inducer).",
-      source_name        = "EFV"
+      notes = "Multiplicative effect on CL relative to the LPV/r 4:1 reference; +12% in Tikiso 2021 Table 4 (efavirenz is a known UGT inducer).",
+      source_name = "EFV"
     ),
     CONMED_RIF_LPVR4 = list(
-      description        = "Concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator (1 = RIF + super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin-based antitubercular treatment with super-boosted lopinavir/ritonavir 4:4 indicator (1 = RIF + super-boosted LPV/r 4:4, 0 = standard LPV/r 4:1 or EFV reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (standard LPV/r 4:1 or EFV)",
-      notes              = "Multiplicative effect on F relative to the LPV/r 4:1 reference; -29.4% in Tikiso 2021 Table 4. The reduction is attributed to PXR-mediated UGT induction by rifampicin (and possibly extra ritonavir).",
-      source_name        = "RIF"
+      notes = "Multiplicative effect on F relative to the LPV/r 4:1 reference; -29.4% in Tikiso 2021 Table 4. The reduction is attributed to PXR-mediated UGT induction by rifampicin (and possibly extra ritonavir).",
+      source_name = "RIF"
     ),
     FORM_TABLET = list(
-      description        = "Abacavir tablet formulation indicator (1 = abacavir + lamivudine fixed-dose-combination tablet, 0 = abacavir liquid solution)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Abacavir tablet formulation indicator (1 = abacavir + lamivudine fixed-dose-combination tablet, 0 = abacavir liquid solution)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (liquid solution)",
-      notes              = "Multiplicative effect on the absorption mean transit time MTT relative to the liquid reference; +24.9% (slower absorption) in Tikiso 2021 Table 4. Distinct from the FDC canonical (Wilkins 2008 antitubercular FDC vs SDC); see covariate-columns.md.",
-      source_name        = "FORM_TABLET"
+      notes = "Multiplicative effect on the absorption mean transit time MTT relative to the liquid reference; +24.9% (slower absorption) in Tikiso 2021 Table 4. Distinct from the FDC canonical (Wilkins 2008 antitubercular FDC vs SDC); see covariate-columns.md.",
+      source_name = "FORM_TABLET"
     ),
     MAL_NOURISH = list(
-      description        = "Malnutrition indicator at study entry (1 = malnourished per WHO definition, height-for-age and weight-for-age Z-scores both < -2.0; 0 = not malnourished)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Malnutrition indicator at study entry (1 = malnourished per WHO definition, height-for-age and weight-for-age Z-scores both < -2.0; 0 = not malnourished)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not malnourished)",
-      notes              = "Subject-level time-fixed covariate flagging malnutrition status at the start of nutritional supplementation. Combined with T_NUT_SUPP via mal_decay = MAL_NOURISH * exp(-T_NUT_SUPP * log(2) / e_mal_thalf) to drive the time-decaying malnutrition effect on F (+115% at t=0) and on CL (-64% at t=0); see Tikiso 2021 Eq. 2 and Table 4.",
-      source_name        = "MAL"
+      notes = "Subject-level time-fixed covariate flagging malnutrition status at the start of nutritional supplementation. Combined with T_NUT_SUPP via mal_decay = MAL_NOURISH * exp(-T_NUT_SUPP * log(2) / e_mal_thalf) to drive the time-decaying malnutrition effect on F (+115% at t=0) and on CL (-64% at t=0); see Tikiso 2021 Eq. 2 and Table 4.",
+      source_name = "MAL"
     ),
     T_NUT_SUPP = list(
-      description        = "Time on nutritional supplementation in days (0 at start of supplementation; increases with time)",
-      units              = "days",
-      type               = "continuous",
+      description = "Time on nutritional supplementation in days (0 at start of supplementation; increases with time)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the exponential decay of the malnutrition effect with half-life 12.2 days (Tikiso 2021 Eq. 2 and Table 4). For non-malnourished subjects (MAL_NOURISH = 0) the value is irrelevant because the malnutrition decay is gated by MAL_NOURISH; supply 0 by default. For fully-recovered malnourished subjects, supply a large value (e.g., 100) so the decay reaches near zero.",
-      source_name        = "TNUTRI"
+      notes = "Time-varying. Drives the exponential decay of the malnutrition effect with half-life 12.2 days (Tikiso 2021 Eq. 2 and Table 4). For non-malnourished subjects (MAL_NOURISH = 0) the value is irrelevant because the malnutrition decay is gated by MAL_NOURISH; supply 0 by default. For fully-recovered malnourished subjects, supply a large value (e.g., 100) so the decay reaches near zero.",
+      source_name = "TNUTRI"
     )
   )
 
   population <- list(
-    n_subjects     = 230L,
-    n_studies      = 4L,
-    age_range      = "0.1-12.8 years (postnatal)",
-    age_median     = "2.1 years",
-    weight_range   = "2.5-30.0 kg",
-    weight_median  = "9.8 kg",
+    n_subjects = 230L,
+    n_studies = 4L,
+    age_range = "0.1-12.8 years (postnatal)",
+    age_median = "2.1 years",
+    weight_range = "2.5-30.0 kg",
+    weight_median = "9.8 kg",
     sex_female_pct = 52.6,
-    disease_state  = "HIV-infected African children on abacavir-containing combination antiretroviral therapy; 115 of 230 (50.0%) malnourished by WHO height-for-age and weight-for-age Z-score criteria, 104 of 230 (45.2%) co-infected with tuberculosis.",
-    dose_range     = "Oral abacavir 8 mg/kg twice daily or 16 mg/kg once daily per WHO weight-band guidelines; total daily dose 16 mg/kg.",
-    regions        = "South Africa, Uganda, Zambia, Zimbabwe",
-    co_medication  = "154 of 230 on lopinavir/ritonavir 4:1 (standard LPV/r); 76 on efavirenz; 104 on rifampicin-based antitubercular treatment of whom 101 received super-boosted LPV/r 4:4 and 3 received EFV.",
-    studies        = "Pooled analysis of ARROW (Uganda/Zimbabwe; n=41 children on abacavir + EFV), CHAPAS-3 (Uganda/Zambia; n=27 children on abacavir + EFV), DNDi (South Africa; n=87 children on abacavir + LPV/r 4:1 plus rifampicin-based TB treatment), and MATCH (South Africa; n=75 severely malnourished children on abacavir + LPV/r 4:1).",
-    notes          = "Baseline demographics from Tikiso 2021 Tables 1 and 2. n_subjects = 230 children with 2760 plasma concentrations of which 285 (10.3%) were below the lower limit of quantification (mostly pre-dose). Lower limits of quantification were 0.0243 ug/mL (DNDi) and 0.0238 ug/mL (CHAPAS, MATCH); the ARROW LLOQ was reported separately as 0.0243 ug/mL (LC-MS/MS at the University of Cape Town; HPLC at GlaxoSmithKline for ARROW). Sex breakdown: 109 male and 121 female (52.6% female)."
+    disease_state = "HIV-infected African children on abacavir-containing combination antiretroviral therapy; 115 of 230 (50.0%) malnourished by WHO height-for-age and weight-for-age Z-score criteria, 104 of 230 (45.2%) co-infected with tuberculosis.",
+    dose_range = "Oral abacavir 8 mg/kg twice daily or 16 mg/kg once daily per WHO weight-band guidelines; total daily dose 16 mg/kg.",
+    regions = "South Africa, Uganda, Zambia, Zimbabwe",
+    co_medication = "154 of 230 on lopinavir/ritonavir 4:1 (standard LPV/r); 76 on efavirenz; 104 on rifampicin-based antitubercular treatment of whom 101 received super-boosted LPV/r 4:4 and 3 received EFV.",
+    studies = "Pooled analysis of ARROW (Uganda/Zimbabwe; n=41 children on abacavir + EFV), CHAPAS-3 (Uganda/Zambia; n=27 children on abacavir + EFV), DNDi (South Africa; n=87 children on abacavir + LPV/r 4:1 plus rifampicin-based TB treatment), and MATCH (South Africa; n=75 severely malnourished children on abacavir + LPV/r 4:1).",
+    notes = "Baseline demographics from Tikiso 2021 Tables 1 and 2. n_subjects = 230 children with 2760 plasma concentrations of which 285 (10.3%) were below the lower limit of quantification (mostly pre-dose). Lower limits of quantification were 0.0243 ug/mL (DNDi) and 0.0238 ug/mL (CHAPAS, MATCH); the ARROW LLOQ was reported separately as 0.0243 ug/mL (LC-MS/MS at the University of Cape Town; HPLC at GlaxoSmithKline for ARROW). Sex breakdown: 109 male and 121 female (52.6% female)."
   )
 
   ini({

@@ -40,24 +40,24 @@ Saleh_2023_topotecan_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    central              = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "topotecan", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE)
+    central = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "topotecan", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "topotecan", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "topotecan", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "topotecan", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (CD1 nude)",
+    species = "mouse (CD1 nude)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "4 mg/kg IV (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "4 mg/kg IV (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for topotecan came from Stewart lab, St. Jude Children's Research Hospital",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -255,4 +255,3 @@ Saleh_2023_topotecan_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

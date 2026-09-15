@@ -42,43 +42,43 @@ Miao_2023_teclistamab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "teclistamab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "teclistamab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "teclistamab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "teclistamab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "teclistamab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric-style) effect normalised to the cohort median of 74 kg, with separately estimated exponents on the time-independent clearance component (0.704), the central volume (0.358) and the peripheral volume (1.40). Miao 2023 Table 2 footnotes a, c and d. Body weight was carried into the structural model a priori rather than by stepwise selection, because it is an established covariate for IgG-based monoclonal antibodies (Methods 2.3). No exponent was applied to Q, which has no covariates. Cohort median 74.3 kg, range 41.0-139 kg (Table 1). Note the reference value is the rounded 74 kg that appears in the printed equations, not the tabulated 74.3 kg median.",
-      source_name        = "BWT"
+      notes = "Power (allometric-style) effect normalised to the cohort median of 74 kg, with separately estimated exponents on the time-independent clearance component (0.704), the central volume (0.358) and the peripheral volume (1.40). Miao 2023 Table 2 footnotes a, c and d. Body weight was carried into the structural model a priori rather than by stepwise selection, because it is an established covariate for IgG-based monoclonal antibodies (Methods 2.3). No exponent was applied to Q, which has no covariates. Cohort median 74.3 kg, range 41.0-139 kg (Table 1). Note the reference value is the rounded 74 kg that appears in the printed equations, not the tabulated 74.3 kg median.",
+      source_name = "BWT"
     ),
     ISS_II = list(
-      description        = "Baseline International Staging System stage II multiple myeloma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline International Staging System stage II multiple myeloma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ISS stage I, the model reference level; ISS_II and ISS_III are mutually exclusive so an ISS stage III patient has ISS_II = 0)",
-      notes              = "Multiplicative factor 1.31 on the time-independent clearance component, encoded exactly as printed in Miao 2023 Table 2 footnote a: CL1 = 0.449 * (BWT/74)^0.704 * 1.31^(ISS = II) * 1.67^(ISS = III) * 0.689^(TPMM = Non-IgG). Higher clearance, hence lower exposure, for ISS stage II than stage I; the paper reports a corresponding ~17% lower geometric-mean Cave,1stdose for stage II vs stage I (Results 3.5). Baseline ISS was derived from serum beta-2-microglobulin and albumin (Table 1 footnote b). Cohort split: stage I 165 (48.8%), II 109 (32.2%), III 59 (17.5%), not reported 5 (1.5%).",
-      source_name        = "ISS"
+      notes = "Multiplicative factor 1.31 on the time-independent clearance component, encoded exactly as printed in Miao 2023 Table 2 footnote a: CL1 = 0.449 * (BWT/74)^0.704 * 1.31^(ISS = II) * 1.67^(ISS = III) * 0.689^(TPMM = Non-IgG). Higher clearance, hence lower exposure, for ISS stage II than stage I; the paper reports a corresponding ~17% lower geometric-mean Cave,1stdose for stage II vs stage I (Results 3.5). Baseline ISS was derived from serum beta-2-microglobulin and albumin (Table 1 footnote b). Cohort split: stage I 165 (48.8%), II 109 (32.2%), III 59 (17.5%), not reported 5 (1.5%).",
+      source_name = "ISS"
     ),
     ISS_III = list(
-      description        = "Baseline International Staging System stage III multiple myeloma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline International Staging System stage III multiple myeloma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ISS stage I, the model reference level; ISS_II and ISS_III are mutually exclusive so an ISS stage II patient has ISS_III = 0)",
-      notes              = "Multiplicative factor 1.67 on the time-independent clearance component (Miao 2023 Table 2 footnote a). The paper reports a corresponding ~29% lower geometric-mean Cave,1stdose for stage III vs stage I (Results 3.5); that value is reproduced by this model because CL1 carries only part of the total clearance at the time Cave,1stdose is measured. See ISS_II for the shared staging definition.",
-      source_name        = "ISS"
+      notes = "Multiplicative factor 1.67 on the time-independent clearance component (Miao 2023 Table 2 footnote a). The paper reports a corresponding ~29% lower geometric-mean Cave,1stdose for stage III vs stage I (Results 3.5); that value is reproduced by this model because CL1 carries only part of the total clearance at the time Cave,1stdose is measured. See ISS_II for the shared staging definition.",
+      source_name = "ISS"
     ),
     MM_NIGG = list(
-      description        = "Non-IgG-secreting multiple myeloma indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-IgG-secreting multiple myeloma indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IgG multiple myeloma) -- Miao 2023 anchors the typical values of CL1 and CL2 to IgG myeloma and applies a reduction factor to non-IgG patients, the same reference orientation as Fau_2020_isatuximab and the opposite of Xu_2020_daratumumab. Canonical column semantics (1 = non-IgG) are preserved.",
-      notes              = "The only covariate retained on BOTH clearance components: factor 0.689 on the time-independent component CL1 (Table 2 footnote a) and 0.295 on the time-dependent component CL2 (Table 2 footnote b). Non-IgG myeloma therefore lowers total clearance and raises exposure; the paper reports geometric-mean Cave,1stdose ~32% lower in IgG than in non-IgG patients (Results 3.5). Mechanistic rationale (Discussion): endogenous monoclonal IgG in IgG-myeloma patients saturates FcRn-mediated recycling and accelerates catabolism of the therapeutic IgG. Cohort split: IgG 173 (51.2%), non-IgG 165 (48.8%) (Table 1).",
-      source_name        = "TPMM"
+      notes = "The only covariate retained on BOTH clearance components: factor 0.689 on the time-independent component CL1 (Table 2 footnote a) and 0.295 on the time-dependent component CL2 (Table 2 footnote b). Non-IgG myeloma therefore lowers total clearance and raises exposure; the paper reports geometric-mean Cave,1stdose ~32% lower in IgG than in non-IgG patients (Results 3.5). Mechanistic rationale (Discussion): endogenous monoclonal IgG in IgG-myeloma patients saturates FcRn-mediated recycling and accelerates catabolism of the therapeutic IgG. Cohort split: IgG 173 (51.2%), non-IgG 165 (48.8%) (Table 1).",
+      source_name = "TPMM"
     )
   )
 
@@ -87,51 +87,65 @@ Miao_2023_teclistamab <- function() {
   # reports no point estimate for any of them.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened as a demographic covariate; not retained. Cohort median 64 years (range 24-84)."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a demographic covariate; not retained. Cohort 44.4% female."
     ),
     CRCL = list(
-      description = "Baseline creatinine clearance", units = "mL/min", type = "continuous",
+      description = "Baseline creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       notes = "Screened as a clinical covariate; not retained. Renal function distribution in Table 1; only 1 of 338 patients had eGFR < 30 mL/min/1.73 m2."
     ),
     ALB = list(
-      description = "Baseline serum albumin", units = "g/dL", type = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/dL",
+      type = "continuous",
       notes = "Screened as a clinical covariate; not retained in its own right. Albumin does enter the model indirectly, because baseline ISS stage is derived from serum beta-2-microglobulin and albumin (Table 1 footnote b)."
     ),
     SBCMA = list(
-      description = "Soluble B-cell maturation antigen, baseline and time-varying", units = "ng/mL", type = "continuous",
+      description = "Soluble B-cell maturation antigen, baseline and time-varying",
+      units = "ng/mL",
+      type = "continuous",
       notes = "Screened both as a baseline covariate and as a time-varying driver of the time-dependent clearance; neither was retained (models relating time-dependent clearance to time-varying sBCMA had significant increases in objective function value). Baseline sBCMA WAS a significant prognostic factor for overall response rate in the multivariate logistic regression (odds ratio 0.99 per ng/mL), which is an exposure-response finding and not part of this PK model. Discussion and Results 3.6."
     ),
     ADA_POS = list(
-      description = "Anti-teclistamab antibody positivity", units = "(binary)", type = "binary",
+      description = "Anti-teclistamab antibody positivity",
+      units = "(binary)",
+      type = "binary",
       notes = "Assessed both as a subject-level and as a time-varying covariate in a sensitivity analysis on the final model; no significant effect on PK. Only 2 of 321 ADA-evaluable patients developed anti-drug antibodies, both at a titre of 20 (Discussion)."
     ),
     ECOG_GE1 = list(
-      description = "Baseline ECOG performance status >= 1 indicator", units = "(binary)", type = "binary",
+      description = "Baseline ECOG performance status >= 1 indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as a disease characteristic; not retained. Cohort: ECOG 0 in 121 (35.8%), 1 in 216 (63.9%), 3 in 1 (0.3%)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 338L,
-    n_studies      = 1L,
-    age_range      = "24-84 years",
-    age_median     = "64 years",
-    weight_range   = "41.0-139 kg",
-    weight_median  = "74.3 kg",
+    species = "human",
+    n_subjects = 338L,
+    n_studies = 1L,
+    age_range = "24-84 years",
+    age_median = "64 years",
+    weight_range = "41.0-139 kg",
+    weight_median = "74.3 kg",
     sex_female_pct = 44.4,
     race_ethnicity = c(White = 83.4, Black = 9.2, Asian = 1.8, Other = 5.6),
-    disease_state  = "Relapsed/refractory multiple myeloma diagnosed per International Myeloma Working Group criteria. Phase I patients were relapsed, refractory or intolerant to established therapies; phase II patients had received at least three prior lines including an immunomodulatory agent, a proteasome inhibitor and an anti-CD38 antibody (cohort A) or additionally prior anti-BCMA therapy (cohort C). Baseline ISS stage I 48.8%, II 32.2%, III 17.5%; IgG myeloma 51.2%; triple-refractory 79.0%; >3 prior lines of therapy 79.9%.",
-    dose_range     = "Intravenous 0.0003-0.0192 mg/kg Q2W and up to 0.01/0.06/0.24 then 0.72 mg/kg QW; subcutaneous 0.02 mg/kg up to 0.06/0.3/1.5 then 6 mg/kg QW, plus flat 2/6/30 then 150/300 mg QW/Q2W. Recommended phase II dose 1.5 mg/kg SC weekly preceded by step-up doses of 0.06 and 0.3 mg/kg.",
-    regions        = "Multicenter international (not tabulated by region in Miao 2023).",
+    disease_state = "Relapsed/refractory multiple myeloma diagnosed per International Myeloma Working Group criteria. Phase I patients were relapsed, refractory or intolerant to established therapies; phase II patients had received at least three prior lines including an immunomodulatory agent, a proteasome inhibitor and an anti-CD38 antibody (cohort A) or additionally prior anti-BCMA therapy (cohort C). Baseline ISS stage I 48.8%, II 32.2%, III 17.5%; IgG myeloma 51.2%; triple-refractory 79.0%; >3 prior lines of therapy 79.9%.",
+    dose_range = "Intravenous 0.0003-0.0192 mg/kg Q2W and up to 0.01/0.06/0.24 then 0.72 mg/kg QW; subcutaneous 0.02 mg/kg up to 0.06/0.3/1.5 then 6 mg/kg QW, plus flat 2/6/30 then 150/300 mg QW/Q2W. Recommended phase II dose 1.5 mg/kg SC weekly preceded by step-up doses of 0.06 and 0.3 mg/kg.",
+    regions = "Multicenter international (not tabulated by region in Miao 2023).",
     renal_function = "eGFR >= 90 in 29.9%, 60 to < 90 in 45.3%, 30 to < 60 in 24.6%, < 30 in 0.3% (mL/min/1.73 m2).",
     hepatic_function = "Normal in 88.2%; mild impairment in 11.8% (NCI Organ Dysfunction Working Group criteria). No moderate or severe hepatic impairment.",
-    notes          = "Baseline demographics from Miao 2023 Table 1, 'Combined IV and SC dosing' column (n = 338). The analysis dataset held 4840 measurable serum concentrations: 83 patients / 1976 observations intravenous and 255 patients / 2864 observations subcutaneous. MajesTEC-1 is a single phase I/II first-in-human trial carrying two ClinicalTrials.gov registrations (NCT03145181 for phase I, NCT04557098 for phase II), which is why n_studies is 1. PK data cutoff 1 December 2021."
+    notes = "Baseline demographics from Miao 2023 Table 1, 'Combined IV and SC dosing' column (n = 338). The analysis dataset held 4840 measurable serum concentrations: 83 patients / 1976 observations intravenous and 255 patients / 2864 observations subcutaneous. MajesTEC-1 is a single phase I/II first-in-human trial carrying two ClinicalTrials.gov registrations (NCT03145181 for phase I, NCT04557098 for phase II), which is why n_studies is 1. PK data cutoff 1 December 2021."
   )
 
   ini({

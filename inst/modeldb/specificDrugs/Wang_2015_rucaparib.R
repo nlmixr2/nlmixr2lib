@@ -15,18 +15,18 @@ Wang_2015_rucaparib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BL_PARP_PBL = list(
-      description        = "Subject-specific pre-dose baseline PARP-1 activity in peripheral blood lymphocytes",
-      units              = "pmol/10^6 PBL",
-      type               = "continuous",
+      description = "Subject-specific pre-dose baseline PARP-1 activity in peripheral blood lymphocytes",
+      units = "pmol/10^6 PBL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject baseline biomarker; appears in the residual maximum-inhibition equation",
         "Emin = TV(Emin) * (BL_PARP_PBL / BLB_median)^alpha (Wang 2015 equation 2). The numeric BLB_median",
         "is not published; the model uses 90.8 pmol/10^6 PBL (= TV(E0) from Wang 2015 Table 2)",
@@ -34,31 +34,31 @@ Wang_2015_rucaparib <- function() {
         "E0 and the exponent value but not the actual centring constant. For typical-value",
         "simulation, set BL_PARP_PBL to 90.8 so Emin reduces to TV(Emin)."
       ),
-      source_name        = "BLB"
+      source_name = "BLB"
     )
   )
 
   population <- list(
-    n_subjects     = 32L,                                        # Wang 2015 Methods (Subjects and Study Design): "A total of 32 patients participated in the study"
-    n_studies      = 1L,                                         # Single Phase 1 first-in-patient study A4991002
-    age_range      = "not reported in main text",                # Demographic table not in main text; Methods lists demographics tested as covariates but no summary table
-    weight_range   = "not reported in main text",
+    n_subjects = 32L, # Wang 2015 Methods (Subjects and Study Design): "A total of 32 patients participated in the study"
+    n_studies = 1L, # Single Phase 1 first-in-patient study A4991002
+    age_range = "not reported in main text", # Demographic table not in main text; Methods lists demographics tested as covariates but no summary table
+    weight_range = "not reported in main text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Adults with advanced solid tumors (Part 1: any tumor type meeting eligibility criteria; Part 2: metastatic malignant melanoma) participating in a Phase 1 first-in-patient dose-escalation study A4991002.",
-    dose_range     = "Rucaparib 1, 2, 4, 8, 12, or 18 mg/m^2 IV over 30 min. Part 1 used escalating single doses up to the PARP Inhibitory Dose (PID, 12 mg/m^2). Part 2 administered the PID and 18 mg/m^2 once daily for 5 days each 28-day cycle alongside escalating temozolomide (TMZ) doses (135, 170, 200 mg/m^2/day).",
-    regions        = "Multicentre clinical trial; specific regions not reported in main text.",
-    co_medication  = "Temozolomide co-administration in combination cohorts; TMZ had no evident effect on rucaparib PK so PK data with and without TMZ were pooled (Methods: Population PK and PK/PD Analyses).",
-    n_pk_samples   = 1022L,                                      # Wang 2015 Results: "A total of 1022 rucaparib PK samples obtained from the 26 patients who had valid PK data"
-    n_subjects_pk  = 26L,                                        # 26 of 32 patients with valid PK data (Results)
-    n_pd_samples_pbl = 348L,                                     # Wang 2015 Results: "A total of 348 PARP activity data values in PBL from all 32 patients participated in the study"
+    disease_state = "Adults with advanced solid tumors (Part 1: any tumor type meeting eligibility criteria; Part 2: metastatic malignant melanoma) participating in a Phase 1 first-in-patient dose-escalation study A4991002.",
+    dose_range = "Rucaparib 1, 2, 4, 8, 12, or 18 mg/m^2 IV over 30 min. Part 1 used escalating single doses up to the PARP Inhibitory Dose (PID, 12 mg/m^2). Part 2 administered the PID and 18 mg/m^2 once daily for 5 days each 28-day cycle alongside escalating temozolomide (TMZ) doses (135, 170, 200 mg/m^2/day).",
+    regions = "Multicentre clinical trial; specific regions not reported in main text.",
+    co_medication = "Temozolomide co-administration in combination cohorts; TMZ had no evident effect on rucaparib PK so PK data with and without TMZ were pooled (Methods: Population PK and PK/PD Analyses).",
+    n_pk_samples = 1022L, # Wang 2015 Results: "A total of 1022 rucaparib PK samples obtained from the 26 patients who had valid PK data"
+    n_subjects_pk = 26L, # 26 of 32 patients with valid PK data (Results)
+    n_pd_samples_pbl = 348L, # Wang 2015 Results: "A total of 348 PARP activity data values in PBL from all 32 patients participated in the study"
     n_subjects_pd_pbl = 32L,
-    n_pd_samples_tumor = 30L,                                    # Wang 2015 Results: "only 30 data points were available for analysis" (tumor PD)
-    n_subjects_pd_tumor = 15L,                                   # 14 patients in Part 2 plus one Part 1 patient at 4 mg/m^2 (Results)
-    pk_sampling    = "Plasma sampled pre-infusion, 0.25 and 0.5 h after start of infusion, and 0.25, 0.5, 1, 2, 4, 6, 8, 24 h after end of infusion on Day -7 (single-agent), Day 1, and Day 4 of the first cycle.",
+    n_pd_samples_tumor = 30L, # Wang 2015 Results: "only 30 data points were available for analysis" (tumor PD)
+    n_subjects_pd_tumor = 15L, # 14 patients in Part 2 plus one Part 1 patient at 4 mg/m^2 (Results)
+    pk_sampling = "Plasma sampled pre-infusion, 0.25 and 0.5 h after start of infusion, and 0.25, 0.5, 1, 2, 4, 6, 8, 24 h after end of infusion on Day -7 (single-agent), Day 1, and Day 4 of the first cycle.",
     pd_sampling_pbl = "PBL PARP activity sampled pre-dose, end-of-infusion, 4-6 h and 24 h after end of infusion on Days -7, 1, 4 of cycle 1 plus an additional Day 8 sample (3 days after last dose) for the duration-of-inhibition window.",
     pd_sampling_tumor = "Tumor biopsies were collected at baseline and 4-6 h or 24 h after treatment with rucaparib (Day 1) in Part 2 patients only.",
-    notes          = "S-PLUS 7.0 / NONMEM 7.1.2 (FOCE) used for analysis. M6 BQL handling per Ahn 2008 (12% of PK samples below LLOQ 2 ng/mL). Demographic / physiological covariates tested (age, gender, weight, body surface area, serum creatinine, AST, ALT, disease stage, PAR baseline in PBL, PAR baseline in tumor) -- only PAR baseline in PBL (BL_PARP_PBL) and PAR baseline in tumor were retained. None of the demographic covariates entered the final model."
+    notes = "S-PLUS 7.0 / NONMEM 7.1.2 (FOCE) used for analysis. M6 BQL handling per Ahn 2008 (12% of PK samples below LLOQ 2 ng/mL). Demographic / physiological covariates tested (age, gender, weight, body surface area, serum creatinine, AST, ALT, disease stage, PAR baseline in PBL, PAR baseline in tumor) -- only PAR baseline in PBL (BL_PARP_PBL) and PAR baseline in tumor were retained. None of the demographic covariates entered the final model."
   )
 
   ini({

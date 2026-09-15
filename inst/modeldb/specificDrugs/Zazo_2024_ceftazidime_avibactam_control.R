@@ -11,7 +11,10 @@ Zazo_2024_ceftazidime_avibactam_control <- function() {
   # ceftazidime/avibactam extraction Kroemer_2024_..._hfim (conc_caz /
   # conc_avi / bact_*) and Mohamed_2012_colistin (central_col / bact_s).
   paper_specific_compartments <- c(
-    "central_caz", "central_avi", "bact_active", "bact_resting"
+    "central_caz",
+    "central_avi",
+    "bact_active",
+    "bact_resting"
   )
 
   # NOTE ON THE STATE SCALES. Eq 5 is written as d(log10(P1))/dt, so
@@ -21,10 +24,20 @@ Zazo_2024_ceftazidime_avibactam_control <- function() {
   # reading that reproduces the Table 1 bacterial densities (see the
   # vignette "Assumptions and deviations" section for the arithmetic).
   compartmentData <- list(
-    central_caz  = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = TRUE),
-    central_avi  = list(analyte = "avibactam", units = "mg", specimen = "plasma", verified = TRUE),
-    bact_active  = list(analyte = "Pseudomonas aeruginosa, actively growing population P1 (state is log10 CFU/mL)", units = "log10 CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_resting = list(analyte = "Pseudomonas aeruginosa, resting population P2 (state is linear CFU/mL)", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    central_caz = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = TRUE),
+    central_avi = list(analyte = "avibactam", units = "mg", specimen = "plasma", verified = TRUE),
+    bact_active = list(
+      analyte = "Pseudomonas aeruginosa, actively growing population P1 (state is log10 CFU/mL)",
+      units = "log10 CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_resting = list(
+      analyte = "Pseudomonas aeruginosa, resting population P2 (state is linear CFU/mL)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

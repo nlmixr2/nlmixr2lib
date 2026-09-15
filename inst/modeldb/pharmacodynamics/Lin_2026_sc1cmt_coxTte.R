@@ -26,39 +26,54 @@ Lin_2026_sc1cmt_coxTte <- function() {
   # conventional reading of a one-compartment model, not something the paper
   # confirms. verified = TRUE requires analyte AND specimen from the source.
   compartmentData <- list(
-    depot = list(analyte = "hypothetical subcutaneous drug", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "hypothetical subcutaneous drug",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "hypothetical subcutaneous drug", units = "mg", specimen = "plasma", verified = FALSE),
-    cumhaz = list(analyte = "cumulative event hazard", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cumhaz_cens = list(analyte = "cumulative censoring hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "cumulative event hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    cumhaz_cens = list(
+      analyte = "cumulative censoring hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     SIMCOV_TI = list(
-      description        = "Meaning-free simulation covariate entering the log hazard directly (Lin 2026 'COV1'). A per-subject standard-normal draw with no clinical interpretation, used to demonstrate a TIME-INVARIANT covariate effect on the event hazard.",
-      units              = "(z-score; standard normal, mean 0, SD 1)",
-      type               = "continuous",
+      description = "Meaning-free simulation covariate entering the log hazard directly (Lin 2026 'COV1'). A per-subject standard-normal draw with no clinical interpretation, used to demonstrate a TIME-INVARIANT covariate effect on the event hazard.",
+      units = "(z-score; standard normal, mean 0, SD 1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters Eq. 6 as beta1 * SIMCOV_TI with beta1 = 0.3. Lin 2026 Methods 2.1: 'COV1 and COV2 are generated from a standard normal distribution with mean of 0 and a standard deviation of 1.' Deposited as the constant-per-subject column COV1 in Data S3.",
-      source_name        = "COV1"
+      notes = "Time-fixed per subject. Enters Eq. 6 as beta1 * SIMCOV_TI with beta1 = 0.3. Lin 2026 Methods 2.1: 'COV1 and COV2 are generated from a standard normal distribution with mean of 0 and a standard deviation of 1.' Deposited as the constant-per-subject column COV1 in Data S3.",
+      source_name = "COV1"
     ),
     SIMCOV_TV = list(
-      description        = "Meaning-free simulation covariate entering the log hazard through a time-varying transform (Lin 2026 'COV2'). A per-subject standard-normal draw with no clinical interpretation, used to demonstrate a TIME-VARYING covariate effect on the event hazard.",
-      units              = "(z-score; standard normal, mean 0, SD 1)",
-      type               = "continuous",
+      description = "Meaning-free simulation covariate entering the log hazard through a time-varying transform (Lin 2026 'COV2'). A per-subject standard-normal draw with no clinical interpretation, used to demonstrate a TIME-VARYING covariate effect on the event hazard.",
+      units = "(z-score; standard normal, mean 0, SD 1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The DATA column is time-fixed per subject; only the model-side transform COVT2(t) = SIMCOV_TV * log(t + 20) is time-varying (Lin 2026 Eq. 5). That is precisely the paper's demonstration -- a time-invariant draw given a time-varying effect. Enters Eq. 6 as beta2 * COVT2(t) with beta2 = 0.05. Lin 2026 Methods 2.1 calls the time function 'an arbitrary logarithmic time function for demonstration purposes' and states that 'the additive constant of 20 was included to ensure stability at early time points and has no clinical interpretation.' Deposited as the constant-per-subject column COV2 in Data S3.",
-      source_name        = "COV2"
+      notes = "The DATA column is time-fixed per subject; only the model-side transform COVT2(t) = SIMCOV_TV * log(t + 20) is time-varying (Lin 2026 Eq. 5). That is precisely the paper's demonstration -- a time-invariant draw given a time-varying effect. Enters Eq. 6 as beta2 * COVT2(t) with beta2 = 0.05. Lin 2026 Methods 2.1 calls the time function 'an arbitrary logarithmic time function for demonstration purposes' and states that 'the additive constant of 20 was included to ensure stability at early time points and has no clinical interpretation.' Deposited as the constant-per-subject column COV2 in Data S3.",
+      source_name = "COV2"
     )
   )
 
   population <- list(
-    species        = "None (methodology paper; simulation-only data-generating model with no drug, no patients, and no fitted estimates).",
-    n_subjects     = 1500L,
-    n_studies      = 1L,
-    disease_state  = "N/A (Monte Carlo clinical-trial simulation study; not a fit of any real molecule).",
-    dose_range     = "Five equally sized dose groups given 1, 3, 10, 30 and 100 mg subcutaneously every 4 weeks for 24 weeks (six doses at days 0, 28, 56, 84, 112 and 140), with follow-up to 96 weeks (672 days). Events after 96 weeks were treated as censored (Lin 2026 Methods 2.1).",
-    regions        = "N/A",
-    scope_note     = paste(
+    species = "None (methodology paper; simulation-only data-generating model with no drug, no patients, and no fitted estimates).",
+    n_subjects = 1500L,
+    n_studies = 1L,
+    disease_state = "N/A (Monte Carlo clinical-trial simulation study; not a fit of any real molecule).",
+    dose_range = "Five equally sized dose groups given 1, 3, 10, 30 and 100 mg subcutaneously every 4 weeks for 24 weeks (six doses at days 0, 28, 56, 84, 112 and 140), with follow-up to 96 weeks (672 days). Events after 96 weeks were treated as censored (Lin 2026 Methods 2.1).",
+    regions = "N/A",
+    scope_note = paste(
       "Filed under inst/modeldb/pharmacodynamics/ (not specificDrugs/) because there is no drug;",
       "the registry's time-to-event / hazard models live in this category. The file stem follows the",
       "established hypothetical-drug family <route><n>cmt_<topic> set by",
@@ -66,7 +81,7 @@ Lin_2026_sc1cmt_coxTte <- function() {
       "The paper is a methodology reference introducing a way to evaluate the Cox partial likelihood",
       "inside NONMEM; every value below is a simulation constant the authors chose, so all are fixed()."
     ),
-    notes          = paste(
+    notes = paste(
       "The paper deposits TWO NONMEM control streams, but they are two ESTIMATION METHODS applied to",
       "one data-generating model, not two models. Data S1 is the semi-parametric Cox partial-likelihood",
       "stream; it deliberately carries no baseline hazard and therefore cannot be simulated forward.",

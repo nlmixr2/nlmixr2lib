@@ -23,8 +23,8 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
   paper_specific_compartments <- c("intIrinotecan", "cumSunitinibFrozen")
 
   units <- list(
-    time          = "day",
-    dosing        = "unitless (K-PD; each oral sunitinib dose enters depot_kpd_sunitinib and each IV irinotecan dose enters depot_kpd_irinotecan with magnitude 1)",
+    time = "day",
+    dosing = "unitless (K-PD; each oral sunitinib dose enters depot_kpd_sunitinib and each IV irinotecan dose enters depot_kpd_irinotecan with magnitude 1)",
     concentration = "mm (geometric mean of three orthogonal tumor diameters (l*w*h)^(1/3); not a drug concentration)"
   )
 
@@ -33,31 +33,41 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    intIrinotecan        = list(analyte = "irinotecan", units = NA_character_, specimen = "tumor", verified = FALSE),
-    cumSunitinibFrozen   = list(analyte = "sunitinib", units = NA_character_, specimen = "plasma", verified = FALSE),
-    cycling_cells        = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    damaged_cells1       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    damaged_cells2       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    damaged_cells3       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
-    carrying_capacity    = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    depot_kpd_sunitinib  = list(analyte = "sunitinib", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot_kpd_irinotecan = list(analyte = "irinotecan", units = NA_character_, specimen = "administration site", verified = FALSE)
+    intIrinotecan = list(analyte = "irinotecan", units = NA_character_, specimen = "tumor", verified = FALSE),
+    cumSunitinibFrozen = list(analyte = "sunitinib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cycling_cells = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells1 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells2 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells3 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    carrying_capacity = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    depot_kpd_sunitinib = list(
+      analyte = "sunitinib",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot_kpd_irinotecan = list(
+      analyte = "irinotecan",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (athymic nude male with subcutaneous HT-29 colorectal-adenocarcinoma xenograft)",
-    n_subjects     = 105L,
-    n_studies      = 2L,
-    age_range      = "5-6 weeks at randomisation",
-    weight_range   = "approximately 20 g each",
+    species = "mouse (athymic nude male with subcutaneous HT-29 colorectal-adenocarcinoma xenograft)",
+    n_subjects = 105L,
+    n_studies = 2L,
+    age_range = "5-6 weeks at randomisation",
+    weight_range = "approximately 20 g each",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "subcutaneous HT-29 human colorectal-adenocarcinoma xenograft (3.0e6 cells in 200 uL inoculated into the flank)",
-    dose_range     = "sunitinib 40 mg/kg oral gavage once daily for 12 consecutive days; irinotecan 90 mg/kg single 5-min IV infusion; in the model the magnitudes are normalized to 1 per dose (K-PD)",
-    regions        = "preclinical (in-vivo xenograft) at CellVax Laboratory facility, Maisons Alfort, France",
-    notes          = "1,371 longitudinal tumor-diameter observations across 105 mice in two model-building experiments (sunitinib monotherapy and combined sunitinib+irinotecan; see Supplemental Tables S1-S3). Wilson 2015 Table 1 (interaction-model parameters used here) are typical-value estimates from experiment #2 fit to the median tumor size per group via nonlinear least-squares; no IIV or residual-error structure is reported for this fit. Tumor diameter measured every 2-3 days by handheld caliper as the geometric mean of length, width, and height (l*w*h)^(1/3) in mm."
+    disease_state = "subcutaneous HT-29 human colorectal-adenocarcinoma xenograft (3.0e6 cells in 200 uL inoculated into the flank)",
+    dose_range = "sunitinib 40 mg/kg oral gavage once daily for 12 consecutive days; irinotecan 90 mg/kg single 5-min IV infusion; in the model the magnitudes are normalized to 1 per dose (K-PD)",
+    regions = "preclinical (in-vivo xenograft) at CellVax Laboratory facility, Maisons Alfort, France",
+    notes = "1,371 longitudinal tumor-diameter observations across 105 mice in two model-building experiments (sunitinib monotherapy and combined sunitinib+irinotecan; see Supplemental Tables S1-S3). Wilson 2015 Table 1 (interaction-model parameters used here) are typical-value estimates from experiment #2 fit to the median tumor size per group via nonlinear least-squares; no IIV or residual-error structure is reported for this fit. Tumor diameter measured every 2-3 days by handheld caliper as the geometric mean of length, width, and height (l*w*h)^(1/3) in mm."
   )
 
   ini({

@@ -16,60 +16,90 @@ deWinter_2009_mycophenolic_acid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "umol", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
-    complex          = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
-    central_mpag     = list(analyte = "free mycophenolic acid-glucuronide (fMPAG)", units = "umol", specimen = "plasma", verified = FALSE),
-    complex_mpag     = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
-    gallbladder_mpag = list(analyte = "mycophenolic acid-glucuronide (MPAG)", units = "umol", specimen = "bile", verified = FALSE)
+    depot = list(
+      analyte = "mycophenolate mofetil (MMF)",
+      units = "umol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(
+      analyte = "free mycophenolic acid (fMPA)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex = list(
+      analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    central_mpag = list(
+      analyte = "free mycophenolic acid-glucuronide (fMPAG)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex_mpag = list(
+      analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    gallbladder_mpag = list(
+      analyte = "mycophenolic acid-glucuronide (MPAG)",
+      units = "umol",
+      specimen = "bile",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance computed by the Cockcroft-Gault formula in mL/min (NOT BSA-normalized). Baseline value carried forward across the modeled occasions.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance computed by the Cockcroft-Gault formula in mL/min (NOT BSA-normalized). Baseline value carried forward across the modeled occasions.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cockcroft-Gault raw mL/min, per Methods 'Renal function was tested by calculation of the creatinine clearance (CrCL) according to Cockcroft and Gault [32]'. Used as a power-covariate on CL fMPAG with reference 45 mL/min (cohort median across cyclosporine and tacrolimus arms; Table 1 medians 44 and 45 mL/min). Effect equation derived from text 'A decrease in CrCL from 45 to 25 ml/min resulted in a decrease from 4.75 to 2.14 l/h in clearance of fMPAG' (consistent with power exponent 1.36 reported in Table 2 covariate effects).",
-      source_name        = "CrCL"
+      notes = "Cockcroft-Gault raw mL/min, per Methods 'Renal function was tested by calculation of the creatinine clearance (CrCL) according to Cockcroft and Gault [32]'. Used as a power-covariate on CL fMPAG with reference 45 mL/min (cohort median across cyclosporine and tacrolimus arms; Table 1 medians 44 and 45 mL/min). Effect equation derived from text 'A decrease in CrCL from 45 to 25 ml/min resulted in a decrease from 4.75 to 2.14 l/h in clearance of fMPAG' (consistent with power exponent 1.36 reported in Table 2 covariate effects).",
+      source_name = "CrCL"
     ),
     ALB = list(
-      description        = "Plasma albumin concentration (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Plasma albumin concentration (mass concentration; SI canonical g/L per the 2026-06-19 register standardization audit).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper reports plasma albumin in mmol/L (Table 1 medians 0.51 mmol/L for both cyclosporine and tacrolimus cohorts; range 0.35-0.68 mmol/L). Canonical column is now SI g/L per the 2026-06-19 register standardization audit; convert inline in model() via `alb_mmolL <- ALB / 66.5` (albumin MW 66.5 g/mmol) to recover the mmol/L value used in the de Winter 2009 calibration. Used as a power-covariate on BMAX with reference 0.5 mmol/L (= 33.25 g/L in SI). The Eq. 8 text of the paper writes the form as P_i = P_pop * exp(theta * (Alb - 0.5)) but the numerical predictions in the Results ('A decrease in albumin from 0.6 to 0.4 mmol/l resulted in a decrease in the number of binding sites from 45200 to 25700 l mol') match a power form P_i = P_pop * (Alb / 0.5)^theta with theta = 1.39 to three significant figures (45100 vs 45200 and 25800 vs 25700); the power form is the one implemented here. See vignette Errata.",
-      source_name        = "Alb"
+      notes = "Source paper reports plasma albumin in mmol/L (Table 1 medians 0.51 mmol/L for both cyclosporine and tacrolimus cohorts; range 0.35-0.68 mmol/L). Canonical column is now SI g/L per the 2026-06-19 register standardization audit; convert inline in model() via `alb_mmolL <- ALB / 66.5` (albumin MW 66.5 g/mmol) to recover the mmol/L value used in the de Winter 2009 calibration. Used as a power-covariate on BMAX with reference 0.5 mmol/L (= 33.25 g/L in SI). The Eq. 8 text of the paper writes the form as P_i = P_pop * exp(theta * (Alb - 0.5)) but the numerical predictions in the Results ('A decrease in albumin from 0.6 to 0.4 mmol/l resulted in a decrease in the number of binding sites from 45200 to 25700 l mol') match a power form P_i = P_pop * (Alb / 0.5)^theta with theta = 1.39 to three significant figures (45100 vs 45200 and 25800 vs 25700); the power form is the one implemented here. See vignette Errata.",
+      source_name = "Alb"
     ),
     CONMED_CSA = list(
-      description        = "Concomitant cyclosporine indicator: 1 = patient cotreated with cyclosporine as the calcineurin inhibitor (CNI), 0 = patient cotreated with tacrolimus.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cyclosporine indicator: 1 = patient cotreated with cyclosporine as the calcineurin inhibitor (CNI), 0 = patient cotreated with tacrolimus.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tacrolimus cotreatment; in the source cohort, n = 45 profiles)",
-      notes              = "Time-fixed per patient in the de Winter 2009 cohort because subjects were randomised to one CNI regimen for the entire post-transplant observation window. Used as a multiplicative power-form effect on the fMPAG-to-gallbladder rate constant k57: cyclosporine inhibits MRP2-mediated biliary efflux of MPAG, suppressing enterohepatic recirculation. Tacrolimus does not have this MRP2 effect, so MPA exposure differs between the two regimens for the same MMF dose. Encoded as `k57 <- exp(lk57) * e_csa_k57^CONMED_CSA` with `e_csa_k57 = 0.002` so that k57 drops from 0.0796 1/h under tacrolimus to 0.000159 1/h under cyclosporine (Table 2 / Eq. 9 of de Winter 2009).",
-      source_name        = "CsA"
+      notes = "Time-fixed per patient in the de Winter 2009 cohort because subjects were randomised to one CNI regimen for the entire post-transplant observation window. Used as a multiplicative power-form effect on the fMPAG-to-gallbladder rate constant k57: cyclosporine inhibits MRP2-mediated biliary efflux of MPAG, suppressing enterohepatic recirculation. Tacrolimus does not have this MRP2 effect, so MPA exposure differs between the two regimens for the same MMF dose. Encoded as `k57 <- exp(lk57) * e_csa_k57^CONMED_CSA` with `e_csa_k57 = 0.002` so that k57 drops from 0.0796 1/h under tacrolimus to 0.000159 1/h under cyclosporine (Table 2 / Eq. 9 of de Winter 2009).",
+      source_name = "CsA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75L,
-    n_studies      = 2L,
-    n_profiles     = 93L,
+    species = "human",
+    n_subjects = 75L,
+    n_studies = 2L,
+    n_profiles = 93L,
     n_observations = "489 tMPA + 489 fMPA + 488 tMPAG + 210 fMPAG plasma concentrations (Results: Patients).",
-    age_range      = "19-76 years (cyclosporine cohort 21-70 years; tacrolimus cohort 19-76 years)",
-    age_median     = "51 years (cyclosporine cohort) / 53 years (tacrolimus cohort), Table 1",
-    weight_range   = "42-113 kg (cyclosporine cohort 42-99 kg; tacrolimus cohort 44-113 kg)",
-    weight_median  = "67 kg (cyclosporine cohort) / 78 kg (tacrolimus cohort), Table 1",
+    age_range = "19-76 years (cyclosporine cohort 21-70 years; tacrolimus cohort 19-76 years)",
+    age_median = "51 years (cyclosporine cohort) / 53 years (tacrolimus cohort), Table 1",
+    weight_range = "42-113 kg (cyclosporine cohort 42-99 kg; tacrolimus cohort 44-113 kg)",
+    weight_median = "67 kg (cyclosporine cohort) / 78 kg (tacrolimus cohort), Table 1",
     sex_female_pct = 36.0,
     race_ethnicity = "Not reported in source paper.",
-    disease_state  = "Adult de novo renal transplant recipients. The cyclosporine cohort received MMF + cyclosporine + corticosteroids; the tacrolimus cohort received MMF + tacrolimus + corticosteroids. Both cohorts pooled from two prior randomised trials (a randomised concentration-controlled trial of MPA AUC target groups + the IMPDH-activity study).",
-    dose_range     = "MMF dose adjusted by clinicians; medians 1350 mg BID (range 400-2200, cyclosporine cohort) and 1000 mg BID (500-1500, tacrolimus cohort), Table 1. Default packaged dosing in the vignette is 1000 mg MMF BID = 2306 umol MPA-equivalent (molar dose) per 12 h.",
-    regions        = "The Netherlands (Erasmus University Medical Center, Rotterdam) and USA (University of Pennsylvania, Philadelphia).",
-    sampling_window= "Up to nine pharmacokinetic occasions post-transplantation per protocol. On day-3, day-7, day-11 (RCCT cohort) and day-6 (IMPDH cohort) occasions, full PK profiles were collected at predose and 0.33, 0.66, 1.25, 2, 6, 8, 12 h post-dose; later occasions used sparser sampling.",
+    disease_state = "Adult de novo renal transplant recipients. The cyclosporine cohort received MMF + cyclosporine + corticosteroids; the tacrolimus cohort received MMF + tacrolimus + corticosteroids. Both cohorts pooled from two prior randomised trials (a randomised concentration-controlled trial of MPA AUC target groups + the IMPDH-activity study).",
+    dose_range = "MMF dose adjusted by clinicians; medians 1350 mg BID (range 400-2200, cyclosporine cohort) and 1000 mg BID (500-1500, tacrolimus cohort), Table 1. Default packaged dosing in the vignette is 1000 mg MMF BID = 2306 umol MPA-equivalent (molar dose) per 12 h.",
+    regions = "The Netherlands (Erasmus University Medical Center, Rotterdam) and USA (University of Pennsylvania, Philadelphia).",
+    sampling_window = "Up to nine pharmacokinetic occasions post-transplantation per protocol. On day-3, day-7, day-11 (RCCT cohort) and day-6 (IMPDH cohort) occasions, full PK profiles were collected at predose and 0.33, 0.66, 1.25, 2, 6, 8, 12 h post-dose; later occasions used sparser sampling.",
     cni_distribution = "Cyclosporine cotreatment n = 48 profiles (47 patients reported by male/female; 1 missing); tacrolimus cotreatment n = 45 profiles (28 patients reported by male/female; some missing).",
-    notes          = "Free-MPA and free-MPAG concentrations were measured via ultrafiltration on a subset of occasions. The final NONMEM run did not minimize successfully (rounding errors) so the source paper does not report parameter standard errors; the visual predictive check confirmed adequate fit. Patient characteristics from Table 1; full cohort summary in Methods 'Patients'."
+    notes = "Free-MPA and free-MPAG concentrations were measured via ultrafiltration on a subset of occasions. The final NONMEM run did not minimize successfully (rounding errors) so the source paper does not report parameter standard errors; the visual predictive check confirmed adequate fit. Patient characteristics from Table 1; full cohort summary in Methods 'Patients'."
   )
 
   ini({

@@ -8,51 +8,51 @@ Nestorov_2014_factorviii <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on V1 with reference weight 73 kg (Nestorov 2014 Eq. 2). Treated as baseline body weight in this model.",
-      source_name        = "WT"
+      notes = "Allometric power scaling on V1 with reference weight 73 kg (Nestorov 2014 Eq. 2). Treated as baseline body weight in this model.",
+      source_name = "WT"
     ),
     VWF = list(
-      description        = "Plasma von Willebrand factor (VWF) antigen concentration; FVIII-protective carrier protein.",
-      units              = "IU/dL",
-      type               = "continuous",
+      description = "Plasma von Willebrand factor (VWF) antigen concentration; FVIII-protective carrier protein.",
+      units = "IU/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 118 IU/dL (Nestorov 2014 Eq. 2). Negative exponent: higher VWF protects FVIII activity from clearance. Time-varying within an individual; the model treats VWF as the covariate value at the observation time; for simulation a typical baseline value (e.g., 100-118 IU/dL) is normally used because the within-subject VWF time course is not characterized in this paper.",
-      source_name        = "VWF"
+      notes = "Power scaling on CL with reference 118 IU/dL (Nestorov 2014 Eq. 2). Negative exponent: higher VWF protects FVIII activity from clearance. Time-varying within an individual; the model treats VWF as the covariate value at the observation time; for simulation a typical baseline value (e.g., 100-118 IU/dL) is normally used because the within-subject VWF time course is not characterized in this paper.",
+      source_name = "VWF"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V1 with reference 45 % (Nestorov 2014 Eq. 2). Negative exponent: a higher hematocrit reduces plasma fraction of total volume, which decreases the plasma-restricted V1 of FVIII activity.",
-      source_name        = "HCT"
+      notes = "Power scaling on V1 with reference 45 % (Nestorov 2014 Eq. 2). Negative exponent: a higher hematocrit reduces plasma fraction of total volume, which decreases the plasma-restricted V1 of FVIII activity.",
+      source_name = "HCT"
     )
   )
 
   population <- list(
-    n_subjects     = 180L,
-    n_studies      = 2L,
-    age_range      = "phase 3 enrolled subjects >=12 years; phase 1/2a enrolled adults",
-    age_median     = "not reported in source; mixed adolescent / adult cohort",
-    weight_range   = "not reported as a range; reference weight 73 kg used in V1 allometry (Nestorov 2014 Eq. 2)",
-    weight_median  = "not reported; allometric reference 73 kg",
+    n_subjects = 180L,
+    n_studies = 2L,
+    age_range = "phase 3 enrolled subjects >=12 years; phase 1/2a enrolled adults",
+    age_median = "not reported in source; mixed adolescent / adult cohort",
+    weight_range = "not reported as a range; reference weight 73 kg used in V1 allometry (Nestorov 2014 Eq. 2)",
+    weight_median = "not reported; allometric reference 73 kg",
     sex_female_pct = 0,
     race_ethnicity = "not reported in source",
-    disease_state  = "Severe hemophilia A (FVIII activity <1 IU/dL); previously treated patients",
-    dose_range     = "Single intravenous injection: 25, 50, or 65 IU/kg in phase 1/2a (Cohorts A and B) and phase 3 (Arms 1, 2, 3); Arm 1 prophylaxis individualized over 25-65 IU/kg every 3-5 days; Arm 2 fixed 65 IU/kg weekly; Arm 3 episodic 10-50 IU/kg",
-    regions        = "phase 3 was multinational, multicenter; specific regions not enumerated in source",
-    co_medication  = "rFVIII (Advate) administered as comparator in phase 1/2a and phase 3 Arm 1 sequential PK subgroup; analysed in a separate population PK model not implemented in this file",
-    notes          = "n = 16 in phase 1/2a (Cohort A 25 IU/kg, Cohort B 65 IU/kg) and n = 164 in phase 3 (Arms 1-3). Hemophilia A is X-linked recessive and the registered phase 1/2a and phase 3 studies enrolled male patients; sex_female_pct = 0 reflects this. Baseline demographics summarised from the Methods of Nestorov 2014; the publication does not present a tabulated summary of baseline demographics for the population PK analysis cohort."
+    disease_state = "Severe hemophilia A (FVIII activity <1 IU/dL); previously treated patients",
+    dose_range = "Single intravenous injection: 25, 50, or 65 IU/kg in phase 1/2a (Cohorts A and B) and phase 3 (Arms 1, 2, 3); Arm 1 prophylaxis individualized over 25-65 IU/kg every 3-5 days; Arm 2 fixed 65 IU/kg weekly; Arm 3 episodic 10-50 IU/kg",
+    regions = "phase 3 was multinational, multicenter; specific regions not enumerated in source",
+    co_medication = "rFVIII (Advate) administered as comparator in phase 1/2a and phase 3 Arm 1 sequential PK subgroup; analysed in a separate population PK model not implemented in this file",
+    notes = "n = 16 in phase 1/2a (Cohort A 25 IU/kg, Cohort B 65 IU/kg) and n = 164 in phase 3 (Arms 1-3). Hemophilia A is X-linked recessive and the registered phase 1/2a and phase 3 studies enrolled male patients; sex_female_pct = 0 reflects this. Baseline demographics summarised from the Methods of Nestorov 2014; the publication does not present a tabulated summary of baseline demographics for the population PK analysis cohort."
   )
 
   ini({

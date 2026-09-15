@@ -22,7 +22,7 @@ Dong_2026_piperacillin <- function() {
     sep = " "
   )
   vignette <- "Dong_2026_piperacillin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -36,15 +36,15 @@ Dong_2026_piperacillin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate from the 2012 CKD-EPI",
         "cystatin-C equation, body-surface-area normalised to",
         "1.73 m^2."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on CL, centred on 46.56",
         "mL/min/1.73 m^2, per the final-model equation printed on Dong 2026",
         "p. 6: CL (L/h) = 6.48 * e^eta * (eGFR/46.56)^0.615 *",
@@ -69,14 +69,14 @@ Dong_2026_piperacillin <- function() {
         "eGFR levels at and beyond the 130 mL/min/1.73 m^2 augmented-renal-",
         "clearance threshold (Figure 6)."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on CL, centred on 70 kg, per",
         "the p. 6 final-model equation. The exponent 1.13 is the 'Total body",
         "weight on CL' row of Table 3 (RSE 13.1%; bootstrap median 1.12,",
@@ -94,14 +94,14 @@ Dong_2026_piperacillin <- function() {
         "(Figure 7), so the term is doing substantial work outside the range",
         "it was fitted in."
       ),
-      source_name        = "Total body weight"
+      source_name = "Total body weight"
     ),
     ALB = list(
-      description        = "Serum albumin.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on V, centred on 34.8 g/L, per",
         "the p. 6 final-model equation V (L) = 19 * e^eta * (albumin/34.8)^1.21.",
         "The exponent 1.21 is the 'Albumin on V' row of Table 3 and is the",
@@ -123,7 +123,7 @@ Dong_2026_piperacillin <- function() {
         "effect on the total-drug volume is not directly a protein-binding",
         "measurement."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     )
   )
 
@@ -138,103 +138,103 @@ Dong_2026_piperacillin <- function() {
   # estimating equation is documented in that entry's notes.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "unitless",
-      type               = "categorical",
+      description = "Female sex indicator.",
+      units = "unitless",
+      type = "categorical",
       reference_category = "male",
-      notes              = "Screened as a covariate but not retained. Cohort was 30 male / 12 female (Table 1).",
-      source_name        = "Sex"
+      notes = "Screened as a covariate but not retained. Cohort was 30 male / 12 female (Table 1).",
+      source_name = "Sex"
     ),
     AGE = list(
-      description        = "Age at enrolment.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Cohort median 59 years (IQR 50.25-75.5), Table 1.",
-      source_name        = "Age"
+      notes = "Screened but not retained. Cohort median 59 years (IQR 50.25-75.5), Table 1.",
+      source_name = "Age"
     ),
     BMI = list(
-      description        = "Body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained; total body weight was retained on CL",
         "instead. Cohort median 24.22 kg/m^2 (IQR 22.41-26.12), Table 1."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     APACHE_II = list(
-      description        = "Acute Physiology and Chronic Health Evaluation II score.",
-      units              = "unitless",
-      type               = "continuous",
+      description = "Acute Physiology and Chronic Health Evaluation II score.",
+      units = "unitless",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Cohort median 21.5 (IQR 19-26), Table 1.",
-      source_name        = "APACHE II score"
+      notes = "Screened but not retained. Cohort median 21.5 (IQR 19-26), Table 1.",
+      source_name = "APACHE II score"
     ),
     TBILI = list(
-      description        = "Total bilirubin.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Cohort median 10.1 umol/L (IQR 6.6-15.7), Table 1.",
-      source_name        = "Total bilirubin"
+      notes = "Screened but not retained. Cohort median 10.1 umol/L (IQR 6.6-15.7), Table 1.",
+      source_name = "Total bilirubin"
     ),
     DBIL = list(
-      description        = "Direct (conjugated) bilirubin.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Direct (conjugated) bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Cohort median 5.6 umol/L (IQR 4.1-10.6), Table 1.",
-      source_name        = "Direct bilirubin"
+      notes = "Screened but not retained. Cohort median 5.6 umol/L (IQR 4.1-10.6), Table 1.",
+      source_name = "Direct bilirubin"
     ),
     CREAT = list(
-      description        = "Serum creatinine.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained, both directly and by way of the",
         "creatinine-based eGFR equations. Cohort median 69 umol/L",
         "(IQR 48-130), Table 1."
       ),
-      source_name        = "Serum creatinine"
+      source_name = "Serum creatinine"
     ),
     CYSC = list(
-      description        = "Serum cystatin C.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a raw laboratory value but not retained; the model",
         "instead carries the cystatin-C-based CKD-EPI eGFR derived from it",
         "(see the CRCL entry). Cohort median 1.44 mg/L (IQR 1.02-2.19),",
         "Table 1."
       ),
-      source_name        = "Cystatin C"
+      source_name = "Cystatin C"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen.",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen.",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Cohort median 8.9 mmol/L (IQR 6.2-14.6), Table 1.",
-      source_name        = "Blood urea nitrogen"
+      notes = "Screened but not retained. Cohort median 8.9 mmol/L (IQR 6.2-14.6), Table 1.",
+      source_name = "Blood urea nitrogen"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
     n_observations = 117L,
-    age_range      = "not reported; interquartile range 50.25-75.5 years",
-    age_median     = "59 years",
-    weight_range   = "not reported; interquartile range 65-75 kg",
-    weight_median  = "70 kg",
+    age_range = "not reported; interquartile range 50.25-75.5 years",
+    age_median = "59 years",
+    weight_range = "not reported; interquartile range 65-75 kg",
+    weight_median = "70 kg",
     sex_female_pct = 100 * 12 / 42,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Adults admitted to the intensive care unit and treated with",
       "piperacillin. Pulmonary infection predominated (92.86%), followed by",
       "sepsis (14.29%), abdominal cavity infection (7.14%), skin and soft",
@@ -248,7 +248,7 @@ Dong_2026_piperacillin <- function() {
       "replacement therapy, enrolled in another interventional trial, or",
       "pregnant were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous piperacillin 4 g q8h by infusion in 39 of 42 patients",
       "(92.86%, 12 g/day), 4 g q8h by intravenous push in 1 (2.38%), and",
       "4 g q12h by infusion in 2 (4.76%, 8 g/day) -- Table 2. The clinical",
@@ -268,7 +268,7 @@ Dong_2026_piperacillin <- function() {
       "1.02-2.19). Patients on continuous renal replacement therapy were",
       "excluded."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Sparse steady-state sampling after at least five piperacillin doses,",
       "2-3 samples per patient: a trough 30 minutes before the next",
       "infusion, a peak at the end of the infusion, and an optional",
@@ -278,12 +278,12 @@ Dong_2026_piperacillin <- function() {
       "quantification (2.56% of the post-first-dose data) were retained and",
       "set to half the LLOQ."
     ),
-    regions        = paste(
+    regions = paste(
       "People's Republic of China (single centre; intensive care unit of the",
       "First Affiliated Hospital of Shandong First Medical University /",
       "Shandong Provincial Qianfoshan Hospital, Jinan)."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Dong 2026 Tables 1 and 2. Prospective",
       "observational single-centre study running September 2021 to January",
       "2022 (ethics approval YXLL-KY-2021(050)). The final model was fit in",

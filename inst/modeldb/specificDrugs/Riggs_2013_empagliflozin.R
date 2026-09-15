@@ -19,50 +19,50 @@ Riggs_2013_empagliflozin <- function() {
   )
   vignette <- "Riggs_2013_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "mg empagliflozin (oral, once daily)",
+    time = "h",
+    dosing = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (converted from mg/L via MW 450.91 g/mol)"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric effect imposed (not estimated) on CL/F, V2/F, Q/F and V3/F,",
         "normalised to a 70 kg reference individual: exponent FIXED at 0.75 for the",
         "clearances (CL/F, Q/F) and at 1 for the volumes (V2/F, V3/F) -- Riggs 2013",
         "Table 2 rows theta_20, theta_21, theta_22, theta_23 (all marked FIXED) and",
         "Methods equation 1. Cohort mean (min-max) weight was 85 (44-152) kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect (AGE/50)^theta on CL/F, V2/F and V3/F; reference 50 years",
         "(Riggs 2013 Figure 3 caption reference individual). Cohort mean (min-max)",
         "age was 58 (28-80) years."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male (the reference individual is a man)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on CL/F, V2/F and V3/F (Riggs 2013 Table 2 rows",
         "theta_24, theta_25, theta_26). The paper's dummy is named SEX with the",
         "reference individual defined as a man (Figure 3 caption), and Figure 3",
@@ -70,14 +70,14 @@ Riggs_2013_empagliflozin <- function() {
         "onto the canonical SEXF with no value inversion. Cohort was 574 male /",
         "400 female (41.1% female)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Asian",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on CL/F, V2/F, V3/F and ka (Riggs 2013 Table 2 rows",
         "theta_11, theta_15, theta_18, theta_27). The paper defines the group as",
         "Japanese, Taiwanese and Korean patients versus non-Asian (Methods,",
@@ -85,14 +85,14 @@ Riggs_2013_empagliflozin <- function() {
         "Asian (Japanese, Taiwanese, and Koreans) and non-Asian patients'), and the",
         "reference individual is Caucasian. 213/974 (22%) of the cohort were Asian."
       ),
-      source_name        = "ASIAN"
+      source_name = "ASIAN"
     ),
     TPRO = list(
-      description        = "Total serum protein at baseline",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein at baseline",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect (TPRO/68 g/L)^theta on CL/F, V2/F and V3/F. The paper",
         "reports total protein in g/dL and normalises to 6.8 g/dL (Riggs 2013",
         "Table 2 rows theta_12, theta_16, theta_19; Figure 3 x-axis labels read",
@@ -101,14 +101,14 @@ Riggs_2013_empagliflozin <- function() {
         "Note the Figure 3 caption's 'total protein of 6.8 mg/dL' is a typographical",
         "error -- Table 1 reports total protein in g/dL (study means 6.62-7.42)."
       ),
-      source_name        = "TPRO"
+      source_name = "TPRO"
     ),
     CREAT = list(
-      description        = "Serum creatinine at baseline",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine at baseline",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F as the INVERTED ratio (0.8 / CREAT)^theta_13 -- the paper uses",
         "'a simple inverse relationship with serum creatinine ... as a surrogate for",
         "renal filtration-associated clearance' (Methods) because estimated creatinine",
@@ -120,14 +120,14 @@ Riggs_2013_empagliflozin <- function() {
         "UNITS ARE mg/dL FOR THIS MODEL, not the umol/L alternative the canonical",
         "register also permits."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     ),
     SMOKE_NEVER = list(
-      description        = "Never-smoker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Never-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former or current smoker",
-      notes              = paste(
+      notes = paste(
         "Riggs 2013 codes smoking history as two dummies SMK1 and SMK2 against a",
         "NEVER-smoker reference (the reference individual is 'non-smoking', Figure 3",
         "caption), whereas the canonical SMOKE_NEVER + SMOKE_CURRENT pair is defined",
@@ -140,14 +140,14 @@ Riggs_2013_empagliflozin <- function() {
         "Supply SMOKE_NEVER = 1, SMOKE_CURRENT = 0 for a never-smoker (the paper's",
         "reference); both 0 for a former smoker; SMOKE_CURRENT = 1 for a current smoker."
       ),
-      source_name        = "SMK1 (as 1 - SMOKE_NEVER - SMOKE_CURRENT)"
+      source_name = "SMK1 (as 1 - SMOKE_NEVER - SMOKE_CURRENT)"
     ),
     SMOKE_CURRENT = list(
-      description        = "Current-smoker indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = former or never smoker",
-      notes              = paste(
+      notes = paste(
         "The paper's SMK2 dummy (Riggs 2013 Table 2 theta_9 = 1.02). Table 2 lists the",
         "CL/F covariate rows in the order SMK1, SMK2, ALC, and Figure 3A lists the",
         "matching categorical effects in the order 'Ex-smoker', 'Current smoker',",
@@ -158,14 +158,14 @@ Riggs_2013_empagliflozin <- function() {
         "the null, consistent with theta_9 = 1.02 > 1).",
         "See SMOKE_NEVER notes for the reference-category reconstruction."
       ),
-      source_name        = "SMK2"
+      source_name = "SMK2"
     ),
     ALCOHOL_USE = list(
-      description        = "Any history of alcohol use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any history of alcohol use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no history of alcohol use",
-      notes              = paste(
+      notes = paste(
         "The paper's ALC dummy (Riggs 2013 Table 2 theta_10 = 1.02), labelled",
         "'Consumes alcohol' in Figure 3A, against a reference individual with 'no",
         "history of alcohol use' (Figure 3 caption). This is ANY alcohol consumption,",
@@ -175,14 +175,14 @@ Riggs_2013_empagliflozin <- function() {
         "'alcohol histories' (Methods) and concludes the effect is null",
         "(95% CI 0.984-1.06, wholly inside the 75-125% null band)."
       ),
-      source_name        = "ALC"
+      source_name = "ALC"
     ),
     STUDY_DE = list(
-      description        = "Riggs 2013 Study D / Study E cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Riggs 2013 Study D / Study E cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = Studies A, B or C",
-      notes              = paste(
+      notes = paste(
         "Selects which of the two estimated residual-error pairs applies to an",
         "observation. Riggs 2013 estimated separate residual variance terms",
         "'to account for the greater variability in the empagliflozin concentrations",
@@ -193,29 +193,29 @@ Riggs_2013_empagliflozin <- function() {
         "Japanese). Affects the residual error only -- no structural or disposition",
         "parameter depends on it. Supply per observation record."
       ),
-      source_name        = "STUDY"
+      source_name = "STUDY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 974L,
-    n_studies      = 5L,
-    age_range      = "28-80 years",
-    age_mean       = "58 years",
-    weight_range   = "44-152 kg",
-    weight_mean    = "85 kg",
+    species = "human",
+    n_subjects = 974L,
+    n_studies = 5L,
+    age_range = "28-80 years",
+    age_mean = "58 years",
+    weight_range = "44-152 kg",
+    weight_mean = "85 kg",
     sex_female_pct = 41.1,
     race_ethnicity = c(White = 77.1, Asian = 21.9, Black = 0.8, `Hawaiian/Pacific` = 0.2),
-    disease_state  = "type 2 diabetes mellitus",
-    dose_range     = "1-100 mg empagliflozin once daily for 8 days to 12 weeks",
+    disease_state = "type 2 diabetes mellitus",
+    dose_range = "1-100 mg empagliflozin once daily for 8 days to 12 weeks",
     n_observations = 8289L,
     renal_function = paste(
       "Mostly preserved: >67% of patients had estimated creatinine clearance",
       ">90 mL/min and only 14 patients (<1.5%) had estimated creatinine clearance",
       "<50 mL/min (Riggs 2013 Results)."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics and laboratory values are in Riggs 2013 Table 1,",
       "reported per study. Study A (EudraCT 2007-000654-32, n = 48, 2.5/10/25/100 mg",
       "q.d. x 8 days), Study B (NCT00558571, n = 78, 10/25/100 mg q.d. x 4 weeks),",

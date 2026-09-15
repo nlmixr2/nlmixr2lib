@@ -24,31 +24,31 @@ Agoram_2006_darbepoetin_alfa <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "darbepoetin alfa", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "darbepoetin alfa", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "darbepoetin alfa", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on clearance and central volume; reference",
         "weight 70 kg per Agoram 2006 Discussion ('For an average 70-kg human,",
         "the estimated mean s.c. relative bioavailability ...'). Development",
         "cohort mean 68.6 +/- 10.3 kg (Agoram 2006 Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on the first-order SC absorption rate Ka.",
         "Reference age 47 years is the development-cohort mean (Agoram 2006",
         "Table 2: 47 +/- 17 years); the paper does not explicitly state the",
@@ -60,28 +60,28 @@ Agoram_2006_darbepoetin_alfa <- function() {
         "paper's reported absorption half-life ln(2)/Ka = 33 h, derivable",
         "from Ka = 0.0212 only). See vignette Assumptions and deviations."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 140L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 140L,
+    n_studies = 6L,
     n_observations = 1664L,
-    age_range      = paste(
+    age_range = paste(
       "Development cohort 47 +/- 17 years (mean +/- SD); evaluation cohort",
       "55 +/- 18 years (Agoram 2006 Table 2)."
     ),
-    age_median     = "Mean 47 years in the development cohort (median not separately tabulated)",
-    weight_range   = paste(
+    age_median = "Mean 47 years in the development cohort (median not separately tabulated)",
+    weight_range = paste(
       "Development cohort 68.6 +/- 10.3 kg; evaluation cohort 71.0 +/- 10.8",
       "kg (Agoram 2006 Table 2)."
     ),
-    weight_median  = "Mean 68.6 kg in the development cohort (median not separately tabulated)",
+    weight_median = "Mean 68.6 kg in the development cohort (median not separately tabulated)",
     sex_female_pct = 55.7,
     race_ethnicity = "Not explicitly tabulated in Agoram 2006.",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers (age >= 18 years; normal physical exam and",
       "12-lead ECG; transferrin saturation >= 15%; normal serum vitamin B12",
       "and folate; screening haemoglobin <= 15.0 g/dL; no infection with HIV,",
@@ -89,18 +89,18 @@ Agoram_2006_darbepoetin_alfa <- function() {
       "hepatic, or renal impairment; no primary haematological disorder; no",
       "recent ESA / blood donation / transfusion exposure; not pregnant)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV 0.75 ug/kg single dose; SC 0.75-8.0 ug/kg single or multiple doses",
       "(0.75, 2.0, 3.0, 5.0, 6.5, 8.0 ug/kg single; 1.0 ug/kg Q6W x 2; 3.0",
       "ug/kg Q3W x 2; 6.5 ug/kg Q3W x 2); SC 80 ug Q4W x 2; SC 2.0 ug/kg QW",
       "x 4; SC 500 ug Q3W x 2 (Agoram 2006 Table 1)."
     ),
-    regions        = paste(
+    regions = paste(
       "Six Amgen-sponsored clinical studies (study numbers 20010262, 990134,",
       "20010198, 20010174, 20030163, 20000250); geographic sites not stated",
       "in the publication."
     ),
-    notes          = paste(
+    notes = paste(
       "Total N = 140 healthy subjects randomly split 50:50 into model",
       "development (N = 70, 1664 plasma samples) and model evaluation",
       "(N = 70) sets. Serum darbepoetin alfa quantified by the validated",

@@ -39,18 +39,18 @@ Karunajeewa_2009_pyrimethamine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling applied at reference WT = 70 kg",
         "(Anderson & Holford 2008 convention, paper Methods).",
         "Exponent 1.0 on all apparent volumes (Vc/F, Vp/F);",
@@ -58,14 +58,14 @@ Karunajeewa_2009_pyrimethamine <- function() {
         "Baseline body weight was 54.0 +/- 6.4 kg (pregnant) and",
         "51.8 +/- 5.5 kg (nonpregnant) per Table 1."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = second- or third-trimester pregnant; 0 = age-matched",
         "nonpregnant control. Pregnancy enters the structural model",
         "via additive terms on CL/F, Vc/F, and Vp/F:",
@@ -78,21 +78,21 @@ Karunajeewa_2009_pyrimethamine <- function() {
         "retained in the final PYR model (Results paragraph",
         "'Pharmacokinetics of pyrimethamine')."
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60,
-    n_subjects_pregnant     = 30,
-    n_subjects_nonpregnant  = 30,
-    n_studies      = 1,
-    age_range      = "Mean 26.0 +/- 5.9 years (pregnant); 25.5 +/- 8.9 years (nonpregnant) (Table 1).",
-    weight_range   = "Mean 54.0 +/- 6.4 kg (pregnant); 51.8 +/- 5.5 kg (nonpregnant) (Table 1).",
+    species = "human",
+    n_subjects = 60,
+    n_subjects_pregnant = 30,
+    n_subjects_nonpregnant = 30,
+    n_studies = 1,
+    age_range = "Mean 26.0 +/- 5.9 years (pregnant); 25.5 +/- 8.9 years (nonpregnant) (Table 1).",
+    weight_range = "Mean 54.0 +/- 6.4 kg (pregnant); 51.8 +/- 5.5 kg (nonpregnant) (Table 1).",
     sex_female_pct = 100,
     race_ethnicity = "Melanesian (Papua New Guinean); the local population at the study site is described as almost exclusively Melanesian (Methods 'Study site and sample').",
-    disease_state  = paste(
+    disease_state = paste(
       "Asymptomatic first-time antenatal attendees and age-matched",
       "nonpregnant village controls. P. falciparum parasitemia at",
       "baseline in 43% (pregnant) and 23% (nonpregnant); P. vivax",
@@ -101,15 +101,15 @@ Karunajeewa_2009_pyrimethamine <- function() {
       "Median gestational age 22 weeks [IQR 20-28] for the pregnant",
       "cohort."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral 1,500 mg sulfadoxine + 75 mg pyrimethamine",
       "(Fansidar, Roche) under direct supervision, with three daily",
       "doses of chloroquine 450 mg base co-administered per Papua",
       "New Guinea national IPTp guidelines (Methods 'Clinical",
       "procedures')."
     ),
-    regions        = "Papua New Guinea (Alexishafen Health Centre, Madang Province, north coast).",
-    notes          = paste(
+    regions = "Papua New Guinea (Alexishafen Health Centre, Madang Province, north coast).",
+    notes = paste(
       "Sampling: pre-dose and 1, 2, 4, 6, 12, 18, 24, 30, 48, 72 h",
       "then 7, 10, 14, 28, 42 days post-dose. PYR assayed by",
       "HPLC-UV (LOQ 2.5 ug/L). NONMEM v6.2.0 with FOCE-INTER",

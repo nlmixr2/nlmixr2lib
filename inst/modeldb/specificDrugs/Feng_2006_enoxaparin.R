@@ -8,45 +8,45 @@ Feng_2006_enoxaparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight. Used as a linear (no allometric exponent) effect on V2 with reference 70 kg: V2 = theta_V2 * (WT / 70) per Feng 2006 Results equation. Pooled cohort range 16-108 kg (CII + SC studies).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline weight. Used as a linear (no allometric exponent) effect on V2 with reference 70 kg: V2 = theta_V2 * (WT / 70) per Feng 2006 Results equation. Pooled cohort range 16-108 kg (CII + SC studies).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per dosing record. Computed by the Cockcroft-Gault equation using ideal body weight for patients with stable serum creatinine, and by the Brater equation when two SCr concentrations measured over 12 h apart differed by > 0.2 mg/dL (Feng 2006 Methods, p. 167). Raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2); stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). The effect on CL is encoded as an additive linear covariate term TVCL = theta_NR + theta_CrCL * (CRCL_L_per_h / 4.8), with 4.8 L/h = 80 mL/min the literature 'normal' renal-function cutoff (Feng 2006 Results equation; cutoff cited from refs 42-43). When CRCL is missing the paper used TVCL = 0.972 L/h (Feng 2006 Table 2 'CLmissing'); this branch is documented in the vignette but the model file encodes only the with-CRCL form, so users must supply CRCL.",
-      source_name        = "CRCL"
+      notes = "Time-fixed per dosing record. Computed by the Cockcroft-Gault equation using ideal body weight for patients with stable serum creatinine, and by the Brater equation when two SCr concentrations measured over 12 h apart differed by > 0.2 mg/dL (Feng 2006 Methods, p. 167). Raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2); stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). The effect on CL is encoded as an additive linear covariate term TVCL = theta_NR + theta_CrCL * (CRCL_L_per_h / 4.8), with 4.8 L/h = 80 mL/min the literature 'normal' renal-function cutoff (Feng 2006 Results equation; cutoff cited from refs 42-43). When CRCL is missing the paper used TVCL = 0.972 L/h (Feng 2006 Table 2 'CLmissing'); this branch is documented in the vignette but the model file encodes only the with-CRCL form, so users must supply CRCL.",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 83L,
-    n_studies      = 2L,
-    age_range      = "16-90 years (CII study) / 44-86 years (SC study)",
-    age_median     = "CII general medical unit 60.9 y, CII ICU 59.3 y, SC general medical unit 75.1 y; combined 66.6 y",
-    weight_range   = "16-108 kg (combined CII + SC)",
-    weight_median  = "CII general medical unit 74.1 kg, CII ICU 73.3 kg, SC general medical unit 67.7 kg; combined 71.0 kg",
+    species = "human",
+    n_subjects = 83L,
+    n_studies = 2L,
+    age_range = "16-90 years (CII study) / 44-86 years (SC study)",
+    age_median = "CII general medical unit 60.9 y, CII ICU 59.3 y, SC general medical unit 75.1 y; combined 66.6 y",
+    weight_range = "16-108 kg (combined CII + SC)",
+    weight_median = "CII general medical unit 74.1 kg, CII ICU 73.3 kg, SC general medical unit 67.7 kg; combined 71.0 kg",
     sex_female_pct = 51.8,
     race_ethnicity = "Not reported",
-    disease_state  = "Adult inpatients receiving therapeutic enoxaparin. CII cohort (n = 48): 29 general medical unit + 19 intensive care unit patients receiving continuous IV infusion (mean infusion 138 +/- 158 h, rate range 100-1600 IU/h, mean 500 +/- 210 IU/h) for treatment of acute thromboembolic disease (Cleveland Clinic Foundation, Jan 1997 - Dec 1998). SC cohort (n = 35): general medical unit patients in the Green 2003 study, included to stabilize PK estimates.",
-    dose_range     = "Initial CII regimen 100 IU/kg per 12 h (8.3 IU/kg/h); infusion rates 100-1600 IU/h (mean 500 IU/h). SC cohort dosed per Green 2003 protocol.",
-    regions        = "United States (Cleveland Clinic Foundation, OH) and the Green 2003 SC cohort.",
+    disease_state = "Adult inpatients receiving therapeutic enoxaparin. CII cohort (n = 48): 29 general medical unit + 19 intensive care unit patients receiving continuous IV infusion (mean infusion 138 +/- 158 h, rate range 100-1600 IU/h, mean 500 +/- 210 IU/h) for treatment of acute thromboembolic disease (Cleveland Clinic Foundation, Jan 1997 - Dec 1998). SC cohort (n = 35): general medical unit patients in the Green 2003 study, included to stabilize PK estimates.",
+    dose_range = "Initial CII regimen 100 IU/kg per 12 h (8.3 IU/kg/h); infusion rates 100-1600 IU/h (mean 500 IU/h). SC cohort dosed per Green 2003 protocol.",
+    regions = "United States (Cleveland Clinic Foundation, OH) and the Green 2003 SC cohort.",
     renal_function = "CrCL median 45.0 mL/min combined; subgroup medians: SC general 39.2 mL/min (range 14.9-95.7), CII general 63.5 mL/min (range 31.1-128.3), CII ICU 26.8 mL/min (range 7.6-49.6). 27 of 48 CII patients had missing SCr concentrations.",
-    notes          = "Baseline demographics per Feng 2006 Table 1 (combined CII + SC dataset, n = 83). The pooled analysis used 363 anti-Xa observations from the CII study and 309 from the SC study (672 total). Anti-Xa concentrations were measured by chromogenic assay (LMWH activity). Patients with unstable serum creatinine (defined as two values > 0.2 mg/dL apart over 12 h) had CrCL computed by the Brater equation; otherwise Cockcroft-Gault on ideal body weight. The model also reports a missing-CrCL branch CL = 0.972 L/h (Table 2 CLmissing) for the 27 CII patients without SCr; this branch is not encoded in the structural model file (see vignette Assumptions and deviations)."
+    notes = "Baseline demographics per Feng 2006 Table 1 (combined CII + SC dataset, n = 83). The pooled analysis used 363 anti-Xa observations from the CII study and 309 from the SC study (672 total). Anti-Xa concentrations were measured by chromogenic assay (LMWH activity). Patients with unstable serum creatinine (defined as two values > 0.2 mg/dL apart over 12 h) had CrCL computed by the Brater equation; otherwise Cockcroft-Gault on ideal body weight. The model also reports a missing-CrCL branch CL = 0.972 L/h (Table 2 CLmissing) for the 27 CII patients without SCr; this branch is not encoded in the structural model file (see vignette Assumptions and deviations)."
   )
 
   ini({

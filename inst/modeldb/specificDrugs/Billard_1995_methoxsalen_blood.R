@@ -8,72 +8,72 @@ Billard_1995_methoxsalen_blood <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "methoxsalen blood", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methoxsalen blood", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methoxsalen blood", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "methoxsalen blood", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight (single-occasion 60-min IV infusion study). Power scaling with allometric exponent 1.0 (fixed; the paper applies weight 'in simple proportion' to volumes and clearances and did not estimate the exponent); reference 70 kg. Paper reports the structural parameters as L/kg and L/kg/min (Table 5); the 70 kg encoding is a presentation choice that leaves the per-kg structural form unchanged. The weight-proportional model decreased the NONMEM -2LL by 10 vs the non-proportional whole-blood model (Results: Compartmental analysis); the improvement was substantially smaller than for the plasma fit (where -2LL dropped by 77).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline weight (single-occasion 60-min IV infusion study). Power scaling with allometric exponent 1.0 (fixed; the paper applies weight 'in simple proportion' to volumes and clearances and did not estimate the exponent); reference 70 kg. Paper reports the structural parameters as L/kg and L/kg/min (Table 5); the 70 kg encoding is a presentation choice that leaves the per-kg structural form unchanged. The weight-proportional model decreased the NONMEM -2LL by 10 vs the non-proportional whole-blood model (Results: Compartmental analysis); the improvement was substantially smaller than for the plasma fit (where -2LL dropped by 77).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in Methods (Compartmental analysis paragraph) but not retained; weight was the only covariate that significantly improved the model. Demographics in Table 1: 32.6 +/- 8.4 years (mean +/- s.d.) across 18 subjects."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in Methods (Compartmental analysis paragraph) but not retained; weight was the only covariate that significantly improved the model. Demographics in Table 1: 32.6 +/- 8.4 years (mean +/- s.d.) across 18 subjects."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened (formula BSA = WT^0.425 * HT^0.725 * 0.007184 footnoted in Methods). 'Models in which the volumes and clearances were proportional to body surface area or lean body mass resulted in similar, but not better, log likelihood values to the weight-proportional model' (Discussion: Compartmental analysis). Not retained."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened (formula BSA = WT^0.425 * HT^0.725 * 0.007184 footnoted in Methods). 'Models in which the volumes and clearances were proportional to body surface area or lean body mass resulted in similar, but not better, log likelihood values to the weight-proportional model' (Discussion: Compartmental analysis). Not retained."
     ),
     LBM = list(
       description = "Lean body mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (sex-specific Boer formulae footnoted in Methods: LBM_men = 1.1*WT - 128*(WT/HT)^2; LBM_women = 1.07*WT - 148*(WT/HT)^2). Not retained for the same reason as BSA."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (sex-specific Boer formulae footnoted in Methods: LBM_men = 1.1*WT - 128*(WT/HT)^2; LBM_women = 1.07*WT - 148*(WT/HT)^2). Not retained for the same reason as BSA."
     ),
     HCT = list(
       description = "Haematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened (Methods: Compartmental analysis paragraph) but not retained. Note: haematocrit was used downstream in the partition-coefficient analysis (Methods: Partition coefficient; Discussion: Partition coefficient analysis) to back-calculate red-cell concentrations from measured whole-blood and plasma, but did not improve the structural PK fit when tested as a covariate on the volumes and clearances."
+      units = "%",
+      type = "continuous",
+      notes = "Screened (Methods: Compartmental analysis paragraph) but not retained. Note: haematocrit was used downstream in the partition-coefficient analysis (Methods: Partition coefficient; Discussion: Partition coefficient analysis) to back-calculate red-cell concentrations from measured whole-blood and plasma, but did not improve the structural PK fit when tested as a covariate on the volumes and clearances."
     ),
     ALB = list(
       description = "Serum albumin",
       units = "g/L",
-      type        = "continuous",
-      notes       = "Screened (Methods: Compartmental analysis paragraph) but not retained."
+      type = "continuous",
+      notes = "Screened (Methods: Compartmental analysis paragraph) but not retained."
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 18L,
-    n_studies            = 1L,
-    age_range            = "18-40 years (inclusion criterion)",
-    age_mean_sd          = "32.6 +/- 8.4 years",
-    weight_mean_sd       = "79.8 +/- 13.7 kg",
-    height_mean_sd       = "180.6 +/- 9.8 cm",
-    bsa_mean_sd          = "2.00 +/- 0.21 m^2",
-    lbm_mean_sd          = "61.9 +/- 9.3 kg",
-    haematocrit_mean_sd  = "43.5 +/- 3.2 %",
-    albumin_mean_sd      = "4.96 +/- 0.37 g/dL",
-    sex_female_pct       = NA_real_,
-    disease_state        = "Healthy adult volunteers (Stanford University School of Medicine / Palo Alto VA Medical Center). No history of significant medical illness; no chronic tobacco / alcohol / medication / illicit drug use; normal laboratory blood and urine tests including HBsAg and HIV antibody.",
-    dose_range           = "Single IV infusion of 5, 10, or 15 mg 8-MOP over 60 min (n = 6 per dose group). Drug diluted to 600 mL total volume in sterile saline; infusion rate 10 mL/min via volumetric pump.",
-    regions              = "Single-center United States study (Palo Alto, CA).",
-    notes                = "Same cohort as the plasma fit (Billard_1995_methoxsalen_plasma); the paper ran two parallel NONMEM analyses on the same 18 subjects, one on plasma concentrations and one on whole-blood concentrations. 'Whole blood 8-MOP concentration decreased below the limit of detection earlier than plasma' (Results: Moment analysis), so the whole-blood fit covers a shorter post-infusion window than the plasma fit. Both men and women enrolled (the LBM formula in Methods is sex-specific), but the paper does not report the sex breakdown; sex_female_pct left as NA."
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "18-40 years (inclusion criterion)",
+    age_mean_sd = "32.6 +/- 8.4 years",
+    weight_mean_sd = "79.8 +/- 13.7 kg",
+    height_mean_sd = "180.6 +/- 9.8 cm",
+    bsa_mean_sd = "2.00 +/- 0.21 m^2",
+    lbm_mean_sd = "61.9 +/- 9.3 kg",
+    haematocrit_mean_sd = "43.5 +/- 3.2 %",
+    albumin_mean_sd = "4.96 +/- 0.37 g/dL",
+    sex_female_pct = NA_real_,
+    disease_state = "Healthy adult volunteers (Stanford University School of Medicine / Palo Alto VA Medical Center). No history of significant medical illness; no chronic tobacco / alcohol / medication / illicit drug use; normal laboratory blood and urine tests including HBsAg and HIV antibody.",
+    dose_range = "Single IV infusion of 5, 10, or 15 mg 8-MOP over 60 min (n = 6 per dose group). Drug diluted to 600 mL total volume in sterile saline; infusion rate 10 mL/min via volumetric pump.",
+    regions = "Single-center United States study (Palo Alto, CA).",
+    notes = "Same cohort as the plasma fit (Billard_1995_methoxsalen_plasma); the paper ran two parallel NONMEM analyses on the same 18 subjects, one on plasma concentrations and one on whole-blood concentrations. 'Whole blood 8-MOP concentration decreased below the limit of detection earlier than plasma' (Results: Moment analysis), so the whole-blood fit covers a shorter post-infusion window than the plasma fit. Both men and women enrolled (the LBM formula in Methods is sex-specific), but the paper does not report the sex breakdown; sex_female_pct left as NA."
   )
 
   ini({

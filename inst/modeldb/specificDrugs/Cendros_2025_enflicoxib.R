@@ -23,7 +23,8 @@ Cendros_2025_enflicoxib <- function() {
     "against sparse plasma samples from 83 client-owned dogs of any breed",
     "with naturally occurring osteoarthritis treated weekly for 6 months.",
     "No covariate other than body weight influenced the PK, and no",
-    "time-dependent PK or over-accumulation was observed.")
+    "time-dependent PK or over-accumulation was observed."
+  )
 
   reference <- paste(
     "Cendros JM, Salichs M, Encina G, Vela JM, Homedes J. Enflicoxib for the",
@@ -47,21 +48,36 @@ Cendros_2025_enflicoxib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "enflicoxib", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "enflicoxib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "enflicoxib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_pyrazol     = list(analyte = "enflicoxib pyrazol metabolite", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_pyrazol = list(analyte = "enflicoxib pyrazol metabolite", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2_pyrazol = list(analyte = "enflicoxib pyrazol metabolite", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "enflicoxib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enflicoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enflicoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_pyrazol = list(
+      analyte = "enflicoxib pyrazol metabolite",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_pyrazol = list(
+      analyte = "enflicoxib pyrazol metabolite",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral2_pyrazol = list(
+      analyte = "enflicoxib pyrazol metabolite",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight of the dog.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight of the dog.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the model. Enters every apparent",
         "clearance and every apparent volume as a fixed-exponent allometric",
         "power of (WGT / median(WGT)) per the Cendros 2025 allometric equation",
@@ -74,8 +90,9 @@ Cendros_2025_enflicoxib <- function() {
         "volumes of distribution (0.75 and 1.00, respectively)'). Body weight was",
         "the only covariate showing a clear trend with plasma levels in the",
         "external-validation cohort (Cendros 2025 Results, 'Relationship between",
-        "plasma levels and covariates')."),
-      source_name        = "WGT"
+        "plasma levels and covariates')."
+      ),
+      source_name = "WGT"
     )
   )
 
@@ -87,32 +104,32 @@ Cendros_2025_enflicoxib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Dog age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; no relationship with enflicoxib or pyrazol metabolite plasma levels. Cendros 2025 Discussion: 'In agreement with other NSAIDS of the same class, no effect has been seen for age or sex'."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; no relationship with enflicoxib or pyrazol metabolite plasma levels. Cendros 2025 Discussion: 'In agreement with other NSAIDS of the same class, no effect has been seen for age or sex'."
     ),
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical covariate (35/83 = 42.2% female); not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate (35/83 = 42.2% female); not retained."
     )
   )
 
   population <- list(
-    species        = "dog (Beagle for parameter estimation; client-owned dogs of any breed for external validation)",
-    n_subjects     = 83L,
-    n_studies      = 1L,
-    age_range      = "2-16 years (mean +/- SD 8.7 +/- 3)",
-    weight_range   = "4.9-64.9 kg (mean +/- SD 27.0 +/- 15)",
-    weight_median  = "9.9 kg in the healthy Beagle population used for parameter estimation (the allometric reference)",
+    species = "dog (Beagle for parameter estimation; client-owned dogs of any breed for external validation)",
+    n_subjects = 83L,
+    n_studies = 1L,
+    age_range = "2-16 years (mean +/- SD 8.7 +/- 3)",
+    weight_range = "4.9-64.9 kg (mean +/- SD 27.0 +/- 15)",
+    weight_median = "9.9 kg in the healthy Beagle population used for parameter estimation (the allometric reference)",
     sex_female_pct = 42.2,
-    disease_state  = "naturally occurring osteoarthritis with clinical signs (pain and lameness) for at least 3 weeks plus radiographic evidence in at least one pelvic or thoracic limb joint; baseline clinical sum score >= 4",
-    dose_range     = "oral Daxocox tablets, 8 mg/kg loading dose on day 0 then 4 mg/kg once weekly for 26 weeks (27 administrations); actual mean administered doses were 10.4 mg/kg loading and 5.2 mg/kg maintenance",
-    regions        = "Portugal and Hungary",
+    disease_state = "naturally occurring osteoarthritis with clinical signs (pain and lameness) for at least 3 weeks plus radiographic evidence in at least one pelvic or thoracic limb joint; baseline clinical sum score >= 4",
+    dose_range = "oral Daxocox tablets, 8 mg/kg loading dose on day 0 then 4 mg/kg once weekly for 26 weeks (27 administrations); actual mean administered doses were 10.4 mg/kg loading and 5.2 mg/kg maintenance",
+    regions = "Portugal and Hungary",
     n_observations = "142 plasma samples (75 on day 44, 2 on day 93, 65 on day 189); 2 samples per dog by design",
-    breeds         = "42 purebred (50.6%) and 41 mixed-bred (49.4%), more than 25 breeds represented; Labrador Retriever and German Shepherd most frequent",
-    notes          = paste(
+    breeds = "42 purebred (50.6%) and 41 mixed-bred (49.4%), more than 25 breeds represented; Labrador Retriever and German Shepherd most frequent",
+    notes = paste(
       "Two-tier population. The structural model, parameter estimates, IIV and",
       "residual error in ini() were estimated by Cendros 2022 in young healthy",
       "Beagle dogs (hence the 9.9 kg allometric reference). Cendros 2025",
@@ -122,7 +139,8 @@ Cendros_2025_enflicoxib <- function() {
       "parameter was re-estimated. Concentrations below the limit of",
       "quantification (5.0 ng/mL enflicoxib, 2.5 ng/mL pyrazol metabolite) were",
       "handled by the M3 likelihood method. Dosing was with food, which",
-      "increases absorption.")
+      "increases absorption."
+    )
   )
 
   ini({

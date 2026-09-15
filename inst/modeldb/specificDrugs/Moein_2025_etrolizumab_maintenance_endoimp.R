@@ -36,18 +36,18 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
   )
   vignette <- "Moein_2025_etrolizumab"
   units <- list(
-    time          = "n/a (static landmark logistic regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark logistic regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_endoimp (probability of endoscopic improvement at end of maintenance, 0-1)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE 105 mg dose (Ctrough,W4,adjusted)",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE 105 mg dose (Ctrough,W4,adjusted)",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "TOTAL etrolizumab, entering the logit LINEARLY and ",
         "UNCENTERED, so logite0 is the logit at zero exposure -- the ",
         "placebo arm (a single intercept is shared by placebo and ",
@@ -64,14 +64,14 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
         "CTROUGH = 0. Observed distribution (Table S6, maintenance): ",
         "mean 1.66, median 0.164, range 0-9.14 ug/mL."
       ),
-      source_name        = "Ctrough,W4,adjusted"
+      source_name = "Ctrough,W4,adjusted"
     ),
     DISLOC_ILEUM = list(
-      description        = "Crohn's disease located in the ileum only (Montreal L1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease located in the ileum only (Montreal L1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ileocolonic disease, Montreal L3, the paper's reference; implies DISLOC_COLON = 0 as well)",
-      notes              = paste0(
+      notes = paste0(
         "Log-odds shift versus ileocolonic disease (-0.937 here). ",
         "Paired with DISLOC_COLON to encode the three-level Montreal ",
         "disease-location categorical, with both indicators zero ",
@@ -84,14 +84,14 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
         "ileum and colon (62%), 78 ileum only (18%), 89 colon only ",
         "(21%)."
       ),
-      source_name        = "Disease location"
+      source_name = "Disease location"
     ),
     DISLOC_COLON = list(
-      description        = "Crohn's disease located in the colon only (Montreal L2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Crohn's disease located in the colon only (Montreal L2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ileocolonic disease, Montreal L3)",
-      notes              = paste0(
+      notes = paste0(
         "Declared for completeness of the three-level disease-location ",
         "encoding and referenced in model() with a coefficient of ",
         "exactly zero, because Table S9 retained no colon-only effect ",
@@ -102,14 +102,14 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
         "data-column contract identical across all six models of the ",
         "family. Mutually exclusive with DISLOC_ILEUM."
       ),
-      source_name        = "Disease location"
+      source_name = "Disease location"
     ),
     SMOKE_NEVER = list(
-      description        = "Never-smoker indicator at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Never-smoker indicator at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (never smoker) -- see notes; the PAPER's reference is the never-smoker group, which is the canonical pair's implicit THIRD level",
-      notes              = paste0(
+      notes = paste0(
         "Used together with SMOKE_CURRENT to encode the three-level ",
         "smoking-status categorical. NOTE the reference-category ",
         "difference from the register's documented pairing: the ",
@@ -131,14 +131,14 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
         "set (Table S7): 223 non-smoker (51%), 120 previously smoked ",
         "(28%), 91 current smoker (21%)."
       ),
-      source_name        = "Smoking status"
+      source_name = "Smoking status"
     ),
     SMOKE_CURRENT = list(
-      description        = "Current-smoker indicator at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not a current smoker); the effect is stated versus the NEVER-smoker reference, so SMOKE_NEVER must be supplied alongside it",
-      notes              = paste0(
+      notes = paste0(
         "Log-odds shift for current versus never smoker (+0.636). ",
         "Paired with SMOKE_NEVER as described in that entry's notes; ",
         "both columns are required because the former-smoker indicator ",
@@ -149,24 +149,24 @@ Moein_2025_etrolizumab_maintenance_endoimp <- function() {
         "further investigation -- so treat the direction with caution ",
         "rather than as a mechanistic claim. Reproduced in Figure 4f."
       ),
-      source_name        = "Smoking status"
+      source_name = "Smoking status"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 434L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 434L,
+    n_studies = 1L,
     n_observations = "434 binary outcome records, one per patient (landmark analysis at end of maintenance)",
-    age_range      = "18.0-76.0 years",
-    age_median     = "37.0 years",
-    weight_range   = "35.3-154 kg",
-    weight_median  = "70.4 kg",
+    age_range = "18.0-76.0 years",
+    age_median = "37.0 years",
+    weight_range = "35.3-154 kg",
+    weight_median = "70.4 kg",
     sex_female_pct = 50,
-    disease_state  = "Moderately-to-severely active Crohn's disease with a CDAI-70 response at the end of induction; baseline CDAI median 320, SES-CD median 12.0",
-    dose_range     = "Placebo or etrolizumab 105 mg SC Q4W over a 52-week maintenance phase, following a 14-week induction phase on 105 or 210 mg SC",
-    regions        = "Multinational (BERGAMOT, NCT02394028)",
-    notes          = paste0(
+    disease_state = "Moderately-to-severely active Crohn's disease with a CDAI-70 response at the end of induction; baseline CDAI median 320, SES-CD median 12.0",
+    dose_range = "Placebo or etrolizumab 105 mg SC Q4W over a 52-week maintenance phase, following a 14-week induction phase on 105 or 210 mg SC",
+    regions = "Multinational (BERGAMOT, NCT02394028)",
+    notes = paste0(
       "Same maintenance analysis set as the two companion maintenance ",
       "models. Entry required a CDAI-70 response at the end of ",
       "induction, so the set is RESPONDER-ENRICHED; induction-placebo ",

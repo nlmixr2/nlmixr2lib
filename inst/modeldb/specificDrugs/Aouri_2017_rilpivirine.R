@@ -22,145 +22,145 @@ Aouri_2017_rilpivirine <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Male",
-      notes              = "Screened in the covariate analysis but not retained in the final model. Aouri 2017 Results page (after Table 1): a 13% decrease in CL/F in females compared with males was observed (95% CI 3-25%) but did not reach statistical significance (dOFV = -5.3, below the multiple-testing significance threshold of -7.88).",
-      source_name        = "SEX"
+      notes = "Screened in the covariate analysis but not retained in the final model. Aouri 2017 Results page (after Table 1): a 13% decrease in CL/F in females compared with males was observed (95% CI 3-25%) but did not reach statistical significance (dOFV = -5.3, below the multiple-testing significance threshold of -7.88).",
+      source_name = "SEX"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Median 74 kg (range 42-112) in the study cohort (Aouri 2017 Table 1).",
-      source_name        = "WT"
+      notes = "Screened but not retained. Median 74 kg (range 42-112) in the study cohort (Aouri 2017 Table 1).",
+      source_name = "WT"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Median 175 cm (range 150-198) in the study cohort (Aouri 2017 Table 1).",
-      source_name        = "HT"
+      notes = "Screened but not retained. Median 175 cm (range 150-198) in the study cohort (Aouri 2017 Table 1).",
+      source_name = "HT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Median 46 years (range 22-80) in the study cohort (Aouri 2017 Table 1).",
-      source_name        = "AGE"
+      notes = "Screened but not retained. Median 46 years (range 22-80) in the study cohort (Aouri 2017 Table 1).",
+      source_name = "AGE"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Recoded to a dichotomous indicator using a cutoff of 1.5 x ULN in the source covariate analysis (Aouri 2017 Methods, Covariate model section).",
-      source_name        = "AST"
+      notes = "Screened but not retained. Recoded to a dichotomous indicator using a cutoff of 1.5 x ULN in the source covariate analysis (Aouri 2017 Methods, Covariate model section).",
+      source_name = "AST"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened but not retained. Recoded to a dichotomous indicator using a cutoff of 1.5 x ULN in the source covariate analysis (Aouri 2017 Methods, Covariate model section).",
-      source_name        = "ALT"
+      notes = "Screened but not retained. Recoded to a dichotomous indicator using a cutoff of 1.5 x ULN in the source covariate analysis (Aouri 2017 Methods, Covariate model section).",
+      source_name = "ALT"
     ),
     HCV_POS = list(
-      description        = "Chronic hepatitis C virus coinfection indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic hepatitis C virus coinfection indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not coinfected",
-      notes              = "Screened but not retained (Aouri 2017 Methods, Covariate model section).",
-      source_name        = "HCV"
+      notes = "Screened but not retained (Aouri 2017 Methods, Covariate model section).",
+      source_name = "HCV"
     ),
     HBV_POS = list(
-      description        = "Hepatitis B virus coinfection indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatitis B virus coinfection indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not coinfected",
-      notes              = "Screened but not retained (Aouri 2017 Methods, Covariate model section).",
-      source_name        = "HBV"
+      notes = "Screened but not retained (Aouri 2017 Methods, Covariate model section).",
+      source_name = "HBV"
     ),
     RACE_BLACK = list(
-      description        = "Black / African ethnicity indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African ethnicity indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Non-Black",
-      notes              = "Race screened but not retained. Aouri 2017 Table 1 cohort: 51.4% Caucasian, 11.6% African, 0.4% Asian, 1.2% Other, 35.3% Unknown.",
-      source_name        = "RACE"
+      notes = "Race screened but not retained. Aouri 2017 Table 1 cohort: 51.4% Caucasian, 11.6% African, 0.4% Asian, 1.2% Other, 35.3% Unknown.",
+      source_name = "RACE"
     ),
     CYP3A4_STAR22 = list(
-      description        = "CYP3A4*22 (rs35599367) loss-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A4*22 (rs35599367) loss-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained (dOFV less than -3.05). Genotype available for 119 Caucasian subjects in the Swiss HIV Cohort Study; MAF 0.04.",
-      source_name        = "CYP3A4_22"
+      notes = "Tested but not retained (dOFV less than -3.05). Genotype available for 119 Caucasian subjects in the Swiss HIV Cohort Study; MAF 0.04.",
+      source_name = "CYP3A4_22"
     ),
     CYP3A5_STAR3 = list(
-      description        = "CYP3A5*3 (rs776746) loss-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*3 (rs776746) loss-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained. MAF 0.90 in the Caucasian subset (Aouri 2017 Genotyping section).",
-      source_name        = "CYP3A5_3"
+      notes = "Tested but not retained. MAF 0.90 in the Caucasian subset (Aouri 2017 Genotyping section).",
+      source_name = "CYP3A5_3"
     ),
     CYP2C19_STAR2 = list(
-      description        = "CYP2C19*2 (rs4244285) loss-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19*2 (rs4244285) loss-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained. MAF 0.16 in the Caucasian subset (Aouri 2017 Genotyping section).",
-      source_name        = "CYP2C19_2"
+      notes = "Tested but not retained. MAF 0.16 in the Caucasian subset (Aouri 2017 Genotyping section).",
+      source_name = "CYP2C19_2"
     ),
     CYP2C19_STAR17 = list(
-      description        = "CYP2C19*17 (rs12248560) gain-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19*17 (rs12248560) gain-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained. MAF 0.24 in the Caucasian subset (Aouri 2017 Genotyping section).",
-      source_name        = "CYP2C19_17"
+      notes = "Tested but not retained. MAF 0.24 in the Caucasian subset (Aouri 2017 Genotyping section).",
+      source_name = "CYP2C19_17"
     ),
     UGT1A1_STAR28 = list(
-      description        = "UGT1A1*28 (rs8175347) loss-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT1A1*28 (rs8175347) loss-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained. MAF 0.39 in the Caucasian subset (Aouri 2017 Genotyping section).",
-      source_name        = "UGT1A1_28"
+      notes = "Tested but not retained. MAF 0.39 in the Caucasian subset (Aouri 2017 Genotyping section).",
+      source_name = "UGT1A1_28"
     ),
     UGT1A4_STAR2 = list(
-      description        = "UGT1A4*2 (rs6755571) loss-of-function allele indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT1A4*2 (rs6755571) loss-of-function allele indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Homozygous wild-type",
-      notes              = "Tested but not retained. MAF 0.04 in the Caucasian subset (Aouri 2017 Genotyping section).",
-      source_name        = "UGT1A4_2"
+      notes = "Tested but not retained. MAF 0.04 in the Caucasian subset (Aouri 2017 Genotyping section).",
+      source_name = "UGT1A4_2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 249L,
+    species = "human",
+    n_subjects = 249L,
     n_observations = 325L,
-    n_studies      = 1L,
-    age_range      = "22-80 years",
-    age_median     = "46 years",
-    weight_range   = "42-112 kg",
-    weight_median  = "74 kg",
-    height_range   = "150-198 cm",
-    height_median  = "175 cm",
+    n_studies = 1L,
+    age_range = "22-80 years",
+    age_median = "46 years",
+    weight_range = "42-112 kg",
+    weight_median = "74 kg",
+    height_range = "150-198 cm",
+    height_median = "175 cm",
     sex_female_pct = 27.3,
     race_ethnicity = c(Caucasian = 51.4, African = 11.6, Asian = 0.4, Other = 1.2, Unknown = 35.3),
-    disease_state  = "HIV-1-infected adults receiving therapeutic drug monitoring (87% antiretroviral-experienced, 13% antiretroviral-naive)",
-    dose_range     = "25 mg orally once daily, fixed-dose single-tablet regimen with emtricitabine (FTC) and tenofovir disoproxil fumarate (TDF)",
-    regions        = "Switzerland (Lausanne, Zurich, Basel, Geneva, Saint Gall, Bern)",
-    study_period   = "April 2013 - January 2015",
-    notes          = "Demographic and genetic characteristics from Aouri 2017 Table 1. Samples were drawn 1.25-36 h after the last drug intake under steady-state conditions (at least 4 weeks after rilpivirine regimen initiation). Plasma rilpivirine concentrations ranged from 12 to 255 ng/mL; the LC-MS/MS assay LLOQ was 5 ng/mL. Genotyping was performed in 119 Swiss HIV Cohort Study participants; 130 of 249 patients had unknown genotypes."
+    disease_state = "HIV-1-infected adults receiving therapeutic drug monitoring (87% antiretroviral-experienced, 13% antiretroviral-naive)",
+    dose_range = "25 mg orally once daily, fixed-dose single-tablet regimen with emtricitabine (FTC) and tenofovir disoproxil fumarate (TDF)",
+    regions = "Switzerland (Lausanne, Zurich, Basel, Geneva, Saint Gall, Bern)",
+    study_period = "April 2013 - January 2015",
+    notes = "Demographic and genetic characteristics from Aouri 2017 Table 1. Samples were drawn 1.25-36 h after the last drug intake under steady-state conditions (at least 4 weeks after rilpivirine regimen initiation). Plasma rilpivirine concentrations ranged from 12 to 255 ng/mL; the LC-MS/MS assay LLOQ was 5 ng/mL. Genotyping was performed in 119 Swiss HIV Cohort Study participants; 130 of 249 patients had unknown genotypes."
   )
 
   ini({

@@ -32,7 +32,7 @@ Chen_2025_remimazolam <- function() {
     sep = " "
   )
   vignette <- "Chen_2025_remimazolam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Remimazolam was given as an intravenous infusion by
@@ -43,7 +43,7 @@ Chen_2025_remimazolam <- function() {
   # remimazolam is a controlled drug, so no parent-metabolite model could be
   # built.
   compartmentData <- list(
-    central     = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -67,151 +67,151 @@ Chen_2025_remimazolam <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 5-6 (CL dOFV -5.564; V1 dOFV -4.610). Screened as a median-normalised exponential model (Chen 2025 Section 2.4, second displayed equation); not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 5-6 (CL dOFV -5.564; V1 dOFV -4.610). Screened as a median-normalised exponential model (Chen 2025 Section 2.4, second displayed equation); not retained."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Chen 2025 Supplementary Table S3 runs 1-2 (CL dOFV -6.244, p < 0.01; V1 dOFV -6.037, p < 0.01). The strongest covariate signal in the screen, but it failed backward elimination. Chen 2025 Section 4.1 reports a post hoc simulation in which CL was 1.3-fold higher in females than in males (Supplementary Figure S3), and the authors discard the effect because men outnumbered women three to one (24 vs 8). Screened as a proportional model (Chen 2025 Section 2.4, first displayed equation) with the categorical covariate coded 0/1; the paper does not state which sex was coded 1, so the SEXF polarity here is the register default and is not asserted from the source."
+      units = "(binary)",
+      type = "binary",
+      notes = "Chen 2025 Supplementary Table S3 runs 1-2 (CL dOFV -6.244, p < 0.01; V1 dOFV -6.037, p < 0.01). The strongest covariate signal in the screen, but it failed backward elimination. Chen 2025 Section 4.1 reports a post hoc simulation in which CL was 1.3-fold higher in females than in males (Supplementary Figure S3), and the authors discard the effect because men outnumbered women three to one (24 vs 8). Screened as a proportional model (Chen 2025 Section 2.4, first displayed equation) with the categorical covariate coded 0/1; the paper does not state which sex was coded 1, so the SEXF polarity here is the register default and is not asserted from the source."
     ),
     WT = list(
       description = "Total body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 3-4 (CL dOFV -4.610; V1 dOFV 0). Not retained. Chen 2025 Section 4.1 argues explicitly against weight-based dosing for remimazolam and notes that the 47-98 kg range was concentrated in 47-75 kg, with only three patients above it, so the negative result should not be extrapolated to obese patients."
+      units = "kg",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 3-4 (CL dOFV -4.610; V1 dOFV 0). Not retained. Chen 2025 Section 4.1 argues explicitly against weight-based dosing for remimazolam and notes that the 47-98 kg range was concentrated in 47-75 kg, with only three patients above it, so the negative result should not be extrapolated to obese patients."
     ),
     BMI = list(
       description = "Body mass index at baseline.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 7-8 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 7-8 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
     ),
     CREAT = list(
       description = "Serum creatinine.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 13-14 (CL dOFV -1.633; V1 dOFV -6.111, p < 0.01). Not retained. Reported in umol/L in Chen 2025 Table 1 (median 75.75, range 42.1-911.77)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 13-14 (CL dOFV -1.633; V1 dOFV -6.111, p < 0.01). Not retained. Reported in umol/L in Chen 2025 Table 1 (median 75.75, range 42.1-911.77)."
     ),
     CRCL = list(
       description = "Creatinine clearance by the Cockcroft-Gault equation.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 27-28 (CL dOFV 0; V1 dOFV 0) -- literally no improvement on either parameter. Not retained. Uncorrected mL/min (Cockcroft-Gault), NOT normalised to 1.73 m^2."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 27-28 (CL dOFV 0; V1 dOFV 0) -- literally no improvement on either parameter. Not retained. Uncorrected mL/min (Cockcroft-Gault), NOT normalised to 1.73 m^2."
     ),
     BUN = list(
       description = "Blood urea nitrogen.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 53-54 (CL dOFV -3.678; V1 dOFV -4.610). Not retained. Chen 2025 Table 1 reports the unit as umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 53-54 (CL dOFV -3.678; V1 dOFV -4.610). Not retained. Chen 2025 Table 1 reports the unit as umol/L."
     ),
     CYSC = list(
       description = "Serum cystatin C.",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 49-50 (CL dOFV -4.810; V1 dOFV -4.610). Not retained."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 49-50 (CL dOFV -4.810; V1 dOFV -4.610). Not retained."
     ),
     ALT = list(
       description = "Alanine aminotransferase.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 15-16. The V1 effect was the single largest in the whole screen (dOFV -11.367, p < 0.001), and Chen 2025 Section 4.1 reports that V1 rose with rising ALT, but it still failed backward elimination and was dropped. Supplementary Figure S3 shows the simulated concentration-time consequence."
+      units = "U/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 15-16. The V1 effect was the single largest in the whole screen (dOFV -11.367, p < 0.001), and Chen 2025 Section 4.1 reports that V1 rose with rising ALT, but it still failed backward elimination and was dropped. Supplementary Figure S3 shows the simulated concentration-time consequence."
     ),
     TPRO = list(
       description = "Total serum protein.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 17-18 (CL dOFV -6.441, p < 0.01; V1 dOFV 0). Not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 17-18 (CL dOFV -6.441, p < 0.01; V1 dOFV 0). Not retained."
     ),
     ALB = list(
       description = "Serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 19-20 (CL dOFV -4.610; V1 dOFV -5.110). Not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 19-20 (CL dOFV -4.610; V1 dOFV -5.110). Not retained."
     ),
     TBILI = list(
       description = "Total serum bilirubin.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 21-22 (CL dOFV -0.060; V1 dOFV 0). Not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 21-22 (CL dOFV -0.060; V1 dOFV 0). Not retained."
     ),
     DBIL = list(
       description = "Direct (conjugated) serum bilirubin.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 23-24 (CL dOFV -4.607; V1 dOFV 0). Not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 23-24 (CL dOFV -4.607; V1 dOFV 0). Not retained."
     ),
     CRP = list(
       description = "C-reactive protein.",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 51-52 (CL dOFV -6.752, p < 0.01; V1 dOFV 0). Not retained."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 51-52 (CL dOFV -6.752, p < 0.01; V1 dOFV 0). Not retained."
     ),
     WBC = list(
       description = "Peripheral leukocyte (white blood cell) count.",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 31-32 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 31-32 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
     ),
     HGB = list(
       description = "Haemoglobin concentration.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 45-46 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 45-46 (CL dOFV -4.610; V1 dOFV -4.610). Not retained."
     ),
     HCT = list(
       description = "Haematocrit.",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 47-48 (CL dOFV -4.610; V1 dOFV -4.610). Not retained. Relevant to ECMO circuit haemodilution, which the authors also screened."
+      units = "%",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 47-48 (CL dOFV -4.610; V1 dOFV -4.610). Not retained. Relevant to ECMO circuit haemodilution, which the authors also screened."
     ),
     LACT = list(
       description = "Arterial lactate.",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 35-36 (CL dOFV -4.610; V1 dOFV -7.671, p < 0.01). Not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 35-36 (CL dOFV -4.610; V1 dOFV -7.671, p < 0.01). Not retained."
     ),
     SOD = list(
       description = "Arterial serum sodium.",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 37-38 (CL dOFV -2.748; V1 dOFV -4.610). Not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 37-38 (CL dOFV -2.748; V1 dOFV -4.610). Not retained."
     ),
     POT = list(
       description = "Arterial serum potassium.",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Chen 2025 Supplementary Table S3 runs 39-40 (CL dOFV -4.610; V1 dOFV -5.314). Not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Chen 2025 Supplementary Table S3 runs 39-40 (CL dOFV -4.610; V1 dOFV -5.314). Not retained."
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal replacement therapy in progress (1 = yes, 0 = no).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Chen 2025 Supplementary Table S3 runs 9-10 (CL dOFV -0.226; V1 dOFV -0.120) -- among the weakest signals in the screen. 14 of 32 patients received CRRT (11 CVVH, 1 CVVHD, 2 CVVHDF). Chen 2025 Section 4.1 additionally reports that CRRT duration, blood flow rate and dialysate flow rate had no effect, and concludes that no dose adjustment is needed during CRRT."
+      units = "(binary)",
+      type = "binary",
+      notes = "Chen 2025 Supplementary Table S3 runs 9-10 (CL dOFV -0.226; V1 dOFV -0.120) -- among the weakest signals in the screen. 14 of 32 patients received CRRT (11 CVVH, 1 CVVHD, 2 CVVHDF). Chen 2025 Section 4.1 additionally reports that CRRT duration, blood flow rate and dialysate flow rate had no effect, and concludes that no dose adjustment is needed during CRRT."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score on the day of ICU admission or drug administration.",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Recorded for the whole cohort (Chen 2025 Section 2.2; median 26, range 15-41 in Table 1) as the illness-severity descriptor, but it does not appear among the 54 numbered runs of Supplementary Table S3, so it was collected and reported rather than formally screened."
+      units = "points",
+      type = "continuous",
+      notes = "Recorded for the whole cohort (Chen 2025 Section 2.2; median 26, range 15-41 in Table 1) as the illness-severity descriptor, but it does not appear among the 54 numbered runs of Supplementary Table S3, so it was collected and reported rather than formally screened."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32,
-    n_studies      = 1,
-    age_range      = "26-79 years",
-    age_median     = "62 years",
-    weight_range   = "47-98 kg",
-    weight_median  = "63 kg",
-    bmi_range      = "18.73-36.00 kg/m2",
-    bmi_median     = "22.67 kg/m2",
+    species = "human",
+    n_subjects = 32,
+    n_studies = 1,
+    age_range = "26-79 years",
+    age_median = "62 years",
+    weight_range = "47-98 kg",
+    weight_median = "63 kg",
+    bmi_range = "18.73-36.00 kg/m2",
+    bmi_median = "22.67 kg/m2",
     sex_female_pct = 25,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults requiring sedation in the intensive care unit.",
       "Admission diagnoses were respiratory failure (28.7%), heart failure",
       "(26.0%), severe pneumonia (15.1%), septic shock (12.3%), acute",
@@ -223,7 +223,7 @@ Chen_2025_remimazolam <- function() {
       "were on CRRT.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Continuous intravenous infusion by micropump of remimazolam besylate",
       "at 1 or 2 mg/mL, titrated by the bedside clinician to the target",
       "Richmond Agitation-Sedation Scale score. Administered dose 2-17.28",
@@ -231,8 +231,8 @@ Chen_2025_remimazolam <- function() {
       "No loading dose was given as part of the observational protocol.",
       sep = " "
     ),
-    regions        = "China (single centre; Maoming People's Hospital, Guangdong)",
-    co_medication  = paste(
+    regions = "China (single centre; Maoming People's Hospital, Guangdong)",
+    co_medication = paste(
       "Remifentanil for analgesia in 96.8% of patients, which Chen 2025",
       "Section 4.3 invokes to explain why adequate sedation was achieved at",
       "plasma concentrations below the 400-1200 ng/mL range reported for",
@@ -248,7 +248,7 @@ Chen_2025_remimazolam <- function() {
       "only. HPLC-MS/MS calibration range 1.0-1000 ng/mL.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective single-centre observational study run April-December",
       "2022 (ethics approval PJ2021MI-K009-01). Demographics reproduced from",
       "Chen 2025 Table 1. The cohort is described as Chinese by recruitment",

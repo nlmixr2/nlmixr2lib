@@ -34,19 +34,19 @@ Bulitta_2011_cefpirome <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cefpirome", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cefpirome", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cefpirome", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "cefpirome", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "cefpirome", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "cefpirome", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL_R, CL_NR, Q12, Q23 (fixed exponent 0.75)",
         "and V1, V2, V3 (fixed exponent 1.0) with reference LBM = 53 kg per",
         "Bulitta 2011 Population PK analysis, body size paragraph and",
@@ -54,17 +54,17 @@ Bulitta_2011_cefpirome <- function() {
         "(Bulitta 2011 Table 1 footnote a citing Cheymol 1972 / James 1976);",
         "the cohort medians were 45.7 kg (CF) and 50.0 kg (HV)."
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     ),
     DIS_CF = list(
-      description        = paste(
+      description = paste(
         "Cystic-fibrosis cohort indicator: 1 = adult CF patient, 0 = healthy",
         "adult volunteer (reference). Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "The paper does not assign a column name to the CF/HV cohort flag;",
         "the CF-vs-HV split is encoded in the structural NONMEM/S-ADAPT",
         "model via three group-scale factors FCYF_CLR, FCYF_CLNR, and",
@@ -74,30 +74,30 @@ Bulitta_2011_cefpirome <- function() {
         "are anchored to DIS_CF = 0 (HV) so the FCYF factors are recovered",
         "as positive log-scale effects via exp(e_cf_<param> * DIS_CF)."
       ),
-      source_name        = NA_character_
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "18-35 years (CF 18-34, median 22.5; HV 20-35, median 29)",
-    weight_range   = "31.5-85.0 kg total body weight (CF 31.5-66.5, median 53.3; HV 53.0-85.0, median 63.6)",
-    lbm_range      = "26.2-62.7 kg lean body mass (CF 26.2-55.9, median 45.7; HV 41.8-62.7, median 50.0)",
-    height_range   = "140-183 cm (CF 140-183, median 170; HV 161-182, median 175)",
-    bmi_range      = "13.2-28.4 kg/m^2 (CF 13.2-20.3, median 19.0; HV 17.7-28.4, median 20.6)",
-    crcl_range     = "89.3-164 mL/min Cockcroft-Gault for a nominal 70 kg subject (CF 89.3-164, median 131; HV 92.3-150, median 116)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18-35 years (CF 18-34, median 22.5; HV 20-35, median 29)",
+    weight_range = "31.5-85.0 kg total body weight (CF 31.5-66.5, median 53.3; HV 53.0-85.0, median 63.6)",
+    lbm_range = "26.2-62.7 kg lean body mass (CF 26.2-55.9, median 45.7; HV 41.8-62.7, median 50.0)",
+    height_range = "140-183 cm (CF 140-183, median 170; HV 161-182, median 175)",
+    bmi_range = "13.2-28.4 kg/m^2 (CF 13.2-20.3, median 19.0; HV 17.7-28.4, median 20.6)",
+    crcl_range = "89.3-164 mL/min Cockcroft-Gault for a nominal 70 kg subject (CF 89.3-164, median 131; HV 92.3-150, median 116)",
     sex_female_pct = 41.7,
     race_ethnicity = "100% Caucasian (Methods, Subjects paragraph).",
-    disease_state  = paste(
+    disease_state = paste(
       "Two parallel groups of similar lean body mass: 12 adult CF patients",
       "and 12 healthy volunteers, all with normal renal function and no",
       "evidence of acute pulmonary exacerbation at the time of dosing."
     ),
-    dose_range     = "Single 10-min IV infusion of 2 g (= 2000 mg) cefpirome dissolved in 20 mL water for injection.",
-    regions        = "Germany (single-centre study by IBMP, Nurnberg-Heroldsberg).",
-    notes          = paste(
+    dose_range = "Single 10-min IV infusion of 2 g (= 2000 mg) cefpirome dissolved in 20 mL water for injection.",
+    regions = "Germany (single-centre study by IBMP, Nurnberg-Heroldsberg).",
+    notes = paste(
       "Baseline demographics from Bulitta 2011 Table 1. Final estimation by",
       "NONMEM VI level 1.2 with FOCE+INTERACTION and a parallel S-ADAPT 1.57",
       "beta MC-PEM analysis; the paper used the NONMEM estimates for the",

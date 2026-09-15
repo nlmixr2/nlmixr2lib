@@ -35,15 +35,35 @@ Bosch_2025_glp1ra_hba1c <- function() {
   )
   vignette <- "Bosch_2025_glp1ra_hba1c"
   paper_specific_compartments <- c(
-    "hba_n01", "hba_n02", "hba_n03", "hba_n04", "hba_n05", "hba_n06",
-    "hba_n07", "hba_n08", "hba_n09", "hba_n10", "hba_n11", "hba_n12",
-    "hba_g01", "hba_g02", "hba_g03", "hba_g04", "hba_g05", "hba_g06",
-    "hba_g07", "hba_g08", "hba_g09", "hba_g10", "hba_g11", "hba_g12"
+    "hba_n01",
+    "hba_n02",
+    "hba_n03",
+    "hba_n04",
+    "hba_n05",
+    "hba_n06",
+    "hba_n07",
+    "hba_n08",
+    "hba_n09",
+    "hba_n10",
+    "hba_n11",
+    "hba_n12",
+    "hba_g01",
+    "hba_g02",
+    "hba_g03",
+    "hba_g04",
+    "hba_g05",
+    "hba_g06",
+    "hba_g07",
+    "hba_g08",
+    "hba_g09",
+    "hba_g10",
+    "hba_g11",
+    "hba_g12"
   )
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; glucose-driven, no exogenous dosing)",
+    time = "day",
+    dosing = "(none; glucose-driven, no exogenous dosing)",
     concentration = "% (HbA1c percentage)"
   )
 
@@ -80,11 +100,11 @@ Bosch_2025_glp1ra_hba1c <- function() {
 
   covariateData <- list(
     GLU = list(
-      description        = "Plasma glucose concentration (time-varying regressor input)",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma glucose concentration (time-varying regressor input)",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying regressor; supplied at every observation / event",
         "row in the dataset and linearly interpolated between rows via",
         "the linear(GLU) declaration in model(). Drives the glycation",
@@ -99,14 +119,14 @@ Bosch_2025_glp1ra_hba1c <- function() {
         "GLU * 18.02 to match the original Lledo-Garcia 2013 / Bosch",
         "2025 supplement S2 parameterisation."
       ),
-      source_name        = "Cglc,av (Bosch 2025 Methods Section 2.3)"
+      source_name = "Cglc,av (Bosch 2025 Methods Section 2.3)"
     ),
     FPG = list(
-      description        = "Baseline (per-subject) fasting plasma glucose anchor",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Baseline (per-subject) fasting plasma glucose anchor",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; supplied at study entry. Used to",
         "initialise the transit chain in steady state at the subject's",
         "baseline glycemic state (Bosch 2025 supplement S2 model code:",
@@ -115,21 +135,21 @@ Bosch_2025_glp1ra_hba1c <- function() {
         "Ph2a population median FPG = 9.6 mmol/L (SD 2.2); Ph2b median",
         "FPG = 10.1 mmol/L (SD 2.6) per supplement Table S1."
       ),
-      source_name        = "AG / IAG / IBGLC (Bosch 2025 supplement S2 $INPUT)"
+      source_name = "AG / IAG / IBGLC (Bosch 2025 supplement S2 $INPUT)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    age_median     = "71 years (SD 6.1)",
-    weight_range   = NA_character_,
-    weight_median  = "93.2 kg (SD 16.6)",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    age_median = "71 years (SD 6.1)",
+    weight_range = NA_character_,
+    weight_median = "93.2 kg (SD 16.6)",
     sex_female_pct = 48.8,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Overweight or obese adults with type 2 diabetes mellitus, baseline",
       "HbA1c 7.87% (SD 1.0), baseline FPG 9.6 mmol/L (SD 2.2), median",
       "duration of T2DM 16.1 years (SD 7.8) (Bosch 2025 supplement Table",
@@ -138,7 +158,7 @@ Bosch_2025_glp1ra_hba1c <- function() {
       "D5670C00011 / NCT03244800 (Cohort 1 placebo + Cohort 1 cotadutide",
       "n = 39 with weekly HbA1c sampling on Days 7, 15, 49)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Cotadutide once-daily subcutaneous, 50-300 ug titration (Bosch",
       "2025 Table 1, Ph2a Cohort 1: 50 ug for 4 days, 100 for 4 days,",
       "200 for 7 days, 300 for 28 days). Cotadutide PK is NOT modelled",
@@ -146,8 +166,8 @@ Bosch_2025_glp1ra_hba1c <- function() {
       "plasma glucose driver GLU produced by an upstream model (4GI in",
       "the source paper) or supplied externally."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Bosch 2025 fits the IGRH HbA1c sub-model sequentially after the",
       "4GI glucose / insulin / GLP-1 / glucagon / GIP module: the 4GI",
       "produces a time series of Cglc,av which is then fed into IGRH as",

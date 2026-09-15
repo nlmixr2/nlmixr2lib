@@ -40,29 +40,29 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv     = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit6_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit7_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit8_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit9_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit8_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit9_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
     transit10_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_rtv   = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
+    central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used for allometric scaling at the cohort median 10 kg",
         "(Zhang 2012 Methods Equations 1 and 2 / Results 'Patients and",
         "data description' / Table 1: median body weight 10.2 kg, range",
@@ -75,14 +75,14 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
         "with the 10 kg reference appearing as the denominator of the",
         "weight ratio in Equations 1 and 2."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin-based antitubercular treatment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin-based antitubercular treatment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin-based antitubercular treatment)",
-      notes              = paste(
+      notes = paste(
         "1 = subject on rifampicin-based antitubercular treatment;",
         "0 = subject not on rifampicin. Set per occasion. Two effects",
         "in this model: (1) multiplicative -83.2% reduction in lopinavir",
@@ -100,14 +100,14 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
         "to be at steady state and within-day change could be",
         "neglected')."
       ),
-      source_name        = "RIF"
+      source_name = "RIF"
     ),
     DOSE_RTV_MGKG = list(
-      description        = "Concomitant ritonavir per-administration dose per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Concomitant ritonavir per-administration dose per kg body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose ritonavir mg/kg given concomitantly with the lopinavir",
         "dose. Enters lopinavir bioavailability via the linear-shift",
         "regressor of Zhang 2012 Equation 4:",
@@ -131,24 +131,24 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
         "doses available in the dataset, and should not be used too",
         "far outside the tested range.')."
       ),
-      source_name        = "DoseRTV"
+      source_name = "DoseRTV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 74L,
-    n_studies      = 2L,
-    age_range      = "6 months to 4.5 years (paediatric)",
-    age_median     = "21 months",
-    weight_range   = "5-17 kg",
-    weight_median  = "10.2 kg (cohort) / 10 kg (allometric-scaling reference, Zhang 2012 Methods Equations 1 and 2)",
+    species = "human",
+    n_subjects = 74L,
+    n_studies = 2L,
+    age_range = "6 months to 4.5 years (paediatric)",
+    age_median = "21 months",
+    weight_range = "5-17 kg",
+    weight_median = "10.2 kg (cohort) / 10 kg (allometric-scaling reference, Zhang 2012 Methods Equations 1 and 2)",
     sex_female_pct = 22.7,
     race_ethnicity = "South African paediatric HIV cohort (not further detailed in the paper).",
-    disease_state  = "HIV-1 infection on lopinavir/ritonavir-based combination antiretroviral therapy (paediatric). Three sub-cohorts: 39 children without tuberculosis receiving standard LPV/r 4:1 oral solution every 12 h (median LPV dose 11.6 mg/kg); 15 children with HIV-associated tuberculosis receiving 'super-boosted' LPV (LPV/r 1:1 with extra ritonavir added to the standard LPV/r 4:1) plus rifampicin-based antitubercular treatment; 20 children with HIV-associated tuberculosis receiving doubled standard LPV/r 4:1 dose every 12 h plus rifampicin-based antitubercular treatment; 11 of the 'double-dose' children were re-sampled at least 4 weeks after completion of antitubercular treatment on standard LPV/r doses (counted within the 39-without-tuberculosis sample because no rifampicin was active at that occasion).",
-    dose_range     = "LPV/r oral solution 230/57.5 mg/m^2 every 12 h in the standard reference cohort (median LPV dose 11.6 mg/kg, range 9.4-16.0; Table 1). Super-boosted cohort: extra ritonavir added to standard 4:1 LPV/r to a 1:1 ratio (median LPV 14.0 mg/kg, range 10.7-18.0). Double-dose cohort: double the standard LPV/r every 12 h (median LPV 23.0 mg/kg, range 13.8-29.5). Antituberculous regimen contained rifampicin 10 mg/kg/day. Simulation-based proposed dose recommendations during rifampicin co-treatment are 27 / 21 / 20 / 18 mg/kg every 8 h in the WHO weight bands 3-5.9 / 6-9.9 / 10-13.9 / 14-19.9 kg (Discussion paragraph 4 and Table 3).",
-    regions        = "Cape Town, Stellenbosch, and Witwatersrand catchments (South Africa).",
-    notes          = paste(
+    disease_state = "HIV-1 infection on lopinavir/ritonavir-based combination antiretroviral therapy (paediatric). Three sub-cohorts: 39 children without tuberculosis receiving standard LPV/r 4:1 oral solution every 12 h (median LPV dose 11.6 mg/kg); 15 children with HIV-associated tuberculosis receiving 'super-boosted' LPV (LPV/r 1:1 with extra ritonavir added to the standard LPV/r 4:1) plus rifampicin-based antitubercular treatment; 20 children with HIV-associated tuberculosis receiving doubled standard LPV/r 4:1 dose every 12 h plus rifampicin-based antitubercular treatment; 11 of the 'double-dose' children were re-sampled at least 4 weeks after completion of antitubercular treatment on standard LPV/r doses (counted within the 39-without-tuberculosis sample because no rifampicin was active at that occasion).",
+    dose_range = "LPV/r oral solution 230/57.5 mg/m^2 every 12 h in the standard reference cohort (median LPV dose 11.6 mg/kg, range 9.4-16.0; Table 1). Super-boosted cohort: extra ritonavir added to standard 4:1 LPV/r to a 1:1 ratio (median LPV 14.0 mg/kg, range 10.7-18.0). Double-dose cohort: double the standard LPV/r every 12 h (median LPV 23.0 mg/kg, range 13.8-29.5). Antituberculous regimen contained rifampicin 10 mg/kg/day. Simulation-based proposed dose recommendations during rifampicin co-treatment are 27 / 21 / 20 / 18 mg/kg every 8 h in the WHO weight bands 3-5.9 / 6-9.9 / 10-13.9 / 14-19.9 kg (Discussion paragraph 4 and Table 3).",
+    regions = "Cape Town, Stellenbosch, and Witwatersrand catchments (South Africa).",
+    notes = paste(
       "Pooled cohort from three antiretroviral clinics in South Africa.",
       "All samples were taken after at least 2 weeks of concurrent",
       "antitubercular and antiretroviral therapy to ensure pharmacokinetic",

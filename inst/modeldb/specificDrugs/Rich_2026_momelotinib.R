@@ -56,11 +56,11 @@ Rich_2026_momelotinib <- function() {
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment per National Cancer Institute Organ Dysfunction Working Group (NCI-ODWG) criteria; 1 = mild, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment per National Cancer Institute Organ Dysfunction Working Group (NCI-ODWG) criteria; 1 = mild, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, when HEPIMP_MOD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "NCI-ODWG classification (Rich 2026 Results, Momelotinib; reference 29",
         "Patel 2004). The three indicators HEPIMP_MILD / HEPIMP_MOD /",
         "HEPIMP_SEV are mutually exclusive; all three 0 selects the",
@@ -72,27 +72,27 @@ Rich_2026_momelotinib <- function() {
         "(19.2%), moderate 29 (4.4%), severe 10 (1.5%), missing 1 (0.2%).",
         "Time-fixed at baseline in this analysis."
       ),
-      source_name        = "NCI-ODWG hepatic impairment"
+      source_name = "NCI-ODWG hepatic impairment"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment per NCI-ODWG criteria; 1 = moderate, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment per NCI-ODWG criteria; 1 = moderate, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, when HEPIMP_MILD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "NCI-ODWG group 3 (total bilirubin > 1.5-3 x ULN with any AST).",
         "See HEPIMP_MILD notes for the shared reference category, the dual",
         "action on momelotinib clearance and on logit(fm), and the baseline",
         "distribution."
       ),
-      source_name        = "NCI-ODWG hepatic impairment"
+      source_name = "NCI-ODWG hepatic impairment"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment per NCI-ODWG criteria; 1 = severe, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment per NCI-ODWG criteria; 1 = severe, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, when HEPIMP_MILD and HEPIMP_MOD are also 0)",
-      notes              = paste(
+      notes = paste(
         "NCI-ODWG group 4 (total bilirubin > 3 x ULN with any AST).",
         "Only 10 of 661 participants (1.5%) were severely impaired, 8 of them",
         "from the dedicated hepatic-impairment study GS-US-352-1153",
@@ -101,14 +101,14 @@ Rich_2026_momelotinib <- function() {
         "Cavg,ss (Rich 2026 Results, Simulated covariate effects).",
         "See HEPIMP_MILD notes for the shared reference category."
       ),
-      source_name        = "NCI-ODWG hepatic impairment"
+      source_name = "NCI-ODWG hepatic impairment"
     ),
     CONMED_CYP3A4_IND_MOD = list(
-      description        = "Concomitant moderate CYP3A4 inducer at the observation; 1 = yes, 0 = no",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant moderate CYP3A4 inducer at the observation; 1 = yes, 0 = no",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant moderate CYP3A4 inducer)",
-      notes              = paste(
+      notes = paste(
         "Rich 2026 does not enumerate which agents were classified as moderate",
         "versus strong CYP3A4 inducers, nor the number of participants in each",
         "stratum; that reporting gap is recorded in the vignette Errata.",
@@ -117,14 +117,14 @@ Rich_2026_momelotinib <- function() {
         "the source enters it as a per-observation indicator without an",
         "induction-onset lag."
       ),
-      source_name        = "Concomitant CYP3A4 inducer (moderate)"
+      source_name = "Concomitant CYP3A4 inducer (moderate)"
     ),
     CONMED_CYP3A4_IND_STRONG = list(
-      description        = "Concomitant strong CYP3A4 inducer at the observation; 1 = yes, 0 = no",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A4 inducer at the observation; 1 = yes, 0 = no",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant strong CYP3A4 inducer)",
-      notes              = paste(
+      notes = paste(
         "Strong CYP3A4 induction doubles apparent momelotinib clearance",
         "(factor 2.01, Table 1), i.e. a 50% fall in Cavg,ss, consistent with",
         "the dedicated rifampin drug-drug-interaction study which showed a 46%",
@@ -133,14 +133,14 @@ Rich_2026_momelotinib <- function() {
         "2C19 jointly rather than CYP3A4 alone. See",
         "CONMED_CYP3A4_IND_MOD notes for the unreported agent list."
       ),
-      source_name        = "Concomitant CYP3A4 inducer (strong)"
+      source_name = "Concomitant CYP3A4 inducer (strong)"
     ),
     CONMED_OATP1B_INH = list(
-      description        = "Concomitant OATP1B1 / OATP1B3 inhibitor at the observation; 1 = yes, 0 = no",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant OATP1B1 / OATP1B3 inhibitor at the observation; 1 = yes, 0 = no",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant OATP1B1/1B3 inhibitor)",
-      notes              = paste(
+      notes = paste(
         "Acts on relative bioavailability rather than on clearance in the",
         "source model (Table 1: 'OATP1B1/1B3 inhibitor on relative",
         "bioavailability' = 1.64), which raises momelotinib, M21 and",
@@ -152,14 +152,14 @@ Rich_2026_momelotinib <- function() {
         "does not enumerate the specific inhibitors pooled into the 1",
         "category; recorded in the vignette Errata."
       ),
-      source_name        = "Concomitant OATP1B1/1B3 inhibitor"
+      source_name = "Concomitant OATP1B1/1B3 inhibitor"
     ),
     CRCL_BASE = list(
-      description        = "Baseline creatinine clearance by the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance by the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters apparent M21 clearance as the power",
         "term (CRCL_BASE / 72)^0.418, where 72.0 mL/min is the median baseline",
         "creatinine clearance of the four myelofibrosis studies and is the",
@@ -170,14 +170,14 @@ Rich_2026_momelotinib <- function() {
         "renal function -- M21 clearance is primarily renal while momelotinib",
         "is cleared hepatically (Rich 2026 Discussion)."
       ),
-      source_name        = "CrCL at baseline"
+      source_name = "CrCL at baseline"
     ),
     STUDY_PHASE3 = list(
-      description        = "Phase III study indicator; 1 = SIMPLIFY-1, SIMPLIFY-2 or MOMENTUM, 0 = the phase I or phase II studies",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase III study indicator; 1 = SIMPLIFY-1, SIMPLIFY-2 or MOMENTUM, 0 = the phase I or phase II studies",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I clinical-pharmacology studies GS-US-352-1151 / -1152 / -1153 and the phase II study GS-US-352-1672)",
-      notes              = paste(
+      notes = paste(
         "Selects the residual-error model only; it has no effect on any",
         "structural or covariate parameter. Rich 2026 estimated a",
         "proportional-only residual error for the phase III studies (which",
@@ -188,36 +188,36 @@ Rich_2026_momelotinib <- function() {
         "a rich profile should use STUDY_PHASE3 = 0; reproducing phase III",
         "trough scatter should use STUDY_PHASE3 = 1."
       ),
-      source_name        = "Study phase"
+      source_name = "Study phase"
     )
   )
 
   compartmentData <- list(
-    depot            = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit6         = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "momelotinib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "momelotinib", units = "mg", specimen = "plasma", verified = TRUE),
-    central_m21      = list(analyte = "M21 (momelotinib metabolite)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m21  = list(analyte = "M21 (momelotinib metabolite)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit6 = list(analyte = "momelotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "momelotinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "momelotinib", units = "mg", specimen = "plasma", verified = TRUE),
+    central_m21 = list(analyte = "M21 (momelotinib metabolite)", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_m21 = list(analyte = "M21 (momelotinib metabolite)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 661L,
-    n_studies      = 7L,
+    species = "human",
+    n_subjects = 661L,
+    n_studies = 7L,
     n_observations = "4508 measurable momelotinib and 4516 measurable M21 plasma concentrations (Rich 2026 Results, Population PK model development)",
-    age_range      = "18-92 years",
-    age_median     = "66 years",
-    weight_range   = "34.2-136 kg",
-    weight_median  = "74.0 kg",
+    age_range = "18-92 years",
+    age_median = "66 years",
+    weight_range = "34.2-136 kg",
+    weight_median = "74.0 kg",
     sex_female_pct = 38.6,
     race_ethnicity = c(White = 82.9, Black = 3.9, Asian = 5.1, Other = 1.8, Missing = 6.2),
-    disease_state  = paste(
+    disease_state = paste(
       "547 patients with intermediate- or high-risk myelofibrosis (primary,",
       "post-essential-thrombocythemia or post-polycythemia-vera) from the",
       "phase II study GS-US-352-1672 and the phase III studies SIMPLIFY-1",
@@ -228,9 +228,9 @@ Rich_2026_momelotinib <- function() {
     ),
     renal_function = "Baseline creatinine clearance (Cockcroft-Gault) median 75.9 mL/min, mean 82.6 (SD 32.0), range 21.6-229 mL/min (Table S7)",
     hepatic_function = "NCI-ODWG: normal 494 (74.7%), mild 127 (19.2%), moderate 29 (4.4%), severe 10 (1.5%), missing 1 (0.2%) (Table S7)",
-    dose_range     = "100-200 mg once daily oral commercial tablet, plus single 200 mg doses in the phase I drug-drug-interaction and organ-impairment studies; 200 mg once daily in all three phase III trials (Table S1)",
-    regions        = "Global (international multicentre phase III programme)",
-    notes          = paste(
+    dose_range = "100-200 mg once daily oral commercial tablet, plus single 200 mg doses in the phase I drug-drug-interaction and organ-impairment studies; 200 mg once daily in all three phase III trials (Table S1)",
+    regions = "Global (international multicentre phase III programme)",
+    notes = paste(
       "Baseline demographics are from Supplemental Table S7 (population PK",
       "analysis set, N = 661). Only participants who received the commercial",
       "tablet formulation and had at least one measurable postdose",
@@ -250,8 +250,12 @@ Rich_2026_momelotinib <- function() {
   # checkModelConventions() does not read the stratum suffixes as deviant
   # residual-error names.
   paper_specific_residual_sds <- c(
-    "propSdPh3", "propSdPh12", "addSdPh12",
-    "propSdPh3_m21", "propSdPh12_m21", "addSdPh12_m21"
+    "propSdPh3",
+    "propSdPh12",
+    "addSdPh12",
+    "propSdPh3_m21",
+    "propSdPh12_m21",
+    "addSdPh12_m21"
   )
 
   ini({

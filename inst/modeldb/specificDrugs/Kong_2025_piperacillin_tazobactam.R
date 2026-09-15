@@ -39,24 +39,24 @@ Kong_2025_piperacillin_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Kong_2025_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central         = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
-    central_taz     = list(analyte = "tazobactam",   units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_taz = list(analyte = "tazobactam",   units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central_taz = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_taz = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   dosing <- c("central", "central_taz")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scalar on every structural parameter, normalised to a",
         "70 kg reference individual (Kong 2025 Methods 2.3; ESM $PK",
         "'FSIZE = WT/70'). Conventional fixed West-Brown-Enquist exponents",
@@ -69,14 +69,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "Time-fixed per subject in the source analysis. Cohort median",
         "66.3 kg, range 27.0-93.8 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the sigmoidal maturation and decline functions on the",
         "endogenous clearance of both drugs, and the postmenstrual-age",
         "standardisation of serum creatinine (Eq. 1). Kong 2025 computes",
@@ -92,14 +92,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "maturation ratio is therefore ~1 throughout this all-adult",
         "cohort and only the decline term moves."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the endogenous clearance through the exponential",
         "correction F_SCR = exp(-theta_SCR * (CREAT - CREAT_std)) of Kong",
         "2025 Eq. 2, where CREAT_std is the postmenstrual-age-standardised",
@@ -116,14 +116,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "implements the published Eq. 2 gate on RRT_HEMODIAL_STATUS",
         "directly instead of relying on the sentinel."
       ),
-      source_name        = "CR"
+      source_name = "CR"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Chronic intermittent-haemodialysis (end-stage kidney disease) status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic intermittent-haemodialysis (end-stage kidney disease) status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on chronic intermittent haemodialysis)",
-      notes              = paste(
+      notes = paste(
         "Subject-level switch between the two branches of Kong 2025",
         "Eq. 2 and Eq. 4. When 1, F_SCR = 1 and the estimated residual",
         "endogenous clearance fraction F_ESKD applies; when 0, F_SCR is",
@@ -137,14 +137,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "Distinct from RRT_HEMODIAL_ACTIVE, which is the time-varying",
         "within-session gate on the dialyser clearance."
       ),
-      source_name        = "(implicit; the fitted dataset is ESKD-only)"
+      source_name = "(implicit; the fitted dataset is ESKD-only)"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Haemodialysis-session-active indicator (time-varying)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Haemodialysis-session-active indicator (time-varying)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (interdialytic period)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per-session gate: 1 while blood is circulating",
         "through the dialyser, 0 in the interdialytic interval (ESM $PK",
         "indicator IND_DIA). Multiplies the dialyser clearance arm",
@@ -158,14 +158,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "Simulations in the source paper assume a thrice-weekly schedule",
         "with 4-hour sessions (Methods 2.5)."
       ),
-      source_name        = "IND_DIA"
+      source_name = "IND_DIA"
     ),
     BFR = list(
-      description        = "Blood flow rate through the dialyser",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the dialyser",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Recorded dialyser blood flow rate; enters the dialyser clearance",
         "of Eq. 5 directly as CL_DIA = ER * BFR after conversion to L/h",
         "(ESM $PK 'FLOW = IFLOW*60/1000'). Meaningful only while",
@@ -181,14 +181,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "extraction ratio (Eq. 7) and was not retained (Methods 2.4;",
         "Table 2)."
       ),
-      source_name        = "IFLOW"
+      source_name = "IFLOW"
     ),
     URINE_VOL_24H = list(
-      description        = "24-hour residual diuresis (residual urine output)",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "24-hour residual diuresis (residual urine output)",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as the binary preserved-diuresis gate (URINE_VOL_24H > 100)",
         "selecting between the two estimated values of theta_ESKD: 0.214",
         "in patients WITHOUT residual diuresis and 0.370 in patients WITH",
@@ -206,14 +206,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "value stated by Kong 2025. Any positive value above 100 mL/24h",
         "reproduces the paper's 'residual diuresis present' branch."
       ),
-      source_name        = "UVOL0123"
+      source_name = "UVOL0123"
     ),
     VASCACC_AVF1N = list(
-      description        = "Single-needle arteriovenous fistula vascular access",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Single-needle arteriovenous fistula vascular access",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tunnelled dialysis catheter, shared with VASCACC_AVF2N)",
-      notes              = paste(
+      notes = paste(
         "Selects the tazobactam dialyser extraction ratio: 73.9%",
         "(95% CI 65.3-81.0) for a single-needle arteriovenous fistula",
         "versus the 80.1% tunnelled-dialysis-catheter reference (Table 3).",
@@ -231,14 +231,14 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "extraction ratio. Cohort split 6 (32%) TDC / 4 (21%) AVF 1N /",
         "9 (47%) AVF 2N (Table 1)."
       ),
-      source_name        = "CVC0SN1DN2 (level 1)"
+      source_name = "CVC0SN1DN2 (level 1)"
     ),
     VASCACC_AVF2N = list(
-      description        = "Double-needle arteriovenous fistula vascular access",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Double-needle arteriovenous fistula vascular access",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tunnelled dialysis catheter, shared with VASCACC_AVF1N)",
-      notes              = paste(
+      notes = paste(
         "Selects the tazobactam dialyser extraction ratio: 73.5%",
         "(95% CI 65.0-80.5) for a double-needle arteriovenous fistula",
         "versus the 80.1% tunnelled-dialysis-catheter reference (Table 3;",
@@ -247,17 +247,17 @@ Kong_2025_piperacillin_tazobactam <- function() {
         "invalid. Kong 2025 judged the access-type differences",
         "statistically significant but clinically limited (Discussion)."
       ),
-      source_name        = "CVC0SN1DN2 (level 2)"
+      source_name = "CVC0SN1DN2 (level 2)"
     )
   )
 
   covariatesDataExcluded <- list(
     DIALYSIS_MODE_HDF = list(
-      description        = "Dialysis modality (haemodialysis vs pre- or post-dilution haemodiafiltration)",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Dialysis modality (haemodialysis vs pre- or post-dilution haemodiafiltration)",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "haemodialysis",
-      notes              = paste(
+      notes = paste(
         "Screened as a covariate on the logit-scale dialyser extraction",
         "ratio in the stepwise covariate search (Kong 2025 Methods 2.4)",
         "and not retained in the final model. Cohort split 14 (74%) HD /",
@@ -269,11 +269,11 @@ Kong_2025_piperacillin_tazobactam <- function() {
       )
     ),
     DIALYZER_PRIMEVOL = list(
-      description        = "Priming volume of the dialyser blood compartment",
-      units              = "mL",
-      type               = "continuous",
+      description = "Priming volume of the dialyser blood compartment",
+      units = "mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a covariate on the logit-scale dialyser extraction",
         "ratio (Kong 2025 Methods 2.4) and not retained. Cohort median",
         "115 mL, range 83-115 (Table 1). The source dataset carries it as",
@@ -288,15 +288,15 @@ Kong_2025_piperacillin_tazobactam <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    age_range      = "20-84 years (median 71.5)",
-    age_median     = "71.5 years",
-    weight_range   = "27.0-93.8 kg (median 66.3)",
-    weight_median  = "66.3 kg",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    age_range = "20-84 years (median 71.5)",
+    age_median = "71.5 years",
+    weight_range = "27.0-93.8 kg (median 66.3)",
+    weight_median = "66.3 kg",
     sex_female_pct = 35,
-    disease_state  = paste(
+    disease_state = paste(
       "End-stage kidney disease on thrice-weekly high-flux intermittent",
       "haemodialysis, with a documented or presumed infection requiring",
       "piperacillin/tazobactam. Residual diuresis present in 11/20 (55%)",
@@ -314,7 +314,7 @@ Kong_2025_piperacillin_tazobactam <- function() {
       "residual diuresis, relative to a patient with normal kidney",
       "function (Kong 2025 Results 3.4)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Piperacillin 0.60-4.00 g (median 3.08) with tazobactam",
       "0.075-0.50 g (median 0.385) per dose, administered intravenously",
       "in the clinical fixed 8:1 ratio; infusion duration 0.25-24.50 h",
@@ -323,7 +323,7 @@ Kong_2025_piperacillin_tazobactam <- function() {
       "remaining in the used infusion lines (Kong 2025 Methods 2.1,",
       "Table 1)."
     ),
-    dialysis       = paste(
+    dialysis = paste(
       "Thrice-weekly high-flux intermittent haemodialysis; session",
       "duration 89.4-333.4 min (median 240.0), dialyser blood flow rate",
       "160-350 mL/min (median 225), priming volume 83-115 mL",
@@ -337,8 +337,8 @@ Kong_2025_piperacillin_tazobactam <- function() {
       "dialysis characteristics are reported for n = 19 (Kong 2025",
       "Results 3.1, Table 1)."
     ),
-    regions        = "Belgium (single centre, Ghent University Hospital)",
-    notes          = paste(
+    regions = "Belgium (single centre, Ghent University Hospital)",
+    notes = paste(
       "Monocentric prospective observational study, ClinicalTrials.gov",
       "NCT03909698, completed 31 March 2022. 195 blood samples were",
       "collected with both piperacillin and tazobactam quantified in each;",

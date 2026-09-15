@@ -34,12 +34,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (missing(model) || is.null(model)) {
     names_all <- get0("modeldb", envir = asNamespace("nlmixr2lib"))$name
     if (is.null(names_all)) {
-      stop("modeldb is not available in this package namespace",
-           call. = FALSE)
+      stop("modeldb is not available in this package namespace", call. = FALSE)
     }
-    issues <- do.call(rbind, lapply(names_all, function(nm) {
-      .checkOneModel(nm, verbose = verbose)
-    }))
+    issues <- do.call(
+      rbind,
+      lapply(names_all, function(nm) {
+        .checkOneModel(nm, verbose = verbose)
+      })
+    )
     .emitSummaryWarning(issues)
     return(invisible(issues))
   }
@@ -82,14 +84,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
     issues,
     stringsAsFactors = FALSE
   )
-  if (verbose) .printReport(model_name, issues)
+  if (verbose) {
+    .printReport(model_name, issues)
+  }
   issues
 }
 
 .resolveModel <- function(model) {
   if (is.character(model)) {
-    checkmate::assertCharacter(model, len = 1, any.missing = FALSE,
-                               min.chars = 1)
+    checkmate::assertCharacter(model, len = 1, any.missing = FALSE, min.chars = 1)
     fun <- readModelDb(model)
     ui <- nlmixr2est::nlmixr(fun)
     return(list(ui = ui, name = model))
@@ -107,14 +110,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # explicit `<function>` placeholder so downstream scope checks can
     # recognize that the true identity is unknown rather than trusting the
     # misleading formal-parameter string.
-    closure_nm <- tryCatch(get0("name", envir = environment(model),
-                                inherits = FALSE),
-                           error = function(e) NULL)
+    closure_nm <- tryCatch(get0("name", envir = environment(model), inherits = FALSE), error = function(e) NULL)
     nm <- .pickModelName(closure_nm, fallback = "<function>")
     return(list(ui = ui, name = nm))
   }
-  stop("`model` must be a character name, function, rxUi, or missing.",
-       call. = FALSE)
+  stop("`model` must be a character name, function, rxUi, or missing.", call. = FALSE)
 }
 
 # rxode2 may populate `ui$modelName` with the full call chain that produced the
@@ -122,9 +122,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # loaded via `rxode2(readModelDb("..."))`). Collapse to a single character so
 # downstream `is.null(nm) || is.na(nm)` guards don't blow up on length > 1.
 .pickModelName <- function(nm, fallback) {
-  if (is.null(nm)) return(fallback)
+  if (is.null(nm)) {
+    return(fallback)
+  }
   nm <- nm[!is.na(nm) & nzchar(nm)]
-  if (length(nm) == 0) return(fallback)
+  if (length(nm) == 0) {
+    return(fallback)
+  }
   # Prefer the last (innermost) call-chain entry -- that's the actual model
   # function name, not the wrapper that returned it.
   nm[[length(nm)]]
@@ -153,14 +157,20 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 .emitSummaryWarning <- function(issues) {
-  if (is.null(issues) || nrow(issues) == 0) return(invisible())
+  if (is.null(issues) || nrow(issues) == 0) {
+    return(invisible())
+  }
   bad <- issues[issues$severity %in% c("error", "warning"), , drop = FALSE]
-  if (nrow(bad) == 0) return(invisible())
+  if (nrow(bad) == 0) {
+    return(invisible())
+  }
   models <- unique(bad$model)
   if (length(models) == 1) {
     msg <- sprintf(
       "%d convention issue(s) found for model '%s'. Run `checkModelConventions('%s')` for the full report.",
-      nrow(bad), models, models
+      nrow(bad),
+      models,
+      models
     )
   } else {
     msg <- sprintf(
@@ -168,7 +178,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
         "%d convention issue(s) found across %d models. ",
         "Run `checkModelConventions(<name>)` for the full report per model."
       ),
-      nrow(bad), length(models)
+      nrow(bad),
+      length(models)
     )
   }
   warning(msg, call. = FALSE)
@@ -181,9 +192,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
     return(invisible())
   }
   counts <- table(issues$severity)
-  parts <- vapply(names(counts), function(s) {
-    sprintf("%d %s", counts[[s]], s)
-  }, character(1))
+  parts <- vapply(
+    names(counts),
+    function(s) {
+      sprintf("%d %s", counts[[s]], s)
+    },
+    character(1)
+  )
   cli::cli_alert_info("{paste(parts, collapse = ', ')}")
   for (cat in unique(issues$category)) {
     sub <- issues[issues$category == cat, , drop = FALSE]
@@ -217,15 +232,26 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (fld in conv$requiredMetadata) {
     val <- meta[[fld]]
     missing <- is.null(val) || (is.character(val) && !nzchar(val))
-    if (!missing) next
+    if (!missing) {
+      next
+    }
     sev <- "error"
-    if (fld == "reference" && endo) sev <- "info"
-    if (fld == "units" && endo) sev <- "info"
-    issues <- rbind(issues, .issue(
-      "file_metadata", sev, fld,
-      sprintf("Metadata field '%s' missing or empty.", fld),
-      sprintf("Add `%s <- ...` at the top of the model function body.", fld)
-    ))
+    if (fld == "reference" && endo) {
+      sev <- "info"
+    }
+    if (fld == "units" && endo) {
+      sev <- "info"
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "file_metadata",
+        sev,
+        fld,
+        sprintf("Metadata field '%s' missing or empty.", fld),
+        sprintf("Add `%s <- ...` at the top of the model function body.", fld)
+      )
+    )
   }
   # `depends` lists names that are provided by an upstream model when
   # this model is composed downstream (e.g. PD templates inheriting Cc
@@ -235,18 +261,28 @@ checkModelConventions <- function(model, verbose = TRUE) {
   covs_for_check <- setdiff(ui$covariates %||% character(), depends)
   uses_covariates <- length(covs_for_check) > 0
   if (uses_covariates && is.null(meta$covariateData)) {
-    issues <- rbind(issues, .issue(
-      "file_metadata", "error", "covariateData",
-      "Model references covariates but `covariateData` metadata is missing.",
-      "Add a `covariateData <- list(<COV> = list(description=..., units=..., type=...))` block."
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "file_metadata",
+        "error",
+        "covariateData",
+        "Model references covariates but `covariateData` metadata is missing.",
+        "Add a `covariateData <- list(<COV> = list(description=..., units=..., type=...))` block."
+      )
+    )
   }
   if (is.null(meta$population) && !endo) {
-    issues <- rbind(issues, .issue(
-      "file_metadata", "info", "population",
-      "Optional `population` metadata block not present.",
-      "Consider adding a `population` list (n_subjects, age_range, weight_range, ...) per the skill template."
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "file_metadata",
+        "info",
+        "population",
+        "Optional `population` metadata block not present.",
+        "Consider adding a `population` list (n_subjects, age_range, weight_range, ...) per the skill template."
+      )
+    )
   }
   issues
 }
@@ -258,14 +294,24 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # eta shared between `lkdeg` and `lkint`) without flagging them as
 # missing a structural pair.
 .isSharedEtaSuffix <- function(suffix, fixed_names) {
-  if (!startsWith(suffix, "l")) return(FALSE)
+  if (!startsWith(suffix, "l")) {
+    return(FALSE)
+  }
   body <- substr(suffix, 2, nchar(suffix))
-  if (!grepl("_", body, fixed = TRUE)) return(FALSE)
+  if (!grepl("_", body, fixed = TRUE)) {
+    return(FALSE)
+  }
   parts <- strsplit(body, "_", fixed = TRUE)[[1]]
-  if (length(parts) < 2) return(FALSE)
-  matches <- vapply(parts, function(p) {
-    p %in% fixed_names || paste0("l", p) %in% fixed_names
-  }, logical(1))
+  if (length(parts) < 2) {
+    return(FALSE)
+  }
+  matches <- vapply(
+    parts,
+    function(p) {
+      p %in% fixed_names || paste0("l", p) %in% fixed_names
+    },
+    logical(1)
+  )
   all(matches)
 }
 
@@ -289,15 +335,20 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (p in c("iov_", "bvv_")) {
     if (startsWith(suffix, p)) prefix <- p
   }
-  if (is.null(prefix)) return(FALSE)
+  if (is.null(prefix)) {
+    return(FALSE)
+  }
   rest <- substr(suffix, nchar(prefix) + 1L, nchar(suffix))
   m <- regmatches(rest, regexec("^(.+)_([0-9]+)$", rest))[[1]]
-  if (length(m) != 3L) return(FALSE)
+  if (length(m) != 3L) {
+    return(FALSE)
+  }
   param <- m[[2L]]
-  param %in% fixed_names ||
-    paste0("l",   param) %in% fixed_names ||
+  param %in%
+    fixed_names ||
+    paste0("l", param) %in% fixed_names ||
     paste0("ltv", param) %in% fixed_names ||
-    paste0("lv",  param) %in% fixed_names
+    paste0("lv", param) %in% fixed_names
 }
 
 # Accept paper-mechanistic stratified-typical-value etas that don't
@@ -329,9 +380,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .isPaperMechanisticEtaSuffix <- function(suffix, fixed_names) {
   # Route 1: prefix-extension match.
   for (p in fixed_names) {
-    if (nchar(p) > 0L &&
+    if (
+      nchar(p) > 0L &&
         (startsWith(p, suffix) || startsWith(suffix, p)) &&
-        p != suffix) {
+        p != suffix
+    ) {
       return(TRUE)
     }
   }
@@ -402,11 +455,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
 #       typical value built from sibling anchors, e.g. logit_fk_asv
 #       pairing with logit_fk_cap_asv / logit_fk_sol_asv.
 .isStudyEtaSuffix <- function(suffix, fixed_names) {
-  if (!startsWith(suffix, "_study_")) return(FALSE)
-  param <- substr(suffix, 8L, nchar(suffix))   # strip leading "_study_"
-  if (!nzchar(param)) return(FALSE)
-  if (param %in% fixed_names) return(TRUE)
-  if (paste0("l", param) %in% fixed_names) return(TRUE)
+  if (!startsWith(suffix, "_study_")) {
+    return(FALSE)
+  }
+  param <- substr(suffix, 8L, nchar(suffix)) # strip leading "_study_"
+  if (!nzchar(param)) {
+    return(FALSE)
+  }
+  if (param %in% fixed_names) {
+    return(TRUE)
+  }
+  if (paste0("l", param) %in% fixed_names) {
+    return(TRUE)
+  }
   for (p in fixed_names) {
     if (nchar(p) > 0L && startsWith(p, param) && p != param) return(TRUE)
   }
@@ -416,37 +477,52 @@ checkModelConventions <- function(model, verbose = TRUE) {
     last <- ptok[[length(ptok)]]
     for (p in fixed_names) {
       ftok <- strsplit(p, "_", fixed = TRUE)[[1]]
-      if (length(ftok) >= 2L &&
+      if (
+        length(ftok) >= 2L &&
           ftok[[1L]] == first &&
-          ftok[[length(ftok)]] == last) return(TRUE)
+          ftok[[length(ftok)]] == last
+      ) {
+        return(TRUE)
+      }
     }
   }
   FALSE
 }
 
 .classifyParam <- function(name, conv) {
-  if (.isPkParam(name, conv)) return("canonical_pk")
+  if (.isPkParam(name, conv)) {
+    return("canonical_pk")
+  }
   if (grepl(conv$covEffectPattern, name) && startsWith(name, "e_")) {
     return("cov_effect")
   }
-  if (grepl("^l[A-Za-z]", name)) return("log_transformed")
-  if (grepl("^logit[A-Za-z0-9]", name)) return("logit_transformed")
-  if (grepl("^probit[A-Za-z0-9]", name)) return("probit_transformed")
-  if (.isPkBareParam(name, conv)) return("bare_pk")
+  if (grepl("^l[A-Za-z]", name)) {
+    return("log_transformed")
+  }
+  if (grepl("^logit[A-Za-z0-9]", name)) {
+    return("logit_transformed")
+  }
+  if (grepl("^probit[A-Za-z0-9]", name)) {
+    return("probit_transformed")
+  }
+  if (.isPkBareParam(name, conv)) {
+    return("bare_pk")
+  }
   "other"
 }
 
 .checkParameterNames <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
 
   fixed <- ini[is.na(ini$neta1) & is.na(ini$err), , drop = FALSE]
   # Only diagonal rows represent distinct IIV parameters; off-diagonal rows
   # carry the covariance of a block (e.g., name "(etalcl,etalvc)") and are
   # fully specified by the two diagonal entries.
-  iiv <- ini[!is.na(ini$neta1) & !is.na(ini$neta2) &
-               ini$neta1 == ini$neta2, , drop = FALSE]
+  iiv <- ini[!is.na(ini$neta1) & !is.na(ini$neta2) & ini$neta1 == ini$neta2, , drop = FALSE]
   reserr <- ini[!is.na(ini$err), , drop = FALSE]
 
   # Optional paper-specific exception fields (analogous to the
@@ -465,35 +541,57 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (nm in fixed$name) {
     cls <- .classifyParam(nm, conv)
     if (cls == "bare_pk") {
-      issues <- rbind(issues, .issue(
-        "parameter_naming", "warning", nm,
-        sprintf("Fixed-effect PK parameter '%s' should be log-transformed (named 'l%s').", nm, nm),
-        sprintf("Rename to 'l%s' in ini() and back-transform in model() via `%s <- exp(l%s)`.", nm, nm, nm)
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "parameter_naming",
+          "warning",
+          nm,
+          sprintf("Fixed-effect PK parameter '%s' should be log-transformed (named 'l%s').", nm, nm),
+          sprintf("Rename to 'l%s' in ini() and back-transform in model() via `%s <- exp(l%s)`.", nm, nm, nm)
+        )
+      )
     }
   }
 
   for (i in seq_len(nrow(iiv))) {
     nm <- iiv$name[i]
     if (!grepl("^eta", nm)) {
-      issues <- rbind(issues, .issue(
-        "parameter_naming", "warning", nm,
-        sprintf("IIV parameter '%s' does not start with 'eta'.", nm),
-        sprintf("Rename to 'eta<transformed-param>' (e.g., 'etalcl' for IIV on lcl).")
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "parameter_naming",
+          "warning",
+          nm,
+          sprintf("IIV parameter '%s' does not start with 'eta'.", nm),
+          sprintf("Rename to 'eta<transformed-param>' (e.g., 'etalcl' for IIV on lcl).")
+        )
+      )
       next
     }
     suffix <- sub("^eta", "", nm)
     if (!(suffix %in% fixed$name)) {
       canonical <- paste0("l", suffix)
       if (canonical %in% fixed$name) {
-        issues <- rbind(issues, .issue(
-          "parameter_naming", "warning", nm,
-          sprintf("IIV '%s' should include the log prefix of its parameter ('%s'), i.e., 'eta%s'.",
-                  nm, canonical, canonical),
-          sprintf("Rename '%s' to 'eta%s' in ini() and model() to match the transformed parameter name.",
-                  nm, canonical)
-        ))
+        issues <- rbind(
+          issues,
+          .issue(
+            "parameter_naming",
+            "warning",
+            nm,
+            sprintf(
+              "IIV '%s' should include the log prefix of its parameter ('%s'), i.e., 'eta%s'.",
+              nm,
+              canonical,
+              canonical
+            ),
+            sprintf(
+              "Rename '%s' to 'eta%s' in ini() and model() to match the transformed parameter name.",
+              nm,
+              canonical
+            )
+          )
+        )
       } else if (.isSharedEtaSuffix(suffix, fixed$name)) {
         # Shared-eta on multiple structural parameters: etal<p1>_<p2>...
         # is accepted when every "_"-separated token matches an existing
@@ -524,11 +622,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # the underlying typical-value parameter is a paper-mechanistic
         # structural equation rather than a 1-to-1 `lX` ini parameter.
       } else {
-        issues <- rbind(issues, .issue(
-          "parameter_naming", "warning", nm,
-          sprintf("IIV '%s' has no matching fixed-effect parameter '%s'.", nm, suffix),
-          "Ensure every eta<x> pairs with a fixed-effect parameter named x."
-        ))
+        issues <- rbind(
+          issues,
+          .issue(
+            "parameter_naming",
+            "warning",
+            nm,
+            sprintf("IIV '%s' has no matching fixed-effect parameter '%s'.", nm, suffix),
+            "Ensure every eta<x> pairs with a fixed-effect parameter named x."
+          )
+        )
       }
     }
   }
@@ -536,19 +639,26 @@ checkModelConventions <- function(model, verbose = TRUE) {
   obs_vars <- unique(ui$predDf$cond %||% character())
   canonical_reserr <- .canonicalResidualErrorNames(obs_vars, conv)
   for (nm in reserr$name) {
-    if (nm %in% paper_specific_reserr) next
+    if (nm %in% paper_specific_reserr) {
+      next
+    }
     if (!(nm %in% canonical_reserr) && !.matchesDeprecatedReserr(nm, conv)) {
-      issues <- rbind(issues, .issue(
-        "parameter_naming", "warning", nm,
-        sprintf(
-          paste0(
-            "Residual-error parameter '%s' does not match canonical ",
-            "propSd/addSd (or '<output>propSd'/'<output>addSd')."
+      issues <- rbind(
+        issues,
+        .issue(
+          "parameter_naming",
+          "warning",
+          nm,
+          sprintf(
+            paste0(
+              "Residual-error parameter '%s' does not match canonical ",
+              "propSd/addSd (or '<output>propSd'/'<output>addSd')."
+            ),
+            nm
           ),
-          nm
-        ),
-        sprintf("Rename to one of: %s.", paste(canonical_reserr, collapse = ", "))
-      ))
+          sprintf("Rename to one of: %s.", paste(canonical_reserr, collapse = ", "))
+        )
+      )
     }
   }
 
@@ -558,7 +668,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .canonicalResidualErrorNames <- function(obs_vars, conv) {
   out <- conv$residualError
   for (v in obs_vars) {
-    if (is.na(v)) next
+    if (is.na(v)) {
+      next
+    }
     if (v == conv$observationVar) {
       # Parent observation Cc: canonical bare propSd / addSd. The
       # output-prefixed CcpropSd / CcaddSd form is no longer accepted
@@ -581,8 +693,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     out <- c(
       out,
       paste0("propSd_", suffix),
-      paste0("addSd_",  suffix),
-      paste0("expSd_",  suffix),
+      paste0("addSd_", suffix),
+      paste0("expSd_", suffix),
       paste0("powExp_", suffix)
     )
   }
@@ -596,17 +708,24 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkParameterLabels <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
   fixed_or_err <- ini[is.na(ini$neta1), , drop = FALSE]
   for (i in seq_len(nrow(fixed_or_err))) {
     nm <- fixed_or_err$name[i]
     lbl <- fixed_or_err$label[i]
     if (is.na(lbl) || !nzchar(lbl)) {
-      issues <- rbind(issues, .issue(
-        "parameter_labels", "warning", nm,
-        sprintf("Parameter '%s' has no label.", nm),
-        sprintf("Add `label(\"<description with units>\")` to the ini() entry for %s.", nm)
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "parameter_labels",
+          "warning",
+          nm,
+          sprintf("Parameter '%s' has no label.", nm),
+          sprintf("Add `label(\"<description with units>\")` to the ini() entry for %s.", nm)
+        )
+      )
     }
   }
   issues
@@ -620,20 +739,31 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkUnitSpellings <- function(ui, conv) {
   issues <- .emptyIssues()
   units <- as.list(ui$meta)$units
-  if (is.null(units)) return(issues)
+  if (is.null(units)) {
+    return(issues)
+  }
   spellings <- list(time = conv$timeUnitSpellings, dosing = conv$doseUnitSpellings)
   for (fld in names(spellings)) {
     val <- units[[fld]]
-    if (is.null(val) || !is.character(val) || length(val) != 1 || is.na(val)) next
-    if (val %in% conv$placeholderUnits) next
+    if (is.null(val) || !is.character(val) || length(val) != 1 || is.na(val)) {
+      next
+    }
+    if (val %in% conv$placeholderUnits) {
+      next
+    }
     map <- spellings[[fld]]
     key <- tolower(val)
     if (key %in% names(map)) {
-      issues <- rbind(issues, .issue(
-        "unit_spelling", "error", sprintf("units$%s", fld),
-        sprintf("units$%s = '%s' is a non-canonical spelling.", fld, val),
-        sprintf("Use '%s'. Same unit, one spelling -- consumers cannot canonicalise otherwise.",
-                map[[key]])))
+      issues <- rbind(
+        issues,
+        .issue(
+          "unit_spelling",
+          "error",
+          sprintf("units$%s", fld),
+          sprintf("units$%s = '%s' is a non-canonical spelling.", fld, val),
+          sprintf("Use '%s'. Same unit, one spelling -- consumers cannot canonicalise otherwise.", map[[key]])
+        )
+      )
     }
   }
   issues
@@ -642,22 +772,29 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkParameterUnits <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
   fixed <- ini[is.na(ini$neta1) & is.na(ini$err), , drop = FALSE]
   for (i in seq_len(nrow(fixed))) {
     nm <- fixed$name[i]
     lbl <- fixed$label[i]
-    if (is.na(lbl) || !nzchar(lbl)) next
+    if (is.na(lbl) || !nzchar(lbl)) {
+      next
+    }
     has_units_hint <- grepl("\\([^)]*[A-Za-z/0-9%][^)]*\\)", lbl)
-    needs_units <- nm %in% conv$pkParams ||
-      grepl("^l[a-z]", nm) ||
-      nm %in% conv$pkBareParams
+    needs_units <- nm %in% conv$pkParams || grepl("^l[a-z]", nm) || nm %in% conv$pkBareParams
     if (needs_units && !has_units_hint) {
-      issues <- rbind(issues, .issue(
-        "parameter_units", "info", nm,
-        sprintf("Label for '%s' does not appear to include a unit hint in parentheses.", nm),
-        "Include units in the label, e.g. `label(\"Clearance (CL, L/day)\")`."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "parameter_units",
+          "info",
+          nm,
+          sprintf("Label for '%s' does not appear to include a unit hint in parentheses.", nm),
+          "Include units in the label, e.g. `label(\"Clearance (CL, L/day)\")`."
+        )
+      )
     }
   }
   issues
@@ -684,11 +821,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
   covExcluded <- as.list(ui$meta)$covariatesDataExcluded
   for (nm in names(covExcluded %||% list())) {
     if (nm %in% covs_all) {
-      issues <- rbind(issues, .issue(
-        "covariates", "warning", nm,
-        sprintf("Covariate '%s' is listed in covariatesDataExcluded but is referenced in model().", nm),
-        "Move it to covariateData (it is actually used), or stop referencing it in model()."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "warning",
+          nm,
+          sprintf("Covariate '%s' is listed in covariatesDataExcluded but is referenced in model().", nm),
+          "Move it to covariateData (it is actually used), or stop referencing it in model()."
+        )
+      )
     }
   }
 
@@ -697,11 +839,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
   for (nm in covs) {
     if (!(nm %in% covDataNames)) {
-      issues <- rbind(issues, .issue(
-        "covariates", "error", nm,
-        sprintf("Covariate '%s' is used in model() but has no entry in covariateData.", nm),
-        sprintf("Add `%s = list(description=..., units=..., type=...)` to covariateData.", nm)
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "error",
+          nm,
+          sprintf("Covariate '%s' is used in model() but has no entry in covariateData.", nm),
+          sprintf("Add `%s = list(description=..., units=..., type=...)` to covariateData.", nm)
+        )
+      )
     }
     # Resolve the canonical entry for `nm` (may be nm itself or via alias map).
     canon_name <- if (nm %in% canonical) {
@@ -715,34 +862,46 @@ checkModelConventions <- function(model, verbose = TRUE) {
       if (nm %in% names(alias_map)) {
         canon <- alias_map[[nm]]
         entry <- covData[[nm]]
-        declared <- !is.null(entry) && is.list(entry) &&
-          !is.null(entry$source_name) && nzchar(entry$source_name)
+        declared <- !is.null(entry) && is.list(entry) && !is.null(entry$source_name) && nzchar(entry$source_name)
         if (!declared) {
-          issues <- rbind(issues, .issue(
-            "covariates", "warning", nm,
-            sprintf(
-              paste0(
-                "Covariate '%s' is an alias of canonical '%s'; ",
-                "alias mapping is not declared via source_name."
+          issues <- rbind(
+            issues,
+            .issue(
+              "covariates",
+              "warning",
+              nm,
+              sprintf(
+                paste0(
+                  "Covariate '%s' is an alias of canonical '%s'; ",
+                  "alias mapping is not declared via source_name."
+                ),
+                nm,
+                canon
               ),
-              nm, canon
-            ),
-            sprintf(
-              paste0(
-                "Either rename to '%s' in the model and data, or ",
-                "document the mapping by adding `source_name = \"%s\"` ",
-                "under covariateData[[\"%s\"]] using the canonical name."
-              ),
-              canon, nm, canon
+              sprintf(
+                paste0(
+                  "Either rename to '%s' in the model and data, or ",
+                  "document the mapping by adding `source_name = \"%s\"` ",
+                  "under covariateData[[\"%s\"]] using the canonical name."
+                ),
+                canon,
+                nm,
+                canon
+              )
             )
-          ))
+          )
         }
       } else {
-        issues <- rbind(issues, .issue(
-          "covariates", "warning", nm,
-          sprintf("Covariate '%s' is not in the canonical register.", nm),
-          "Rename to a canonical name (see `inst/references/covariate-columns.md`) or register a new canonical entry."
-        ))
+        issues <- rbind(
+          issues,
+          .issue(
+            "covariates",
+            "warning",
+            nm,
+            sprintf("Covariate '%s' is not in the canonical register.", nm),
+            "Rename to a canonical name (see `inst/references/covariate-columns.md`) or register a new canonical entry."
+          )
+        )
       }
     }
     # Scope check: a canonical covariate marked `scope: specific` is only
@@ -754,31 +913,41 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # add it to the `Example models` list for covariates that are legitimate.
     if (!is.na(canon_name)) {
       entry <- conv$canonicalCovariates[[canon_name]]
-      if (identical(entry$scope, "specific") &&
-          !(model_name %in% entry$example_models)) {
+      if (
+        identical(entry$scope, "specific") &&
+          !(model_name %in% entry$example_models)
+      ) {
         allowed <- if (length(entry$example_models) == 0) {
           "(none)"
         } else {
           paste(entry$example_models, collapse = ", ")
         }
-        issues <- rbind(issues, .issue(
-          "covariates", "warning", nm,
-          sprintf(
-            paste0(
-              "Covariate '%s' is canonical but scoped 'specific' to ",
-              "model(s) %s; using it in '%s' is not permitted."
+        issues <- rbind(
+          issues,
+          .issue(
+            "covariates",
+            "warning",
+            nm,
+            sprintf(
+              paste0(
+                "Covariate '%s' is canonical but scoped 'specific' to ",
+                "model(s) %s; using it in '%s' is not permitted."
+              ),
+              nm,
+              allowed,
+              model_name
             ),
-            nm, allowed, model_name
-          ),
-          sprintf(
-            paste0(
-              "Rename to a different canonical name, promote '%s' to ",
-              "`Scope: general` in inst/references/covariate-columns.md, ",
-              "or add '%s' to that entry's Example models list."
-            ),
-            canon_name, model_name
+            sprintf(
+              paste0(
+                "Rename to a different canonical name, promote '%s' to ",
+                "`Scope: general` in inst/references/covariate-columns.md, ",
+                "or add '%s' to that entry's Example models list."
+              ),
+              canon_name,
+              model_name
+            )
           )
-        ))
+        )
       }
     }
   }
@@ -786,27 +955,44 @@ checkModelConventions <- function(model, verbose = TRUE) {
   for (nm in covDataNames) {
     entry <- covData[[nm]]
     if (is.character(entry)) {
-      issues <- rbind(issues, .issue(
-        "covariates", "warning", nm,
-        sprintf("covariateData[['%s']] is a bare string (old style); missing structured units/type.", nm),
-        "Convert to a list: `list(description=..., units=..., type=<continuous|binary|categorical|count>)`."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "warning",
+          nm,
+          sprintf("covariateData[['%s']] is a bare string (old style); missing structured units/type.", nm),
+          "Convert to a list: `list(description=..., units=..., type=<continuous|binary|categorical|count>)`."
+        )
+      )
       next
     }
-    if (!is.list(entry)) next
+    if (!is.list(entry)) {
+      next
+    }
     if (is.null(entry$description) || !nzchar(entry$description %||% "")) {
-      issues <- rbind(issues, .issue(
-        "covariates", "error", nm,
-        sprintf("covariateData[['%s']] is missing `description`.", nm),
-        "Add a one-line `description` field."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "error",
+          nm,
+          sprintf("covariateData[['%s']] is missing `description`.", nm),
+          "Add a one-line `description` field."
+        )
+      )
     }
     if (is.null(entry$units) || !nzchar(entry$units %||% "")) {
-      issues <- rbind(issues, .issue(
-        "covariates", "error", nm,
-        sprintf("covariateData[['%s']] is missing `units`.", nm),
-        "Add a `units` field (use \"(binary)\" or \"(categorical)\" where appropriate)."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "error",
+          nm,
+          sprintf("covariateData[['%s']] is missing `units`.", nm),
+          "Add a `units` field (use \"(binary)\" or \"(categorical)\" where appropriate)."
+        )
+      )
     }
     # Check that the covariateData entry corresponds to a name actually
     # used inside model(). Use the unfiltered ui$covariates list so
@@ -816,11 +1002,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # epidemiological effect modifiers) are correctly recognised when
     # they appear in BOTH depends and covariateData.
     if (!(nm %in% covs_all)) {
-      issues <- rbind(issues, .issue(
-        "covariates", "warning", nm,
-        sprintf("covariateData[['%s']] has an entry but is not referenced in model().", nm),
-        "Remove the unused entry or confirm the covariate is still used."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "covariates",
+          "warning",
+          nm,
+          sprintf("covariateData[['%s']] has an entry but is not referenced in model().", nm),
+          "Remove the unused entry or confirm the covariate is still used."
+        )
+      )
     }
   }
 
@@ -847,11 +1038,18 @@ checkModelConventions <- function(model, verbose = TRUE) {
   paper_specific <- meta$paper_specific_compartments %||% character()
   paper_specific_re <- meta$paper_specific_compartment_pattern %||% character()
   for (cm in cmts) {
-    if (.matchesCompartment(cm, conv)) next
-    if (length(paper_specific) > 0L && cm %in% paper_specific) next
-    if (length(paper_specific_re) > 0L &&
-        any(sapply(paper_specific_re,
-                   function(p) grepl(p, cm)))) next
+    if (.matchesCompartment(cm, conv)) {
+      next
+    }
+    if (length(paper_specific) > 0L && cm %in% paper_specific) {
+      next
+    }
+    if (
+      length(paper_specific_re) > 0L &&
+        any(sapply(paper_specific_re, function(p) grepl(p, cm)))
+    ) {
+      next
+    }
     # Tailor the message: a capital-prefixed name is almost never
     # canonical because the convention is lowercase compartment names
     # (observation variables like Cc are the exception). Surface that
@@ -889,9 +1087,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
         paste(conv$registeredMetabolites, collapse = ", ")
       )
     }
-    issues <- rbind(issues, .issue(
-      "compartments", "warning", cm, msg, sug
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "compartments",
+        "warning",
+        cm,
+        msg,
+        sug
+      )
+    )
   }
   issues
 }
@@ -899,7 +1104,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkObservation <- function(ui, conv) {
   issues <- .emptyIssues()
   pred <- ui$predDf
-  if (is.null(pred) || nrow(pred) == 0) return(issues)
+  if (is.null(pred) || nrow(pred) == 0) {
+    return(issues)
+  }
   obs_vars <- unique(pred$cond)
   if (length(obs_vars) == 1 && obs_vars != conv$observationVar) {
     obs <- obs_vars
@@ -923,55 +1130,69 @@ checkModelConventions <- function(model, verbose = TRUE) {
     is_canon_pd <- .matchesCompartment(obs, conv) ||
       .matchesProbOutput(obs, conv) ||
       startsWith(obs, "Cc_") ||
-      (startsWith(obs, "C") && nchar(obs) > 1 &&
-       .matchesCompartment(substr(obs, 2, nchar(obs)), conv))
+      (startsWith(obs, "C") && nchar(obs) > 1 && .matchesCompartment(substr(obs, 2, nchar(obs)), conv))
     if (!is_canon_pd) {
-      issues <- rbind(issues, .issue(
-        "observation", "warning", obs,
-        sprintf(
-          paste0(
-            "Single-output observation variable '%s' is not canonical: ",
-            "use 'Cc' for drug-concentration outputs, or a registered ",
-            "PD-output canonical compartment / state name otherwise."
+      issues <- rbind(
+        issues,
+        .issue(
+          "observation",
+          "warning",
+          obs,
+          sprintf(
+            paste0(
+              "Single-output observation variable '%s' is not canonical: ",
+              "use 'Cc' for drug-concentration outputs, or a registered ",
+              "PD-output canonical compartment / state name otherwise."
+            ),
+            obs
           ),
-          obs
-        ),
-        sprintf(
-          paste0(
-            "Rename to '%s' for plasma-drug-concentration outputs; use ",
-            "'prob_<endpoint>' (lowercase, e.g. prob_orr_central) for a ",
-            "landmark exposure-response event probability in [0, 1]; or ",
-            "register the PD output name as a canonical compartment in ",
-            "inst/references/compartment-names.md if it is a recurring ",
-            "paper-mechanistic endpoint."
-          ),
-          conv$observationVar
+          sprintf(
+            paste0(
+              "Rename to '%s' for plasma-drug-concentration outputs; use ",
+              "'prob_<endpoint>' (lowercase, e.g. prob_orr_central) for a ",
+              "landmark exposure-response event probability in [0, 1]; or ",
+              "register the PD output name as a canonical compartment in ",
+              "inst/references/compartment-names.md if it is a recurring ",
+              "paper-mechanistic endpoint."
+            ),
+            conv$observationVar
+          )
         )
-      ))
+      )
     }
     return(issues)
   }
   # Multi-output: flag deprecated `C<metab>` style (e.g. Cmmae, Cdxd, Cdar0)
   # and suggest the canonical `Cc_<metab>` form for PK metabolite outputs.
   for (v in obs_vars) {
-    if (is.na(v) || v == conv$observationVar) next
-    if (startsWith(v, "Cc_")) next  # already canonical metabolite output
-    if (!startsWith(v, "C")) next   # non-PK output (tumorSize, freeIgE, ...)
+    if (is.na(v) || v == conv$observationVar) {
+      next
+    }
+    if (startsWith(v, "Cc_")) {
+      next
+    } # already canonical metabolite output
+    if (!startsWith(v, "C")) {
+      next
+    } # non-PK output (tumorSize, freeIgE, ...)
     rest <- substr(v, 2, nchar(v))
     rest_lc <- tolower(rest)
     if (rest_lc %in% conv$registeredMetabolites) {
-      issues <- rbind(issues, .issue(
-        "observation", "warning", v,
-        sprintf(
-          paste0(
-            "Multi-output observation '%s' uses the deprecated 'C<metab>' ",
-            "form for a PK metabolite output."
+      issues <- rbind(
+        issues,
+        .issue(
+          "observation",
+          "warning",
+          v,
+          sprintf(
+            paste0(
+              "Multi-output observation '%s' uses the deprecated 'C<metab>' ",
+              "form for a PK metabolite output."
+            ),
+            v
           ),
-          v
-        ),
-        sprintf("Rename to 'Cc_%s' to match the canonical metabolite-suffix convention.",
-                rest_lc)
-      ))
+          sprintf("Rename to 'Cc_%s' to match the canonical metabolite-suffix convention.", rest_lc)
+        )
+      )
     }
   }
   issues
@@ -980,16 +1201,23 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkUnits <- function(ui, conv) {
   issues <- .emptyIssues()
   units <- as.list(ui$meta)$units
-  if (is.null(units)) return(issues)
+  if (is.null(units)) {
+    return(issues)
+  }
   endo <- .isEndogenousOrTemplate(ui)
   for (fld in conv$requiredUnits) {
     if (is.null(units[[fld]]) || !nzchar(units[[fld]] %||% "")) {
       sev <- if (endo) "info" else "error"
-      issues <- rbind(issues, .issue(
-        "units", sev, fld,
-        sprintf("units$%s is missing.", fld),
-        sprintf("Add `%s = \"<unit>\"` to the `units <- list(...)` metadata block.", fld)
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "units",
+          sev,
+          fld,
+          sprintf("units$%s is missing.", fld),
+          sprintf("Add `%s = \"<unit>\"` to the `units <- list(...)` metadata block.", fld)
+        )
+      )
     }
   }
   dosing <- units$dosing
@@ -1016,8 +1244,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   # comparison so they do not spuriously defeat a same-dimension match.
   # The relaxation only removes or downgrades issues; it never introduces a
   # new warning.
-  dose_is_amount <- !endo && !is.null(dosing) && nzchar(dosing) &&
-    .unitsRecognizedAmount(dosing)
+  dose_is_amount <- !endo && !is.null(dosing) && nzchar(dosing) && .unitsRecognizedAmount(dosing)
   if (dose_is_amount && !is.null(conc) && nzchar(conc)) {
     dose_core <- trimws(sub("\\(.*$", "", dosing))
     if (!grepl("/", conc)) {
@@ -1026,11 +1253,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
       # concentration belongs); a non-amount PD endpoint (mmHg, ordinal
       # grade, ...) is a legitimate non-plasma-concentration output.
       if (.unitsRecognizedAmount(conc)) {
-        issues <- rbind(issues, .issue(
-          "units", "warning", "concentration",
-          sprintf("units$concentration='%s' does not contain '/' (mass/volume).", conc),
-          "Concentration units usually look like 'mg/L', 'ug/mL', 'ng/mL'."
-        ))
+        issues <- rbind(
+          issues,
+          .issue(
+            "units",
+            "warning",
+            "concentration",
+            sprintf("units$concentration='%s' does not contain '/' (mass/volume).", conc),
+            "Concentration units usually look like 'mg/L', 'ug/mL', 'ng/mL'."
+          )
+        )
       }
     } else {
       conc_num <- trimws(sub("\\(.*$", "", trimws(sub("/.*$", "", conc))))
@@ -1040,40 +1272,52 @@ checkModelConventions <- function(model, verbose = TRUE) {
       } else if (.unitsCompatible(dose_core, conc_num)) {
         # Identical pharmacological dimension and token -> nothing to flag.
       } else if (.unitsSameDimension(dose_core, conc_num)) {
-        issues <- rbind(issues, .issue(
-          "units", "info", "dosing_concentration",
-          sprintf(
-            paste0(
-              "units$dosing ('%s') and units$concentration numerator ",
-              "('%s') differ in magnitude; ensure scaling is applied in model()."
+        issues <- rbind(
+          issues,
+          .issue(
+            "units",
+            "info",
+            "dosing_concentration",
+            sprintf(
+              paste0(
+                "units$dosing ('%s') and units$concentration numerator ",
+                "('%s') differ in magnitude; ensure scaling is applied in model()."
+              ),
+              dose_core,
+              conc_num
             ),
-            dose_core, conc_num
-          ),
-          paste0(
-            "When dosing is mg but concentration is ug/mL (= mg/L), no ",
-            "conversion is needed if volume is in L. Verify the relationship."
+            paste0(
+              "When dosing is mg but concentration is ug/mL (= mg/L), no ",
+              "conversion is needed if volume is in L. Verify the relationship."
+            )
           )
-        ))
+        )
       } else {
         # Both are recognized amounts but of different pharmacological
         # dimensions (mass vs molar vs IU). The conversion (molecular
         # weight / potency) is expected and performed in model() ->
         # informational, not a warning.
-        issues <- rbind(issues, .issue(
-          "units", "info", "dosing_concentration",
-          sprintf(
-            paste0(
-              "units$dosing ('%s') and units$concentration numerator ",
-              "('%s') differ in dimension (mass vs molar vs IU); ensure the ",
-              "molecular-weight / potency conversion is applied in model()."
+        issues <- rbind(
+          issues,
+          .issue(
+            "units",
+            "info",
+            "dosing_concentration",
+            sprintf(
+              paste0(
+                "units$dosing ('%s') and units$concentration numerator ",
+                "('%s') differ in dimension (mass vs molar vs IU); ensure the ",
+                "molecular-weight / potency conversion is applied in model()."
+              ),
+              dose_core,
+              conc_num
             ),
-            dose_core, conc_num
-          ),
-          paste0(
-            "Confirm the dosing-to-concentration conversion (e.g. mg -> nmol ",
-            "via molecular weight) is performed in model()."
+            paste0(
+              "Confirm the dosing-to-concentration conversion (e.g. mg -> nmol ",
+              "via molecular weight) is performed in model()."
+            )
           )
-        ))
+        )
       }
     }
   }
@@ -1081,7 +1325,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 .unitsCompatible <- function(a, b) {
-  if (identical(a, b)) return(TRUE)
+  if (identical(a, b)) {
+    return(TRUE)
+  }
   identical(.normUnit(a), .normUnit(b))
 }
 
@@ -1111,10 +1357,24 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .unitsRecognizedAmount <- function(x) {
   core <- .normUnit(trimws(sub("\\(.*$", "", x)))
   amounts <- c(
-    "kg", "g", "mg", "ug", "ng", "pg",
-    "mol", "mmol", "umol", "nmol", "pmol",
-    "iu", "miu", "uiu", "niu",
-    "meq", "mu", "u"
+    "kg",
+    "g",
+    "mg",
+    "ug",
+    "ng",
+    "pg",
+    "mol",
+    "mmol",
+    "umol",
+    "nmol",
+    "pmol",
+    "iu",
+    "miu",
+    "uiu",
+    "niu",
+    "meq",
+    "mu",
+    "u"
   )
   core %in% amounts
 }
@@ -1122,31 +1382,48 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkDeprecatedNames <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
   for (nm in ini$name) {
     if (nm %in% conv$deprecatedResidualError) {
-      issues <- rbind(issues, .issue(
-        "deprecated_names", "warning", nm,
-        sprintf("'%s' is a deprecated residual-error name.", nm),
-        "Rename to 'propSd' (proportional) or 'addSd' (additive), with output prefix for multi-output models."
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "deprecated_names",
+          "warning",
+          nm,
+          sprintf("'%s' is a deprecated residual-error name.", nm),
+          "Rename to 'propSd' (proportional) or 'addSd' (additive), with output prefix for multi-output models."
+        )
+      )
     }
     for (pfx in conv$deprecatedIivPrefixes) {
       if (startsWith(nm, pfx)) {
-        issues <- rbind(issues, .issue(
-          "deprecated_names", "warning", nm,
-          sprintf("'%s' uses deprecated IIV prefix '%s'.", nm, pfx),
-          "Use `eta<transformed-param>` (e.g., 'etalcl')."
-        ))
+        issues <- rbind(
+          issues,
+          .issue(
+            "deprecated_names",
+            "warning",
+            nm,
+            sprintf("'%s' uses deprecated IIV prefix '%s'.", nm, pfx),
+            "Use `eta<transformed-param>` (e.g., 'etalcl')."
+          )
+        )
         break
       }
     }
     if (!is.null(conv$renamedParameters) && nm %in% names(conv$renamedParameters)) {
-      issues <- rbind(issues, .issue(
-        "deprecated_names", "error", nm,
-        sprintf("'%s' was renamed; this spelling defeats name-based discovery.", nm),
-        sprintf("Use '%s'.", conv$renamedParameters[[nm]])
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "deprecated_names",
+          "error",
+          nm,
+          sprintf("'%s' was renamed; this spelling defeats name-based discovery.", nm),
+          sprintf("Use '%s'.", conv$renamedParameters[[nm]])
+        )
+      )
     }
     issues <- rbind(issues, .checkDeprecatedVolumeOrVmaxName(nm, conv))
     issues <- rbind(issues, .checkDeprecatedAdcSuffix(nm, conv))
@@ -1164,32 +1441,52 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues <- .emptyIssues()
   if (nm %in% c("v", "v1", "lv", "lv1")) {
     canonical <- if (startsWith(nm, "l")) "lvc" else "vc"
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf("'%s' is a deprecated central-volume name.", nm),
-      sprintf("Rename to '%s' (canonical central volume).", canonical)
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf("'%s' is a deprecated central-volume name.", nm),
+        sprintf("Rename to '%s' (canonical central volume).", canonical)
+      )
+    )
   } else if (nm %in% c("v2", "lv2")) {
     canonical <- if (startsWith(nm, "l")) "lvp (likely) or lvc if v1 is depot" else "vp (likely) or vc"
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf("'%s' is a deprecated numbered-volume name.", nm),
-      sprintf("Verify against the source paper and rename to %s.", canonical)
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf("'%s' is a deprecated numbered-volume name.", nm),
+        sprintf("Verify against the source paper and rename to %s.", canonical)
+      )
+    )
   } else if (nm %in% c("v3", "lv3")) {
     canonical <- if (startsWith(nm, "l")) "lvp2" else "vp2"
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf("'%s' is a deprecated numbered-volume name.", nm),
-      sprintf("Rename to '%s' (second peripheral volume).", canonical)
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf("'%s' is a deprecated numbered-volume name.", nm),
+        sprintf("Rename to '%s' (second peripheral volume).", canonical)
+      )
+    )
   } else if (nm %in% c("vm", "lvm")) {
     canonical <- if (startsWith(nm, "l")) "lvmax" else "vmax"
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf("'%s' is a deprecated Michaelis-Menten Vmax name.", nm),
-      sprintf("Rename to '%s'.", canonical)
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf("'%s' is a deprecated Michaelis-Menten Vmax name.", nm),
+        sprintf("Rename to '%s'.", canonical)
+      )
+    )
   }
   issues
 }
@@ -1201,18 +1498,23 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues <- .emptyIssues()
   if (endsWith(nm, "_adc")) {
     suggested <- substr(nm, 1, nchar(nm) - 4)
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf(
-        paste0(
-          "'%s' uses the deprecated parent-ADC suffix '_adc'. ",
-          "Parent-drug parameters should use the canonical name ",
-          "without a suffix; metabolite parameters carry the suffix."
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf(
+          paste0(
+            "'%s' uses the deprecated parent-ADC suffix '_adc'. ",
+            "Parent-drug parameters should use the canonical name ",
+            "without a suffix; metabolite parameters carry the suffix."
+          ),
+          nm
         ),
-        nm
-      ),
-      sprintf("Drop the '_adc' suffix and rename to '%s'.", suggested)
-    ))
+        sprintf("Drop the '_adc' suffix and rename to '%s'.", suggested)
+      )
+    )
   }
   issues
 }
@@ -1227,8 +1529,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # become "vc_vp" and "cl_ss".
 .checkDeprecatedCovEffectSuffix <- function(nm, conv) {
   issues <- .emptyIssues()
-  if (!startsWith(nm, "e_")) return(issues)
-  if (!grepl(conv$covEffectPattern, nm)) return(issues)
+  if (!startsWith(nm, "e_")) {
+    return(issues)
+  }
+  if (!grepl(conv$covEffectPattern, nm)) {
+    return(issues)
+  }
   # Reverse-order: e_<param>_<cov>(_<extra>)*. Detect when the FIRST
   # token is a bare PK parameter (cl, vc, vp, q, ka, ...) and the SECOND
   # token (or the joined remainder for compound covariates) maps to a
@@ -1254,50 +1560,60 @@ checkModelConventions <- function(model, verbose = TRUE) {
         paste(parts[2:j], collapse = "_")
       )
     }
-    if (first %in% conv$pkBareParams &&
-        any(vapply(second_or_more, is_known_cov, logical(1)))) {
-      issues <- rbind(issues, .issue(
-        "deprecated_names", "warning", nm,
-        sprintf(
-          paste0(
-            "'%s' looks like a reversed-order covariate effect ",
-            "(e_<param>_<cov>); the canonical order is e_<cov>_<param>."
+    if (first %in% conv$pkBareParams && any(vapply(second_or_more, is_known_cov, logical(1)))) {
+      issues <- rbind(
+        issues,
+        .issue(
+          "deprecated_names",
+          "warning",
+          nm,
+          sprintf(
+            paste0(
+              "'%s' looks like a reversed-order covariate effect ",
+              "(e_<param>_<cov>); the canonical order is e_<cov>_<param>."
+            ),
+            nm
           ),
-          nm
-        ),
-        sprintf("Rename to e_<cov>_<param>; verify the covariate identity in the source.")
-      ))
+          sprintf("Rename to e_<cov>_<param>; verify the covariate identity in the source.")
+        )
+      )
       return(issues)
     }
   }
   # Trailing token deprecations (parameter token that's a deprecated form).
   trailing_token <- parts[length(parts)]
   trailing_map <- list(
-    v   = "vc",
-    v1  = "vc",
-    v2  = "vp (verify against source)",
-    v3  = "vp2",
-    vm  = "vmax",
+    v = "vc",
+    v1 = "vc",
+    v2 = "vp (verify against source)",
+    v3 = "vp2",
+    vm = "vmax",
     clq = "cl_q (split shared exponent)",
     vcvp = "vc_vp (split shared exponent)",
     vss = "vc_vp (Vss = Vc + Vp; split shared exponent)",
     clinf = "cl_ss",
-    clss  = "cl_ss",
-    clt   = "cl_time"
+    clss = "cl_ss",
+    clt = "cl_time"
   )
   if (trailing_token %in% names(trailing_map)) {
     canonical <- trailing_map[[trailing_token]]
-    issues <- rbind(issues, .issue(
-      "deprecated_names", "warning", nm,
-      sprintf(
-        paste0(
-          "'%s' uses a deprecated parameter-token '%s' in a ",
-          "covariate-effect name."
+    issues <- rbind(
+      issues,
+      .issue(
+        "deprecated_names",
+        "warning",
+        nm,
+        sprintf(
+          paste0(
+            "'%s' uses a deprecated parameter-token '%s' in a ",
+            "covariate-effect name."
+          ),
+          nm,
+          trailing_token
         ),
-        nm, trailing_token
-      ),
-      sprintf("Rename the parameter portion to '%s'.", canonical)
-    ))
+        sprintf("Rename the parameter portion to '%s'.", canonical)
+      )
+    )
   }
   issues
 }
@@ -1368,34 +1684,53 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # "Sigmoidicity exponent of time on CL" look like a reference to `t`.
 .modelBlockLines <- function(ui) {
   lines <- tryCatch(deparse(ui$fun), error = function(e) character(0))
-  if (!length(lines)) return(character(0))
+  if (!length(lines)) {
+    return(character(0))
+  }
   start <- grep("^\\s*model\\(\\{", lines)
-  if (!length(start)) return(character(0))
+  if (!length(start)) {
+    return(character(0))
+  }
   lines[seq(start[1], length(lines))]
 }
 
 .checkTimeVaryingClearanceNames <- function(ui, conv) {
   issues <- .emptyIssues()
   lines <- .modelBlockLines(ui)
-  if (!length(lines)) return(issues)
+  if (!length(lines)) {
+    return(issues)
+  }
   for (ln in lines) {
-    if (!grepl(.clearanceLhsPattern, ln)) next
+    if (!grepl(.clearanceLhsPattern, ln)) {
+      next
+    }
     rhs <- sub("^[^<]*<-", "", ln)
     rhs <- sub("#.*$", "", rhs)
     # Strip string literals: a label such as "...exponent of time on CL..."
     # is prose about the parameter, not a reference to the time variable.
     rhs <- gsub("\"[^\"]*\"", "", rhs)
-    if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
-    if (grepl(.timeVaryingClearanceAcceptPattern, rhs)) next
+    if (!grepl(.bareTimePattern, rhs, perl = TRUE)) {
+      next
+    }
+    if (grepl(.timeVaryingClearanceAcceptPattern, rhs)) {
+      next
+    }
     nm <- trimws(sub("\\s*<-.*$", "", ln))
-    issues <- rbind(issues, .issue(
-      "time_varying_clearance", "warning", nm,
-      sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
-      paste("Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
-            "clearance, cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
-            "exponential decay, or tclchange / cl_late for a piecewise-constant",
-            "step, so the structure can be found by name (issue #481).")
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "time_varying_clearance",
+        "warning",
+        nm,
+        sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
+        paste(
+          "Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
+          "clearance, cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+          "exponential decay, or tclchange / cl_late for a piecewise-constant",
+          "step, so the structure can be found by name (issue #481)."
+        )
+      )
+    )
   }
   issues
 }
@@ -1408,47 +1743,80 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues <- .emptyIssues()
   meta <- as.list(ui$meta)
   states <- tryCatch(ui$state, error = function(e) character(0))
-  if (!length(states)) return(issues)
+  if (!length(states)) {
+    return(issues)
+  }
   cd <- meta$compartmentData
   if (is.null(cd)) {
     # Warning rather than error while the database is being backfilled; see
     # inst/references/compartment-data-followup.md for the remaining models.
-    return(rbind(issues, .issue(
-      "compartment_data", "warning", "compartmentData",
-      "Model has ODE states but no `compartmentData` metadata.",
-      paste("Add compartmentData <- list(<state> = list(analyte=, units=,",
-            "specimen=, verified=)) for every d/dt() state (issue #482).")
-    )))
+    return(rbind(
+      issues,
+      .issue(
+        "compartment_data",
+        "warning",
+        "compartmentData",
+        "Model has ODE states but no `compartmentData` metadata.",
+        paste(
+          "Add compartmentData <- list(<state> = list(analyte=, units=,",
+          "specimen=, verified=)) for every d/dt() state (issue #482)."
+        )
+      )
+    ))
   }
   missing <- setdiff(states, names(cd))
   if (length(missing)) {
-    issues <- rbind(issues, .issue(
-      "compartment_data", "error", paste(missing, collapse = ", "),
-      "ODE state(s) have no `compartmentData` entry.",
-      "Add one entry per d/dt() state."))
+    issues <- rbind(
+      issues,
+      .issue(
+        "compartment_data",
+        "error",
+        paste(missing, collapse = ", "),
+        "ODE state(s) have no `compartmentData` entry.",
+        "Add one entry per d/dt() state."
+      )
+    )
   }
   extra <- setdiff(names(cd), states)
   if (length(extra)) {
-    issues <- rbind(issues, .issue(
-      "compartment_data", "error", paste(extra, collapse = ", "),
-      "`compartmentData` names a compartment that is not an ODE state.",
-      "Remove the entry, or correct the state name."))
+    issues <- rbind(
+      issues,
+      .issue(
+        "compartment_data",
+        "error",
+        paste(extra, collapse = ", "),
+        "`compartmentData` names a compartment that is not an ODE state.",
+        "Remove the entry, or correct the state name."
+      )
+    )
   }
   for (nm in intersect(names(cd), states)) {
     entry <- cd[[nm]]
     absent <- setdiff(conv$compartmentDataFields, names(entry))
     if (length(absent)) {
-      issues <- rbind(issues, .issue(
-        "compartment_data", "error", nm,
-        sprintf("`compartmentData$%s` is missing: %s.", nm, paste(absent, collapse = ", ")),
-        paste("Every entry needs", paste(conv$compartmentDataFields, collapse = ", "), ".")))
+      issues <- rbind(
+        issues,
+        .issue(
+          "compartment_data",
+          "error",
+          nm,
+          sprintf("`compartmentData$%s` is missing: %s.", nm, paste(absent, collapse = ", ")),
+          paste("Every entry needs", paste(conv$compartmentDataFields, collapse = ", "), ".")
+        )
+      )
       next
     }
     if (!entry$specimen %in% conv$specimenVocabulary) {
-      issues <- rbind(issues, .issue(
-        "compartment_data", "error", nm,
-        sprintf("`%s` is not in the specimen vocabulary.", entry$specimen),
-        paste("Use one of:", paste(conv$specimenVocabulary, collapse = ", "))))
+      issues <- rbind(
+        issues,
+        .issue(
+          "compartment_data",
+          "error",
+          nm,
+          sprintf("`%s` is not in the specimen vocabulary.", entry$specimen),
+          paste("Use one of:", paste(conv$specimenVocabulary, collapse = ", "))
+        )
+      )
     }
   }
   issues
@@ -1463,38 +1831,61 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkFixedLabelAgreement <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
-  if (!all(c("name", "label", "fix") %in% names(ini))) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
+  if (!all(c("name", "label", "fix") %in% names(ini))) {
+    return(issues)
+  }
   for (i in seq_len(nrow(ini))) {
     lbl <- ini$label[[i]]
-    if (is.na(lbl) || !nzchar(lbl)) next
+    if (is.na(lbl) || !nzchar(lbl)) {
+      next
+    }
     if (isTRUE(ini$fix[[i]])) {
       # Mirror case: the value IS fixed, so saying so again in the label is
       # redundant. `fixed()` is the machine-readable statement; the label
       # should carry only what `fixed()` cannot express -- where the value
       # came from ("from Rizk 2015"), or that the encoder assumed it.
       if (grepl(.redundantFixedPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
-        issues <- rbind(issues, .issue(
-          "fixed_label_redundant", "error", ini$name[[i]],
-          sprintf("Label of '%s' says the value is fixed, which `fixed()` already states.",
-                  ini$name[[i]]),
-          paste("Drop the word from the label. Keep any provenance around it --",
-                "\"fixed from Rizk 2015\" becomes \"from Rizk 2015\".")))
+        issues <- rbind(
+          issues,
+          .issue(
+            "fixed_label_redundant",
+            "error",
+            ini$name[[i]],
+            sprintf("Label of '%s' says the value is fixed, which `fixed()` already states.", ini$name[[i]]),
+            paste(
+              "Drop the word from the label. Keep any provenance around it --",
+              "\"fixed from Rizk 2015\" becomes \"from Rizk 2015\"."
+            )
+          )
+        )
       }
       next
     }
     # Variance terms: their labels almost always discuss the fixed status of
     # the corresponding typical value, not of the variance itself.
-    if (grepl("^eta", ini$name[[i]])) next
-    if (grepl(.estimatedDisclaimerPattern, lbl, ignore.case = TRUE)) next
+    if (grepl("^eta", ini$name[[i]])) {
+      next
+    }
+    if (grepl(.estimatedDisclaimerPattern, lbl, ignore.case = TRUE)) {
+      next
+    }
     if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
-      issues <- rbind(issues, .issue(
-        "fixed_label_disagreement", "error", ini$name[[i]],
-        sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",
-                ini$name[[i]]),
-        paste("Wrap the value in `fixed(...)` so `iniDf$fix` matches the label,",
-              "or reword the label if it was in fact estimated.")
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "fixed_label_disagreement",
+          "error",
+          ini$name[[i]],
+          sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.", ini$name[[i]]),
+          paste(
+            "Wrap the value in `fixed(...)` so `iniDf$fix` matches the label,",
+            "or reword the label if it was in fact estimated."
+          )
+        )
+      )
     }
   }
   issues
@@ -1530,10 +1921,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # would miss it silently, which is the failure mode this whole check exists to
 # remove.
 .assignedNamesIn <- function(e, acc = character(0)) {
-  if (!is.call(e)) return(acc)
+  if (!is.call(e)) {
+    return(acc)
+  }
   op <- tryCatch(as.character(e[[1]]), error = function(e) character(0))
-  if (length(op) && op[[1]] %in% c("<-", "=") && length(e) >= 2L &&
-      is.name(e[[2]])) {
+  if (length(op) && op[[1]] %in% c("<-", "=") && length(e) >= 2L && is.name(e[[2]])) {
     acc <- c(acc, as.character(e[[2]]))
   }
   for (i in seq_along(e)) {
@@ -1548,22 +1940,34 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # comments and string literals out without having to strip them by regex.
 .modelBlockAssignedNames <- function(ui) {
   exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
-  if (!length(exprs)) return(character(0))
+  if (!length(exprs)) {
+    return(character(0))
+  }
   out <- character(0)
-  for (e in exprs) out <- .assignedNamesIn(e, out)
+  for (e in exprs) {
+    out <- .assignedNamesIn(e, out)
+  }
   unique(out)
 }
 
 # Nearest registered member, for the two drifts this check exists to stop:
 # a case difference (`fm_H4`) and a stray plural (`fm_others`).
 .fmFamilyNearMiss <- function(nm, registered) {
-  if (!length(registered)) return(NA_character_)
+  if (!length(registered)) {
+    return(NA_character_)
+  }
   hit <- registered[tolower(registered) == tolower(nm)]
-  if (length(hit)) return(hit[[1]])
+  if (length(hit)) {
+    return(hit[[1]])
+  }
   hit <- registered[tolower(registered) == sub("s$", "", tolower(nm))]
-  if (length(hit)) return(hit[[1]])
+  if (length(hit)) {
+    return(hit[[1]])
+  }
   hit <- registered[paste0(tolower(registered), "s") == tolower(nm)]
-  if (length(hit)) return(hit[[1]])
+  if (length(hit)) {
+    return(hit[[1]])
+  }
   NA_character_
 }
 
@@ -1600,24 +2004,34 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # Suffix (possibly "") when `e` is exactly `central<sfx> / vc<sfx>`; NULL if not.
 .plainCentralConcSuffix <- function(e) {
   e <- .stripExprParens(e)
-  if (!is.call(e) || length(e) != 3L) return(NULL)
-  if (!identical(as.character(e[[1]]), "/")) return(NULL)
+  if (!is.call(e) || length(e) != 3L) {
+    return(NULL)
+  }
+  if (!identical(as.character(e[[1]]), "/")) {
+    return(NULL)
+  }
   num <- .stripExprParens(e[[2]])
   den <- .stripExprParens(e[[3]])
-  if (!is.name(num) || !is.name(den)) return(NULL)
-  m1 <- regmatches(as.character(num),
-                   regexec("^central(_[A-Za-z0-9]+)?$", as.character(num)))[[1]]
-  m2 <- regmatches(as.character(den),
-                   regexec("^vc(_[A-Za-z0-9]+)?$", as.character(den)))[[1]]
-  if (!length(m1) || !length(m2)) return(NULL)
+  if (!is.name(num) || !is.name(den)) {
+    return(NULL)
+  }
+  m1 <- regmatches(as.character(num), regexec("^central(_[A-Za-z0-9]+)?$", as.character(num)))[[1]]
+  m2 <- regmatches(as.character(den), regexec("^vc(_[A-Za-z0-9]+)?$", as.character(den)))[[1]]
+  if (!length(m1) || !length(m2)) {
+    return(NULL)
+  }
   s1 <- if (length(m1) >= 2L) m1[[2]] else ""
   s2 <- if (length(m2) >= 2L) m2[[2]] else ""
-  if (!identical(s1, s2)) return(NULL)
+  if (!identical(s1, s2)) {
+    return(NULL)
+  }
   s1
 }
 
 .symbolsIn <- function(e, acc = character(0)) {
-  if (is.name(e)) return(c(acc, as.character(e)))
+  if (is.name(e)) {
+    return(c(acc, as.character(e)))
+  }
   if (is.call(e)) {
     for (i in seq_along(e)) {
       part <- tryCatch(e[[i]], error = function(e) NULL)
@@ -1632,72 +2046,118 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # Does `nm` reach the central drug pool -- a `central*` state or `linCmt()` --
 # through at most `depth` further definitions?
 .reachesCentralPool <- function(nm, defs, depth = 0L, seen = character(0)) {
-  if (nm %in% seen || depth > 6L) return(FALSE)
+  if (nm %in% seen || depth > 6L) {
+    return(FALSE)
+  }
   rhs <- defs[[nm]]
-  if (is.null(rhs)) return(FALSE)
+  if (is.null(rhs)) {
+    return(FALSE)
+  }
   syms <- .symbolsIn(rhs)
-  if (any(grepl("central", syms)) || any(syms == "linCmt")) return(TRUE)
-  any(vapply(setdiff(syms, c(nm, seen)),
-             function(s) .reachesCentralPool(s, defs, depth + 1L, c(seen, nm)),
-             logical(1)))
+  if (any(grepl("central", syms)) || any(syms == "linCmt")) {
+    return(TRUE)
+  }
+  any(vapply(setdiff(syms, c(nm, seen)), function(s) .reachesCentralPool(s, defs, depth + 1L, c(seen, nm)), logical(1)))
 }
 
 .checkCentralConcentrationName <- function(ui, conv) {
   issues <- .emptyIssues()
   exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
-  if (!length(exprs)) return(issues)
+  if (!length(exprs)) {
+    return(issues)
+  }
   defs <- list()
   for (e in exprs) {
-    if (is.call(e) && length(e) == 3L &&
-        as.character(e[[1]]) %in% c("<-", "=") && is.name(e[[2]])) {
+    if (is.call(e) && length(e) == 3L && as.character(e[[1]]) %in% c("<-", "=") && is.name(e[[2]])) {
       nm <- as.character(e[[2]])
       if (is.null(defs[[nm]])) defs[[nm]] <- e[[3]]
     }
   }
-  if (!length(defs)) return(issues)
+  if (!length(defs)) {
+    return(issues)
+  }
 
   # (1) a bare `central<sfx>/vc<sfx>` must be `Cc<sfx>`, unless the model also
   #     defines `Cc<sfx>` -- then this is the second quantity and keeps its name.
   for (nm in names(defs)) {
     sfx <- .plainCentralConcSuffix(defs[[nm]])
-    if (is.null(sfx)) next
+    if (is.null(sfx)) {
+      next
+    }
     expected <- paste0("Cc", sfx)
-    if (identical(nm, expected)) next
+    if (identical(nm, expected)) {
+      next
+    }
     # The exemption for a second central quantity requires that the defined
     # `Cc` IS a central concentration. Merely existing is not enough: in
     # `Venisse_2008_caspofungin` `Cc` was the fungal burden, and exempting on
     # its presence alone reported only half of that swap -- the burden, but not
     # the drug concentration sitting under `cc`, which is the half a reader
     # needs in order to fix it.
-    if (!is.null(defs[[expected]]) && .reachesCentralPool(expected, defs)) next
-    issues <- rbind(issues, .issue(
-      "compartments", "error", nm,
-      sprintf(paste0("'%s' is the central drug concentration (%s) but is not ",
-                     "named '%s'."), nm, deparse(defs[[nm]])[[1]], expected),
-      sprintf(paste0("Rename '%s' to '%s'. If it is a SECOND central quantity ",
-                     "(unbound beside total, raw beside calibrated), define ",
-                     "'%s' as well and keep this name for the other one."),
-              nm, expected, expected)
-    ))
+    if (!is.null(defs[[expected]]) && .reachesCentralPool(expected, defs)) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "compartments",
+        "error",
+        nm,
+        sprintf(
+          paste0("'%s' is the central drug concentration (%s) but is not ", "named '%s'."),
+          nm,
+          deparse(defs[[nm]])[[1]],
+          expected
+        ),
+        sprintf(
+          paste0(
+            "Rename '%s' to '%s'. If it is a SECOND central quantity ",
+            "(unbound beside total, raw beside calibrated), define ",
+            "'%s' as well and keep this name for the other one."
+          ),
+          nm,
+          expected,
+          expected
+        )
+      )
+    )
   }
 
   # (2) `Cc` must BE a central concentration. This is the direction that catches
   #     `Cc <- log10(cfu)`, `Cc <- bwkg` and the rest.
   for (nm in names(defs)) {
-    if (!grepl("^Cc(_[A-Za-z0-9]+)?$", nm)) next
+    if (!grepl("^Cc(_[A-Za-z0-9]+)?$", nm)) {
+      next
+    }
     rhs <- .stripExprParens(defs[[nm]])
-    if (!(is.call(rhs) && as.character(rhs[[1]]) %in% c("log", "log10", "log2"))) next
-    if (.reachesCentralPool(nm, defs)) next
-    issues <- rbind(issues, .issue(
-      "compartments", "error", nm,
-      sprintf(paste0("'%s' is a log-transformed quantity (%s), so it is not a ",
-                     "concentration. 'Cc' names the central drug ",
-                     "concentration, not the model's primary observation."),
-              nm, deparse(defs[[nm]])[[1]]),
-      paste0("Name this output by its own canonical -- 'log_cfu' for a log ",
-             "CFU burden, 'log10_viral_load' for a viral load, 'BW' for a ",
-             "body weight -- and leave 'Cc' for 'central / vc'.")
-    ))
+    if (!(is.call(rhs) && as.character(rhs[[1]]) %in% c("log", "log10", "log2"))) {
+      next
+    }
+    if (.reachesCentralPool(nm, defs)) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "compartments",
+        "error",
+        nm,
+        sprintf(
+          paste0(
+            "'%s' is a log-transformed quantity (%s), so it is not a ",
+            "concentration. 'Cc' names the central drug ",
+            "concentration, not the model's primary observation."
+          ),
+          nm,
+          deparse(defs[[nm]])[[1]]
+        ),
+        paste0(
+          "Name this output by its own canonical -- 'log_cfu' for a log ",
+          "CFU burden, 'log10_viral_load' for a viral load, 'BW' for a ",
+          "body weight -- and leave 'Cc' for 'central / vc'."
+        )
+      )
+    )
   }
   issues
 }
@@ -1707,32 +2167,48 @@ checkModelConventions <- function(model, verbose = TRUE) {
   registered <- grep(.fmFamilyPattern, conv$paperNamedParams, value = TRUE)
   bound <- character(0)
   ini <- ui$iniDf
-  if (!is.null(ini) && nrow(ini) > 0) bound <- c(bound, ini$name)
+  if (!is.null(ini) && nrow(ini) > 0) {
+    bound <- c(bound, ini$name)
+  }
   bound <- unique(c(bound, .modelBlockAssignedNames(ui)))
   unregistered <- setdiff(grep(.fmFamilyPattern, bound, value = TRUE), registered)
   for (nm in unregistered) {
     near <- .fmFamilyNearMiss(nm, registered)
     suggestion <-
       if (is.na(near)) {
-        paste("If this is a genuinely new elimination pathway, add it to the",
-              "`### fm_...` family heading in inst/references/parameter-names.md;",
-              "`<pathway>` must be lowercase and must match the enzyme or the",
-              "canonical metabolite suffix it names. If the parameter is not a",
-              "fraction metabolised, rename it so it does not claim the `fm_`",
-              "prefix.")
+        paste(
+          "If this is a genuinely new elimination pathway, add it to the",
+          "`### fm_...` family heading in inst/references/parameter-names.md;",
+          "`<pathway>` must be lowercase and must match the enzyme or the",
+          "canonical metabolite suffix it names. If the parameter is not a",
+          "fraction metabolised, rename it so it does not claim the `fm_`",
+          "prefix."
+        )
       } else {
-        sprintf(paste("Rename to '%s', the registered spelling. If this is",
-                      "instead a distinct pathway that merely looks similar,",
-                      "add it to the `### fm_...` family heading in",
-                      "inst/references/parameter-names.md."), near)
+        sprintf(
+          paste(
+            "Rename to '%s', the registered spelling. If this is",
+            "instead a distinct pathway that merely looks similar,",
+            "add it to the `### fm_...` family heading in",
+            "inst/references/parameter-names.md."
+          ),
+          near
+        )
       }
-    issues <- rbind(issues, .issue(
-      "fm_family", "error", nm,
-      sprintf(paste("'%s' is not a registered `fm_<pathway>` fraction-metabolised",
-                    "parameter (registered: %s)."),
-              nm, paste(registered, collapse = ", ")),
-      suggestion
-    ))
+    issues <- rbind(
+      issues,
+      .issue(
+        "fm_family",
+        "error",
+        nm,
+        sprintf(
+          paste("'%s' is not a registered `fm_<pathway>` fraction-metabolised", "parameter (registered: %s)."),
+          nm,
+          paste(registered, collapse = ", ")
+        ),
+        suggestion
+      )
+    )
   }
   issues
 }
@@ -1756,11 +2232,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .referenceTypePattern <- "^-\\s+\\*\\*Type:\\*\\*\\s*(.+?)\\s*$"
 
 .referenceRegisterBlocks <- function(path) {
-  empty <- data.frame(name = character(), type = character(),
-                      line = integer(), stringsAsFactors = FALSE)
+  empty <- data.frame(name = character(), type = character(), line = integer(), stringsAsFactors = FALSE)
   lines <- readLines(path, warn = FALSE)
   isHeader <- grepl(.referenceHeaderPattern, lines)
-  if (!any(isHeader)) return(empty)
+  if (!any(isHeader)) {
+    return(empty)
+  }
   # A block ends at the next register header, the next `## ` section, or a
   # horizontal rule -- whichever comes first.
   isBreak <- isHeader | grepl("^## ", lines) | grepl("^---\\s*$", lines)
@@ -1786,23 +2263,38 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .referenceDuplicateIssues <- function(paths) {
   issues <- .emptyIssues()
   for (p in paths) {
-    if (!file.exists(p)) next
+    if (!file.exists(p)) {
+      next
+    }
     blocks <- .referenceRegisterBlocks(p)
-    if (!nrow(blocks)) next
+    if (!nrow(blocks)) {
+      next
+    }
     key <- paste(blocks$name, blocks$type, sep = "\r")
     for (k in unique(key[duplicated(key)])) {
       rows <- blocks[key == k, , drop = FALSE]
-      issues <- rbind(issues, .issue(
-        "reference_duplicate", "error", rows$name[[1]],
-        sprintf(
-          "%s has %d `### %s` entries sharing `- **Type:** %s` (lines %s).",
-          basename(p), nrow(rows), rows$name[[1]], rows$type[[1]],
-          paste(rows$line, collapse = ", ")),
-        paste("Merge them into a single block, keeping every source alias and",
-              "example model from both. The register resolves in document",
-              "order, last one wins, so each earlier block is silently",
-              "discarded. Repeating a name is only safe when the Types differ.")
-      ))
+      issues <- rbind(
+        issues,
+        .issue(
+          "reference_duplicate",
+          "error",
+          rows$name[[1]],
+          sprintf(
+            "%s has %d `### %s` entries sharing `- **Type:** %s` (lines %s).",
+            basename(p),
+            nrow(rows),
+            rows$name[[1]],
+            rows$type[[1]],
+            paste(rows$line, collapse = ", ")
+          ),
+          paste(
+            "Merge them into a single block, keeping every source alias and",
+            "example model from both. The register resolves in document",
+            "order, last one wins, so each earlier block is silently",
+            "discarded. Repeating a name is only safe when the Types differ."
+          )
+        )
+      )
     }
   }
   issues
@@ -1845,14 +2337,20 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # percent sign so that incidental numbers in prose are not mistaken for the
 # back-transformed value.
 .labelDocumentedProportions <- function(label) {
-  if (is.na(label) || !nzchar(label)) return(numeric(0))
+  if (is.na(label) || !nzchar(label)) {
+    return(numeric(0))
+  }
   out <- numeric(0)
   # "= 0.825", "= .825"
   m <- regmatches(label, gregexpr("=\\s*(0?\\.[0-9]+)", label, perl = TRUE))[[1]]
-  if (length(m)) out <- c(out, as.numeric(sub("^=\\s*", "", m)))
+  if (length(m)) {
+    out <- c(out, as.numeric(sub("^=\\s*", "", m)))
+  }
   # "(0.825)" as a standalone parenthetical
   m <- regmatches(label, gregexpr("\\(\\s*(0?\\.[0-9]+)\\s*\\)", label, perl = TRUE))[[1]]
-  if (length(m)) out <- c(out, as.numeric(gsub("[()[:space:]]", "", m)))
+  if (length(m)) {
+    out <- c(out, as.numeric(gsub("[()[:space:]]", "", m)))
+  }
   # "25%" / "25 percent" / "25 pct"
   # No percentage branch. Every percentage that appears in a logit-scale label
   # in this library states a THRESHOLD, not the parameter's value -- five
@@ -1871,40 +2369,70 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkLogitBackTransform <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
-  if (is.null(ini) || nrow(ini) == 0) return(issues)
-  if (!all(c("name", "est", "label") %in% names(ini))) return(issues)
+  if (is.null(ini) || nrow(ini) == 0) {
+    return(issues)
+  }
+  if (!all(c("name", "est", "label") %in% names(ini))) {
+    return(issues)
+  }
   # tolerance is absolute on a probability scale; 0.005 accommodates a label
   # that rounds "0.9168" to "0.917" without admitting a genuinely wrong sign,
   # which moves the value by far more than that except very near logit 0.
   tol <- 0.005
   for (i in seq_len(nrow(ini))) {
     nm <- ini$name[[i]]
-    if (!grepl(.logitScaleNamePattern, nm, ignore.case = TRUE)) next
+    if (!grepl(.logitScaleNamePattern, nm, ignore.case = TRUE)) {
+      next
+    }
     # Variance terms are on the eta scale, not the logit scale of a proportion.
-    if (grepl("^eta", nm)) next
+    if (grepl("^eta", nm)) {
+      next
+    }
     est <- suppressWarnings(as.numeric(ini$est[[i]]))
-    if (!is.finite(est)) next
+    if (!is.finite(est)) {
+      next
+    }
     docs <- .labelDocumentedProportions(ini$label[[i]])
     # A label that merely repeats the logit-scale estimate documents nothing.
     docs <- docs[abs(docs - est) > 1e-9]
-    if (!length(docs)) next
+    if (!length(docs)) {
+      next
+    }
     pos <- .expit(est)
     neg <- .expit(-est)
-    if (any(abs(pos - docs) <= tol) || any(abs(neg - docs) <= tol)) next
-    issues <- rbind(issues, .issue(
-      "logit_backtransform_disagreement", "error", nm,
-      sprintf(paste0("'%s' is on the logit scale with estimate %s, but neither ",
-                     "expit(%s) = %s nor expit(-%s) = %s reproduces the ",
-                     "proportion its label states (%s)."),
-              nm, format(est), format(est), format(round(pos, 4)),
-              format(est), format(round(neg, 4)),
-              paste(format(docs), collapse = ", ")),
-      paste("Check the back-transform in `model()`. The inverse of logit is",
-            "expit: `expit(x)`, `1/(1+exp(-x))` or `exp(x)/(1+exp(x))`.",
-            "`exp(x)` alone yields the ODDS, not a probability, and",
-            "`1/(1+exp(x))` is expit(-x). If the source really does use the",
-            "negative convention, keep it and make the label state the",
-            "proportion that convention produces.")))
+    if (any(abs(pos - docs) <= tol) || any(abs(neg - docs) <= tol)) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "logit_backtransform_disagreement",
+        "error",
+        nm,
+        sprintf(
+          paste0(
+            "'%s' is on the logit scale with estimate %s, but neither ",
+            "expit(%s) = %s nor expit(-%s) = %s reproduces the ",
+            "proportion its label states (%s)."
+          ),
+          nm,
+          format(est),
+          format(est),
+          format(round(pos, 4)),
+          format(est),
+          format(round(neg, 4)),
+          paste(format(docs), collapse = ", ")
+        ),
+        paste(
+          "Check the back-transform in `model()`. The inverse of logit is",
+          "expit: `expit(x)`, `1/(1+exp(-x))` or `exp(x)/(1+exp(x))`.",
+          "`exp(x)` alone yields the ODDS, not a probability, and",
+          "`1/(1+exp(x))` is expit(-x). If the source really does use the",
+          "negative convention, keep it and make the label state the",
+          "proportion that convention produces."
+        )
+      )
+    )
   }
   issues
 }
@@ -1954,8 +2482,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # `(exp(a))/(1 + exp(a))` alike. Applied to the templates too, so both sides are
 # in the same normal form.
 .stripParens <- function(e) {
-  while (is.call(e) && length(e) == 2L &&
-         identical(as.character(e[[1]]), "(")) {
+  while (is.call(e) && length(e) == 2L && identical(as.character(e[[1]]), "(")) {
     e <- e[[2]]
   }
   if (is.call(e)) {
@@ -1989,15 +2516,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .inverseLogitTemplates <- list(
   list(tmpl = .stripParens(str2lang("1/(1 + exp(.))")), args = NULL),
   list(tmpl = .stripParens(str2lang("1/(exp(.) + 1)")), args = NULL),
-  list(tmpl = .stripParens(str2lang("exp(.)/(1 + exp(.))")),
-       args = .ilArgsPlusRight),
-  list(tmpl = .stripParens(str2lang("exp(.)/(exp(.) + 1)")),
-       args = .ilArgsPlusLeft)
+  list(tmpl = .stripParens(str2lang("exp(.)/(1 + exp(.))")), args = .ilArgsPlusRight),
+  list(tmpl = .stripParens(str2lang("exp(.)/(exp(.) + 1)")), args = .ilArgsPlusLeft)
 )
 
 .sameArg <- function(a, b) {
-  identical(paste(deparse(a), collapse = " "),
-            paste(deparse(b), collapse = " "))
+  identical(paste(deparse(a), collapse = " "), paste(deparse(b), collapse = " "))
 }
 
 # Does this expression spell a binary inverse logit by hand? Returns the
@@ -2005,7 +2529,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .handWrittenInverseLogit <- function(e) {
   e <- .stripParens(e)
   for (spec in .inverseLogitTemplates) {
-    if (!rxode2::.matchesLangTemplate(e, spec$tmpl)) next
+    if (!rxode2::.matchesLangTemplate(e, spec$tmpl)) {
+      next
+    }
     if (!is.null(spec$args)) {
       ab <- tryCatch(spec$args(e), error = function(e) NULL)
       if (is.null(ab) || !.sameArg(ab[[1]], ab[[2]])) next
@@ -2016,9 +2542,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 .inverseLogitOffenders <- function(e, acc = character(0)) {
-  if (!is.call(e)) return(acc)
+  if (!is.call(e)) {
+    return(acc)
+  }
   hit <- .handWrittenInverseLogit(e)
-  if (!is.na(hit)) acc <- c(acc, hit)
+  if (!is.na(hit)) {
+    acc <- c(acc, hit)
+  }
   for (i in seq_along(e)) {
     part <- tryCatch(e[[i]], error = function(e) NULL)
     if (is.call(part)) acc <- .inverseLogitOffenders(part, acc)
@@ -2029,19 +2559,31 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .checkHandWrittenInverseLogit <- function(ui, conv) {
   issues <- .emptyIssues()
   exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
-  if (!length(exprs)) return(issues)
+  if (!length(exprs)) {
+    return(issues)
+  }
   offenders <- character(0)
-  for (e in exprs) offenders <- .inverseLogitOffenders(e, offenders)
+  for (e in exprs) {
+    offenders <- .inverseLogitOffenders(e, offenders)
+  }
   for (o in unique(offenders)) {
-    issues <- rbind(issues, .issue(
-      "hand_written_inverse_logit", "error", NA_character_,
-      sprintf("`%s` spells an inverse logit by hand.", substr(o, 1, 120)),
-      paste("Use `expit()`. `exp(x)/(1+exp(x))` returns NaN for x >= 710",
-            "because exp() overflows before the division cancels it, and a",
-            "logit-scale parameter with IIV can reach that on an extreme eta",
-            "draw. `expit(x)` is bit-identical to `1/(1+exp(-x))` and within",
-            "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
-            "`expit(-x)`.")))
+    issues <- rbind(
+      issues,
+      .issue(
+        "hand_written_inverse_logit",
+        "error",
+        NA_character_,
+        sprintf("`%s` spells an inverse logit by hand.", substr(o, 1, 120)),
+        paste(
+          "Use `expit()`. `exp(x)/(1+exp(x))` returns NaN for x >= 710",
+          "because exp() overflows before the division cancels it, and a",
+          "logit-scale parameter with IIV can reach that on an extreme eta",
+          "draw. `expit(x)` is bit-identical to `1/(1+exp(-x))` and within",
+          "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
+          "`expit(-x)`."
+        )
+      )
+    )
   }
   issues
 }

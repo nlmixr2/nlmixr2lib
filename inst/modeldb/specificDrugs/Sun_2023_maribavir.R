@@ -8,51 +8,51 @@ Sun_2023_maribavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "maribavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "maribavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "maribavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (baseline weight). Allometric power scaling on CL/F, Vc/F, Q/F and Vp/F with a 70 kg reference; all four exponents were FIXED (0.75 for the clearance terms, 1 for the volume terms) rather than estimated, because the model with estimated exponents returned imprecise estimates for CL/F~weight and Vp/F~weight and was judged insufficiently robust for the adolescent simulations.",
-      source_name        = "WTBL"
+      notes = "Time-fixed per subject (baseline weight). Allometric power scaling on CL/F, Vc/F, Q/F and Vp/F with a 70 kg reference; all four exponents were FIXED (0.75 for the clearance terms, 1 for the volume terms) rather than estimated, because the model with estimated exponents returned imprecise estimates for CL/F~weight and Vp/F~weight and was judged insufficiently robust for the adolescent simulations.",
+      source_name = "WTBL"
     ),
     DIS_CMV = list(
-      description        = "Transplant recipient with cytomegalovirus infection/disease indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Transplant recipient with cytomegalovirus infection/disease indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer / non-CMV participant)",
-      notes              = "1 = hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipient with CMV infection/disease (the phase II SHP620-202 / SHP620-203 and phase III SHP620-303 populations); 0 = healthy volunteer or phase I participant without CMV (including the renal- and hepatic-impairment cohorts). Enters as a log-scale additive shift on CL/F: CL/F is 0.756x lower in transplant recipients with CMV than in the healthy reference. Table S2 states the structural reference population explicitly as 'a 70-kg individual without CMV administered a 800 mg maribavir dose', so DIS_CMV = 0 is the reference.",
-      source_name        = "HSCMV"
+      notes = "1 = hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipient with CMV infection/disease (the phase II SHP620-202 / SHP620-203 and phase III SHP620-303 populations); 0 = healthy volunteer or phase I participant without CMV (including the renal- and hepatic-impairment cohorts). Enters as a log-scale additive shift on CL/F: CL/F is 0.756x lower in transplant recipients with CMV than in the healthy reference. Table S2 states the structural reference population explicitly as 'a 70-kg individual without CMV administered a 800 mg maribavir dose', so DIS_CMV = 0 is the reference.",
+      source_name = "HSCMV"
     ),
     DOSE = list(
-      description        = "Administered maribavir dose per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered maribavir dose per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Use case (a) of the DOSE canonical: per-subject assigned dose level entering a power-form covariate effect on the first-order absorption rate, Ka = 0.336 * (DOSE / 800)^-1.94, normalised at 800 mg. The exponent is negative, so Ka decreases as the maribavir dose increases. Observed dose levels in the pooled analysis were single doses of 100, 200 and 400 mg and twice-daily regimens of 400, 800 and 1200 mg.",
-      source_name        = "DOSE"
+      notes = "Use case (a) of the DOSE canonical: per-subject assigned dose level entering a power-form covariate effect on the first-order absorption rate, Ka = 0.336 * (DOSE / 800)^-1.94, normalised at 800 mg. The exponent is negative, so Ka decreases as the maribavir dose increases. Observed dose levels in the pooled analysis were single doses of 100, 200 and 400 mg and twice-daily regimens of 400, 800 and 1200 mg.",
+      source_name = "DOSE"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration)",
-      notes              = "Time-varying. Multiplicative power-form effect on CL/F: 0.700^CONMED_CYP3A4_INH (a 30 percent reduction in CL/F when 1), consistent with maribavir being cleared mainly by CYP3A4/CYP1A2 metabolism. The pooled dataset's inhibitor exposure comes principally from the dedicated ketoconazole drug-drug-interaction study 1263-102 (Table S1); the source does not enumerate which inhibitor strengths were pooled into the 1 category. This coefficient appears in the final NONMEM control stream but is not tabulated in Table S2 (which presents the model for the reference population, where the indicator is 0), so no RSE or confidence interval is reported for it.",
-      source_name        = "CYP3AINH"
+      notes = "Time-varying. Multiplicative power-form effect on CL/F: 0.700^CONMED_CYP3A4_INH (a 30 percent reduction in CL/F when 1), consistent with maribavir being cleared mainly by CYP3A4/CYP1A2 metabolism. The pooled dataset's inhibitor exposure comes principally from the dedicated ketoconazole drug-drug-interaction study 1263-102 (Table S1); the source does not enumerate which inhibitor strengths were pooled into the 1 category. This coefficient appears in the final NONMEM control stream but is not tabulated in Table S2 (which presents the model for the reference population, where the indicator is 0), so no RSE or confidence interval is reported for it.",
+      source_name = "CYP3AINH"
     ),
     CONMED_CYP3A4_IND = list(
-      description        = "Concomitant CYP3A4 inducer coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inducer coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inducer coadministration)",
-      notes              = "Time-varying. Multiplicative power-form effect on CL/F: 2.242^CONMED_CYP3A4_IND (a 2.24-fold increase in CL/F when 1). The pooled dataset's inducer exposure comes principally from the dedicated rifampin drug-drug-interaction study 1263-110 (Table S1); the source does not enumerate which inducer strengths were pooled into the 1 category. This coefficient appears in the final NONMEM control stream but is not tabulated in Table S2 (which presents the model for the reference population, where the indicator is 0), so no RSE or confidence interval is reported for it.",
-      source_name        = "CYP3AIND"
+      notes = "Time-varying. Multiplicative power-form effect on CL/F: 2.242^CONMED_CYP3A4_IND (a 2.24-fold increase in CL/F when 1). The pooled dataset's inducer exposure comes principally from the dedicated rifampin drug-drug-interaction study 1263-110 (Table S1); the source does not enumerate which inducer strengths were pooled into the 1 category. This coefficient appears in the final NONMEM control stream but is not tabulated in Table S2 (which presents the model for the reference population, where the indicator is 0), so no RSE or confidence interval is reported for it.",
+      source_name = "CYP3AIND"
     )
   )
 
@@ -62,35 +62,35 @@ Sun_2023_maribavir <- function() {
   # model(), because a coefficient fixed at exactly 0 contributes nothing.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened as an effect on both CL/F (THETA(14)) and Vc/F (THETA(15)) in the final control stream, but both coefficients are '(0 FIX)' and the covariate is additionally hardcoded to SEXN = 0 in the published simulation stream. Not retained in the final model and not reported in Table S2.",
-      source_name        = "SEXN"
+      notes = "Screened as an effect on both CL/F (THETA(14)) and Vc/F (THETA(15)) in the final control stream, but both coefficients are '(0 FIX)' and the covariate is additionally hardcoded to SEXN = 0 in the published simulation stream. Not retained in the final model and not reported in Table S2.",
+      source_name = "SEXN"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment (Child-Pugh class B) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment (Child-Pugh class B) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function)",
-      notes              = "Screened as an effect on Vc/F (THETA(13), labelled '[Vc~Child-Pugh Class B]') in the final control stream, but the coefficient is '(0 FIX)' and the covariate is additionally hardcoded to HEPN2 = 0 in the published simulation stream. The hepatic-impairment cohort came from phase I study 1263-103 (10 participants with normal hepatic function and 10 with moderate impairment; Table S1). Not retained in the final model and not reported in Table S2.",
-      source_name        = "HEPN2"
+      notes = "Screened as an effect on Vc/F (THETA(13), labelled '[Vc~Child-Pugh Class B]') in the final control stream, but the coefficient is '(0 FIX)' and the covariate is additionally hardcoded to HEPN2 = 0 in the published simulation stream. The hepatic-impairment cohort came from phase I study 1263-103 (10 participants with normal hepatic function and 10 with moderate impairment; Table S1). Not retained in the final model and not reported in Table S2.",
+      source_name = "HEPN2"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = "Not reported as a pooled total. Table S1 accounts for 182 participants across the 9 phase I studies and 235 across the 2 phase II studies (417 combined); the phase III SHP620-303 participant count is not given in Table S1. Table S3 reports model-estimated steady-state exposures for 253 phase III (400 mg b.i.d.) and 232 phase II (1200 mg b.i.d.) transplant recipients with CMV.",
-    n_studies      = 12,
-    age_range      = "Adults. Numeric age range not reported in the article or its supplement.",
-    weight_range   = "Not reported numerically; the baseline body weight distribution is shown graphically only, in Figure S1. The model's allometric reference weight is 70 kg.",
+    species = "human",
+    n_subjects = "Not reported as a pooled total. Table S1 accounts for 182 participants across the 9 phase I studies and 235 across the 2 phase II studies (417 combined); the phase III SHP620-303 participant count is not given in Table S1. Table S3 reports model-estimated steady-state exposures for 253 phase III (400 mg b.i.d.) and 232 phase II (1200 mg b.i.d.) transplant recipients with CMV.",
+    n_studies = 12,
+    age_range = "Adults. Numeric age range not reported in the article or its supplement.",
+    weight_range = "Not reported numerically; the baseline body weight distribution is shown graphically only, in Figure S1. The model's allometric reference weight is 70 kg.",
     sex_female_pct = "Not reported.",
     race_ethnicity = "Not reported.",
-    disease_state  = "Pooled analysis of healthy volunteers, phase I participants with renal or hepatic impairment, and hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipients with cytomegalovirus (CMV) infection refractory to (with or without resistance to) valganciclovir, ganciclovir, cidofovir or foscarnet.",
-    dose_range     = "100-1200 mg orally: single doses of 100, 200 and 400 mg (phase I) and twice-daily regimens of 400, 800 and 1200 mg (phase II/III).",
-    regions        = "Not reported.",
-    notes          = "Study-by-study designs and per-study participant counts are in Table S1 of the supplement. The final parameter estimates are in Table S2; steady-state exposure summaries used as validation targets are in Table S3. The model was developed in NONMEM 7.4.3 / 7.5.0 (ADVAN4 TRANS4). This model file encodes the 'fixed weight effect exponents' model (control-stream run 171), which is the model the authors used for all reported simulations and exposure estimates; the alternative model with estimated weight exponents (run 174) was explicitly rejected as insufficiently robust and is not extracted."
+    disease_state = "Pooled analysis of healthy volunteers, phase I participants with renal or hepatic impairment, and hematopoietic cell transplant (HCT) or solid organ transplant (SOT) recipients with cytomegalovirus (CMV) infection refractory to (with or without resistance to) valganciclovir, ganciclovir, cidofovir or foscarnet.",
+    dose_range = "100-1200 mg orally: single doses of 100, 200 and 400 mg (phase I) and twice-daily regimens of 400, 800 and 1200 mg (phase II/III).",
+    regions = "Not reported.",
+    notes = "Study-by-study designs and per-study participant counts are in Table S1 of the supplement. The final parameter estimates are in Table S2; steady-state exposure summaries used as validation targets are in Table S3. The model was developed in NONMEM 7.4.3 / 7.5.0 (ADVAN4 TRANS4). This model file encodes the 'fixed weight effect exponents' model (control-stream run 171), which is the model the authors used for all reported simulations and exposure estimates; the alternative model with estimated weight exponents (run 174) was explicitly rejected as insufficiently robust and is not extracted."
   )
 
   ini({

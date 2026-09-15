@@ -6,20 +6,20 @@ Westra_2025_osimertinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; reported in kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; reported in kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power effects applied a priori (not estimated) with reference weight 70 kg: exponent 0.75 on parent CL/F and on AZ5104 CL/F, exponent 1 on parent V/F and on AZ5104 V/F, and exponent -0.25 on ka. Westra 2025 Methods 'PopPK Model Development' and Table 2 footnote b; the exponents appear literally in the supplementary Part SI NONMEM control stream ($PK block).",
-      source_name        = "BW"
+      notes = "Allometric power effects applied a priori (not estimated) with reference weight 70 kg: exponent 0.75 on parent CL/F and on AZ5104 CL/F, exponent 1 on parent V/F and on AZ5104 V/F, and exponent -0.25 on ka. Westra 2025 Methods 'PopPK Model Development' and Table 2 footnote b; the exponents appear literally in the supplementary Part SI NONMEM control stream ($PK block).",
+      source_name = "BW"
     ),
     CONMED_COBICISTAT = list(
-      description        = "Concomitant cobicistat 150 mg once-daily coadministration indicator (1 = boosted with cobicistat, 0 = osimertinib monotherapy).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cobicistat 150 mg once-daily coadministration indicator (1 = boosted with cobicistat, 0 = osimertinib monotherapy).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (osimertinib monotherapy; the reference state is the pre-boost osimertinib 80 mg QD phase of the OSIBOOST trial).",
-      notes              = "Multiplicative power-form effect on osimertinib apparent clearance only: cl is multiplied by 0.704^CONMED_COBICISTAT, i.e. a 29.6 percent reduction in CL/F when cobicistat is coadministered (Westra 2025 Results 'PopPK Model' and Table 2 row 'Effect of cobicistat on CL/F'). Not confounded with dose level: every OSIBOOST patient contributed both an unboosted and a boosted steady-state profile in a within-subject sequential design, so the coefficient is a pure drug-drug-interaction effect rather than a dose-normalisation term. The paper reports that adding the same covariate to AZ5104 CL/F and/or to relative bioavailability did not further improve the fit (P > .05), so AZ5104 clearance carries no cobicistat effect. Time-varying within a subject: cobicistat was added after the monotherapy sampling occasion and steady state was re-established over 21 days before the boosted samples were drawn.",
-      source_name        = "COBI"
+      notes = "Multiplicative power-form effect on osimertinib apparent clearance only: cl is multiplied by 0.704^CONMED_COBICISTAT, i.e. a 29.6 percent reduction in CL/F when cobicistat is coadministered (Westra 2025 Results 'PopPK Model' and Table 2 row 'Effect of cobicistat on CL/F'). Not confounded with dose level: every OSIBOOST patient contributed both an unboosted and a boosted steady-state profile in a within-subject sequential design, so the coefficient is a pure drug-drug-interaction effect rather than a dose-normalisation term. The paper reports that adding the same covariate to AZ5104 CL/F and/or to relative bioavailability did not further improve the fit (P > .05), so AZ5104 clearance carries no cobicistat effect. Time-varying within a subject: cobicistat was added after the monotherapy sampling occasion and steady state was re-established over 21 days before the boosted samples were drawn.",
+      source_name = "COBI"
     )
   )
 
@@ -28,15 +28,15 @@ Westra_2025_osimertinib <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Westra 2025 Methods 'PopPK Model Development' states the categorical covariate gender was tested on CL/F and V/F; it is absent from the final model of Table 2 and from the supplementary Part SI control stream $PK block, so it was not retained. The OSIBOOST cohort was 63.6 percent female (Table 1). Carried in the analysis dataset as $INPUT column SEX."
+      units = "(binary)",
+      type = "binary",
+      notes = "Westra 2025 Methods 'PopPK Model Development' states the categorical covariate gender was tested on CL/F and V/F; it is absent from the final model of Table 2 and from the supplementary Part SI control stream $PK block, so it was not retained. The OSIBOOST cohort was 63.6 percent female (Table 1). Carried in the analysis dataset as $INPUT column SEX."
     ),
     ALB = list(
       description = "Baseline serum albumin concentration.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Westra 2025 Methods 'PopPK Model Development' states albumin was tested, after normalisation on the population median, as a power model on CL/F and V/F; it is absent from the final model of Table 2 and from the supplementary Part SI control stream $PK block, so it was not retained. Albumin IS retained on parent V/F in the companion model Westra_2025_osimertinib_brownbase.R, where it is inherited fixed from Brown 2017. Carried in the analysis dataset as $INPUT column ALB."
+      units = "g/L",
+      type = "continuous",
+      notes = "Westra 2025 Methods 'PopPK Model Development' states albumin was tested, after normalisation on the population median, as a power model on CL/F and V/F; it is absent from the final model of Table 2 and from the supplementary Part SI control stream $PK block, so it was not retained. Albumin IS retained on parent V/F in the companion model Westra_2025_osimertinib_brownbase.R, where it is inherited fixed from Brown 2017. Carried in the analysis dataset as $INPUT column ALB."
     )
   )
 
@@ -46,27 +46,27 @@ Westra_2025_osimertinib <- function() {
   # METABOLITE, and against the $PK scaling statements S2 = V1/1000 and
   # S3 = V2/1000, which place both observed concentrations in ug/L.
   compartmentData <- list(
-    depot          = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "osimertinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "osimertinib", units = "mg", specimen = "plasma", verified = TRUE),
     central_az5104 = list(analyte = "AZ5104", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11,
-    n_studies      = 1,
-    age_median     = "69.0 years",
-    weight_median  = "78.5 kg",
-    height_median  = "166.0 cm",
-    bmi_median     = "23.6 kg/m^2",
-    bsa_median     = "1.9 m^2",
+    species = "human",
+    n_subjects = 11,
+    n_studies = 1,
+    age_median = "69.0 years",
+    weight_median = "78.5 kg",
+    height_median = "166.0 cm",
+    bmi_median = "23.6 kg/m^2",
+    bsa_median = "1.9 m^2",
     sex_female_pct = 63.6,
     race_ethnicity = c(Caucasian = 100.0),
-    disease_state  = "Advanced non-small cell lung cancer, adenocarcinoma histology in 100 percent of the cohort, ECOG/WHO performance status 0-1 in 100 percent. All patients were on established osimertinib treatment and were selected for a relatively low steady-state trough concentration (Cmin,ss at or below 195 ug/L) under osimertinib 80 mg once daily. Smoking status: never 36.4 percent, current 9.1 percent, former 54.5 percent. No healthy volunteers.",
-    dose_range     = "Oral osimertinib 80 mg once daily (one patient received an increased dose of 160 mg once daily), first as monotherapy and then with oral cobicistat 150 mg once daily added for at least 21 days to reach steady state.",
-    regions        = "Netherlands (Maastricht University Medical Centre and the Antoni van Leeuwenhoek hospital).",
+    disease_state = "Advanced non-small cell lung cancer, adenocarcinoma histology in 100 percent of the cohort, ECOG/WHO performance status 0-1 in 100 percent. All patients were on established osimertinib treatment and were selected for a relatively low steady-state trough concentration (Cmin,ss at or below 195 ug/L) under osimertinib 80 mg once daily. Smoking status: never 36.4 percent, current 9.1 percent, former 54.5 percent. No healthy volunteers.",
+    dose_range = "Oral osimertinib 80 mg once daily (one patient received an increased dose of 160 mg once daily), first as monotherapy and then with oral cobicistat 150 mg once daily added for at least 21 days to reach steady state.",
+    regions = "Netherlands (Maastricht University Medical Centre and the Antoni van Leeuwenhoek hospital).",
     n_observations = "88 osimertinib and AZ5104 plasma concentrations in total from the 11 patients. Steady-state sampling at pre-dose, 0.5-1.5 h, 2.5-3.5 h and 7-8 h on each of the monotherapy and cobicistat-boosted occasions. Seven additional t = 24 h therapeutic-drug-monitoring observations were excluded because they were not sampled per protocol (supplementary Part SI $DATA IGNORE(INACT=1) comment).",
-    notes          = "Baseline characteristics reproduced from Westra 2025 Table 1, OSIBOOST cohort column; the table reports medians for continuous characteristics and percentages for categorical ones, with no ranges. Data are from the OSIBOOST trial (NCT03858491, ethics approval METC19-013). The osimertinib metabolite AZ7550 was measured in the trial but excluded from this analysis. Selection for low osimertinib exposure is a deliberate enrichment and, as the paper's own Limitations note, may bias the cobicistat effect upward relative to a general osimertinib population, because high CYP3A4/A5 activity is one cause of low osimertinib exposure."
+    notes = "Baseline characteristics reproduced from Westra 2025 Table 1, OSIBOOST cohort column; the table reports medians for continuous characteristics and percentages for categorical ones, with no ranges. Data are from the OSIBOOST trial (NCT03858491, ethics approval METC19-013). The osimertinib metabolite AZ7550 was measured in the trial but excluded from this analysis. Selection for low osimertinib exposure is a deliberate enrichment and, as the paper's own Limitations note, may bias the cobicistat effect upward relative to a general osimertinib population, because high CYP3A4/A5 activity is one cause of low osimertinib exposure."
   )
 
   ini({

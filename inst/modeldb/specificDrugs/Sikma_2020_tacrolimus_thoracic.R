@@ -20,32 +20,32 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     "2020;45(1):123-134. doi:10.1007/s13318-019-00591-7."
   )
   vignette <- "Sikma_2020_tacrolimus_thoracic"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    n_observations  = "1180 whole-blood tacrolimus concentrations across 119 twelve-hour profiles (median 5 profiles per patient, range 1-6); 46 of 1180 (3.9%) observations below the lower limit of quantification (0.5 ng/mL) were discarded.",
-    age_range       = "34-60 years (Q1-Q3 of 30 patients)",
-    age_median      = "43 years",
-    weight_range    = "61-86 kg (Q1-Q3)",
-    weight_median   = "73.5 kg",
-    height_median   = "173.5 cm",
-    sex_female_pct  = 50.0,
-    race_ethnicity  = "Not reported in source paper (single-centre Utrecht, Netherlands cohort).",
-    disease_state   = paste0(
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    n_observations = "1180 whole-blood tacrolimus concentrations across 119 twelve-hour profiles (median 5 profiles per patient, range 1-6); 46 of 1180 (3.9%) observations below the lower limit of quantification (0.5 ng/mL) were discarded.",
+    age_range = "34-60 years (Q1-Q3 of 30 patients)",
+    age_median = "43 years",
+    weight_range = "61-86 kg (Q1-Q3)",
+    weight_median = "73.5 kg",
+    height_median = "173.5 cm",
+    sex_female_pct = 50.0,
+    race_ethnicity = "Not reported in source paper (single-centre Utrecht, Netherlands cohort).",
+    disease_state = paste0(
       "Adult thoracic organ transplant recipients admitted to the intensive ",
       "care unit during the first 6 postoperative days. Heart transplant ",
       "indications (n=10): ischaemic cardiomyopathy 5, non-ischaemic ",
@@ -58,7 +58,7 @@ Sikma_2020_tacrolimus_thoracic <- function() {
       "97% (29 of 30). Postoperative ECMO was used in 27% (8 of 30) for a ",
       "median of 4 days (Q1-Q3 2-6)."
     ),
-    dose_range      = paste0(
+    dose_range = paste0(
       "Oral tacrolimus (Prograf, Astellas Pharma Europe) twice daily, ",
       "starting at 0.1 mg/kg/dose for lung recipients and 2 mg/dose for ",
       "heart recipients on the day after transplantation. Dose adjustments ",
@@ -68,8 +68,8 @@ Sikma_2020_tacrolimus_thoracic <- function() {
       "dysmotility, and liver injury; steady state was not necessarily ",
       "reached at the time of dose adjustment."
     ),
-    regions         = "Netherlands (University Medical Center Utrecht, June 2013 - March 2015).",
-    co_medication   = paste0(
+    regions = "Netherlands (University Medical Center Utrecht, June 2013 - March 2015).",
+    co_medication = paste0(
       "Triple immunosuppression with corticosteroids (prednisolone) plus ",
       "mycophenolate mofetil. Lung recipients additionally received ",
       "basiliximab induction on postoperative days 1 and 4. Drug-drug ",
@@ -79,7 +79,7 @@ Sikma_2020_tacrolimus_thoracic <- function() {
       "exposure. No covariate, including these co-medications, was retained ",
       "in the final model."
     ),
-    notes           = paste0(
+    notes = paste0(
       "Single-centre prospective study (NTR 3912 / EudraCT 2012-001909-24). ",
       "Whole-blood samples drawn pre-dose and at 1, 1.5, 2, 2.5, 3, 4, 6, 8, ",
       "and 12 hours after a daily index dose during ICU admission. Tacrolimus ",

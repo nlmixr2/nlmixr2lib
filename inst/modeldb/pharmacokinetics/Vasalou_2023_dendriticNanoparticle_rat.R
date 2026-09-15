@@ -13,30 +13,50 @@ Vasalou_2023_dendriticNanoparticle_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    liver_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_np = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    blood     = list(analyte = "free API", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    liver     = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen    = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "free API", units = NA_character_, specimen = "lymph", verified = FALSE)
+    blood_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    liver_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    blood = list(analyte = "free API", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    liver = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other = list(analyte = "free API", units = NA_character_, specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (male Han Wistar)",
-    n_subjects     = 9,
-    n_studies      = 1,
-    age_range      = "not reported",
-    weight_range   = "0.25 kg (reference body weight, Tables 3 and 4)",
+    species = "rat (male Han Wistar)",
+    n_subjects = 9,
+    n_studies = 1,
+    age_range = "not reported",
+    weight_range = "0.25 kg (reference body weight, Tables 3 and 4)",
     sex_female_pct = 0,
-    disease_state  = "Healthy male Han Wistar rats; no tumour implanted.",
-    dose_range     = "55, 110 or 505 mg/kg of the nanoparticle as a 30-minute IV infusion (dose volume 10 mL/kg), given on day 1 and day 8; dose expressed as mg of API per kg body weight.",
-    regions        = "Single-centre preclinical (AstraZeneca R&D Boston; animals from Charles River Laboratories).",
-    notes          = "Blood sampled at 0.5, 1, 8, 24 and 72 h post dose on day 1; tissue collected 24 h post dose on day 8. Plasma sampling was dense but tissues were sparse -- ONE liver time point and NO spleen samples were obtained in rat, so model performance in rat can only be judged from plasma. Observed 55 mg/kg values are tabulated in Table S6 of S1 File. The paper reports that total API in plasma was captured accurately while released API in plasma was underpredicted by roughly 3-5-fold.",
-    scope_note     = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Parameters were scaled prospectively from mouse (Eqs 22-25), NOT fitted to rat data. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
+    disease_state = "Healthy male Han Wistar rats; no tumour implanted.",
+    dose_range = "55, 110 or 505 mg/kg of the nanoparticle as a 30-minute IV infusion (dose volume 10 mL/kg), given on day 1 and day 8; dose expressed as mg of API per kg body weight.",
+    regions = "Single-centre preclinical (AstraZeneca R&D Boston; animals from Charles River Laboratories).",
+    notes = "Blood sampled at 0.5, 1, 8, 24 and 72 h post dose on day 1; tissue collected 24 h post dose on day 8. Plasma sampling was dense but tissues were sparse -- ONE liver time point and NO spleen samples were obtained in rat, so model performance in rat can only be judged from plasma. Observed 55 mg/kg values are tabulated in Table S6 of S1 File. The paper reports that total API in plasma was captured accurately while released API in plasma was underpredicted by roughly 3-5-fold.",
+    scope_note = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Parameters were scaled prospectively from mouse (Eqs 22-25), NOT fitted to rat data. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
   )
 
   ini({

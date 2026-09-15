@@ -10,7 +10,7 @@ Chen_2025_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Chen_2025_ceftazidime_avibactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -20,12 +20,12 @@ Chen_2025_ceftazidime <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated with the Cockcroft-Gault equation from serum creatinine recorded in the hospital electronic medical record (Chen 2025 Methods, Patients and Ethics)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance calculated with the Cockcroft-Gault equation from serum creatinine recorded in the hospital electronic medical record (Chen 2025 Methods, Patients and Ethics)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Raw Cockcroft-Gault mL/min, NOT BSA-normalized. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper applies no BSA normalization (same convention as Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and the sibling combination-product pair Chandorkar_2015_ceftolozane.R / Chandorkar_2015_tazobactam.R). Reference value 71.3 mL/min = the cohort median (Chen 2025 Table 1; the paper states 71.3 is the median value of CrCL immediately below Eq. 1-2). Cohort range 13.9-337.1 mL/min, so the model spans anuric-to-augmented renal function. Effect on CL is a median-normalized power form (CRCL / 71.3)^e_crcl_cl; the paper's typeset Eq. 1 places the fraction bar under CrCL^0.44 only, which cannot be the fitted form -- see the model file comment on e_crcl_cl and the validation vignette's Assumptions and deviations section. CrCL was the SOLE covariate retained after stepwise forward inclusion / backward elimination.",
-      source_name        = "CrCL"
+      notes = "Raw Cockcroft-Gault mL/min, NOT BSA-normalized. Stored under the canonical CRCL column per inst/references/covariate-columns.md, which accepts raw mL/min when the source paper applies no BSA normalization (same convention as Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R and the sibling combination-product pair Chandorkar_2015_ceftolozane.R / Chandorkar_2015_tazobactam.R). Reference value 71.3 mL/min = the cohort median (Chen 2025 Table 1; the paper states 71.3 is the median value of CrCL immediately below Eq. 1-2). Cohort range 13.9-337.1 mL/min, so the model spans anuric-to-augmented renal function. Effect on CL is a median-normalized power form (CRCL / 71.3)^e_crcl_cl; the paper's typeset Eq. 1 places the fraction bar under CrCL^0.44 only, which cannot be the fitted form -- see the model file comment on e_crcl_cl and the validation vignette's Assumptions and deviations section. CrCL was the SOLE covariate retained after stepwise forward inclusion / backward elimination.",
+      source_name = "CrCL"
     )
   )
 
@@ -37,79 +37,105 @@ Chen_2025_ceftazidime <- function() {
   # model() block never references.
   covariatesDataExcluded <- list(
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 62.0 kg (range 35.0-80.0), Chen 2025 Table 1. Screened; not retained. The final model carries no allometric term.",
       source_name = "Weight"
     ),
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 59.0 years (range 18.0-94.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "Age"
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "", type = "categorical",
+      description = "Female sex indicator",
+      units = "",
+      type = "categorical",
       reference_category = "0 = male",
       notes = "9 of 45 subjects (20%) female, Chen 2025 Table 1 (reported as male/female 36/9). Screened; not retained.",
       source_name = "Gender"
     ),
     HT = list(
-      description = "Body height", units = "cm", type = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 170.0 cm (range 150.0-180.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "Height"
     ),
     APACHE_II = list(
-      description = "Acute Physiology and Chronic Health Evaluation II score", units = "", type = "continuous",
+      description = "Acute Physiology and Chronic Health Evaluation II score",
+      units = "",
+      type = "continuous",
       reference_category = NULL,
       notes = "Used to define the disease-severity strata (> 15 critically ill, <= 15 non-critically ill; 25 vs 20 subjects, Chen 2025 Table 1). Screened; not retained -- Chen 2025 Discussion states explicitly that APACHE II scores do not significantly impact the PK of CAZ-AVI. The critically-ill / non-critically-ill split therefore drives only the PK/PD TARGET in the Monte Carlo simulation, not any structural or covariate term.",
       source_name = "APACHE II"
     ),
     RRT_CRRT_STATUS = list(
-      description = "Continuous renal replacement therapy status", units = "", type = "categorical",
+      description = "Continuous renal replacement therapy status",
+      units = "",
+      type = "categorical",
       reference_category = "0 = no CRRT",
       notes = "15 of 45 subjects (33.3%) received CRRT, Chen 2025 Table 1. Screened; not retained. Chen 2025 Discussion attributes the null effect to the CRRT subgroup retaining substantial residual renal function (median CrCL 69.3 mL/min) and cites reports that CRRT alters clearance only below about 10 mL/min. Circuit settings when used: blood flow 160 mL/min, pre-replacement 2000 L/h, post-replacement 1000 L/h (Chen 2025 Results, Patients -- reproduced as printed).",
       source_name = "CRRT"
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 35.0 g/L (range 26.1-53.7), Chen 2025 Table 1. Screened; not retained.",
       source_name = "ALB"
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 79.0 umol/L (range 17.0-377.0), Chen 2025 Table 1. Screened as a covariate in its own right; the retained renal term is the Cockcroft-Gault CRCL derived from it.",
       source_name = "SCR"
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 13.4 umol/L (range 1.6-125.6), Chen 2025 Table 1. Screened; not retained.",
       source_name = "TBIL"
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 22.0 U/L (range 6.0-199.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "ALT"
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 27.0 U/L (range 6.0-417.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "AST"
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "U/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 56.0 U/L (range 11.0-639.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "GGT"
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "U/L", type = "continuous",
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
       notes = "Median 113.0 U/L (range 26.0-523.0), Chen 2025 Table 1. Screened; not retained.",
       source_name = "ALP"
@@ -117,20 +143,20 @@ Chen_2025_ceftazidime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = "18-94 years",
-    age_median     = "59 years",
-    weight_range   = "35.0-80.0 kg",
-    weight_median  = "62.0 kg",
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = "18-94 years",
+    age_median = "59 years",
+    weight_range = "35.0-80.0 kg",
+    weight_median = "62.0 kg",
     sex_female_pct = 20,
     race_ethnicity = "Not reported by category; single-centre Chinese cohort (Fujian Medical University Union Hospital, Fuzhou)",
-    disease_state  = "Adults with verified carbapenem-resistant Klebsiella pneumoniae infection receiving intravenous ceftazidime-avibactam. Infection sites: hospital-acquired pneumonia including ventilator-associated pneumonia 31 (68.9%), complicated intra-abdominal infection 5 (11.1%), bacteraemia associated with these infections 5 (11.1%), complicated urinary tract infection including pyelonephritis 4 (8.9%). Disease severity by APACHE II: 25 (55.6%) critically ill (> 15) and 20 (44.4%) non-critically ill (<= 15).",
-    dose_range     = "Ceftazidime-avibactam 1.25 g or 2.5 g intravenously every 8, 12 or 24 h, each as a 2-hour infusion; the 4:1 fixed-ratio product delivers 1000 mg or 2000 mg of ceftazidime per dose. Most common regimen 2.5 g q8h (29 of 45 subjects).",
-    regions        = "China (single centre, Fuzhou, Fujian)",
+    disease_state = "Adults with verified carbapenem-resistant Klebsiella pneumoniae infection receiving intravenous ceftazidime-avibactam. Infection sites: hospital-acquired pneumonia including ventilator-associated pneumonia 31 (68.9%), complicated intra-abdominal infection 5 (11.1%), bacteraemia associated with these infections 5 (11.1%), complicated urinary tract infection including pyelonephritis 4 (8.9%). Disease severity by APACHE II: 25 (55.6%) critically ill (> 15) and 20 (44.4%) non-critically ill (<= 15).",
+    dose_range = "Ceftazidime-avibactam 1.25 g or 2.5 g intravenously every 8, 12 or 24 h, each as a 2-hour infusion; the 4:1 fixed-ratio product delivers 1000 mg or 2000 mg of ceftazidime per dose. Most common regimen 2.5 g q8h (29 of 45 subjects).",
+    regions = "China (single centre, Fuzhou, Fujian)",
     renal_function = "Creatinine clearance (Cockcroft-Gault) median 71.3 mL/min, range 13.9-337.1; 29 subjects (64.4%) with renal insufficiency (CrCL < 90 mL/min), 9 (20.0%) with CrCL 90-130, and 7 (15.6%) with augmented renal clearance (CrCL >= 130 mL/min). 15 subjects (33.3%) received continuous renal replacement therapy (median CrCL in that subgroup 69.3 mL/min).",
-    notes          = "Prospective single-centre study, July 2021 to September 2023; baseline demographics per Chen 2025 Table 1. 91 steady-state plasma concentrations from 45 adults, of which 33 trough and 31 peak samples; sparse design of 1-3 samples per subject collected at or after the sixth dose. Assay LC-MS/MS validated to FDA bioanalytical guidance. Ceftazidime concentrations spanned 1.6-305.8 mg/L across sampling times 0-12 h post dose start (Chen 2025 Table 1, continued). Model estimated in Phoenix NLME 8.1 by first-order conditional estimation with extended least squares."
+    notes = "Prospective single-centre study, July 2021 to September 2023; baseline demographics per Chen 2025 Table 1. 91 steady-state plasma concentrations from 45 adults, of which 33 trough and 31 peak samples; sparse design of 1-3 samples per subject collected at or after the sixth dose. Assay LC-MS/MS validated to FDA bioanalytical guidance. Ceftazidime concentrations spanned 1.6-305.8 mg/L across sampling times 0-12 h post dose start (Chen 2025 Table 1, continued). Model estimated in Phoenix NLME 8.1 by first-order conditional estimation with extended least squares."
   )
 
   ini({

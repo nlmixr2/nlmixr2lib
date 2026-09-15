@@ -21,24 +21,24 @@ Facchin_2019_ganciclovir <- function() {
     sep = " "
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a RAW (un-normalized) power term, BSA^1.31 on CL/F and BSA^1.28",
         "on Vc/F, so the structural reference subject is BSA = 1 m^2 rather than a",
         "cohort median or the conventional 1.73 m^2. Body surface area rather than",
@@ -47,14 +47,14 @@ Facchin_2019_ganciclovir <- function() {
         "age median 12.2 years, range 2.1-20.5 (Yang 2023 Table 2).",
         sep = " "
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Yang 2023 Table 3 footnote defines SCR as serum creatinine concentration",
         "in umol/L. Inverse power effect on CL/F referenced to 72.5 umol/L:",
         "(SCR/72.5)^-0.768, so higher serum creatinine (worse renal function)",
@@ -62,14 +62,14 @@ Facchin_2019_ganciclovir <- function() {
         "clearance, is the renal-function descriptor retained in this model.",
         sep = " "
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "VALUE INVERSION: the source paper codes GENDER = 1 for male and 0 for",
         "female (Yang 2023 Table 3 footnote: 'GENDER: gender, 1 for male and 0 for",
         "female'), and applies multiplicative factors 1.15^GENDER on CL/F and",
@@ -82,30 +82,30 @@ Facchin_2019_ganciclovir <- function() {
         "(less than 20% difference).",
         sep = " "
       ),
-      source_name        = "GENDER"
+      source_name = "GENDER"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 104L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 104L,
+    n_studies = 1L,
     n_observations = 1212L,
-    age_median     = "12.2 years (range 2.1-20.5)",
-    weight_median  = "30.35 kg (range 11.9-83.0)",
+    age_median = "12.2 years (range 2.1-20.5)",
+    weight_median = "30.35 kg (range 11.9-83.0)",
     sex_female_pct = 36.5,
     race_ethnicity = "Not reported.",
-    disease_state  = "Children with a renal transplant receiving valganciclovir.",
-    dose_range     = "Oral valganciclovir 18.5 mg/kg once or twice daily (range 5.0-70.2 mg/kg).",
-    regions        = "France (retrospective study).",
-    bioassay       = paste(
+    disease_state = "Children with a renal transplant receiving valganciclovir.",
+    dose_range = "Oral valganciclovir 18.5 mg/kg once or twice daily (range 5.0-70.2 mg/kg).",
+    regions = "France (retrospective study).",
+    bioassay = paste(
       "HPLC. Yang 2023 Table 2 reports the LLOQ as '0.25 mg/mL', which is",
       "implausible for a plasma ganciclovir assay and is most likely a typographic",
       "error for 0.25 mg/L (0.25 ug/mL, matching the LLOQ that the same review",
       "reports for Zhao 2009); flagged for verification against the primary.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics and dosing from Yang 2023 Table 2. Intensive sampling at",
       "0 (pre-dose), 0.5, 0.75, 1, 1.5, 2, 6 and 12 h post dose. Covariates tested:",
       "weight, gender, age, height, BSA, underlying disease, serum creatinine,",

@@ -1,75 +1,75 @@
 Zhao_2014_ciprofloxacin <- function() {
   description <- "Two-compartment population PK model with first-order elimination for intravenous ciprofloxacin in neonates and young infants less than three months of age (Zhao 2014). Central and peripheral volumes (V1, V2) scale allometrically with current body weight (fixed exponent 1, reference 1.955 kg); clearance (CL) and inter-compartmental clearance (Q) scale with current body weight at a fixed exponent of 0.75. CL is further multiplied by a renal-maturation factor in gestational age and postnatal age (F_age), a renal-function factor in serum creatinine (RF = exp((CREAT - 42 umol/L) * theta7)), and a fractional reduction (factor 0.708) when inotropic / vasoactive agents are coadministered. IIV is reported on V1, V2, and CL as %CV on an exponential model. Residual error is proportional. Inter-occasion variability on CL (16.4%CV) reported by Zhao 2014 is not encoded structurally here -- the source paper does not define an operational occasion mapping for the model-library use case; users who need IOV can add an OCC indicator and per-occasion eta downstream."
-  reference   <- "Zhao W, Hill H, Le Guellec C, Neal T, Mahoney S, Paulus S, Castellan C, Kassai B, van den Anker JN, Kearns GL, Turner MA, Jacqz-Aigrain E. Population pharmacokinetics of ciprofloxacin in neonates and young infants less than three months of age. Antimicrob Agents Chemother. 2014;58(11):6572-6580. doi:10.1128/AAC.03568-14"
-  vignette    <- "Zhao_2014_ciprofloxacin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Zhao W, Hill H, Le Guellec C, Neal T, Mahoney S, Paulus S, Castellan C, Kassai B, van den Anker JN, Kearns GL, Turner MA, Jacqz-Aigrain E. Population pharmacokinetics of ciprofloxacin in neonates and young infants less than three months of age. Antimicrob Agents Chemother. 2014;58(11):6572-6580. doi:10.1128/AAC.03568-14"
+  vignette <- "Zhao_2014_ciprofloxacin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight (time-varying).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight (time-varying).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying current weight on the day of pharmacokinetic sampling. Reference value is the Zhao 2014 cohort median 1955 g = 1.955 kg (Table 4 footnote). Allometric scaling: exponent 0.75 on CL and Q (per Zhao 2014 Methods, 'Covariate analysis' paragraph 1) and exponent 1 on V1 and V2 (per the same passage; Table 4 lists '(CW/1955)^theta1' for V1 and '(CW/1955)^theta2' for V2 but the surrounding prose makes clear the exponent is the fixed allometric value of 1, not a parameter equal to theta1 or theta2).",
-      source_name        = "CW"
+      notes = "Time-varying current weight on the day of pharmacokinetic sampling. Reference value is the Zhao 2014 cohort median 1955 g = 1.955 kg (Table 4 footnote). Allometric scaling: exponent 0.75 on CL and Q (per Zhao 2014 Methods, 'Covariate analysis' paragraph 1) and exponent 1 on V1 and V2 (per the same passage; Table 4 lists '(CW/1955)^theta1' for V1 and '(CW/1955)^theta2' for V2 but the surrounding prose makes clear the exponent is the fixed allometric value of 1, not a parameter equal to theta1 or theta2).",
+      source_name = "CW"
     ),
     GA = list(
-      description        = "Gestational age at birth (time-fixed per subject).",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth (time-fixed per subject).",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Cohort median 27.9 weeks (range 23.3-42.0; Zhao 2014 Table 2). Reference value 27.9 weeks (Table 4 footnote). Enters CL via power form F_age = (GA / 27.9)^theta5 (Table 4) as the antenatal-maturation component.",
-      source_name        = "GA"
+      notes = "Time-fixed. Cohort median 27.9 weeks (range 23.3-42.0; Zhao 2014 Table 2). Reference value 27.9 weeks (Table 4 footnote). Enters CL via power form F_age = (GA / 27.9)^theta5 (Table 4) as the antenatal-maturation component.",
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological since birth, time-varying).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth, time-varying).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Canonical PNA is in MONTHS. Zhao 2014 reports PNA in DAYS (cohort median 27 days, range 5-121; Table 2 and Table 4 footnote). The paper's expression F_age = (PNA_days / 27)^theta6 is reparameterised inside model() as (PNA_months / 0.8870)^theta6 using PNA_months = PNA_days / 30.4375 and reference 0.8870 months = 27 days / 30.4375; both numerator and denominator carry the same units factor so the ratio is unchanged. Users should supply PNA in months in the input dataset.",
-      source_name        = "PNA"
+      notes = "Canonical PNA is in MONTHS. Zhao 2014 reports PNA in DAYS (cohort median 27 days, range 5-121; Table 2 and Table 4 footnote). The paper's expression F_age = (PNA_days / 27)^theta6 is reparameterised inside model() as (PNA_months / 0.8870)^theta6 using PNA_months = PNA_days / 30.4375 and reference 0.8870 months = 27 days / 30.4375; both numerator and denominator carry the same units factor so the ratio is unchanged. Users should supply PNA in months in the input dataset.",
+      source_name = "PNA"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration (time-varying).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration (time-varying).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying serum creatinine on the day of pharmacokinetic sampling (within 48 h per Zhao 2014 Methods). Cohort median 41 umol/L (range 22-164; Table 2). Reference value 42 umol/L (Table 4 footnote; given to the nearest integer). Enters CL via exponential centered-deviation form RF = exp((CREAT - 42) * theta7), with theta7 = -0.00335 per umol/L so increases in serum creatinine reduce CL.",
-      source_name        = "CREA"
+      notes = "Time-varying serum creatinine on the day of pharmacokinetic sampling (within 48 h per Zhao 2014 Methods). Cohort median 41 umol/L (range 22-164; Table 2). Reference value 42 umol/L (Table 4 footnote; given to the nearest integer). Enters CL via exponential centered-deviation form RF = exp((CREAT - 42) * theta7), with theta7 = -0.00335 per umol/L so increases in serum creatinine reduce CL.",
+      source_name = "CREA"
     ),
     CONMED_INOTROPE = list(
-      description        = "Concomitant inotrope / vasoactive coadministration indicator (per-occasion / time-varying).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant inotrope / vasoactive coadministration indicator (per-occasion / time-varying).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on any inotrope)",
-      notes              = "1 = subject is receiving at least one inotropic / vasoactive agent at the time of the observation; 0 = not on any such agent. In Zhao 2014 the comedication summary (Table 2) reports 22/60 subjects with inotropic-agent coadministration. The paper applies F_inotrope = theta8 = 0.708 directly to CL when the indicator is 1 (CL reduced by 29.2% in patients on inotropes; see Zhao 2014 Table 4 footnote and Discussion paragraph 2, attributing the effect to inotrope-driven hemodynamic instability with reduced GFR, paralleling the Seay et al. 1998 dopamine / vancomycin observation in neonates).",
-      source_name        = "inotropic agents"
+      notes = "1 = subject is receiving at least one inotropic / vasoactive agent at the time of the observation; 0 = not on any such agent. In Zhao 2014 the comedication summary (Table 2) reports 22/60 subjects with inotropic-agent coadministration. The paper applies F_inotrope = theta8 = 0.708 directly to CL when the indicator is 1 (CL reduced by 29.2% in patients on inotropes; see Zhao 2014 Table 4 footnote and Discussion paragraph 2, attributing the effect to inotrope-driven hemodynamic instability with reduced GFR, paralleling the Seay et al. 1998 dopamine / vancomycin observation in neonates).",
+      source_name = "inotropic agents"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
     n_observations = "430 ciprofloxacin plasma concentrations (265 pharmacokinetic + 165 scavenged); pharmacokinetic samples 450-15,976 ng/mL, scavenged samples 52-10,961 ng/mL (Zhao 2014 Results 'Model building' paragraph 1).",
-    age_range      = "Postmenstrual age (PMA) 24.9-47.9 weeks; gestational age 23.3-42.0 weeks; postnatal age 5-121 days",
-    age_median     = "PMA 36.5 weeks; GA 27.9 weeks; PNA 27 days (Table 2)",
-    weight_range   = "Current weight 700-4200 g; birth weight 540-3850 g",
-    weight_median  = "Current weight 1955 g; birth weight 1115 g (Table 2)",
+    age_range = "Postmenstrual age (PMA) 24.9-47.9 weeks; gestational age 23.3-42.0 weeks; postnatal age 5-121 days",
+    age_median = "PMA 36.5 weeks; GA 27.9 weeks; PNA 27 days (Table 2)",
+    weight_range = "Current weight 700-4200 g; birth weight 540-3850 g",
+    weight_median = "Current weight 1955 g; birth weight 1115 g (Table 2)",
     sex_female_pct = 35,
     race_ethnicity = c(White = 88.3, Asian = 8.3, Unknown = 3.3),
-    disease_state  = "Neonates and young infants less than three months of age with suspected or documented Gram-negative serious infections receiving ciprofloxacin in two UK neonatal / paediatric intensive care units. Comedication: inotropic agents (22/60), teicoplanin (41/60), diuretics (30/60), caffeine (15/60), amoxicillin-clavulanic acid (12/60), nystatin (12/60), colistin-tobramycin-amphotericin B (10/60). Intrauterine growth retardation flagged in 3/60.",
-    dose_range     = "Intravenous ciprofloxacin 5 mg/kg/dose BID (7/60), 10 mg/kg/dose BID (47/60), or 10 mg/kg/dose TID (6/60); 30 or 60 min infusion via syringe pump with microbore tubing (Zhao 2014 Methods 'Dosing regimen and pharmacokinetic sampling'). Median 18.7 mg/dose (range 4.5-40 mg/dose); median 9.1 mg/kg/dose (range 4.4-11 mg/kg/dose).",
-    regions        = "United Kingdom (Liverpool Women's Hospital neonatal ICU; Alder Hey Children's Hospital paediatric ICU). Multicentre TINN consortium (EudraCT 2010-019955-23).",
-    notes          = "Demographics from Zhao 2014 Table 2. Sixty newborns retained for the population pharmacokinetic analysis after exclusions (2 withdrawn, 1 on dialysis, 1 received ciprofloxacin within 36 h of inclusion). Race recorded as Caucasian (53/60), Asian (5/60), and Unknown (2/60). Comedication categories reported as one-or-the-other counts (a subject may appear in multiple categories). The two PMA strata used in the dose-optimisation simulation (PMA < 34 weeks and PMA >= 34 weeks) are not modelled covariates but post-hoc bins for the dosing-regimen recommendations."
+    disease_state = "Neonates and young infants less than three months of age with suspected or documented Gram-negative serious infections receiving ciprofloxacin in two UK neonatal / paediatric intensive care units. Comedication: inotropic agents (22/60), teicoplanin (41/60), diuretics (30/60), caffeine (15/60), amoxicillin-clavulanic acid (12/60), nystatin (12/60), colistin-tobramycin-amphotericin B (10/60). Intrauterine growth retardation flagged in 3/60.",
+    dose_range = "Intravenous ciprofloxacin 5 mg/kg/dose BID (7/60), 10 mg/kg/dose BID (47/60), or 10 mg/kg/dose TID (6/60); 30 or 60 min infusion via syringe pump with microbore tubing (Zhao 2014 Methods 'Dosing regimen and pharmacokinetic sampling'). Median 18.7 mg/dose (range 4.5-40 mg/dose); median 9.1 mg/kg/dose (range 4.4-11 mg/kg/dose).",
+    regions = "United Kingdom (Liverpool Women's Hospital neonatal ICU; Alder Hey Children's Hospital paediatric ICU). Multicentre TINN consortium (EudraCT 2010-019955-23).",
+    notes = "Demographics from Zhao 2014 Table 2. Sixty newborns retained for the population pharmacokinetic analysis after exclusions (2 withdrawn, 1 on dialysis, 1 received ciprofloxacin within 36 h of inclusion). Race recorded as Caucasian (53/60), Asian (5/60), and Unknown (2/60). Comedication categories reported as one-or-the-other counts (a subject may appear in multiple categories). The two PMA strata used in the dose-optimisation simulation (PMA < 34 weeks and PMA >= 34 weeks) are not modelled covariates but post-hoc bins for the dosing-regimen recommendations."
   )
 
   ini({

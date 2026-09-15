@@ -22,49 +22,49 @@ Kim_2025_infliximab_dubinsky <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on all four disposition parameters, normalized to a 70 kg reference: CL *= (WT/70)^0.612, Vc *= (WT/70)^0.696, Vp *= (WT/70)^0.604 and Q *= (WT/70)^1.15. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models.",
-      source_name        = "WGT"
+      notes = "Power effect on all four disposition parameters, normalized to a 70 kg reference: CL *= (WT/70)^0.612, Vc *= (WT/70)^0.696, Vp *= (WT/70)^0.604 and Q *= (WT/70)^1.15. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models.",
+      source_name = "WGT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, normalized to a 4 g/dL reference: CL *= (ALB/4)^(-2.3), i.e. lower albumin gives markedly higher clearance. The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ALB"
+      notes = "Power effect on CL, normalized to a 4 g/dL reference: CL *= (ALB/4)^(-2.3), i.e. lower albumin gives markedly higher clearance. The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies toward infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies toward infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Linear fractional effect on CL: CL *= (1 + 0.231 * ADA_POS), i.e. +23.1% clearance when ADA-positive. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset. Kim 2025 showed (Figure 3) that assuming every patient to be ATI-positive improved predictive performance for the five ATI-carrying models, which they attributed to a positive bias inherent in the population PK models.",
-      source_name        = "ATI"
+      notes = "Linear fractional effect on CL: CL *= (1 + 0.231 * ADA_POS), i.e. +23.1% clearance when ADA-positive. Source paper labels this covariate 'ATI' (antibodies toward infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying in the Kim 2025 validation dataset. Kim 2025 showed (Figure 3) that assuming every patient to be ATI-positive improved predictive performance for the five ATI-carrying models, which they attributed to a positive bias inherent in the population PK models.",
+      source_name = "ATI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "Paediatric; mean age 13 years (Kim 2025 Table S1).",
-    weight_range   = "Not reported; mean body weight 41 kg (Kim 2025 Table S1). The model's reference weight is 70 kg, well above the development cohort's mean.",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "Paediatric; mean age 13 years (Kim 2025 Table S1).",
+    weight_range = "Not reported; mean body weight 41 kg (Kim 2025 Table S1). The model's reference weight is 70 kg, well above the development cohort's mean.",
     sex_female_pct = 44,
     race_ethnicity = "Not specified.",
-    disease_state  = "Inflammatory bowel disease: Crohn's disease (n = 41) and ulcerative colitis (n = 9).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "United States.",
-    notes          = paste(
+    disease_state = "Inflammatory bowel disease: Crohn's disease (n = 41) and ulcerative colitis (n = 9).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "United States.",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Dubinsky model: Crohn's disease (n = 41) and ulcerative",
       "colitis (n = 9), paediatric patients, induction and maintenance phases,",

@@ -12,8 +12,8 @@ Chen_2025_methotrexate_das28_mbma <- function() {
   vignette <- "Chen_2025_methotrexate_rheumatoid_arthritis"
 
   units <- list(
-    time          = "week (follow-up time after starting MTX treatment; ET50 is reported in weeks)",
-    dosing        = "n/a (this MBMA has no exposure driver and consumes no rxode2 dose events; MTX dose was screened as a covariate and rejected)",
+    time = "week (follow-up time after starting MTX treatment; ET50 is reported in weeks)",
+    dosing = "n/a (this MBMA has no exposure driver and consumes no rxode2 dose events; MTX dose was screened as a covariate and rejected)",
     concentration = "percent/percent (Cc is the study-arm mean PERCENTAGE CHANGE FROM BASELINE in DAS28, a negative quantity; it is NOT a drug concentration. The slash satisfies checkModelConventions unit parsing.)"
   )
 
@@ -22,42 +22,42 @@ Chen_2025_methotrexate_das28_mbma <- function() {
   # without triggering a "declared but not referenced" convention warning.
   covariatesDataExcluded <- list(
     DOSE_MTX_MGM2 = list(
-      description        = "Per-arm average administered methotrexate dose.",
-      units              = "mg/m^2",
-      type               = "continuous",
+      description = "Per-arm average administered methotrexate dose.",
+      units = "mg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on Emax as both a power form (P = theta1 * (COV/COVmedian)^theta2) and an exponential form (P = theta1 * exp(theta2 * (COV - COVmedian))); NOT retained (Chen 2025 Results, Model Developing: 'After forward selection and backward elimination, no significant reduction in the OFV was observed, as shown in Tables S2-S6.'). The Discussion attributes the failure to non-standard MTX dosing and to most trials not reporting an average dose: 'The inability to fit the dose-effect model in this study was disappointing, likely because the majority of studies did not report the average MTX dose.' Note the register canonical DOSE_MTX_MGM2 is per body-surface area; Chen 2025 does not state the dose unit used in the covariate screen, and since no coefficient was retained the unit is immaterial to this model."
+      notes = "Screened on Emax as both a power form (P = theta1 * (COV/COVmedian)^theta2) and an exponential form (P = theta1 * exp(theta2 * (COV - COVmedian))); NOT retained (Chen 2025 Results, Model Developing: 'After forward selection and backward elimination, no significant reduction in the OFV was observed, as shown in Tables S2-S6.'). The Discussion attributes the failure to non-standard MTX dosing and to most trials not reporting an average dose: 'The inability to fit the dose-effect model in this study was disappointing, likely because the majority of studies did not report the average MTX dose.' Note the register canonical DOSE_MTX_MGM2 is per body-surface area; Chen 2025 does not state the dose unit used in the covariate screen, and since no coefficient was retained the unit is immaterial to this model."
     ),
     T_DIAG_RA = list(
-      description        = "Per-arm mean time since rheumatoid arthritis diagnosis (RA disease duration).",
-      units              = "year",
-      type               = "continuous",
+      description = "Per-arm mean time since rheumatoid arthritis diagnosis (RA disease duration).",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on Emax and NOT retained (Chen 2025 Results, Model Developing; Tables S2-S6). Table 1 reports a pooled median duration of rheumatoid arthritis of 4.15 years (range 0.13-12.5). Named per the register's established T_DIAG_<disease> family (T_DIAG_DIAB, T_DIAG_CANCER)."
+      notes = "Screened on Emax and NOT retained (Chen 2025 Results, Model Developing; Tables S2-S6). Table 1 reports a pooled median duration of rheumatoid arthritis of 4.15 years (range 0.13-12.5). Named per the register's established T_DIAG_<disease> family (T_DIAG_DIAB, T_DIAG_CANCER)."
     ),
     CRP = list(
-      description        = "Per-arm mean baseline C-reactive protein.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Per-arm mean baseline C-reactive protein.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on Emax and NOT retained (Chen 2025 Results, Model Developing; Tables S2-S6). Table 1 reports a pooled median baseline CRP of 27.82 mg/L (range 3.1-53.9). The Discussion notes the covariate screen evaluated relative rather than absolute treatment effects, which may explain the null result."
+      notes = "Screened on Emax and NOT retained (Chen 2025 Results, Model Developing; Tables S2-S6). Table 1 reports a pooled median baseline CRP of 27.82 mg/L (range 3.1-53.9). The Discussion notes the covariate screen evaluated relative rather than absolute treatment effects, which may explain the null result."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 7999L,
-    n_studies      = 31L,
-    age_range      = "not reported at arm level",
-    weight_range   = "not reported at arm level",
+    species = "human",
+    n_subjects = 7999L,
+    n_studies = 31L,
+    age_range = "not reported at arm level",
+    weight_range = "not reported at arm level",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported at arm level",
-    disease_state  = "adults with active rheumatoid arthritis receiving methotrexate monotherapy; trials in which MTX-inadequate responders continued on MTX were excluded, so the population is MTX-naive or MTX-responsive patients",
-    dose_range     = "not tabulated; most included trials did not report an average MTX dose (Chen 2025 Discussion)",
-    baseline       = "pooled medians (Chen 2025 Table 1): DAS28 5.78 (range 3.79-6.84), HAQ 1.34 (0.67-2.59), CRP 27.82 mg/L (3.1-53.9), ESR 46.56 mm/h (23-63), RA duration 4.15 years (0.13-12.5)",
-    timepoints     = "arm-mean DAS28 percentage change reported at multiple follow-up times per trial; pooled median treatment duration 52.73 weeks (range 12-144)",
-    regions        = "not reported at arm level; the search was restricted to English-language publications",
-    notes          = "MBMA at the study-arm level: each modeled data point is one trial arm's mean DAS28 percentage change at one follow-up time. n_studies = 31 is the number of trials contributing DAS28 data; n_subjects = 7999 is the pooled patient count across all 69 trials in the database, not the DAS28 subset (Chen 2025 does not report a DAS28-specific patient count). Baseline ESR was the fourth screened covariate and was likewise NOT retained; it is documented in prose rather than in covariatesDataExcluded because the covariate register has no canonical entry for erythrocyte sedimentation rate and this file introduces no new canonical for a rejected covariate. The Results text says 'Table S1 provides an overview of the 71 studies' while the Results and Abstract both state 69 included studies; the supplement is not on disk and the discrepancy is unresolved (see vignette Errata). The model simulates study-arm mean trajectories and is NOT suitable for individual-subject simulation."
+    disease_state = "adults with active rheumatoid arthritis receiving methotrexate monotherapy; trials in which MTX-inadequate responders continued on MTX were excluded, so the population is MTX-naive or MTX-responsive patients",
+    dose_range = "not tabulated; most included trials did not report an average MTX dose (Chen 2025 Discussion)",
+    baseline = "pooled medians (Chen 2025 Table 1): DAS28 5.78 (range 3.79-6.84), HAQ 1.34 (0.67-2.59), CRP 27.82 mg/L (3.1-53.9), ESR 46.56 mm/h (23-63), RA duration 4.15 years (0.13-12.5)",
+    timepoints = "arm-mean DAS28 percentage change reported at multiple follow-up times per trial; pooled median treatment duration 52.73 weeks (range 12-144)",
+    regions = "not reported at arm level; the search was restricted to English-language publications",
+    notes = "MBMA at the study-arm level: each modeled data point is one trial arm's mean DAS28 percentage change at one follow-up time. n_studies = 31 is the number of trials contributing DAS28 data; n_subjects = 7999 is the pooled patient count across all 69 trials in the database, not the DAS28 subset (Chen 2025 does not report a DAS28-specific patient count). Baseline ESR was the fourth screened covariate and was likewise NOT retained; it is documented in prose rather than in covariatesDataExcluded because the covariate register has no canonical entry for erythrocyte sedimentation rate and this file introduces no new canonical for a rejected covariate. The Results text says 'Table S1 provides an overview of the 71 studies' while the Results and Abstract both state 69 included studies; the supplement is not on disk and the discrepancy is unresolved (see vignette Errata). The model simulates study-arm mean trajectories and is NOT suitable for individual-subject simulation."
   )
 
   ini({

@@ -27,24 +27,24 @@ Chen_2023_nemonoxacin <- function() {
     sep = " "
   )
   vignette <- "Chen_2023_nemonoxacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nemonoxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nemonoxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nemonoxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nemonoxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nemonoxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives allometric scaling of CL and Q (exponent 0.75) and of Vc",
         "and Vp (exponent 1), both fixed a priori rather than estimated,",
         "on a 70 kg reference weight. Chen 2023 Methods 'Fixed effect",
@@ -56,14 +56,14 @@ Chen_2023_nemonoxacin <- function() {
         "'Parameter values are for a 70 kg adult.' Cohort weight 61.0 +/-",
         "9.0 kg (median 60, range 42-90) per Table 1."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CLcr. Chen 2023 Methods 'Data processing': 'The",
         "serum creatinine was measured using enzymatic method, and",
         "creatinine clearance (CLcr) was calculated by Cockcroft Gault",
@@ -81,14 +81,14 @@ Chen_2023_nemonoxacin <- function() {
         "below ~50 mL/min are an extrapolation (Discussion 'Some",
         "limitations', third point)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; structural reference for the Table 2 typical Vc of 103 L)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Multiplicative power-form effect on Vc:",
         "0.89^SEXF per Eq. 8 'V2 = 103 x (BW/70) x 0.89^Sex x exp(eta2)'.",
         "Chen 2023 states the coding explicitly after Eq. 8: 'Value of sex",
@@ -98,18 +98,18 @@ Chen_2023_nemonoxacin <- function() {
         "distribution (V2) decreased by 11% in female subjects compared to",
         "male subjects.' Cohort 111 male / 84 female (Table 1)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator (1 = healthy subject, 0 = CAP patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator (1 = healthy subject, 0 = CAP patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (community-acquired pneumonia patient); the model file shifts the",
         "structural lvp onto this reference so DIS_HEALTHY = 0 reproduces",
         "Eq. 8's CAP-patient Vp of 28 x 1.23 = 34.4 L"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Chen 2023 uses the reverse-coded DisStat",
         "indicator (stated after Eq. 8: 'DisStat indicates disease status,",
         "0 for healthy subjects and 1 for CAP patients'), which is",
@@ -127,17 +127,17 @@ Chen_2023_nemonoxacin <- function() {
         "(TG-873870-C-1) cohort. 125 CAP patients and 36 healthy subjects",
         "(Table 1)."
       ),
-      source_name        = "DisStat"
+      source_name = "DisStat"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (1 = fed, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (1 = fed, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (fasted; structural reference for the Table 2 typical ka of 2.2",
         "1/h, T_lag of 0.19 h, and F anchored at 1)"
       ),
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Chen 2023 defines the food window",
         "explicitly after Eq. 8: 'Value of food was 1 if taking food within",
         "2 h before administration or within 30 min after administration,",
@@ -151,14 +151,14 @@ Chen_2023_nemonoxacin <- function() {
         "bioavailability reduced by 12%.' Cohort 91 fed / 104 fasted",
         "(Table 1)."
       ),
-      source_name        = "Food"
+      source_name = "Food"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for inter-occasion variability on CL",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for inter-occasion variability on CL",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two occasions. Chen 2023 Methods 'Base model': 'Since PK",
         "parameters of nemonoxacin may change at steady state (72 h",
         "following multiple doses) compared to the single dose",
@@ -172,21 +172,21 @@ Chen_2023_nemonoxacin <- function() {
         "IOV etas on log-CL, following the Jonsson_2011_ethambutol.R",
         "precedent. For single-occasion simulation pass OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 161L,
-    n_studies      = 3L,
-    age_range      = "18 to 70 years",
-    age_median     = "27.5 years (mean 34.0 +/- 14.4)",
-    weight_range   = "42 to 90 kg",
-    weight_median  = "60 kg (mean 61.0 +/- 9.0)",
+    species = "human",
+    n_subjects = 161L,
+    n_studies = 3L,
+    age_range = "18 to 70 years",
+    age_median = "27.5 years (mean 34.0 +/- 14.4)",
+    weight_range = "42 to 90 kg",
+    weight_median = "60 kg (mean 61.0 +/- 9.0)",
     sex_female_pct = 100 * 84 / 195,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled Chinese cohort of 125 adults with community-acquired",
       "pneumonia (CAP) and 36 healthy subjects. Among CAP patients 38",
       "(30.4%) had an underlying disease (hypertension 6, COPD 3, chronic",
@@ -204,7 +204,7 @@ Chen_2023_nemonoxacin <- function() {
       "range 100.9-185.3) in healthy subjects. No subject had moderate or",
       "severe renal impairment."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral nemonoxacin capsules (250 mg capsules, Huayu Wuxi",
       "Pharmaceutical Co., Ltd.). Doses represented in the pooled PK",
       "dataset span 250, 500 and 750 mg (Results 'PPK model': 'VPC results",
@@ -213,8 +213,8 @@ Chen_2023_nemonoxacin <- function() {
       "administration; the CAP dosing regimens evaluated by Monte Carlo",
       "simulation were 500 mg and 750 mg q24 h for 10 days."
     ),
-    regions        = "China.",
-    notes          = paste(
+    regions = "China.",
+    notes = paste(
       "Data pooled from three trials of oral nemonoxacin capsule: phase I",
       "(TG-873870-C-1), phase II in CAP (TG-873870-C-3), and phase III vs",
       "levofloxacin in CAP (TG-873870-C-4). 161 subjects contributed 195",
@@ -236,9 +236,9 @@ Chen_2023_nemonoxacin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Identified as a significant covariate during FO screening but",
         "dropped under FOCEI and absent from the final model. Results 'PPK",
         "model': 'Age, bilirubin and concomitant medication were not",
@@ -248,9 +248,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     ALB = list(
       description = "Serum albumin, expressed as the paper's normal-range-scaled ratio",
-      units       = "(ratio to normal-range midpoint)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(ratio to normal-range midpoint)",
+      type = "continuous",
+      notes = paste(
         "Screened as significant under FO ('seven covariates (CLcr,",
         "weight, sex, albumin, hemoglobin, food, and age) were preliminarily",
         "identified as significant covariates') but not retained after",
@@ -261,9 +261,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     HGB = list(
       description = "Hemoglobin, expressed as the paper's normal-range-scaled ratio",
-      units       = "(ratio to normal-range midpoint)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(ratio to normal-range midpoint)",
+      type = "continuous",
+      notes = paste(
         "Screened as significant under FO but not retained after FOCEI",
         "screening. Reported in Table 1 as the normal-range-scaled ratio:",
         "1.00 +/- 0.10 overall."
@@ -271,9 +271,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "(ratio to normal-range midpoint)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(ratio to normal-range midpoint)",
+      type = "continuous",
+      notes = paste(
         "Explicitly excluded from the final model: 'Age, bilirubin and",
         "concomitant medication were not included in the final model due to",
         "their variable effects on PK parameters.'"
@@ -281,9 +281,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     NEUT = list(
       description = "Absolute neutrophil count",
-      units       = "(ratio to normal-range midpoint)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(ratio to normal-range midpoint)",
+      type = "continuous",
+      notes = paste(
         "Reduced OBJ when added on V3 (FO, dOBJ 8.1) and on CL and T_lag",
         "(FOCEI, dOBJ 15.3 and 8.3) but deliberately excluded because",
         "'neutrophil was often used as the PD index in clinical studies'",
@@ -292,9 +292,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     RESPRATE = list(
       description = "Respiratory rate",
-      units       = "breaths/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "breaths/min",
+      type = "continuous",
+      notes = paste(
         "Reduced OBJ by 19.3 on CL and 11.0 on V2 under FO but excluded",
         "because 'the relationship between respiratory rate and drug",
         "clearance could not be explained' (Discussion)."
@@ -302,9 +302,9 @@ Chen_2023_nemonoxacin <- function() {
     ),
     GLUC = list(
       description = "Serum glucose",
-      units       = "(ratio to normal-range midpoint)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(ratio to normal-range midpoint)",
+      type = "continuous",
+      notes = paste(
         "Reduced OBJ significantly when added on V1 or Ka but excluded",
         "because 'to our knowledge, glucose was not regarded as a covariate",
         "on PK parameter' (Discussion)."

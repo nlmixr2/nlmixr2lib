@@ -14,27 +14,27 @@ Lee_2015_sumatriptan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "sumatriptan", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "sumatriptan", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "sumatriptan", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "sumatriptan", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "sumatriptan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
-    age_range      = "22-28 years",
-    age_median     = "23.9 years (mean)",
-    weight_range   = "51-84 kg",
-    weight_median  = "66.7 kg (mean)",
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_range = "22-28 years",
+    age_median = "23.9 years (mean)",
+    weight_range = "51-84 kg",
+    weight_median = "66.7 kg (mean)",
     sex_female_pct = 0,
     race_ethnicity = "Korean (single-center Korean cohort)",
-    disease_state  = "Healthy adult male volunteers",
-    dose_range     = "Single 50 mg oral dose of sumatriptan succinate (50 mg expressed as sumatriptan free base)",
-    regions        = "Republic of Korea (Kyungpook National University Hospital Clinical Trial Center, Daegu)",
-    notes          = "Retrospective re-analysis of the reference-formulation arm of a single-center, randomized, open-label, two-period, single-dose crossover bioequivalence study (364 plasma concentrations). Demographics per Table 1 of Lee 2015. Only data from the reference formulation entered the popPK analysis."
+    disease_state = "Healthy adult male volunteers",
+    dose_range = "Single 50 mg oral dose of sumatriptan succinate (50 mg expressed as sumatriptan free base)",
+    regions = "Republic of Korea (Kyungpook National University Hospital Clinical Trial Center, Daegu)",
+    notes = "Retrospective re-analysis of the reference-formulation arm of a single-center, randomized, open-label, two-period, single-dose crossover bioequivalence study (364 plasma concentrations). Demographics per Table 1 of Lee 2015. Only data from the reference formulation entered the popPK analysis."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

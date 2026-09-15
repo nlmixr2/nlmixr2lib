@@ -1,6 +1,6 @@
 Zecchin_2016_tumorovarian <- function() {
   description <- "Tumour-size dynamics model (sum of longest diameters, SLD) for advanced epithelial ovarian cancer with independent additive carboplatin and gemcitabine cytotoxic effects (Zecchin 2016 / DDMODEL00000217): exponential SLD growth with two drug-exposure-driven death-rate terms (no resistance, no synergy), additive residual error, and M3-method handling of below-LLOQ observations in the source NONMEM run."
-  reference   <- paste(
+  reference <- paste(
     "Zecchin C, Gueorguieva I, Enas NH, Friberg LE.",
     "Models for change in tumour size, appearance of new lesions",
     "and survival probability in patients with advanced epithelial",
@@ -10,14 +10,14 @@ Zecchin_2016_tumorovarian <- function() {
     "DDMORE Foundation Model Repository: DDMODEL00000217.",
     sep = " "
   )
-  vignette    <- "Zecchin_2016_tumorovarian"
-  units       <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM covariates)",
+  vignette <- "Zecchin_2016_tumorovarian"
+  units <- list(
+    time = "day",
+    dosing = "n/a (no drug-dosing events; drug exposure enters as time-varying per-cycle AUC_CARBO and AUC_GEM covariates)",
     concentration = "mm (tumour-size endpoint, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000217"
+  ddmore_id <- "DDMODEL00000217"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -30,32 +30,32 @@ Zecchin_2016_tumorovarian <- function() {
 
   covariateData <- list(
     AUC_CARBO = list(
-      description        = "Per-cycle average AUC of carboplatin (time-varying drug-exposure covariate driving the carboplatin cytotoxic-death term).",
-      units              = "carboplatin AUC units (mg*min/mL)",
-      type               = "continuous",
+      description = "Per-cycle average AUC of carboplatin (time-varying drug-exposure covariate driving the carboplatin cytotoxic-death term).",
+      units = "carboplatin AUC units (mg*min/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in cycles where carboplatin is not administered. The DDMORE bundle's Simulated_SLD.csv encodes this column as AUC0; the source $INPUT NM-TRAN column is CB.",
-      source_name        = "CB"
+      notes = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in cycles where carboplatin is not administered. The DDMORE bundle's Simulated_SLD.csv encodes this column as AUC0; the source $INPUT NM-TRAN column is CB.",
+      source_name = "CB"
     ),
     AUC_GEM = list(
-      description        = "Per-cycle average AUC of gemcitabine (sum of parent and active intracellular metabolite exposure, per Zecchin 2016 Methods); time-varying drug-exposure covariate driving the gemcitabine cytotoxic-death term.",
-      units              = "gemcitabine AUC units (paper composite mol*day / 10^6 cells)",
-      type               = "continuous",
+      description = "Per-cycle average AUC of gemcitabine (sum of parent and active intracellular metabolite exposure, per Zecchin 2016 Methods); time-varying drug-exposure covariate driving the gemcitabine cytotoxic-death term.",
+      units = "gemcitabine AUC units (paper composite mol*day / 10^6 cells)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in carboplatin-monotherapy cycles. The DDMORE bundle's Simulated_SLD.csv encodes this column as AUC1; the source $INPUT NM-TRAN column is G.",
-      source_name        = "G"
+      notes = "Time-varying. Held step-wise constant within each chemotherapy cycle and reset at the start of the next cycle. Set to 0 in carboplatin-monotherapy cycles. The DDMORE bundle's Simulated_SLD.csv encodes this column as AUC1; the source $INPUT NM-TRAN column is G.",
+      source_name = "G"
     )
   )
 
   population <- list(
-    n_subjects     = 336L,
-    n_studies      = 1L,
-    age_range      = "advanced ovarian cancer adult population (specific range not available in this extraction)",
-    weight_range   = "not available in this extraction",
+    n_subjects = 336L,
+    n_studies = 1L,
+    age_range = "advanced ovarian cancer adult population (specific range not available in this extraction)",
+    weight_range = "not available in this extraction",
     sex_female_pct = 100,
-    disease_state  = "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / metastatic)",
-    dose_range     = "Phase III chemotherapy: carboplatin monotherapy (target AUC 4-6 mg*min/mL Q3W) or carboplatin + gemcitabine combination per the trial protocol referenced by Zecchin 2016",
-    notes          = "336 patients pooled from a randomised Phase III trial comparing carboplatin monotherapy vs carboplatin + gemcitabine combination chemotherapy in advanced ovarian cancer (per PubMed PMID 27136318 abstract for Zecchin 2016, Br J Clin Pharmacol 82(3):717-727). The linked publication PDF was not on disk for this extraction, so detailed baseline demographics (median age, weight, region) could not be transcribed; the population block reports only what the abstract and the DDMORE bundle's NONMEM run-time messages confirm. The model itself uses no patient-level covariates beyond the time-varying drug-AUC inputs; no allometric / age / sex effect was carried into the final SLD model."
+    disease_state = "advanced (FIGO stage III/IV) epithelial ovarian cancer (recurrent / metastatic)",
+    dose_range = "Phase III chemotherapy: carboplatin monotherapy (target AUC 4-6 mg*min/mL Q3W) or carboplatin + gemcitabine combination per the trial protocol referenced by Zecchin 2016",
+    notes = "336 patients pooled from a randomised Phase III trial comparing carboplatin monotherapy vs carboplatin + gemcitabine combination chemotherapy in advanced ovarian cancer (per PubMed PMID 27136318 abstract for Zecchin 2016, Br J Clin Pharmacol 82(3):717-727). The linked publication PDF was not on disk for this extraction, so detailed baseline demographics (median age, weight, region) could not be transcribed; the population block reports only what the abstract and the DDMORE bundle's NONMEM run-time messages confirm. The model itself uses no patient-level covariates beyond the time-varying drug-AUC inputs; no allometric / age / sex effect was carried into the final SLD model."
   )
 
   ini({

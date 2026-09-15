@@ -20,82 +20,82 @@ Kawuma_2023_dolutegravir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on all disposition parameters with a reference weight of 70 kg (Kawuma 2023 Table 1 footnote b). Exponents fixed at 0.75 for the clearances and 1 for the volumes per Kawuma 2022 Methods ('The allometric exponents for clearance and volume parameters were fixed at 0.75 and 1, respectively'). Total body weight was preferred over fat-free mass, which did not describe the data any better (Kawuma 2022 Results).",
-      source_name        = "WT"
+      notes = "Allometric scaling on all disposition parameters with a reference weight of 70 kg (Kawuma 2023 Table 1 footnote b). Exponents fixed at 0.75 for the clearances and 1 for the volumes per Kawuma 2022 Methods ('The allometric exponents for clearance and volume parameters were fixed at 0.75 and 1, respectively'). Total body weight was preferred over fat-free mass, which did not describe the data any better (Kawuma 2022 Results).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical register; the SOURCE paper's reference category is FEMALE",
-      notes              = "The source reports 'Male sex on ka (%) = -38.1', i.e. a male indicator against a female reference, so the printed typical ka of 1.63 /h belongs to women. To keep both the canonical 1 = female orientation and the verbatim printed values, the effect is applied to the complement, ka * (1 + e_sexf_ka * (1 - SEXF)) with e_sexf_ka = -0.381 -- the same construction registered for Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. Men absorb dolutegravir 38.1% more slowly; no sex difference in clearance or bioavailability was identified (Kawuma 2022 Results).",
-      source_name        = "Male sex"
+      notes = "The source reports 'Male sex on ka (%) = -38.1', i.e. a male indicator against a female reference, so the printed typical ka of 1.63 /h belongs to women. To keep both the canonical 1 = female orientation and the verbatim printed values, the effect is applied to the complement, ka * (1 + e_sexf_ka * (1 - SEXF)) with e_sexf_ka = -0.381 -- the same construction registered for Bajaj_2017_nivolumab.R and Wada_2023_sparsentan.R. Men absorb dolutegravir 38.1% more slowly; no sex difference in clearance or bioavailability was identified (Kawuma 2022 Results).",
+      source_name = "Male sex"
     ),
     CONMED_RIFAMPICIN = list(
-      description        = "Concomitant rifampicin coadministration indicator, 1 = dolutegravir taken with rifampicin 600 mg once daily, 0 = dolutegravir alone",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin coadministration indicator, 1 = dolutegravir taken with rifampicin 600 mg once daily, 0 = dolutegravir alone",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin)",
-      notes              = "Rifampicin 600 mg once daily, dosed for at least 7 days before the pharmacokinetic sampling visit in both source studies, so the estimate describes steady-state enzyme/transporter induction rather than the onset. Rifampicin induces UGT1A1 and CYP3A4 (the enzymes that clear dolutegravir) as well as P-glycoprotein and BCRP.",
-      source_name        = "Rifampicin co-administration"
+      notes = "Rifampicin 600 mg once daily, dosed for at least 7 days before the pharmacokinetic sampling visit in both source studies, so the estimate describes steady-state enzyme/transporter induction rather than the onset. Rifampicin induces UGT1A1 and CYP3A4 (the enzymes that clear dolutegravir) as well as P-glycoprotein and BCRP.",
+      source_name = "Rifampicin co-administration"
     ),
     CONMED_RIFABUTIN = list(
-      description        = "Concomitant rifabutin coadministration indicator, 1 = dolutegravir taken with rifabutin 300 mg once daily, 0 = dolutegravir alone",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifabutin coadministration indicator, 1 = dolutegravir taken with rifabutin 300 mg once daily, 0 = dolutegravir alone",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifabutin)",
-      notes              = "Rifabutin 300 mg once daily for 14 days (arm B of NCT01231542) before the pharmacokinetic sampling visit, so the estimate describes steady-state induction. This is the interaction the 2023 paper adds: the authors tested rifabutin on clearance, on bioavailability, and on both jointly, and selected the effect on central volume on goodness-of-fit, plausibility and BIC grounds (Kawuma 2023 Results). The mechanism is speculative -- the authors hypothesise induction of P-glycoprotein restricting tissue distribution (Kawuma 2023 Discussion).",
-      source_name        = "Rifabutin co-administration"
+      notes = "Rifabutin 300 mg once daily for 14 days (arm B of NCT01231542) before the pharmacokinetic sampling visit, so the estimate describes steady-state induction. This is the interaction the 2023 paper adds: the authors tested rifabutin on clearance, on bioavailability, and on both jointly, and selected the effect on central volume on goodness-of-fit, plausibility and BIC grounds (Kawuma 2023 Results). The mechanism is speculative -- the authors hypothesise induction of P-glycoprotein restricting tissue distribution (Kawuma 2023 Discussion).",
+      source_name = "Rifabutin co-administration"
     ),
     FED = list(
-      description        = "Fed-versus-fasted dose-record indicator, 1 = dose taken after a meal, 0 = dose taken fasted",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted dose-record indicator, 1 = dose taken after a meal, 0 = dose taken fasted",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Kawuma 2023 Table 1 reports two absorption lag times, labelled by study and annotated by prandial state in footnotes c and d: 0.205 h for NCT01231542 ('Dolutegravir taken under fasted conditions', an overnight fast) and 0.986 h for RADIO ('Under fed condition', a standard breakfast). The two studies are perfectly confounded with the two prandial states in the source data, but the authors themselves index the lag time by prandial state rather than by study when simulating (Kawuma 2022 Figure 3 caption: 'For the absorption lag time, we used the value estimated for the NCT01231542 study since this was done under fasted conditions') and attribute the difference mechanistically to food (Kawuma 2022 Discussion, citing Song 2012). Bioavailability did not differ between the two studies, which the authors ascribe to the low fat content of the RADIO breakfast; because the meal is described only as 'a standard breakfast' the generic FED indicator is used rather than FED_LOWFAT.",
-      source_name        = "Study (RADIO = fed, NCT01231542 = fasted)"
+      notes = "Kawuma 2023 Table 1 reports two absorption lag times, labelled by study and annotated by prandial state in footnotes c and d: 0.205 h for NCT01231542 ('Dolutegravir taken under fasted conditions', an overnight fast) and 0.986 h for RADIO ('Under fed condition', a standard breakfast). The two studies are perfectly confounded with the two prandial states in the source data, but the authors themselves index the lag time by prandial state rather than by study when simulating (Kawuma 2022 Figure 3 caption: 'For the absorption lag time, we used the value estimated for the NCT01231542 study since this was done under fasted conditions') and attribute the difference mechanistically to food (Kawuma 2022 Discussion, citing Song 2012). Bioavailability did not differ between the two studies, which the authors ascribe to the low fat content of the RADIO breakfast; because the meal is described only as 'a standard breakfast' the generic FED indicator is used rather than FED_LOWFAT.",
+      source_name = "Study (RADIO = fed, NCT01231542 = fasted)"
     ),
     STUDY_RADIO = list(
-      description        = "RADIO study indicator, 1 = record from the RADIO healthy-volunteer study, 0 = record from NCT01231542",
-      units              = "(binary)",
-      type               = "binary",
+      description = "RADIO study indicator, 1 = record from the RADIO healthy-volunteer study, 0 = record from NCT01231542",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NCT01231542)",
-      notes              = "Selects the study-specific additive residual error, which tracks the two studies' bioanalytical assays rather than any physiology: RADIO used a UHPLC-UV method validated over 0.050-10 mg/L and NCT01231542 an LC-MS/MS method validated over 0.020-20 mg/L (Kawuma 2022 'Analytical assay'), and the additive error was constrained to be at least 20% of each study's LLOQ (Kawuma 2022 Methods). The printed additive errors of 0.036 and 0.0485 mg/L are the resulting TOTAL additive standard deviations -- their lower confidence bounds, 0.00435 and 0.0103 mg/L, sit on the 0.2 x LLOQ floors of 0.004 and 0.010 mg/L. Perfectly confounded with FED in the source data; the two indicators are kept separate because they carry different mechanisms and land on different parts of the model.",
-      source_name        = "Study (RADIO vs NCT01231542)"
+      notes = "Selects the study-specific additive residual error, which tracks the two studies' bioanalytical assays rather than any physiology: RADIO used a UHPLC-UV method validated over 0.050-10 mg/L and NCT01231542 an LC-MS/MS method validated over 0.020-20 mg/L (Kawuma 2022 'Analytical assay'), and the additive error was constrained to be at least 20% of each study's LLOQ (Kawuma 2022 Methods). The printed additive errors of 0.036 and 0.0485 mg/L are the resulting TOTAL additive standard deviations -- their lower confidence bounds, 0.00435 and 0.0103 mg/L, sit on the 0.2 x LLOQ floors of 0.004 and 0.010 mg/L. Perfectly confounded with FED in the source data; the two indicators are kept separate because they carry different mechanisms and land on different parts of the model.",
+      source_name = "Study (RADIO vs NCT01231542)"
     ),
     OCC = list(
-      description        = "Integer-valued occasion indicator for between-occasion-variability multiplexing",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion indicator for between-occasion-variability multiplexing",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Kawuma 2022 Methods defines an occasion as 'a dosing event leading to at least one observation', with each pharmacokinetic sampling visit contributing two occasions (the predose occasion and the postdose occasion). A single between-occasion variance per absorption parameter is reported and shared by every occasion, so occasion 1 carries the estimated variance and later occasions fix it to the same value (the registered NONMEM $OMEGA BLOCK(1) SAME idiom -- see Blackman_2026_methotrexate.R, Goggin_2004_emfilermin.R, Barnett_2018_coproporphyrin_I.R). Four occasions are encoded, which spans a two-period within-subject crossover with a predose and a postdose occasion in each period; because the variance is common to every occasion, extending the chain is a mechanical copy of the fix() lines. For single-occasion records pass OCC = 1.",
-      source_name        = "OCC"
+      notes = "Kawuma 2022 Methods defines an occasion as 'a dosing event leading to at least one observation', with each pharmacokinetic sampling visit contributing two occasions (the predose occasion and the postdose occasion). A single between-occasion variance per absorption parameter is reported and shared by every occasion, so occasion 1 carries the estimated variance and later occasions fix it to the same value (the registered NONMEM $OMEGA BLOCK(1) SAME idiom -- see Blackman_2026_methotrexate.R, Goggin_2004_emfilermin.R, Barnett_2018_coproporphyrin_I.R). Four occasions are encoded, which spans a two-period within-subject crossover with a predose and a postdose occasion in each period; because the variance is common to every occasion, extending the chain is a mechanical copy of the fix() lines. For single-occasion records pass OCC = 1.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dolutegravir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dolutegravir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 2L,
-    age_median     = "43 years",
-    age_range      = "31-50 years (interquartile range)",
-    weight_median  = "81.5 kg",
-    weight_range   = "69.5-88.6 kg (interquartile range)",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 2L,
+    age_median = "43 years",
+    age_range = "31-50 years (interquartile range)",
+    weight_median = "81.5 kg",
+    weight_range = "69.5-88.6 kg (interquartile range)",
     sex_female_pct = 32,
-    disease_state  = "healthy HIV-negative volunteers",
-    dose_range     = "dolutegravir 50 mg once daily, 50 mg twice daily and 100 mg once daily, alone or with rifampicin 600 mg once daily or rifabutin 300 mg once daily",
-    regions        = "United Kingdom (RADIO, London) and United States (NCT01231542, Baltimore MD)",
-    notes          = "Kawuma 2023 Results: 41 volunteers (68% male), 16 in RADIO and 25 in NCT01231542 (12 in arm A, 13 in arm B), contributing 907 dolutegravir plasma concentrations of which 90 were taken during rifabutin coadministration. No sample was below the lower limit of quantification. Fuller demographics are in Kawuma 2022 Table 1. The externally-validating INSPIRING patient cohort of Kawuma 2022 did not contribute to this model: the authors could not reliably co-model healthy-volunteer and patient data and note that the healthy-volunteer model slightly underpredicts trough concentrations in patients, making target-attainment predictions conservative."
+    disease_state = "healthy HIV-negative volunteers",
+    dose_range = "dolutegravir 50 mg once daily, 50 mg twice daily and 100 mg once daily, alone or with rifampicin 600 mg once daily or rifabutin 300 mg once daily",
+    regions = "United Kingdom (RADIO, London) and United States (NCT01231542, Baltimore MD)",
+    notes = "Kawuma 2023 Results: 41 volunteers (68% male), 16 in RADIO and 25 in NCT01231542 (12 in arm A, 13 in arm B), contributing 907 dolutegravir plasma concentrations of which 90 were taken during rifabutin coadministration. No sample was below the lower limit of quantification. Fuller demographics are in Kawuma 2022 Table 1. The externally-validating INSPIRING patient cohort of Kawuma 2022 did not contribute to this model: the authors could not reliably co-model healthy-volunteer and patient data and note that the healthy-volunteer model slightly underpredicts trough concentrations in patients, making target-attainment predictions conservative."
   )
 
   ini({

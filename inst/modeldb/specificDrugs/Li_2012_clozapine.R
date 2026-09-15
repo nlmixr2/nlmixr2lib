@@ -37,25 +37,25 @@ Li_2012_clozapine <- function() {
     sep = " "
   )
   vignette <- "Li_2012_clozapine"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "clozapine", units = "umol", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "clozapine", units = "umol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "clozapine", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "clozapine", units = "umol", specimen = "plasma", verified = FALSE),
     central_norcloz = list(analyte = "norclozapine", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The Li 2012 paper's reference category is female (Table 2 typical values are for female nonsmokers; Methods example formula uses SEX = 0 for female, 1 for male).",
-      notes              = paste(
+      notes = paste(
         "Li 2012 encodes sex as a male-indicator (1 = male, 0 = female) with",
         "female as the reference category (Methods 'For male subjects, the",
         "theta_cov term is added to the population estimate'). To store under",
@@ -65,14 +65,14 @@ Li_2012_clozapine <- function() {
         "(1 - SEXF)), so SEXF = 1 (female) yields factor 1 and SEXF = 0 (male)",
         "yields the paper's +20.8% (parent) / +24.2% (metabolite) increment."
       ),
-      source_name        = "SEX (1 = male, 0 = female)"
+      source_name = "SEX (1 = male, 0 = female)"
     ),
     SMOKE = list(
-      description        = "Current-smoker status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-smoker).",
-      notes              = paste(
+      notes = paste(
         "Li 2012 Methods: 'Persons who had smoked 5 or more cigarettes per",
         "day within the last week were defined as smokers.' Self-reported and",
         "nurse-confirmed; no biochemical verification (Discussion lists this",
@@ -81,16 +81,16 @@ Li_2012_clozapine <- function() {
         "smokers. Applied multiplicatively on apparent clearance of both",
         "clozapine and norclozapine."
       ),
-      source_name        = "smoking status"
+      source_name = "smoking status"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate on apparent clearance and volume",
         "of distribution of both clozapine and norclozapine via the",
         "power-law form TVCL = theta_CL * (AGE/AGEAVE)^theta_AGE (Methods).",
@@ -104,9 +104,9 @@ Li_2012_clozapine <- function() {
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened alongside AGE as a continuous covariate on apparent",
         "clearance and volume of distribution; not retained in the final",
         "model (Results). Cohort range and central tendency are not",
@@ -117,33 +117,33 @@ Li_2012_clozapine <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 162L,
-    n_observations  = 1617L,
-    n_studies       = 1L,
-    age_range       = "18-59 years (mean 35.5, SD 10.6; Table 1)",
-    age_median      = "mean 35.5 years (median not reported)",
-    weight_range    = "not tabulated in Table 1; WT and BSA were collected but only Methods narrates the screen",
-    weight_median   = "not reported",
-    sex_female_pct  = 54.3,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 162L,
+    n_observations = 1617L,
+    n_studies = 1L,
+    age_range = "18-59 years (mean 35.5, SD 10.6; Table 1)",
+    age_median = "mean 35.5 years (median not reported)",
+    weight_range = "not tabulated in Table 1; WT and BSA were collected but only Methods narrates the screen",
+    weight_median = "not reported",
+    sex_female_pct = 54.3,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste(
       "DSM-IV-diagnosed refractory schizophrenia, hospitalized at multiple",
       "mental-health sites in China. All patients on maintenance oral",
       "clozapine therapy (Jiangsu Nhwa pharmaceutical, Xuzhou); most",
       "dosed twice or three times per day. Compliance was confirmed by",
       "repeated serum-clozapine measurements during the study."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Patient-clinician-prescribed oral clozapine; specific per-subject",
       "daily-dose distribution is not tabulated in the publication.",
       "Sampling: 20% of total samples taken 0.5-4.5 h after the last dose,",
       "remaining samples taken 8.5-15.5 h after the last dose (sparse",
       "design typical of therapeutic-drug-monitoring data)."
     ),
-    regions         = "China (multiple mental-health sites; lead site Beijing An Ding Hospital)",
-    smoke_strata    = "female nonsmoker n=72, female smoker n=2, male nonsmoker n=40, male smoker n=48 (Table 1)",
-    notes           = paste(
+    regions = "China (multiple mental-health sites; lead site Beijing An Ding Hospital)",
+    smoke_strata = "female nonsmoker n=72, female smoker n=2, male nonsmoker n=40, male smoker n=48 (Table 1)",
+    notes = paste(
       "Refractory schizophrenia, Chinese-ethnicity inpatient cohort.",
       "Clozapine and norclozapine concentrations were quantified by HPLC",
       "with UV detection at 254 nm using desipramine as internal standard;",

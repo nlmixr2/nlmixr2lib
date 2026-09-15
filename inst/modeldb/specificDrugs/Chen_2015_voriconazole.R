@@ -13,30 +13,30 @@ Chen_2015_voriconazole <- function() {
 
   covariateData <- list(
     DBIL = list(
-      description        = "Direct (conjugated) serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Direct (conjugated) serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL: CL_typical = TVCL * (DBIL / 2.6)^e_dbil_cl with reference 2.6 umol/L (Chen 2015 Table 2 typical-value equation and Table 1 cohort median direct bilirubin 3.16 +/- 2.21 umol/L; the reference 2.6 is the value used inside the model equation as printed in Table 2 footnote rather than the Table 1 mean). The estimated exponent is -0.40 (95% CI -0.69 to -0.11), so a doubling of DBIL above the reference scales CL by 2^-0.40 = 0.76 (~24% decrease).",
-      source_name        = "DBIL"
+      notes = "Power-form effect on CL: CL_typical = TVCL * (DBIL / 2.6)^e_dbil_cl with reference 2.6 umol/L (Chen 2015 Table 2 typical-value equation and Table 1 cohort median direct bilirubin 3.16 +/- 2.21 umol/L; the reference 2.6 is the value used inside the model equation as printed in Table 2 footnote rather than the Table 1 mean). The estimated exponent is -0.40 (95% CI -0.69 to -0.11), so a doubling of DBIL above the reference scales CL by 2^-0.40 = 0.76 (~24% decrease).",
+      source_name = "DBIL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 62L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 1L,
     n_observations = 240L,
-    age_range      = "19-90 years",
-    age_mean       = "59.71 +/- 16.67 years",
-    weight_range   = "41-84 kg",
-    weight_mean    = "60.13 +/- 10.03 kg",
+    age_range = "19-90 years",
+    age_mean = "59.71 +/- 16.67 years",
+    weight_range = "41-84 kg",
+    weight_mean = "60.13 +/- 10.03 kg",
     sex_female_pct = 32.3,
     race_ethnicity = c(Chinese = 100),
-    disease_state  = "Adult intensive-care-unit patients with pulmonary diseases (clinical indication for invasive fungal infection; 84% with positive microbiology, predominantly aspergillosis 60% and candidiasis 19%). Hepatic and renal function ranged across normal and mildly impaired; severe renal impairment (CLCR < 50 mL/min) was an exclusion criterion under the hospital's voriconazole-stopping policy.",
-    dose_range     = "Loading dose 300 mg intravenous voriconazole followed by 200 mg intravenous infusion every 12 h; therapeutic drug monitoring started at trough before the sixth maintenance dose (steady state after 72 h).",
-    regions        = "Single center: The First Affiliated Hospital of Guangzhou Medical University, Guangzhou, P.R. China.",
-    notes          = "Prospective observational study, March 2012 - May 2013. 240 plasma concentration samples collected at 0.5, 1, 1.5, 2, 4, 6, 9, and 12 h after the start of an infusion (or any two of those points per occasion). Bioanalytical: HPLC-UV with LLOQ 70 ng/mL, calibration range 208-20800 ng/mL. Baseline demographics per Chen 2015 Table 1; final population PK parameter estimates per Chen 2015 Table 2. APACHE II 21.6 +/- 13.8, SOFA median 4, observed mortality 14.5%. Hepatotoxicity in 24.2% of patients."
+    disease_state = "Adult intensive-care-unit patients with pulmonary diseases (clinical indication for invasive fungal infection; 84% with positive microbiology, predominantly aspergillosis 60% and candidiasis 19%). Hepatic and renal function ranged across normal and mildly impaired; severe renal impairment (CLCR < 50 mL/min) was an exclusion criterion under the hospital's voriconazole-stopping policy.",
+    dose_range = "Loading dose 300 mg intravenous voriconazole followed by 200 mg intravenous infusion every 12 h; therapeutic drug monitoring started at trough before the sixth maintenance dose (steady state after 72 h).",
+    regions = "Single center: The First Affiliated Hospital of Guangzhou Medical University, Guangzhou, P.R. China.",
+    notes = "Prospective observational study, March 2012 - May 2013. 240 plasma concentration samples collected at 0.5, 1, 1.5, 2, 4, 6, 9, and 12 h after the start of an infusion (or any two of those points per occasion). Bioanalytical: HPLC-UV with LLOQ 70 ng/mL, calibration range 208-20800 ng/mL. Baseline demographics per Chen 2015 Table 1; final population PK parameter estimates per Chen 2015 Table 2. APACHE II 21.6 +/- 13.8, SOFA median 4, observed mortality 14.5%. Hepatotoxicity in 24.2% of patients."
   )
 
   ini({

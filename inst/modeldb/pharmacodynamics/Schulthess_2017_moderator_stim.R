@@ -35,8 +35,13 @@ Schulthess_2017_moderator_stim <- function() {
   # itself, and the supplementary R script adds dose = 0.1 to that state), so
   # the implied central volume is 1 and `central` carries a concentration.
   compartmentData <- list(
-    central    = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
-    effect     = list(analyte = "biomarker response x1 (the model output)", units = "mL", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "drug (generic)", units = "umol/L", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "biomarker response x1 (the model output)",
+      units = "mL",
+      specimen = "plasma",
+      verified = TRUE
+    ),
     moderator1 = list(analyte = "endogenous moderator x2", units = "mL", specimen = "not applicable", verified = TRUE)
   )
 

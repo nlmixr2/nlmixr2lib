@@ -3,8 +3,8 @@ Hayashi_2007_omalizumab <- function() {
   reference <- "Hayashi N, Tsukamoto Y, Sallas WM, Lowe PJ. A mechanism-based binding model for the population pharmacokinetics and pharmacodynamics of omalizumab. Br J Clin Pharmacol. 2007;63(5):548-561. doi:10.1111/j.1365-2125.2006.02803.x (PMID 17096680)."
   vignette <- "Hayashi_2007_omalizumab"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL (total omalizumab); ng/mL (free and total IgE)"
   )
 
@@ -13,50 +13,52 @@ Hayashi_2007_omalizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "omalizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "omalizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "omalizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "omalizumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "IgE", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent CL of free omalizumab (CL_X/f, exponent 0.911) and on apparent V_d of omalizumab and IgE (V_X/f = V_E/f, exponent 0.658). Both effects centred at 61.1 kg (Hayashi 2007 Table 3 footnote *).",
-      source_name        = "Body weight"
+      notes = "Power covariate on apparent CL of free omalizumab (CL_X/f, exponent 0.911) and on apparent V_d of omalizumab and IgE (V_X/f = V_E/f, exponent 0.658). Both effects centred at 61.1 kg (Hayashi 2007 Table 3 footnote *).",
+      source_name = "Body weight"
     ),
     IGE = list(
-      description        = "Baseline serum total IgE concentration (pretreatment)",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum total IgE concentration (pretreatment)",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on apparent CL of free IgE (CL_E/f, exponent -0.281) and on apparent IgE production rate (P_E/f, exponent 0.657). Both effects centred at 482.4 ng/mL (Hayashi 2007 Table 3 footnote dagger). Also used as the initial value for the total-IgE state total_target at t = 0: with no drug aboard, total_target(0) = (IGE / MW_IgE) * V_E. Source paper reports IU/mL alongside ng/mL with conversion 1 IU/mL = 2.42 ng/mL (Hayashi 2007 Methods, page 549).",
-      source_name        = "IgE0 (baseline IgE concentration)"
+      notes = "Power covariate on apparent CL of free IgE (CL_E/f, exponent -0.281) and on apparent IgE production rate (P_E/f, exponent 0.657). Both effects centred at 482.4 ng/mL (Hayashi 2007 Table 3 footnote dagger). Also used as the initial value for the total-IgE state total_target at t = 0: with no drug aboard, total_target(0) = (IGE / MW_IgE) * V_E. Source paper reports IU/mL alongside ng/mL with conversion 1 IU/mL = 2.42 ng/mL (Hayashi 2007 Methods, page 549).",
+      source_name = "IgE0 (baseline IgE concentration)"
     )
   )
 
   population <- list(
-    n_subjects       = 202L,
-    n_studies        = 2L,
-    study_names      = c("1101 (single-dose, healthy atopic Japanese)",
-                         "1305 (multiple-dose, Japanese seasonal allergic rhinitis)"),
-    n_observations   = 3192L,
+    n_subjects = 202L,
+    n_studies = 2L,
+    study_names = c(
+      "1101 (single-dose, healthy atopic Japanese)",
+      "1305 (multiple-dose, Japanese seasonal allergic rhinitis)"
+    ),
+    n_observations = 3192L,
     n_omalizumab_obs = 1037L,
-    n_total_ige_obs  = 1191L,
-    n_free_ige_obs   = 964L,
-    age_range        = "Adults; demographic table of Hayashi 2007 (Table 1) reports body weight and baseline IgE only",
-    weight_range     = "Study 1101: 51-79 kg (mean 62.5, SD 6.4); Study 1305: 42-101 kg (mean 60.5, SD 10.2)",
-    weight_median    = "Reference 61.1 kg (Hayashi 2007 Table 3 footnote *)",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = c(White = 0, Black = 0, Asian = 100, Other = 0),
-    race_notes       = "All 202 model-building subjects were Japanese (Hayashi 2007 Table 1).",
-    disease_state    = "Healthy Japanese atopic volunteers (study 1101) and Japanese patients with seasonal allergic rhinitis (study 1305)",
-    dose_range       = "Study 1101: single SC 75, 150, 300, or 375 mg; Study 1305: multiple-dose SC 150-375 mg every 2 or 4 weeks per the dosing table (Hayashi 2007 Table 2) keyed by body weight and baseline IgE",
-    regions          = "Japan",
+    n_total_ige_obs = 1191L,
+    n_free_ige_obs = 964L,
+    age_range = "Adults; demographic table of Hayashi 2007 (Table 1) reports body weight and baseline IgE only",
+    weight_range = "Study 1101: 51-79 kg (mean 62.5, SD 6.4); Study 1305: 42-101 kg (mean 60.5, SD 10.2)",
+    weight_median = "Reference 61.1 kg (Hayashi 2007 Table 3 footnote *)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = c(White = 0, Black = 0, Asian = 100, Other = 0),
+    race_notes = "All 202 model-building subjects were Japanese (Hayashi 2007 Table 1).",
+    disease_state = "Healthy Japanese atopic volunteers (study 1101) and Japanese patients with seasonal allergic rhinitis (study 1305)",
+    dose_range = "Study 1101: single SC 75, 150, 300, or 375 mg; Study 1305: multiple-dose SC 150-375 mg every 2 or 4 weeks per the dosing table (Hayashi 2007 Table 2) keyed by body weight and baseline IgE",
+    regions = "Japan",
     baseline_ige_range = "Study 1101: 204-2143 ng/mL (mean 811, SD 473); Study 1305: 53-1316 ng/mL (mean 373, SD 317)",
-    notes            = "Model-building dataset from two Japanese clinical studies (1101 and 1305). The published external validation against 531 White patients from studies 007/008/009 is not part of the model-building cohort and is referenced only for predictive evaluation (Hayashi 2007 Table 1)."
+    notes = "Model-building dataset from two Japanese clinical studies (1101 and 1305). The published external validation against 531 White patients from studies 007/008/009 is not part of the model-building cohort and is referenced only for predictive evaluation (Hayashi 2007 Table 1)."
   )
 
   ini({

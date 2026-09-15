@@ -19,23 +19,23 @@ Straube_2025_omalizumab_2cmt <- function() {
   # -- Equation (S18) gives the peripheral compartment no target and no
   # binding, so no complex accumulates there.
   compartmentData <- list(
-    depot       = list(analyte = "omalizumab",             units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "omalizumab",             units = "nmol", specimen = "plasma",              verified = FALSE),
-    peripheral1 = list(analyte = "omalizumab",             units = "nmol", specimen = "tissue",              verified = FALSE),
-    target      = list(analyte = "IgE",                    units = "nmol", specimen = "plasma",              verified = FALSE),
-    complex     = list(analyte = "omalizumab-IgE complex", units = "nmol", specimen = "plasma",              verified = FALSE)
+    depot = list(analyte = "omalizumab", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "omalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "omalizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    target = list(analyte = "IgE", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "omalizumab-IgE complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 2L,
-    n_studies     = 1L,
+    species = "human",
+    n_subjects = 2L,
+    n_studies = 1L,
     disease_state = "Atopic disease; omalizumab is a monoclonal antibody against IgE used to treat atopic diseases (Straube 2025 section 3.2).",
-    dose_range    = "Single subcutaneous dose. 90 mg for the Figure S3a patient encoded here; the second patient (Table S1 'Fig. S2b' column) received 270 mg.",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Single subcutaneous dose. 90 mg for the Figure S3a patient encoded here; the second patient (Table S1 'Fig. S2b' column) received 270 mg.",
+    regions = NA_character_,
+    notes = paste(
       "Same two digitised phase I patients as Straube_2025_omalizumab_1cmt, refitted with the",
       "two-compartment TMDD model of Equations (S18)-(S21). Straube states that the fits to the observed",
       "data 'can be improved with a two-compartment model' (section 3.2). Table S1 footnote: Vc, Vp, CL and",

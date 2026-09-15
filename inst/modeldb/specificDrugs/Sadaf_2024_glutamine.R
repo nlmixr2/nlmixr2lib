@@ -33,11 +33,11 @@ Sadaf_2024_glutamine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sadaf 2024 Eq. 3 and Table 2. Allometric scaling to a 70 kg",
         "reference with the theoretical exponents held at 0.75 for CL/F and",
         "1 for V/F. The paper also estimated the exponents freely and",
@@ -46,14 +46,14 @@ Sadaf_2024_glutamine <- function() {
         "theoretical exponents. Cohort weights 30.3-119.1 kg (Table 1).",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     GLN_BL = list(
-      description        = "Pre-dose (baseline) endogenous plasma L-glutamine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Pre-dose (baseline) endogenous plasma L-glutamine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sadaf 2024 Table 2: CLi = theta1 * (WT/70)^0.75 *",
         "(Glu_BSL / Glu_BSLstandard)^theta2 with the standard baseline",
         "Glu_BSLstandard = 683 umol/L given in the Table 2 footnote and",
@@ -69,14 +69,14 @@ Sadaf_2024_glutamine <- function() {
         "364-758 umol/L (Table 1).",
         sep = " "
       ),
-      source_name        = "Glu_BSL"
+      source_name = "Glu_BSL"
     ),
     DOSE_GLN_GKG = list(
-      description        = "Administered L-glutamine dose per kg body weight for the current dosing occasion",
-      units              = "g/kg",
-      type               = "continuous",
+      description = "Administered L-glutamine dose per kg body weight for the current dosing occasion",
+      units = "g/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sadaf 2024 Table 2: Vi = theta3 * (WT/70) * (DOSE per kg / 0.1)^theta4",
         "with theta4 = 0.27 and the 0.1 g/kg lowest dose level as the",
         "reference. Takes the values 0.1, 0.3, and 0.6 g/kg in the source",
@@ -91,14 +91,14 @@ Sadaf_2024_glutamine <- function() {
         "dose, the lower the relative bioavailability').",
         sep = " "
       ),
-      source_name        = "DOSE per kg"
+      source_name = "DOSE per kg"
     ),
     OCC = list(
-      description        = "Study-visit occasion index for inter-occasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Study-visit occasion index for inter-occasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sadaf 2024 Methods 2.6.1: 'For the full dataset, four occasions were",
         "defined', corresponding to study visits 1-4. Decomposed inside",
         "model() into binary indicators oc1..oc4 that multiplex four",
@@ -108,7 +108,7 @@ Sadaf_2024_glutamine <- function() {
         "34.5 units (Results 3.3).",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -120,39 +120,39 @@ Sadaf_2024_glutamine <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (6.8-43.8 years, Table 1); not retained. Sadaf 2024 Results 3.3 and Discussion report no age effect once weight was scaled allometrically."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (6.8-43.8 years, Table 1); not retained. Sadaf 2024 Results 3.3 and Discussion report no age effect once weight was scaled allometrically."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a body-size descriptor (Methods 2.6.2); not retained - allometric body weight was the size descriptor selected."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a body-size descriptor (Methods 2.6.2); not retained - allometric body weight was the size descriptor selected."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened as a body-size descriptor (Methods 2.6.2); not retained - allometric body weight was the size descriptor selected."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened as a body-size descriptor (Methods 2.6.2); not retained - allometric body weight was the size descriptor selected."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (8 of 12 participants female, Table 1); not retained (Results 3.3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (8 of 12 participants female, Table 1); not retained (Results 3.3)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened (Methods 2.6.2); not retained (Results 3.3). Cohort creatinine was unchanged by treatment (0.63 vs 0.63 mg/dL, p = 0.887, Results 3.4)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened (Methods 2.6.2); not retained (Results 3.3). Cohort creatinine was unchanged by treatment (0.63 vs 0.63 mg/dL, p = 0.887, Results 3.4)."
     ),
     FED = list(
       description = "Meal-intake status of the dosing occasion",
-      units       = "(0 / 0.5 / 1 / 1.5)",
-      type        = "continuous",
-      notes       = paste(
+      units = "(0 / 0.5 / 1 / 1.5)",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and not retained - this is the paper's headline",
         "negative finding ('Food intake did not alter glutamine clearance,",
         "thus l-glutamine can be taken with or without food'). Note that",
@@ -168,18 +168,18 @@ Sadaf_2024_glutamine <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "L-glutamine", units = "umol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "L-glutamine", units = "umol", specimen = "administration site", verified = TRUE),
     central = list(analyte = "L-glutamine", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "6.8-43.8 years",
-    weight_range   = "30.3-119.1 kg",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "6.8-43.8 years",
+    weight_range = "30.3-119.1 kg",
     sex_female_pct = 66.7,
-    disease_state  = paste(
+    disease_state = paste(
       "Sickle cell disease (N = 8: 4 homozygous sickle cell anemia HbSS,",
       "4 sickle-hemoglobin C disease HbSC) plus healthy adult volunteers",
       "with a normal hemoglobin profile (N = 4, HbAA). Concomitant",
@@ -191,9 +191,9 @@ Sadaf_2024_glutamine <- function() {
       "(Methods 2.6.2), so the discrepancy does not affect the model.",
       sep = " "
     ),
-    dose_range     = "0.1 g/kg twice daily, then 0.3 g/kg twice daily, then 0.6 g/kg once daily, oral, one dose level per week for three weeks",
-    regions        = "United States (single center: Cincinnati Children's Hospital Medical Center)",
-    notes          = paste(
+    dose_range = "0.1 g/kg twice daily, then 0.3 g/kg twice daily, then 0.6 g/kg once daily, oral, one dose level per week for three weeks",
+    regions = "United States (single center: Cincinnati Children's Hospital Medical Center)",
+    notes = paste(
       "Open-label, dose-ascending phase IV trial (NCT04684381), January to",
       "June 2021. Baseline demographics are Sadaf 2024 Table 1, reported by",
       "the three allocation groups (pediatric SCD N = 4, adult SCD N = 4,",

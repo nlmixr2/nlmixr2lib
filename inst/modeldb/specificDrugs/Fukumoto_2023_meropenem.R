@@ -25,21 +25,21 @@ Fukumoto_2023_meropenem <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Measured creatinine clearance from an 8-hour timed urine",
         "collection, BSA-normalized to 1.73 m^2. NOT a creatinine-based",
         "estimating equation: urinary creatinine was assayed directly."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'measured CCr'. Fukumoto 2023 Equation 1 (p. 393):",
         "measured CCr = (urine Cr [mg/dL] / SCr [mg/dL]) * urine output",
         "[mL/min] * (1.73 m^2 / BSA [m^2]). The trailing 1.73/BSA factor",
@@ -64,16 +64,16 @@ Fukumoto_2023_meropenem <- function() {
         "Treated as time-fixed per subject: a single 8-hour collection was",
         "paired with each patient's PK sampling occasion."
       ),
-      source_name        = "measured CCr"
+      source_name = "measured CCr"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at the time of blood collection",
-      units       = "year",
-      type        = "continuous",
-      notes       = paste(
+      units = "year",
+      type = "continuous",
+      notes = paste(
         "Screened on CL; reached significance in the forward-addition step",
         "(Fukumoto 2023 Results 'PPK Model', p. 395: 'Age, Alb, SCr, eGFR,",
         "measured CCr, CG-CCr, and SOFA score were selected as the",
@@ -86,9 +86,9 @@ Fukumoto_2023_meropenem <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Screened; significant on forward addition but not retained in the",
         "final model. No published point estimate. Cohort median 2.10 g/dL",
         "(range 1.50-3.10), Table 1 -- i.e. uniformly hypoalbuminemic, as",
@@ -98,9 +98,9 @@ Fukumoto_2023_meropenem <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened; significant on forward addition but not retained. No",
         "published point estimate. Cohort median 0.69 mg/dL (range",
         "0.29-2.39), Table 1. The paper argues SCr is an unreliable renal",
@@ -111,9 +111,9 @@ Fukumoto_2023_meropenem <- function() {
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and V1 as a marker of sepsis severity / vascular",
         "permeability; NOT significant and not retained. Cohort median",
         "11.0 mg/dL (range 0.72-41.0), Table 1. Note the Discussion",
@@ -124,18 +124,18 @@ Fukumoto_2023_meropenem <- function() {
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = NULL,
-      type        = "categorical",
-      notes       = paste(
+      units = NULL,
+      type = "categorical",
+      notes = paste(
         "Screened; NOT significant and not retained. Cohort 25 men / 6",
         "women (19.4% female), Table 1."
       )
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and V1; NOT significant and not retained -- so no",
         "allometric scaling appears in the final model and V1 / V2 / Q are",
         "absolute volumes and flows for the cohort. Cohort median 53.7 kg",
@@ -147,9 +147,9 @@ Fukumoto_2023_meropenem <- function() {
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "points",
-      type        = "continuous",
-      notes       = paste(
+      units = "points",
+      type = "continuous",
+      notes = paste(
         "Screened as a sepsis-severity covariate; significant on forward",
         "addition but not retained in the final model. No published point",
         "estimate. Cohort median 8 (range 2-15) on admission and 6 (range",
@@ -163,17 +163,17 @@ Fukumoto_2023_meropenem <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 31L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
     n_concentrations = 100L,
-    age_range        = "18-94 years",
-    age_median       = "72 years",
-    weight_range     = "35.3-91.7 kg",
-    weight_median    = "53.7 kg",
-    sex_female_pct   = 19.4,
-    race_ethnicity   = "Not reported (single-center Japanese cohort)",
-    disease_state    = paste(
+    age_range = "18-94 years",
+    age_median = "72 years",
+    weight_range = "35.3-91.7 kg",
+    weight_median = "53.7 kg",
+    sex_female_pct = 19.4,
+    race_ethnicity = "Not reported (single-center Japanese cohort)",
+    disease_state = paste(
       "Adults with sepsis admitted to the emergency center or intensive care",
       "unit, diagnosed by specialized physicians. Median SOFA score 8",
       "(range 2-15) on admission and 6 (range 0-11) at the time of blood",
@@ -185,17 +185,17 @@ Fukumoto_2023_meropenem <- function() {
       "Exclusions: age < 18 years, hemodialysis, massive bleeding,",
       "pregnancy, and death during the urine collection."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Meropenem IV 0.5 g every 8 or 12 hours, or 1 g every 8 or 12 hours,",
       "each administered as a 0.5-hour infusion. The regimen for each",
       "patient was chosen by the treating physician based on sepsis severity",
       "and renal function."
     ),
-    regions          = paste(
+    regions = paste(
       "Japan (single center: Showa University Hospital, Tokyo).",
       "Enrolled June 2016-August 2021."
     ),
-    renal_function   = paste(
+    renal_function = paste(
       "Broad range by design. Measured CCr (8-hour urine collection,",
       "BSA-normalized) median 87.6 mL/min/1.73 m^2 (range 12.3-223);",
       "Cockcroft-Gault CCr median 81.1 mL/min (range 14.0-246); eGFR median",
@@ -204,7 +204,7 @@ Fukumoto_2023_meropenem <- function() {
       "clearance (CCr >= 130 mL/min) and 3/31 (10%) had CCr <= 30 mL/min.",
       "Patients on hemodialysis were excluded."
     ),
-    notes            = paste(
+    notes = paste(
       "Demographics from Fukumoto 2023 Table 1 (p. 394). Prospective",
       "observational study; 32 patients enrolled, 1 excluded, 31 analyzed.",
       "Sparse sampling: 2-5 samples per patient (median 2) within a single",

@@ -1,77 +1,77 @@
 Mitra_2026_ziftomenib <- function() {
   description <- "Sequential two-stage population PK model for oral ziftomenib (a potent, selective, oral menin inhibitor for R/R NPM1-mutated acute myeloid leukemia) and its two active metabolites KO-739 and KO-516 (Mitra 2026 Kura Oncology KOMET-001 + KO-MEN-003). Parent PK is a 2-compartment model with first-order absorption, absorption lag time, and linear elimination from the central compartment; oral bioavailability F1 is fixed at 0.129 (identifiability constraint from the human ADME + absolute-BA study KO-MEN-005). Each metabolite is 2-compartment with linear elimination; the metabolic clearance is split between KO-739 and KO-516 by a fixed 1:1 in-vitro-anchored biotransformation ratio (FM_KO516 = 0.5), with the total metabolized fraction FM held fixed at 0.535 after an initial identifiability-limited estimation. Covariate effects retained in the final model: FED and PPI on parent F1 (logit-scale shifts +3.21 fed; -0.520 PPI = 6.09x and 0.627x multipliers on F1), PPI on parent Ka (log-scale shift -0.485 = 0.616x), FED on parent absorption lag time (log-scale shift +0.322 = 1.38x), strong CYP3A4 inhibitor on parent CL/F (log-scale -0.778 = 0.459x), healthy-volunteer status on parent CL/F (log-scale +0.950 = 2.59x), healthy-volunteer status on FM (logit-scale -1.62 = 0.348x multiplier on FM), strong CYP3A4 inhibitor on KO-739 CL (log-scale -1.64 = 0.195x), strong CYP3A4 inhibitor on KO-516 CL (log-scale -0.802 = 0.449x), healthy-volunteer status on KO-739 Vc (log-scale -1.62 = 0.197x), and healthy-volunteer status on KO-516 Vc (log-scale -1.87 = 0.154x). No effect of NPM1-m vs KMT2A-r mutational status, body weight, sex, race, age, mild/moderate renal or hepatic impairment, or P-gp inhibitor coadministration on ziftomenib PK. IIV: parent 47.3% CV on CL and 120% CV on Vc; metabolites 74.7% (KO-739 CL), 110% (KO-739 Vc), 162% (KO-739 Q), 31.2% (KO-516 CL), 191% (KO-516 Vc), 118% (KO-516 Q), and 56.8% CV on FM (all independent diagonals). Inter-occasion variability on F1 (Omega 1.06 corresponding to 137.3% CV) reported in the parent NONMEM run across 3 occasions is not encoded structurally here (no operational occasion column is defined for the model-library use case; see vignette Assumptions and deviations). Residual error: proportional 43.7% CV on parent Cc; proportional 45.2% CV plus additive 0.128 ng/mL on Cc_ko739; proportional 36.4% CV on Cc_ko516."
-  reference   <- "Mitra A, Yang X, Ortiz RH, Jomphe C, Leoni M, Gosselin NH. Population Pharmacokinetics and Exposure-Response Analysis of Ziftomenib in Relapsed or Refractory Acute Myeloid Leukemia Patients With NPM1 Mutation. CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70244."
-  vignette    <- "Mitra_2026_ziftomenib"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Mitra A, Yang X, Ortiz RH, Jomphe C, Leoni M, Gosselin NH. Population Pharmacokinetics and Exposure-Response Analysis of Ziftomenib in Relapsed or Refractory Acute Myeloid Leukemia Patients With NPM1 Mutation. CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70244."
+  vignette <- "Mitra_2026_ziftomenib"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "ziftomenib", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ko739     = list(analyte = "KO-739", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ziftomenib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ziftomenib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ko739 = list(analyte = "KO-739", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_ko739 = list(analyte = "KO-739", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ko516     = list(analyte = "KO-516", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ko516 = list(analyte = "KO-516", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_ko516 = list(analyte = "KO-516", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator, 1 = healthy subject (KO-MEN-003 crossover food-effect / PPI-effect study), 0 = patient with R/R NPM1-m or KMT2A-r AML (KOMET-001).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator, 1 = healthy subject (KO-MEN-003 crossover food-effect / PPI-effect study), 0 = patient with R/R NPM1-m or KMT2A-r AML (KOMET-001).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (R/R AML patient; the KOMET-001 reference cohort)",
-      notes              = "Time-fixed per subject. Multiplicative effects (via the paper's log/logit-scale shifts): 2.59x on parent CL/F when DIS_HEALTHY = 1 (Table 1 'Healthy volunteers on CL'; corresponds to log-scale THETA(12) = 0.950); 0.348x on FM (Table 1 'Healthy volunteers on FM'; logit-scale THETA(17) = -1.62 -> multiplicative reduction of parent-to-metabolite fraction by 65.2% in healthy subjects); 0.197x on KO-739 Vc (Table 1 'Healthy volunteers on Vc of KO-739'; log-scale THETA(21) = -1.62); 0.154x on KO-516 Vc (Table 1 'Healthy volunteers on Vc of KO-516'; log-scale THETA(22) = -1.87). Source paper column 'HV' (0/1). Paper notes the elevated ziftomenib exposure in AML patients relative to healthy volunteers (GMR ~2.55 for AUCss, ~2.18 for Cmax,ss) is attributed to disease-state effects on CL/F and (for metabolite Vc) distribution.",
-      source_name        = "HV"
+      notes = "Time-fixed per subject. Multiplicative effects (via the paper's log/logit-scale shifts): 2.59x on parent CL/F when DIS_HEALTHY = 1 (Table 1 'Healthy volunteers on CL'; corresponds to log-scale THETA(12) = 0.950); 0.348x on FM (Table 1 'Healthy volunteers on FM'; logit-scale THETA(17) = -1.62 -> multiplicative reduction of parent-to-metabolite fraction by 65.2% in healthy subjects); 0.197x on KO-739 Vc (Table 1 'Healthy volunteers on Vc of KO-739'; log-scale THETA(21) = -1.62); 0.154x on KO-516 Vc (Table 1 'Healthy volunteers on Vc of KO-516'; log-scale THETA(22) = -1.87). Source paper column 'HV' (0/1). Paper notes the elevated ziftomenib exposure in AML patients relative to healthy volunteers (GMR ~2.55 for AUCss, ~2.18 for Cmax,ss) is attributed to disease-state effects on CL/F and (for metabolite Vc) distribution.",
+      source_name = "HV"
     ),
     CONMED_CYP3A4_INH_STRONG = list(
-      description        = "Concomitant strong CYP3A4 inhibitor coadministration indicator (per-dose-record), 1 = ziftomenib dose administered during a period of concomitant strong CYP3A4 inhibitor (e.g., posaconazole, voriconazole, itraconazole, ketoconazole) coadministration, 0 = no strong CYP3A4 inhibitor coadministration during the dose period.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong CYP3A4 inhibitor coadministration indicator (per-dose-record), 1 = ziftomenib dose administered during a period of concomitant strong CYP3A4 inhibitor (e.g., posaconazole, voriconazole, itraconazole, ketoconazole) coadministration, 0 = no strong CYP3A4 inhibitor coadministration during the dose period.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no strong CYP3A4 inhibitor coadministration)",
-      notes              = "Time-varying per record. Multiplicative effects (via the paper's log-scale shifts): 0.459x on parent CL/F when CONMED_CYP3A4_INH_STRONG = 1 (Table 1 'Strong CYP3A4 inhibitors on CL'; log-scale THETA(11) = -0.778, corresponding to a 54.1% reduction in parent CL/F, consistent with ziftomenib being primarily metabolized by CYP3A4); 0.195x on KO-739 CL (Table 1 'Strong CYP3A4 inhibitors on CL of KO-739'; log-scale THETA(18) = -1.64, 80.5% reduction); 0.449x on KO-516 CL (Table 1 'Strong CYP3A4 inhibitors on CL of KO-516'; log-scale THETA(19) = -0.802, 55.1% reduction). Source paper column 'DDICYPSH'. Weak- and moderate-CYP3A4-inhibitor effects on parent CL were tested (paper's THETA(10)) but fixed at 0 in the final model; the CONMED_CYP3A4_INH_STRONG canonical captures only the strong-inhibitor stratum. Concomitant antifungal azoles are the dominant driver of this indicator in the KOMET-001 AML cohort (used for prophylaxis against invasive fungal infections).",
-      source_name        = "DDICYPSH"
+      notes = "Time-varying per record. Multiplicative effects (via the paper's log-scale shifts): 0.459x on parent CL/F when CONMED_CYP3A4_INH_STRONG = 1 (Table 1 'Strong CYP3A4 inhibitors on CL'; log-scale THETA(11) = -0.778, corresponding to a 54.1% reduction in parent CL/F, consistent with ziftomenib being primarily metabolized by CYP3A4); 0.195x on KO-739 CL (Table 1 'Strong CYP3A4 inhibitors on CL of KO-739'; log-scale THETA(18) = -1.64, 80.5% reduction); 0.449x on KO-516 CL (Table 1 'Strong CYP3A4 inhibitors on CL of KO-516'; log-scale THETA(19) = -0.802, 55.1% reduction). Source paper column 'DDICYPSH'. Weak- and moderate-CYP3A4-inhibitor effects on parent CL were tested (paper's THETA(10)) but fixed at 0 in the final model; the CONMED_CYP3A4_INH_STRONG canonical captures only the strong-inhibitor stratum. Concomitant antifungal azoles are the dominant driver of this indicator in the KOMET-001 AML cohort (used for prophylaxis against invasive fungal infections).",
+      source_name = "DDICYPSH"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant proton-pump inhibitor coadministration indicator (per-dose-record), 1 = ziftomenib dose administered during a period of concomitant PPI (e.g., rabeprazole in study KO-MEN-003; or an oncology-standard PPI in KOMET-001) coadministration, 0 = no PPI coadministration during the dose period.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant proton-pump inhibitor coadministration indicator (per-dose-record), 1 = ziftomenib dose administered during a period of concomitant PPI (e.g., rabeprazole in study KO-MEN-003; or an oncology-standard PPI in KOMET-001) coadministration, 0 = no PPI coadministration during the dose period.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no PPI coadministration)",
-      notes              = "Time-varying per record. Multiplicative effects (via the paper's log/logit-scale shifts): 0.627x on parent F1 when CONMED_PPI = 1 (Table 1 'Effect of PPI on F1'; logit-scale THETA(15) = -0.520, 37.3% reduction in oral bioavailability); 0.616x on parent Ka (Table 1 'Effect of PPI on Ka'; log-scale THETA(13) = -0.485, 38.4% slower first-order absorption). The dual effect on F1 and Ka is consistent with ziftomenib's pH-solubility profile of reduced solubility at elevated gastric pH. Source paper column 'DDIPPI'.",
-      source_name        = "DDIPPI"
+      notes = "Time-varying per record. Multiplicative effects (via the paper's log/logit-scale shifts): 0.627x on parent F1 when CONMED_PPI = 1 (Table 1 'Effect of PPI on F1'; logit-scale THETA(15) = -0.520, 37.3% reduction in oral bioavailability); 0.616x on parent Ka (Table 1 'Effect of PPI on Ka'; log-scale THETA(13) = -0.485, 38.4% slower first-order absorption). The dual effect on F1 and Ka is consistent with ziftomenib's pH-solubility profile of reduced solubility at elevated gastric pH. Source paper column 'DDIPPI'.",
+      source_name = "DDIPPI"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator (per-dose-record), 1 = ziftomenib dose administered in the fed state (any meal), 0 = ziftomenib dose administered fasted (recommended clinical administration state).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator (per-dose-record), 1 = ziftomenib dose administered in the fed state (any meal), 0 = ziftomenib dose administered fasted (recommended clinical administration state).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Time-varying per record. Multiplicative effects (via the paper's log/logit-scale shifts): 6.09x on parent F1 when FED = 1 (Table 1 'Effect of FED on F1'; logit-scale THETA(14) = 3.21, corresponding to a 6.1-fold increase in F1 due to food, consistent with ziftomenib's low solubility); 1.38x on parent absorption lag time (Table 1 'Effect of FED on Lag'; log-scale THETA(16) = 0.322). Source paper column 'FED'. Paper recommends fasted administration in clinical use (Ziftomenib label recommendation; Discussion).",
-      source_name        = "FED"
+      notes = "Time-varying per record. Multiplicative effects (via the paper's log/logit-scale shifts): 6.09x on parent F1 when FED = 1 (Table 1 'Effect of FED on F1'; logit-scale THETA(14) = 3.21, corresponding to a 6.1-fold increase in F1 due to food, consistent with ziftomenib's low solubility); 1.38x on parent absorption lag time (Table 1 'Effect of FED on Lag'; log-scale THETA(16) = 0.322). Source paper column 'FED'. Paper recommends fasted administration in clinical use (Ziftomenib label recommendation; Discussion).",
+      source_name = "FED"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 188L,
-    n_studies       = 2L,
-    n_patients      = 174L,
-    n_healthy       = 14L,
-    n_observations_parent    = 2436L,
-    n_observations_ko739     = 2376L,
-    n_observations_ko516     = 2299L,
-    age_range       = "18-86 years (overall median 64.5); patients 18-86 (median 66.0); healthy volunteers 22-55 (median 39.0)",
-    weight_range    = "41.0-135 kg (overall median 71.5); patients 41.0-135 (median 71.1); healthy volunteers 61.5-93.0 (median 76.7)",
-    sex_female_pct  = 51.1,
-    race_ethnicity  = c(White = 75.0, `Black or African American` = 5.3, Asian = 3.2, Other = 2.1, Missing = 14.4),
-    disease_state   = "Pooled cohort of 174 adult patients with relapsed or refractory acute myeloid leukemia (R/R AML; predominantly NPM1-m in Phase 1b/2 and KMT2A-r in Phase 1a of KOMET-001) enrolled in KOMET-001 (NCT04067336; a Phase 1/2 first-in-human study of oral ziftomenib) plus 14 healthy volunteers enrolled in KO-MEN-003 (a Phase 1, open-label, crossover food-effect / rabeprazole DDI study of ziftomenib). At baseline in KOMET-001: 137/174 (78.7%) with normal hepatic function, 32/174 (18.4%) mild hepatic impairment, 5/174 (2.9%) moderate hepatic impairment; 73/174 (42.0%) normal renal function, 66/174 (37.9%) mild, 21/174 (12.1%) moderate renal impairment. No patients with severe renal or hepatic impairment were enrolled.",
-    dose_range      = "KOMET-001 Phase 1a: 50 mg QD dose escalation up to 1000 mg QD (7 cohorts); Phase 1b: single-agent ziftomenib PO QD; Phase 2 (registrational-enabling): 600 mg PO QD. KO-MEN-003: single 400 mg oral dose in each period (fed or fasted) with or without a 20 mg PO rabeprazole pretreatment.",
-    regions         = "International (KOMET-001 conducted at 21 sites)",
-    assay           = "Validated bioanalytical assay for ziftomenib, KO-739, and KO-516 (LLOQ = 0.2 ng/mL for each analyte per Supplementary Table S3 footnote).",
-    iov_structure   = "Paper reports inter-occasion variability (IOV) on ziftomenib F1 across 3 occasions in the final parent NONMEM run (Table 1 IOV Omega = 1.06, corresponding to 137.3% CV; Occasion #1 and #2 = rich sample profiles in each study, Occasion #3 = sparse samples in KOMET-001 or third rich profile in KO-MEN-003). This model file does NOT encode the IOV structurally -- no operational occasion column is defined for the model-library use case, and the nlmixr2lib convention (Yin_2020_pexidartinib precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations.",
-    notes           = "Sequential two-stage popPK: parent (ziftomenib) fit first, then individual empirical Bayes estimates (EBEs) of parent PK parameters were fixed and used as inputs to the metabolite (KO-739 + KO-516) model. Final metabolite NONMEM run also has fixed F1 = 0.129, FM = 0.535, FM_ko516 = 0.5 (see reference Discussion). Reference subject for typical-value simulations: R/R AML patient, fasted, no PPI, no strong CYP3A4 inhibitor coadministration (Table 1 base). Parent Phase 1 NONMEM run: OBJV = 23621.837 (2436 obs, 188 individuals). Metabolite Phase 4 NONMEM run: OBJV = 28349.343 (metabolites only after fixing parent EBEs)."
+    species = "human",
+    n_subjects = 188L,
+    n_studies = 2L,
+    n_patients = 174L,
+    n_healthy = 14L,
+    n_observations_parent = 2436L,
+    n_observations_ko739 = 2376L,
+    n_observations_ko516 = 2299L,
+    age_range = "18-86 years (overall median 64.5); patients 18-86 (median 66.0); healthy volunteers 22-55 (median 39.0)",
+    weight_range = "41.0-135 kg (overall median 71.5); patients 41.0-135 (median 71.1); healthy volunteers 61.5-93.0 (median 76.7)",
+    sex_female_pct = 51.1,
+    race_ethnicity = c(White = 75.0, `Black or African American` = 5.3, Asian = 3.2, Other = 2.1, Missing = 14.4),
+    disease_state = "Pooled cohort of 174 adult patients with relapsed or refractory acute myeloid leukemia (R/R AML; predominantly NPM1-m in Phase 1b/2 and KMT2A-r in Phase 1a of KOMET-001) enrolled in KOMET-001 (NCT04067336; a Phase 1/2 first-in-human study of oral ziftomenib) plus 14 healthy volunteers enrolled in KO-MEN-003 (a Phase 1, open-label, crossover food-effect / rabeprazole DDI study of ziftomenib). At baseline in KOMET-001: 137/174 (78.7%) with normal hepatic function, 32/174 (18.4%) mild hepatic impairment, 5/174 (2.9%) moderate hepatic impairment; 73/174 (42.0%) normal renal function, 66/174 (37.9%) mild, 21/174 (12.1%) moderate renal impairment. No patients with severe renal or hepatic impairment were enrolled.",
+    dose_range = "KOMET-001 Phase 1a: 50 mg QD dose escalation up to 1000 mg QD (7 cohorts); Phase 1b: single-agent ziftomenib PO QD; Phase 2 (registrational-enabling): 600 mg PO QD. KO-MEN-003: single 400 mg oral dose in each period (fed or fasted) with or without a 20 mg PO rabeprazole pretreatment.",
+    regions = "International (KOMET-001 conducted at 21 sites)",
+    assay = "Validated bioanalytical assay for ziftomenib, KO-739, and KO-516 (LLOQ = 0.2 ng/mL for each analyte per Supplementary Table S3 footnote).",
+    iov_structure = "Paper reports inter-occasion variability (IOV) on ziftomenib F1 across 3 occasions in the final parent NONMEM run (Table 1 IOV Omega = 1.06, corresponding to 137.3% CV; Occasion #1 and #2 = rich sample profiles in each study, Occasion #3 = sparse samples in KOMET-001 or third rich profile in KO-MEN-003). This model file does NOT encode the IOV structurally -- no operational occasion column is defined for the model-library use case, and the nlmixr2lib convention (Yin_2020_pexidartinib precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations.",
+    notes = "Sequential two-stage popPK: parent (ziftomenib) fit first, then individual empirical Bayes estimates (EBEs) of parent PK parameters were fixed and used as inputs to the metabolite (KO-739 + KO-516) model. Final metabolite NONMEM run also has fixed F1 = 0.129, FM = 0.535, FM_ko516 = 0.5 (see reference Discussion). Reference subject for typical-value simulations: R/R AML patient, fasted, no PPI, no strong CYP3A4 inhibitor coadministration (Table 1 base). Parent Phase 1 NONMEM run: OBJV = 23621.837 (2436 obs, 188 individuals). Metabolite Phase 4 NONMEM run: OBJV = 28349.343 (metabolites only after fixing parent EBEs)."
   )
 
   ini({

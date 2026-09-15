@@ -27,9 +27,9 @@ Willmann_2022_rivaroxaban <- function() {
     "Syst Pharmacol. 2022;11(8):1111-1121. doi:10.1002/psp4.12830"
   )
   vignette <- "Willmann_2022_rivaroxaban"
-  units    <- list(
-    time          = "h",
-    dosing        = "mg",
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -37,18 +37,18 @@ Willmann_2022_rivaroxaban <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; the UNIVERSE post-Fontan cohort spans 9.8-25.3 kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; the UNIVERSE post-Fontan cohort spans 9.8-25.3 kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Fixed allometric scaling on CL (exponent 0.481), Vc and Vp",
         "(shared exponent 0.821), and Q (exponent 0.761), centred on the",
         "82.48 kg adult reference weight of the integrated EINSTEIN-Jr",
@@ -60,14 +60,14 @@ Willmann_2022_rivaroxaban <- function() {
         "estimates). Only CL is re-estimated for the post-Fontan",
         "population."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     ),
     AGE = list(
-      description        = "Baseline age (years); used as a binary cut at 5 years to select the two F1 values.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age (years); used as a binary cut at 5 years to select the two F1 values.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "In the paper's adapted popPK model, F1 is estimated separately for",
         "post-Fontan patients aged >=5 years (F1 = 0.752) versus <5 years",
         "(F1 = 1.20). The cutoff of 5 years was chosen by comparing objective",
@@ -78,16 +78,16 @@ Willmann_2022_rivaroxaban <- function() {
         "than 5 years of age provided the best improvement in OBJF'). AGE is",
         "used only as this binary switch, not as a continuous covariate."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_JAPANESE = list(
       description = "Japanese race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Explored on CL and F1 in the adapted popPK covariate search",
         "(Willmann 2022 Results 'PopPK model qualification' paragraph 3).",
         "'No statistically significant effect of Japanese patients on CL",
@@ -102,9 +102,9 @@ Willmann_2022_rivaroxaban <- function() {
     ),
     EGFR_SCHWARTZ = list(
       description = "Estimated glomerular filtration rate by the Schwartz formula",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Explored in Willmann 2022 Discussion paragraph 1 ('the estimated",
         "glomerular filtration rate values at baseline in the UNIVERSE",
         "study were in the normal range and very similar for the age",
@@ -115,9 +115,9 @@ Willmann_2022_rivaroxaban <- function() {
     ),
     CONMED_CYP3A4_INHIB = list(
       description = "CYP3A4 inhibitor co-medication indicator (any strength)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "'Concomitant medications that could potentially affect",
         "rivaroxaban exposure (e.g., CYP3A4 inhibitors) were reviewed but",
         "could not explain the findings' (Willmann 2022 Discussion",
@@ -126,9 +126,9 @@ Willmann_2022_rivaroxaban <- function() {
     ),
     T_SINCE_FONTAN = list(
       description = "Time between end of Fontan procedure and start of rivaroxaban administration",
-      units       = "days",
-      type        = "continuous",
-      notes       = paste(
+      units = "days",
+      type = "continuous",
+      notes = paste(
         "Explored as a potential covariate for exposure in Willmann 2022",
         "Discussion paragraph 1, motivated by adult VTE-P studies where",
         "major orthopedic surgery reduces rivaroxaban CL by ~20% in the",
@@ -141,25 +141,25 @@ Willmann_2022_rivaroxaban <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76L,
-    n_studies      = 1L,
-    trial_id       = "UNIVERSE (NCT02846532), post-Fontan cohort",
-    age_range      = "2-8 years (76 post-Fontan patients; 52 aged 2 to <5 y, 24 aged 5-8 y)",
-    weight_range   = "9.8-25.3 kg",
+    species = "human",
+    n_subjects = 76L,
+    n_studies = 1L,
+    trial_id = "UNIVERSE (NCT02846532), post-Fontan cohort",
+    age_range = "2-8 years (76 post-Fontan patients; 52 aged 2 to <5 y, 24 aged 5-8 y)",
+    weight_range = "9.8-25.3 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = paste(
       "8 of the 76 patients were Japanese; 7 were younger than 5 years",
       "of age (Willmann 2022 Data and Methods 'Bridging concept and",
       "model qualification' paragraph 3)."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric congenital heart disease patients who had completed",
       "the Fontan procedure within 4 months. Received rivaroxaban as an",
       "oral suspension formulation for thromboprophylaxis over 12 months",
       "in the UNIVERSE study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Body-weight-adjusted rivaroxaban delivered twice-daily as an",
       "oral suspension in UNIVERSE (post-Fontan cohort 2-8 y, <30 kg);",
       "regimen designed to reproduce adult 10 mg once-daily exposure",
@@ -167,7 +167,7 @@ Willmann_2022_rivaroxaban <- function() {
       "Fontan-PBPK model of Zhu et al. (Willmann 2022 Introduction",
       "paragraph 4)."
     ),
-    regions        = "Multi-regional (UNIVERSE international phase III trial including a Japanese subgroup).",
+    regions = "Multi-regional (UNIVERSE international phase III trial including a Japanese subgroup).",
     n_observations = "Not reported per model in Willmann 2022; UNIVERSE contributed 76 patients to the popPK re-fit; sparse PK sampling per UNIVERSE protocol.",
     upstream_model = paste(
       "The structural PK framework (2-compartment, ka, Vc, Vp, Q, and",
@@ -178,7 +178,7 @@ Willmann_2022_rivaroxaban <- function() {
       "standard errors, confirming they were held fixed during the",
       "UNIVERSE re-fit."
     ),
-    forward_use    = paste(
+    forward_use = paste(
       "For the forward extrapolation to post-Fontan patients aged 9-18",
       "years or >=30 kg (the target population of the paper), the",
       "original EINSTEIN-Jr popPK model (Willmann 2021, CL = 8.02 L/h",
@@ -189,7 +189,7 @@ Willmann_2022_rivaroxaban <- function() {
       "paragraph). This adapted model itself describes the UNIVERSE",
       "post-Fontan 2-8 year retrospective fit."
     ),
-    notes          = paste(
+    notes = paste(
       "The paper also reports a Fontan-PBPK model with age-dependent",
       "CL adjustment factors (0.53, 0.64, 0.45 for children aged 4",
       "to <5, 3 to <4, and 2 to <3 years respectively; Willmann 2022",

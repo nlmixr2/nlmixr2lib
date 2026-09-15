@@ -24,8 +24,8 @@ Kim_2026_midazolam_postecmo <- function() {
   )
   vignette <- "Kim_2026_midazolam"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -40,83 +40,83 @@ Kim_2026_midazolam_postecmo <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; not retained. Median 56 (range 22-87), Supplementary Table S1."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; not retained. Median 56 (range 22-87), Supplementary Table S1."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; not retained. Median 70 (range 52.9-81.4), Supplementary Table S1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; not retained. Median 70 (range 52.9-81.4), Supplementary Table S1."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Listed among the screened continuous covariates in Supplementary Methods; not retained, and not tabulated in Supplementary Table S1."
+      units = "g/L",
+      type = "continuous",
+      notes = "Listed among the screened continuous covariates in Supplementary Methods; not retained, and not tabulated in Supplementary Table S1."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; not retained. Median 63.9 (range 21-356), Supplementary Table S1."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; not retained. Median 63.9 (range 21-356), Supplementary Table S1."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; not retained. Median 44 (range 12-93), Supplementary Table S1."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; not retained. Median 44 (range 12-93), Supplementary Table S1."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate; not retained. Median 1.0 (range 0.6-1.7), Supplementary Table S1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as a continuous covariate; not retained. Median 1.0 (range 0.6-1.7), Supplementary Table S1."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an indicator variable; not retained. 3 of 11 female, Supplementary Table S1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an indicator variable; not retained. 3 of 11 female, Supplementary Table S1."
     ),
     CONMED_SUFENTANIL = list(
       description = "Concomitant sufentanil sedation",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an indicator variable (Supplementary Methods); not retained. Counts not reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an indicator variable (Supplementary Methods); not retained. Counts not reported."
     ),
     CONMED_REMIFENTANIL = list(
       description = "Concomitant remifentanil sedation",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an indicator variable (Supplementary Methods); not retained. Counts not reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an indicator variable (Supplementary Methods); not retained. Counts not reported."
     ),
     Q_ECMO = list(
       description = "ECMO circuit blood flow rate",
-      units       = "L/min",
-      type        = "continuous",
-      notes       = "Retained in the companion on-ECMO model but structurally inapplicable here: these patients have been decannulated, so there is no circuit flow. Table 1 shows '-' for theta ECMO flow rate on CL1-OH MDZ in the 'After ECMO Support' column."
+      units = "L/min",
+      type = "continuous",
+      notes = "Retained in the companion on-ECMO model but structurally inapplicable here: these patients have been decannulated, so there is no circuit flow. Table 1 shows '-' for theta ECMO flow rate on CL1-OH MDZ in the 'After ECMO Support' column."
     )
   )
 
   compartmentData <- list(
-    central           = list(analyte = "midazolam",          units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1       = list(analyte = "midazolam",          units = "mg", specimen = "plasma", verified = TRUE),
-    central_1ohm      = list(analyte = "1-OH-midazolam",     units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_1ohm  = list(analyte = "1-OH-midazolam",     units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    central_1ohm = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_1ohm = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11,
-    n_studies      = 1,
-    age_range      = "22-87 years",
-    age_median     = "56 years",
-    weight_range   = "52.9-81.4 kg",
-    weight_median  = "70 kg",
+    species = "human",
+    n_subjects = 11,
+    n_studies = 1,
+    age_range = "22-87 years",
+    age_median = "56 years",
+    weight_range = "52.9-81.4 kg",
+    weight_median = "70 kg",
     sex_female_pct = 27.3,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults in a cardiovascular intensive care unit",
       "after decannulation from venoarterial ECMO, still receiving",
       "midazolam sedation. Indications for the preceding VA-ECMO run:",
@@ -125,17 +125,17 @@ Kim_2026_midazolam_postecmo <- function() {
       "or renal dysfunction, or taking strong CYP3A4 inhibitors, were",
       "excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Continuous IV midazolam infusion, rate set by the treating",
       "physician to meet each patient's sedation need, with additional",
       "boluses as required; the study did not fix a dose."
     ),
-    regions        = "Republic of Korea (Seoul)",
-    lab_medians    = paste(
+    regions = "Republic of Korea (Seoul)",
+    lab_medians = paste(
       "AST 63.9 U/L (21-356); ALT 44 U/L (12-93);",
       "serum creatinine 1.0 mg/dL (0.6-1.7)"
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective cohort, ClinicalTrials.gov NCT02581280; Yonsei",
       "University IRB 4-2014-0919. Baseline demographics are",
       "Supplementary Table S1 (post-ECMO support column). These 11",

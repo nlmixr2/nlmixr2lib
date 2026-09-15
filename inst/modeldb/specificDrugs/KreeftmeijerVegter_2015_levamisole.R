@@ -23,62 +23,62 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     sep = " "
   )
   vignette <- "KreeftmeijerVegter_2015_levamisole"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "levamisole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor; reference weight 70 kg per",
         "Methods (PK data analysis paragraph) and Table 3 row 2",
         "(allometric scaling of CL/F at exponent 0.75 and V/F at",
         "exponent 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (chronological time since birth)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (chronological time since birth)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear proportional effect on CL/F centred on the",
         "population median age of 6.28 years (Table 2 / final-model",
         "equation in Results, Section 'A stepwise covariate analysis').",
         "Slope -0.101 per year, i.e. -10.1% change in CL/F per",
         "additional life year above the median."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 38L,
-    n_studies      = 1L,
-    age_range      = "2.35-13.10 years",
-    age_median     = "6.28 years (Table 1)",
-    weight_range   = "11-68 kg",
-    weight_median  = "21 kg (Table 1)",
+    species = "human",
+    n_subjects = 38L,
+    n_studies = 1L,
+    age_range = "2.35-13.10 years",
+    age_median = "6.28 years (Table 1)",
+    weight_range = "11-68 kg",
+    weight_median = "21 kg (Table 1)",
     sex_female_pct = 100 * 11 / 38,
     race_ethnicity = c(Caucasian = 47.4, Asian = 50.0, Unknown = 2.6),
-    disease_state  = paste(
+    disease_state = paste(
       "Children with frequently relapsing idiopathic",
       "steroid-sensitive nephrotic syndrome (SSNS), either with or",
       "without steroid dependency."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral levamisole 2.5 mg/kg every other day (maximum 150 mg),",
       "delivered as 5, 10, 25 or 50 mg film-coated tablets per the",
       "weight-band dosing schedule of Kreeftmeijer-Vegter 2014;",
@@ -86,12 +86,12 @@ KreeftmeijerVegter_2015_levamisole <- function() {
       "Treatment continued for 12 months (cohort phase up to a",
       "further 12 months for responders)."
     ),
-    regions        = paste(
+    regions = paste(
       "India 47.4%, Netherlands 15.8%, Belgium 13.2%,",
       "France 10.5%, Poland 10.5%, Italy 2.6% (Table 1)."
     ),
     n_observations = 136L,
-    sampling       = paste(
+    sampling = paste(
       "Sparse sampling at four visits (weeks 8, 12, 20, 24);",
       "in weeks 8 and 20 one pre-dose and one post-dose sample at a",
       "computer-randomised 1, 2, 4 or 6 h post-dose time; in weeks 12",
@@ -99,7 +99,7 @@ KreeftmeijerVegter_2015_levamisole <- function() {
       "Pre-dose and 24 h post-dose samples (102 of 121) fell below",
       "the assay LOQ and were excluded; final dataset 136 samples."
     ),
-    notes          = paste(
+    notes = paste(
       "Steady-state every-other-day dosing in routine clinical care;",
       "sampling restricted to the absorption / peak phase",
       "(0-6 h post-dose) because of paediatric blood-volume",

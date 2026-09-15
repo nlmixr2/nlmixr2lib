@@ -11,23 +11,28 @@ Chen_2024_remimazolam <- function() {
   # formation, V5 CNS 7054 central, V6 CNS 7054 peripheral, and V4 the effect
   # compartment.
   compartmentData <- list(
-    central              = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral2          = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
-    transit1             = list(analyte = "remimazolam-derived CNS 7054 precursor", units = "mg", specimen = "administration site", verified = TRUE),
-    central_cns7054      = list(analyte = "CNS 7054", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_cns7054  = list(analyte = "CNS 7054", units = "mg", specimen = "plasma", verified = TRUE),
-    effect               = list(analyte = "remimazolam", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    central = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "remimazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    transit1 = list(
+      analyte = "remimazolam-derived CNS 7054 precursor",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_cns7054 = list(analyte = "CNS 7054", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_cns7054 = list(analyte = "CNS 7054", units = "mg", specimen = "plasma", verified = TRUE),
+    effect = list(analyte = "remimazolam", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on every clearance and volume term of both the remimazolam and the CNS 7054 disposition model, with the exponent fixed at 0.75 for clearance terms (CL, Q2, Q3, CLm, Q4) and 1 for volume terms (V1, V2, V3, V5, V6). Reference weight is 60 kg, taken from the denominator printed in Chen 2024 Equation (5); the cohort median weight is 62.5 kg (Table 2). Chen 2024 applies allometry to 'the PK models' only, so the transit rate constant Ktr and the effect-compartment rate constant ke0 -- neither of which is a clearance or a volume -- are left unscaled.",
-      source_name        = "WT"
+      notes = "Allometric scaling on every clearance and volume term of both the remimazolam and the CNS 7054 disposition model, with the exponent fixed at 0.75 for clearance terms (CL, Q2, Q3, CLm, Q4) and 1 for volume terms (V1, V2, V3, V5, V6). Reference weight is 60 kg, taken from the denominator printed in Chen 2024 Equation (5); the cohort median weight is 62.5 kg (Table 2). Chen 2024 applies allometry to 'the PK models' only, so the transit rate constant Ktr and the effect-compartment rate constant ke0 -- neither of which is a clearance or a volume -- are left unscaled.",
+      source_name = "WT"
     )
   )
 
@@ -40,41 +45,41 @@ Chen_2024_remimazolam <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a median-normalised power function (Chen 2024 Equation 6) on both PK and PD parameters; not retained in either final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a median-normalised power function (Chen 2024 Equation 6) on both PK and PD parameters; not retained in either final model."
     ),
     HT = list(
       description = "Body height at baseline.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a median-normalised power function (Chen 2024 Equation 6) on both PK and PD parameters; not retained in either final model."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a median-normalised power function (Chen 2024 Equation 6) on both PK and PD parameters; not retained in either final model."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a proportional model (Chen 2024 Equation 7, coded 0 = male / 1 = female, which matches the SEXF polarity) on both PK and PD parameters; not retained in either final model. The authors attribute the absence of covariate effects to the homogeneity of the healthy-volunteer cohort (Discussion)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a proportional model (Chen 2024 Equation 7, coded 0 = male / 1 = female, which matches the SEXF polarity) on both PK and PD parameters; not retained in either final model. The authors attribute the absence of covariate effects to the homogeneity of the healthy-volunteer cohort (Discussion)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55,
-    n_studies      = 2,
-    age_range      = "19-43 years",
-    age_median     = "28 years",
-    weight_range   = "52-75 kg",
-    weight_median  = "62.5 kg",
-    height_range   = "151-185 cm",
-    bmi_range      = "19.3-24.0 kg/m2",
+    species = "human",
+    n_subjects = 55,
+    n_studies = 2,
+    age_range = "19-43 years",
+    age_median = "28 years",
+    weight_range = "52-75 kg",
+    weight_median = "62.5 kg",
+    height_range = "151-185 cm",
+    bmi_range = "19.3-24.0 kg/m2",
     sex_female_pct = 27.3,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult volunteers (no organ disease; Mallampati score 1-2; BMI 19-24 kg/m2; weight at least 50 kg).",
-    dose_range     = "Single IV bolus of 0.025, 0.05, 0.075, 0.1, 0.2, 0.3, or 0.4 mg/kg (n = 46); or an IV bolus of 0.2 mg/kg given over 1 min followed by a 1 mg/kg/h IV infusion for 2 h (n = 9).",
-    regions        = "China (single centre; conducted at Peking University First Hospital)",
+    disease_state = "Healthy adult volunteers (no organ disease; Mallampati score 1-2; BMI 19-24 kg/m2; weight at least 50 kg).",
+    dose_range = "Single IV bolus of 0.025, 0.05, 0.075, 0.1, 0.2, 0.3, or 0.4 mg/kg (n = 46); or an IV bolus of 0.2 mg/kg given over 1 min followed by a 1 mg/kg/h IV infusion for 2 h (n = 9).",
+    regions = "China (single centre; conducted at Peking University First Hospital)",
     n_observations = "1113 remimazolam plasma concentrations, 1206 CNS 7054 plasma concentrations, and 1026 BIS observations. Assay calibration range 2-2000 ng/mL for both analytes.",
-    notes          = "Secondary analysis of a single-centre, placebo-controlled, randomised, dose-escalation clinical pharmacology study (ChiCTR1800015185 and ChiCTR1800015186). Demographics reproduced from Chen 2024 Table 2 (Total column, N = 55); 40 men and 15 women. Sedation depth was measured as the bispectral index (BIS) by continuous EEG (BIS EEG VISTA) for 60 min after the bolus dose and for 3 h in the bolus-plus-infusion arm."
+    notes = "Secondary analysis of a single-centre, placebo-controlled, randomised, dose-escalation clinical pharmacology study (ChiCTR1800015185 and ChiCTR1800015186). Demographics reproduced from Chen 2024 Table 2 (Total column, N = 55); 40 men and 15 women. Sedation depth was measured as the bispectral index (BIS) by continuous EEG (BIS EEG VISTA) for 60 min after the bolus dose and for 3 h in the bolus-plus-infusion arm."
   )
 
   ini({

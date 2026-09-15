@@ -3,8 +3,8 @@ GonzalezSales_2024_imetelstat <- function() {
   reference <- "Gonzalez-Sales M, Lennox AL, Huang F, Pamulapati C, Wan Y, Sun L, Berry T, Kelly Behrs M, Feller F, Morcos PN. (2024). Population pharmacokinetics of imetelstat, a first-in-class oligonucleotide telomerase inhibitor. CPT Pharmacometrics Syst Pharmacol 13(7):1264-1277. doi:10.1002/psp4.13160."
   vignette <- "GonzalezSales_2024_imetelstat"
   units <- list(
-    time          = "h",
-    dosing        = "umol",
+    time = "h",
+    dosing = "umol",
     concentration = "umol/L"
   )
 
@@ -13,141 +13,141 @@ GonzalezSales_2024_imetelstat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "imetelstat", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imetelstat", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imetelstat", units = "umol", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "imetelstat", units = "umol", specimen = "administration site", verified = FALSE)
+    complex = list(analyte = "imetelstat", units = "umol", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Theory-based allometric scaling on Vc (exponent 1), CL (exponent 0.75), and Kback (exponent -0.25) with reference body weight 70 kg (Gonzalez-Sales 2024 Methods, 'Base structural model', Equation 1). The mean baseline body weight in the analysis dataset was 77.2 kg (range 44.0-161 kg).",
-      source_name        = "WEIGHT"
+      notes = "Theory-based allometric scaling on Vc (exponent 1), CL (exponent 0.75), and Kback (exponent -0.25) with reference body weight 70 kg (Gonzalez-Sales 2024 Methods, 'Base structural model', Equation 1). The mean baseline body weight in the analysis dataset was 77.2 kg (range 44.0-161 kg).",
+      source_name = "WEIGHT"
     ),
     SEXF = list(
-      description        = "Sex indicator: 1 if female, 0 if male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator: 1 if female, 0 if male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Categorical effect on CL (multiplicative, exp scale) and on Vc (multiplicative, exp scale). The source column SEX uses the same 0=male / 1=female encoding as the canonical SEXF (Gonzalez-Sales 2024 supplement S1, $INPUT block: 'SEX ;Sex 0 = Male; 1 = Female; -99 = Missing'). 41.7% of the analysis dataset was female (Results, 247 of 424 patients were male).",
-      source_name        = "SEX"
+      notes = "Categorical effect on CL (multiplicative, exp scale) and on Vc (multiplicative, exp scale). The source column SEX uses the same 0=male / 1=female encoding as the canonical SEXF (Gonzalez-Sales 2024 supplement S1, $INPUT block: 'SEX ;Sex 0 = Male; 1 = Female; -99 = Missing'). 41.7% of the analysis dataset was female (Results, 247 of 424 patients were male).",
+      source_name = "SEX"
     ),
     DIS_MF = list(
-      description        = "Myelofibrosis disease-state indicator: 1 if myelofibrosis (MF), 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Myelofibrosis disease-state indicator: 1 if myelofibrosis (MF), 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-MF subject (the analysis-dataset complement is solid tumors, MDS, MM, ET/PV, or CLD).",
-      notes              = "Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MF = as.integer(MTYPE == 1) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on CL and on Bmax (multiplicative, exp scale). For Bmax, an additional power-form spleen-volume covariate is applied only to MF subjects (gating via DIS_MF in the model).",
-      source_name        = "MTYPE == 1"
+      notes = "Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MF = as.integer(MTYPE == 1) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on CL and on Bmax (multiplicative, exp scale). For Bmax, an additional power-form spleen-volume covariate is applied only to MF subjects (gating via DIS_MF in the model).",
+      source_name = "MTYPE == 1"
     ),
     DIS_MM = list(
-      description        = "Active multiple myeloma disease-state indicator: 1 if active (non-smoldering) multiple myeloma, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active multiple myeloma disease-state indicator: 1 if active (non-smoldering) multiple myeloma, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-MM subject (the analysis-dataset complement is solid tumors, MF, MDS, ET/PV, or CLD).",
-      notes              = "Renamed from the working covariate name MM to the canonical disease-indicator DIS_MM per the 2026-06-19 canonical-register standardization audit (parallels DIS_MF). Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MM = as.integer(MTYPE == 3) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on Vc only (multiplicative, exp scale).",
-      source_alias       = "MM (working column name prior to the 2026-06-19 canonical rename)",
-      source_name        = "MTYPE == 3"
+      notes = "Renamed from the working covariate name MM to the canonical disease-indicator DIS_MM per the 2026-06-19 canonical-register standardization audit (parallels DIS_MF). Derived from the source NONMEM column MTYPE (0=solid tumors, 1=MF, 2=MDS, 3=MM, 4=ET/PV, 5=CLD) as DIS_MM = as.integer(MTYPE == 3) (Gonzalez-Sales 2024 supplement S1, MTYPE definition). Categorical effect on Vc only (multiplicative, exp scale).",
+      source_alias = "MM (working column name prior to the 2026-06-19 canonical rename)",
+      source_name = "MTYPE == 3"
     ),
     SPLV = list(
-      description        = "Baseline spleen volume (cm^3).",
-      units              = "cm^3",
-      type               = "continuous",
+      description = "Baseline spleen volume (cm^3).",
+      units = "cm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on Bmax centred at the MF-cohort median 3010 cm^3 (Gonzalez-Sales 2024 Figure 4 caption, 'baseline spleen volume 3010 cm3'; supplement S1 SPLEFF_BMAX = (SPLV0/3010)^THETA(9)). The effect is gated to MF subjects only (STDY.EQ.6 in the supplement); for non-MF subjects the spleen-volume term collapses to 1 in the model. Baseline spleen volume was only available from patients with MF (Study MYF2001) per Results, 'Patient characteristics at baseline'.",
-      source_name        = "SPLV0"
+      notes = "Power-form effect on Bmax centred at the MF-cohort median 3010 cm^3 (Gonzalez-Sales 2024 Figure 4 caption, 'baseline spleen volume 3010 cm3'; supplement S1 SPLEFF_BMAX = (SPLV0/3010)^THETA(9)). The effect is gated to MF subjects only (STDY.EQ.6 in the supplement); for non-MF subjects the spleen-volume term collapses to 1 in the model. Baseline spleen volume was only available from patients with MF (Study MYF2001) per Results, 'Patient characteristics at baseline'.",
+      source_name = "SPLV0"
     ),
     DOSE = list(
-      description        = "Dose level for the current administration occasion.",
-      units              = "umol",
-      type               = "continuous",
+      description = "Dose level for the current administration occasion.",
+      units = "umol",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL centred at the reference dose 108 umol (Gonzalez-Sales 2024 supplement S1: DOSE_CL = (DOSE/108)^THETA(12)). 108 umol of imetelstat sodium corresponds to approximately 7.5 mg/kg in a 70 kg patient (525 mg / 4896 g/mol = 107.2 umol). Carried as a per-record covariate that takes the current dose level; constant across observation records between dose changes.",
-      source_name        = "DOSE"
+      notes = "Power-form effect on CL centred at the reference dose 108 umol (Gonzalez-Sales 2024 supplement S1: DOSE_CL = (DOSE/108)^THETA(12)). 108 umol of imetelstat sodium corresponds to approximately 7.5 mg/kg in a 70 kg patient (525 mg / 4896 g/mol = 107.2 umol). Carried as a per-record covariate that takes the current dose level; constant across observation records between dose changes.",
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL and Vc but not retained in the final model (Gonzalez-Sales 2024 Results, 'Covariate analysis': 'Effects of other baseline covariates including ... age ... did not have a statistically significant or meaningful impact on imetelstat PK')."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL and Vc but not retained in the final model (Gonzalez-Sales 2024 Results, 'Covariate analysis': 'Effects of other baseline covariates including ... age ... did not have a statistically significant or meaningful impact on imetelstat PK')."
     ),
     RACE_BLACK = list(
       description = "Race indicator: 1 if Black/African-American, 0 otherwise.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained in the final model (Gonzalez-Sales 2024 Results, no race effect identified)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained in the final model (Gonzalez-Sales 2024 Results, no race effect identified)."
     ),
     RACE_ASIAN = list(
       description = "Race indicator: 1 if Asian, 0 otherwise.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained in the final model."
     ),
     ADA_POS = list(
       description = "Antidrug-antibody status: 1 if ADA-positive, 0 if ADA-negative.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the forward addition (time-variant ADA on CL, dOFV = -48.6) but eliminated in backward elimination (dOFV = +7.7). ADA status data were available from two studies (MYF2001 and MDS3001), contributing 65.6% of the analysis dataset (Gonzalez-Sales 2024 Results, 'Patient characteristics'; 'Covariate analysis')."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the forward addition (time-variant ADA on CL, dOFV = -48.6) but eliminated in backward elimination (dOFV = +7.7). ADA status data were available from two studies (MYF2001 and MDS3001), contributing 65.6% of the analysis dataset (Gonzalez-Sales 2024 Results, 'Patient characteristics'; 'Covariate analysis')."
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault, mL/min).",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on CL (forward addition dOFV = -11.4) but eliminated in backward elimination (dOFV = +8.7). Mild-to-moderate renal impairment had no effect on imetelstat PK in the final model."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on CL (forward addition dOFV = -11.4) but eliminated in backward elimination (dOFV = +8.7). Mild-to-moderate renal impairment had no effect on imetelstat PK in the final model."
     ),
     HEPF = list(
       description = "Hepatic-function class (NCI ODWG; 0 = normal, 1 = mild, 2 = moderate, 3 = severe).",
-      units       = "(category)",
-      type        = "categorical",
-      notes       = "Screened but not retained in the final model. No effect of mild-to-moderate hepatic impairment on imetelstat PK was identified (Gonzalez-Sales 2024 Results, Discussion)."
+      units = "(category)",
+      type = "categorical",
+      notes = "Screened but not retained in the final model. No effect of mild-to-moderate hepatic impairment on imetelstat PK was identified (Gonzalez-Sales 2024 Results, Discussion)."
     ),
     ALB = list(
       description = "Serum albumin.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model. Canonical units standardized to SI g/L per the 2026-06-19 canonical-register audit; the source paper reports serum albumin in g/dL (1 g/dL = 10 g/L). No inline conversion is needed because ALB is an excluded covariate and is not referenced in model()/ini()."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained in the final model. Canonical units standardized to SI g/L per the 2026-06-19 canonical-register audit; the source paper reports serum albumin in g/dL (1 g/dL = 10 g/L). No inline conversion is needed because ALB is an excluded covariate and is not referenced in model()/ini()."
     ),
     TBILI = list(
       description = "Total bilirubin.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained in the final model. Renamed from the working covariate name BILI to the canonical TBILI and units standardized to SI umol/L per the 2026-06-19 canonical-register audit; the source paper reports total bilirubin in mg/dL (1 mg/dL = 17.1 umol/L). No inline conversion is needed because TBILI is an excluded covariate and is not referenced in model()/ini().",
       source_alias = "BILI (working column name prior to the 2026-06-19 canonical rename)"
     ),
     AST = list(
       description = "Aspartate aminotransferase (U/L).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained in the final model."
     ),
     ALT = list(
       description = "Alanine aminotransferase (U/L).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 424L,
-    n_studies      = 7L,
-    age_range      = "adults; full age range not enumerated in the main paper (no age effect on PK identified)",
-    age_median     = "not reported in main-paper Table S1 quotation",
-    weight_range   = "44.0-161 kg",
-    weight_median  = "77.2 kg (mean)",
+    species = "human",
+    n_subjects = 424L,
+    n_studies = 7L,
+    age_range = "adults; full age range not enumerated in the main paper (no age effect on PK identified)",
+    age_median = "not reported in main-paper Table S1 quotation",
+    weight_range = "44.0-161 kg",
+    weight_median = "77.2 kg (mean)",
     sex_female_pct = 41.7,
     race_ethnicity = "not enumerated in main paper text (race / ethnicity available in supplement Table S1; no race effect on PK identified)",
-    disease_state  = "Pooled adults with hematologic malignancies (myelofibrosis, lower-risk MDS, multiple myeloma, essential thrombocythemia / polycythemia vera, chronic lymphoproliferative disease) or solid tumors. Studies included: CP04-151 (chronic lymphoproliferative disease, phase I), CP05-101 (refractory solid tumors, phase I), CP14A004 (refractory multiple myeloma, phase I), CP14B013 (multiple myeloma + lenalidomide maintenance, phase II), CP14B015 (essential thrombocythemia / polycythemia vera, phase II), MYF2001 (intermediate-2 / high-risk myelofibrosis refractory to JAK inhibitors, phase II), MDS3001 (transfusion-dependent low- or intermediate-1-risk MDS refractory to erythropoiesis-stimulating agents, phase II/III).",
-    dose_range     = "0.4-11.7 mg/kg of imetelstat sodium (MW 4896 g/mol) administered as a 2-hour or 6-hour IV infusion (per-study schedules ranged from weekly to once every 4 weeks); the registered MDS3001 dose was 7.5 mg/kg Q4W and the registered MYF2001 / MYF3001 myelofibrosis dose was 9.4 mg/kg Q3W.",
-    regions        = "Multinational (specific regions not enumerated in the main paper text on disk).",
-    notes          = "Baseline-covariate summary statistics quoted from Gonzalez-Sales 2024 main-paper Results (Table S1 referenced but not on disk). Mean baseline body weight 77.2 kg, range 44.0-161 kg; 247 of 424 patients (58.3%) were male, so 41.7% female. Baseline spleen volume was available only from MF patients (Study MYF2001); MF-cohort median spleen volume 3010 cm^3 (Figure 4 caption). ADA status was categorised as negative / positive / missing (ADA data available from MYF2001 and MDS3001, contributing 65.6% of the analysis dataset). 374 of 4375 plasma observations (8.55%) were below the limit of quantification and modelled by the M3 method (Beal 2001)."
+    disease_state = "Pooled adults with hematologic malignancies (myelofibrosis, lower-risk MDS, multiple myeloma, essential thrombocythemia / polycythemia vera, chronic lymphoproliferative disease) or solid tumors. Studies included: CP04-151 (chronic lymphoproliferative disease, phase I), CP05-101 (refractory solid tumors, phase I), CP14A004 (refractory multiple myeloma, phase I), CP14B013 (multiple myeloma + lenalidomide maintenance, phase II), CP14B015 (essential thrombocythemia / polycythemia vera, phase II), MYF2001 (intermediate-2 / high-risk myelofibrosis refractory to JAK inhibitors, phase II), MDS3001 (transfusion-dependent low- or intermediate-1-risk MDS refractory to erythropoiesis-stimulating agents, phase II/III).",
+    dose_range = "0.4-11.7 mg/kg of imetelstat sodium (MW 4896 g/mol) administered as a 2-hour or 6-hour IV infusion (per-study schedules ranged from weekly to once every 4 weeks); the registered MDS3001 dose was 7.5 mg/kg Q4W and the registered MYF2001 / MYF3001 myelofibrosis dose was 9.4 mg/kg Q3W.",
+    regions = "Multinational (specific regions not enumerated in the main paper text on disk).",
+    notes = "Baseline-covariate summary statistics quoted from Gonzalez-Sales 2024 main-paper Results (Table S1 referenced but not on disk). Mean baseline body weight 77.2 kg, range 44.0-161 kg; 247 of 424 patients (58.3%) were male, so 41.7% female. Baseline spleen volume was available only from MF patients (Study MYF2001); MF-cohort median spleen volume 3010 cm^3 (Figure 4 caption). ADA status was categorised as negative / positive / missing (ADA data available from MYF2001 and MDS3001, contributing 65.6% of the analysis dataset). 374 of 4375 plasma observations (8.55%) were below the limit of quantification and modelled by the M3 method (Beal 2001)."
   )
 
   ini({

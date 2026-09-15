@@ -1,71 +1,71 @@
 Stocker_2012_oxypurinol <- function() {
   description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
-  reference   <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
-  vignette    <- "Stocker_2012_oxypurinol"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
+  vignette <- "Stocker_2012_oxypurinol"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "oxypurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "oxypurinol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "oxypurinol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation using lean body weight as the size descriptor (NOT BSA-normalised).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation using lean body weight as the size descriptor (NOT BSA-normalised).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Stocker 2012 Methods (Covariate model development): 'creatinine clearance (CLCr) estimated using the Cockcroft-Gault equation corrected for LBW or using TBW'. The final model retained the LBW-based form. Enters CL/Fm as a linear-deviation multiplier centred on the cohort median 37.6 mL/min; not as a power scaling. Per-cohort reference value 37.6 mL/min reflects elderly gouty patients with substantial mild-to-moderate renal impairment (CLCr range 6.0-130.4 mL/min). Stored under the canonical CRCL register entry with the explicit non-BSA-normalised Cockcroft-Gault assay form documented here (matches Delattre_2010_amikacin.R precedent for raw mL/min Cockcroft-Gault).",
-      source_name        = "CLCR"
+      notes = "Stocker 2012 Methods (Covariate model development): 'creatinine clearance (CLCr) estimated using the Cockcroft-Gault equation corrected for LBW or using TBW'. The final model retained the LBW-based form. Enters CL/Fm as a linear-deviation multiplier centred on the cohort median 37.6 mL/min; not as a power scaling. Per-cohort reference value 37.6 mL/min reflects elderly gouty patients with substantial mild-to-moderate renal impairment (CLCr range 6.0-130.4 mL/min). Stored under the canonical CRCL register entry with the explicit non-BSA-normalised Cockcroft-Gault assay form documented here (matches Delattre_2010_amikacin.R precedent for raw mL/min Cockcroft-Gault).",
+      source_name = "CLCR"
     ),
     LBM = list(
-      description        = "Lean body weight, paper notation LBW.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight, paper notation LBW.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Stocker 2012 Methods cites reference [22] for the LBW formula (the James 1976 formula commonly used in the Sydney popPK group). Used as the size descriptor for V/Fm allometric scaling with the volume exponent held fixed at the theoretical value of 1.0 and a reference value of 60 kg (Stocker 2012 Table 3 footnote: 'For a typical patient who has a lean body weight of 60 kg'). LBW is also the size descriptor used to estimate CRCL via Cockcroft-Gault.",
-      source_name        = "LBW"
+      notes = "Stocker 2012 Methods cites reference [22] for the LBW formula (the James 1976 formula commonly used in the Sydney popPK group). Used as the size descriptor for V/Fm allometric scaling with the volume exponent held fixed at the theoretical value of 1.0 and a reference value of 60 kg (Stocker 2012 Table 3 footnote: 'For a typical patient who has a lean body weight of 60 kg'). LBW is also the size descriptor used to estimate CRCL via Cockcroft-Gault.",
+      source_name = "LBW"
     ),
     CONMED_DIURETIC = list(
-      description        = "Concomitant any-class diuretic indicator (composite: thiazide + loop diuretic + potassium-sparing diuretic).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant any-class diuretic indicator (composite: thiazide + loop diuretic + potassium-sparing diuretic).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant diuretic of any class)",
-      notes              = "Stocker 2012 Table 1 footnote ' Including furosemide, thiazide diuretics and spironolactone'. 46% of the cohort (72 of 155 gouty patients) were on a concomitant diuretic. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + (-0.294) * CONMED_DIURETIC), i.e. 29.4% lower apparent oxypurinol clearance when a diuretic is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion.",
-      source_name        = "DIUR"
+      notes = "Stocker 2012 Table 1 footnote ' Including furosemide, thiazide diuretics and spironolactone'. 46% of the cohort (72 of 155 gouty patients) were on a concomitant diuretic. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + (-0.294) * CONMED_DIURETIC), i.e. 29.4% lower apparent oxypurinol clearance when a diuretic is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion.",
+      source_name = "DIUR"
     ),
     CONMED_PROBENECID = list(
-      description        = "Concomitant probenecid indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant probenecid indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant probenecid)",
-      notes              = "Stocker 2012 Table 1: 13% of the cohort (20 of 155 gouty patients) were on chronic oral probenecid. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + 0.383 * CONMED_PROBENECID), i.e. 38.3% higher apparent oxypurinol clearance when probenecid is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion. The mechanism is probenecid inhibiting renal tubular reabsorption of oxypurinol (Stocker 2012 Discussion, citing references [21, 30, 38]).",
-      source_name        = "PROB"
+      notes = "Stocker 2012 Table 1: 13% of the cohort (20 of 155 gouty patients) were on chronic oral probenecid. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + 0.383 * CONMED_PROBENECID), i.e. 38.3% higher apparent oxypurinol clearance when probenecid is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion. The mechanism is probenecid inhibiting renal tubular reabsorption of oxypurinol (Stocker 2012 Discussion, citing references [21, 30, 38]).",
+      source_name = "PROB"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 155,
-    n_studies       = 1,
-    age_range       = "28.0 to 93.6 years",
-    age_median      = "69.0 years",
-    weight_range    = "42.5 to 139.0 kg total body weight",
-    weight_median   = "83.0 kg total body weight",
-    sex_female_pct  = 14.8,
-    race_ethnicity  = "Not reported; cohort drawn from an Australian community and hospital setting in Sydney.",
-    disease_state   = "Gout (n = 146) or asymptomatic hyperuricaemia (n = 9); all on chronic allopurinol for at least 7 days; 13% with tophi present; 28% (n = 44) with BMI > 30 kg/m^2.",
-    dose_range      = "Allopurinol 50-400 mg/day oral (median 300 mg/day). Oxypurinol-equivalent doses entered into the model are 90% of the allopurinol dose per Stocker 2012 Methods (citing reference [6]).",
-    regions         = "Australia (St Vincent's Hospital and community patients in New South Wales).",
-    n_observations  = "1013 plasma oxypurinol concentrations (1-30 samples per patient, primarily across the 0-24 h dosing interval). Concentration range 0.14-70.9 mg/L. 23 samples below the limit of quantification (<2 mg/L) but above the limit of detection were included.",
-    occasions       = "1-5 PK occasions per patient; occasion defined as a hospital readmission or a change in concomitant medication.",
-    co_medication   = "All patients on at least one other medication (median 9, range 1-18). Significant covariates retained: concomitant diuretic (any class) and concomitant probenecid. Concomitant medications tested without retained effect: low-dose aspirin, colchicine, warfarin, angiotensin II receptor antagonists, beta-adrenoceptor antagonists, ACE inhibitors, calcium channel blockers, HMG-CoA reductase inhibitors, and antibiotics.",
-    excluded        = "7 patients excluded prior to modelling: 4 not at steady-state, 2 undergoing dialysis, 1 in acute renal failure.",
-    bov_cl_note     = "Source paper reports between-occasion variability (BOV) on CL/Fm of 21% CV (Stocker 2012 Table 3, 'BOV CL/Fm'). nlmixr2lib's ini() does not natively encode occasion-level random effects; the BSV CL/Fm reported in the model file (28% CV) does not include this BOV term. Users who need an occasion-aware simulation must add an additional occasion-level eta on lcl with variance log(1 + 0.21^2) = 0.04314 outside the model file.",
-    notes           = "Cohort demographics in Stocker 2012 Table 1. Pharmacogenetic SNPs (SLC2A9, ABCG2, SLC22A13, SLC17A1, SLC22A11, SLC22A8) were tested but not retained after adjustment for CLCr, diuretics, and probenecid (Stocker 2012 Discussion). Bootstrap with 1000 replicates was used to refine parameter uncertainty (Stocker 2012 Table 3)."
+    species = "human",
+    n_subjects = 155,
+    n_studies = 1,
+    age_range = "28.0 to 93.6 years",
+    age_median = "69.0 years",
+    weight_range = "42.5 to 139.0 kg total body weight",
+    weight_median = "83.0 kg total body weight",
+    sex_female_pct = 14.8,
+    race_ethnicity = "Not reported; cohort drawn from an Australian community and hospital setting in Sydney.",
+    disease_state = "Gout (n = 146) or asymptomatic hyperuricaemia (n = 9); all on chronic allopurinol for at least 7 days; 13% with tophi present; 28% (n = 44) with BMI > 30 kg/m^2.",
+    dose_range = "Allopurinol 50-400 mg/day oral (median 300 mg/day). Oxypurinol-equivalent doses entered into the model are 90% of the allopurinol dose per Stocker 2012 Methods (citing reference [6]).",
+    regions = "Australia (St Vincent's Hospital and community patients in New South Wales).",
+    n_observations = "1013 plasma oxypurinol concentrations (1-30 samples per patient, primarily across the 0-24 h dosing interval). Concentration range 0.14-70.9 mg/L. 23 samples below the limit of quantification (<2 mg/L) but above the limit of detection were included.",
+    occasions = "1-5 PK occasions per patient; occasion defined as a hospital readmission or a change in concomitant medication.",
+    co_medication = "All patients on at least one other medication (median 9, range 1-18). Significant covariates retained: concomitant diuretic (any class) and concomitant probenecid. Concomitant medications tested without retained effect: low-dose aspirin, colchicine, warfarin, angiotensin II receptor antagonists, beta-adrenoceptor antagonists, ACE inhibitors, calcium channel blockers, HMG-CoA reductase inhibitors, and antibiotics.",
+    excluded = "7 patients excluded prior to modelling: 4 not at steady-state, 2 undergoing dialysis, 1 in acute renal failure.",
+    bov_cl_note = "Source paper reports between-occasion variability (BOV) on CL/Fm of 21% CV (Stocker 2012 Table 3, 'BOV CL/Fm'). nlmixr2lib's ini() does not natively encode occasion-level random effects; the BSV CL/Fm reported in the model file (28% CV) does not include this BOV term. Users who need an occasion-aware simulation must add an additional occasion-level eta on lcl with variance log(1 + 0.21^2) = 0.04314 outside the model file.",
+    notes = "Cohort demographics in Stocker 2012 Table 1. Pharmacogenetic SNPs (SLC2A9, ABCG2, SLC22A13, SLC17A1, SLC22A11, SLC22A8) were tested but not retained after adjustment for CLCr, diuretics, and probenecid (Stocker 2012 Discussion). Bootstrap with 1000 replicates was used to refine parameter uncertainty (Stocker 2012 Table 3)."
   )
 
   ini({

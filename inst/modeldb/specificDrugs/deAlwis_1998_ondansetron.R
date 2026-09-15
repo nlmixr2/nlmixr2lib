@@ -6,74 +6,77 @@ deAlwis_1998_ondansetron <- function() {
 
   paper_specific_etas <- c("etalcl", "etalvc", "etalvss", "etalq")
   paper_specific_residual_sds <- c(
-    "propSd_young_vol", "propSd_elderly_vol", "propSd_aged_vol",
-    "propSd_paed_chemo", "propSd_paed_anaes"
+    "propSd_young_vol",
+    "propSd_elderly_vol",
+    "propSd_aged_vol",
+    "propSd_paed_chemo",
+    "propSd_paed_anaes"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters every structural parameter (CL, V1, Vss, CLd) as a linear slope in the additive linear-regression covariate model (Table 3, Three Step Full data column). Training-cohort range 10.2-95.8 kg (Methods, Data paragraph).",
-      source_name        = "wt"
+      notes = "Time-fixed per subject. Enters every structural parameter (CL, V1, Vss, CLd) as a linear slope in the additive linear-regression covariate model (Table 3, Three Step Full data column). Training-cohort range 10.2-95.8 kg (Methods, Data paragraph).",
+      source_name = "wt"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters CL (sex-specific slope) and Vss (single slope) in the linear-regression covariate model. Training-cohort range 2-82 y (Methods, Data paragraph). Also drives the residual-error stratification thresholds (volunteer sub-population: young AGE < 45, elderly 45 <= AGE < 75, aged AGE >= 75; chosen to separate the paper's three healthy-volunteer age bands, study 1 / study 2).",
-      source_name        = "age"
+      notes = "Time-fixed per subject. Enters CL (sex-specific slope) and Vss (single slope) in the linear-regression covariate model. Training-cohort range 2-82 y (Methods, Data paragraph). Also drives the residual-error stratification thresholds (volunteer sub-population: young AGE < 45, elderly 45 <= AGE < 75, aged AGE >= 75; chosen to separate the paper's three healthy-volunteer age bands, study 1 / study 2).",
+      source_name = "age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. de Alwis 1998 encodes sex as 'gender 1 for females and 0 for males' (Table 2 footnote # and Stepwise regression analysis paragraph), matching the canonical SEXF orientation directly. CL and CLd carry sex-specific intercepts AND sex-specific slopes (Table 3 'CL male' / 'CL female' / 'CLd male' / 'CLd female' rows). V1 and Vss are NOT sex-stratified in the final model. Training-set sex breakdown 31 females / 68 males (Methods, Data paragraph).",
-      source_name        = "gender"
+      notes = "Time-fixed per subject. de Alwis 1998 encodes sex as 'gender 1 for females and 0 for males' (Table 2 footnote # and Stepwise regression analysis paragraph), matching the canonical SEXF orientation directly. CL and CLd carry sex-specific intercepts AND sex-specific slopes (Table 3 'CL male' / 'CL female' / 'CLd male' / 'CLd female' rows). V1 and Vss are NOT sex-stratified in the final model. Training-set sex breakdown 31 females / 68 males (Methods, Data paragraph).",
+      source_name = "gender"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator: 1 = healthy volunteer (studies 1 and 2), 0 = paediatric patient (studies 3 and 4).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator: 1 = healthy volunteer (studies 1 and 2), 0 = paediatric patient (studies 3 and 4).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (paediatric patient cohort; studies 3 and 4)",
-      notes              = "Time-fixed per subject. Used together with DIS_CANCER_PED and AGE to assign the per-subject proportional-residual-error magnitude across the five paper-defined sub-populations (Table 1 footnote: *1 young volunteers, *2 elderly volunteers, *3 aged volunteers, *4 paediatric patients on chemotherapy, *5 paediatrics on anaesthesia). DIS_HEALTHY = 1 routes the subject into one of the three volunteer strata (selected by AGE); DIS_HEALTHY = 0 routes the subject into one of the two paediatric strata (selected by DIS_CANCER_PED).",
-      source_name        = "(derived from study identifier; studies 1-2 = healthy volunteer, studies 3-4 = paediatric patient)"
+      notes = "Time-fixed per subject. Used together with DIS_CANCER_PED and AGE to assign the per-subject proportional-residual-error magnitude across the five paper-defined sub-populations (Table 1 footnote: *1 young volunteers, *2 elderly volunteers, *3 aged volunteers, *4 paediatric patients on chemotherapy, *5 paediatrics on anaesthesia). DIS_HEALTHY = 1 routes the subject into one of the three volunteer strata (selected by AGE); DIS_HEALTHY = 0 routes the subject into one of the two paediatric strata (selected by DIS_CANCER_PED).",
+      source_name = "(derived from study identifier; studies 1-2 = healthy volunteer, studies 3-4 = paediatric patient)"
     ),
     DIS_CANCER_PED = list(
-      description        = "Paediatric oncology cohort indicator: 1 = paediatric cancer patient receiving chemotherapy (study 3), 0 = paediatric patient receiving general anaesthesia (study 4) or any non-paediatric subject (studies 1 and 2).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paediatric oncology cohort indicator: 1 = paediatric cancer patient receiving chemotherapy (study 3), 0 = paediatric patient receiving general anaesthesia (study 4) or any non-paediatric subject (studies 1 and 2).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (paediatric general-anaesthesia cohort or non-paediatric subject)",
-      notes              = "Time-fixed per subject. Discriminates the paediatric chemotherapy sub-population (study 3, n=14, AGE 2-13 y, BSA-banded i.v. doses) from the paediatric general-anaesthesia sub-population (study 4, n=19, AGE 3-11 y, prophylactic 2-4 mg i.v. before anaesthetic induction). Only used in the residual-error switch within model(); does not enter the structural covariate model.",
-      source_name        = "(derived from study identifier; study 3 = paediatric chemo, study 4 = paediatric anaesthesia)"
+      notes = "Time-fixed per subject. Discriminates the paediatric chemotherapy sub-population (study 3, n=14, AGE 2-13 y, BSA-banded i.v. doses) from the paediatric general-anaesthesia sub-population (study 4, n=19, AGE 3-11 y, prophylactic 2-4 mg i.v. before anaesthetic induction). Only used in the residual-error switch within model(); does not enter the structural covariate model.",
+      source_name = "(derived from study identifier; study 3 = paediatric chemo, study 4 = paediatric anaesthesia)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99L,
-    n_studies      = 4L,
-    age_range      = "2-82 years",
-    weight_range   = "10.2-95.8 kg",
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 4L,
+    age_range = "2-82 years",
+    weight_range = "10.2-95.8 kg",
     sex_female_pct = 31.3,
-    disease_state  = "Pooled healthy-volunteer + paediatric-patient cohort drawn from four phase I/II ondansetron i.v. studies. Study 1 (n=32): adult male healthy volunteers, 16 young (18-41 y) and 16 elderly (65-75 y), single 8 mg i.v. 15-min infusion. Study 2 (n=34): age-and-gender stratified healthy volunteers, young (21-38 y, 6 M + 5 F), elderly (61-74 y, 6 M + 6 F), aged (75-82 y, 5 M + 6 F), single 0.15 mg/kg i.v. 15-min infusion. Study 3 (n=14): paediatric cancer patients (2-13 y, 3 F + 11 M) receiving cancer chemotherapy, single BSA-banded i.v. 15-min infusion (5 mg/m^2 if BSA <= 1.2 m^2; 8 mg fixed otherwise). Study 4 (n=19): paediatric patients (3-11 y, 11 F + 8 M) undergoing general anaesthesia, single 5-min i.v. infusion before anaesthetic induction (2 mg if 3-7 y; 4 mg if 8-11 y).",
-    dose_range     = "Single i.v. 15-min infusion (5-min in study 4): 8 mg fixed (studies 1, 5, 6), 0.15 mg/kg (study 2), 5 mg/m^2 or 8 mg BSA-banded (study 3), 2 mg or 4 mg age-banded (study 4). Repeated 0.15 mg/kg every 4 h on a single day in study 7.",
-    regions        = "United Kingdom (GlaxoWellcome Research and Development sponsored studies).",
-    bioanalysis    = "Plasma ondansetron quantified by validated solid-phase extraction HPLC with UV detection at 305 nm; LLOQ 1 ng/mL; linear calibration 1-250 ng/mL; CV < 10%. Plasma samples for the different studies were analysed by different centres, which is one source of the residual-error heterogeneity across the five sub-populations (Methods, Data analysis paragraph).",
-    test_set       = "An independent test set of 54 subjects from studies 5-7 (young healthy male volunteers 20-35 y, n=16; adult cancer patients on chemotherapy 39-78 y, 18 M + 2 F, n=20; paediatric cancer patients 4-18 y, n=18) was used for the standardised-prediction-error validation. Weight range 16.2-100.0 kg; gender 7 F + 47 M.",
-    notes          = "Total 1506 plasma concentrations from 99 model-building subjects (studies 1-4) and 607 plasma concentrations from 54 test-set subjects (studies 5-7). de Alwis 1998 Methods, Data paragraph. Demographics available for modelling were limited to age, weight, and gender; no race, no laboratory chemistry, no concomitant-medication, and no organ-function covariates were tested. The aged subgroup (study 2, AGE 75-82 y) is recorded as a distinct stratum from the elderly subgroup (AGE 61-74 y) only in the residual-error structure; the structural covariate model treats AGE as continuous."
+    disease_state = "Pooled healthy-volunteer + paediatric-patient cohort drawn from four phase I/II ondansetron i.v. studies. Study 1 (n=32): adult male healthy volunteers, 16 young (18-41 y) and 16 elderly (65-75 y), single 8 mg i.v. 15-min infusion. Study 2 (n=34): age-and-gender stratified healthy volunteers, young (21-38 y, 6 M + 5 F), elderly (61-74 y, 6 M + 6 F), aged (75-82 y, 5 M + 6 F), single 0.15 mg/kg i.v. 15-min infusion. Study 3 (n=14): paediatric cancer patients (2-13 y, 3 F + 11 M) receiving cancer chemotherapy, single BSA-banded i.v. 15-min infusion (5 mg/m^2 if BSA <= 1.2 m^2; 8 mg fixed otherwise). Study 4 (n=19): paediatric patients (3-11 y, 11 F + 8 M) undergoing general anaesthesia, single 5-min i.v. infusion before anaesthetic induction (2 mg if 3-7 y; 4 mg if 8-11 y).",
+    dose_range = "Single i.v. 15-min infusion (5-min in study 4): 8 mg fixed (studies 1, 5, 6), 0.15 mg/kg (study 2), 5 mg/m^2 or 8 mg BSA-banded (study 3), 2 mg or 4 mg age-banded (study 4). Repeated 0.15 mg/kg every 4 h on a single day in study 7.",
+    regions = "United Kingdom (GlaxoWellcome Research and Development sponsored studies).",
+    bioanalysis = "Plasma ondansetron quantified by validated solid-phase extraction HPLC with UV detection at 305 nm; LLOQ 1 ng/mL; linear calibration 1-250 ng/mL; CV < 10%. Plasma samples for the different studies were analysed by different centres, which is one source of the residual-error heterogeneity across the five sub-populations (Methods, Data analysis paragraph).",
+    test_set = "An independent test set of 54 subjects from studies 5-7 (young healthy male volunteers 20-35 y, n=16; adult cancer patients on chemotherapy 39-78 y, 18 M + 2 F, n=20; paediatric cancer patients 4-18 y, n=18) was used for the standardised-prediction-error validation. Weight range 16.2-100.0 kg; gender 7 F + 47 M.",
+    notes = "Total 1506 plasma concentrations from 99 model-building subjects (studies 1-4) and 607 plasma concentrations from 54 test-set subjects (studies 5-7). de Alwis 1998 Methods, Data paragraph. Demographics available for modelling were limited to age, weight, and gender; no race, no laboratory chemistry, no concomitant-medication, and no organ-function covariates were tested. The aged subgroup (study 2, AGE 75-82 y) is recorded as a distinct stratum from the elderly subgroup (AGE 61-74 y) only in the residual-error structure; the structural covariate model treats AGE as continuous."
   )
 
   ini({

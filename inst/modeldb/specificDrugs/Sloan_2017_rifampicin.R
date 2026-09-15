@@ -16,89 +16,89 @@ Sloan_2017_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives allometric scaling of CL/F (fixed exponent 0.75) and V/F (fixed exponent 1.0), both standardized to a 70-kg patient (Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'An allometric weight model was applied to standardize the pharmacokinetic parameters using a standard weight (wt_std) of 70 kg'). Sparse cohort: median 52 kg, range 34-74 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Drives allometric scaling of CL/F (fixed exponent 0.75) and V/F (fixed exponent 1.0), both standardized to a 70-kg patient (Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'An allometric weight model was applied to standardize the pharmacokinetic parameters using a standard weight (wt_std) of 70 kg'). Sparse cohort: median 52 kg, range 34-74 kg (Table 1).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- the typical value CL/F = 19.6 L/h applies to females; males have a multiplicative effect of 1.2x (95% CI 1.0-1.3) on CL/F per Sloan 2017 Table 3.",
-      notes              = "Sloan 2017 Table 3 reports THETA_sex_male = 1.2 with the published narrative (Results paragraph 4) describing 'an increase of clearance of 17% in male patients'. The table value 1.2 is used canonically; the slight prose/table discrepancy is rounding (1.17 vs 1.2). Storage uses canonical SEXF (1 = female, 0 = male); the model applies the effect as 1.2^(1 - SEXF) so females (SEXF = 1) give factor 1 and males (SEXF = 0) give factor 1.2.",
-      source_name        = "SEX"
+      notes = "Sloan 2017 Table 3 reports THETA_sex_male = 1.2 with the published narrative (Results paragraph 4) describing 'an increase of clearance of 17% in male patients'. The table value 1.2 is used canonically; the slight prose/table discrepancy is rounding (1.17 vs 1.2). Storage uses canonical SEXF (1 = female, 0 = male); the model applies the effect as 1.2^(1 - SEXF) so females (SEXF = 1) give factor 1 and males (SEXF = 0) give factor 1.2.",
+      source_name = "SEX"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age in years.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate in the stage 2 model (Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 3: 'The following covariates were explored: body weight, age, gender, HIV status, and SNP genotypes'). Did not significantly decrease the OFV and was not retained in the final model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate in the stage 2 model (Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 3: 'The following covariates were explored: body weight, age, gender, HIV status, and SNP genotypes'). Did not significantly decrease the OFV and was not retained in the final model."
     ),
     HIV = list(
       description = "HIV infection status indicator (1 = HIV-infected, 0 = HIV-uninfected).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stage 2 covariate search; not retained in the final model. 56.3% of the sparse cohort (98 of 174) were HIV-infected, of whom 28 (28.6%) were on antiretroviral therapy at recruitment."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stage 2 covariate search; not retained in the final model. 56.3% of the sparse cohort (98 of 174) were HIV-infected, of whom 28 (28.6%) were on antiretroviral therapy at recruitment."
     ),
     SLCO1B1_rs11045819 = list(
       description = "SLCO1B1 rs11045819 SNP genotype (CC = wild, AC = heterozygous, AA = variant); SLCO1B1 encodes the OATP1B1 hepatic uptake transporter.",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested as a covariate on CL/F and on relative bioavailability F (Sloan 2017 Results paragraph 7: 'Additive, dominant, and recessive models of effect were tested for each SNP'). Did not significantly improve model fit; variant allele frequency in the Malawian cohort was 0.07 (Sloan 2017 Discussion paragraph 4)."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested as a covariate on CL/F and on relative bioavailability F (Sloan 2017 Results paragraph 7: 'Additive, dominant, and recessive models of effect were tested for each SNP'). Did not significantly improve model fit; variant allele frequency in the Malawian cohort was 0.07 (Sloan 2017 Discussion paragraph 4)."
     ),
     SLCO1B1_rs4149032 = list(
       description = "SLCO1B1 rs4149032 SNP genotype (TT = wild, CT = heterozygous, CC = variant).",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested on CL/F and F; not retained. Minor allele frequency 0.32 in the Malawian cohort; previously associated with reduced rifampin exposure in South African and Ugandan cohorts (Sloan 2017 Discussion paragraph 3)."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested on CL/F and F; not retained. Minor allele frequency 0.32 in the Malawian cohort; previously associated with reduced rifampin exposure in South African and Ugandan cohorts (Sloan 2017 Discussion paragraph 3)."
     ),
     AADAC_rs1803155 = list(
       description = "AADAC rs1803155 SNP genotype (GG = wild, CG = heterozygous, CC = variant); AADAC encodes a serine deacetylase responsible for 25-deacetylation of rifamycins.",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested on CL/F and F; not retained. Minor allele frequency 0.25 in the Malawian cohort."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested on CL/F and F; not retained. Minor allele frequency 0.25 in the Malawian cohort."
     ),
     AADAC_rs61733692 = list(
       description = "AADAC rs61733692 SNP genotype.",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "All 174 participants were wild-type (TT) for this SNP; not testable as a covariate."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "All 174 participants were wild-type (TT) for this SNP; not testable as a covariate."
     ),
     CES1_rs12149368 = list(
       description = "CES-1 rs12149368 SNP genotype; CES-1 encodes carboxylesterase-1, an alternative hepatic ester-bond-cleaving enzyme.",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Exploratory SNP screened as a covariate; only one of 174 participants was heterozygous, rest wild-type; not retained."
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Exploratory SNP screened as a covariate; only one of 174 participants was heterozygous, rest wild-type; not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 174L,
-    n_studies      = 1L,
-    age_range      = "17-61 years (median 30)",
-    age_median     = "30 years",
-    weight_range   = "34-74 kg (median 52)",
-    weight_median  = "52 kg",
+    species = "human",
+    n_subjects = 174L,
+    n_studies = 1L,
+    age_range = "17-61 years (median 30)",
+    age_median = "30 years",
+    weight_range = "34-74 kg (median 52)",
+    weight_median = "52 kg",
     sex_female_pct = 30.5,
     race_ethnicity = "Black African (all participants were black Africans newly diagnosed with TB at Queen Elizabeth Central Hospital, Blantyre, Malawi).",
-    disease_state  = "Smear-positive pulmonary tuberculosis (TB); HIV co-infection in 98 of 174 (56.3%), of whom 28 (28.6%) were on antiretroviral therapy at recruitment (median CD4 174 cells/uL, range 6-783).",
-    dose_range     = "Oral rifampin / isoniazid fixed-dose combination tablets per WHO weight-adjusted bands: 300/150 mg (n=2, 1.1%), 450/225 mg (n=113, 64.9%), or 600/300 mg (n=59, 33.9%) once daily; corresponding to 8-12 mg/kg rifampin.",
-    regions        = "Malawi (Blantyre; Queen Elizabeth Central Hospital, sparse cohort recruited 2010-2012).",
-    co_medication  = "Standard first-line antitubercular regimen (rifampin + isoniazid +/- pyrazinamide + ethambutol per WHO guidelines). Antiretroviral therapy in 28 of 174 (16.1%).",
-    notes          = "Sparse PK sampling at 0 (predose), 2, and 6 h post-dose on day 14 or 21 of TB treatment, drawn after an overnight fast at 7:30 a.m. Drug assay LLQ 0.5 ug/mL (LC-MS/MS); ~5% of samples below LLQ were imputed at LLQ/2. The stage 1 dataset comprised 47 intensively-sampled patients from a prior 2007-2008 cohort at the same hospital (Sloan 2017 Methods 'The intensively sampled pharmacokinetic data'); their absorption parameters Ka, NN, MMT, and IIV_MMT were carried forward as fixed values in the final stage 2 model. Pharmacogenetic SNPs in SLCO1B1, AADAC, and CES-1 were screened on CL/F and F but none significantly improved the model fit (Sloan 2017 Results paragraph 7); they are documented in covariatesDataExcluded."
+    disease_state = "Smear-positive pulmonary tuberculosis (TB); HIV co-infection in 98 of 174 (56.3%), of whom 28 (28.6%) were on antiretroviral therapy at recruitment (median CD4 174 cells/uL, range 6-783).",
+    dose_range = "Oral rifampin / isoniazid fixed-dose combination tablets per WHO weight-adjusted bands: 300/150 mg (n=2, 1.1%), 450/225 mg (n=113, 64.9%), or 600/300 mg (n=59, 33.9%) once daily; corresponding to 8-12 mg/kg rifampin.",
+    regions = "Malawi (Blantyre; Queen Elizabeth Central Hospital, sparse cohort recruited 2010-2012).",
+    co_medication = "Standard first-line antitubercular regimen (rifampin + isoniazid +/- pyrazinamide + ethambutol per WHO guidelines). Antiretroviral therapy in 28 of 174 (16.1%).",
+    notes = "Sparse PK sampling at 0 (predose), 2, and 6 h post-dose on day 14 or 21 of TB treatment, drawn after an overnight fast at 7:30 a.m. Drug assay LLQ 0.5 ug/mL (LC-MS/MS); ~5% of samples below LLQ were imputed at LLQ/2. The stage 1 dataset comprised 47 intensively-sampled patients from a prior 2007-2008 cohort at the same hospital (Sloan 2017 Methods 'The intensively sampled pharmacokinetic data'); their absorption parameters Ka, NN, MMT, and IIV_MMT were carried forward as fixed values in the final stage 2 model. Pharmacogenetic SNPs in SLCO1B1, AADAC, and CES-1 were screened on CL/F and F but none significantly improved the model fit (Sloan 2017 Results paragraph 7); they are documented in covariatesDataExcluded."
   )
 
   ini({

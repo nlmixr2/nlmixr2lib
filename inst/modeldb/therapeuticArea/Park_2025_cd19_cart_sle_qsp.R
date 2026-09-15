@@ -35,8 +35,8 @@ Park_2025_cd19_cart_sle_qsp <- function() {
   vignette <- "Park_2025_cd19_cart_sle_qsp"
 
   units <- list(
-    time          = "day",
-    dosing        = "CAR-positive cells/kg (CAR-T product); mg (lymphodepletion chemotherapy)",
+    time = "day",
+    dosing = "CAR-positive cells/kg (CAR-T product); mg (lymphodepletion chemotherapy)",
     concentration = "cells/L (CAR-T and B cell states); cells/uL (host lymphocytes and neutrophils)"
   )
 
@@ -46,63 +46,201 @@ Park_2025_cd19_cart_sle_qsp <- function() {
   # host T cell pools, a Friberg neutrophil chain, and four disease biomarkers.
   # None map onto the canonical PK compartment roles.
   paper_specific_compartments <- c(
-    "cd8_tn_pb", "cd8_cm_pb", "cd8_em_pb", "cd8_ef_pb",
-    "cd4_tn_pb", "cd4_cm_pb", "cd4_em_pb", "cd4_ef_pb",
-    "cd8_tn_bm", "cd8_cm_bm", "cd8_em_bm", "cd8_ef_bm",
-    "cd4_tn_bm", "cd4_cm_bm", "cd4_em_bm", "cd4_ef_bm",
-    "cplx_cd8_pb", "cplx_cd4_pb", "cplx_cd8_bm", "cplx_cd4_bm",
-    "cd19b_pb", "cd19b_rev_pb", "cd19b_bm",
-    "ldc", "cd4t_pre", "cd4t", "cd8t_pre", "cd8t",
-    "nt_prol", "nt_tr1", "nt_tr2", "nt_tr3", "nt",
-    "ifna", "aab", "c3", "ptu"
+    "cd8_tn_pb",
+    "cd8_cm_pb",
+    "cd8_em_pb",
+    "cd8_ef_pb",
+    "cd4_tn_pb",
+    "cd4_cm_pb",
+    "cd4_em_pb",
+    "cd4_ef_pb",
+    "cd8_tn_bm",
+    "cd8_cm_bm",
+    "cd8_em_bm",
+    "cd8_ef_bm",
+    "cd4_tn_bm",
+    "cd4_cm_bm",
+    "cd4_em_bm",
+    "cd4_ef_bm",
+    "cplx_cd8_pb",
+    "cplx_cd4_pb",
+    "cplx_cd8_bm",
+    "cplx_cd4_bm",
+    "cd19b_pb",
+    "cd19b_rev_pb",
+    "cd19b_bm",
+    "ldc",
+    "cd4t_pre",
+    "cd4t",
+    "cd8t_pre",
+    "cd8t",
+    "nt_prol",
+    "nt_tr1",
+    "nt_tr2",
+    "nt_tr3",
+    "nt",
+    "ifna",
+    "aab",
+    "c3",
+    "ptu"
   )
 
   compartmentData <- list(
-    cd8_tn_pb    = list(analyte = "naive CD8+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd8_cm_pb    = list(analyte = "central memory CD8+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd8_em_pb    = list(analyte = "effector memory CD8+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd8_ef_pb    = list(analyte = "effector CD8+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd4_tn_pb    = list(analyte = "naive CD4+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd4_cm_pb    = list(analyte = "central memory CD4+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd4_em_pb    = list(analyte = "effector memory CD4+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd4_ef_pb    = list(analyte = "effector CD4+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd8_tn_bm    = list(analyte = "naive CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd8_cm_bm    = list(analyte = "central memory CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd8_em_bm    = list(analyte = "effector memory CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd8_ef_bm    = list(analyte = "effector CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd4_tn_bm    = list(analyte = "naive CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd4_cm_bm    = list(analyte = "central memory CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd4_em_bm    = list(analyte = "effector memory CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cd4_ef_bm    = list(analyte = "effector CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    cplx_cd8_pb  = list(analyte = "CAR-CD19 complexes on CD8+ CAR-T cells", units = "number/L", specimen = "whole blood", verified = FALSE),
-    cplx_cd4_pb  = list(analyte = "CAR-CD19 complexes on CD4+ CAR-T cells", units = "number/L", specimen = "whole blood", verified = FALSE),
-    cplx_cd8_bm  = list(analyte = "CAR-CD19 complexes on CD8+ CAR-T cells", units = "number/L", specimen = "tissue", verified = FALSE),
-    cplx_cd4_bm  = list(analyte = "CAR-CD19 complexes on CD4+ CAR-T cells", units = "number/L", specimen = "tissue", verified = FALSE),
-    cd19b_pb     = list(analyte = "autoreactive CD19+ B cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd19b_rev_pb = list(analyte = "reconstituted naive CD19+ B cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
-    cd19b_bm     = list(analyte = "CD19+ B cells", units = "cells/L", specimen = "tissue", verified = FALSE),
-    ldc          = list(analyte = "fludarabine plus cyclophosphamide K-PD signal", units = "mg", specimen = "plasma", verified = FALSE),
-    cd4t_pre     = list(analyte = "host CD4+ T cell precursors", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    cd4t         = list(analyte = "host CD4+ T cells", units = "cells/uL", specimen = "whole blood", verified = FALSE),
-    cd8t_pre     = list(analyte = "host CD8+ T cell precursors", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    cd8t         = list(analyte = "host CD8+ T cells", units = "cells/uL", specimen = "whole blood", verified = FALSE),
-    nt_prol      = list(analyte = "proliferating neutrophil precursors", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    nt_tr1       = list(analyte = "maturing neutrophils, transit 1", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    nt_tr2       = list(analyte = "maturing neutrophils, transit 2", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    nt_tr3       = list(analyte = "maturing neutrophils, transit 3", units = "cells/uL", specimen = "tissue", verified = FALSE),
-    nt           = list(analyte = "circulating neutrophils", units = "cells/uL", specimen = "whole blood", verified = FALSE),
-    ifna         = list(analyte = "interferon-alpha", units = "pg/L", specimen = "serum", verified = FALSE),
-    aab          = list(analyte = "anti-double-stranded-DNA autoantibodies", units = "IU/L", specimen = "serum", verified = FALSE),
-    c3           = list(analyte = "complement C3 protein", units = "mg/L", specimen = "serum", verified = FALSE),
-    ptu          = list(analyte = "urinary protein", units = "mg/g creatinine", specimen = "urine", verified = FALSE)
+    cd8_tn_pb = list(analyte = "naive CD8+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
+    cd8_cm_pb = list(
+      analyte = "central memory CD8+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd8_em_pb = list(
+      analyte = "effector memory CD8+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd8_ef_pb = list(
+      analyte = "effector CD8+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd4_tn_pb = list(analyte = "naive CD4+ CAR-T cells", units = "cells/L", specimen = "whole blood", verified = FALSE),
+    cd4_cm_pb = list(
+      analyte = "central memory CD4+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd4_em_pb = list(
+      analyte = "effector memory CD4+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd4_ef_pb = list(
+      analyte = "effector CD4+ CAR-T cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd8_tn_bm = list(analyte = "naive CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
+    cd8_cm_bm = list(
+      analyte = "central memory CD8+ CAR-T cells",
+      units = "cells/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cd8_em_bm = list(
+      analyte = "effector memory CD8+ CAR-T cells",
+      units = "cells/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cd8_ef_bm = list(analyte = "effector CD8+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
+    cd4_tn_bm = list(analyte = "naive CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
+    cd4_cm_bm = list(
+      analyte = "central memory CD4+ CAR-T cells",
+      units = "cells/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cd4_em_bm = list(
+      analyte = "effector memory CD4+ CAR-T cells",
+      units = "cells/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cd4_ef_bm = list(analyte = "effector CD4+ CAR-T cells", units = "cells/L", specimen = "tissue", verified = FALSE),
+    cplx_cd8_pb = list(
+      analyte = "CAR-CD19 complexes on CD8+ CAR-T cells",
+      units = "number/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cplx_cd4_pb = list(
+      analyte = "CAR-CD19 complexes on CD4+ CAR-T cells",
+      units = "number/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cplx_cd8_bm = list(
+      analyte = "CAR-CD19 complexes on CD8+ CAR-T cells",
+      units = "number/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cplx_cd4_bm = list(
+      analyte = "CAR-CD19 complexes on CD4+ CAR-T cells",
+      units = "number/L",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cd19b_pb = list(
+      analyte = "autoreactive CD19+ B cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd19b_rev_pb = list(
+      analyte = "reconstituted naive CD19+ B cells",
+      units = "cells/L",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    cd19b_bm = list(analyte = "CD19+ B cells", units = "cells/L", specimen = "tissue", verified = FALSE),
+    ldc = list(
+      analyte = "fludarabine plus cyclophosphamide K-PD signal",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    cd4t_pre = list(analyte = "host CD4+ T cell precursors", units = "cells/uL", specimen = "tissue", verified = FALSE),
+    cd4t = list(analyte = "host CD4+ T cells", units = "cells/uL", specimen = "whole blood", verified = FALSE),
+    cd8t_pre = list(analyte = "host CD8+ T cell precursors", units = "cells/uL", specimen = "tissue", verified = FALSE),
+    cd8t = list(analyte = "host CD8+ T cells", units = "cells/uL", specimen = "whole blood", verified = FALSE),
+    nt_prol = list(
+      analyte = "proliferating neutrophil precursors",
+      units = "cells/uL",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nt_tr1 = list(
+      analyte = "maturing neutrophils, transit 1",
+      units = "cells/uL",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nt_tr2 = list(
+      analyte = "maturing neutrophils, transit 2",
+      units = "cells/uL",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nt_tr3 = list(
+      analyte = "maturing neutrophils, transit 3",
+      units = "cells/uL",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    nt = list(analyte = "circulating neutrophils", units = "cells/uL", specimen = "whole blood", verified = FALSE),
+    ifna = list(analyte = "interferon-alpha", units = "pg/L", specimen = "serum", verified = FALSE),
+    aab = list(
+      analyte = "anti-double-stranded-DNA autoantibodies",
+      units = "IU/L",
+      specimen = "serum",
+      verified = FALSE
+    ),
+    c3 = list(analyte = "complement C3 protein", units = "mg/L", specimen = "serum", verified = FALSE),
+    ptu = list(analyte = "urinary protein", units = "mg/g creatinine", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
-      notes              = paste(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Scales the blood volume (Vb = 5 * WT/70 L) and bone marrow volume",
         "(Vbm = 1.6 * WT/70 L), the total administered CAR-T cell number",
         "(dose_cart * WT), the C3 synthesis rate (1.5 mg/kg/h * 24 * WT) and",
@@ -113,32 +251,32 @@ Park_2025_cd19_cart_sle_qsp <- function() {
         "verified on disk. Every allometric term is normalized to 70 kg, which",
         "is the reference used throughout the validation vignette."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 5L,
-    n_studies      = 1L,
-    age_range      = "18-24 years",
-    weight_range   = "not reported by Park 2025; 70 kg reference used",
+    species = "human",
+    n_subjects = 5L,
+    n_studies = 1L,
+    age_range = "18-24 years",
+    weight_range = "not reported by Park 2025; 70 kg reference used",
     sex_female_pct = 80,
-    disease_state  = paste(
+    disease_state = paste(
       "Severe, treatment-refractory systemic lupus erythematosus. Model",
       "qualification used an external cohort of 13 additional patients",
       "(7 SLE, 6 other B cell-mediated autoimmune diseases) followed for",
       "up to 2 years."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1 x 10^6 FMC63-based anti-CD19 CAR-positive T cells/kg as a single",
       "intravenous infusion. Lymphodepletion:",
       "fludarabine 25 mg/m2/day on days -5 to -3 plus cyclophosphamide",
       "1000 mg/m2 on day -3. Model-based dose-ranging covered 1, 5, 10, 50",
       "and 100% of the clinical dose."
     ),
-    regions        = "Germany (Erlangen); Mackensen 2022 / Muller 2024 case series.",
-    notes          = paste(
+    regions = "Germany (Erlangen); Mackensen 2022 / Muller 2024 case series.",
+    notes = paste(
       "Four female (18-24 years) and one male (23 years) SLE patient.",
       "Infusion product composition 75.9% CD4+ and 23.0% CD8+ CAR-T cells,",
       "with 7.29% naive, 22.1% central memory, 60.9% effector memory and",

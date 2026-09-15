@@ -31,8 +31,8 @@ Elkomy_2015_morphine <- function() {
   )
   vignette <- "Elkomy_2015_morphine"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -41,19 +41,19 @@ Elkomy_2015_morphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
-    effect_m3g  = list(analyte = "M3G", units = "nmol", specimen = "not applicable", verified = FALSE),
-    effect_m6g  = list(analyte = "M6G", units = "nmol", specimen = "not applicable", verified = FALSE)
+    effect_m3g = list(analyte = "M3G", units = "nmol", specimen = "not applicable", verified = FALSE),
+    effect_m6g = list(analyte = "M6G", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed total body weight. Power-form allometric covariate",
         "on all four morphine PK parameters: CL ~ WT^0.75, CLD (Q) ~",
         "WT^0.75, VC ~ WT^1.0, VP ~ WT^1.0. Exponents FIXED (not",
@@ -65,14 +65,14 @@ Elkomy_2015_morphine <- function() {
         "age and WT); the paper attributes the combined size + hepatic-",
         "maturation effect to WT alone (Discussion para 3)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Schwartz-formula estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Schwartz-formula estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "eGFR computed via the Schwartz formula (Schwartz 1976) to",
         "account for the effect of age on renal function (paper Methods",
         "and Results, Fig. 3). Covariate on the two metabolite-channel",
@@ -86,21 +86,21 @@ Elkomy_2015_morphine <- function() {
         "this register (creatinine-based renal function, BSA-",
         "normalized); the source paper notation is GFR."
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    age_range      = "3 days - 5.4 years",
-    age_median     = "1.4 years (SD 1.6)",
-    weight_range   = "3.1 - 18.5 kg",
-    weight_median  = "7.8 kg (SD 4.3); 6 kg used as the allometric reference",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    age_range = "3 days - 5.4 years",
+    age_median = "1.4 years (SD 1.6)",
+    weight_range = "3.1 - 18.5 kg",
+    weight_median = "7.8 kg (SD 4.3); 6 kg used as the allometric reference",
     sex_female_pct = 50,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Infants and young children admitted to the cardiovascular",
       "intensive care unit (CVICU) after congenital heart surgery.",
       "Cardiac diagnoses (by count): tetralogy of Fallot 12,",
@@ -113,15 +113,15 @@ Elkomy_2015_morphine <- function() {
       "mL/min/1.73 m^2 (mean 79); hepatic enzymes ALT 25 - 108 U/L,",
       "AST 78 - 659 U/L; gestational age 35 - 40 weeks (mean 38)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV bolus loading dose 0.15 mg/kg morphine sulfate (range 0.14",
       "- 0.17 mg/kg); nurse-controlled-analgesia (NCA) follow-up IV",
       "bolus doses averaging 0.06 mg/kg (range 0.02 - 0.21 mg/kg).",
       "Mean 18 NCA doses per subject (range 7 - 35) over the 6-h",
       "post-loading sampling period and subsequent random sampling."
     ),
-    regions        = "USA (Lucile Packard Children's Hospital, Palo Alto, CA; Children's Hospital Colorado, Aurora, CO)",
-    notes          = paste(
+    regions = "USA (Lucile Packard Children's Hospital, Palo Alto, CA; Children's Hospital Colorado, Aurora, CO)",
+    notes = paste(
       "Demographics from Elkomy 2015 Table I. NONMEM VII with FOCE-",
       "INTER (eta-eps interaction); ADVAN6 TOL5 general ODE solver.",
       "Sequential fitting: morphine 2-compartment model first, then",

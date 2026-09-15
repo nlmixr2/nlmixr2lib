@@ -5,26 +5,26 @@ Bai_2024_tacrolimus <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     DBIL = list(
-      description        = "Direct (conjugated) serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Direct (conjugated) serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent oral clearance: CL_typical = 37.6 * (DBIL / 22.1)^-0.188. The reference 22.1 umol/L is the cohort median direct bilirubin (Bai 2024 Table 1: median 22.1, mean 36.2 (SD 49.1), range 3.40-345 umol/L) and is the value printed inside the final-model equation in Section 3.2. The negative exponent means that rising direct bilirubin (impaired biliary excretion / cholestasis after transplantation) lowers apparent clearance.",
-      source_name        = "DBIL"
+      notes = "Power-form effect on apparent oral clearance: CL_typical = 37.6 * (DBIL / 22.1)^-0.188. The reference 22.1 umol/L is the cohort median direct bilirubin (Bai 2024 Table 1: median 22.1, mean 36.2 (SD 49.1), range 3.40-345 umol/L) and is the value printed inside the final-model equation in Section 3.2. The negative exponent means that rising direct bilirubin (impaired biliary excretion / cholestasis after transplantation) lowers apparent clearance.",
+      source_name = "DBIL"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent central volume: Vc_typical = 1710 * (WT / 70)^1.4. The reference 70 kg is the cohort median weight (Bai 2024 Table 1: median 70.0, mean 70.7 (SD 13.9), range 41-129 kg) and is the value printed inside the final-model equation in Section 3.2. The exponent 1.4 was estimated, not fixed at an allometric 1.0.",
-      source_name        = "WT"
+      notes = "Power-form effect on apparent central volume: Vc_typical = 1710 * (WT / 70)^1.4. The reference 70 kg is the cohort median weight (Bai 2024 Table 1: median 70.0, mean 70.7 (SD 13.9), range 41-129 kg) and is the value printed inside the final-model equation in Section 3.2. The exponent 1.4 was estimated, not fixed at an allometric 1.0.",
+      source_name = "WT"
     )
   )
 
@@ -39,113 +39,113 @@ Bai_2024_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "unitless",
-      type        = "binary",
-      notes       = "Screened but not retained by the stepwise forward-inclusion / backward-elimination procedure (Bai 2024 Section 2.4). Cohort 148 male / 48 female (Table 1). No coefficient is reported."
+      units = "unitless",
+      type = "binary",
+      notes = "Screened but not retained by the stepwise forward-inclusion / backward-elimination procedure (Bai 2024 Section 2.4). Cohort 148 male / 48 female (Table 1). No coefficient is reported."
     ),
     AGE = list(
       description = "Subject age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 55.0, range 16.0-76.0 years (Table 1). No coefficient is reported."
+      units = "year",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 55.0, range 16.0-76.0 years (Table 1). No coefficient is reported."
     ),
     POD = list(
       description = "Post-operative day (days since liver transplantation)",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 5.50, range 0.500-30.9 days (Table 1). The Discussion attributes the null result to the short early-postoperative follow-up window and calls for longer follow-up. No coefficient is reported."
+      units = "days",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 5.50, range 0.500-30.9 days (Table 1). The Discussion attributes the null result to the short early-postoperative follow-up window and calls for longer follow-up. No coefficient is reported."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 6.43, range 1.44-22.2 10^9/L (Table 1). No coefficient is reported."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 6.43, range 1.44-22.2 10^9/L (Table 1). No coefficient is reported."
     ),
     LYMPH_ABS = list(
       description = "Absolute peripheral-blood lymphocyte count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 0.545, range 0.0500-6.45 10^9/L (Table 1). No coefficient is reported."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 0.545, range 0.0500-6.45 10^9/L (Table 1). No coefficient is reported."
     ),
     HCT = list(
       description = "Haematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 26.3%, range 13.5-40.6% (Table 1). Tacrolimus partitions extensively into erythrocytes (85-95% of whole-blood drug) and haematocrit is a commonly retained covariate in other tacrolimus models, so the null result here is notable. No coefficient is reported."
+      units = "%",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 26.3%, range 13.5-40.6% (Table 1). Tacrolimus partitions extensively into erythrocytes (85-95% of whole-blood drug) and haematocrit is a commonly retained covariate in other tacrolimus models, so the null result here is notable. No coefficient is reported."
     ),
     HGB = list(
       description = "Haemoglobin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 87.5, range 48.0-141 g/L (Table 1). No coefficient is reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 87.5, range 48.0-141 g/L (Table 1). No coefficient is reported."
     ),
     ALB = list(
       description = "Serum albumin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 36.0, range 28.4-57.0 g/L (Table 1). No coefficient is reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 36.0, range 28.4-57.0 g/L (Table 1). No coefficient is reported."
     ),
     TPRO = list(
       description = "Total serum protein concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 59.3, range 40.4-139 g/L (Table 1). No coefficient is reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 59.3, range 40.4-139 g/L (Table 1). No coefficient is reported."
     ),
     AST = list(
       description = "Aspartate aminotransferase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 39.0, range 11.0-5970 U/L (Table 1). No coefficient is reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 39.0, range 11.0-5970 U/L (Table 1). No coefficient is reported."
     ),
     ALT = list(
       description = "Alanine aminotransferase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 117, range 25.0-1740 U/L (Table 1). No coefficient is reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 117, range 25.0-1740 U/L (Table 1). No coefficient is reported."
     ),
     TBILI = list(
       description = "Total serum bilirubin concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4); the direct (conjugated) fraction DBIL was retained instead. Cohort median 38.3, range 0.290-457 umol/L (Table 1). No coefficient is reported for total bilirubin."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4); the direct (conjugated) fraction DBIL was retained instead. Cohort median 38.3, range 0.290-457 umol/L (Table 1). No coefficient is reported for total bilirubin."
     ),
     ALP = list(
       description = "Alkaline phosphatase activity",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 133, range 51.0-570 U/L (Table 1). No coefficient is reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 133, range 51.0-570 U/L (Table 1). No coefficient is reported."
     ),
     BUN = list(
       description = "Serum urea concentration",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Bai 2024 Table 1 reports serum urea in SI mmol/L (median 11.9, range 4.07-48.1), not urea nitrogen in mg/dL; the two differ by the factor BUN_mgdL = urea_mmolL * 2.8. No coefficient is reported."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Bai 2024 Table 1 reports serum urea in SI mmol/L (median 11.9, range 4.07-48.1), not urea nitrogen in mg/dL; the two differ by the factor BUN_mgdL = urea_mmolL * 2.8. No coefficient is reported."
     ),
     CREAT = list(
       description = "Serum creatinine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 60.5, range 28.0-291 umol/L (Table 1). No coefficient is reported."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bai 2024 Section 2.4). Cohort median 60.5, range 28.0-291 umol/L (Table 1). No coefficient is reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 196L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 196L,
+    n_studies = 1L,
     n_observations = 802L,
-    age_range      = "16-76 years",
-    age_median     = "55.0 years",
-    age_mean       = "54.4 +/- 10.1 years",
-    weight_range   = "41-129 kg",
-    weight_median  = "70.0 kg",
-    weight_mean    = "70.7 +/- 13.9 kg",
+    age_range = "16-76 years",
+    age_median = "55.0 years",
+    age_mean = "54.4 +/- 10.1 years",
+    weight_range = "41-129 kg",
+    weight_median = "70.0 kg",
+    weight_mean = "70.7 +/- 13.9 kg",
     sex_female_pct = 24.5,
     race_ethnicity = c(Chinese = 100),
-    disease_state  = "Adults in the early period after a first orthotopic liver transplantation, sampled from the first postoperative day to hospital discharge (postoperative day median 5.50, range 0.500-30.9 days). The cohort is split by the preoperative diagnosis into a liver-cancer group (N = 118) and a non-liver-cancer group (N = 78); the final model does not distinguish the two. Post-transplant hepatic recovery spans a wide range (direct bilirubin median 22.1, range 3.40-345 umol/L; ALT median 117, range 25.0-1740 U/L) and the cohort is anaemic (haematocrit median 26.3%, haemoglobin median 87.5 g/L).",
-    dose_range     = "Oral tacrolimus (Prograf) twice daily on an empty stomach at 08:00 and 20:00, started 6-48 h after transplantation and titrated to trough concentration; daily dose mean 3.90 +/- 0.84 mg, median 3.92 mg, range 1.40-6.00 mg. Co-administered with mycophenolate mofetil and methylprednisolone.",
-    regions        = "Single center: Beijing YouAn Hospital of Capital Medical University, Beijing, China.",
-    notes          = "Retrospective therapeutic-drug-monitoring analysis, November 2021 - December 2023. Baseline demographics per Bai 2024 Table 1; final population PK parameter estimates and bootstrap validation per Bai 2024 Table 3. Whole-blood tacrolimus by validated LC-MS over a 1.0-50.0 ng/mL calibrated range; observed concentrations mean 4.53 +/- 3.30 ng/mL, median 3.80, range BQL-28.8 ng/mL. Sampling was overwhelmingly pre-morning-dose trough (0.5-1 h before the 08:00 dose), which the authors note makes Ka poorly identified. CYP3A5 genotype was not available and was not tested as a covariate (stated limitation). Section 2.4 lists the full 19-covariate screen: preoperative disease diagnosis, gender, age, weight, postoperative days, white blood cell count, lymphocytes, haematocrit, haemoglobin, albumin, total protein, AST, ALT, total bilirubin, direct bilirubin, alkaline phosphatase, urea, creatinine, and prothrombin time. Only weight (on Vc/F) and direct bilirubin (on CL/F) survived stepwise selection; the other 17 carry no reported coefficient and are recorded in covariatesDataExcluded, except the preoperative diagnosis and prothrombin time (seconds; cohort median 11.5, range 7.90-27.1 s), which have no canonical register column. Bai 2024 Table 2 reports a rejected base model in which CL/F, Vc/F and Ka were estimated separately in the liver-cancer and non-liver-cancer groups (CL/F 38.9 vs 37.7 L/h, Vc/F 1603.6 vs 1772.2 L, Ka 0.354 vs 0.221 1/h); despite a 7.50-point OFV drop the authors rejected it because the parameters were similar and IIV_Ka was not estimable in the non-liver-cancer group (RSE 4959%), so only the pooled final model is implemented here."
+    disease_state = "Adults in the early period after a first orthotopic liver transplantation, sampled from the first postoperative day to hospital discharge (postoperative day median 5.50, range 0.500-30.9 days). The cohort is split by the preoperative diagnosis into a liver-cancer group (N = 118) and a non-liver-cancer group (N = 78); the final model does not distinguish the two. Post-transplant hepatic recovery spans a wide range (direct bilirubin median 22.1, range 3.40-345 umol/L; ALT median 117, range 25.0-1740 U/L) and the cohort is anaemic (haematocrit median 26.3%, haemoglobin median 87.5 g/L).",
+    dose_range = "Oral tacrolimus (Prograf) twice daily on an empty stomach at 08:00 and 20:00, started 6-48 h after transplantation and titrated to trough concentration; daily dose mean 3.90 +/- 0.84 mg, median 3.92 mg, range 1.40-6.00 mg. Co-administered with mycophenolate mofetil and methylprednisolone.",
+    regions = "Single center: Beijing YouAn Hospital of Capital Medical University, Beijing, China.",
+    notes = "Retrospective therapeutic-drug-monitoring analysis, November 2021 - December 2023. Baseline demographics per Bai 2024 Table 1; final population PK parameter estimates and bootstrap validation per Bai 2024 Table 3. Whole-blood tacrolimus by validated LC-MS over a 1.0-50.0 ng/mL calibrated range; observed concentrations mean 4.53 +/- 3.30 ng/mL, median 3.80, range BQL-28.8 ng/mL. Sampling was overwhelmingly pre-morning-dose trough (0.5-1 h before the 08:00 dose), which the authors note makes Ka poorly identified. CYP3A5 genotype was not available and was not tested as a covariate (stated limitation). Section 2.4 lists the full 19-covariate screen: preoperative disease diagnosis, gender, age, weight, postoperative days, white blood cell count, lymphocytes, haematocrit, haemoglobin, albumin, total protein, AST, ALT, total bilirubin, direct bilirubin, alkaline phosphatase, urea, creatinine, and prothrombin time. Only weight (on Vc/F) and direct bilirubin (on CL/F) survived stepwise selection; the other 17 carry no reported coefficient and are recorded in covariatesDataExcluded, except the preoperative diagnosis and prothrombin time (seconds; cohort median 11.5, range 7.90-27.1 s), which have no canonical register column. Bai 2024 Table 2 reports a rejected base model in which CL/F, Vc/F and Ka were estimated separately in the liver-cancer and non-liver-cancer groups (CL/F 38.9 vs 37.7 L/h, Vc/F 1603.6 vs 1772.2 L, Ka 0.354 vs 0.221 1/h); despite a 7.50-point OFV drop the authors rejected it because the parameters were similar and IIV_Ka was not estimable in the non-liver-cancer group (RSE 4959%), so only the pooled final model is implemented here."
   )
 
   ini({

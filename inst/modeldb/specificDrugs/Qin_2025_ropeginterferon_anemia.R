@@ -36,18 +36,18 @@ Qin_2025_ropeginterferon_anemia <- function() {
   )
   vignette <- "Qin_2025_ropeginterferon"
   units <- list(
-    time          = "n/a (static maintenance-phase landmark regression; no time dimension)",
-    dosing        = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
+    time = "n/a (static maintenance-phase landmark regression; no time dimension)",
+    dosing = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
     concentration = "prob_anemia (probability of a treatment-related anemia event during the maintenance phase, 0-1; also logit_anemia)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average total serum ropeginterferon alfa-2b concentration over the dose-maintenance phase.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average total serum ropeginterferon alfa-2b concentration over the dose-maintenance phase.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (free plus target-bound) serum ropeg. THE AVERAGING",
         "WINDOW IS STUDY-DEPENDENT and is the COMPLEMENT of the",
         "titration-phase window used by the companion transaminase",
@@ -73,14 +73,14 @@ Qin_2025_ropeginterferon_anemia <- function() {
         "and NOT scaled, so the intercept is the logit at CAV = 0 and",
         "zero allele burden, a doubly extrapolated anchor."
       ),
-      source_name        = "Cavg, maintenance phase (average concentration within the maintenance phase)"
+      source_name = "Cavg, maintenance phase (average concentration within the maintenance phase)"
     ),
     TUM_JAK2_V617F_VAF = list(
-      description        = "Baseline JAK2 V617F somatic variant allele frequency (allele burden) in peripheral blood, before the first ropeg dose.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Baseline JAK2 V617F somatic variant allele frequency (allele burden) in peripheral blood, before the first ropeg dose.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "THE SCALE IS PER CENT, NOT A FRACTION. Qin 2025 Table 1 prints",
         "the row as 'JAK2 V617F (%)' with medians of 77.8 (range",
         "0.0210-97.5) in A19-201 and 61.2 (range 4.70-96.4) in A20-202;",
@@ -101,16 +101,16 @@ Qin_2025_ropeginterferon_anemia <- function() {
         "Quantitated as described in Qin 2025 references 39, 42 and 44",
         "(Methods 2.2)."
       ),
-      source_name        = "JAK2 V617F (%) (baseline JAK2 V617F allele burden)"
+      source_name = "JAK2 V617F (%) (baseline JAK2 V617F allele burden)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened by forward inclusion at p < 0.05 and not retained for",
         "this endpoint, although it WAS retained by the companion",
         "week-24 JAK2 V617F efficacy regression",
@@ -119,15 +119,15 @@ Qin_2025_ropeginterferon_anemia <- function() {
     ),
     BMI = list(
       description = "Baseline body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion at p < 0.05 and not retained for this endpoint."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened by forward inclusion at p < 0.05 and not retained for this endpoint."
     ),
     HCT = list(
       description = "Baseline hematocrit.",
-      units       = "percent (volume fraction times 100), per the HCT register entry. Note that Qin 2025 Table 1 mixes the two scales inside a single cell, printing an A20-202 median of 45.7 against a range of [0.421, 64.1]",
-      type        = "continuous",
-      notes       = paste(
+      units = "percent (volume fraction times 100), per the HCT register entry. Note that Qin 2025 Table 1 mixes the two scales inside a single cell, printing an A20-202 median of 45.7 against a range of [0.421, 64.1]",
+      type = "continuous",
+      notes = paste(
         "Part of the Table 1 covariate set screened for the",
         "exposure-response models (Qin 2025 Methods 2.4.6.2: 'Covariates",
         "tested were the same as those in the PopPK analysis'). Not",
@@ -140,19 +140,19 @@ Qin_2025_ropeginterferon_anemia <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 78L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 78L,
+    n_studies = 2L,
     n_observations = "78 evaluable binary maintenance-phase anemia records, one per patient (Qin 2025 Results 3.4: 'Seventy-eight PV patients from A19-201 and A20-202 were included in the exposure-safety population')",
-    age_range      = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
-    weight_range   = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
+    age_range = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
+    weight_range = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
     sex_female_pct = 43.6,
     race_ethnicity = "Japanese (A19-201, n = 29) and Chinese (A20-202, n = 49)",
-    disease_state  = "polycythaemia vera; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline JAK2 V617F allele burden median 77.8%, range 0.0210-97.5 (A19-201) and median 61.2%, range 4.70-96.4 (A20-202) (Qin 2025 Table 1). All A20-202 patients and all but two A19-201 patients carried the mutation",
-    dose_range     = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
-    regions        = "Japan (A19-201) and China (A20-202)",
+    disease_state = "polycythaemia vera; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline JAK2 V617F allele burden median 77.8%, range 0.0210-97.5 (A19-201) and median 61.2%, range 4.70-96.4 (A20-202) (Qin 2025 Table 1). All A20-202 patients and all but two A19-201 patients carried the mutation",
+    dose_range = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
+    regions = "Japan (A19-201) and China (A20-202)",
     endpoint_definition = "Treatment-related adverse event of anemia occurring during the study's dose-maintenance phase, graded by CTCAE version 5.0 (Qin 2025 Methods 2.3 and 2.4.7.1). Anemia is one of the ten most frequent treatment-related adverse events carried into the exposure-safety screen",
-    notes          = paste0(
+    notes = paste0(
       "Model selection was evidence-led. Qin 2025 Results 3.4 reports ",
       "that 'In the maintenance phase, anemia occurrence was associated ",
       "with average exposure in this phase (p = 0.022)' in the ",

@@ -1,58 +1,108 @@
 Scheuher_2023_ADC_human_qsp <- function() {
   description <- "QSP. Human platform model for HER2-targeting antibody-drug conjugates in HER2+ metastatic breast cancer (T-DM1 default; T-DXd variant via parameter overrides). Extends the mouse model with: (i) HER2 receptor sinks on normal cells in the central and peripheral compartments (with binding, endocytosis, recycling, degradation); (ii) soluble HER2 (sHER2) shed from cell-surface HER2 into central + peripheral + tumor compartments, with reversible binding to ADC and Ab and its own turnover; and (iii) larger physiologic volumes (3 L central, 13 L peripheral for a 70 kg adult). Mouse-derived TGI parameters (kkill_max, kc50, tau, n_Hill) are carried over from N87 xenograft fits. Amounts in nmol; concentrations amount/volume."
-  reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Human model = Tables S1c, S2d-e, S3e-f."
-  vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
+  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Human model = Tables S1c, S2d-e, S3e-f."
+  vignette <- "Scheuher_2023_ADC_platform_qsp"
+  units <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    adc_central         = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
-    ab_central          = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
-    pl_central          = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "plasma", verified = FALSE),
-    adc_peripheral      = list(analyte = "ADC", units = "nmol", specimen = "tissue", verified = FALSE),
-    ab_peripheral       = list(analyte = "Ab", units = "nmol", specimen = "tissue", verified = FALSE),
-    pl_peripheral       = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tissue", verified = FALSE),
-    adc_ext_tumor       = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
-    ab_ext_tumor        = list(analyte = "Ab", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_ext_tumor        = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_nc_c           = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2adc_nc_c        = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2ab_nc_c         = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2endo_nc_c       = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2adcendo_nc_c    = list(analyte = "Endocytosed ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2abendo_nc_c     = list(analyte = "Endocytosed Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2_nc_p           = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2adc_nc_p        = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2ab_nc_p         = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2endo_nc_p       = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2adcendo_nc_p    = list(analyte = "Endocytosed ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2abendo_nc_p     = list(analyte = "Endocytosed Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    sher2_c             = list(analyte = "Soluble HER2", units = "nmol", specimen = "plasma", verified = FALSE),
-    sher2adc_c          = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
-    sher2ab_c           = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
-    sher2_p             = list(analyte = "Soluble HER2", units = "nmol", specimen = "tissue", verified = FALSE),
-    sher2adc_p          = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
-    sher2ab_p           = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
-    sher2_tumor         = list(analyte = "Soluble HER2", units = "nmol", specimen = "tumor", verified = FALSE),
-    sher2adc_tumor      = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    sher2ab_tumor       = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_surf_tumor     = list(analyte = "HER2 on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_adc_surf_tumor = list(analyte = "ADC-HER2 complex on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_ab_surf_tumor  = list(analyte = "Ab-HER2 complex on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_endo_tumor     = list(analyte = "Endocytosed HER2 in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_adc_endo_tumor = list(analyte = "Endocytosed ADC-HER2 complex in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_ab_endo_tumor  = list(analyte = "Endocytosed Ab-HER2 complex in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_endo_tumor       = list(analyte = "Prodrug/Placido in endosomes of tumor cells", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_cyto_tumor       = list(analyte = "Prodrug/Placido in cytoplasm of tumor cells", units = "nmol", specimen = "tumor", verified = FALSE),
-    t_cyto_tumor        = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
-    tpl_cyto_tumor      = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
-    n1                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n2                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n3                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n4                  = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE)
+    adc_central = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_central = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_central = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_peripheral = list(analyte = "ADC", units = "nmol", specimen = "tissue", verified = FALSE),
+    ab_peripheral = list(analyte = "Ab", units = "nmol", specimen = "tissue", verified = FALSE),
+    pl_peripheral = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tissue", verified = FALSE),
+    adc_ext_tumor = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
+    ab_ext_tumor = list(analyte = "Ab", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_ext_tumor = list(analyte = "Prodrug/Placido", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_nc_c = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adc_nc_c = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2ab_nc_c = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2endo_nc_c = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adcendo_nc_c = list(
+      analyte = "Endocytosed ADC-HER2 complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    her2abendo_nc_c = list(
+      analyte = "Endocytosed Ab-HER2 complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    her2_nc_p = list(analyte = "HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adc_nc_p = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2ab_nc_p = list(analyte = "Ab-HER2 complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2endo_nc_p = list(analyte = "Endocytosed HER2", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2adcendo_nc_p = list(
+      analyte = "Endocytosed ADC-HER2 complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    her2abendo_nc_p = list(
+      analyte = "Endocytosed Ab-HER2 complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    sher2_c = list(analyte = "Soluble HER2", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2adc_c = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2ab_c = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    sher2_p = list(analyte = "Soluble HER2", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2adc_p = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2ab_p = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tissue", verified = FALSE),
+    sher2_tumor = list(analyte = "Soluble HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    sher2adc_tumor = list(analyte = "ADC-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    sher2ab_tumor = list(analyte = "Ab-soluble HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_surf_tumor = list(analyte = "HER2 on tumor surface", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_surf_tumor = list(
+      analyte = "ADC-HER2 complex on tumor surface",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    her2_ab_surf_tumor = list(
+      analyte = "Ab-HER2 complex on tumor surface",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    her2_endo_tumor = list(analyte = "Endocytosed HER2 in tumor", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_endo_tumor = list(
+      analyte = "Endocytosed ADC-HER2 complex in tumor",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    her2_ab_endo_tumor = list(
+      analyte = "Endocytosed Ab-HER2 complex in tumor",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    pl_endo_tumor = list(
+      analyte = "Prodrug/Placido in endosomes of tumor cells",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    pl_cyto_tumor = list(
+      analyte = "Prodrug/Placido in cytoplasm of tumor cells",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    t_cyto_tumor = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
+    tpl_cyto_tumor = list(analyte = "Tumor cell components", units = "nmol", specimen = "tumor", verified = FALSE),
+    n1 = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n2 = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n3 = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n4 = list(analyte = "Not specified", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
@@ -60,15 +110,15 @@ Scheuher_2023_ADC_human_qsp <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 4L,
-    age_range      = "adult HER2+ metastatic breast cancer patients (simulated virtual cohorts)",
-    weight_range   = "70 kg reference adult",
-    disease_state  = "HER2+ (HER2 1+ = 2e4 receptors/cell; HER2 3+ = 1e6 receptors/cell) metastatic breast cancer",
-    dose_range     = "T-DM1: 0.3-4.8 mg/kg IV Q3W; T-DXd: 0.8-8.0 mg/kg IV Q3W; MTD dosing 3.6 mg/kg (T-DM1) or 5.4 mg/kg (T-DXd) Q3W over 14-29 months",
-    regions        = "Global clinical trials (phase 1 dose escalation + phase 2 + phase 3)",
-    notes          = "Human parameters (Table S2d) inherit systemic PK from mouse with volume rescaling to human physiology; PD parameters (kkill_max, kc50, tau, n_Hill, n_Hill from N87) carried directly from mouse T-DM1 or T-DXd fits. Soluble HER2 baseline (8 ng/mL healthy) and shedding calibrated to human data. Virtual patient CVs from Table S2e (kkill_max CV 10%, kc50 CV 2000%/10000% for T-DM1/T-DXd). See vignette Errata for aggregation of the tumor-cell 4-stage cascade."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 4L,
+    age_range = "adult HER2+ metastatic breast cancer patients (simulated virtual cohorts)",
+    weight_range = "70 kg reference adult",
+    disease_state = "HER2+ (HER2 1+ = 2e4 receptors/cell; HER2 3+ = 1e6 receptors/cell) metastatic breast cancer",
+    dose_range = "T-DM1: 0.3-4.8 mg/kg IV Q3W; T-DXd: 0.8-8.0 mg/kg IV Q3W; MTD dosing 3.6 mg/kg (T-DM1) or 5.4 mg/kg (T-DXd) Q3W over 14-29 months",
+    regions = "Global clinical trials (phase 1 dose escalation + phase 2 + phase 3)",
+    notes = "Human parameters (Table S2d) inherit systemic PK from mouse with volume rescaling to human physiology; PD parameters (kkill_max, kc50, tau, n_Hill, n_Hill from N87) carried directly from mouse T-DM1 or T-DXd fits. Soluble HER2 baseline (8 ng/mL healthy) and shedding calibrated to human data. Virtual patient CVs from Table S2e (kkill_max CV 10%, kc50 CV 2000%/10000% for T-DM1/T-DXd). See vignette Errata for aggregation of the tumor-cell 4-stage cascade."
   )
 
   ini({

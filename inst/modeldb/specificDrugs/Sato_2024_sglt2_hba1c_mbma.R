@@ -36,12 +36,12 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
   )
   vignette <- "Sato_2024_sglt2_hba1c_mbma"
   units <- list(
-    time          = paste0(
+    time = paste0(
       "week (placeholder). The model is a time-independent end-of-treatment ",
       "dose-response; Sato 2024 restricted the pool to trials of at least 12 ",
       "weeks and found study duration non-significant as a covariate."
     ),
-    dosing        = paste0(
+    dosing = paste0(
       "mg/day. Per-arm daily doses enter as the six DOSE_<drug>_MGD covariate ",
       "columns, NOT as rxode2 dose events; the model has no compartments."
     ),
@@ -55,11 +55,11 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
 
   covariateData <- list(
     DOSE_CANA_MGD = list(
-      description        = "Per-arm total daily canagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily canagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level, not individual-level. Exactly one of the six ",
         "DOSE_<drug>_MGD columns is non-zero on any active record; a placebo ",
         "arm sets all six to 0, the normalized dose collapses to 0 and the ",
@@ -74,60 +74,60 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "of 0 on every placebo arm. Doses in the pooled trials: 50-300 mg/day ",
         "(Sato 2024 Supplementary Table S2)."
       ),
-      source_name        = "Dose (mg), rows with Drug = canagliflozin (Sato 2024 Table S2)"
+      source_name = "Dose (mg), rows with Drug = canagliflozin (Sato 2024 Table S2)"
     ),
     DOSE_DAPA_MGD = list(
-      description        = "Per-arm total daily dapagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily dapagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 1-50 mg/day (Sato 2024 Supplementary Table S2).",
-      source_name        = "Dose (mg), rows with Drug = dapagliflozin (Sato 2024 Table S2)"
+      notes = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 1-50 mg/day (Sato 2024 Supplementary Table S2).",
+      source_name = "Dose (mg), rows with Drug = dapagliflozin (Sato 2024 Table S2)"
     ),
     DOSE_EMPA_MGD = list(
-      description        = "Per-arm total daily empagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily empagliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. ",
         "Doses in the pooled trials: 1-50 mg/day (Sato 2024 Supplementary ",
         "Table S2). Same canonical column already used by ",
         "Baron_2016_empagliflozin.R and Riggs_2014_empagliflozin.R, where it ",
         "is an individual-level daily dose; here it is a study-arm mean."
       ),
-      source_name        = "Dose (mg), rows with Drug = empagliflozin (Sato 2024 Table S2)"
+      source_name = "Dose (mg), rows with Drug = empagliflozin (Sato 2024 Table S2)"
     ),
     DOSE_IPRA_MGD = list(
-      description        = "Per-arm total daily ipragliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily ipragliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 12.5-300 mg/day (Sato 2024 Supplementary Table S2).",
-      source_name        = "Dose (mg), rows with Drug = ipragliflozin (Sato 2024 Table S2)"
+      notes = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 12.5-300 mg/day (Sato 2024 Supplementary Table S2).",
+      source_name = "Dose (mg), rows with Drug = ipragliflozin (Sato 2024 Table S2)"
     ),
     DOSE_LUSEO_MGD = list(
-      description        = "Per-arm total daily luseogliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily luseogliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 0.5-10 mg/day (Sato 2024 Supplementary Table S2).",
-      source_name        = "Dose (mg), rows with Drug = luseogliflozin (Sato 2024 Table S2)"
+      notes = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 0.5-10 mg/day (Sato 2024 Supplementary Table S2).",
+      source_name = "Dose (mg), rows with Drug = luseogliflozin (Sato 2024 Table S2)"
     ),
     DOSE_TOFO_MGD = list(
-      description        = "Per-arm total daily tofogliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-arm total daily tofogliflozin dose (mg/day); 0 for placebo arms and for arms given a different SGLT2 inhibitor.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 2.5-40 mg/day (Sato 2024 Supplementary Table S2).",
-      source_name        = "Dose (mg), rows with Drug = tofogliflozin (Sato 2024 Table S2)"
+      notes = "Study-arm-level. See DOSE_CANA_MGD for the mutual-exclusivity rule. Doses in the pooled trials: 2.5-40 mg/day (Sato 2024 Supplementary Table S2).",
+      source_name = "Dose (mg), rows with Drug = tofogliflozin (Sato 2024 Table S2)"
     ),
     HBA1C = list(
-      description        = "Per-arm mean BASELINE HbA1c before randomization (NGSP %).",
-      units              = "% (NGSP)",
-      type               = "continuous",
+      description = "Per-arm mean BASELINE HbA1c before randomization (NGSP %).",
+      units = "% (NGSP)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Enters the Emax covariate model in ",
         "exponential-linear-deviation form exp(0.438 * (HBA1C - 8)), centered ",
         "on 8%; a higher baseline HbA1c gives a LARGER reduction. Observed ",
@@ -138,27 +138,27 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "confirm NGSP percent. Distinct from the model OUTPUT Cc, which is the ",
         "CHANGE in HbA1c from this baseline."
       ),
-      source_name        = "Baseline HbA1c (%) (Sato 2024 Table S2; Table 2B)"
+      source_name = "Baseline HbA1c (%) (Sato 2024 Table S2; Table 2B)"
     ),
     WT = list(
-      description        = "Per-arm mean body weight (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Per-arm mean body weight (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Enters the Emax covariate model as the power form ",
         "(WT / 81.6)^-0.661, normalized to 81.6 kg; a HEAVIER arm gets a ",
         "SMALLER reduction. Observed range 61.0-96.7 kg, over which f(COV) ",
         "spans 1.21-0.894 (Sato 2024 Table 2B)."
       ),
-      source_name        = "Body weight (kg) (Sato 2024 Table S2; Table 2B)"
+      source_name = "Body weight (kg) (Sato 2024 Table S2; Table 2B)"
     ),
     CRCL = list(
-      description        = "Per-arm mean baseline estimated glomerular filtration rate, body-surface-area normalized (mL/min/1.73 m^2).",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Per-arm mean baseline estimated glomerular filtration rate, body-surface-area normalized (mL/min/1.73 m^2).",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Sato 2024 reports eGFR, which the canonical CRCL ",
         "column covers (CRCL is the canonical for BSA-normalized renal ",
         "function from either a creatinine-based estimate or a tracer-measured ",
@@ -169,14 +169,14 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "range 38.5-154.5, over which f(COV) spans 0.517-1.62 (Sato 2024 ",
         "Table 2B)."
       ),
-      source_name        = "eGFR (mL/min/1.73 m2) (Sato 2024 Table S2; Table 2B 'GFR')"
+      source_name = "eGFR (mL/min/1.73 m2) (Sato 2024 Table S2; Table 2B 'GFR')"
     ),
     T_DIAG_DIAB = list(
-      description        = "Per-arm mean time since type 2 diabetes diagnosis (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Per-arm mean time since type 2 diabetes diagnosis (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Enters the Emax covariate model as the linear form ",
         "1 - 0.025 * (T_DIAG_DIAB - 6.6), centered on 6.6 years; LONGER ",
         "disease duration gives a SMALLER reduction. Observed range 0.25-18.2 ",
@@ -185,14 +185,14 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "roughly the observed range -- it crosses zero at 46.6 years and turns ",
         "the drug effect backwards beyond that."
       ),
-      source_name        = "Diabetic duration (years) (Sato 2024 Table S2; Table 2B)"
+      source_name = "Diabetic duration (years) (Sato 2024 Table S2; Table 2B)"
     ),
     TRT_T2DM_NAIVE = list(
-      description        = "1 = the study arm enrolled patients naive to antihyperglycemic therapy; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the study arm enrolled patients naive to antihyperglycemic therapy; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Sato 2024 Table 2B reports this covariate as ",
         "'Pre-treatment: Yes: 1; No: 1.230', i.e. arms with NO prior treatment ",
         "get a 1.230-fold LARGER Emax. The indicator in the source data is ",
@@ -210,14 +210,14 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "TRT_T2DM_MIXED is unused because every Sato 2024 arm resolves its ",
         "treatment history."
       ),
-      source_name        = "Pre-treatment (Sato 2024 Table S2, read as drug-naive per Supplementary File MOESM1)"
+      source_name = "Pre-treatment (Sato 2024 Table S2, read as drug-naive per Supplementary File MOESM1)"
     ),
     TRT_T2DM_ADDON = list(
-      description        = "1 = the study arm received the SGLT2 inhibitor (or placebo) on top of ongoing background antihyperglycemic therapy; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the study arm received the SGLT2 inhibitor (or placebo) on top of ongoing background antihyperglycemic therapy; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other treatment-history stratum)",
-      notes              = paste0(
+      notes = paste0(
         "Study-arm-level. Sato 2024 Table 2B reports this covariate on the ",
         "PLACEBO term as 'Concomitant medications: Yes: 0; No: 0.156', i.e. ",
         "arms WITHOUT background therapy get +0.156 added to Base, so their ",
@@ -229,84 +229,84 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
         "inhibitors and combinations). See TRT_T2DM_NAIVE for how the two ",
         "flags reconstruct the canonical four-level family."
       ),
-      source_name        = "Concomitant drug (Sato 2024 Table S2; Table 2B 'Concomitant medications')"
+      source_name = "Concomitant drug (Sato 2024 Table S2; Table 2B 'Concomitant medications')"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Per-arm mean baseline age. Screened in the Sato 2024 stepwise covariate search but NOT retained in the final model.",
-      units              = "years",
-      type               = "continuous",
+      description = "Per-arm mean baseline age. Screened in the Sato 2024 stepwise covariate search but NOT retained in the final model.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists baseline age among the candidate covariates; it did not survive forward inclusion at p < 0.01 / backward elimination at p < 0.001. No point estimate is published, so no effect parameter appears in ini(). Tabulated per arm in Supplementary Table S2.",
-      source_name        = "Age (years) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists baseline age among the candidate covariates; it did not survive forward inclusion at p < 0.01 / backward elimination at p < 0.001. No point estimate is published, so no effect parameter appears in ini(). Tabulated per arm in Supplementary Table S2.",
+      source_name = "Age (years) (Sato 2024 Table S2)"
     ),
     SEXF = list(
-      description        = "Per-arm proportion female. Screened but NOT retained.",
-      units              = "(fraction)",
-      type               = "continuous",
+      description = "Per-arm proportion female. Screened but NOT retained.",
+      units = "(fraction)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists sex among the candidate covariates; not retained. Supplementary Table S2 tabulates the complement, 'Male (%)'.",
-      source_name        = "Male (%) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists sex among the candidate covariates; not retained. Supplementary Table S2 tabulates the complement, 'Male (%)'.",
+      source_name = "Male (%) (Sato 2024 Table S2)"
     ),
     BMI = list(
-      description        = "Per-arm mean baseline body mass index. Screened but NOT retained.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Per-arm mean baseline body mass index. Screened but NOT retained.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists BMI among the candidate covariates; body weight was retained instead.",
-      source_name        = "BMI (kg/m2) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists BMI among the candidate covariates; body weight was retained instead.",
+      source_name = "BMI (kg/m2) (Sato 2024 Table S2)"
     ),
     FPG = list(
-      description        = "Per-arm mean baseline fasting plasma glucose. Screened but NOT retained.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Per-arm mean baseline fasting plasma glucose. Screened but NOT retained.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists fasting plasma glucose among the candidate covariates; baseline HbA1c was retained instead.",
-      source_name        = "FPG (mg/dL) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists fasting plasma glucose among the candidate covariates; baseline HbA1c was retained instead.",
+      source_name = "FPG (mg/dL) (Sato 2024 Table S2)"
     ),
     SBP = list(
-      description        = "Per-arm mean baseline systolic blood pressure. Screened but NOT retained.",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Per-arm mean baseline systolic blood pressure. Screened but NOT retained.",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists systolic blood pressure among the candidate covariates; not retained.",
-      source_name        = "SBP (mmHg) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists systolic blood pressure among the candidate covariates; not retained.",
+      source_name = "SBP (mmHg) (Sato 2024 Table S2)"
     ),
     DBP = list(
-      description        = "Per-arm mean baseline diastolic blood pressure. Screened but NOT retained.",
-      units              = "mmHg",
-      type               = "continuous",
+      description = "Per-arm mean baseline diastolic blood pressure. Screened but NOT retained.",
+      units = "mmHg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists diastolic blood pressure among the candidate covariates; not retained.",
-      source_name        = "DBP (mmHg) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists diastolic blood pressure among the candidate covariates; not retained.",
+      source_name = "DBP (mmHg) (Sato 2024 Table S2)"
     ),
     TRT_DURATION = list(
-      description        = "Trial treatment duration. Screened but NOT retained.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Trial treatment duration. Screened but NOT retained.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Sato 2024 Methods lists study duration among the candidate covariates; not retained. This is why the final model is time-independent: the pool is restricted to trials of at least 12 weeks (range 12-104 weeks) and duration did not explain inter-study variability.",
-      source_name        = "Study duration (weeks) (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists study duration among the candidate covariates; not retained. This is why the final model is time-independent: the pool is restricted to trials of at least 12 weeks (range 12-104 weeks) and duration did not explain inter-study variability.",
+      source_name = "Study duration (weeks) (Sato 2024 Table S2)"
     ),
     REGION_JAPAN = list(
-      description        = "1 = the trial was conducted in Japan. Screened but NOT retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the trial was conducted in Japan. Screened but NOT retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (conducted outside Japan)",
-      notes              = "Sato 2024 Methods lists 'whether the study was conducted in Japan' among the candidate covariates; not retained. Relevant because ipragliflozin, luseogliflozin and tofogliflozin are studied almost exclusively in Japan.",
-      source_name        = "Study in Japan (Sato 2024 Table S2)"
+      notes = "Sato 2024 Methods lists 'whether the study was conducted in Japan' among the candidate covariates; not retained. Relevant because ipragliflozin, luseogliflozin and tofogliflozin are studied almost exclusively in Japan.",
+      source_name = "Study in Japan (Sato 2024 Table S2)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_studies      = 83L,
-    n_data_points  = 295L,
-    age_range      = "per-arm mean age approximately 51-66 years (Sato 2024 Supplementary Table S2)",
-    weight_range   = "per-arm mean body weight 61.0-96.7 kg (Sato 2024 Table 2B covariate range)",
-    disease_state  = paste0(
+    species = "human",
+    n_studies = 83L,
+    n_data_points = 295L,
+    age_range = "per-arm mean age approximately 51-66 years (Sato 2024 Supplementary Table S2)",
+    weight_range = "per-arm mean body weight 61.0-96.7 kg (Sato 2024 Table 2B covariate range)",
+    disease_state = paste0(
       "Type 2 diabetes mellitus. Per-arm mean baseline HbA1c 7.2-9.1% ",
       "(NGSP), per-arm mean eGFR 38.5-154.5 mL/min/1.73 m^2 (so the pool ",
       "spans normal renal function through moderate-to-severe impairment, ",
@@ -315,19 +315,19 @@ Sato_2024_sglt2_hba1c_mbma <- function() {
       "drug-naive, 53 previously treated but on monotherapy in the trial, 191 ",
       "add-on to background antihyperglycemic therapy."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Placebo plus canagliflozin 50-300, dapagliflozin 1-50, empagliflozin ",
       "1-50, ipragliflozin 12.5-300, luseogliflozin 0.5-10 and tofogliflozin ",
       "2.5-40 mg/day; equivalently UGE-normalized doses of roughly 0.07-3.1. ",
       "Treatment durations 12-104 weeks."
     ),
-    regions        = paste0(
+    regions = paste0(
       "International. Canagliflozin, dapagliflozin and empagliflozin trials ",
       "were mostly conducted outside Japan; ipragliflozin, luseogliflozin and ",
       "tofogliflozin trials were mostly Japanese (Sato 2024 Supplementary ",
       "Table S2)."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "study-arm mean HbA1c change from baseline, not an individual ",
       "measurement. 83 trials contributed 295 arms after a PubMed search of ",

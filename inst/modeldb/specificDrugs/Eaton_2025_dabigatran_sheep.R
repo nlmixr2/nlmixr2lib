@@ -14,38 +14,38 @@ Eaton_2025_dabigatran_sheep <- function() {
   # S1 = V1 and S2 = V2, so states 1-2 are amounts, while state 3 is scaled by
   # the NONMEM default S3 = 1 and is therefore already a concentration).
   compartmentData <- list(
-    central     = list(analyte = "dabigatran",   units = "mg",   specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "dabigatran",   units = "mg",   specimen = "tissue",              verified = TRUE),
-    effect      = list(analyte = "dabigatran",   units = "mg/L", specimen = "not applicable",      verified = TRUE),
-    depot_kpd   = list(analyte = "idarucizumab", units = "unit", specimen = "administration site", verified = TRUE)
+    central = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "dabigatran", units = "mg", specimen = "tissue", verified = TRUE),
+    effect = list(analyte = "dabigatran", units = "mg/L", specimen = "not applicable", verified = TRUE),
+    depot_kpd = list(analyte = "idarucizumab", units = "unit", specimen = "administration site", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor, reference weight 70 kg. Exponent 0.75 on CL and Q, 1 on Vc and Vp (Eaton 2025 Methods, 'Pharmacokinetics'), and -0.25 on ke0 -- the NM-TRAN control stream scales the equilibration HALF-TIME T1/2keo by (WT/70)^0.25 (FSZT), which is the same as scaling ke0 by (WT/70)^-0.25. Sheep body weights were 28.7-41.8 kg (Table 1); the 70 kg standard is a reporting convention, not a studied weight.",
-      source_name        = "WT"
+      notes = "Allometric size descriptor, reference weight 70 kg. Exponent 0.75 on CL and Q, 1 on Vc and Vp (Eaton 2025 Methods, 'Pharmacokinetics'), and -0.25 on ke0 -- the NM-TRAN control stream scales the equilibration HALF-TIME T1/2keo by (WT/70)^0.25 (FSZT), which is the same as scaling ke0 by (WT/70)^-0.25. Sheep body weights were 28.7-41.8 kg (Table 1); the 70 kg standard is a reporting convention, not a studied weight.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "sheep",
-    n_subjects     = 5L,                                 # Eaton 2025 Methods, 'Animals and materials'; Table 1
-    n_studies      = 1L,                                 # Single-centre study, University of Rochester
-    age_range      = "6 months",                         # Eaton 2025 Table 1: all five sheep 6 months
-    age_median     = "6 months",                         # Eaton 2025 Table 1
-    weight_range   = "28.7-41.8 kg",                     # Eaton 2025 Table 1
-    weight_median  = "33.9 kg",                          # Eaton 2025 Table 1: 28.7, 33.9, 33.8, 33.9, 41.8 kg
-    sex_female_pct = 100,                                # Eaton 2025 Table 1: all five sheep female
-    race_ethnicity = NULL,                               # Not applicable (animal study)
-    disease_state  = "Healthy sheep under general anaesthesia (ketamine 4 mg/kg plus midazolam 0.4 mg/kg induction, isoflurane 1-4% maintenance); no cardiopulmonary bypass was run during the PKPD study itself.",
-    dose_range     = "Dabigatran 4 mg/kg IV over 1 min at time 0; idarucizumab 15 mg/kg IV over 30 s at 120 min.",
-    regions        = "USA (University of Rochester Medical Center).",
+    species = "sheep",
+    n_subjects = 5L, # Eaton 2025 Methods, 'Animals and materials'; Table 1
+    n_studies = 1L, # Single-centre study, University of Rochester
+    age_range = "6 months", # Eaton 2025 Table 1: all five sheep 6 months
+    age_median = "6 months", # Eaton 2025 Table 1
+    weight_range = "28.7-41.8 kg", # Eaton 2025 Table 1
+    weight_median = "33.9 kg", # Eaton 2025 Table 1: 28.7, 33.9, 33.8, 33.9, 41.8 kg
+    sex_female_pct = 100, # Eaton 2025 Table 1: all five sheep female
+    race_ethnicity = NULL, # Not applicable (animal study)
+    disease_state = "Healthy sheep under general anaesthesia (ketamine 4 mg/kg plus midazolam 0.4 mg/kg induction, isoflurane 1-4% maintenance); no cardiopulmonary bypass was run during the PKPD study itself.",
+    dose_range = "Dabigatran 4 mg/kg IV over 1 min at time 0; idarucizumab 15 mg/kg IV over 30 s at 120 min.",
+    regions = "USA (University of Rochester Medical Center).",
     n_observations = "Plasma dabigatran and thromboelastographic R-time at baseline and 5, 15, 30, 60, 90, 120 min after dabigatran, then 5, 15, 30, 60, 120, 240, 480 min and 24 h after idarucizumab (Eaton 2025 Methods).",
-    notes          = "Demographics from Eaton 2025 Table 1. Parameter estimates were obtained in NONMEM 7.5 (ADVAN6, FOCE with INTERACTION) using a sequential PPP&D approach for the pharmacodynamic parameters; the full control stream is reproduced in the article's Supplementary NM-TRAN Code."
+    notes = "Demographics from Eaton 2025 Table 1. Parameter estimates were obtained in NONMEM 7.5 (ADVAN6, FOCE with INTERACTION) using a sequential PPP&D approach for the pharmacodynamic parameters; the full control stream is reproduced in the article's Supplementary NM-TRAN Code."
   )
 
   ini({

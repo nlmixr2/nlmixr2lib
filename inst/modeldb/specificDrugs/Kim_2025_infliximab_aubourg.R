@@ -24,41 +24,41 @@ Kim_2025_infliximab_aubourg <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "no reference level: separate typical CL and Vc are estimated for each sex",
-      notes              = "Drives separate typical values of both CL and Vc rather than a multiplicative offset: CL = 0.336 L/day (female) or 0.456 L/day (male); Vc = 2.6 L (female) or 3.2 L (male) before the weight effect. The source control stream codes SEX = 1 for female and SEX = 0 for male, which matches the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
-      source_name        = "SEX"
+      notes = "Drives separate typical values of both CL and Vc rather than a multiplicative offset: CL = 0.336 L/day (female) or 0.456 L/day (male); Vc = 2.6 L (female) or 3.2 L (male) before the weight effect. The source control stream codes SEX = 1 for female and SEX = 0 for male, which matches the canonical SEXF polarity directly (no value inversion needed). Time-invariant.",
+      source_name = "SEX"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Vc only, normalized to a 60 kg reference: Vc = Vc_sex * (WT/60)^0.22. CL carries no weight effect in this model. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
-      source_name        = "WGT"
+      notes = "Power effect on Vc only, normalized to a 60 kg reference: Vc = Vc_sex * (WT/60)^0.22. CL carries no weight effect in this model. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement).",
+      source_name = "WGT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 133L,
-    n_studies      = 1L,
-    age_range      = "Adults; age not specified in Kim 2025 Table S1 for this model.",
-    weight_range   = "Not reported; median body weight 60 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
+    species = "human",
+    n_subjects = 133L,
+    n_studies = 1L,
+    age_range = "Adults; age not specified in Kim 2025 Table S1 for this model.",
+    weight_range = "Not reported; median body weight 60 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
     sex_female_pct = 59,
     race_ethnicity = "Not specified; developed in a French Crohn's disease cohort.",
-    disease_state  = "Crohn's disease (n = 133).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "France.",
-    notes          = paste(
+    disease_state = "Crohn's disease (n = 133).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "France.",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Aubourg model: Crohn's disease only (n = 133), adults,",
       "induction and maintenance phases, peak and trough sampling, 0% ATI",

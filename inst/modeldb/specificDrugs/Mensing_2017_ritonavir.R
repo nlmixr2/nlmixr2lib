@@ -17,7 +17,7 @@ Mensing_2017_ritonavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -25,46 +25,46 @@ Mensing_2017_ritonavir <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.13 (0.95, 1.33) and AUC24,ss ratio of 1.15 (0.94, 1.39) for females vs males (<=15% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
-      source_name        = "SEX"
+      notes = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.13 (0.95, 1.33) and AUC24,ss ratio of 1.15 (0.94, 1.39) for females vs males (<=15% higher exposures); paper does not publish covariate coefficient point estimates so the effect is not encoded in model().",
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the DAA-pharmacokinetic-dataset median of 104 mL/min (Cmax,ss / AUC24,ss ratios of 1.13/1.12 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-281.4 mL/min, median 104.0 mL/min.",
-      source_name        = "CRCL"
+      notes = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports exposure ratios at CrCL 75 mL/min and 105 mL/min vs the DAA-pharmacokinetic-dataset median of 104 mL/min (Cmax,ss / AUC24,ss ratios of 1.13/1.12 at 75 mL/min and 1.00/1.00 at 105 mL/min); paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Cohort range 37.0-281.4 mL/min, median 104.0 mL/min.",
+      source_name = "CRCL"
     ),
     HCV_GT1B = list(
-      description        = "HCV genotype-1 subtype indicator (1 = GT1B, 0 = GT1A)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HCV genotype-1 subtype indicator (1 = GT1B, 0 = GT1A)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (GT1a)",
-      notes              = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.28 (1.28, 1.28) and AUC24,ss ratio of 1.33 (1.33, 1.33) for GT1a vs GT1b (28-33% higher exposures); per Mensing 2017 Discussion this is considered a chance finding 'based on random variation and not clinically meaningful' (no physiological basis for HCV subtype to influence ritonavir PK). Paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Note: the canonical HCV_GT1B = 1 for GT1B; the Figure 2 ratio is reported with GT1a in the numerator (i.e., GT1A vs GT1B), so the canonical encoding would flip the direction.",
-      source_name        = "GT1A"
+      notes = "Retained in the author's final ritonavir model as a significant covariate on CL/F (Table 3, Mensing 2017). Figure 2 reports a Cmax,ss ratio of 1.28 (1.28, 1.28) and AUC24,ss ratio of 1.33 (1.33, 1.33) for GT1a vs GT1b (28-33% higher exposures); per Mensing 2017 Discussion this is considered a chance finding 'based on random variation and not clinically meaningful' (no physiological basis for HCV subtype to influence ritonavir PK). Paper does not publish covariate coefficient point estimates so the effect is not encoded in model(). Note: the canonical HCV_GT1B = 1 for GT1B; the Figure 2 ratio is reported with GT1a in the numerator (i.e., GT1A vs GT1B), so the canonical encoding would flip the direction.",
+      source_name = "GT1A"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2348L,
-    n_studies      = 7L,
-    age_range      = "18-71 years",
-    age_median     = "54 years",
-    weight_range   = "42-129 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 2348L,
+    n_studies = 7L,
+    age_range = "18-71 years",
+    age_median = "54 years",
+    weight_range = "42-129 kg",
+    weight_median = "76 kg",
     sex_female_pct = 42,
     race_ethnicity = c(Asian = 2, Black = 7, Nonblack_NonAsian = 91),
     ethnicity_hispanic_latino_pct = 6,
-    disease_state  = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
-    dose_range     = "Ritonavir 100 mg orally once daily coformulated with paritaprevir 150 mg and ombitasvir 25 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin; 12-week or 24-week treatment courses. Ritonavir functions here as a CYP3A4 pharmacokinetic enhancer for paritaprevir; the 100 mg ritonavir dose is sub-therapeutic for HIV protease-inhibition but sufficient to boost paritaprevir exposure ~30-fold.",
-    regions        = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
-    notes          = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). HCV genotype distribution: 53% GT1a, 47% GT1b."
+    disease_state = "Adults with chronic hepatitis C virus (HCV) genotype 1 infection (HCV RNA > 10,000 IU/mL). 16% had compensated cirrhosis (Child-Pugh A); none had moderate or severe hepatic impairment. 34% were peg-IFN/RBV treatment-experienced.",
+    dose_range = "Ritonavir 100 mg orally once daily coformulated with paritaprevir 150 mg and ombitasvir 25 mg, in combination with dasabuvir 250 mg twice daily and optional weight-based ribavirin; 12-week or 24-week treatment courses. Ritonavir functions here as a CYP3A4 pharmacokinetic enhancer for paritaprevir; the 100 mg ritonavir dose is sub-therapeutic for HIV protease-inhibition but sufficient to boost paritaprevir exposure ~30-fold.",
+    regions = "Multinational phase II (NCT01911845) and phase III (PEARL-II/III/IV, SAPPHIRE-I/II, TURQUOISE-II) studies.",
+    notes = "Demographic and clinical baseline characteristics from Mensing 2017 Table 2 (DAA pharmacokinetic data column, n = 2348). HCV genotype distribution: 53% GT1a, 47% GT1b."
   )
 
   ini({

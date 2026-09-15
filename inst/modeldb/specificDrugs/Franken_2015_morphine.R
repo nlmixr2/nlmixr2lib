@@ -27,8 +27,8 @@ Franken_2015_morphine <- function() {
   )
   vignette <- "Franken_2015_morphine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -37,10 +37,10 @@ Franken_2015_morphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot3      = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3 = list(analyte = "morphine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
     central_m3g = list(analyte = "M3G", units = "mg", specimen = "plasma", verified = FALSE),
     central_m6g = list(analyte = "M6G", units = "mg", specimen = "plasma", verified = FALSE)
@@ -48,15 +48,15 @@ Franken_2015_morphine <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate computed from the",
         "four-variable Modification of Diet in Renal Disease (MDRD)",
         "formula (age, sex, race, serum creatinine)."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying renal-function covariate. Used with power scaling",
         "(CRCL / 96)^0.673 on both M3G and M6G clearance, normalised to",
         "the population median eGFR of 96 mL/min/1.73 m^2 reported in",
@@ -65,14 +65,14 @@ Franken_2015_morphine <- function() {
         "Source column 'eGFR' in the paper text and table; canonical",
         "register name CRCL covers MDRD-derived eGFR."
       ),
-      source_name        = "eGFR (MDRD four-variable, paper Eq. 4)"
+      source_name = "eGFR (MDRD four-variable, paper Eq. 4)"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (g/L).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration (g/L).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying serum albumin. Used with power scaling",
         "(ALB / 26)^1.1 on both M3G and M6G clearance, normalised to",
         "the population median of 26 g/L (Table 1). Same coefficient",
@@ -80,18 +80,18 @@ Franken_2015_morphine <- function() {
         "effect on M3G and M6G clearance: Albumin'). g/L units; multiply",
         "g/dL values by 10."
       ),
-      source_name        = "albumin (g/L)"
+      source_name = "albumin (g/L)"
     ),
     TTD = list(
-      description        = paste(
+      description = paste(
         "Time-to-death covariate (days remaining until the patient's",
         "recorded time of death). Required by Franken 2015 as a",
         "time-varying covariate on morphine clearance."
       ),
-      units              = "days",
-      type               = "continuous",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Days from the observation time to the patient's recorded time",
         "of death (TTD >= 0). Used in a first-order exponential decay",
         "term on morphine CL: CL(TTD) = CL_pop - theta_D * exp(-theta_rate * TTD)",
@@ -103,21 +103,21 @@ Franken_2015_morphine <- function() {
         "days) to recover the asymptotic CL when the time of death is",
         "unknown."
       ),
-      source_name        = "TTD (paper Eq. 3 and Table 2)"
+      source_name = "TTD (paper Eq. 3 and Table 2)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47,
-    n_studies      = 1,
-    age_range      = "43-93 years",
-    age_median     = "71 years",
-    weight_range   = "not reported",
-    weight_median  = "not reported",
+    species = "human",
+    n_subjects = 47,
+    n_studies = 1,
+    age_range = "43-93 years",
+    age_median = "71 years",
+    weight_range = "not reported",
+    weight_median = "not reported",
     sex_female_pct = 55.3,
     race_ethnicity = c(Caucasian = 95.7, AfroCaribbean = 4.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Terminally ill adult palliative-care patients admitted to a",
       "Dutch hospice with prognosis of 2 days to 3 months. 95.7%",
       "had advanced malignancy (neoplasm) as the primary diagnosis;",
@@ -126,14 +126,14 @@ Franken_2015_morphine <- function() {
       "both pre-terminal and terminal phases (terminal = bed-bound,",
       "semi-comatose, unable to take oral medication)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Morphine 15-540 mg/day administered per Dutch national",
       "palliative guidelines. Routes: oral immediate-release liquid,",
       "oral controlled-release tablet, or subcutaneous bolus / infusion.",
       "Two patients (4.2%) had concomitant codeine."
     ),
-    regions        = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
-    notes          = paste(
+    regions = "The Netherlands (Laurens Cadenza palliative care centre, Rotterdam)",
+    notes = paste(
       "Demographics from Franken 2015 Table 1. NONMEM 7.2 + PsN 3.7.6",
       "with FOCE-I and ADVAN5; data were log-transformed before fitting.",
       "Sampling: 152 plasma samples for morphine, M3G, and M6G; ~12% of",

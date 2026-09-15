@@ -3,8 +3,8 @@ Stein_2019_Tisagenlecleucel <- function() {
   reference <- "Stein AM, Grupp SA, Levine JE, et al. Tisagenlecleucel Model-Based Cellular Kinetic Analysis of Chimeric Antigen Receptor-T Cells. CPT Pharmacometrics Syst Pharmacol. 2019;8(5):285-295. doi:10.1002/psp4.12388"
   vignette <- "Stein_2019_Tisagenlecleucel"
   units <- list(
-    time          = "day",
-    dosing        = "transgene copies/ug genomic DNA",
+    time = "day",
+    dosing = "transgene copies/ug genomic DNA",
     concentration = "transgene copies/ug genomic DNA"
   )
 
@@ -17,18 +17,18 @@ Stein_2019_Tisagenlecleucel <- function() {
   )
 
   population <- list(
-    n_subjects     = 90,
-    n_studies      = 2,
-    age_range      = "3-25 years",
-    age_median     = "12 years",
-    weight_range   = "14-140 kg",
-    weight_median  = "39 kg",
+    n_subjects = 90,
+    n_studies = 2,
+    age_range = "3-25 years",
+    age_median = "12 years",
+    weight_range = "14-140 kg",
+    weight_median = "39 kg",
     sex_female_pct = 50,
     race_ethnicity = c(White = 77, Asian = 9, "Other/unknown" = 14),
-    disease_state  = "Pediatric and young adult patients with relapsed or refractory B-cell acute lymphoblastic leukemia (r/r B-ALL).",
-    dose_range     = "Median (range) 3.1e6 (0.2-5.4e6) CAR-positive viable T cells/kg in patients <=50 kg; total dose 1.0e8 (0.03-2.6e8) cells in patients >50 kg.",
-    regions        = "Global; ELIANA (NCT02435849, 10 countries) and ENSIGN (NCT02228096, US).",
-    notes          = "Stein 2019 Table 2 baseline demographics. Down syndrome 8%; previous stem cell transplant 57%; lymphodepleting chemotherapy with fludarabine 94%; received tocilizumab 36%; received corticosteroids 26%. Population summary refers to the 90 patients pooled in the model-based analysis."
+    disease_state = "Pediatric and young adult patients with relapsed or refractory B-cell acute lymphoblastic leukemia (r/r B-ALL).",
+    dose_range = "Median (range) 3.1e6 (0.2-5.4e6) CAR-positive viable T cells/kg in patients <=50 kg; total dose 1.0e8 (0.03-2.6e8) cells in patients >50 kg.",
+    regions = "Global; ELIANA (NCT02435849, 10 countries) and ENSIGN (NCT02228096, US).",
+    notes = "Stein 2019 Table 2 baseline demographics. Down syndrome 8%; previous stem cell transplant 57%; lymphodepleting chemotherapy with fludarabine 94%; received tocilizumab 36%; received corticosteroids 26%. Population summary refers to the 90 patients pooled in the model-based analysis."
   )
 
   ini({

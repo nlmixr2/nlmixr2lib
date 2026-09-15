@@ -32,17 +32,17 @@ Chae_2026_teicoplanin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the CKD-EPI formula; retained on clearance as a power term",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the CKD-EPI formula; retained on clearance as a power term",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. BSA-NORMALISED renal function in mL/min/1.73 m^2",
         "derived with the CKD-EPI equation (Chae 2026 Methods, 'Patient",
         "Population and Observed Data': 'Estimated glomerular filtration rate",
@@ -69,14 +69,14 @@ Chae_2026_teicoplanin <- function() {
         "the demographic variables captured per patient and gives no",
         "within-subject time course for it."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     ALB = list(
-      description        = "Serum albumin concentration; retained on clearance as a power term with a negative exponent, consistent with teicoplanin's high plasma protein binding",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration; retained on clearance as a power term with a negative exponent, consistent with teicoplanin's high plasma protein binding",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'Serum albumin level', reported by Chae 2026 in g/dL",
         "(Table 1: 3.04 +/- 0.41 g/dL). The canonical ALB column is g/L (SI) per",
         "inst/references/covariate-columns.md, so model() applies the inline",
@@ -100,49 +100,49 @@ Chae_2026_teicoplanin <- function() {
         "Treated as time-fixed at the subject level; no within-subject albumin",
         "time course is reported."
       ),
-      source_name        = "Serum albumin level"
+      source_name = "Serum albumin level"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Cohort mean 164.82 +/- 9.23 cm (Chae 2026 Table 1; 12 subjects with missing height were excluded). Listed among the covariates tested by GAM screening and PsN stepwise covariate modelling (Methods, 'Base Model Building': 'Tested covariates included height, weight, sex, albumin, serum creatinine level, and estimated creatinine clearance') and not retained in the final model."
+      units = "cm",
+      type = "continuous",
+      notes = "Cohort mean 164.82 +/- 9.23 cm (Chae 2026 Table 1; 12 subjects with missing height were excluded). Listed among the covariates tested by GAM screening and PsN stepwise covariate modelling (Methods, 'Base Model Building': 'Tested covariates included height, weight, sex, albumin, serum creatinine level, and estimated creatinine clearance') and not retained in the final model."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Cohort mean 64.06 +/- 12.22 kg (Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained. No allometric scaling appears anywhere in the final model, so the published volumes and clearances are absolute values for a roughly 64 kg adult rather than per-70 kg values."
+      units = "kg",
+      type = "continuous",
+      notes = "Cohort mean 64.06 +/- 12.22 kg (Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained. No allometric scaling appears anywhere in the final model, so the published volumes and clearances are absolute values for a roughly 64 kg adult rather than per-70 kg values."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "195 of 417 initially screened subjects were female (222 male / 195 female, Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "195 of 417 initially screened subjects were female (222 male / 195 female, Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Cohort mean 0.63 +/- 0.30 mg/dL (Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained; the CKD-EPI eGFR derived from it was retained instead, so creatinine enters the model only through CRCL. The Discussion flags the low cohort creatinine as a consequence of the reduced muscle mass of HSCT recipients and therefore as the reason the derived eGFR runs high."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Cohort mean 0.63 +/- 0.30 mg/dL (Chae 2026 Table 1). Screened by GAM plus PsN stepwise covariate modelling and not retained; the CKD-EPI eGFR derived from it was retained instead, so creatinine enters the model only through CRCL. The Discussion flags the low cohort creatinine as a consequence of the reduced muscle mass of HSCT recipients and therefore as the reason the derived eGFR runs high."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 405L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 405L,
+    n_studies = 1L,
     n_concentrations = 568L,
-    age_mean         = "49.29 +/- 14.86 years (Chae 2026 Table 1)",
-    age_range        = "Adults aged 18 years and older (Methods inclusion criterion); no upper bound reported",
-    weight_mean      = "64.06 +/- 12.22 kg (Chae 2026 Table 1)",
-    height_mean      = "164.82 +/- 9.23 cm (Chae 2026 Table 1; 12 subjects with missing height excluded)",
-    sex_female_pct   = 46.8,
-    race_ethnicity   = "Korean (single-centre Korean cohort; the paper frames the model throughout as population-specific to Koreans and cites inter-ethnic variability in glycopeptide PK as the reason non-Korean models are not transportable here)",
-    disease_state    = paste(
+    age_mean = "49.29 +/- 14.86 years (Chae 2026 Table 1)",
+    age_range = "Adults aged 18 years and older (Methods inclusion criterion); no upper bound reported",
+    weight_mean = "64.06 +/- 12.22 kg (Chae 2026 Table 1)",
+    height_mean = "164.82 +/- 9.23 cm (Chae 2026 Table 1; 12 subjects with missing height excluded)",
+    sex_female_pct = 46.8,
+    race_ethnicity = "Korean (single-centre Korean cohort; the paper frames the model throughout as population-specific to Koreans and cites inter-ethnic variability in glycopeptide PK as the reason non-Korean models are not transportable here)",
+    disease_state = paste(
       "Adults with haematologic malignancies who had undergone haematopoietic",
       "stem cell transplantation, were neutropenic, were hospitalised for",
       "infection and received intravenous teicoplanin. Teicoplanin was given",
@@ -155,7 +155,7 @@ Chae_2026_teicoplanin <- function() {
       "carries no dialysis-clearance term and should not be applied to patients",
       "on RRT."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Teicoplanin intravenously. The standard institutional regimen was three",
       "400 mg loading doses at 12 h intervals followed by 400 mg once daily,",
       "but the actual dose was at the physician's discretion and the standard",
@@ -163,8 +163,8 @@ Chae_2026_teicoplanin <- function() {
       "sampling times were reconstructed and used in the analysis. The paper",
       "does not state the infusion duration."
     ),
-    regions          = "Korea (Bone Marrow Transplantation Center, now Catholic Hematology Hospital, Seoul St. Mary's Hospital, The Catholic University of Korea; TDM data collected 2015-2017)",
-    renal_function   = paste(
+    regions = "Korea (Bone Marrow Transplantation Center, now Catholic Hematology Hospital, Seoul St. Mary's Hospital, The Catholic University of Korea; TDM data collected 2015-2017)",
+    renal_function = paste(
       "Supranormal on a creatinine basis. CKD-EPI eGFR mean 113.38 +/- 20.80",
       "mL/min/1.73 m^2 and serum creatinine mean 0.63 +/- 0.30 mg/dL (Chae 2026",
       "Table 1). The Discussion compares this with eGFR means of 64 and 103",
@@ -185,7 +185,7 @@ Chae_2026_teicoplanin <- function() {
       "IIV on CL and V2 -565.546, plus eGFR on CL -600.598, plus albumin on CL",
       "-588.965, plus both -634.415."
     ),
-    notes            = paste(
+    notes = paste(
       "SINGLE-CENTRE RETROSPECTIVE TDM STUDY WITH A SIMULATED BACKBONE. 417",
       "patients were initially included; after excluding 12 with missing",
       "covariates and 1 with an erroneously recorded concentration, 405 patients",

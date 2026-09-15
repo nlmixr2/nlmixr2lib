@@ -22,22 +22,37 @@ Clewe_2016_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fbugs = list(analyte = "M. tuberculosis H37Rv fast-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    sbugs = list(analyte = "M. tuberculosis H37Rv slow-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    nbugs = list(analyte = "M. tuberculosis H37Rv non-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE)
+    fbugs = list(
+      analyte = "M. tuberculosis H37Rv fast-multiplying bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    sbugs = list(
+      analyte = "M. tuberculosis H37Rv slow-multiplying bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    nbugs = list(
+      analyte = "M. tuberculosis H37Rv non-multiplying bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "(not applicable; in vitro experiment)",
-    weight_range   = "(not applicable; in vitro experiment)",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "(not applicable; in vitro experiment)",
+    weight_range = "(not applicable; in vitro experiment)",
     sex_female_pct = NULL,
-    disease_state  = "(in vitro M. tuberculosis H37Rv culture)",
-    dose_range     = "(no drug; natural-growth scaffold only)",
-    notes          = "In vitro time-kill experiments on Mycobacterium tuberculosis H37Rv (St George's University strain). The bundled DDMODEL00000240 .mod fits 12 replicate cultures (per the Output_real_MTP.lst ETABAR N = 12) followed for ~200 days under untreated growth conditions. Initial F (fast-multiplying), S (slow-multiplying) and N (non-multiplying) bacterial counts and the inter-state transfer rate constants are estimated from the CFU/mL trajectory; only IIV on initial F is identifiable. The Clewe 2016 publication then uses this scaffold + a separate rifampicin exposure-response layer (scenario 4 in Model_Accomodations.txt), but the rifampicin layer is NOT shipped in the DDMORE bundle; the model file therefore contains only the natural-growth scaffold."
+    disease_state = "(in vitro M. tuberculosis H37Rv culture)",
+    dose_range = "(no drug; natural-growth scaffold only)",
+    notes = "In vitro time-kill experiments on Mycobacterium tuberculosis H37Rv (St George's University strain). The bundled DDMODEL00000240 .mod fits 12 replicate cultures (per the Output_real_MTP.lst ETABAR N = 12) followed for ~200 days under untreated growth conditions. Initial F (fast-multiplying), S (slow-multiplying) and N (non-multiplying) bacterial counts and the inter-state transfer rate constants are estimated from the CFU/mL trajectory; only IIV on initial F is identifiable. The Clewe 2016 publication then uses this scaffold + a separate rifampicin exposure-response layer (scenario 4 in Model_Accomodations.txt), but the rifampicin layer is NOT shipped in the DDMORE bundle; the model file therefore contains only the natural-growth scaffold."
   )
 
   ini({

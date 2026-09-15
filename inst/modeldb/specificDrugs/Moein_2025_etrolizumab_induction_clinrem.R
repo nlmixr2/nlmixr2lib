@@ -36,18 +36,18 @@ Moein_2025_etrolizumab_induction_clinrem <- function() {
   )
   vignette <- "Moein_2025_etrolizumab"
   units <- list(
-    time          = "n/a (static landmark logistic regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark logistic regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_clinrem (probability of clinical remission at end of induction, 0-1)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE dose (Ctrough,W4,adjusted)",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual predicted etrolizumab serum trough concentration at week 4 following a SINGLE dose (Ctrough,W4,adjusted)",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "TOTAL (not unbound) etrolizumab, entering the logit LINEARLY ",
         "and UNCENTERED, so logite0 is the logit at zero exposure -- ",
         "which is exactly the placebo arm. Moein 2025 found that 'linear ",
@@ -70,14 +70,14 @@ Moein_2025_etrolizumab_induction_clinrem <- function() {
         "this analysis set (Table S6): mean 3.85, median 3.23, range ",
         "0-16.6 ug/mL."
       ),
-      source_name        = "Ctrough,W4,adjusted"
+      source_name = "Ctrough,W4,adjusted"
     ),
     PRIOR_TNF = list(
-      description        = "Prior anti-TNF biologic therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior anti-TNF biologic therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (TNF-experienced) -- see notes; this is the PAPER's reference category, which is the complement of the canonical column's 0 level",
-      notes              = paste0(
+      notes = paste0(
         "The published coefficient is stated on the TNF-NAIVE side of ",
         "the contrast (Table S8 row 'TNF-naive' = 0.580, RSE 39.2%, ",
         "P < 0.05), with TNF-EXPERIENCED as the reference absorbed into ",
@@ -94,24 +94,24 @@ Moein_2025_etrolizumab_induction_clinrem <- function() {
         "-- the paper's headline induction finding. Analysis set split ",
         "(Table S7): 205 TNF-experienced (53%), 179 TNF-naive (47%)."
       ),
-      source_name        = "TNF status"
+      source_name = "TNF status"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 384L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 384L,
+    n_studies = 1L,
     n_observations = "384 binary outcome records, one per patient (landmark analysis at end of induction; no repeated measures)",
-    age_range      = "18.0-79.0 years",
-    age_median     = "35.0 years",
-    weight_range   = "40.4-160 kg",
-    weight_median  = "71.8 kg",
+    age_range = "18.0-79.0 years",
+    age_median = "35.0 years",
+    weight_range = "40.4-160 kg",
+    weight_median = "71.8 kg",
     sex_female_pct = 46,
-    disease_state  = "Moderately-to-severely active Crohn's disease; baseline CDAI median 322 (range 215-481), SES-CD median 12.0 (4.00-43.0)",
-    dose_range     = "Placebo, etrolizumab 105 mg SC Q4W, or etrolizumab 210 mg SC Q4W with an additional 210 mg loading dose at week 2; 14-week induction phase",
-    regions        = "Multinational (BERGAMOT, NCT02394028)",
-    notes          = paste0(
+    disease_state = "Moderately-to-severely active Crohn's disease; baseline CDAI median 322 (range 215-481), SES-CD median 12.0 (4.00-43.0)",
+    dose_range = "Placebo, etrolizumab 105 mg SC Q4W, or etrolizumab 210 mg SC Q4W with an additional 210 mg loading dose at week 2; 14-week induction phase",
+    regions = "Multinational (BERGAMOT, NCT02394028)",
+    notes = paste0(
       "Baseline characteristics from Moein 2025 Tables S6 (continuous) ",
       "and S7 (categorical), induction column. Smoking status: 53% ",
       "non-smoker, 25% previously smoked, 22% current smoker. Disease ",

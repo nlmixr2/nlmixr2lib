@@ -13,9 +13,12 @@ Othman_2007_carvedilol <- function() {
   vignette <- "Othman_2007_carvedilol"
 
   paper_specific_etas <- c(
-    "etalka_cr", "etalka_iram", "etalka_irpm",
+    "etalka_cr",
+    "etalka_iram",
+    "etalka_irpm",
     "etafrel",
-    "etalka_cr_iov", "etafrel_cr_iov"
+    "etalka_cr_iov",
+    "etafrel_cr_iov"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -24,35 +27,35 @@ Othman_2007_carvedilol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
-    depot3      = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3 = list(analyte = "carvedilol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
-    n_studies      = 3L,
-    age_range      = "Healthy adults (specific demographic ranges not reported in the paper)",
-    weight_range   = "Healthy adults (specific demographic ranges not reported in the paper)",
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 3L,
+    age_range = "Healthy adults (specific demographic ranges not reported in the paper)",
+    weight_range = "Healthy adults (specific demographic ranges not reported in the paper)",
     sex_female_pct = NULL,
     race_ethnicity = "Not reported in the paper",
-    disease_state  = "Healthy volunteers",
-    dose_range     = paste(
+    disease_state = "Healthy volunteers",
+    dose_range = paste(
       "IR: 25 mg of carvedilol (racemate, free base) every 12 hours for 2 doses;",
       "CR: single doses of 10, 20, 40, or 80 mg carvedilol phosphate",
       "(equivalent to 8.1, 16.2, 32.4, and 64.8 mg of carvedilol racemate free base)",
       "as a balanced 4-period crossover. All doses given under fed conditions."
     ),
-    regions        = "Not reported",
+    regions = "Not reported",
     n_observations = 3328L,
-    n_obs_ir       = 1270L,
-    n_obs_cr       = 2058L,
-    notes          = paste(
+    n_obs_ir = 1270L,
+    n_obs_cr = 2058L,
+    notes = paste(
       "Three pooled studies (2 IR, 1 CR). Poor metabolizers of carvedilol were",
       "excluded by CYP2D6 genotyping. All doses administered under fed conditions",
       "(moderate-calorie, low-to-moderate-fat breakfast 30 minutes pre-dose).",

@@ -30,11 +30,11 @@ Krishna_2011_anacetrapib_ldlc <- function() {
 
   covariateData <- list(
     CSS_ANACETRAPIB = list(
-      description        = "Population-predicted anacetrapib steady-state trough (24 h post-dose) plasma concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Population-predicted anacetrapib steady-state trough (24 h post-dose) plasma concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters Eq. 9 as Emax * CSS_ANACETRAPIB / (EC50 + ",
         "CSS_ANACETRAPIB). Same driver and same provenance rule as the ",
         "companion HDL-C model: a POPULATION-predicted trough, obtained by ",
@@ -49,14 +49,14 @@ Krishna_2011_anacetrapib_ldlc <- function() {
         "than the HDL-C EC50 of 135 ng/mL, so LDL-C is the less sensitive of ",
         "the two endpoints."
       ),
-      source_name        = "C_trough (C24h)"
+      source_name = "C_trough (C24h)"
     ),
     DIS_HYPERLIP = list(
-      description        = "Dyslipidemia diagnosis indicator, 1 = patient with dyslipidemia, 0 = normal healthy volunteer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dyslipidemia diagnosis indicator, 1 = patient with dyslipidemia, 0 = normal healthy volunteer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal healthy volunteer, NHV)",
-      notes              = paste0(
+      notes = paste0(
         "Selects between the two baseline LDL-C estimates of Eq. 9, ",
         "rbase_nhv = 107 mg/dL and rbase_pts = 140 mg/dL. Krishna 2011 ",
         "Results: baseline LDL-C is 'about 33 mg/dL (27 to 40 mg/dL) higher ",
@@ -71,14 +71,14 @@ Krishna_2011_anacetrapib_ldlc <- function() {
         "additive Emax model that required population-specific Emax values. ",
         "The analysis set was 474 patients and 72 volunteers."
       ),
-      source_name        = "I_Pts / I_NHV"
+      source_name = "I_Pts / I_NHV"
     ),
     CONMED_ATORVASTATIN = list(
-      description        = "Concomitant atorvastatin indicator, 1 = receiving atorvastatin 20 mg once daily, 0 = no atorvastatin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant atorvastatin indicator, 1 = receiving atorvastatin 20 mg once daily, 0 = no atorvastatin",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant atorvastatin)",
-      notes              = paste0(
+      notes = paste0(
         "Acts twice in Eq. 9: as the direct proportional effect ",
         "e_conmed_atorvastatin_ldlc = -0.442 (a 44.2% LDL-C reduction from ",
         "baseline, 95% CI 42.5% to 46%, which the paper notes is close to a ",
@@ -95,20 +95,20 @@ Krishna_2011_anacetrapib_ldlc <- function() {
         "generic statin flag; the register carries CONMED_STATIN and the ",
         "CONMED_STATIN_LI / _MI / _HI intensity strata for that purpose."
       ),
-      source_name        = "I_Atorva"
+      source_name = "I_Atorva"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 544L,
-    n_observations   = 3078L,
-    n_studies        = 5L,
-    disease_state    = "Combined phase I and phase IIb dataset of 474 patients with dyslipidemia and 72 normal healthy volunteers (546 subjects); the LDL-C model converged on 544 subjects and 3,078 observations (Table III).",
-    ldlc_baseline    = "Typical baseline LDL-C 107 mg/dL (SE 3) in normal healthy volunteers and 140 mg/dL (SE 1) in patients with dyslipidemia, with a shared 25 mg/dL between-subject SD (18% coefficient of variation on the patient baseline).",
-    dose_range       = "Anacetrapib doses across the pooled phase I and phase IIb studies; the model was exercised over simulated arms of placebo and 10, 50, 100, 150, 250 and 300 mg once daily, with and without atorvastatin 20 mg once daily. 100 mg once daily as the hot-melt-extruded tablet was selected for phase III.",
-    co_medication    = "Atorvastatin 20 mg once daily was the only statin regimen studied, in the phase IIb trial.",
-    notes            = paste0(
+    species = "human",
+    n_subjects = 544L,
+    n_observations = 3078L,
+    n_studies = 5L,
+    disease_state = "Combined phase I and phase IIb dataset of 474 patients with dyslipidemia and 72 normal healthy volunteers (546 subjects); the LDL-C model converged on 544 subjects and 3,078 observations (Table III).",
+    ldlc_baseline = "Typical baseline LDL-C 107 mg/dL (SE 3) in normal healthy volunteers and 140 mg/dL (SE 1) in patients with dyslipidemia, with a shared 25 mg/dL between-subject SD (18% coefficient of variation on the patient baseline).",
+    dose_range = "Anacetrapib doses across the pooled phase I and phase IIb studies; the model was exercised over simulated arms of placebo and 10, 50, 100, 150, 250 and 300 mg once daily, with and without atorvastatin 20 mg once daily. 100 mg once daily as the hot-melt-extruded tablet was selected for phase III.",
+    co_medication = "Atorvastatin 20 mg once daily was the only statin regimen studied, in the phase IIb trial.",
+    notes = paste0(
       "Per-study designs are in Table IB of the Electronic Supplementary ",
       "Material, which is not on disk (see the vignette Errata). Krishna ",
       "2011 publishes no age, weight, sex or race distribution for the ",

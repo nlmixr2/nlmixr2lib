@@ -25,23 +25,23 @@ Brussee_2016_arginine <- function() {
     sep = " "
   )
   vignette <- "Brussee_2016_arginine"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "arginine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "arginine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "arginine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL (estimated exponent e_wt_cl = 2.47) and V1",
         "(estimated exponent e_wt_vc = 0.757), normalised to the reference",
         "weight of 60 kg. Reference weight is the standardising centring value",
@@ -49,14 +49,14 @@ Brussee_2016_arginine <- function() {
         "footnotes a and b, in the Yeo 2008 lineage). Median observed WT in the",
         "73-subject cohort was 57 kg (range 42-77)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     RACE_PAPUAN = list(
-      description        = "Papuan / indigenous Melanesian heritage indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Papuan / indigenous Melanesian heritage indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Papuan; in the Brussee 2016 cohort, mainland-Indonesian transmigrants)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on CL: CL_i = CL * (WT/60)^e_wt_cl * f^RACE_PAPUAN",
         "with f = 1.9 (Brussee 2016 Table 2). Source paper's binary covariate is",
         "named 'Papuan' (1 = indigenous Melanesian Papuan, 0 = non-Papuan).",
@@ -66,21 +66,21 @@ Brussee_2016_arginine <- function() {
         "model was developed in Yeo 2008 (52(12):4381) with the same",
         "Papuan-vs-non-Papuan stratification."
       ),
-      source_name        = "Papuan"
+      source_name = "Papuan"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 73L,
-    n_studies      = 2L,
-    age_range      = "18-56 years",
-    age_median     = "27 years",
-    weight_range   = "42-77 kg",
-    weight_median  = "57 kg",
+    species = "human",
+    n_subjects = 73L,
+    n_studies = 2L,
+    age_range = "18-56 years",
+    age_median = "27 years",
+    weight_range = "42-77 kg",
+    weight_median = "57 kg",
     sex_female_pct = 34,
     race_ethnicity = c(Papuan = 86, NonPapuan = 14),
-    disease_state  = paste(
+    disease_state = paste(
       "Moderately severe Plasmodium falciparum malaria (defined by parasitaemia",
       "and the absence of severe-malaria criteria). All subjects enrolled at",
       "Mitra Masyarakat Hospital in Timika, Papua, Indonesia. 30 subjects",
@@ -89,13 +89,13 @@ Brussee_2016_arginine <- function() {
       "in an observational cohort. Both arms received standard antimalarial",
       "treatment (artesunate-based)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "3, 6, or 12 g L-arginine as a 0.5-hour intravenous infusion (n = 10 per",
       "dose group); saline placebo (n = 43) for the observational arm. Single",
       "dose at study start."
     ),
-    regions        = "Indonesia (Papua province, Timika)",
-    notes          = paste(
+    regions = "Indonesia (Papua province, Timika)",
+    notes = paste(
       "Pooled cohorts from two prior studies: a natural-history observational",
       "study of 48 subjects (Yeo 2008 ref 16; 43 retained after exclusion for",
       "missing PD data) and a non-randomised intervention trial of 30 subjects",

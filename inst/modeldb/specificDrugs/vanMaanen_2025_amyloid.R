@@ -41,8 +41,8 @@ vanMaanen_2025_amyloid <- function() {
   paper_specific_compartments <- c("plaque")
 
   units <- list(
-    time          = "day",
-    dosing        = paste(
+    time = "day",
+    dosing = paste(
       "(this model has no dosing events; drug exposure enters via the",
       "time-varying covariates AUC_VERUB, AUC_ADU, AUC_DON, AUC_GAN,",
       "AUC_LEC. See covariateData for units and reference values.)",
@@ -65,7 +65,7 @@ vanMaanen_2025_amyloid <- function() {
 
   covariateData <- list(
     PLAQUE_BL = list(
-      description        = paste(
+      description = paste(
         "Per-subject baseline amyloid plaque burden on the Centiloid",
         "scale used as the initial condition for the plaque state at",
         "t = 0 (before any drug exposure). van Maanen 2025 Supplement",
@@ -78,10 +78,10 @@ vanMaanen_2025_amyloid <- function() {
         "CL in the APECS analysis dataset.",
         sep = " "
       ),
-      units              = "CL (Centiloid; 0 = no plaque, 100 = typical AD plaque burden)",
-      type               = "continuous",
+      units = "CL (Centiloid; 0 = no plaque, 100 = typical AD plaque burden)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Required per-subject covariate. Set to the observed individual",
         "baseline value; for typical-subject simulations at the natural-",
         "progression starting condition, use e.g. 10 CL (paper Section 2.3",
@@ -91,10 +91,10 @@ vanMaanen_2025_amyloid <- function() {
         "covariates.",
         sep = " "
       ),
-      source_name        = "(paper does not report a specific NONMEM column name; individual APECS baselines came from the trial PET dataset)"
+      source_name = "(paper does not report a specific NONMEM column name; individual APECS baselines came from the trial PET dataset)"
     ),
     AUC_VERUB = list(
-      description        = paste(
+      description = paste(
         "Verubecestat plasma exposure (AUC over 24 h at steady state).",
         "Enters the model as the driver of the inhibitory sigmoid Emax",
         "on plaque formation Kin (Inh_verub = Imax * AUC_VERUB /",
@@ -110,10 +110,10 @@ vanMaanen_2025_amyloid <- function() {
         "levels and AUC50 = 0.392 uM*h using Eq 4 rearranged.)",
         sep = " "
       ),
-      units              = "uM*h (micromolar * hour; verubecestat AUC over 24 h at steady state)",
-      type               = "continuous",
+      units = "uM*h (micromolar * hour; verubecestat AUC over 24 h at steady state)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying step-wise (held constant during a verubecestat",
         "treatment period, resets to 0 during washout). Must be in the",
         "SAME units as AUC50 (uM*h) so the sigmoid AUC_VERUB / (AUC_VERUB",
@@ -123,10 +123,10 @@ vanMaanen_2025_amyloid <- function() {
         "columns.md).",
         sep = " "
       ),
-      source_name        = "AUC_verub (paper Eq 4)"
+      source_name = "AUC_verub (paper Eq 4)"
     ),
     AUC_ADU = list(
-      description        = paste(
+      description = paste(
         "Aducanumab serum exposure (AUC over 4 weeks at steady state).",
         "Enters the model as the driver of the linear stimulation term",
         "on plaque elimination Kout for aducanumab (Stim_ADU =",
@@ -139,10 +139,10 @@ vanMaanen_2025_amyloid <- function() {
         "approximately 0.36 L/day.",
         sep = " "
       ),
-      units              = "mg*day/L (milligrams * day per litre; aducanumab AUC over 4 weeks at steady state). Divide by MW_ADU (145912 g/mol; hard-coded in model()) to obtain the paper's dimensionless AUC/MW term in mmol*day/L (= mM*day).",
-      type               = "continuous",
+      units = "mg*day/L (milligrams * day per litre; aducanumab AUC over 4 weeks at steady state). Divide by MW_ADU (145912 g/mol; hard-coded in model()) to obtain the paper's dimensionless AUC/MW term in mmol*day/L (= mM*day).",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying step-wise. Units MUST be mg*day/L (not mg*h/mL,",
         "not ug*h/mL) so that (AUC_ADU / MW_ADU_g_per_mol) evaluates in",
         "mmol*day/L (= mM*day) and slope_adu (mM^-1 * day^-1) *",
@@ -150,10 +150,10 @@ vanMaanen_2025_amyloid <- function() {
         "Member of the AUC_<DRUG> canonical family.",
         sep = " "
       ),
-      source_name        = "AUC_mAb for aducanumab (paper Eq 6)"
+      source_name = "AUC_mAb for aducanumab (paper Eq 6)"
     ),
     AUC_DON = list(
-      description        = paste(
+      description = paste(
         "Donanemab serum exposure (AUC over 4 weeks at steady state).",
         "Enters the model as the driver of the linear stimulation term",
         "on plaque elimination Kout for donanemab (Stim_DON =",
@@ -162,18 +162,18 @@ vanMaanen_2025_amyloid <- function() {
         "after 3 loading doses of 10 mg/kg IV Q4W.",
         sep = " "
       ),
-      units              = "mg*day/L (see AUC_ADU units notes)",
-      type               = "continuous",
+      units = "mg*day/L (see AUC_ADU units notes)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying step-wise; same unit convention as AUC_ADU (mg*day/L).",
         "Divided in model() by MW_DON = 145087 g/mol.",
         sep = " "
       ),
-      source_name        = "AUC_mAb for donanemab (paper Eq 6)"
+      source_name = "AUC_mAb for donanemab (paper Eq 6)"
     ),
     AUC_GAN = list(
-      description        = paste(
+      description = paste(
         "Gantenerumab serum exposure (AUC over 4 weeks at steady state).",
         "Enters the model as the driver of the linear stimulation term",
         "on plaque elimination Kout for gantenerumab (Stim_GAN =",
@@ -182,18 +182,18 @@ vanMaanen_2025_amyloid <- function() {
         "(delivered as 510 mg Q2W) after a 9-month step-up.",
         sep = " "
       ),
-      units              = "mg*day/L (see AUC_ADU units notes)",
-      type               = "continuous",
+      units = "mg*day/L (see AUC_ADU units notes)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying step-wise; same unit convention as AUC_ADU.",
         "Divided in model() by MW_GAN = 146300 g/mol.",
         sep = " "
       ),
-      source_name        = "AUC_mAb for gantenerumab (paper Eq 6)"
+      source_name = "AUC_mAb for gantenerumab (paper Eq 6)"
     ),
     AUC_LEC = list(
-      description        = paste(
+      description = paste(
         "Lecanemab serum exposure (AUC over 4 weeks at steady state).",
         "Enters the model as the driver of the linear stimulation term",
         "on plaque elimination Kout for lecanemab (Stim_LEC =",
@@ -202,27 +202,27 @@ vanMaanen_2025_amyloid <- function() {
         "20 mg/kg per 4 weeks).",
         sep = " "
       ),
-      units              = "mg*day/L (see AUC_ADU units notes)",
-      type               = "continuous",
+      units = "mg*day/L (see AUC_ADU units notes)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying step-wise; same unit convention as AUC_ADU.",
         "Divided in model() by MW_LEC = 150000 g/mol.",
         sep = " "
       ),
-      source_name        = "AUC_mAb for lecanemab (paper Eq 6)"
+      source_name = "AUC_mAb for lecanemab (paper Eq 6)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 188L,
-    n_studies      = 8L,
-    age_range      = "median age 70-75 years across contributing trials (Table S2); APECS individual dataset median 71.5 years",
-    weight_range   = "(paper does not tabulate body-weight distribution; the modelled dataset covers roughly the age 55-85 body-mass range typical of late-life mild AD)",
+    species = "human",
+    n_subjects = 188L,
+    n_studies = 8L,
+    age_range = "median age 70-75 years across contributing trials (Table S2); APECS individual dataset median 71.5 years",
+    weight_range = "(paper does not tabulate body-weight distribution; the modelled dataset covers roughly the age 55-85 body-mass range typical of late-life mild AD)",
     sex_female_pct = 51.5,
     race_ethnicity = c(White = 85.0, Black = 1.5, Asian = 8.0, Hispanic = 6.0),
-    disease_state  = paste(
+    disease_state = paste(
       "Mild cognitive impairment (aMCI, i.e., prodromal AD; APECS",
       "study of verubecestat) or mild dementia due to Alzheimer's",
       "disease (mAb studies). Baseline amyloid PET burden across the",
@@ -232,7 +232,7 @@ vanMaanen_2025_amyloid <- function() {
       "on cohort.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Model INPUTS are AUC covariates, not dose amounts, but the",
       "reference dosing regimens used to derive the input AUCs are:",
       "verubecestat 12-40 mg PO once daily (APECS phase 3);",
@@ -245,8 +245,8 @@ vanMaanen_2025_amyloid <- function() {
       "phase 3 simulation regimens.",
       sep = " "
     ),
-    regions        = "predominantly North America and Europe; contributing trials also enrolled Asia-Pacific and Latin American sites (per Table S2 Hispanic and Asian race percentages up to 24% and 17% in some cohorts)",
-    notes          = paste(
+    regions = "predominantly North America and Europe; contributing trials also enrolled Asia-Pacific and Latin American sites (per Table S2 Hispanic and Asian race percentages up to 24% and 17% in some cohorts)",
+    notes = paste(
       "The n_subjects = 188 count reflects only the individual-level",
       "APECS verubecestat cohort; the mAb data (aducanumab, donanemab,",
       "gantenerumab, lecanemab) were pooled at the summary level from",

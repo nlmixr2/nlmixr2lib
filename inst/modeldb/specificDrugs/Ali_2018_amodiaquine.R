@@ -19,57 +19,57 @@ Ali_2018_amodiaquine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1         = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2         = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_deaq     = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Reference WT = 50 kg = pooled-cohort median (Ali 2018 Table 1). Allometric exponents 0.75 on CL and Q (for both AQ and DEAQ) and 1.0 on Vc and Vp (Ali 2018 Methods, 'Effect of body size and age').",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Reference WT = 50 kg = pooled-cohort median (Ali 2018 Table 1). Allometric exponents 0.75 on CL and Q (for both AQ and DEAQ) and 1.0 on Vc and Vp (Ali 2018 Methods, 'Effect of body size and age').",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the sigmoidal maturation function on CL_AQ and CL_DEAQ. Per Ali 2018 Methods ('Effect of body size and age'), PMA is computed as PNA_months + 9 months assuming term gestation, because individual gestational ages were not available; for subjects with known GA the standard PAGE = GA_weeks/4.35 + PNA_months computation applies. Adults: PAGE = AGE_years*12 + 9.",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the sigmoidal maturation function on CL_AQ and CL_DEAQ. Per Ali 2018 Methods ('Effect of body size and age'), PMA is computed as PNA_months + 9 months assuming term gestation, because individual gestational ages were not available; for subjects with known GA the standard PAGE = GA_weeks/4.35 + PNA_months computation applies. Adults: PAGE = AGE_years*12 + 9.",
+      source_name = "PMA"
     ),
     CYCLE = list(
-      description        = "Dose-number counter (1 = first daily dose of a 3-day course; 2 or 3 = second/third dose)",
-      units              = "(count)",
-      type               = "count",
+      description = "Dose-number counter (1 = first daily dose of a 3-day course; 2 or 3 = second/third dose)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = "Used in a piecewise (CYCLE == 1) form to encode the first-day relative bioavailability reduction. Ali 2018 Table 3 reports an estimated -22.4% (95% CI -32.0% to -15.6%) reduction in F on day 1 relative to days 2 and 3 of the 3-day treatment course; the source paper attributes this to a transient malaria disease effect on absorption.",
-      source_name        = "OCC"
+      notes = "Used in a piecewise (CYCLE == 1) form to encode the first-day relative bioavailability reduction. Ali 2018 Table 3 reports an estimated -22.4% (95% CI -32.0% to -15.6%) reduction in F on day 1 relative to days 2 and 3 of the 3-day treatment course; the source paper attributes this to a transient malaria disease effect on absorption.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 261,
-    n_studies      = 6,
-    n_pregnant     = 26,
-    age_range      = "1-60 years",
-    age_median     = "7.6 years",
-    weight_range   = "6.5-93 kg",
-    weight_median  = "21 kg",
+    species = "human",
+    n_subjects = 261,
+    n_studies = 6,
+    n_pregnant = 26,
+    age_range = "1-60 years",
+    age_median = "7.6 years",
+    weight_range = "6.5-93 kg",
+    weight_median = "21 kg",
     sex_female_pct = 53.3,
-    disease_state  = "Uncomplicated Plasmodium falciparum or Plasmodium vivax malaria; includes 26 pregnant women in the second or third trimester.",
-    dose_range     = "Oral amodiaquine (base, mg) targeting ~10 mg/kg once daily for 3 days, given alone or as artesunate + amodiaquine fixed-dose combination or as loose tablets; all administered doses are reported on the amodiaquine-base scale (Ali 2018 Materials and Methods).",
-    regions        = "Burkina Faso, Ghana, Kenya, Uganda, Thailand (pooled via the WWARN Amodiaquine PK Study Group)",
-    notes          = "Pooled patient-level data from five cohorts (six studies): Tarning 2008/2012 (pregnant women, Thailand, n = 26 + 7 resampled post-delivery), Jullien 2010 (adults, Uganda, n = 53), Mwesigwa 2010 (children 5-13 yr, Uganda, n = 20), Stepniewska 2009 (children 1-5 yr, Burkina Faso, n = 61), Adjei 2008 (children 1-14 yr, Ghana, n = 101). 36.4% of subjects are children under 5 years; 12.6% under 2 years. Baseline demographics summarised from Ali 2018 Table 1."
+    disease_state = "Uncomplicated Plasmodium falciparum or Plasmodium vivax malaria; includes 26 pregnant women in the second or third trimester.",
+    dose_range = "Oral amodiaquine (base, mg) targeting ~10 mg/kg once daily for 3 days, given alone or as artesunate + amodiaquine fixed-dose combination or as loose tablets; all administered doses are reported on the amodiaquine-base scale (Ali 2018 Materials and Methods).",
+    regions = "Burkina Faso, Ghana, Kenya, Uganda, Thailand (pooled via the WWARN Amodiaquine PK Study Group)",
+    notes = "Pooled patient-level data from five cohorts (six studies): Tarning 2008/2012 (pregnant women, Thailand, n = 26 + 7 resampled post-delivery), Jullien 2010 (adults, Uganda, n = 53), Mwesigwa 2010 (children 5-13 yr, Uganda, n = 20), Stepniewska 2009 (children 1-5 yr, Burkina Faso, n = 61), Adjei 2008 (children 1-14 yr, Ghana, n = 101). 36.4% of subjects are children under 5 years; 12.6% under 2 years. Baseline demographics summarised from Ali 2018 Table 1."
   )
 
   ini({

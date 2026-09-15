@@ -42,8 +42,8 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
   vignette <- "Takechi_2025_nemolizumab"
 
   units <- list(
-    time          = "day",
-    dosing        = paste0(
+    time = "day",
+    dosing = paste0(
       "mg/administration (nemolizumab 30 mg Q4W after a 60 mg loading dose, ",
       "or 60 mg Q4W, supplied through the DOSE_NEMOLIZUMAB_MG covariate ",
       "column and NOT as rxode2 dose events; the source found no ",
@@ -59,14 +59,14 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
 
   covariateData <- list(
     SCORE_PPNRS = list(
-      description        = paste0(
+      description = paste0(
         "Subject's own observed weekly average Peak Pruritus Numerical Rating ",
         "Scale score at baseline, used as the initial value of the response."
       ),
-      units              = "(score)",
-      type               = "continuous",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Takechi 2025 Results 'PopPD Analysis': 'Model initialization was ",
         "based on the observed weekly average PP-NRS scores at baseline.' The ",
         "baseline is therefore DATA, not an estimated parameter, and carries ",
@@ -77,17 +77,17 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
         "over each week before use (Methods 'Pharmacokinetic and ",
         "Pharmacodynamic Assessments')."
       ),
-      source_name        = "weekly average PP-NRS at baseline (Takechi 2025 Results 'PopPD Analysis'; Table 1 'PP-NRS score' row)"
+      source_name = "weekly average PP-NRS at baseline (Takechi 2025 Results 'PopPD Analysis'; Table 1 'PP-NRS score' row)"
     ),
     DOSE_NEMOLIZUMAB_MG = list(
-      description        = paste0(
+      description = paste0(
         "Per-subject assigned subcutaneous nemolizumab maintenance dose; 0 ",
         "identifies a placebo subject."
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Acts ONLY as an on/off switch in this model: the drug effect enters ",
         "as Edrug * (DOSE_NEMOLIZUMAB_MG > 0), with no dose-response. Takechi ",
         "2025 Discussion: 'an initial attempt was made to evaluate the ",
@@ -101,17 +101,17 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
         "faithfully and so a future dose-response extension has somewhere to ",
         "read the dose from."
       ),
-      source_name        = "treatment arm (Takechi 2025 Results 'Data Summary'; Table 3 Yokozeki et al. rows)"
+      source_name = "treatment arm (Takechi 2025 Results 'Data Summary'; Table 3 Yokozeki et al. rows)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight. Screened as a PD covariate but NOT retained in the final model.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Screened as a PD covariate but NOT retained in the final model.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Takechi 2025 Methods 'Pharmacodynamic Model' lists body weight among ",
         "the covariates evaluated on the PD parameters. Results 'PopPD ",
         "Analysis': 'No covariates were included in the model, as no ",
@@ -119,59 +119,59 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
         "estimate is reported. Median 61.2 kg, range 32.8-109.6 (Table 1, ",
         "footnote b)."
       ),
-      source_name        = "body weight (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
+      source_name = "body weight (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
     ),
     ALB = list(
-      description        = "Serum albumin. Screened as a PD covariate but NOT retained in the final model.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin. Screened as a PD covariate but NOT retained in the final model.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Listed as 'ALB' in the Takechi 2025 Methods 'Pharmacodynamic Model' ",
         "covariate screen; no effect retained and no point estimate reported. ",
         "ALB IS retained in the companion popPK model on CL/F - see ",
         "modellib('Takechi_2025_nemolizumab')."
       ),
-      source_name        = "ALB (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
+      source_name = "ALB (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
     ),
     AGE = list(
-      description        = "Patient age. Screened as a PD covariate but NOT retained in the final model.",
-      units              = "year",
-      type               = "continuous",
+      description = "Patient age. Screened as a PD covariate but NOT retained in the final model.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Listed in the Takechi 2025 Methods 'Pharmacodynamic Model' covariate ",
         "screen; no effect retained and no point estimate reported. Median 51 ",
         "years, range 13-84 (Table 1, footnote b)."
       ),
-      source_name        = "age (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
+      source_name = "age (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
     ),
     SEXF = list(
-      description        = "Sex. Screened as a PD covariate but NOT retained in the final model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex. Screened as a PD covariate but NOT retained in the final model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Listed as 'sex' in the Takechi 2025 Methods 'Pharmacodynamic Model' ",
         "covariate screen; no effect retained and no point estimate reported. ",
         "The PopPD cohort is 107 male / 122 female (Table 1, footnote b)."
       ),
-      source_name        = "sex (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
+      source_name = "sex (Takechi 2025 Methods 'Pharmacodynamic Model' covariate list)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 229L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 229L,
+    n_studies = 1L,
     n_observations = 3833L,
-    age_range      = "13-84 years",
-    age_median     = "51 years",
-    weight_range   = "32.8-109.6 kg",
-    weight_median  = "61.2 kg",
+    age_range = "13-84 years",
+    age_median = "51 years",
+    weight_range = "32.8-109.6 kg",
+    weight_median = "61.2 kg",
     sex_female_pct = 53.3,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Prurigo nodularis diagnosed more than 6 months earlier, with limb ",
       "lesions, at least 20 bilateral prurigo nodules, and inadequate ",
       "response to (or inability to receive) high-potency topical ",
@@ -180,13 +180,13 @@ Takechi_2025_nemolizumab_ppnrs <- function() {
       "(range 6.4-10) and Investigator's Global Assessment 3 in 112 patients ",
       "and 4 in 117 patients."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Subcutaneous nemolizumab 30 mg Q4W after a 60 mg loading dose, 60 mg ",
       "Q4W, or placebo, for 16 weeks (initial treatment phase only). Arm ",
       "sizes 77 / 76 / 76 (Table 3, Yokozeki et al. rows)."
     ),
-    regions        = "Japan",
-    notes          = paste0(
+    regions = "Japan",
+    notes = paste0(
       "Single study: the phase II/III randomized, placebo-controlled, ",
       "double-blind, multicentre trial M525101-11 (jRCT2011200017; Yokozeki ",
       "et al. 2024, Br J Dermatol 191:200-208), in patients aged 13 years and ",

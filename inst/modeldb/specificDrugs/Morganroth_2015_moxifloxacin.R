@@ -39,8 +39,8 @@ Morganroth_2015_moxifloxacin <- function() {
   vignette <- "Morganroth_2015_moxifloxacin"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -48,17 +48,17 @@ Morganroth_2015_moxifloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used by the typical-value NCA-derived PK driver to reproduce the",
         "reported by-ethnicity difference in moxifloxacin exposure: Morganroth",
         "2015 Methods 'Sample size' states 'body weight is known to affect",
@@ -68,14 +68,14 @@ Morganroth_2015_moxifloxacin <- function() {
         "the two cohorts: Japanese 65.9 kg, Caucasian 76.6 kg per Results",
         "'Study population and exposure'). WT is time-fixed per subject."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     RACE_WHITE = list(
-      description        = "White (Caucasian) race indicator, 1 = White, 0 = non-White (Japanese in this cohort).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White (Caucasian) race indicator, 1 = White, 0 = non-White (Japanese in this cohort).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Japanese; Japan study site)",
-      notes              = paste(
+      notes = paste(
         "Morganroth 2015 Methods 'Statistical plan' Equation 1 uses country",
         "as a binary indicator: country = 0 for Japanese subjects (Kitasato",
         "University East Hospital, Sagamihara, Japan) and country = 1 for",
@@ -90,19 +90,19 @@ Morganroth_2015_moxifloxacin <- function() {
         "ethnicity enrolled at a non-Japan site), the same coding applies",
         "because the paper does not disentangle ethnicity from site."
       ),
-      source_name        = "country (Japan = 0, USA = 1; RACE_WHITE = country directly)"
+      source_name = "country (Japan = 0, USA = 1; RACE_WHITE = country directly)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    age_range      = "18-45 years (Japanese mean 33.8 +/- 7.9; Caucasian mean 30.9 +/- 7.2)",
-    weight_range   = "Japanese 65.9 +/- 8.9 kg; Caucasian 76.6 +/- 8.3 kg",
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
+    age_range = "18-45 years (Japanese mean 33.8 +/- 7.9; Caucasian mean 30.9 +/- 7.2)",
+    weight_range = "Japanese 65.9 +/- 8.9 kg; Caucasian 76.6 +/- 8.3 kg",
     sex_female_pct = 0,
     race_ethnicity = c(Japanese = 50, White = 50),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male volunteers meeting the ICH E14 thorough-QT-study",
       "inclusion criteria: BMI 18-28 kg/m^2 at screening; no family history",
       "of QTc prolongation or unexplainable sudden death at less than 50",
@@ -111,15 +111,15 @@ Morganroth_2015_moxifloxacin <- function() {
       "mmHg; no baseline ECG abnormality (QTc <= 450 ms, QRS <= 110 ms,",
       "PR <= 200 ms, no second or third degree heart block)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 400 mg oral moxifloxacin (site-specific tablet formulation)",
       "administered in the fasted state (no food or liquid except water for",
       "at least 10 h prior to dosing and at least 4 h thereafter) with a",
       "minimum 3-day washout between the placebo and moxifloxacin periods",
       "of the two-period crossover design."
     ),
-    regions        = "Japan (Kitasato University East Hospital, Sagamihara) for Japanese subjects; USA (SeaView Research Inc., Miami, Florida) for Caucasian subjects.",
-    notes          = paste(
+    regions = "Japan (Kitasato University East Hospital, Sagamihara) for Japanese subjects; USA (SeaView Research Inc., Miami, Florida) for Caucasian subjects.",
+    notes = paste(
       "Randomized, double-blind, two-period, crossover, ICH-E14-compliant",
       "thorough QT study (Morganroth 2015 Methods 'Study design').",
       "Half of subjects at each site received placebo followed by 400 mg",

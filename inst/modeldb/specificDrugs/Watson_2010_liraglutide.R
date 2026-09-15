@@ -23,17 +23,17 @@ Watson_2010_liraglutide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "liraglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "liraglutide", units = "nmol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "liraglutide", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Watson 2010 reports apparent clearance and volume on a per-kg",
         "basis (CL/F in L/h/kg, V/F in L/kg). WT enters as a linear",
         "(allometric-exponent-1) multiplier on CL/F and V/F relative to",
@@ -41,14 +41,14 @@ Watson_2010_liraglutide <- function() {
         "cohort baseline weight; typical adult 70-90 kg is a reasonable",
         "simulation range. Time-fixed at baseline."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_DIAB = list(
-      description        = "Type 2 diabetes status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type 2 diabetes status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = paste(
+      notes = paste(
         "Watson 2010 (Results, Single Dose in HV and Subjects With T2D)",
         "tested the statistical significance of the HV-vs-T2D disease-",
         "status covariate on all model parameters one at a time; the",
@@ -65,25 +65,25 @@ Watson_2010_liraglutide <- function() {
         "pooled at the column level per the canonical register; the",
         "Watson 2010 cohort is Type 2 only)."
       ),
-      source_name        = "T2D"
+      source_name = "T2D"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 98L,
-    n_studies      = 4L,
-    age_range      = "Adults (Watson 2010 does not tabulate a pooled age range; individual ranges are in the source studies A-D references)",
-    weight_range   = "Adults (Watson 2010 does not tabulate a pooled weight range; per-kg parameterisation scales linearly with WT)",
+    species = "human",
+    n_subjects = 98L,
+    n_studies = 4L,
+    age_range = "Adults (Watson 2010 does not tabulate a pooled age range; individual ranges are in the source studies A-D references)",
+    weight_range = "Adults (Watson 2010 does not tabulate a pooled weight range; per-kg parameterisation scales linearly with WT)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not tabulated in Watson 2010",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers (Study A n=54; Study B n=20 HV) pooled with",
       "adults with type 2 diabetes (Study B n=2 T2D; Study C n=11;",
       "Study D n=11). Studies A and B included fasted single-dose SC",
       "arms; Studies C and D were single-dose SC crossover trials."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "SC single dose 1.25-20 ug/kg (Study A: 1.25, 2.5, 5.0, 10.0, 12.5,",
       "15.0, 17.5, or 20.0 ug/kg, n=8 per level); SC single or once-daily",
       "for 5 days 1.25-12.5 ug/kg (Study B); SC single dose 10 ug/kg",
@@ -91,12 +91,14 @@ Watson_2010_liraglutide <- function() {
       "ug/kg SC IV arm (n=8) used only in the initial Study-A-only",
       "submodel. Molar equivalents via MW 3751.2 g/mol."
     ),
-    regions        = "Not tabulated in Watson 2010; source studies were Novo Nordisk single-country Phase 1 trials (Denmark).",
-    trials         = c("Elbrond 2002 (Study A)",
-                       "Agerso 2002 (Study B, HV + 2 T2D unpublished)",
-                       "Juhl 2002 (Study C)",
-                       "Nauck 2003 (Study D)"),
-    notes          = paste(
+    regions = "Not tabulated in Watson 2010; source studies were Novo Nordisk single-country Phase 1 trials (Denmark).",
+    trials = c(
+      "Elbrond 2002 (Study A)",
+      "Agerso 2002 (Study B, HV + 2 T2D unpublished)",
+      "Juhl 2002 (Study C)",
+      "Nauck 2003 (Study D)"
+    ),
+    notes = paste(
       "The final combined model was fit to Studies A-D SC-only data per",
       "Watson 2010 Methods ('reestimated on the combined pharmacokinetic",
       "data from studies A through D ... exposure after subcutaneous",

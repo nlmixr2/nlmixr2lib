@@ -32,22 +32,27 @@ Mukker_2026_tuvusertib_hematology <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot              = list(analyte = "tuvusertib", units = "mg", specimen = "administration site", verified = TRUE),
-    central            = list(analyte = "tuvusertib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1        = list(analyte = "tuvusertib", units = "mg", specimen = "tissue", verified = TRUE),
-    clearance_capacity = list(analyte = "none", units = "unitless (relative to drug-free baseline of 1)", specimen = "not applicable", verified = TRUE),
-    prol               = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
-    precursor1         = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
-    precursor2         = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
-    precursor3         = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
-    reticulocytes1     = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    reticulocytes2     = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    reticulocytes3     = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    reticulocytes4     = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    erythrocytes1      = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    erythrocytes2      = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    erythrocytes3      = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
-    erythrocytes4      = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE)
+    depot = list(analyte = "tuvusertib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tuvusertib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "tuvusertib", units = "mg", specimen = "tissue", verified = TRUE),
+    clearance_capacity = list(
+      analyte = "none",
+      units = "unitless (relative to drug-free baseline of 1)",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    prol = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
+    precursor1 = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
+    precursor2 = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
+    precursor3 = list(analyte = "erythroid progenitor cells", units = "10^9/mL", specimen = "tissue", verified = TRUE),
+    reticulocytes1 = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    reticulocytes2 = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    reticulocytes3 = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    reticulocytes4 = list(analyte = "reticulocytes", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    erythrocytes1 = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    erythrocytes2 = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    erythrocytes3 = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE),
+    erythrocytes4 = list(analyte = "red blood cells", units = "10^9/mL", specimen = "blood cell", verified = TRUE)
   )
 
   # Mukker 2026 Results: "No discernible effect of the evaluated covariates
@@ -55,31 +60,52 @@ Mukker_2026_tuvusertib_hematology <- function() {
   # variability for tuvusertib could be identified."
   covariateData <- list()
   covariatesDataExcluded <- list(
-    AGE = list(description = "Age", units = "y", type = "continuous",
-               notes = "Screened in the stepwise PK/PD covariate search; not retained."),
-    WT = list(description = "Baseline body weight", units = "kg", type = "continuous",
-              notes = "Screened; not retained."),
-    SEXF = list(description = "Female sex indicator", units = "(binary)", type = "binary",
-                reference_category = "male", notes = "Screened; not retained."),
-    ECOG = list(description = "Baseline ECOG performance status", units = "(score)", type = "categorical",
-                notes = "Screened; not retained."),
-    RACE_ASIAN = list(description = "Asian race indicator", units = "(binary)", type = "binary",
-                      reference_category = "non-Asian",
-                      notes = "Screened; not retained. Assessed post hoc by overlaying observed HGB-time profiles for Asian and Black or African American patients on the model 90% PI (Figure 4f).")
+    AGE = list(
+      description = "Age",
+      units = "y",
+      type = "continuous",
+      notes = "Screened in the stepwise PK/PD covariate search; not retained."
+    ),
+    WT = list(
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained."
+    ),
+    SEXF = list(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "male",
+      notes = "Screened; not retained."
+    ),
+    ECOG = list(
+      description = "Baseline ECOG performance status",
+      units = "(score)",
+      type = "categorical",
+      notes = "Screened; not retained."
+    ),
+    RACE_ASIAN = list(
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "non-Asian",
+      notes = "Screened; not retained. Assessed post hoc by overlaying observed HGB-time profiles for Asian and Black or African American patients on the model 90% PI (Figure 4f)."
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = c(Asian = 5, `Black or African American` = 2, `non-Asian` = 48),
-    disease_state  = "advanced / metastatic solid tumors",
-    dose_range     = "5-270 mg once daily, plus intermittent regimens (180 mg QD 2w on/1w off, 220 mg QD 2w on/1w off, 150 mg BID 4d on/3d off)",
-    regions        = "multicenter first-in-human trial (DDRiver Solid Tumors 301, NCT04170153, Part A1)",
-    notes          = paste(
+    disease_state = "advanced / metastatic solid tumors",
+    dose_range = "5-270 mg once daily, plus intermittent regimens (180 mg QD 2w on/1w off, 220 mg QD 2w on/1w off, 150 mg BID 4d on/3d off)",
+    regions = "multicenter first-in-human trial (DDRiver Solid Tumors 301, NCT04170153, Part A1)",
+    notes = paste(
       "Same 55-patient cohort as the companion population PK model. Reticulocyte,",
       "red-blood-cell and hemoglobin time courses were fitted jointly, driven by",
       "the tuvusertib concentration predicted by the population PK model (a",

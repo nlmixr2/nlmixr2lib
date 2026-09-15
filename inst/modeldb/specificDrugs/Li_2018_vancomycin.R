@@ -13,39 +13,39 @@ Li_2018_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (current; time-varying as recorded in NICU charts)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (current; time-varying as recorded in NICU charts)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Li 2018 Table 1: median 2.74 kg, mean 2.87 kg (range 1.4-5.6). Used with allometric scaling reference 2.9 kg in both CL and V structural equations (Li 2018 Table 3 footnote: CL = theta1 * (WT/2.9)^theta2 * (23.3/Scr)^theta3; V = theta4 * (WT/2.9)^theta5).",
-      source_name        = "WT"
+      notes = "Li 2018 Table 1: median 2.74 kg, mean 2.87 kg (range 1.4-5.6). Used with allometric scaling reference 2.9 kg in both CL and V structural equations (Li 2018 Table 3 footnote: CL = theta1 * (WT/2.9)^theta2 * (23.3/Scr)^theta3; V = theta4 * (WT/2.9)^theta5).",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine (enzymatic method, Hitachi 7180 Automatic Analyzer)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (enzymatic method, Hitachi 7180 Automatic Analyzer)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Li 2018 Table 1: median 28.3 umol/L, mean 23.2 umol/L (range 5.85-61.6). Reference 23.3 umol/L in the CL structural equation. Enters CL as a power on the SCr_ref/SCr ratio (Li 2018 Table 3 footnote: CL = ... * (23.3/Scr)^theta3) so higher SCr reduces CL. No effect on V.",
-      source_name        = "Scr"
+      notes = "Li 2018 Table 1: median 28.3 umol/L, mean 23.2 umol/L (range 5.85-61.6). Reference 23.3 umol/L in the CL structural equation. Enters CL as a power on the SCr_ref/SCr ratio (Li 2018 Table 3 footnote: CL = ... * (23.3/Scr)^theta3) so higher SCr reduces CL. No effect on V.",
+      source_name = "Scr"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 80L,
-    n_studies        = 1L,
-    age_range        = "PNA 4-126 days (median 24); GA 25.7-41.1 weeks at birth; PMA 29-47.1 weeks",
-    age_median       = "PNA 24 days; PMA 40 weeks",
-    weight_range     = "1.4-5.6 kg",
-    weight_median    = "2.74 kg",
-    sex_female_pct   = 32.5,
-    race_ethnicity   = "Chinese (single-center cohort at Shanghai Children's Hospital, Shanghai Jiao Tong University)",
-    disease_state    = "Critically ill neonates in the neonatal ICU; 59% preterm; 57% with respiratory tract infections. Patients with extracorporeal membrane oxygenation or continuous renal replacement therapy were excluded.",
-    dose_range       = "Intravenous vancomycin 10-15 mg/kg every 8 h (q8h) or every 12 h (q12h) administered as a 2-h infusion per local protocols.",
-    regions          = "China (Shanghai)",
-    renal_function   = "Serum creatinine median 28.3 umol/L (range 5.85-61.6); BUN median 4.1 mmol/L (range 0.4-28.5); albumin median 32 g/L (range 21.6-46.8).",
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
+    age_range = "PNA 4-126 days (median 24); GA 25.7-41.1 weeks at birth; PMA 29-47.1 weeks",
+    age_median = "PNA 24 days; PMA 40 weeks",
+    weight_range = "1.4-5.6 kg",
+    weight_median = "2.74 kg",
+    sex_female_pct = 32.5,
+    race_ethnicity = "Chinese (single-center cohort at Shanghai Children's Hospital, Shanghai Jiao Tong University)",
+    disease_state = "Critically ill neonates in the neonatal ICU; 59% preterm; 57% with respiratory tract infections. Patients with extracorporeal membrane oxygenation or continuous renal replacement therapy were excluded.",
+    dose_range = "Intravenous vancomycin 10-15 mg/kg every 8 h (q8h) or every 12 h (q12h) administered as a 2-h infusion per local protocols.",
+    regions = "China (Shanghai)",
+    renal_function = "Serum creatinine median 28.3 umol/L (range 5.85-61.6); BUN median 4.1 mmol/L (range 0.4-28.5); albumin median 32 g/L (range 21.6-46.8).",
     n_concentrations = 165L,
-    notes            = "Patient characteristics from Li 2018 Table 1 (January 2013 to December 2016 enrolment). Sampling design: peak 1 h after end of 2-h infusion and trough half an hour before the next dose, both obtained after at least four repeated doses (75 trough and 90 peak observations). Modelling done in NONMEM 7.4 with FOCE-I (eta-eps interaction). Volume-of-distribution IIV had RSE > 50% with the sparse peak/trough design and was not estimated."
+    notes = "Patient characteristics from Li 2018 Table 1 (January 2013 to December 2016 enrolment). Sampling design: peak 1 h after end of 2-h infusion and trough half an hour before the next dose, both obtained after at least four repeated doses (75 trough and 90 peak observations). Modelling done in NONMEM 7.4 with FOCE-I (eta-eps interaction). Volume-of-distribution IIV had RSE > 50% with the sparse peak/trough design and was not estimated."
   )
 
   ini({

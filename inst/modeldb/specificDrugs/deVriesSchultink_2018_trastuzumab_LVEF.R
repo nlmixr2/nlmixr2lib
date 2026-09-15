@@ -43,61 +43,61 @@ deVriesSchultink_2018_trastuzumab_LVEF <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "cardiac damage", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "cardiac damage", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Inherited from Bruno 2005: power effect on central volume V with exponent 0.556, reference 70 kg. No retained WT effect on linear CL in Bruno 2005's final model.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline value. Inherited from Bruno 2005: power effect on central volume V with exponent 0.556, reference 70 kg. No retained WT effect on linear CL in Bruno 2005's final model.",
+      source_name = "WT"
     ),
     HER2_ECD = list(
-      description        = "Baseline serum HER2 shed extracellular domain (ECD) concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum HER2 shed extracellular domain (ECD) concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Inherited from Bruno 2005: power effects on linear CL (exponent 0.041) and on V (exponent 0.105), reference 8.23 ng/mL. ECD is capped at 200 ng/mL inside the model() block before the power law is applied, following Bruno 2005's observation that ECD levels above 200 ng/mL did not drive further increases in clearance. The de Vries Schultink 2018 cohort comprised early-breast-cancer patients (vs Bruno 2005's MBC cohort); ECD distribution in that cohort is not tabulated and is taken from Bruno 2005 for the purpose of reproducing the Bruno 2005-derived typical trastuzumab profile.",
-      source_name        = "ECD"
+      notes = "Time-fixed baseline. Inherited from Bruno 2005: power effects on linear CL (exponent 0.041) and on V (exponent 0.105), reference 8.23 ng/mL. ECD is capped at 200 ng/mL inside the model() block before the power law is applied, following Bruno 2005's observation that ECD levels above 200 ng/mL did not drive further increases in clearance. The de Vries Schultink 2018 cohort comprised early-breast-cancer patients (vs Bruno 2005's MBC cohort); ECD distribution in that cohort is not tabulated and is taken from Bruno 2005 for the purpose of reproducing the Bruno 2005-derived typical trastuzumab profile.",
+      source_name = "ECD"
     ),
     MET_GE4 = list(
-      description        = "Indicator of baseline number of metastatic sites >= 4",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator of baseline number of metastatic sites >= 4",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fewer than four metastatic sites at baseline)",
-      notes              = "Inherited from Bruno 2005: multiplicative-additive effect on linear CL: CL_typ = CL_pop * (1 + 0.221 * MET_GE4). For the de Vries Schultink 2018 early-breast-cancer cohort this covariate is effectively 0 for all patients (no metastatic disease at the time of adjuvant trastuzumab treatment), but the parameter is retained to keep the PK forcing function consistent with the registered Bruno 2005 trastuzumab model.",
-      source_name        = "MET"
+      notes = "Inherited from Bruno 2005: multiplicative-additive effect on linear CL: CL_typ = CL_pop * (1 + 0.221 * MET_GE4). For the de Vries Schultink 2018 early-breast-cancer cohort this covariate is effectively 0 for all patients (no metastatic disease at the time of adjuvant trastuzumab treatment), but the parameter is retained to keep the PK forcing function consistent with the registered Bruno 2005 trastuzumab model.",
+      source_name = "MET"
     ),
     TROPONIN_T_MAX = list(
-      description        = "Peak post-anthracycline high-sensitive serum troponin T concentration",
-      units              = "ng/L",
-      type               = "continuous",
+      description = "Peak post-anthracycline high-sensitive serum troponin T concentration",
+      units = "ng/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (a determined historical scalar by the time the LVEF observation period begins). Power covariate effect on EC50 with exponent -1.16, median-centered at 18 ng/L: EC50_i = EC50_pop * (TROPONIN_T_MAX / 18)^(-1.16). A higher peak troponin T lowers EC50, i.e. increases sensitivity to trastuzumab-induced LVEF decline. Per de Vries Schultink 2018 covariate-effect equation and Table 2: a TROPONIN_T_MAX of 31 ng/L is associated with a twofold lower EC50 relative to the cohort-median patient. Inclusion of TROPONIN_T_MAX reduced the EC50 inter-individual variability from 98.0% in the base model to 82.9% (15.1% of EC50 IIV explained). TROPONIN_T_MAX is the per-subject output peak from the companion `deVriesSchultink_2018_anthracycline_troponinT.R` K-PD model.",
-      source_name        = "TRPmax"
+      notes = "Time-fixed per subject (a determined historical scalar by the time the LVEF observation period begins). Power covariate effect on EC50 with exponent -1.16, median-centered at 18 ng/L: EC50_i = EC50_pop * (TROPONIN_T_MAX / 18)^(-1.16). A higher peak troponin T lowers EC50, i.e. increases sensitivity to trastuzumab-induced LVEF decline. Per de Vries Schultink 2018 covariate-effect equation and Table 2: a TROPONIN_T_MAX of 31 ng/L is associated with a twofold lower EC50 relative to the cohort-median patient. Inclusion of TROPONIN_T_MAX reduced the EC50 inter-individual variability from 98.0% in the base model to 82.9% (15.1% of EC50 IIV explained). TROPONIN_T_MAX is the per-subject output peak from the companion `deVriesSchultink_2018_anthracycline_troponinT.R` K-PD model.",
+      source_name = "TRPmax"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 206L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 206L,
+    n_studies = 1L,
     n_observations = 1444L,
-    age_range      = "25-69 years",
-    age_median     = "50 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    age_range = "25-69 years",
+    age_median = "50 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 100,
     race_ethnicity = "Not explicitly tabulated in de Vries Schultink 2018; clinical-trial cohort recruited at Dutch sites (Antoni van Leeuwenhoek / NKI Amsterdam, University Medical Center Groningen).",
-    disease_state  = "HER2-positive early (stage I-III) breast cancer; LVEF-evaluable cohort (n = 206) of the parent candesartan-vs-placebo cardioprotection trial (Boekhout 2016, JAMA Oncology 2:1030-1037, doi:10.1001/jamaoncol.2016.1726). All patients had favorable cardiac history at baseline (max age 69 y; only 13% > 60 y; LVEF >= 55% at entry).",
-    dose_range     = "Adjuvant trastuzumab for 52 weeks following anthracycline therapy. Two regimens used: 3-weekly schedule (8 mg/kg loading then 6 mg/kg q3w, n = 62) and weekly schedule (4 mg/kg loading then 2 mg/kg weekly, n = 144), administered IV. Median 23 [5-46] trastuzumab cycles per subject. Patients were randomized 1:1 to receive concomitant candesartan or placebo from the first trastuzumab dose until 26 weeks after the last dose; candesartan did not affect LVEF model parameters (treatment-group covariate non-significant).",
-    regions        = "Netherlands.",
-    notes          = "Total 1444 LVEF measurements available (median 8 [2-9] per patient, 96% by MUGA scan, 4% by echocardiography). Clinically relevant LVEF decline defined as a drop below 0.45 or a 0.15 absolute decrement from baseline; 37/206 (18%) of patients experienced a clinically relevant decline during trastuzumab. Patient and measurement details from de Vries Schultink 2018 Table 1. The trastuzumab PK was simulated deterministically (Bruno 2005 fixed-effect typical values + covariates; no PK IIV); LVEF is the only observation with associated residual error and inter-individual variability."
+    disease_state = "HER2-positive early (stage I-III) breast cancer; LVEF-evaluable cohort (n = 206) of the parent candesartan-vs-placebo cardioprotection trial (Boekhout 2016, JAMA Oncology 2:1030-1037, doi:10.1001/jamaoncol.2016.1726). All patients had favorable cardiac history at baseline (max age 69 y; only 13% > 60 y; LVEF >= 55% at entry).",
+    dose_range = "Adjuvant trastuzumab for 52 weeks following anthracycline therapy. Two regimens used: 3-weekly schedule (8 mg/kg loading then 6 mg/kg q3w, n = 62) and weekly schedule (4 mg/kg loading then 2 mg/kg weekly, n = 144), administered IV. Median 23 [5-46] trastuzumab cycles per subject. Patients were randomized 1:1 to receive concomitant candesartan or placebo from the first trastuzumab dose until 26 weeks after the last dose; candesartan did not affect LVEF model parameters (treatment-group covariate non-significant).",
+    regions = "Netherlands.",
+    notes = "Total 1444 LVEF measurements available (median 8 [2-9] per patient, 96% by MUGA scan, 4% by echocardiography). Clinically relevant LVEF decline defined as a drop below 0.45 or a 0.15 absolute decrement from baseline; 37/206 (18%) of patients experienced a clinically relevant decline during trastuzumab. Patient and measurement details from de Vries Schultink 2018 Table 1. The trastuzumab PK was simulated deterministically (Bruno 2005 fixed-effect typical values + covariates; no PK IIV); LVEF is the only observation with associated residual error and inter-individual variability."
   )
 
   ini({

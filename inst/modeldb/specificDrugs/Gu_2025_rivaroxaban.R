@@ -5,18 +5,18 @@ Gu_2025_rivaroxaban <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min, NOT BSA-normalized:",
         "CRCL = [140 - AGE (years)] x WT (kg) x 0.85 (if female) / [72 x CREAT (mg/dL)]",
         "(Gu 2025 Table 1 footnote a). Enters CL/F as the power term (CRCL / 97.7)^1.53,",
@@ -26,14 +26,14 @@ Gu_2025_rivaroxaban <- function() {
         "Same raw-Cockcroft-Gault usage as Delattre_2010_amikacin.R, Chen_2023_nemonoxacin.R,",
         "Wada_2023_sparsentan.R and Shu_2024_posaconazole.R."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with non-valvular atrial fibrillation treated by radiofrequency ablation, Gu 2025 Study 2)",
-      notes              = paste(
+      notes = paste(
         "1 = healthy Chinese volunteer from the bioequivalence study (Gu 2025 Study 1, n = 36);",
         "0 = NVAF patient after radiofrequency ablation (Gu 2025 Study 2, n = 105).",
         "Gu 2025 calls this the 'morbid state' covariate and reports the two typical clearances",
@@ -42,14 +42,14 @@ Gu_2025_rivaroxaban <- function() {
         "log(6.48 / 8.35) restores the healthy-volunteer typical value, matching the canonical",
         "DIS_HEALTHY orientation used by Chen_2023_nemonoxacin.R and Galluppi_2021_ulotaront.R."
       ),
-      source_name        = "morbid state"
+      source_name = "morbid state"
     ),
     SNP_ABCB1_RS1045642_HOM = list(
-      description        = "ABCB1 rs1045642 (c.3435C>T) homozygous-variant indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 rs1045642 (c.3435C>T) homozygous-variant indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (GG or AG/CG, i.e. the pooled c.3435CC wild-type homozygotes and CT heterozygotes)",
-      notes              = paste(
+      notes = paste(
         "1 = AA genotype at rs1045642 (equivalently c.3435TT, the homozygous-variant stratum);",
         "0 = the pooled GG and AG/CG genotypes. Gu 2025 first screened rs1045642 as a four-category",
         "variable, found that only the AA stratum separated from the other three, and reclassified it",
@@ -61,206 +61,206 @@ Gu_2025_rivaroxaban <- function() {
         "(G = 0.60, A = 0.40 in Study 2, matching the Han-Chinese c.3435C frequency); the model file",
         "follows the unambiguous AA-vs-non-AA coding of the printed final-model equation, not the prose label."
       ),
-      source_name        = "AA (ABCB1 rs1045642)"
+      source_name = "AA (ABCB1 rs1045642)"
     ),
     DOSE_10MG = list(
-      description        = "10 mg rivaroxaban dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "10 mg rivaroxaban dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (15 mg reference dose level, when DOSE_20MG is also 0)",
-      notes              = paste(
+      notes = paste(
         "1 = the dose record is a 10 mg rivaroxaban dose. Relative bioavailability of the 10 mg dose",
         "group was estimated as 1.363 relative to the 15 mg reference and then FIXED because of the",
         "small 10 mg sample size (2 of 105 patients; Gu 2025 Results section 3.2 and Table 3).",
         "Paired with DOSE_20MG so that both indicators = 0 selects the 15 mg reference (F1 = 1)."
       ),
-      source_name        = "F 10mg"
+      source_name = "F 10mg"
     ),
     DOSE_20MG = list(
-      description        = "20 mg rivaroxaban dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "20 mg rivaroxaban dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (15 mg reference dose level, when DOSE_10MG is also 0)",
-      notes              = paste(
+      notes = paste(
         "1 = the dose record is a 20 mg rivaroxaban dose (all 36 healthy volunteers in Study 1 and",
         "2 of 105 patients in Study 2). Relative bioavailability 0.537 versus the 15 mg reference,",
         "estimated (%RSE 15.6; Gu 2025 Table 3). Paired with DOSE_10MG so that both indicators = 0",
         "selects the 15 mg reference (F1 = 1)."
       ),
-      source_name        = "F 20mg"
+      source_name = "F 20mg"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the forward-selection covariate step; not significant (Gu 2025 Results section 3.2). Note that sex is nonetheless an input to the Cockcroft-Gault CRCL that IS retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the forward-selection covariate step; not significant (Gu 2025 Results section 3.2). Note that sex is nonetheless an input to the Cockcroft-Gault CRCL that IS retained."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2). Age is an input to the retained Cockcroft-Gault CRCL. Cohort 31.6 +/- 8.9 years (healthy) and 64.1 +/- 8.4 years (patients)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2). Age is an input to the retained Cockcroft-Gault CRCL. Cohort 31.6 +/- 8.9 years (healthy) and 64.1 +/- 8.4 years (patients)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Weight entered the full model as an effect on the peripheral volume V3/F but did NOT meet the backward-elimination retention criterion and was removed (Gu 2025 Results section 3.2). No point estimate is published for the removed effect."
+      units = "kg",
+      type = "continuous",
+      notes = "Weight entered the full model as an effect on the peripheral volume V3/F but did NOT meet the backward-elimination retention criterion and was removed (Gu 2025 Results section 3.2). No point estimate is published for the removed effect."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     RBC = list(
       description = "Red blood cell count",
-      units       = "10^12 cells/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "10^12 cells/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     PLT = list(
       description = "Platelet count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2). No canonical register entry exists for platelet count; documented here only, since the effect was not retained."
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2). No canonical register entry exists for platelet count; documented here only, since the effect was not retained."
     ),
     GLU = list(
       description = "Plasma glucose",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a covariate in its own right; not significant (Gu 2025 Results section 3.2). Creatinine is an input to the retained Cockcroft-Gault CRCL."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a covariate in its own right; not significant (Gu 2025 Results section 3.2). Creatinine is an input to the retained Cockcroft-Gault CRCL."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     CA = list(
       description = "Serum calcium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2). No canonical register entry exists for serum calcium; documented here only, since the effect was not retained."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2). No canonical register entry exists for serum calcium; documented here only, since the effect was not retained."
     ),
     POT = list(
       description = "Serum potassium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     CPK = list(
       description = "Creatine kinase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     CONMED_PGP_INH = list(
       description = "Concomitant P-glycoprotein inhibitor coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "56 of 105 patients (53.3%) received a P-gp inhibitor (amiodarone, propafenone, or felodipine; Gu 2025 Table 1 and Discussion). Post hoc individual clearances were significantly lower in this group (t-test p = 0.046; Gu 2025 Figure 4), but the indicator was NOT retained as a covariate in the final model and no point estimate is published."
+      units = "(binary)",
+      type = "binary",
+      notes = "56 of 105 patients (53.3%) received a P-gp inhibitor (amiodarone, propafenone, or felodipine; Gu 2025 Table 1 and Discussion). Post hoc individual clearances were significantly lower in this group (t-test p = 0.046; Gu 2025 Figure 4), but the indicator was NOT retained as a covariate in the final model and no point estimate is published."
     ),
     CONMED_CYP3A4_INH = list(
       description = "Concomitant CYP3A4 inhibitor coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "6 of 105 patients (5.7%) received a CYP3A4 inhibitor (Gu 2025 Table 1). Post hoc individual clearances did not differ (t-test p = 0.877; Gu 2025 Figure 4) and the indicator was not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "6 of 105 patients (5.7%) received a CYP3A4 inhibitor (Gu 2025 Table 1). Post hoc individual clearances did not differ (t-test p = 0.877; Gu 2025 Figure 4) and the indicator was not retained in the final model."
     ),
     SNP_CYP3A4_RS2242480 = list(
       description = "CYP3A4 rs2242480 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "One of the ten genotyped SNPs screened as covariates; not significant (Gu 2025 Results section 3.2). Genotype counts in Gu 2025 Table 2."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "One of the ten genotyped SNPs screened as covariates; not significant (Gu 2025 Results section 3.2). Genotype counts in Gu 2025 Table 2."
     ),
     SNP_CYP3A4_RS2246709 = list(
       description = "CYP3A4 rs2246709 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_CYP3A4_RS3735451 = list(
       description = "CYP3A4 rs3735451 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_CYP3A5_RS776746 = list(
       description = "CYP3A5 rs776746 (CYP3A5*3) genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_ABCB1_RS1128503 = list(
       description = "ABCB1 rs1128503 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_ABCB1_RS2032582 = list(
       description = "ABCB1 rs2032582 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2). Genotype distribution departed from Hardy-Weinberg equilibrium in both studies (Gu 2025 Table 2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2). Genotype distribution departed from Hardy-Weinberg equilibrium in both studies (Gu 2025 Table 2)."
     ),
     SNP_ABCB1_RS4148738 = list(
       description = "ABCB1 rs4148738 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_ABCB1_RS4728709 = list(
       description = "ABCB1 rs4728709 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     ),
     SNP_ABCG2_RS3114018 = list(
       description = "ABCG2 rs3114018 genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened; not significant (Gu 2025 Results section 3.2)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened; not significant (Gu 2025 Results section 3.2)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 141L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 141L,
+    n_studies = 2L,
     n_observations = 1506L,
-    age_range      = "18-82 years (healthy volunteers 18-48; NVAF patients 34-82)",
-    age_median     = "31.6 +/- 8.9 years (healthy volunteers); 64.1 +/- 8.4 years (patients)",
-    weight_range   = "42.0-107.0 kg",
-    weight_median  = "64.2 +/- 5.8 kg (healthy volunteers); 67.4 +/- 11.4 kg (patients)",
+    age_range = "18-82 years (healthy volunteers 18-48; NVAF patients 34-82)",
+    age_median = "31.6 +/- 8.9 years (healthy volunteers); 64.1 +/- 8.4 years (patients)",
+    weight_range = "42.0-107.0 kg",
+    weight_median = "64.2 +/- 5.8 kg (healthy volunteers); 67.4 +/- 11.4 kg (patients)",
     sex_female_pct = 34.8,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy volunteers (bioequivalence study) pooled with patients treated by radiofrequency ablation for non-valvular atrial fibrillation",
-    dose_range     = "Single oral 20 mg (healthy volunteers, Study 1); 10, 15, or 20 mg once daily orally (patients, Study 2)",
-    regions        = "China (Huzhou Central Hospital)",
+    disease_state = "Healthy volunteers (bioequivalence study) pooled with patients treated by radiofrequency ablation for non-valvular atrial fibrillation",
+    dose_range = "Single oral 20 mg (healthy volunteers, Study 1); 10, 15, or 20 mg once daily orally (patients, Study 2)",
+    regions = "China (Huzhou Central Hospital)",
     renal_function = "Creatinine clearance 33.6-161 mL/min (Cockcroft-Gault); 42 patients with normal renal function, 50 with mild and 13 with moderate impairment (Gu 2025 Figure 3)",
-    co_medication  = "P-glycoprotein inhibitors in 56/105 patients (53.3%); CYP3A4 inhibitors in 6/105 (5.7%)",
-    notes          = paste(
+    co_medication = "P-glycoprotein inhibitors in 56/105 patients (53.3%); CYP3A4 inhibitors in 6/105 (5.7%)",
+    notes = paste(
       "Study 1 (CTR20202135): single-centre, single-dose, randomized, two-formulation, four-period",
       "crossover bioequivalence study in 36 healthy Chinese volunteers dosed 20 mg fasted, 18 samples",
       "per period over 48 h; only the reference-formulation (Xarelto) periods contributed the 1,296",

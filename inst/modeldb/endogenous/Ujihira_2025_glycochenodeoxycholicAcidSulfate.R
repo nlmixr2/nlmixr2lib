@@ -27,35 +27,45 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Checked against Ujihira 2025 Eqs 1-4 and Figure 2.
   compartmentData <- list(
-    central      = list(analyte = "glycochenodeoxycholic acid 3-O-sulfate", units = "umol", specimen = "plasma", verified = TRUE),
-    urine        = list(analyte = "glycochenodeoxycholic acid 3-O-sulfate", units = "umol", specimen = "urine",  verified = TRUE),
-    central_rif  = list(analyte = "rifampicin",  units = "umol", specimen = "plasma", verified = TRUE),
-    depot_prob   = list(analyte = "probenecid",  units = "umol", specimen = "administration site", verified = TRUE),
-    central_prob = list(analyte = "probenecid",  units = "umol", specimen = "plasma", verified = TRUE)
+    central = list(
+      analyte = "glycochenodeoxycholic acid 3-O-sulfate",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    urine = list(
+      analyte = "glycochenodeoxycholic acid 3-O-sulfate",
+      units = "umol",
+      specimen = "urine",
+      verified = TRUE
+    ),
+    central_rif = list(analyte = "rifampicin", units = "umol", specimen = "plasma", verified = TRUE),
+    depot_prob = list(analyte = "probenecid", units = "umol", specimen = "administration site", verified = TRUE),
+    central_prob = list(analyte = "probenecid", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_PROBENECID = list(
-      description        = "Concomitant probenecid co-administration indicator (1 = subject is within a probenecid dosing period; 0 = no probenecid). Gates the concentration-independent fold reduction X in GCDCA-S hepatobiliary clearance that Ujihira 2025 estimated for probenecid's weak OATP1B3 inhibition.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant probenecid co-administration indicator (1 = subject is within a probenecid dosing period; 0 = no probenecid). Gates the concentration-independent fold reduction X in GCDCA-S hepatobiliary clearance that Ujihira 2025 estimated for probenecid's weak OATP1B3 inhibition.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no probenecid co-administration)",
-      notes              = "Time-varying within subject. Probenecid regimen in the source studies (Ujihira 2025 Table 1, studies #2 and #3, adopted from Willemin et al. 2021): 500 mg orally at 6 pm and 11 pm on day 0, then 500 mg at 7 am, 1 pm, 6 pm and 11 pm on days 1 to 7; GCDCA-S plasma and urine sampling begins on day 1. The indicator modifies ONLY the hepatobiliary clearance arm cl_nonren, via the multiplicative factor (1 + e_prob_clh * CONMED_PROBENECID) = 1 / X. It deliberately does NOT gate the renal-clearance inhibition, which is concentration-driven through the probenecid PK model and Ki,u,OAT3 and therefore switches itself off whenever probenecid is not dosed. Set to 1 from the first probenecid dose through the end of the probenecid-phase sampling window; the paper reports no lag or washout term. Rifampicin needs no equivalent indicator because its only effect is the concentration-driven OATP1B3 term."
+      notes = "Time-varying within subject. Probenecid regimen in the source studies (Ujihira 2025 Table 1, studies #2 and #3, adopted from Willemin et al. 2021): 500 mg orally at 6 pm and 11 pm on day 0, then 500 mg at 7 am, 1 pm, 6 pm and 11 pm on days 1 to 7; GCDCA-S plasma and urine sampling begins on day 1. The indicator modifies ONLY the hepatobiliary clearance arm cl_nonren, via the multiplicative factor (1 + e_prob_clh * CONMED_PROBENECID) = 1 / X. It deliberately does NOT gate the renal-clearance inhibition, which is concentration-driven through the probenecid PK model and Ki,u,OAT3 and therefore switches itself off whenever probenecid is not dosed. Set to 1 from the first probenecid dose through the end of the probenecid-phase sampling window; the paper reports no lag or washout term. Rifampicin needs no equivalent indicator because its only effect is the concentration-driven OATP1B3 term."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 3L,
-    age_range      = "20-71 years across the three model-development studies (study #1 50-71; study #2 48-58; study #3 20-55).",
-    weight_range   = "(not extracted; Ujihira 2025 Table 1 does not tabulate body weight, and no allometric or weight covariate appears in the final model.)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 3L,
+    age_range = "20-71 years across the three model-development studies (study #1 50-71; study #2 48-58; study #3 20-55).",
+    weight_range = "(not extracted; Ujihira 2025 Table 1 does not tabulate body weight, and no allometric or weight covariate appears in the final model.)",
     sex_female_pct = 37.5,
     race_ethnicity = "White in all three model-development studies (Ujihira 2025 Table 1).",
-    disease_state  = "Healthy volunteers. GCDCA-S was monitored as an endogenous biomarker of hepatic OATP1B3 and renal OAT3 activity during transporter drug-drug-interaction studies.",
-    dose_range     = "Endogenous biomarker (no exogenous GCDCA-S dose). Perpetrators: rifampicin single 600 mg oral dose (study #1); probenecid 500 mg orally four times daily (QID) on days 1 to 7, preceded by two loading doses on day 0 (studies #2 and #3).",
-    regions        = "(not extracted; Ujihira 2025 Table 1 reports ethnicity but not study region for the three development studies.)",
-    notes          = "Pooled from three healthy-volunteer crossover studies, each with a control occasion and an inhibitor occasion: study #1 Tatosian et al. 2021 (n = 6; 3 male, 3 female; microdose probe cocktail +/- rifampicin), study #2 Willemin et al. 2021 (n = 6; 6 female; +/- probenecid), study #3 unpublished data of the same design as study #2 (n = 12; 12 male). Sex percentage is 9 female of 24. 430 GCDCA-S plasma samples and 175 GCDCA-S urine samples were fit simultaneously with 153 perpetrator plasma samples in Monolix 2024R2. Observed GCDCA-S plasma baseline was approximately 80 nmol/L with high between-subject (CV 34-69%) and within-subject diurnal (CV 34-43%) variability. Neither a diurnal-fluctuation function (six forms tested, Table S2) nor a sex effect on ksyn (Table S3) improved the fit, so neither is in the final model. The model was verified against four independent studies (Table S1) not used in fitting."
+    disease_state = "Healthy volunteers. GCDCA-S was monitored as an endogenous biomarker of hepatic OATP1B3 and renal OAT3 activity during transporter drug-drug-interaction studies.",
+    dose_range = "Endogenous biomarker (no exogenous GCDCA-S dose). Perpetrators: rifampicin single 600 mg oral dose (study #1); probenecid 500 mg orally four times daily (QID) on days 1 to 7, preceded by two loading doses on day 0 (studies #2 and #3).",
+    regions = "(not extracted; Ujihira 2025 Table 1 reports ethnicity but not study region for the three development studies.)",
+    notes = "Pooled from three healthy-volunteer crossover studies, each with a control occasion and an inhibitor occasion: study #1 Tatosian et al. 2021 (n = 6; 3 male, 3 female; microdose probe cocktail +/- rifampicin), study #2 Willemin et al. 2021 (n = 6; 6 female; +/- probenecid), study #3 unpublished data of the same design as study #2 (n = 12; 12 male). Sex percentage is 9 female of 24. 430 GCDCA-S plasma samples and 175 GCDCA-S urine samples were fit simultaneously with 153 perpetrator plasma samples in Monolix 2024R2. Observed GCDCA-S plasma baseline was approximately 80 nmol/L with high between-subject (CV 34-69%) and within-subject diurnal (CV 34-43%) variability. Neither a diurnal-fluctuation function (six forms tested, Table S2) nor a sex effect on ksyn (Table S3) improved the fit, so neither is in the final model. The model was verified against four independent studies (Table S1) not used in fitting."
   )
 
   # Covariates screened by Ujihira 2025 but NOT retained in the final model.
@@ -64,9 +74,9 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested on the GCDCA-S synthesis rate ksyn as ksyn,sex = ksyn,male * (1 - SEX * COVSEX) (Supplementary Material S1 Eq. 2, with SEX = 1 for women). The estimate COVSEX = 0.065 carried an RSE of 404% and moved the objective function by only 3 points (OFV -642 -> -639, p > 0.9; Table S3), so sex was excluded from the final model despite the paper's observation that baseline GCDCA-S is higher in men."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested on the GCDCA-S synthesis rate ksyn as ksyn,sex = ksyn,male * (1 - SEX * COVSEX) (Supplementary Material S1 Eq. 2, with SEX = 1 for women). The estimate COVSEX = 0.065 carried an RSE of 404% and moved the objective function by only 3 points (OFV -642 -> -639, p > 0.9; Table S3), so sex was excluded from the final model despite the paper's observation that baseline GCDCA-S is higher in men."
     )
   )
 

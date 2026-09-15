@@ -25,30 +25,38 @@ Gosselin_2015_motesanib <- function() {
   # VM4/FM4 for M4.
   compartmentData <- list(
     depot = list(
-      analyte = "motesanib", units = "mg (apparent, i.e. amount/F)",
-      specimen = "administration site", verified = FALSE
+      analyte = "motesanib",
+      units = "mg (apparent, i.e. amount/F)",
+      specimen = "administration site",
+      verified = FALSE
     ),
     central = list(
-      analyte = "motesanib", units = "mg (apparent, i.e. amount/F)",
-      specimen = "plasma", verified = FALSE
+      analyte = "motesanib",
+      units = "mg (apparent, i.e. amount/F)",
+      specimen = "plasma",
+      verified = FALSE
     ),
     peripheral1 = list(
-      analyte = "motesanib", units = "mg (apparent, i.e. amount/F)",
-      specimen = "plasma", verified = FALSE
+      analyte = "motesanib",
+      units = "mg (apparent, i.e. amount/F)",
+      specimen = "plasma",
+      verified = FALSE
     ),
     central_m4 = list(
-      analyte = "M4", units = "mg motesanib-equivalents (apparent, i.e. amount/FM4)",
-      specimen = "plasma", verified = FALSE
+      analyte = "M4",
+      units = "mg motesanib-equivalents (apparent, i.e. amount/FM4)",
+      specimen = "plasma",
+      verified = FALSE
     )
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Baseline serum total albumin, the most influential covariate on motesanib CL/F and also a covariate on Vc/F",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum total albumin, the most influential covariate on motesanib CL/F and also a covariate on Vc/F",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered as a power function centred at 39 g/L on both CL/F and Vc/F",
         "(Gosselin 2015 Table 3 'ALB on CL/F = (ALB/39)^0.971' and 'ALB on Vc/F",
         "= (ALB/39)^1.66'). Methods 'Population PK Modeling of Motesanib':",
@@ -65,14 +73,14 @@ Gosselin_2015_motesanib <- function() {
         "notes that predicted clearance is at least 22% lower in patients with",
         "hypoalbuminemia (< 34 g/L) than in patients with albumin 34-54 g/L."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase, a covariate on motesanib Vc/F",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase, a covariate on motesanib Vc/F",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered as a power function centred at 101 U/L on Vc/F (Gosselin 2015",
         "Table 3 'ALP on Vc/F = (ALP/101)^-0.217'). The negative exponent",
         "matches the exploratory finding of 'a negative trend between EBEs of",
@@ -84,14 +92,14 @@ Gosselin_2015_motesanib <- function() {
         "was fitted to 445 patients. ALP was missing for 1 patient and was",
         "imputed to the median before modelling (Methods 'Data Assembly')."
       ),
-      source_name        = "ALP"
+      source_name = "ALP"
     ),
     WT = list(
-      description        = "Baseline body weight, a covariate on motesanib Vc/F",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight, a covariate on motesanib Vc/F",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered as a power function centred at 68.3 kg on Vc/F (Gosselin 2015",
         "Table 3 'WT on Vc/F = (WT/68.3)^0.612'). This is an ESTIMATED",
         "exponent, not a fixed allometric 1: the paper's stepwise covariate",
@@ -106,14 +114,14 @@ Gosselin_2015_motesanib <- function() {
         "weight, age, ALP, AST, albumin (ALB), serum creatinine, and total",
         "bilirubin')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator; a covariate on motesanib CL/F and on M4 VM4/FM4",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator; a covariate on motesanib CL/F and on M4 VM4/FM4",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Applied as a multiplicative factor on the male",
         "typical value in both places: motesanib CL/F is 0.882-fold in women",
         "(Gosselin 2015 Table 3 'Sex on CL/F = 0.882 for women'; the male",
@@ -128,14 +136,14 @@ Gosselin_2015_motesanib <- function() {
         "the reported female terminal half-life of 6.20 h. The cohort was 232",
         "men / 219 women (Table 2)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat, high-calorie meal indicator at the dosing occasion; the paper's 'diet' covariate on the motesanib absorption rate constant and lag time",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat, high-calorie meal indicator at the dosing occasion; the paper's 'diet' covariate on the motesanib absorption rate constant and lag time",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "1 = dose taken 5 minutes after a standardized high-fat, high-caloric",
         "breakfast; 0 = fasted. Gosselin 2015 Methods 'Clinical Studies': 'In",
         "most studies, motesanib was taken under fasted conditions (no food or",
@@ -155,14 +163,14 @@ Gosselin_2015_motesanib <- function() {
         "(9.84 -> 0.241 1/h). Dosing was assumed to be fasted when diet status",
         "was missing (Methods 'Data Assembly')."
       ),
-      source_name        = "DIET"
+      source_name = "DIET"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator; a covariate on M4 apparent clearance",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator; a covariate on M4 apparent clearance",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = paste(
+      notes = paste(
         "1 = Asian, 0 = non-Asian. Applied as a multiplicative factor on the",
         "non-Asian typical value of CLM4/FM4 (Gosselin 2015 Table 3 'Asian on",
         "CLM4/FM4 = x 1.4 for Asian'), i.e. M4 apparent clearance is 1.4-fold",
@@ -173,14 +181,14 @@ Gosselin_2015_motesanib <- function() {
         "Demographics'). Race was also tested on motesanib CL/F and Vc/F and",
         "on M4 VM4/FM4 but was NOT retained in those places."
       ),
-      source_name        = "ASIAN"
+      source_name = "ASIAN"
     ),
     REGI_QD = list(
-      description        = "Once-daily dosing-regimen indicator; a covariate on both M4 disposition parameters, with twice-daily dosing as the reference",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Once-daily dosing-regimen indicator; a covariate on both M4 disposition parameters, with twice-daily dosing as the reference",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (twice-daily, every-12-hour dosing)",
-      notes              = paste(
+      notes = paste(
         "1 = the patient's motesanib regimen is once daily (every 24 h),",
         "0 = twice daily (every 12 h). Gosselin 2015 makes TWICE-daily the",
         "reference and reports both effects 'for once-daily dose' (Table 3",
@@ -205,14 +213,14 @@ Gosselin_2015_motesanib <- function() {
         "empirical correction and NOT a mechanistic property; do not use this",
         "model to extrapolate to dosing intervals other than q12h and q24h."
       ),
-      source_name        = "FREQ"
+      source_name = "FREQ"
     ),
     OCC = list(
-      description        = "Occasion index for inter-occasion variability: 1 = the first week of treatment, 2 = the remaining weeks",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for inter-occasion variability: 1 = the first week of treatment, 2 = the remaining weeks",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Gosselin 2015 Results 'Population PK Modeling of M4': the retained M4",
         "model carried 'IOV on all PK parameters with 2 occasions (ie, one for",
         "the first week and another for the remaining weeks)'. The motesanib",
@@ -229,7 +237,7 @@ Gosselin_2015_motesanib <- function() {
         "Chen_2023_nemonoxacin.R, because rxode2 cannot simulate the",
         "'eta ~ var | occ' multi-level IOV syntax."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -240,64 +248,64 @@ Gosselin_2015_motesanib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on motesanib CL/F and on M4 CLM4/FM4 (a 'small negative trend' was seen against both sets of EBEs) but not retained at P < .01. Median 59.0 y (5th-95th percentiles 38.0-75.0), Gosselin 2015 Table 2."
+      units = "years",
+      type = "continuous",
+      notes = "Tested on motesanib CL/F and on M4 CLM4/FM4 (a 'small negative trend' was seen against both sets of EBEs) but not retained at P < .01. Median 59.0 y (5th-95th percentiles 38.0-75.0), Gosselin 2015 Table 2."
     ),
     CREAT = list(
       description = "Serum creatinine at baseline",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Tested on motesanib CL/F and Vc/F and on both M4 parameters but not retained. Median 0.8 mg/dL (5th-95th percentiles 0.5-1.3), Gosselin 2015 Table 2; 6 patients had aberrant values that were imputed to the median."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Tested on motesanib CL/F and Vc/F and on both M4 parameters but not retained. Median 0.8 mg/dL (5th-95th percentiles 0.5-1.3), Gosselin 2015 Table 2; 6 patients had aberrant values that were imputed to the median."
     ),
     CRCL = list(
       description = "Creatinine clearance at baseline",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Reported in the demographics table as a renal-function descriptor and screened graphically, but not retained in either final model. Median 84.0 mL/min (5th-95th percentiles 47.0-153.1), Gosselin 2015 Table 2."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Reported in the demographics table as a renal-function descriptor and screened graphically, but not retained in either final model. Median 84.0 mL/min (5th-95th percentiles 47.0-153.1), Gosselin 2015 Table 2."
     ),
     BILI = list(
       description = "Total bilirubin at baseline",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested on motesanib CL/F and on M4 CLM4/FM4 (a 'small negative trend' against motesanib CL/F EBEs) but not retained. Median 8.55 umol/L (5th-95th percentiles 4.0-18.8), Gosselin 2015 Table 2; 6 patients had aberrant values that were imputed to the median."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested on motesanib CL/F and on M4 CLM4/FM4 (a 'small negative trend' against motesanib CL/F EBEs) but not retained. Median 8.55 umol/L (5th-95th percentiles 4.0-18.8), Gosselin 2015 Table 2; 6 patients had aberrant values that were imputed to the median."
     ),
     AST = list(
       description = "Aspartate aminotransferase at baseline",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested on motesanib CL/F and on M4 CLM4/FM4 but not retained. Median 22.0 U/L (5th-95th percentiles 12.5-55.0), Gosselin 2015 Table 2."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested on motesanib CL/F and on M4 CLM4/FM4 but not retained. Median 22.0 U/L (5th-95th percentiles 12.5-55.0), Gosselin 2015 Table 2."
     ),
     ALT = list(
       description = "Alanine aminotransferase at baseline",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened graphically against motesanib CL/F EBEs ('small negative trends were observed between EBEs of CL/F and age, alkaline phosphatase (ALP), alanine aminotransferase, aspartate aminotransferase (AST), and total bilirubin') but not carried into the formal NONMEM covariate analysis. Median 20.0 U/L (5th-95th percentiles 9.0-56.5), Gosselin 2015 Table 2."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened graphically against motesanib CL/F EBEs ('small negative trends were observed between EBEs of CL/F and age, alkaline phosphatase (ALP), alanine aminotransferase, aspartate aminotransferase (AST), and total bilirubin') but not carried into the formal NONMEM covariate analysis. Median 20.0 U/L (5th-95th percentiles 9.0-56.5), Gosselin 2015 Table 2."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 451L,
-    n_studies      = 8L,
-    age_range      = "5th-95th percentiles 38.0-75.0 years (median 59.0)",
-    weight_range   = "5th-95th percentiles 45.0-103.8 kg (median 67.41)",
+    species = "human",
+    n_subjects = 451L,
+    n_studies = 8L,
+    age_range = "5th-95th percentiles 38.0-75.0 years (median 59.0)",
+    weight_range = "5th-95th percentiles 45.0-103.8 kg (median 67.41)",
     sex_female_pct = 48.6,
     race_ethnicity = c(White = 61.9, Black = 3.3, Hispanic = 2.4, Asian = 31.5, Other = 0.9),
-    disease_state  = paste(
+    disease_state = paste(
       "Patients with advanced solid tumors: 246 (54.5%) non-small cell lung",
       "cancer, 49 (10.9%) breast cancer, 43 (9.5%) gastrointestinal stromal",
       "tumor, and the remainder thyroid, pancreatic, colorectal, sarcoma,",
       "kidney, neuroendocrine and other tumor types."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral motesanib 25 to 175 mg, once daily (50, 75, 100, 125 or 175 mg",
       "q24h) or twice daily (25 or 75 mg q12h), given in 28-day cycles with",
       "treatment holidays of 2 days or 1 week; plus a single oral 125 mg",
       "[14C]-labelled dose in a mass-balance study."
     ),
-    regions        = "Not stated in the publication; 102 of the 142 Asian patients (72%) were Japanese",
-    notes          = paste(
+    regions = "Not stated in the publication; 102 of the 142 Asian patients (72%) were Japanese",
+    notes = paste(
       "Baseline demographics from Gosselin 2015 Table 2 (n = 451). The 451",
       "patients are the union of the two analysis datasets: 445 patients",
       "contributed motesanib concentrations and 249 contributed M4",

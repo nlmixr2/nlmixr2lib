@@ -38,11 +38,11 @@ Hopkins_2024_amisulpride <- function() {
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer occasion index for the inter-occasion variability terms.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion index for the inter-occasion variability terms.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Study 5 dosed each subject on several single-dose periods separated by a minimum 7 day",
         "washout, plus a multiple-dose cohort, so occasion is the dosing period. The NONMEM PK",
         "control stream declares OCC in $INPUT and maps it through seven $ABBR REPLACE blocks",
@@ -50,60 +50,60 @@ Hopkins_2024_amisulpride <- function() {
         "ALAG2, ALAG3, F1, F2 and F3. Records outside the seven modelled occasions take OCC = 0,",
         "which zeroes every indicator and leaves only the IIV terms."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     FORM_SEP4199_CR10 = list(
-      description        = "1 = the dose was given as the 10 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 10 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN1 of the NONMEM control stream. Selects F1 / F2 / F3 and the Weibull dissolution pair (TKA1, TGAMA1) = (1.6536, 1.3732).",
-      source_name        = "RGN"
+      notes = "Regimen RGN1 of the NONMEM control stream. Selects F1 / F2 / F3 and the Weibull dissolution pair (TKA1, TGAMA1) = (1.6536, 1.3732).",
+      source_name = "RGN"
     ),
     FORM_SEP4199_CR25 = list(
-      description        = "1 = the dose was given as the 25 percent rate-controlling-polymer controlled-release SEP-4199 tablet under fasted conditions; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 25 percent rate-controlling-polymer controlled-release SEP-4199 tablet under fasted conditions; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN2. Fasted counterpart of FORM_SEP4199_CR25_FED. Weibull pair (0.1824, 1.1305).",
-      source_name        = "RGN"
+      notes = "Regimen RGN2. Fasted counterpart of FORM_SEP4199_CR25_FED. Weibull pair (0.1824, 1.1305).",
+      source_name = "RGN"
     ),
     FORM_SEP4199_IR = list(
-      description        = "1 = the dose was given as the immediate-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the immediate-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN3. The clinical reference formulation: the 200 and 400 mg IR tablet carried through the Phase II bipolar depression study (NCT03543410) against which the controlled-release prototypes were compared. Weibull pair (5.7466, 1.4364).",
-      source_name        = "RGN"
+      notes = "Regimen RGN3. The clinical reference formulation: the 200 and 400 mg IR tablet carried through the Phase II bipolar depression study (NCT03543410) against which the controlled-release prototypes were compared. Weibull pair (5.7466, 1.4364).",
+      source_name = "RGN"
     ),
     FORM_SEP4199_SOLUTION = list(
-      description        = "1 = the dose was given as an oral solution of SEP-4199; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as an oral solution of SEP-4199; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Regimen RGN4, used by the Study 3 single-dose and Study 4 timed-aliquot PET cohorts. The D2",
         "receptor occupancy control stream sets the Weibull dissolution term WB = 1 for this regimen",
         "(IF (RGN.EQ.4) WB = 1) because a solution has no solid-state dissolution step; the PK control",
         "stream instead carries a nominal fast Weibull pair (7.98, 0.905) that reaches WB > 0.95 within",
         "about 30 min. This model follows the D2 occupancy script and switches the term off for solution."
       ),
-      source_name        = "RGN"
+      source_name = "RGN"
     ),
     FORM_SEP4199_CR15 = list(
-      description        = "1 = the dose was given as the 15 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 15 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN5. Weibull pair (0.3276, 1.0949).",
-      source_name        = "RGN"
+      notes = "Regimen RGN5. Weibull pair (0.3276, 1.0949).",
+      source_name = "RGN"
     ),
     FORM_SEP4199_CR25_FED = list(
-      description        = "1 = the dose was given as the 25 percent rate-controlling-polymer controlled-release SEP-4199 tablet with food; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 25 percent rate-controlling-polymer controlled-release SEP-4199 tablet with food; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Regimen RGN6, the fed arm of the 25 percent CR tablet. Its Weibull pair (1.1305, 5.7466) was",
         "not fitted to an in vitro dissolution curve: the supplement states that the parameters for the",
         "25 percent CR tablet with food and for the solution were interpolated from the other fits and",
@@ -111,54 +111,54 @@ Hopkins_2024_amisulpride <- function() {
         "the TGAMA1 of RGN3, so this pair should be read as an operational interpolation rather than an",
         "independent dissolution measurement."
       ),
-      source_name        = "RGN"
+      source_name = "RGN"
     ),
     FORM_SEP4199_MUPS30 = list(
-      description        = "1 = the dose was given as the multiple-unit pellet system (MUPS) SEP-4199 capsule containing 30 percent polymer; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the multiple-unit pellet system (MUPS) SEP-4199 capsule containing 30 percent polymer; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN7. Weibull pair (0.1800, 0.6988). Belongs to the capsule dosage-form class, which carries its own KA1 / KA2 / KA3 set.",
-      source_name        = "RGN"
+      notes = "Regimen RGN7. Weibull pair (0.1800, 0.6988). Belongs to the capsule dosage-form class, which carries its own KA1 / KA2 / KA3 set.",
+      source_name = "RGN"
     ),
     FORM_SEP4199_MUPS225 = list(
-      description        = "1 = the dose was given as the multiple-unit pellet system (MUPS) SEP-4199 capsule containing 22.5 percent polymer; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the multiple-unit pellet system (MUPS) SEP-4199 capsule containing 22.5 percent polymer; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN8. Weibull pair (0.6870, 1.0411). Capsule dosage-form class.",
-      source_name        = "RGN"
+      notes = "Regimen RGN8. Weibull pair (0.6870, 1.0411). Capsule dosage-form class.",
+      source_name = "RGN"
     ),
     FORM_SEP4199_CR20 = list(
-      description        = "1 = the dose was given as the 20 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 20 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN9. Weibull pair (0.8457, 0.5496); Table 5 of the supplement rounds TKA1 to 0.80 while the executed control stream carries 0.8457.",
-      source_name        = "RGN"
+      notes = "Regimen RGN9. Weibull pair (0.8457, 0.5496); Table 5 of the supplement rounds TKA1 to 0.80 while the executed control stream carries 0.8457.",
+      source_name = "RGN"
     ),
     FORM_SEP4199_CR40 = list(
-      description        = "1 = the dose was given as the 40 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was given as the 40 percent rate-controlling-polymer controlled-release SEP-4199 tablet; 0 = any of the other nine study formulations.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Regimen RGN10. Weibull pair (0.1411, 0.7764); Table 5 of the supplement rounds TGAMA1 to 0.70 while the executed control stream carries 0.7764.",
-      source_name        = "RGN"
+      notes = "Regimen RGN10. Weibull pair (0.1411, 0.7764); Table 5 of the supplement rounds TGAMA1 to 0.70 while the executed control stream carries 0.7764.",
+      source_name = "RGN"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex, female indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "SEX is carried in the NONMEM $INPUT record of both control streams and is tabulated per study in Table 1 of the paper, but it is not referenced in $PK or $DES of either script and no sex effect is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "SEX is carried in the NONMEM $INPUT record of both control streams and is tabulated per study in Table 1 of the paper, but it is not referenced in $PK or $DES of either script and no sex effect is reported."
     ),
     FED = list(
       description = "Fed-versus-fasted indicator for the dosing occasion.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "FED is carried in the NONMEM $INPUT record but is not referenced in $PK or $DES. The single fed",
         "arm of the study (the 25 percent CR tablet with food) is instead carried structurally as its own",
         "regimen, FORM_SEP4199_CR25_FED, with a distinct F1 / F2 / F3 triple and Weibull pair, so the",
@@ -169,9 +169,24 @@ Hopkins_2024_amisulpride <- function() {
   )
 
   compartmentData <- list(
-    depot1 = list(analyte = "amisulpride enantiomers (total)", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2 = list(analyte = "amisulpride enantiomers (total)", units = "mg", specimen = "administration site", verified = TRUE),
-    depot3 = list(analyte = "amisulpride enantiomers (total)", units = "mg", specimen = "administration site", verified = TRUE),
+    depot1 = list(
+      analyte = "amisulpride enantiomers (total)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    depot2 = list(
+      analyte = "amisulpride enantiomers (total)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    depot3 = list(
+      analyte = "amisulpride enantiomers (total)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
     central = list(analyte = "amisulpride enantiomers (total)", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "amisulpride enantiomers (total)", units = "mg", specimen = "plasma", verified = TRUE),
     # The two brain states of the Distribution Model are concentration-like, not
@@ -185,15 +200,15 @@ Hopkins_2024_amisulpride <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 181L,
-    n_studies      = 6L,
-    age_range      = "32-39 years (per-study means; Table 1)",
-    disease_state  = "healthy volunteers",
+    species = "human",
+    n_subjects = 181L,
+    n_studies = 6L,
+    age_range = "32-39 years (per-study means; Table 1)",
+    disease_state = "healthy volunteers",
     race_ethnicity = c(White = 68, Black = 19, Other = 14),
-    dose_range     = "25-700 mg single oral doses, plus 200 and 400 mg once daily for 7 days",
-    regions        = "UK (Studies 1, 3, 4, 5 conducted under MHRA Clinical Trial Authorization)",
-    notes          = paste(
+    dose_range = "25-700 mg single oral doses, plus 200 and 400 mg once daily for 7 days",
+    regions = "UK (Studies 1, 3, 4, 5 conducted under MHRA Clinical Trial Authorization)",
+    notes = paste(
       "Table 1 of the paper gives baseline demographics for the four PET / translational-pharmaceutics",
       "studies (Study 1 N = 6, Study 3 N = 11, Study 4 N = 11, Study 5 Part 1 N = 17 and Part 2 N = 18,",
       "imaging arm N = 37). Supplement Table 1 lists all six studies pooled for the PK/PD analysis,",

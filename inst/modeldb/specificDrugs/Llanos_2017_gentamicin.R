@@ -8,56 +8,56 @@ Llanos_2017_gentamicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Reference 70 kg. Drives the FFM allometric exponent of 0.75 inside GFRmat (CL pathway) and the FFM/70 multipliers on V1, V2 (linear) and Q (^0.75). Fat-free mass should be precomputed via the Janmahasatian et al. 2005 formula from total body weight, height, and sex.",
-      source_name        = "FFM"
+      notes = "Time-varying. Reference 70 kg. Drives the FFM allometric exponent of 0.75 inside GFRmat (CL pathway) and the FFM/70 multipliers on V1, V2 (linear) and Q (^0.75). Fat-free mass should be precomputed via the Janmahasatian et al. 2005 formula from total body weight, height, and sex.",
+      source_name = "FFM"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. The Llanos 2017 paper uses postmenstrual age in WEEKS in its Rhodin et al. 2009 maturation function (TM50 = 55.4 weeks, Hill = 3.33). Canonical PAGE in nlmixr2lib is in months, so the model converts internally as PMA_weeks = PAGE * 4.35 before evaluating the Hill equation.",
-      source_name        = "PMA"
+      notes = "Time-varying. The Llanos 2017 paper uses postmenstrual age in WEEKS in its Rhodin et al. 2009 maturation function (TM50 = 55.4 weeks, Hill = 3.33). Canonical PAGE in nlmixr2lib is in months, so the model converts internally as PMA_weeks = PAGE * 4.35 before evaluating the Hill equation.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Observed serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Observed serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient measurement. Per Llanos 2017 Methods, values below the lowest reportable assay limit (< 30 umol/L) were imputed to the age- and sex-expected mean creatinine (CREAT_REF) in the model-building dataset; downstream users may apply the same imputation. Effect on CL is the inverse power model (CREAT_REF / CREAT)^0.55, so a higher individual creatinine reduces CL.",
-      source_name        = "Scri"
+      notes = "Per-patient measurement. Per Llanos 2017 Methods, values below the lowest reportable assay limit (< 30 umol/L) were imputed to the age- and sex-expected mean creatinine (CREAT_REF) in the model-building dataset; downstream users may apply the same imputation. Effect on CL is the inverse power model (CREAT_REF / CREAT)^0.55, so a higher individual creatinine reduces CL.",
+      source_name = "Scri"
     ),
     CREAT_REF = list(
-      description        = "Age- and sex-expected mean serum creatinine for an individual, computed externally per Ceriotti et al. 2008 (Clin Chem 54:559-566)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Age- and sex-expected mean serum creatinine for an individual, computed externally per Ceriotti et al. 2008 (Clin Chem 54:559-566)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-patient reference value used to standardize CREAT. Time-varying through age dependence. The Ceriotti 2008 reference table is age- and (in adolescents) sex-stratified; the user precomputes CREAT_REF externally and supplies it as a covariate column. Same units as CREAT so the ratio is dimensionless.",
-      source_name        = "Scrmean"
+      notes = "Per-patient reference value used to standardize CREAT. Time-varying through age dependence. The Ceriotti 2008 reference table is age- and (in adolescents) sex-stratified; the user precomputes CREAT_REF externally and supplies it as a covariate column. Same units as CREAT so the ratio is dimensionless.",
+      source_name = "Scrmean"
     )
   )
 
   population <- list(
-    n_subjects     = 423L,
-    n_studies      = 1L,
-    age_range      = "Postnatal age 0.2-18.2 years (median 5.18 years); postmenstrual age 50.9-985 weeks (median 309 weeks)",
-    weight_range   = "Total body weight 4.8-102.8 kg (median 19.4 kg); fat-free mass 3.4-72.6 kg (median 15.7 kg)",
+    n_subjects = 423L,
+    n_studies = 1L,
+    age_range = "Postnatal age 0.2-18.2 years (median 5.18 years); postmenstrual age 50.9-985 weeks (median 309 weeks)",
+    weight_range = "Total body weight 4.8-102.8 kg (median 19.4 kg); fat-free mass 3.4-72.6 kg (median 15.7 kg)",
     sex_female_pct = 48.2,
     race_ethnicity = "Not reported",
-    disease_state  = "Pediatric oncology (febrile neutropenia in 88%, fever-only neutropenia in 12%); 24% had received prior nephrotoxic chemotherapy (cisplatin or carboplatin) within 6 months prior to gentamicin",
-    dose_range     = "7.5 mg/kg once daily for patients < 10 years; 6 mg/kg once daily for patients >= 10 years; 30-min IV infusion (per local hospital guidelines)",
-    regions        = "Australia (single center: The Lady Cilento Children's Hospital, Brisbane)",
-    notes          = "Retrospective therapeutic drug monitoring data 2008-2013 (model-building) and 2014-2015 (n = 52, external evaluation). 2,422 gentamicin concentrations from 423 patients, sampled 0.5-36.0 h after end of infusion. 15% of measurements were below the lower limit of quantitation and replaced by LLOQ/2."
+    disease_state = "Pediatric oncology (febrile neutropenia in 88%, fever-only neutropenia in 12%); 24% had received prior nephrotoxic chemotherapy (cisplatin or carboplatin) within 6 months prior to gentamicin",
+    dose_range = "7.5 mg/kg once daily for patients < 10 years; 6 mg/kg once daily for patients >= 10 years; 30-min IV infusion (per local hospital guidelines)",
+    regions = "Australia (single center: The Lady Cilento Children's Hospital, Brisbane)",
+    notes = "Retrospective therapeutic drug monitoring data 2008-2013 (model-building) and 2014-2015 (n = 52, external evaluation). 2,422 gentamicin concentrations from 423 patients, sampled 0.5-36.0 h after end of infusion. 15% of measurements were below the lower limit of quantitation and replaced by LLOQ/2."
   )
 
   ini({

@@ -8,47 +8,47 @@ Feng_2014_ipilimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ipilimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL (exponent CL_BW) and on Vc (exponent V_cBW) with reference weight 80 kg (Feng 2014 Table 2 footnote; reference subject defined in Figure 1 caption).",
-      source_name        = "BW"
+      notes = "Power scaling on CL (exponent CL_BW) and on Vc (exponent V_cBW) with reference weight 80 kg (Feng 2014 Table 2 footnote; reference subject defined in Figure 1 caption).",
+      source_name = "BW"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Canonical unit string is U/L per the 2026-06-19 SI register; the source paper reports IU/L, which is value-identical to U/L (same magnitude), so the covariate values and reference (206) are unchanged. Effect on CL via the literal Feng 2014 form (log(LDH)/log(206))^CL_LDH -- a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Feng 2014 Results state 'The value for LDH was log-transformed due to its right-skewed distribution'; reference LDH = 206 U/L (Table 2 footnote). The same unusual literal form was carried forward by the same Bristol-Myers Squibb modeling group in the later ipilimumab popPK (Sanghavi 2020), giving a small (<20%) effect across the observed LDH range -- the conventional power-of-ratio form would inflate the effect well above the paper's narrative.",
-      source_name        = "LDH"
+      notes = "Canonical unit string is U/L per the 2026-06-19 SI register; the source paper reports IU/L, which is value-identical to U/L (same magnitude), so the covariate values and reference (206) are unchanged. Effect on CL via the literal Feng 2014 form (log(LDH)/log(206))^CL_LDH -- a power of a ratio of logs, not the conventional (LDH/ref)^exponent. Feng 2014 Results state 'The value for LDH was log-transformed due to its right-skewed distribution'; reference LDH = 206 U/L (Table 2 footnote). The same unusual literal form was carried forward by the same Bristol-Myers Squibb modeling group in the later ipilimumab popPK (Sanghavi 2020), giving a small (<20%) effect across the observed LDH range -- the conventional power-of-ratio form would inflate the effect well above the paper's narrative.",
+      source_name = "LDH"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 499L,
-    n_studies      = 4L,
-    age_range      = "26-86 years",
-    age_median     = "57.75 years (SD 12.91) in the index dataset",
-    weight_range   = "mean 80.11 kg (SD 16.87) in the index dataset",
-    weight_median  = "not tabulated; mean 80.11 kg (SD 16.87) in the index dataset",
+    species = "human",
+    n_subjects = 499L,
+    n_studies = 4L,
+    age_range = "26-86 years",
+    age_median = "57.75 years (SD 12.91) in the index dataset",
+    weight_range = "mean 80.11 kg (SD 16.87) in the index dataset",
+    weight_median = "not tabulated; mean 80.11 kg (SD 16.87) in the index dataset",
     sex_female_pct = 37.4,
-    disease_state  = "Unresectable stage III or IV melanoma",
-    dose_range     = "0.3, 3, or 10 mg/kg IV as a 90-minute infusion every 3 weeks for up to 4 induction doses, followed by maintenance every 12 weeks beginning at week 24 in eligible patients",
-    regions        = "Multinational phase II studies CA184-007, CA184-008, CA184-022, CA184-004",
+    disease_state = "Unresectable stage III or IV melanoma",
+    dose_range = "0.3, 3, or 10 mg/kg IV as a 90-minute infusion every 3 weeks for up to 4 induction doses, followed by maintenance every 12 weeks beginning at week 24 in eligible patients",
+    regions = "Multinational phase II studies CA184-007, CA184-008, CA184-022, CA184-004",
     ecog_distribution = "ECOG 0 65.0%, ECOG 1 34.5%, ECOG 2 0.5% (index dataset)",
     renal_function = "Baseline MDRD eGFR mean 86.66 (SD 25.78) mL/min/1.73 m^2 (index dataset)",
     hepatic_function = "Baseline total bilirubin mean 0.48 mg/dL; baseline direct bilirubin mean 0.16 mg/dL; ALT mean 23.65 IU/L (index dataset)",
     immunogenicity = "4.29% of index-dataset patients were ADA-positive at baseline or post-ipilimumab",
     co_medication = "Concomitant budesonide in 13.81% of index-dataset patients (CA184-007 prophylactic-toxicity sub-study)",
-    notes          = "Pooled index dataset of 1,767 ipilimumab serum concentrations from 420 patients in three phase II studies (CA184-007, CA184-008, CA184-022) plus an external validation dataset of 328 concentrations from 79 patients in CA184-004. Final parameter estimates were obtained from the combined analysis (index + external) dataset. Baseline LDH mean 326.74 (SD 375.19) U/L; reference LDH 206 U/L (approximate median; Table 2 footnote; source reports IU/L, value-identical to canonical U/L). Demographics from Feng 2014 Table 1; values are for the index dataset (n = 420) used for model development."
+    notes = "Pooled index dataset of 1,767 ipilimumab serum concentrations from 420 patients in three phase II studies (CA184-007, CA184-008, CA184-022) plus an external validation dataset of 328 concentrations from 79 patients in CA184-004. Final parameter estimates were obtained from the combined analysis (index + external) dataset. Baseline LDH mean 326.74 (SD 375.19) U/L; reference LDH 206 U/L (approximate median; Table 2 footnote; source reports IU/L, value-identical to canonical U/L). Demographics from Feng 2014 Table 1; values are for the index dataset (n = 420) used for model development."
   )
 
   ini({

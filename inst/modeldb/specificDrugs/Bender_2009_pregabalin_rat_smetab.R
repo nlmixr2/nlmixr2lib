@@ -30,27 +30,27 @@ Bender_2009_pregabalin_rat_smetab <- function() {
     sep = " "
   )
   vignette <- "Bender_2009_pregabalin_rat"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "pregabalin rat smetab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "pregabalin rat smetab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pregabalin rat smetab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SLDM = list(
-      description        = paste(
+      description = paste(
         "Time-varying plasma concentration of the active N-methyl",
         "metabolite of sildenafil (ng/mL), used as the saturable-",
         "inhibition driver on pregabalin CL."
       ),
-      units              = "ng/mL",
-      type               = "continuous",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying covariate column to be supplied by the user.",
         "In the Bender 2009 study, SLDM was measured directly in",
         "plasma alongside the pregabalin concentration (LC-MS/MS;",
@@ -61,42 +61,42 @@ Bender_2009_pregabalin_rat_smetab <- function() {
         "typical-CL prediction. Paper alias: [SLDM] (Results,",
         "Eq. unnumbered above Discussion)."
       ),
-      source_name        = "[SLDM]"
+      source_name = "[SLDM]"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer-valued occasion / period indicator for between-",
         "occasion variability multiplexing. Values 1 and 2 identify",
         "the two crossover days (Day 1 and Day 4) within each rat."
       ),
-      units              = "(count)",
-      type               = "categorical",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Decomposed inside model() into binary indicators oc1 and",
         "oc2 that multiplex the BOV etas on log-CL and log-Vc.",
         "The two occasions are separated by a >= 3 day washout per",
         "Methods (Pharmacokinetic Study Design)."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley)",
-    n_subjects     = 28L,
-    n_studies      = 1L,
-    age_range      = "(not reported in the source publication; surgically prepared adult rats)",
-    weight_range   = "200-250 g at receipt (Charles River Laboratories, Margate, UK)",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "(not reported in the source publication; surgically prepared adult rats)",
+    weight_range = "200-250 g at receipt (Charles River Laboratories, Margate, UK)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic-constriction-injury (CCI) model of neuropathic pain",
       "(Bennett & Xie). Four loose ligatures around the right",
       "sciatic nerve produce a peripheral mononeuropathy with",
       "static and dynamic allodynia resembling the human",
       "neuropathic-pain phenotype."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Pregabalin IV constant-rate infusion through the jugular",
       "venous catheter for 2 hours at either 4 mg/kg/h or 10",
       "mg/kg/h. Each rat received both dose levels on the two",
@@ -104,8 +104,8 @@ Bender_2009_pregabalin_rat_smetab <- function() {
       "over 10 min followed by 12 mg/kg/h infusion for 6 h.",
       "Saline arm: matching saline bolus + infusion."
     ),
-    regions        = "United Kingdom (Pfizer Global Research and Development, Pfizer UK)",
-    notes          = paste(
+    regions = "United Kingdom (Pfizer Global Research and Development, Pfizer UK)",
+    notes = paste(
       "28 male Sprague-Dawley rats, divided evenly (n = 7) into four",
       "crossover treatment groups (1A, 1B, 2A, 2B per Table I).",
       "Jugular venous catheters (drug administration) and carotid",

@@ -11,19 +11,19 @@ Decrane_2023_oxyfluorfen_human <- function() {
   vignette <- "Decrane_2023_oxyfluorfen"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
-      notes              = paste(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Table 2 fixes the reference human at 80 kg. Scales cardiac output (allometric",
         "exponent 0.75), every tissue volume (linear) and the three thyroid-hormone volumes",
         "of distribution (linear). Unlike the rat model, human hepatic clearance, GFR and the",
@@ -31,58 +31,58 @@ Decrane_2023_oxyfluorfen_human <- function() {
         "values and are NOT body-weight scaled.",
         sep = " "
       ),
-      source_name        = "Body Weight (kg)"
+      source_name = "Body Weight (kg)"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
-      notes              = paste(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Table 2 fixes the reference human at 30 years. Enters ONLY through the cardiac-output",
         "relationship Cardiac Output = -6.846*log10(age) + 16.775 (L/h/kg^0.75). No other",
         "parameter is age-dependent. At age 30 this gives 6.662 L/h/kg^0.75; see the vignette",
         "Errata, which notes this is below the Brown et al. (1997) adult human value.",
         sep = " "
       ),
-      source_name        = "Age(years)"
+      source_name = "Age(years)"
     )
   )
 
   compartmentData <- list(
     # --- oxyfluorfen (chemical PBPK layer), amounts in mg ---
-    stomach            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "administration site", verified = TRUE),
-    a_gut              = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_liver            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_kidney           = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_muscle           = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_skin             = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_fat              = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_brain            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused  = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "Oxyfluorfen", units = "mg", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_kidney = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_muscle = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_skin = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_fat = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_brain = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_slowly_perfused = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
     a_rapidly_perfused = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_thyroid_blood    = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
-    a_thyroid_tissue   = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
-    a_blood            = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_thyroid_blood = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
+    a_thyroid_tissue = list(analyte = "Oxyfluorfen", units = "mg", specimen = "tissue", verified = TRUE),
+    a_blood = list(analyte = "Oxyfluorfen", units = "mg", specimen = "whole blood", verified = TRUE),
     # --- thyroid hormones (TH kinetics layer), amounts in mg ---
-    t4_thyroid         = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "tissue", verified = TRUE),
-    t3_thyroid         = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "tissue", verified = TRUE),
-    t4_serum           = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "serum", verified = TRUE),
-    t3_serum           = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "serum", verified = TRUE),
-    tsh_serum          = list(analyte = "Thyrotropin (TSH)", units = "mg", specimen = "serum", verified = TRUE)
+    t4_thyroid = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "tissue", verified = TRUE),
+    t3_thyroid = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "tissue", verified = TRUE),
+    t4_serum = list(analyte = "Thyroxine (T4)", units = "mg", specimen = "serum", verified = TRUE),
+    t3_serum = list(analyte = "Triiodothyronine (T3)", units = "mg", specimen = "serum", verified = TRUE),
+    tsh_serum = list(analyte = "Thyrotropin (TSH)", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    age_range      = "30 years (single reference adult, Table 2)",
-    weight_range   = "80 kg (single reference adult, Table 2)",
+    species = "human",
+    n_subjects = 0L,
+    n_studies = 0L,
+    age_range = "30 years (single reference adult, Table 2)",
+    weight_range = "80 kg (single reference adult, Table 2)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "healthy reference adult",
-    dose_range     = "long-term daily oral exposure via drinking water; the paper reports the water concentrations predicted to give a 10% drop in serum T4 (57 mg/L) and serum T3 (89 mg/L), and compares against 300 mg/L (the rat-derived equivalent), assuming 2 L/day water consumption at 80 kg",
-    regions        = "United States (US EPA ORD)",
-    notes          = paste(
+    disease_state = "healthy reference adult",
+    dose_range = "long-term daily oral exposure via drinking water; the paper reports the water concentrations predicted to give a 10% drop in serum T4 (57 mg/L) and serum T3 (89 mg/L), and compares against 300 mg/L (the rat-derived equivalent), assuming 2 L/day water consumption at 80 kg",
+    regions = "United States (US EPA ORD)",
+    notes = paste(
       "This is a forward EXTRAPOLATION, not a fit: there were no human in-vivo oxyfluorfen",
       "data, so n_subjects = 0. Human physiology is from Brown et al. (1997) (Table 2);",
       "tissue:blood partition coefficients from GastroPlus 9.8 (Table 3, identical to the",

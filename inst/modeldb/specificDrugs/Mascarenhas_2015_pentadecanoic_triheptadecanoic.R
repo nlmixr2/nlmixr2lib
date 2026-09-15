@@ -20,95 +20,100 @@ Mascarenhas_2015_pentadecanoic_triheptadecanoic <- function() {
   dosing <- c("depot", "depot_hepta")
 
   compartmentData <- list(
-    depot         = list(analyte = "pentadecanoic acid", units = "umol", specimen = "administration site", verified = TRUE),
-    central       = list(analyte = "pentadecanoic acid", units = "umol", specimen = "plasma", verified = TRUE),
-    depot_hepta   = list(analyte = "heptadecanoic acid", units = "umol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "pentadecanoic acid", units = "umol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pentadecanoic acid", units = "umol", specimen = "plasma", verified = TRUE),
+    depot_hepta = list(
+      analyte = "heptadecanoic acid",
+      units = "umol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
     central_hepta = list(analyte = "heptadecanoic acid", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling of CL/F (exponent fixed 0.75) and V/F (exponent fixed 1.0) for both analytes, normalized to a 70 kg reference weight. Mascarenhas 2015 Results, Population Pharmacokinetic Analysis: 'described by an allometric model, where the typical value of a model parameter was described as a function of individual body weight (WTi), normalized by a reference weight, which was 70 kg.' Cohort weights ranged 30.7-101.6 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Allometric scaling of CL/F (exponent fixed 0.75) and V/F (exponent fixed 1.0) for both analytes, normalized to a 70 kg reference weight. Mascarenhas 2015 Results, Population Pharmacokinetic Analysis: 'described by an allometric model, where the typical value of a model parameter was described as a function of individual body weight (WTi), normalized by a reference weight, which was 70 kg.' Cohort weights ranged 30.7-101.6 kg (Table 1).",
+      source_name = "WT"
     ),
     DIS_CF = list(
-      description        = "Cystic fibrosis with pancreatic insufficiency indicator (1 = CF subject, 0 = healthy comparison subject)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cystic fibrosis with pancreatic insufficiency indicator (1 = CF subject, 0 = healthy comparison subject)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy comparison subject; relative bioavailability fixed at 1 for both analytes)",
-      notes              = "Selects which relative-bioavailability branch applies. Healthy subjects are the F = 1 reference by construction (Mascarenhas 2015 Results: 'Separate bioavailability fractions (relative to healthy subjects) were estimated for subjects with CF both with and without enzyme administration'). All CF subjects in this analysis had pancreatic insufficiency confirmed by fecal elastase 1 < 200 ug/g stool (Methods, Subjects).",
-      source_name        = "CF"
+      notes = "Selects which relative-bioavailability branch applies. Healthy subjects are the F = 1 reference by construction (Mascarenhas 2015 Results: 'Separate bioavailability fractions (relative to healthy subjects) were estimated for subjects with CF both with and without enzyme administration'). All CF subjects in this analysis had pancreatic insufficiency confirmed by fecal elastase 1 < 200 ug/g stool (Methods, Subjects).",
+      source_name = "CF"
     ),
     CONMED_PANCRELIPASE = list(
-      description        = "Pancreatic enzyme replacement (pancrelipase) administered with the MBT on this occasion (1 = enzymes taken, 0 = no enzymes)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pancreatic enzyme replacement (pancrelipase) administered with the MBT on this occasion (1 = enzymes taken, 0 = no enzymes)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no pancreatic enzymes administered with the MBT)",
-      notes              = "Occasion-level, not subject-level: the No Enzymes Protocol gave the same 6 CF subjects one MBT with and one without enzymes. Only meaningful when DIS_CF = 1; healthy subjects took no enzymes and are handled by the DIS_CF = 0 reference branch. The product was Creon 20 (delayed-release, enteric-coated) at 4-7 capsules = 80 000-140 000 lipase units, taken with the MBT and again with lunch (Methods, MBT Preparation). Mascarenhas 2015 Results reports that doses above the 80 000-unit standard 'did not yield an increase in bioavailability', so a binary indicator rather than a continuous lipase-unit column is the correct encoding for this dataset.",
-      source_name        = "ENZ"
+      notes = "Occasion-level, not subject-level: the No Enzymes Protocol gave the same 6 CF subjects one MBT with and one without enzymes. Only meaningful when DIS_CF = 1; healthy subjects took no enzymes and are handled by the DIS_CF = 0 reference branch. The product was Creon 20 (delayed-release, enteric-coated) at 4-7 capsules = 80 000-140 000 lipase units, taken with the MBT and again with lunch (Methods, MBT Preparation). Mascarenhas 2015 Results reports that doses above the 80 000-unit standard 'did not yield an increase in bioavailability', so a binary indicator rather than a continuous lipase-unit column is the correct encoding for this dataset.",
+      source_name = "ENZ"
     ),
     CONMED_PANCRELIPASE_PRE30 = list(
-      description        = "Pancreatic enzymes taken 30 minutes BEFORE the MBT (1 = yes, 0 = no)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pancreatic enzymes taken 30 minutes BEFORE the MBT (1 = yes, 0 = no)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (with the all-zero reference across the three timing indicators meaning enzymes taken WITH the MBT)",
-      notes              = "Indicator variable t1 of the Mascarenhas 2015 final-model equation block. Acts on heptadecanoic-acid bioavailability only; the paper found no corresponding effect on pentadecanoic acid ('PA was absorbed similarly to healthy subjects regardless of timing of enzymes', Discussion), and the PA column of the equation block carries no timing term. Only meaningful when DIS_CF = 1 and CONMED_PANCRELIPASE = 1.",
-      source_name        = "T1"
+      notes = "Indicator variable t1 of the Mascarenhas 2015 final-model equation block. Acts on heptadecanoic-acid bioavailability only; the paper found no corresponding effect on pentadecanoic acid ('PA was absorbed similarly to healthy subjects regardless of timing of enzymes', Discussion), and the PA column of the equation block carries no timing term. Only meaningful when DIS_CF = 1 and CONMED_PANCRELIPASE = 1.",
+      source_name = "T1"
     ),
     CONMED_PANCRELIPASE_POST30 = list(
-      description        = "Pancreatic enzymes taken 30 minutes AFTER the MBT (1 = yes, 0 = no)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pancreatic enzymes taken 30 minutes AFTER the MBT (1 = yes, 0 = no)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all-zero across the three timing indicators = enzymes taken WITH the MBT)",
-      notes              = "Indicator variable t2 of the Mascarenhas 2015 final-model equation block. Heptadecanoic acid only; see CONMED_PANCRELIPASE_PRE30.",
-      source_name        = "T2"
+      notes = "Indicator variable t2 of the Mascarenhas 2015 final-model equation block. Heptadecanoic acid only; see CONMED_PANCRELIPASE_PRE30.",
+      source_name = "T2"
     ),
     CONMED_PANCRELIPASE_POST60 = list(
-      description        = "Pancreatic enzymes taken 60 minutes AFTER the MBT (1 = yes, 0 = no)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pancreatic enzymes taken 60 minutes AFTER the MBT (1 = yes, 0 = no)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all-zero across the three timing indicators = enzymes taken WITH the MBT)",
-      notes              = "Indicator variable t3 of the Mascarenhas 2015 final-model equation block. Heptadecanoic acid only; see CONMED_PANCRELIPASE_PRE30. This arm was discontinued after 9 of the planned 16 subjects once an interim review showed markedly reduced concentrations, which is why its effect (0.78) is the least precisely estimated of the three timing factors (95%CI 0.491-1.13).",
-      source_name        = "T3"
+      notes = "Indicator variable t3 of the Mascarenhas 2015 final-model equation block. Heptadecanoic acid only; see CONMED_PANCRELIPASE_PRE30. This arm was discontinued after 9 of the planned 16 subjects once an interim review showed markedly reduced concentrations, which is why its effect (0.78) is the least precisely estimated of the three timing factors (95%CI 0.491-1.13).",
+      source_name = "T3"
     ),
     OCC = list(
-      description        = "Occasion index for between-occasion variability (1-4)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for between-occasion variability (1-4)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "The MBT was repeated on up to 4 separate occasions at least 5 days apart (Timing of Enzymes Protocol: 4 occasions; Reproducibility Protocol: 3; No Enzymes Protocol: 2). Decomposed inside model() into binary indicators oc1..oc4 that multiplex the between-occasion etas on mean transit time and on relative bioavailability, carried independently for each analyte. For a single-occasion simulation pass OCC = 1 so the first IOV eta applies.",
-      source_name        = "OCC"
+      notes = "The MBT was repeated on up to 4 separate occasions at least 5 days apart (Timing of Enzymes Protocol: 4 occasions; Reproducibility Protocol: 3; No Enzymes Protocol: 2). Decomposed inside model() into binary indicators oc1..oc4 that multiplex the between-occasion etas on mean transit time and on relative bioavailability, carried independently for each analyte. For a single-occasion simulation pass OCC = 1 so the first IOV eta applies.",
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a post hoc power covariate on CL/F for both analytes but NOT retained in the final model. Mascarenhas 2015 Results: 'Adding these effect models resulted in no drop in the objective function value when compared with the reported model. Estimated exponents (95%CI) for the age effect were -0.421 (-1.11, 0.267) for PA CL/F and ... (-0.995, 0.467) for HA CL/F. Although the 95%CIs include the null value of zero, the low precision of the estimates indicates insufficient information in the data set to accurately characterize any age effects on CL/F.' Documented here to preserve the provenance of the covariate screen; both confidence intervals span zero, so no age term is implemented."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a post hoc power covariate on CL/F for both analytes but NOT retained in the final model. Mascarenhas 2015 Results: 'Adding these effect models resulted in no drop in the objective function value when compared with the reported model. Estimated exponents (95%CI) for the age effect were -0.421 (-1.11, 0.267) for PA CL/F and ... (-0.995, 0.467) for HA CL/F. Although the 95%CIs include the null value of zero, the low precision of the estimates indicates insufficient information in the data set to accurately characterize any age effects on CL/F.' Documented here to preserve the provenance of the covariate screen; both confidence intervals span zero, so no age term is implemented."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 5L,
-    age_range      = "9.9-49.9 years (CF 9.9-24.2; healthy 19.0-49.9)",
-    age_median     = "CF 15.6 years; healthy 28.2 years",
-    weight_range   = "30.7-101.6 kg (CF 30.7-74.5; healthy 60.0-101.6)",
-    weight_median  = "CF 50.5 kg; healthy 71.6 kg",
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 5L,
+    age_range = "9.9-49.9 years (CF 9.9-24.2; healthy 19.0-49.9)",
+    age_median = "CF 15.6 years; healthy 28.2 years",
+    weight_range = "30.7-101.6 kg (CF 30.7-74.5; healthy 60.0-101.6)",
+    weight_median = "CF 50.5 kg; healthy 71.6 kg",
     sex_female_pct = 50.0,
-    disease_state  = "33 subjects with cystic fibrosis and pancreatic insufficiency (fecal elastase 1 < 200 ug/g stool, FEV1 >= 40% predicted, no fibrosing colonopathy or significant bowel resection) and 27 healthy comparison subjects (BMI 21-30 kg/m2, no chronic illness affecting nutrient absorption).",
-    dose_range     = "Single oral MBT test meal (8 oz, 550 kcal, 32 g fat) containing 2.5 or 5.0 g pentadecanoic acid and 5.0, 5.5 or 8.0 g triheptadecanoic acid. Healthy Orlistat Protocol 2.5 g PA + 8.0 g THA; healthy Timing Protocol 5.0 g PA + 5.5 g THA; CF No Enzymes Protocol 2.5 g PA + 5.0 g (n=3) or 8.0 g (n=3) THA; CF Timing and Reproducibility Protocols 5.0 g PA + 5.5 g THA. 5.0 g PA + 5.5 g THA was selected as the final MBT.",
-    regions        = "United States (Children's Hospital of Philadelphia and Pennsylvania Presbyterian Medical Center)",
-    co_medication  = "CF subjects received Creon 20 pancrelipase, 4-7 capsules (80 000-140 000 lipase units): 52% took 80 000 units, 15% 100 000, 21% 120 000, 12% 140 000. Enzymes were taken with the MBT and again with the 6-hour lunch meal, except on the no-enzyme occasion and on the timing-arm occasions where the dose was displaced by -30, +30 or +60 minutes.",
-    studies        = "Pooled analysis across 5 protocols: CF No Enzymes (n=6, 2 occasions), CF Timing of Enzymes (n=16, 3-4 occasions), CF Reproducibility (n=11, 3 occasions), healthy Orlistat (n=15, pre-Orlistat MBT only), healthy Timing of Enzymes comparison group (n=12).",
-    notes          = "Baseline demographics from Mascarenhas 2015 Table 1. Plasma sampled hourly over 8 hours starting with a premeal baseline sample, after a 12-hour overnight fast; subjects abstained from alcohol and dairy for 24 hours beforehand. Estimation in NONMEM VII level 2.0 with FOCE-INT. Parameter precision from a 500-replicate nonparametric bootstrap stratified by subject status and enzyme administration method. sex_female_pct is the pooled figure across both cohorts (CF 45%, healthy 56%)."
+    disease_state = "33 subjects with cystic fibrosis and pancreatic insufficiency (fecal elastase 1 < 200 ug/g stool, FEV1 >= 40% predicted, no fibrosing colonopathy or significant bowel resection) and 27 healthy comparison subjects (BMI 21-30 kg/m2, no chronic illness affecting nutrient absorption).",
+    dose_range = "Single oral MBT test meal (8 oz, 550 kcal, 32 g fat) containing 2.5 or 5.0 g pentadecanoic acid and 5.0, 5.5 or 8.0 g triheptadecanoic acid. Healthy Orlistat Protocol 2.5 g PA + 8.0 g THA; healthy Timing Protocol 5.0 g PA + 5.5 g THA; CF No Enzymes Protocol 2.5 g PA + 5.0 g (n=3) or 8.0 g (n=3) THA; CF Timing and Reproducibility Protocols 5.0 g PA + 5.5 g THA. 5.0 g PA + 5.5 g THA was selected as the final MBT.",
+    regions = "United States (Children's Hospital of Philadelphia and Pennsylvania Presbyterian Medical Center)",
+    co_medication = "CF subjects received Creon 20 pancrelipase, 4-7 capsules (80 000-140 000 lipase units): 52% took 80 000 units, 15% 100 000, 21% 120 000, 12% 140 000. Enzymes were taken with the MBT and again with the 6-hour lunch meal, except on the no-enzyme occasion and on the timing-arm occasions where the dose was displaced by -30, +30 or +60 minutes.",
+    studies = "Pooled analysis across 5 protocols: CF No Enzymes (n=6, 2 occasions), CF Timing of Enzymes (n=16, 3-4 occasions), CF Reproducibility (n=11, 3 occasions), healthy Orlistat (n=15, pre-Orlistat MBT only), healthy Timing of Enzymes comparison group (n=12).",
+    notes = "Baseline demographics from Mascarenhas 2015 Table 1. Plasma sampled hourly over 8 hours starting with a premeal baseline sample, after a 12-hour overnight fast; subjects abstained from alcohol and dairy for 24 hours beforehand. Estimation in NONMEM VII level 2.0 with FOCE-INT. Parameter precision from a 500-replicate nonparametric bootstrap stratified by subject status and enzyme administration method. sex_female_pct is the pooled figure across both cohorts (CF 45%, healthy 56%)."
   )
 
   ini({

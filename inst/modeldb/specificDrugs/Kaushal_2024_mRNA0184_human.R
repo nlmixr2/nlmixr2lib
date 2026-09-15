@@ -13,8 +13,8 @@ Kaushal_2024_mRNA0184_human <- function() {
   paper_specific_compartments <- c("rel2vlk", "rel2vlk_p")
 
   units <- list(
-    time          = "h",
-    dosing        = "ng",
+    time = "h",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -23,25 +23,45 @@ Kaushal_2024_mRNA0184_human <- function() {
   # Table S1 writes dCe/dt = Ke0 * (C(t) - Ce(t)) directly in
   # concentration units.
   compartmentData <- list(
-    central     = list(analyte = "Rel2-vlk mRNA (A1, plasma-1)",                 units = "ng",    specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "Rel2-vlk mRNA (A2, tissue / target site)",     units = "ng",    specimen = "tissue", verified = TRUE),
-    peripheral2 = list(analyte = "Rel2-vlk mRNA (A3, plasma-2)",                 units = "ng",    specimen = "plasma", verified = TRUE),
-    effect      = list(analyte = "Rel2-vlk mRNA (Ce, hypothetical effect compartment)", units = "ng/mL", specimen = "tissue", verified = TRUE),
-    rel2vlk     = list(analyte = "Rel2-vlk protein (protein1, central)",         units = "ng",    specimen = "plasma", verified = TRUE),
-    rel2vlk_p   = list(analyte = "Rel2-vlk protein (protein2, peripheral)",      units = "ng",    specimen = "tissue", verified = TRUE)
+    central = list(analyte = "Rel2-vlk mRNA (A1, plasma-1)", units = "ng", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(
+      analyte = "Rel2-vlk mRNA (A2, tissue / target site)",
+      units = "ng",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    peripheral2 = list(analyte = "Rel2-vlk mRNA (A3, plasma-2)", units = "ng", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "Rel2-vlk mRNA (Ce, hypothetical effect compartment)",
+      units = "ng/mL",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    rel2vlk = list(
+      analyte = "Rel2-vlk protein (protein1, central)",
+      units = "ng",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    rel2vlk_p = list(
+      analyte = "Rel2-vlk protein (protein2, peripheral)",
+      units = "ng",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human (allometric projection from cynomolgus monkey; no human PK or PD data were fitted)",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    age_range      = "adults (target population of NCT05659264); not otherwise specified",
-    weight_range   = "70 kg reference body weight (Table 2 column header)",
+    species = "human (allometric projection from cynomolgus monkey; no human PK or PD data were fitted)",
+    n_subjects = 0L,
+    n_studies = 0L,
+    age_range = "adults (target population of NCT05659264); not otherwise specified",
+    weight_range = "70 kg reference body weight (Table 2 column header)",
     sex_female_pct = NA_real_,
-    disease_state  = "Intended population: adult patients with stable heart failure with reduced ejection fraction (first-in-human trial NCT05659264). The projection itself carries no human covariate or disease information.",
-    dose_range     = "Simulated doses 0.01-1 mg/kg every 2 weeks; 0.025 mg/kg every 2 weeks was the selected first-in-human starting dose (Figure 5, Discussion).",
-    regions        = "Not applicable (simulation only).",
-    notes          = "Every parameter value is a deterministic allometric transform of the cynomolgus-monkey estimate in Table 1 using Equation 1, Y = a * (BW_human / BW_cyno)^beta with BW ratio 70 / 2.5 = 28: exponent 1 for all volumes and for Slope, 0.75 for the Rel2-vlk mRNA clearances (CL, CL2, CL3), and 0.85 for the Rel2-vlk protein clearances (Kprot, K50). The 0.85 protein-clearance exponent was chosen from a literature review of therapeutic proteins (paper references 19-21). Inter-individual variances, the effect-compartment rate constant Ke0, and both residual-error SDs are carried over unscaled (Table 2). No within-human body-weight scaling is included because the paper does not fit or report any; the values are for a 70 kg adult and doses were simulated in mg/kg. Because concentrations are in ng/mL and volumes in mL, the dose amount supplied to the model must be expressed in ng (e.g. 0.025 mg/kg x 70 kg = 1.75e6 ng). See the vignette Assumptions and deviations section for the clearance-vs-rate-constant reading of Kprot and K50, and for the small rounding differences between Table 2 as printed and an exact application of Equation 1."
+    disease_state = "Intended population: adult patients with stable heart failure with reduced ejection fraction (first-in-human trial NCT05659264). The projection itself carries no human covariate or disease information.",
+    dose_range = "Simulated doses 0.01-1 mg/kg every 2 weeks; 0.025 mg/kg every 2 weeks was the selected first-in-human starting dose (Figure 5, Discussion).",
+    regions = "Not applicable (simulation only).",
+    notes = "Every parameter value is a deterministic allometric transform of the cynomolgus-monkey estimate in Table 1 using Equation 1, Y = a * (BW_human / BW_cyno)^beta with BW ratio 70 / 2.5 = 28: exponent 1 for all volumes and for Slope, 0.75 for the Rel2-vlk mRNA clearances (CL, CL2, CL3), and 0.85 for the Rel2-vlk protein clearances (Kprot, K50). The 0.85 protein-clearance exponent was chosen from a literature review of therapeutic proteins (paper references 19-21). Inter-individual variances, the effect-compartment rate constant Ke0, and both residual-error SDs are carried over unscaled (Table 2). No within-human body-weight scaling is included because the paper does not fit or report any; the values are for a 70 kg adult and doses were simulated in mg/kg. Because concentrations are in ng/mL and volumes in mL, the dose amount supplied to the model must be expressed in ng (e.g. 0.025 mg/kg x 70 kg = 1.75e6 ng). See the vignette Assumptions and deviations section for the clearance-vs-rate-constant reading of Kprot and K50, and for the small rounding differences between Table 2 as printed and an exact application of Equation 1."
   )
 
   ini({

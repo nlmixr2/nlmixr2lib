@@ -29,19 +29,19 @@ Teixeira_2026_meloxicam_dog <- function() {
   # biological matrix. Confirmed against Teixeira 2026 Figure 1 (final model
   # structure diagram) and Section 4.4 (oral dosing, jugular plasma sampling).
   compartmentData <- list(
-    depot       = list(analyte = "meloxicam", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "meloxicam", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "meloxicam", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "meloxicam", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "meloxicam", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "meloxicam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "meloxicam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per dog. Weight is NOT a covariate effect in Teixeira 2026 - it was",
         "screened (supplementary Table S2 footnote b) and not retained. It appears here",
         "purely as a unit conversion: Table 2 reports CL_pop in mL/min/kg and V1_pop /",
@@ -52,14 +52,14 @@ Teixeira_2026_meloxicam_dog <- function() {
         "(i.e. 0.2 * WT for the published regimen). Study means: 14.2 kg (free MLX arm)",
         "and 12.9 kg (NC-MLX arm); overall range 10.5-16.6 kg."
       ),
-      source_name        = "Body Weight"
+      source_name = "Body Weight"
     ),
     FORM_MLX_NANOCAPSULE = list(
-      description        = "Meloxicam-loaded polymeric nanocapsule formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Meloxicam-loaded polymeric nanocapsule formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = free meloxicam solution (MLX in 60% v/v PEG-400 diluted with water)",
-      notes              = paste(
+      notes = paste(
         "1 = NC-MLX, the poly(epsilon-caprolactone) nanocapsule formulation prepared by",
         "interfacial polymer deposition (mean diameter 326 +/- 13 nm, zeta potential",
         "-26.2 +/- 6.4 mV, SPAN 1.10, drug content 99.47%, encapsulation efficiency",
@@ -68,7 +68,7 @@ Teixeira_2026_meloxicam_dog <- function() {
         "delivery system and not the amount administered. Retained on Tlag2 and on V2",
         "only (Section 2.3 and Table 2); it was not retained on CL, V1, Q, ka1, ka2 or F1."
       ),
-      source_name        = "NC-MLX"
+      source_name = "NC-MLX"
     )
   )
 
@@ -78,9 +78,9 @@ Teixeira_2026_meloxicam_dog <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Tested as a covariate on the one-compartment and double-extravascular-absorption",
         "candidate models (Table S2 footnote a) but absent from the final model in Table 2.",
         "Cohort: 9-48 months overall; 26.1 +/- 18.3 months (free MLX) and 19.5 +/- 14.4",
@@ -91,24 +91,24 @@ Teixeira_2026_meloxicam_dog <- function() {
   )
 
   population <- list(
-    species        = "dog (female, mixed breed)",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "9-48 months",
-    age_median     = "26.1 +/- 18.3 months (free MLX arm); 19.5 +/- 14.4 months (NC-MLX arm), mean +/- SD (Table S1)",
-    weight_range   = "10.5-16.6 kg",
-    weight_median  = "14.2 +/- 1.6 kg (free MLX arm); 12.9 +/- 1.8 kg (NC-MLX arm), mean +/- SD (Table S1)",
+    species = "dog (female, mixed breed)",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "9-48 months",
+    age_median = "26.1 +/- 18.3 months (free MLX arm); 19.5 +/- 14.4 months (NC-MLX arm), mean +/- SD (Table S1)",
+    weight_range = "10.5-16.6 kg",
+    weight_median = "14.2 +/- 1.6 kg (free MLX arm); 12.9 +/- 1.8 kg (NC-MLX arm), mean +/- SD (Table S1)",
     sex_female_pct = 100,
     race_ethnicity = "Not applicable (mixed-breed dogs; the authors note that breed heterogeneity is itself a source of metabolic variability, Discussion)",
-    disease_state  = "Healthy female dogs undergoing elective ovariohysterectomy; drug given 4 h before surgery",
-    dose_range     = paste(
+    disease_state = "Healthy female dogs undergoing elective ovariohysterectomy; drug given 4 h before surgery",
+    dose_range = paste(
       "Single oral dose of 0.2 mg/kg meloxicam, given 4 h before ovariohysterectomy.",
       "NC-MLX dogs received 2.8 +/- 0.3 mL of the nanocapsule suspension (1 mg/mL);",
       "free-MLX dogs received 5.2 +/- 0.4 mL of the PEG-400 solution (0.5 mg/mL)."
     ),
-    regions        = "Brazil (UNIPAMPA Veterinary Hospital, Uruguaiana, Rio Grande do Sul; single centre)",
+    regions = "Brazil (UNIPAMPA Veterinary Hospital, Uruguaiana, Rio Grande do Sul; single centre)",
     n_observations = 196L,
-    notes          = paste(
+    notes = paste(
       "196 plasma meloxicam observations from 18 dogs (9 per arm), all above the",
       "quantification limit. Sampling at 0.5, 1, 2, 4, 6, 8, 12, 24, 36, 48 and 60 h",
       "post-dose; plasma meloxicam by HPLC-PDA with piroxicam internal standard.",

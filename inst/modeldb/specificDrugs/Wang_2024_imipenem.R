@@ -21,25 +21,25 @@ Wang_2024_imipenem <- function() {
     sep = " "
   )
   vignette <- "Wang_2024_imipenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation,",
         "reported raw in mL/min and NOT BSA-normalised to mL/min/1.73 m^2"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Paper Methods 'Data collection and sampling schedule': 'The",
         "creatinine clearance rate (CLCR) was calculated by Cockcroft-Gault",
         "Equation.' Reported raw in mL/min; the cohort median is 58.9",
@@ -61,7 +61,7 @@ Wang_2024_imipenem <- function() {
         "description records the assay form -- precedent: Delattre 2010",
         "amikacin, Couffignal 2014 imipenem, Lamoth 2009 imipenem."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
@@ -76,9 +76,9 @@ Wang_2024_imipenem <- function() {
   covariatesDataExcluded <- list(
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/L",
+      type = "continuous",
+      notes = paste(
         "Cohort median 63.8 mg/L (IQR 26.92-115.14, paper Table 1). Added",
         "to CL in forward inclusion (model 3, dOFV -6.02, p < 0.05) and",
         "removed in backward elimination (model 8, dOFV +6.02 < 6.63;",
@@ -88,9 +88,9 @@ Wang_2024_imipenem <- function() {
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = paste(
         "Cohort median 8.6 x10^9/L (IQR 5.67-13.07, paper Table 1). Added",
         "to CL in forward inclusion (model 4, dOFV -4.47, p < 0.05) and",
         "removed first in backward elimination (model 6, dOFV +6.42 < 6.63;",
@@ -100,9 +100,9 @@ Wang_2024_imipenem <- function() {
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous renal replacement therapy during imipenem treatment",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "24 of 120 modeling-group patients (20%) received CRRT during",
         "imipenem therapy (paper Table 1). Added to CL in forward inclusion",
         "(model 5, dOFV -6.64, p < 0.01) and removed in backward elimination",
@@ -119,16 +119,16 @@ Wang_2024_imipenem <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 120L,
-    n_studies        = 1L,
-    age_range        = ">= 60 years (inclusion criterion)",
-    age_median       = "72 years (IQR 68-81)",
-    weight_range     = "35-93.5 kg",
-    weight_median    = "65 kg (IQR 59.00-65.33)",
-    sex_female_pct   = 35.0,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = ">= 60 years (inclusion criterion)",
+    age_median = "72 years (IQR 68-81)",
+    weight_range = "35-93.5 kg",
+    weight_median = "65 kg (IQR 59.00-65.33)",
+    sex_female_pct = 35.0,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Hospitalized Chinese patients aged 60 years or above treated",
       "empirically with imipenem-cilastatin sodium for injection and",
       "monitored by therapeutic drug monitoring, including patients in",
@@ -139,7 +139,7 @@ Wang_2024_imipenem <- function() {
       "renal replacement therapy during imipenem therapy. Patients on",
       "extracorporeal membrane oxygenation (ECMO) were excluded."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "IV infusion of 250-1000 mg imipenem, dosing interval every 6 h to",
       "every 12 h, chosen empirically by the treating clinicians (paper",
       "Methods 'Quantification of imipenem concentrations'). The infusion",
@@ -148,8 +148,8 @@ Wang_2024_imipenem <- function() {
       "distribution. The Monte Carlo dosing simulations evaluate 0.25 g",
       "q6h, 0.5 g q6h, 0.5 g q8h, 1 g q6h, 1 g q8h and 1 g q12h."
     ),
-    regions          = "China (single centre: Nanjing Drum Tower Hospital, Nanjing, Jiangsu)",
-    renal_function   = paste(
+    regions = "China (single centre: Nanjing Drum Tower Hospital, Nanjing, Jiangsu)",
+    renal_function = paste(
       "Cockcroft-Gault creatinine clearance median 58.9 mL/min (IQR",
       "35.54-97.33, raw mL/min, not BSA-normalised); BSA-normalised eGFR",
       "median 86.9 mL/min/1.73 m^2 (IQR 50.12-132.20); serum creatinine",
@@ -159,7 +159,7 @@ Wang_2024_imipenem <- function() {
       "them and neither value enters the model directly."
     ),
     n_concentrations = 370L,
-    notes            = paste(
+    notes = paste(
       "Retrospective single-centre observational study, October 2021 to",
       "April 2024 (paper Methods 'Study design and ethics'; ethics",
       "approval No. 2023-380-02). A total of 142 patients contributing 370",

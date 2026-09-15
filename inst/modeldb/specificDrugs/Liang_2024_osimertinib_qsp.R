@@ -46,8 +46,8 @@ Liang_2024_osimertinib_qsp <- function() {
   vignette <- "Liang_2024_osimertinib"
 
   units <- list(
-    time          = "h",
-    dosing        = "(not applicable; the osimertinib concentration is supplied as the time-varying covariate CEFFECT)",
+    time = "h",
+    dosing = "(not applicable; the osimertinib concentration is supplied as the time-varying covariate CEFFECT)",
     concentration = "umol/L"
   )
 
@@ -55,8 +55,10 @@ Liang_2024_osimertinib_qsp <- function() {
   # registered metabolites, so the canonical `target` / `complex` TMDD names
   # carry a mutant suffix and are declared here rather than silently warned on.
   paper_specific_compartments <- c(
-    "target_t790m", "complex_t790m",
-    "target_l858r", "complex_l858r"
+    "target_t790m",
+    "complex_t790m",
+    "target_l858r",
+    "complex_l858r"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -67,26 +69,26 @@ Liang_2024_osimertinib_qsp <- function() {
   # system is also driven with plasma concentrations in Figure 1.
   compartmentData <- list(
     target_t790m = list(
-      analyte  = "EGFR T790M mutant (free, unbound)",
-      units    = "umol/L",
+      analyte = "EGFR T790M mutant (free, unbound)",
+      units = "umol/L",
       specimen = "tissue",
       verified = TRUE
     ),
     complex_t790m = list(
-      analyte  = "osimertinib-EGFR T790M covalent complex",
-      units    = "umol/L",
+      analyte = "osimertinib-EGFR T790M covalent complex",
+      units = "umol/L",
       specimen = "tissue",
       verified = TRUE
     ),
     target_l858r = list(
-      analyte  = "EGFR L858R mutant (free, unbound)",
-      units    = "umol/L",
+      analyte = "EGFR L858R mutant (free, unbound)",
+      units = "umol/L",
       specimen = "tissue",
       verified = TRUE
     ),
     complex_l858r = list(
-      analyte  = "osimertinib-EGFR L858R covalent complex",
-      units    = "umol/L",
+      analyte = "osimertinib-EGFR L858R covalent complex",
+      units = "umol/L",
       specimen = "tissue",
       verified = TRUE
     )
@@ -94,11 +96,11 @@ Liang_2024_osimertinib_qsp <- function() {
 
   covariateData <- list(
     CEFFECT = list(
-      description        = "Time-varying TOTAL osimertinib concentration (umol/L) driving EGFRm+ target engagement",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Time-varying TOTAL osimertinib concentration (umol/L) driving EGFRm+ target engagement",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "For this model the canonical effect-site PD driver CEFFECT carries",
         "the TOTAL (not free) osimertinib concentration in umol/L; the free",
         "concentration that actually drives binding is computed inside",
@@ -125,21 +127,21 @@ Liang_2024_osimertinib_qsp <- function() {
         "modellib('Brown_2017_osimertinib') is a user choice, not the",
         "authors' design."
       ),
-      source_name        = "(none; Clung is computed by the PK-Sim PBPK model and is not a named NONMEM data column)"
+      source_name = "(none; Clung is computed by the PK-Sim PBPK model and is not a named NONMEM data column)"
     )
   )
 
   population <- list(
-    species       = "human (in silico; PK-Sim virtual populations)",
-    n_subjects    = 10L,
-    n_studies     = 1L,
-    age_range     = "44-83 years for the Caucasian NSCLC scenario; 53-78 years Japanese; 35-76 years Chinese (Liang 2024 Table 2)",
+    species = "human (in silico; PK-Sim virtual populations)",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "44-83 years for the Caucasian NSCLC scenario; 53-78 years Japanese; 35-76 years Chinese (Liang 2024 Table 2)",
     sex_female_pct = 71,
     race_ethnicity = c(Caucasian = NA_real_, Japanese = NA_real_, Chinese = NA_real_),
     disease_state = "non-small cell lung cancer (NSCLC) with EGFR T790M and/or L858R activating mutations",
-    dose_range    = "osimertinib 80 mg once daily for 14 consecutive days in the Figure 1 target-engagement simulation; 20-240 mg once daily across the wider validation set (Liang 2024 Table 2)",
-    regions       = "simulated Caucasian, Japanese and Chinese populations",
-    notes         = paste(
+    dose_range = "osimertinib 80 mg once daily for 14 consecutive days in the Figure 1 target-engagement simulation; 20-240 mg once daily across the wider validation set (Liang 2024 Table 2)",
+    regions = "simulated Caucasian, Japanese and Chinese populations",
+    notes = paste(
       "Liang 2024 Section 2.3: 'Each simulation consisted of ten virtual",
       "subjects.' The virtual populations' demographic characteristics and",
       "dosing regimens were taken from the clinical studies tabulated in",

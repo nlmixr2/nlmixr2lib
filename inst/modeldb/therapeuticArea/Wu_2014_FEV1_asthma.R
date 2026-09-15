@@ -22,67 +22,67 @@ Wu_2014_FEV1_asthma <- function() {
   paper_specific_compartments <- c("fev1")
 
   units <- list(
-    time          = "year (subject age in years; the structural model has no dosing events and the time column carries age directly -- AGE is the independent variable, not a separate covariate)",
-    dosing        = "n/a (no PK dosing; treatment effect enters as a per-subject randomized-arm binary covariate)",
+    time = "year (subject age in years; the structural model has no dosing events and the time column carries age directly -- AGE is the independent variable, not a separate covariate)",
+    dosing = "n/a (no PK dosing; treatment effect enters as a per-subject randomized-arm binary covariate)",
     concentration = "L (FEV1 absolute volume, observation fev1)"
   )
 
   covariateData <- list(
     HT = list(
-      description        = "Standing height at the time of the FEV1 observation.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Standing height at the time of the FEV1 observation.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per visit. Strongly correlated with AGE in growing children; both covariates are retained in the structural model because the paper showed substantial improvement in fit when both are included (Methods, model-development paragraph, and Table E1).",
-      source_name        = "height"
+      notes = "Time-varying per visit. Strongly correlated with AGE in growing children; both covariates are retained in the structural model because the paper showed substantial improvement in fit when both are included (Methods, model-development paragraph, and Table E1).",
+      source_name = "height"
     ),
     RACE_BLACK = list(
-      description        = "Self-reported African American race indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-reported African American race indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White or Mexican American; pooled per the paper's Results section because the FEV1 level was statistically indistinguishable between White and Mexican American children -- a 3-level intercept was fit with the pooled White/Mexican American group as the typical-value reference). RACE_BLACK = 0 AND RACE_OTHER = 0 jointly encodes the reference.",
-      notes              = "Per-subject time-fixed. Wu 2014 reported separate theta3 intercepts for White/Mexican American (reference), African American, and Other (Table 2). The original parameterisation had three independent thetas; we re-parameterise as one reference intercept (theta_int) plus two additive race deltas (e_race_black_int, e_race_other_int) so that the reference group is unambiguously {RACE_BLACK = 0, RACE_OTHER = 0}.",
-      source_name        = "Race (African American)"
+      notes = "Per-subject time-fixed. Wu 2014 reported separate theta3 intercepts for White/Mexican American (reference), African American, and Other (Table 2). The original parameterisation had three independent thetas; we re-parameterise as one reference intercept (theta_int) plus two additive race deltas (e_race_black_int, e_race_other_int) so that the reference group is unambiguously {RACE_BLACK = 0, RACE_OTHER = 0}.",
+      source_name = "Race (African American)"
     ),
     RACE_OTHER = list(
-      description        = "Self-reported race indicator for any group other than White, African American, or Mexican American (e.g., Asian, Native American, multiracial, not reported).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-reported race indicator for any group other than White, African American, or Mexican American (e.g., Asian, Native American, multiracial, not reported).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White or Mexican American; pooled per the paper's Results section).",
-      notes              = "Per-subject time-fixed. Wu 2014 reports an 'Others' intercept of 1.95 (Table 2) which captures the pooled non-White-non-Black-non-Mexican-American children in CAMP. The fraction in this group was ~8-11% per arm (Table 1).",
-      source_name        = "Race (Others)"
+      notes = "Per-subject time-fixed. Wu 2014 reports an 'Others' intercept of 1.95 (Table 2) which captures the pooled non-White-non-Black-non-Mexican-American children in CAMP. The fraction in this group was ~8-11% per arm (Table 1).",
+      source_name = "Race (Others)"
     ),
     CONMED_BUDESONIDE = list(
-      description        = "Per-subject inhaled-budesonide randomized-arm indicator. 1 = budesonide arm; 0 = placebo or nedocromil arm.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-subject inhaled-budesonide randomized-arm indicator. 1 = budesonide arm; 0 = placebo or nedocromil arm.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm or nedocromil arm; pooled because the paper reports no significant nedocromil effect on FEV1).",
-      notes              = "Per-subject time-fixed. Wu 2014 estimated a small but statistically significant additive shift on linear-scale FEV1 in the budesonide arm relative to placebo (theta_drugeffect = 0.103 L, RSE 14.1%, P < 0.001; paper Results paragraph 'Evaluating the different treatment arms'). The nedocromil arm did not show a significant effect and is pooled into the reference. The IIV on this term is 0.129 L with high shrinkage (67.3%) because only ~30% of the CAMP cohort carries the indicator.",
-      source_name        = "treatment arm (budesonide vs placebo+nedocromil)"
+      notes = "Per-subject time-fixed. Wu 2014 estimated a small but statistically significant additive shift on linear-scale FEV1 in the budesonide arm relative to placebo (theta_drugeffect = 0.103 L, RSE 14.1%, P < 0.001; paper Results paragraph 'Evaluating the different treatment arms'). The nedocromil arm did not show a significant effect and is pooled into the reference. The IIV on this term is 0.129 L with high shrinkage (67.3%) because only ~30% of the CAMP cohort carries the indicator.",
+      source_name = "treatment arm (budesonide vs placebo+nedocromil)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1041L,
-    n_studies       = 1L,
-    age_range       = "5-13 years (mean ~9 years at enrolment across all three arms)",
-    age_median      = "~9 years",
-    weight_range    = "approximately 25-60 kg (paper Table 1 reports mean (SD) ~42 (16) kg across arms)",
-    weight_median   = "~42 kg",
-    height_range    = "approximately 110-170 cm (paper Table 1 reports mean (SD) ~56 (29) cm across arms; the reported mean is implausibly low for school-age children and likely reflects a baseline-deviation or unit confusion in the published table -- standing height in cm should be used for simulation)",
-    sex_female_pct  = 39.4,
-    race_ethnicity  = c(
-      White            = 68.4,
-      Black            = 13.3,
-      MexicanAmerican  =  9.4,
-      Other            =  8.9
+    species = "human",
+    n_subjects = 1041L,
+    n_studies = 1L,
+    age_range = "5-13 years (mean ~9 years at enrolment across all three arms)",
+    age_median = "~9 years",
+    weight_range = "approximately 25-60 kg (paper Table 1 reports mean (SD) ~42 (16) kg across arms)",
+    weight_median = "~42 kg",
+    height_range = "approximately 110-170 cm (paper Table 1 reports mean (SD) ~56 (29) cm across arms; the reported mean is implausibly low for school-age children and likely reflects a baseline-deviation or unit confusion in the published table -- standing height in cm should be used for simulation)",
+    sex_female_pct = 39.4,
+    race_ethnicity = c(
+      White = 68.4,
+      Black = 13.3,
+      MexicanAmerican = 9.4,
+      Other = 8.9
     ),
-    disease_state   = "Children with mild to moderate persistent asthma enrolled in the Childhood Asthma Management Program (CAMP) randomized controlled trial (NEJM 2000;343:1054-1063). FEV1 sampled every 2-4 months before bronchodilator administration over up to 4 years of follow-up.",
-    dose_range      = "Not applicable -- disease-progression model. Treatment effect enters as a per-subject randomized-arm binary covariate (CONMED_BUDESONIDE).",
-    regions         = "United States (8-site multicenter CAMP trial).",
-    randomization   = "Three arms with stratified randomization: placebo (n=418), nedocromil 8 mg BID inhaled (n=312), budesonide 200 microg BID inhaled (n=311).",
-    notes           = "n=1041 children at enrolment (Table 1). Sex_female_pct computed as 420/1041 = 40.3% from the per-arm female counts in Table 1 (184 + 106 + 130 = 420; corrected to 39.4% accounting for total subject-level pooling). Race percentages computed from Table 1 (White: 292+218+201=711; African American: 56+38+44=138; Mexican American: 37+29+32=98; Other: 33+27+34=94; sum 1041)."
+    disease_state = "Children with mild to moderate persistent asthma enrolled in the Childhood Asthma Management Program (CAMP) randomized controlled trial (NEJM 2000;343:1054-1063). FEV1 sampled every 2-4 months before bronchodilator administration over up to 4 years of follow-up.",
+    dose_range = "Not applicable -- disease-progression model. Treatment effect enters as a per-subject randomized-arm binary covariate (CONMED_BUDESONIDE).",
+    regions = "United States (8-site multicenter CAMP trial).",
+    randomization = "Three arms with stratified randomization: placebo (n=418), nedocromil 8 mg BID inhaled (n=312), budesonide 200 microg BID inhaled (n=311).",
+    notes = "n=1041 children at enrolment (Table 1). Sex_female_pct computed as 420/1041 = 40.3% from the per-arm female counts in Table 1 (184 + 106 + 130 = 420; corrected to 39.4% accounting for total subject-level pooling). Race percentages computed from Table 1 (White: 292+218+201=711; African American: 56+38+44=138; Mexican American: 37+29+32=98; Other: 33+27+34=94; sum 1041)."
   )
 
   ini({

@@ -1,56 +1,71 @@
 Li_2014_penicillinG_cattle <- function() {
   description <- "Preclinical (cattle). Three-compartment population pharmacokinetic model for penicillin G in cattle, with four parallel first-order absorption depots covering intramuscular penicillin sodium, intramuscular procaine penicillin, subcutaneous procaine penicillin, and oral procaine penicillin (the oral depot feeds the liver compartment directly), plus separate liver and kidney tissue compartments connected to the central compartment by inter-compartmental clearance; pooled meta-analysis of 100 cattle from 30 published studies and FARAD records (Li 2014)."
-  reference   <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
-  vignette    <- "Li_2014_penicillinG"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
+  vignette <- "Li_2014_penicillinG"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
-    depot3      = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "administration site", verified = FALSE),
-    depot4      = list(analyte = "penicillin G", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
+    depot1 = list(
+      analyte = "penicillin G (procaine)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot2 = list(
+      analyte = "penicillin G (procaine)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot3 = list(
+      analyte = "penicillin G (procaine)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot4 = list(analyte = "penicillin G", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "penicillin G", units = "mg", specimen = "plasma", verified = FALSE),
-    liver       = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney      = list(analyte = "penicillin G", units = "mg", specimen = "tissue", verified = FALSE)
+    liver = list(analyte = "penicillin G (procaine)", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "penicillin G", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power-model covariate on Vp2 (second peripheral volume) and on the liver inter-compartmental clearance, per Li 2014 Table 2 (covariate factors). Form: P_i = P_pop * (WT/300)^theta. Reference WT (300 kg) is a rounded midrange of the cattle dataset (Li 2014 Table 1 weights 43.5-633 kg); the paper did not report the exact normalisation weight. Effect sizes (theta_1 = -0.005 on Vp2, theta_2 = 0.008 on liver clearance) are very small, so the exact reference is numerically inconsequential.",
-      source_name        = "WT"
+      notes = "Used as a power-model covariate on Vp2 (second peripheral volume) and on the liver inter-compartmental clearance, per Li 2014 Table 2 (covariate factors). Form: P_i = P_pop * (WT/300)^theta. Reference WT (300 kg) is a rounded midrange of the cattle dataset (Li 2014 Table 1 weights 43.5-633 kg); the paper did not report the exact normalisation weight. Effect sizes (theta_1 = -0.005 on Vp2, theta_2 = 0.008 on liver clearance) are very small, so the exact reference is numerically inconsequential.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a power-model covariate on Vc (central volume) per Li 2014 Table 2 covariate factor theta_3 = -0.011. Form: Vc_i = Vc_pop * (AGE/1)^(-0.011) * exp(eta). Reference AGE (1 year) is a rounded midrange of Li 2014 Table 1 ages (0.01-5.8 years); the paper did not report the exact normalisation age. The effect coefficient is very small so the reference value is numerically inconsequential.",
-      source_name        = "AGE"
+      notes = "Used as a power-model covariate on Vc (central volume) per Li 2014 Table 2 covariate factor theta_3 = -0.011. Form: Vc_i = Vc_pop * (AGE/1)^(-0.011) * exp(eta). Reference AGE (1 year) is a rounded midrange of Li 2014 Table 1 ages (0.01-5.8 years); the paper did not report the exact normalisation age. The effect coefficient is very small so the reference value is numerically inconsequential.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "cattle (Bos taurus); mixed steers, heifers, cows, and calves pooled from 30 published studies",
-    n_subjects     = 100L,
-    n_studies      = 30L,
-    age_range      = "0.01-5.8 years (calves through adult cattle, pooled across studies)",
-    weight_range   = "43.5-633 kg (pooled across studies; not every study reported weights)",
+    species = "cattle (Bos taurus); mixed steers, heifers, cows, and calves pooled from 30 published studies",
+    n_subjects = 100L,
+    n_studies = 30L,
+    age_range = "0.01-5.8 years (calves through adult cattle, pooled across studies)",
+    weight_range = "43.5-633 kg (pooled across studies; not every study reported weights)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy animals only (animals with various diseased conditions were excluded; Li 2014 Methods)",
-    dose_range     = "Penicillin sodium 1-30 mg/kg IV or IM; procaine penicillin 1.5-66 mg/kg IM/SC/PO (Li 2014 Table 1)",
-    regions        = "Published cattle PK studies (US and international); FARAD records",
+    disease_state = "Healthy animals only (animals with various diseased conditions were excluded; Li 2014 Methods)",
+    dose_range = "Penicillin sodium 1-30 mg/kg IV or IM; procaine penicillin 1.5-66 mg/kg IM/SC/PO (Li 2014 Table 1)",
+    regions = "Published cattle PK studies (US and international); FARAD records",
     n_observations = 368L,
-    notes          = "Pooled plasma/serum data (368 concentrations from 100 cattle) plus 26 liver and 13 kidney tissue residue concentrations. Cattle muscle data were too sparse to model. Routes carried in the dosing dataset via the rxode2 cmt column: 'central' for IV; 'depot1' for intramuscular penicillin sodium; 'depot2' for intramuscular procaine penicillin; 'depot3' for subcutaneous procaine penicillin; 'depot4' for oral procaine penicillin (which Li 2014 Methods assumed is absorbed directly into the liver compartment, so the depot4 mass flux feeds liver rather than central). The companion swine model from this paper is modellib('Li_2014_penicillinG_swine')."
+    notes = "Pooled plasma/serum data (368 concentrations from 100 cattle) plus 26 liver and 13 kidney tissue residue concentrations. Cattle muscle data were too sparse to model. Routes carried in the dosing dataset via the rxode2 cmt column: 'central' for IV; 'depot1' for intramuscular penicillin sodium; 'depot2' for intramuscular procaine penicillin; 'depot3' for subcutaneous procaine penicillin; 'depot4' for oral procaine penicillin (which Li 2014 Methods assumed is absorbed directly into the liver compartment, so the depot4 mass flux feeds liver rather than central). The companion swine model from this paper is modellib('Li_2014_penicillinG_swine')."
   )
 
   ini({

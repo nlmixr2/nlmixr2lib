@@ -42,8 +42,8 @@ Plan_2012_bmd_fracture <- function() {
   # R/conventions.R; no paper_specific_compartments declaration needed.
 
   units <- list(
-    time          = "year (years since final menstrual period; t = 0 at FMP)",
-    dosing        = "n/a (disease-progression model; no drug input)",
+    time = "year (years since final menstrual period; t = 0 at FMP)",
+    dosing = "n/a (disease-progression model; no drug input)",
     concentration = "g/cm^2 (BMD observation); survival probability for sur (derived output, unitless)"
   )
 
@@ -65,7 +65,7 @@ Plan_2012_bmd_fracture <- function() {
 
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = paste0(
+      description = paste0(
         "Body mass index at the time of the NHANES examination. Listed in ",
         "Plan 2012 Methods ('Included covariates: BMI, ethnicity, and ",
         "FMPage') as one of three covariates added as centered effects ",
@@ -75,10 +75,10 @@ Plan_2012_bmd_fracture <- function() {
         "encoding fixed(0) entries for all 12 unreported covariate ",
         "effects would add clutter without information."
       ),
-      units              = "kg/m^2",
-      type               = "continuous",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Centred form per the source paper. The reference (centring) ",
         "value is not reported in the poster; the typical NHANES ",
         "postmenopausal-women cohort BMI is approximately 28-30 kg/m^2. ",
@@ -87,10 +87,10 @@ Plan_2012_bmd_fracture <- function() {
         "2012 poster and would need to be obtained from the authors' ",
         "underlying WinBUGS run for forward simulation."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     AGE_FMP = list(
-      description        = paste0(
+      description = paste0(
         "Age at the final menstrual period (FMP), i.e. the subject's ",
         "chronological age in years at the time her FMP occurred. ",
         "Distinct from current age: in the Plan 2012 NHANES cohort the ",
@@ -102,10 +102,10 @@ Plan_2012_bmd_fracture <- function() {
         "Models: 'Investigated covariates: observed BMD, BMD(t), ",
         "FMPage, and time')."
       ),
-      units              = "year",
-      type               = "continuous",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. Derived from the NHANES Reproductive ",
         "Health questionnaire (age at last natural menstrual period). ",
         "Per-parameter coefficient magnitudes are not reported in the ",
@@ -116,10 +116,10 @@ Plan_2012_bmd_fracture <- function() {
         "for documentation only and is not validated against the ",
         "canonical register."
       ),
-      source_name        = "FMPage"
+      source_name = "FMPage"
     ),
     ETHNICITY = list(
-      description        = paste0(
+      description = paste0(
         "Self-reported ethnicity using the NHANES 2005-2008 categories ",
         "(Non-Hispanic White, Non-Hispanic Black, Mexican American, ",
         "Other Hispanic, Other Race / Multi-Racial). Listed in Plan 2012 ",
@@ -128,10 +128,10 @@ Plan_2012_bmd_fracture <- function() {
         "the per-parameter coefficient magnitudes are not reported in ",
         "the source PAGE 2012 poster."
       ),
-      units              = "(categorical)",
-      type               = "categorical",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "not reported in the source poster (canonical NHANES practice usually treats Non-Hispanic White as the reference)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. The poster does not specify how the ",
         "five NHANES ethnicity groups were collapsed for modelling ",
         "(e.g., binary White-vs-non-White, full 4-level dummy, or a ",
@@ -141,23 +141,23 @@ Plan_2012_bmd_fracture <- function() {
         "with the canonical RACE_BLACK / RACE_HISPANIC / RACE_ASIAN ",
         "indicators registered in inst/references/covariate-columns.md."
       ),
-      source_name        = "ethnicity"
+      source_name = "ethnicity"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1605L,
-    n_studies       = 1L,
-    age_range       = "27-85 years (95% interpercentile range; mean 63 yr at NHANES examination)",
-    age_median      = "mean 63 years at examination (Plan 2012 Methods/Data)",
-    weight_range    = "not transcribed in this extraction (NHANES 2005-2008 anthropometric distributions are public but not summarized in the poster)",
-    sex_female_pct  = 100,
-    race_ethnicity  = "NHANES 2005-2008 sample weights span Non-Hispanic White, Non-Hispanic Black, Mexican American, Other Hispanic, and Other Race / Multi-Racial. Per-group counts are not reported in the poster.",
-    disease_state   = "Postmenopausal women (any age at FMP; women on the natural-menopause trajectory rather than a surgical / induced menopause sub-cohort).",
-    dose_range      = "n/a (this model has no drug input; the disease-progression trajectory is driven entirely by years since FMP).",
-    regions         = "United States (NHANES 2005-2008 nationally representative sample).",
-    notes           = paste0(
+    species = "human",
+    n_subjects = 1605L,
+    n_studies = 1L,
+    age_range = "27-85 years (95% interpercentile range; mean 63 yr at NHANES examination)",
+    age_median = "mean 63 years at examination (Plan 2012 Methods/Data)",
+    weight_range = "not transcribed in this extraction (NHANES 2005-2008 anthropometric distributions are public but not summarized in the poster)",
+    sex_female_pct = 100,
+    race_ethnicity = "NHANES 2005-2008 sample weights span Non-Hispanic White, Non-Hispanic Black, Mexican American, Other Hispanic, and Other Race / Multi-Racial. Per-group counts are not reported in the poster.",
+    disease_state = "Postmenopausal women (any age at FMP; women on the natural-menopause trajectory rather than a surgical / induced menopause sub-cohort).",
+    dose_range = "n/a (this model has no drug input; the disease-progression trajectory is driven entirely by years since FMP).",
+    regions = "United States (NHANES 2005-2008 nationally representative sample).",
+    notes = paste0(
       "Plan 2012 PAGE conference poster (IV-04). Data source: 2005-2008 ",
       "National Health and Nutrition Examination Survey (NHANES) ",
       "demographics, dual-energy X-ray absorptiometry, body measures, ",

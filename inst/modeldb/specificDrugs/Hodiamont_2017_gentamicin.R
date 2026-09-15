@@ -8,7 +8,7 @@ Hodiamont_2017_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Hodiamont_2017_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Hodiamont 2017 tested total, ideal, and adjusted body weight as covariates
   # on CL, Q, V1, and V2 using both allometric and univariate forms, and
@@ -22,27 +22,27 @@ Hodiamont_2017_gentamicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59L,
-    n_studies      = 1L,
-    age_mean       = "60.9 +/- 17.2 years",
-    weight_mean    = "TBW 79.2 +/- 22.0 kg; IBW 71.4 +/- 11.6 kg; ABW 74.6 +/- 13.0 kg",
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
+    age_mean = "60.9 +/- 17.2 years",
+    weight_mean = "TBW 79.2 +/- 22.0 kg; IBW 71.4 +/- 11.6 kg; ABW 74.6 +/- 13.0 kg",
     sex_female_pct = 49,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults admitted to a mixed medical-surgical ICU",
       "receiving intravenous gentamicin. Four of 62 treatment episodes",
       "were for endocarditis (3 mg/kg combined with a beta-lactam for",
       "synergy); these were included in the PK model fit but excluded",
       "from the primary TDM end points."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Fixed first dose approximately 5 mg/kg (mean 5.1 +/- 1.1 mg/kg",
       "TBW for the 58 non-endocarditis episodes), 3 mg/kg for the 4",
       "endocarditis episodes, administered as a 30-min IV infusion.",
@@ -56,8 +56,8 @@ Hodiamont_2017_gentamicin <- function() {
       "(n = 62 episodes), 99.7 +/- 59.3 before the second dose (n = 33),",
       "133.0 +/- 85.6 before the third (n = 13)."
     ),
-    regions        = "Single-centre cohort: Academic Medical Center ICU, Amsterdam, the Netherlands. Data collected May-June 2013 and April-June 2014.",
-    notes          = paste(
+    regions = "Single-centre cohort: Academic Medical Center ICU, Amsterdam, the Netherlands. Data collected May-June 2013 and April-June 2014.",
+    notes = paste(
       "Baseline demographics from Hodiamont 2017 Table 1. Renal function",
       "showed large between-patient and within-patient variation; in part",
       "this is what the unmodelled IOV on CL captures. The cohort was",

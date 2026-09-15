@@ -8,61 +8,61 @@ Tod_1998_amikacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "amikacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as bw in the Cockcroft-Gault-like renal-CL covariate term (WT / CREAT). Tod 1998 Table 1: mean (SD) 65.8 (13.0) kg in the o.d. group and 68.1 (13.1) kg in the b.i.d. group; range 44-106 kg. Time-fixed at baseline in the published model.",
-      source_name        = "bw"
+      notes = "Used as bw in the Cockcroft-Gault-like renal-CL covariate term (WT / CREAT). Tod 1998 Table 1: mean (SD) 65.8 (13.0) kg in the o.d. group and 68.1 (13.1) kg in the b.i.d. group; range 44-106 kg. Time-fixed at baseline in the published model.",
+      source_name = "bw"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as age in the renal-CL age-correction factor (theta_3 - AGE/100). Tod 1998 Table 1: mean (SD) 50.2 (16.8) years in the o.d. group and 51.3 (16.0) years in the b.i.d. group; range 18-85 years. At AGE = 0 the age-correction factor equals theta_3 = 0.985; the linear extrapolation reaches zero at AGE = 100 x theta_3 = 98.5 years, so the structural CL is only physiologically meaningful for adult ages below that threshold.",
-      source_name        = "age"
+      notes = "Used as age in the renal-CL age-correction factor (theta_3 - AGE/100). Tod 1998 Table 1: mean (SD) 50.2 (16.8) years in the o.d. group and 51.3 (16.0) years in the b.i.d. group; range 18-85 years. At AGE = 0 the age-correction factor equals theta_3 = 0.985; the linear extrapolation reaches zero at AGE = 100 x theta_3 = 98.5 years, so the structural CL is only physiologically meaningful for adult ages below that threshold.",
+      source_name = "age"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as S_CR (the patient's measured serum creatinine) in the Cockcroft-Gault-like renal-CL covariate term (WT / CREAT). Tod 1998 Discussion (p. 853) reports the per-patient serum creatinine assumed log-normally distributed with mean (SD) 85 (37) umol/L (used for the population simulation of Table 5). The full per-patient SCR vector underlies the CLCR mean (SD) 91 (36) mL/min in the b.i.d. group and 104 (39) mL/min in the o.d. group (Table 1). Time-fixed at baseline in the published model.",
-      source_name        = "SCR"
+      notes = "Used as S_CR (the patient's measured serum creatinine) in the Cockcroft-Gault-like renal-CL covariate term (WT / CREAT). Tod 1998 Discussion (p. 853) reports the per-patient serum creatinine assumed log-normally distributed with mean (SD) 85 (37) umol/L (used for the population simulation of Table 5). The full per-patient SCR vector underlies the CLCR mean (SD) 91 (36) mL/min in the b.i.d. group and 104 (39) mL/min in the o.d. group (Table 1). Time-fixed at baseline in the published model.",
+      source_name = "SCR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Tod 1998 Table 4 reports two distinct renal-CL slope coefficients (theta_1 = 0.797 for males, theta_2 = 0.640 for females). The structural model selects theta_i based on SEXF; the canonical SEXF (1 = female) maps directly to the paper's 'i = 2 for women'. Removing the sex covariate produced a significantly poorer fit (Table 3 step 6).",
-      source_name        = "sex"
+      notes = "Tod 1998 Table 4 reports two distinct renal-CL slope coefficients (theta_1 = 0.797 for males, theta_2 = 0.640 for females). The structural model selects theta_i based on SEXF; the canonical SEXF (1 = female) maps directly to the paper's 'i = 2 for women'. Removing the sex covariate produced a significantly poorer fit (Table 3 step 6).",
+      source_name = "sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 1L,
-    age_range      = "18-85 years",
-    age_median     = "o.d. 51 years; b.i.d. 50 years",
-    weight_range   = "44-106 kg",
-    weight_median  = "o.d. 64 kg; b.i.d. 66 kg",
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 1L,
+    age_range = "18-85 years",
+    age_median = "o.d. 51 years; b.i.d. 50 years",
+    weight_range = "44-106 kg",
+    weight_median = "o.d. 64 kg; b.i.d. 66 kg",
     sex_female_pct = 39,
     race_ethnicity = "Not reported (single-centre French cohort, Hopital Avicenne, Bobigny)",
-    disease_state  = "Febrile severe neutropenia (neutrophil count <500/mm^3) under treatment for a primary hematological disorder. Diagnoses: acute myeloblastic leukemia (n=18), non-Hodgkin's lymphoma (n=21), acute lymphoblastic leukemia (n=8), myeloma (n=7), Hodgkin's lymphoma (n=1), agranulocytosis (n=1), aplastic anemia (n=1).",
-    dose_range     = "7.5 mg/kg b.i.d. (n=29) or 20 mg/kg o.d. (n=28) intravenous infusion over 0.5 h; both regimens given alongside piperacillin (b.i.d. cohort) or piperacillin-tazobactam (o.d. cohort) t.i.d.",
-    regions        = "France (single centre, Hopital Avicenne)",
+    disease_state = "Febrile severe neutropenia (neutrophil count <500/mm^3) under treatment for a primary hematological disorder. Diagnoses: acute myeloblastic leukemia (n=18), non-Hodgkin's lymphoma (n=21), acute lymphoblastic leukemia (n=8), myeloma (n=7), Hodgkin's lymphoma (n=1), agranulocytosis (n=1), aplastic anemia (n=1).",
+    dose_range = "7.5 mg/kg b.i.d. (n=29) or 20 mg/kg o.d. (n=28) intravenous infusion over 0.5 h; both regimens given alongside piperacillin (b.i.d. cohort) or piperacillin-tazobactam (o.d. cohort) t.i.d.",
+    regions = "France (single centre, Hopital Avicenne)",
     n_observations = 278L,
     renal_function = "Cockcroft-Gault CLCR mean (SD) 91 (36) mL/min in the b.i.d. group and 104 (39) mL/min in the o.d. group; range 20-213 mL/min (Tod 1998 Table 1).",
-    notes          = "Demographics from Tod 1998 Table 1. 278 serum amikacin samples (93 peak, 117 trough, 68 intermediate); median 4 samples per subject (range 1-14). Concentrations were measured by enzyme-multiplied immunoassay (EMIT, Cobas Roche); LOQ 2.5 mg/L. Pregnant women and HIV-infected patients were excluded. The dosing-regimen covariate was not retained in the final model (Table 3 steps 7-14)."
+    notes = "Demographics from Tod 1998 Table 1. 278 serum amikacin samples (93 peak, 117 trough, 68 intermediate); median 4 samples per subject (range 1-14). Concentrations were measured by enzyme-multiplied immunoassay (EMIT, Cobas Roche); LOQ 2.5 mg/L. Pregnant women and HIV-infected patients were excluded. The dosing-regimen covariate was not retained in the final model (Table 3 steps 7-14)."
   )
 
   ini({

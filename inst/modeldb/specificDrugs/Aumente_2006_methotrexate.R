@@ -32,7 +32,7 @@ Aumente_2006_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Wang 2023 Table 2 records this model as '2 CMT' and names the
   # states V1 (central) and, implicitly through K12/K21, one peripheral
@@ -44,17 +44,17 @@ Aumente_2006_methotrexate <- function() {
   # for the specimen because the Aumente 2006 primary, which would state the
   # assayed matrix for THIS cohort, is not on disk.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Weight. Enters BOTH clearance and central volume, with",
         "a different form in each age stratum, per Wang 2023 Table 2:",
         "'CL (L/h, age > 10 years) = 0.149 x Weight',",
@@ -65,14 +65,14 @@ Aumente_2006_methotrexate <- function() {
         "(L/h per kg, or per kg^0.876; and L per kg). Wang 2023 Table 1",
         "records median 24.2 kg (range 7.5-80.0) for this cohort."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column age. Used ONLY as a binary stratifier at 10 years, not",
         "as a continuous effect: Wang 2023 Table 2 gives one pair of CL and V1",
         "equations for 'age > 10 years' and another for 'age < 10 years'.",
@@ -83,26 +83,26 @@ Aumente_2006_methotrexate <- function() {
         "age is exactly 10.0 years. Wang 2023 Table 1 records median 5.0 years",
         "(range 0.5-17.0) for this cohort. See the vignette Errata."
       ),
-      source_name        = "age"
+      source_name = "age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 37L,
-    n_studies      = 1L,
-    age_range      = "0.5 to 17.0 years",
-    age_median     = "5.0 years",
-    weight_range   = "7.5 to 80.0 kg",
-    weight_median  = "24.2 kg",
-    height_range   = "69 to 174 cm (median 115)",
-    bsa_range      = "0.30 to 1.90 m^2 (median 1.07)",
+    species = "human",
+    n_subjects = 37L,
+    n_studies = 1L,
+    age_range = "0.5 to 17.0 years",
+    age_median = "5.0 years",
+    weight_range = "7.5 to 80.0 kg",
+    weight_median = "24.2 kg",
+    height_range = "69 to 174 cm (median 115)",
+    bsa_range = "0.30 to 1.90 m^2 (median 1.07)",
     sex_female_pct = 100 * 20 / 37,
-    disease_state  = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate.",
+    disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate.",
     renal_function = "Serum creatinine median 0.5 mg/dL (range 0.3-0.8).",
-    dose_range     = "1.23 to 5.23 g/m^2 intravenous high-dose methotrexate.",
-    regions        = "Spain (Reina Sofia University Hospital, Cordoba).",
-    notes          = paste(
+    dose_range = "1.23 to 5.23 g/m^2 intravenous high-dose methotrexate.",
+    regions = "Spain (Reina Sofia University Hospital, Cordoba).",
+    notes = paste(
       "All demographics are from Wang 2023 Table 1, which tabulates the six",
       "evaluated cohorts side by side; the Aumente 2006 primary is not on",
       "disk. Wang 2023 Results reports that this model, together with the",

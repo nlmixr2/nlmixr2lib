@@ -7,61 +7,66 @@ Zhang_2023_valproic_acid_onebindingsite <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = TRUE,
-                   notes = "Holds administered valproic acid amount. Dividing by V/F yields the UNBOUND plasma concentration Cu, not the total: V/F is the unbound-referenced apparent volume (13000 L, about 470-fold the base model's 27.8 L, matching the 0.27% unbound fraction the binding isotherm produces). The observed total concentration is the algebraic sum Cu + Cb.")
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "valproic acid",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE,
+      notes = "Holds administered valproic acid amount. Dividing by V/F yields the UNBOUND plasma concentration Cu, not the total: V/F is the unbound-referenced apparent volume (13000 L, about 470-fold the base model's 27.8 L, matching the 0.27% unbound fraction the binding isotherm produces). The observed total concentration is the algebraic sum Cu + Cb."
+    )
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Scales the saturable binding capacity in the one-binding-site isotherm (Zhang 2023 Eq. 3): Cb = N * K * Cu * ALB / (1 + K * Cu). Cohort mean 42.21 g/L, median 42.10, range 29.70-70.50 (Zhang 2023 Table 2); patients with abnormal albumin were excluded from the cohort. Albumin is the only covariate in any of the six models the authors fit. IMPORTANT UNITS NOTE: the paper labels K as 15.5 per mM, but the published parameter estimates only reconcile when Eq. 3 is evaluated with Cu in mg/L, ALB in g/L and K taken at its printed numeric value; see the model file comment on lkassoc_pb and the vignette Errata.",
-      source_name        = "ALB"
+      notes = "Scales the saturable binding capacity in the one-binding-site isotherm (Zhang 2023 Eq. 3): Cb = N * K * Cu * ALB / (1 + K * Cu). Cohort mean 42.21 g/L, median 42.10, range 29.70-70.50 (Zhang 2023 Table 2); patients with abnormal albumin were excluded from the cohort. Albumin is the only covariate in any of the six models the authors fit. IMPORTANT UNITS NOTE: the paper labels K as 15.5 per mM, but the published parameter estimates only reconcile when Eq. 3 is evaluated with Cu in mg/L, ALB in g/L and K taken at its printed numeric value; see the model file comment on lkassoc_pb and the vignette Errata.",
+      source_name = "ALB"
     ),
     FORM_TABLET = list(
-      description        = "Conventional (immediate-release) oral tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Conventional (immediate-release) oral tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral syrup, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED conventional-tablet absorption rate constant Ka = 1.57 1/h. Oral syrup (Ka = 2.64 1/h) is the reference formulation: FORM_TABLET = 0 and FORM_VPA_SR = 0. The Zhang 2023 evaluation cohort itself received only syrup (194 records) or sustained-release tablet (61 records); the conventional-tablet level is retained so the full literature Ka set the authors quote is reachable. Zhang 2023 Supplementary Table S3 footnote.",
-      source_name        = "conventional tablet"
+      notes = "Selects the FIXED conventional-tablet absorption rate constant Ka = 1.57 1/h. Oral syrup (Ka = 2.64 1/h) is the reference formulation: FORM_TABLET = 0 and FORM_VPA_SR = 0. The Zhang 2023 evaluation cohort itself received only syrup (194 records) or sustained-release tablet (61 records); the conventional-tablet level is retained so the full literature Ka set the authors quote is reachable. Zhang 2023 Supplementary Table S3 footnote.",
+      source_name = "conventional tablet"
     ),
     FORM_VPA_SR = list(
-      description        = "Sustained-release valproic acid tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sustained-release valproic acid tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral syrup, the reference formulation in this cohort)",
-      notes              = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h. 61 of 255 observation records in the Zhang 2023 cohort were on the sustained-release tablet (Table 2). Zhang 2023 Supplementary Table S3 footnote.",
-      source_name        = "sustained release tablet"
+      notes = "Selects the FIXED sustained-release-tablet absorption rate constant Ka = 0.46 1/h. 61 of 255 observation records in the Zhang 2023 cohort were on the sustained-release tablet (Table 2). Zhang 2023 Supplementary Table S3 footnote.",
+      source_name = "sustained release tablet"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term."
+      units = "kg",
+      type = "continuous",
+      notes = "Collected in the evaluation cohort (median 19.00 kg, range 4.00-70.00; Zhang 2023 Table 2) but NOT retained on CL/F or V/F in any of the authors' own six models. Zhang 2023 Supplementary Table S3 reports no weight term."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 202,
-    n_studies      = 1,
-    age_range      = "0.17-15.00 years",
-    age_median     = "4.92 years",
-    weight_range   = "4.00-70.00 kg",
-    weight_median  = "19.00 kg",
+    species = "human",
+    n_subjects = 202,
+    n_studies = 1,
+    age_range = "0.17-15.00 years",
+    age_median = "4.92 years",
+    weight_range = "4.00-70.00 kg",
+    weight_median = "19.00 kg",
     sex_female_pct = 31.2,
     race_ethnicity = "Chinese (single-centre Han-predominant cohort; sub-ethnicity not reported)",
-    disease_state  = "Childhood epilepsy on maintenance valproic acid with routine therapeutic drug monitoring",
-    dose_range     = "60-1250 mg/day (median 480); 8.70-57.69 mg/kg/day (median 23.44); oral syrup or sustained-release tablet given once, twice or three times daily",
-    regions        = "China (Wuhan Children's Hospital, single centre, January 2016 - November 2018)",
-    notes          = "255 total plasma valproic acid trough concentrations in 202 children (139 male / 63 female), measured by gas chromatography (LOQ 1 mg/L, calibration range 12.5-150 mg/L, CV < 10%). Observed concentrations 22.60-118.50 mg/L (median 50.40). All samples were troughs collected under steady-state conditions, so absorption and distribution parameters are only weakly identified. The authors caution that the one-binding-site constants come from an ADULT population and that age is positively correlated with the valproate free fraction, so this strategy may be poorly suited to children - it was nonetheless the third-best of the five on prediction-based metrics (MDPE 3.48%, MAPE 19.38%). Baseline demographics: Zhang 2023 Table 2."
+    disease_state = "Childhood epilepsy on maintenance valproic acid with routine therapeutic drug monitoring",
+    dose_range = "60-1250 mg/day (median 480); 8.70-57.69 mg/kg/day (median 23.44); oral syrup or sustained-release tablet given once, twice or three times daily",
+    regions = "China (Wuhan Children's Hospital, single centre, January 2016 - November 2018)",
+    notes = "255 total plasma valproic acid trough concentrations in 202 children (139 male / 63 female), measured by gas chromatography (LOQ 1 mg/L, calibration range 12.5-150 mg/L, CV < 10%). Observed concentrations 22.60-118.50 mg/L (median 50.40). All samples were troughs collected under steady-state conditions, so absorption and distribution parameters are only weakly identified. The authors caution that the one-binding-site constants come from an ADULT population and that age is positively correlated with the valproate free fraction, so this strategy may be poorly suited to children - it was nonetheless the third-best of the five on prediction-based metrics (MDPE 3.48%, MAPE 19.38%). Baseline demographics: Zhang 2023 Table 2."
   )
 
   ini({

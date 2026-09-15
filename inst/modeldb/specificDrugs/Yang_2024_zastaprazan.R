@@ -1,32 +1,32 @@
 Yang_2024_zastaprazan <- function() {
   description <- "Two-compartment population PK model with Erlang-type absorption through six sequential first-order transit steps and first-order elimination for zastaprazan (JP-1366), a potassium-competitive acid blocker, after oral dosing in patients with erosive gastroesophageal reflux disease (GERD) and in healthy volunteers (Yang 2024). Pooled analysis of 1590 plasma concentrations from 160 subjects across one phase 1 study in healthy volunteers (intensive sampling) and one phase 2 study in patients with erosive GERD (trough sampling), fit in NONMEM 7.4.4 by FOCEI. All six absorption steps share a single transit rate constant Ktr, so the absorption-time distribution is Erlang with shape 6 and rate Ktr. Disease status is the only retained covariate: apparent clearance is 41.4% lower in patients with GERD than in healthy volunteers, via the linear form CL/F = 29.4 * (1 - 0.414 * DIS_GERD). Typical values are for a healthy volunteer. Inter-individual variability is log-normal on Ktr, CL/F, Vc/F and Vp/F (none on Q/F); residual variability is proportional. CYP2C19 phenotype had no meaningful effect on zastaprazan PK, consistent with CYP3A-mediated rather than CYP2C19-mediated metabolism."
-  reference   <- "Yang E, Hwang I, Ji SC, Kim J, Lee S. Population pharmacokinetic analysis of zastaprazan (JP-1366), a novel potassium-competitive acid blocker, in patients and healthy volunteers. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2150-2158. doi:10.1002/psp4.13228."
-  vignette    <- "Yang_2024_zastaprazan"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  reference <- "Yang E, Hwang I, Ji SC, Kim J, Lee S. Population pharmacokinetic analysis of zastaprazan (JP-1366), a novel potassium-competitive acid blocker, in patients and healthy volunteers. CPT Pharmacometrics Syst Pharmacol. 2024;13(12):2150-2158. doi:10.1002/psp4.13228."
+  vignette <- "Yang_2024_zastaprazan"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. The absorption chain is the six sequential
   # compartments drawn in Yang 2024 Figure 1 (boxes 1-6): `depot` is box 1
   # (the dosing compartment) and `transit1`-`transit5` are boxes 2-6.
   compartmentData <- list(
-    depot       = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5    = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "zastaprazan", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "zastaprazan", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "zastaprazan", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "zastaprazan", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DIS_GERD = list(
-      description        = "Erosive gastroesophageal reflux disease indicator: 1 = patient with endoscopically confirmed erosive GERD enrolled in the phase 2 study (Study 2), 0 = healthy volunteer without any gastrointestinal disorder enrolled in the phase 1 study (Study 1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Erosive gastroesophageal reflux disease indicator: 1 = patient with endoscopically confirmed erosive GERD enrolled in the phase 2 study (Study 2), 0 = healthy volunteer without any gastrointestinal disorder enrolled in the phase 1 study (Study 1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer; the 68-subject phase 1 cohort of Study 1)",
-      notes              = "Time-fixed per subject. Maps 1:1 onto the paper's `disease status` covariate, which Yang 2024 Table 2 footnote a codes as PT = 1 for patient and PT = 0 for healthy volunteer, so the reported coefficient and the reported typical CL/F are carried through unchanged with no sign flip or re-baselining. The effect is LINEAR fractional rather than exponential: Table 2 footnote a prints CL/F (L/h) = 29.4 * (1 - 0.414 * PT), giving 17.2 L/h in patients versus 29.4 L/h in healthy volunteers (a 41.4% reduction). Yang 2024 attributes the lower apparent clearance to delayed gastric emptying in GERD raising bioavailability F rather than to a change in intrinsic clearance, and notes the same direction of effect for vonoprazan (another P-CAB) and lansoprazole (a PPI). Cohort composition 92 patients with erosive GERD / 68 healthy volunteers (Yang 2024 Table 1).",
-      source_name        = "disease status (PT)"
+      notes = "Time-fixed per subject. Maps 1:1 onto the paper's `disease status` covariate, which Yang 2024 Table 2 footnote a codes as PT = 1 for patient and PT = 0 for healthy volunteer, so the reported coefficient and the reported typical CL/F are carried through unchanged with no sign flip or re-baselining. The effect is LINEAR fractional rather than exponential: Table 2 footnote a prints CL/F (L/h) = 29.4 * (1 - 0.414 * PT), giving 17.2 L/h in patients versus 29.4 L/h in healthy volunteers (a 41.4% reduction). Yang 2024 attributes the lower apparent clearance to delayed gastric emptying in GERD raising bioavailability F rather than to a change in intrinsic clearance, and notes the same direction of effect for vonoprazan (another P-CAB) and lansoprazole (a PPI). Cohort composition 92 patients with erosive GERD / 68 healthy volunteers (Yang 2024 Table 1).",
+      source_name = "disease status (PT)"
     )
   )
 
@@ -40,82 +40,82 @@ Yang_2024_zastaprazan <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Total-cohort median 39 years (range 19-74); the patient and healthy cohorts differ markedly (patients median 58, range 24-74; healthy volunteers median 28, range 19-45; Yang 2024 Table 1), so age is strongly confounded with DIS_GERD in this dataset."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Total-cohort median 39 years (range 19-74); the patient and healthy cohorts differ markedly (patients median 58, range 24-74; healthy volunteers median 28, range 19-45; Yang 2024 Table 1), so age is strongly confounded with DIS_GERD in this dataset."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained; no allometric scaling appears in the final model. Total-cohort median 71.0 kg (range 43.4-106.2; Yang 2024 Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained; no allometric scaling appears in the final model. Total-cohort median 71.0 kg (range 43.4-106.2; Yang 2024 Table 1)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate height."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate height."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate AST."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate AST."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate ALT."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate ALT."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate albumin, and the paper does not state the units in which it was screened."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate albumin, and the paper does not state the units in which it was screened."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate total bilirubin, and the paper does not state the units in which it was screened."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a continuous candidate covariate and not retained. Yang 2024 Table 1 does not tabulate total bilirubin, and the paper does not state the units in which it was screened."
     ),
     SEXF = list(
       description = "Female sex indicator: 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical candidate covariate and not retained. 31 of 160 subjects (19.4%) were female, all of them in the patient cohort (the phase 1 healthy cohort was 100% male; Yang 2024 Table 1), so sex is partly confounded with DIS_GERD."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical candidate covariate and not retained. 31 of 160 subjects (19.4%) were female, all of them in the patient cohort (the phase 1 healthy cohort was 100% male; Yang 2024 Table 1), so sex is partly confounded with DIS_GERD."
     ),
     CYP2C19_IM = list(
       description = "CYP2C19 intermediate-metabolizer phenotype indicator: 1 = intermediate metabolizer (*1/*2, *1/*3), 0 = otherwise",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the categorical CYP2C19-phenotype covariate and not retained: 'CYP2C19 phenotypes had no meaningful effect on zastaprazan PK' and 'No visual correlations between CYP2C19 phenotypes and PK parameters including CL/F were observed' (Yang 2024 Results and Figure S1). 69 of 160 subjects (43.1%) were intermediate metabolizers; the reference phenotype is the normal metabolizer (*1/*1, 70 subjects, 43.8%) and phenotype was unidentified for 4 subjects (Yang 2024 Table 1). Consistent with zastaprazan being metabolized mainly by CYP3A4/CYP3A5 rather than CYP2C19."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the categorical CYP2C19-phenotype covariate and not retained: 'CYP2C19 phenotypes had no meaningful effect on zastaprazan PK' and 'No visual correlations between CYP2C19 phenotypes and PK parameters including CL/F were observed' (Yang 2024 Results and Figure S1). 69 of 160 subjects (43.1%) were intermediate metabolizers; the reference phenotype is the normal metabolizer (*1/*1, 70 subjects, 43.8%) and phenotype was unidentified for 4 subjects (Yang 2024 Table 1). Consistent with zastaprazan being metabolized mainly by CYP3A4/CYP3A5 rather than CYP2C19."
     ),
     CYP2C19_PM = list(
       description = "CYP2C19 poor-metabolizer phenotype indicator: 1 = poor metabolizer (*2/*2, *2/*3, *3/*3), 0 = otherwise",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the categorical CYP2C19-phenotype covariate and not retained (see CYP2C19_IM). 17 of 160 subjects (10.6%) were poor metabolizers (Yang 2024 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the categorical CYP2C19-phenotype covariate and not retained (see CYP2C19_IM). 17 of 160 subjects (10.6%) were poor metabolizers (Yang 2024 Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 160L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 160L,
+    n_studies = 2L,
     n_observations = 1590L,
-    age_range      = "Total 19-74 years (median 39); patients with erosive GERD 24-74 years (median 58); healthy volunteers 19-45 years (median 28)",
-    age_median     = "39 years",
-    weight_range   = "Total 43.4-106.2 kg (median 71.0); patients with erosive GERD 43.4-106.2 kg (median 69.7); healthy volunteers 56.4-88.4 kg (median 73.6)",
-    weight_median  = "71.0 kg",
+    age_range = "Total 19-74 years (median 39); patients with erosive GERD 24-74 years (median 58); healthy volunteers 19-45 years (median 28)",
+    age_median = "39 years",
+    weight_range = "Total 43.4-106.2 kg (median 71.0); patients with erosive GERD 43.4-106.2 kg (median 69.7); healthy volunteers 56.4-88.4 kg (median 73.6)",
+    weight_median = "71.0 kg",
     sex_female_pct = 19.4,
     race_ethnicity = "Not reported; Yang 2024 Table 1 tabulates no race or ethnicity",
-    disease_state  = "92 patients with erosive gastroesophageal reflux disease (phase 2 Study 2) and 68 healthy volunteers without any gastrointestinal disorder (phase 1 Study 1)",
-    dose_range     = "Study 1 (healthy volunteers): oral single doses of 5-60 mg or once-daily multiple doses of 5-40 mg for 7 consecutive days. Study 2 (patients with erosive GERD): oral once-daily multiple doses of 10-40 mg for 4 or 8 weeks. The approved regimen for erosive GERD is 20 mg once daily.",
-    regions        = "Not explicitly stated; both studies were run by investigators at Seoul National University College of Medicine and Hospital and sponsored by Onconic Therapeutics Inc. (Seoul, Republic of Korea)",
-    genotype       = "CYP2C19 phenotype identified for 156 of 160 subjects: 70 normal metabolizers (*1/*1, 43.8%), 69 intermediate metabolizers (*1/*2 or *1/*3, 43.1%), 17 poor metabolizers (*2/*2, *2/*3 or *3/*3, 10.6%); genotyped by Affymetrix DMET Plus microarray in Study 1 and by PCR in Study 2",
-    notes          = "Demographics from Yang 2024 Table 1 (median and range for age and weight, n (%) for categorical variables); study designs and sampling schemes from the Methods 'Data' section and Table S1. Sampling was intensive in the healthy volunteers (1495 of the 1590 observations came from 68 subjects) and sparse trough-only in the patients (95 observations from 92 subjects). Eleven of the 92 patients (12.0%) were Helicobacter pylori positive and every healthy volunteer was negative; H. pylori status was examined graphically (Figure S2) rather than as a formal covariate candidate and did not influence zastaprazan exposure."
+    disease_state = "92 patients with erosive gastroesophageal reflux disease (phase 2 Study 2) and 68 healthy volunteers without any gastrointestinal disorder (phase 1 Study 1)",
+    dose_range = "Study 1 (healthy volunteers): oral single doses of 5-60 mg or once-daily multiple doses of 5-40 mg for 7 consecutive days. Study 2 (patients with erosive GERD): oral once-daily multiple doses of 10-40 mg for 4 or 8 weeks. The approved regimen for erosive GERD is 20 mg once daily.",
+    regions = "Not explicitly stated; both studies were run by investigators at Seoul National University College of Medicine and Hospital and sponsored by Onconic Therapeutics Inc. (Seoul, Republic of Korea)",
+    genotype = "CYP2C19 phenotype identified for 156 of 160 subjects: 70 normal metabolizers (*1/*1, 43.8%), 69 intermediate metabolizers (*1/*2 or *1/*3, 43.1%), 17 poor metabolizers (*2/*2, *2/*3 or *3/*3, 10.6%); genotyped by Affymetrix DMET Plus microarray in Study 1 and by PCR in Study 2",
+    notes = "Demographics from Yang 2024 Table 1 (median and range for age and weight, n (%) for categorical variables); study designs and sampling schemes from the Methods 'Data' section and Table S1. Sampling was intensive in the healthy volunteers (1495 of the 1590 observations came from 68 subjects) and sparse trough-only in the patients (95 observations from 92 subjects). Eleven of the 92 patients (12.0%) were Helicobacter pylori positive and every healthy volunteer was negative; H. pylori status was examined graphically (Figure S2) rather than as a formal covariate candidate and did not influence zastaprazan exposure."
   )
 
   ini({

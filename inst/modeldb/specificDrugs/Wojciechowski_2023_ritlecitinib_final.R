@@ -14,55 +14,55 @@ Wojciechowski_2023_ritlecitinib_final <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ritlecitinib", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote. Final-model analysis population median 68.5 kg (range 29.6-131), which includes adolescents from 12 years of age. Wojciechowski 2023 Sect. 4 concludes that allometric weight scaling accounted for adolescent exposure differences and no weight-based dose adjustment was warranted.",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote. Final-model analysis population median 68.5 kg (range 29.6-131), which includes adolescents from 12 years of age. Wojciechowski 2023 Sect. 4 concludes that allometric weight scaling accounted for adolescent exposure differences and no weight-based dose adjustment was warranted.",
+      source_name = "BWT"
     ),
     DIS_ALOPECIA_AREATA = list(
-      description        = "Alopecia areata patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Alopecia areata patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant or severe renal impairment participant)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and is the only member of the inflammatory-disease group (PTST in {1, 2, 3, 5}) present in the final-model evaluation dataset, so it alone scales the IIV and residual-error magnitudes here. The control stream names healthy participants and severe renal impairment participants as the CL/F reference.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and is the only member of the inflammatory-disease group (PTST in {1, 2, 3, 5}) present in the final-model evaluation dataset, so it alone scales the IIV and residual-error magnitudes here. The control stream names healthy participants and severe renal impairment participants as the CL/F reference.",
+      source_name = "PTST"
     ),
     RENALIMP_SEV = list(
-      description        = "Severe renal impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe renal impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function; healthy participants and alopecia areata patients)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 7), from the dedicated phase I renal impairment study NCT04037865 (n = 8 in the final-model dataset). Carries a multiplicative effect on F only. Severe renal impairment participants are NOT part of the inflammatory-disease group that scales the IIV and residual-error magnitudes (the control stream tests PTST > 0 AND PTST < 6). Wojciechowski 2023 Sect. 4 attributes the higher F to reduced first-pass metabolism in chronic kidney disease and reports an average 47% increase in steady-state AUC(tau) and 41% increase in Cmax.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 7), from the dedicated phase I renal impairment study NCT04037865 (n = 8 in the final-model dataset). Carries a multiplicative effect on F only. Severe renal impairment participants are NOT part of the inflammatory-disease group that scales the IIV and residual-error magnitudes (the control stream tests PTST > 0 AND PTST < 6). Wojciechowski 2023 Sect. 4 attributes the higher F to reduced first-pass metabolism in chronic kidney disease and reports an average 47% increase in steady-state AUC(tau) and 41% increase in Cmax.",
+      source_name = "PTST"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 601L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 601L,
+    n_studies = 3L,
     n_observations = 2944L,
-    age_range      = "12.0-72.0 years",
-    age_median     = "32.0 years",
-    weight_range   = "29.6-131 kg",
-    weight_median  = "68.5 kg",
+    age_range = "12.0-72.0 years",
+    age_median = "32.0 years",
+    weight_range = "29.6-131 kg",
+    weight_median = "68.5 kg",
     sex_female_pct = 60.6,
     race_ethnicity = c(White = 66.4, Asian = 27.3, Black = 3.8, Other = 1.7, Missing = 0.8),
-    disease_state  = "Alopecia areata patients (584; 97.2%), healthy participants (9; 1.5%) and severe renal impairment participants (8; 1.3%).",
-    dose_range     = "10-200 mg/day oral ritlecitinib in the phase IIb/III alopecia areata studies, plus phase I healthy participant and renal impairment doses; overall programme range 5-800 mg/day",
-    regions        = "Global (phase IIb/III alopecia areata programme plus phase I studies; see Table S1 of the Electronic Supplementary Material)",
+    disease_state = "Alopecia areata patients (584; 97.2%), healthy participants (9; 1.5%) and severe renal impairment participants (8; 1.3%).",
+    dose_range = "10-200 mg/day oral ritlecitinib in the phase IIb/III alopecia areata studies, plus phase I healthy participant and renal impairment doses; overall programme range 5-800 mg/day",
+    regions = "Global (phase IIb/III alopecia areata programme plus phase I studies; see Table S1 of the Electronic Supplementary Material)",
     renal_function = "Normal, plus 8 participants with severe renal impairment (NCT04037865)",
     hepatic_function = "Normal",
-    notes          = "Demographics from Wojciechowski 2023 Table 1, final-model column (the Table 1 total row reads 599 while the counts sum to 601 and the text states 601 individuals; the text value is used here). Median baseline creatinine clearance 117 mL/min (range 14.7-288). This is the first iteration to include adolescents (age range starts at 12 years), supporting the Litfulo label in adults and adolescents aged 12 years and older. Below-limit-of-quantification observations were excluded during estimation."
+    notes = "Demographics from Wojciechowski 2023 Table 1, final-model column (the Table 1 total row reads 599 while the counts sum to 601 and the text states 601 individuals; the text value is used here). Median baseline creatinine clearance 117 mL/min (range 14.7-288). This is the first iteration to include adolescents (age range starts at 12 years), supporting the Litfulo label in adults and adolescents aged 12 years and older. Below-limit-of-quantification observations were excluded during estimation."
   )
 
   # Implementation notes (see the vignette 'Assumptions and deviations'

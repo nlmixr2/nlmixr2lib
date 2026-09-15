@@ -11,35 +11,35 @@ Ekhart_2008_carboplatin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects        = 240L,
-    n_courses         = 380L,
-    n_observations    = 4478L,
-    age_range         = "16-75 years",
-    age_median        = "47 years",
-    weight_range      = "46-170 kg",
-    weight_median     = "70 kg",
-    height_range      = "153-210 cm",
-    height_median     = "171 cm",
-    bmi_range         = "16-46 kg/m^2",
-    bmi_median        = "24 kg/m^2",
-    bsa_range         = "1.49-2.94 m^2",
-    bsa_median        = "1.81 m^2",
-    sex_female_pct    = 67.1,
-    bmi_categories    = "underweight (BMI < 18.5) 7 (3%), normal (18.5-25) 146 (61%), overweight (25-30) 72 (30%), obese (>=30) 15 (6%)",
-    serum_creatinine_range_uM           = "18-124 (median 57)",
-    creatinine_clearance_range_mL_min   = "55-451 (median 126; Cockcroft-Gault)",
-    albumin_range_g_L                   = "18-52 (median 42)",
-    disease_state     = "Adult cancer patients with normal renal function receiving carboplatin in combination chemotherapy (NSCLC, ovarian cancer, high-risk and metastatic breast cancer, refractory germ cell cancer, epithelial breast cancer)",
-    dose_range        = "Carboplatin 267-600 mg/m^2/day or AUC 6-20 mg.min/mL (Calvert formula); 30 min to 1 h IV infusions; conventional and high-dose CTC / tCTC / miniCTC / paclitaxel-carboplatin regimens",
-    regions           = "Netherlands (Antoni van Leeuwenhoek Hospital / Slotervaart Hospital, Amsterdam)",
-    notes             = "Pooled across previously published studies (Ekhart 2008 references 10-14). Free (ultrafilterable) platinum measured by flameless atomic absorption spectrometry."
+    n_subjects = 240L,
+    n_courses = 380L,
+    n_observations = 4478L,
+    age_range = "16-75 years",
+    age_median = "47 years",
+    weight_range = "46-170 kg",
+    weight_median = "70 kg",
+    height_range = "153-210 cm",
+    height_median = "171 cm",
+    bmi_range = "16-46 kg/m^2",
+    bmi_median = "24 kg/m^2",
+    bsa_range = "1.49-2.94 m^2",
+    bsa_median = "1.81 m^2",
+    sex_female_pct = 67.1,
+    bmi_categories = "underweight (BMI < 18.5) 7 (3%), normal (18.5-25) 146 (61%), overweight (25-30) 72 (30%), obese (>=30) 15 (6%)",
+    serum_creatinine_range_uM = "18-124 (median 57)",
+    creatinine_clearance_range_mL_min = "55-451 (median 126; Cockcroft-Gault)",
+    albumin_range_g_L = "18-52 (median 42)",
+    disease_state = "Adult cancer patients with normal renal function receiving carboplatin in combination chemotherapy (NSCLC, ovarian cancer, high-risk and metastatic breast cancer, refractory germ cell cancer, epithelial breast cancer)",
+    dose_range = "Carboplatin 267-600 mg/m^2/day or AUC 6-20 mg.min/mL (Calvert formula); 30 min to 1 h IV infusions; conventional and high-dose CTC / tCTC / miniCTC / paclitaxel-carboplatin regimens",
+    regions = "Netherlands (Antoni van Leeuwenhoek Hospital / Slotervaart Hospital, Amsterdam)",
+    notes = "Pooled across previously published studies (Ekhart 2008 references 10-14). Free (ultrafilterable) platinum measured by flameless atomic absorption spectrometry."
   )
 
   ini({

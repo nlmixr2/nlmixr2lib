@@ -29,18 +29,18 @@ Collins_2025_midazolam <- function() {
   )
   vignette <- "Collins_2025_midazolam"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nM"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with fixed exponents, referenced to 73 kg (the",
         "Table 1 median). File S5 codes the scaling on the log scale inside",
         "the MU-referenced typical value, e.g.",
@@ -53,14 +53,14 @@ Collins_2025_midazolam <- function() {
         "clearance and volume parameter estimates.'",
         "Table 1 weight median (range): 73 (53-104) kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Self-reported female sex",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-reported female sex",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Multiplicative effect on midazolam clearance.",
         "The source dataset codes the opposite polarity: File S5 sets",
         "K0 = 1 IF(SEX.EQ.0) with the trailing comment ';female', so the",
@@ -71,14 +71,14 @@ Collins_2025_midazolam <- function() {
         "higher in females compared to males') and the Table 2 row label",
         "'Female'. Table 1: 27/72 (37.5%) female in the single-dose cohort."
       ),
-      source_name        = "SEX (0 = female, 1 = male)"
+      source_name = "SEX (0 = female, 1 = male)"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 non-expresser)",
-      notes              = paste(
+      notes = paste(
         "1 = expresser, 0 = non-expresser. Methods 'DNA Genotyping':",
         "'CYP3A5 genotypes were classified as non-expressors (two copies of",
         "*3, *6, or *7 alleles) and expressors (one or no copies of *3, *6,",
@@ -90,14 +90,14 @@ Collins_2025_midazolam <- function() {
         "File S5 column A5, with N1 = 1 IF(A5.EQ.1) ';CYP3A5 Expressors'.",
         "Table 1: 18/72 (25%) expressers in the single-dose cohort."
       ),
-      source_name        = "A5"
+      source_name = "A5"
     ),
     SNP_CYP3A4_RS35599367 = list(
-      description        = "CYP3A4*22 (rs35599367) reduced-function allele carrier",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A4*22 (rs35599367) reduced-function allele carrier",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A4 *1/*1 normal metabolizer)",
-      notes              = paste(
+      notes = paste(
         "1 = carries at least one *22 allele, 0 = *1/*1. Methods 'DNA",
         "Genotyping': 'CYP3A4 genotypes were categorized as normal",
         "metabolizers (*1/*1) and intermediate metabolizers (*1/*22)' and",
@@ -110,14 +110,14 @@ Collins_2025_midazolam <- function() {
         "significance, likely due to the small number of intermediate",
         "metabolizers enrolled in the study (n = 4)'."
       ),
-      source_name        = "A4"
+      source_name = "A4"
     ),
     CONMED_EFV_MD = list(
-      description        = "Multiple-dose (steady-state) efavirenz co-administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multiple-dose (steady-state) efavirenz co-administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (single 600 mg dose of efavirenz)",
-      notes              = paste(
+      notes = paste(
         "1 = midazolam probe dose given on study Day 24, after efavirenz",
         "600 mg once daily on Days 7-23 plus the Day 24 morning dose;",
         "0 = midazolam probe dose given on Day 1, one hour after a single",
@@ -135,48 +135,62 @@ Collins_2025_midazolam <- function() {
         "and EFV = 1 represents the single-dose condition ... The reference",
         "(baseline) state is thus the single-dose efavirenz condition.'"
       ),
-      source_name        = "EFV (0 = multiple dose, 1 = single dose)"
+      source_name = "EFV (0 = multiple dose, 1 = single dose)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "midazolam", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "midazolam",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "midazolam", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "midazolam",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "midazolam", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "midazolam",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_1ohm = list(
-      analyte = "1-OH-midazolam", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "1-OH-midazolam",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_1ohm = list(
-      analyte = "1-OH-midazolam", units = "nmol", specimen = "plasma", verified = TRUE
+      analyte = "1-OH-midazolam",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72,
-    n_studies      = 1,
-    age_range      = "18-50 years",
-    age_median     = "25 years",
-    weight_range   = "53-104 kg",
-    weight_median  = "73 kg",
+    species = "human",
+    n_subjects = 72,
+    n_studies = 1,
+    age_range = "18-50 years",
+    age_median = "25 years",
+    weight_range = "53-104 kg",
+    weight_median = "73 kg",
     sex_female_pct = 37.5,
     race_ethnicity = c(White = 72, Black = 21, Other = 7),
-    disease_state  = "healthy volunteers",
-    dose_range     = paste(
+    disease_state = "healthy volunteers",
+    dose_range = paste(
       "Midazolam 1 mg oral syrup as a single CYP3A probe dose on each of two",
       "occasions, given one hour after efavirenz. Efavirenz 600 mg oral:",
       "a single dose on Day 1 and 600 mg once daily on Days 7-23 with a",
       "final dose on Day 24."
     ),
-    regions        = "United States (Indiana CTSI Clinical Research Center, Indianapolis)",
-    notes          = paste(
+    regions = "United States (Indiana CTSI Clinical Research Center, Indianapolis)",
+    notes = paste(
       "Demographics from Table 1 (single-dose efavirenz column, n = 72).",
       "All 72 subjects completed the Day 1 (single-dose efavirenz) session;",
       "58 completed both sessions, so the multiple-dose efavirenz occasion",

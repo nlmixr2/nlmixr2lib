@@ -13,8 +13,8 @@ Zhou_2026_tacrolimus <- function() {
   )
   vignette <- "Zhou_2026_tacrolimus"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -32,26 +32,26 @@ Zhou_2026_tacrolimus <- function() {
   # because the source contradicts itself; V/F and CL/F are whole-blood
   # apparent parameters either way, so the numerical model is unaffected.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_WUZHI = list(
-      description        = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant Wuzhi capsule (Schisandra sphenanthera extract) indicator (1 = receiving Wuzhi capsule, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant Wuzhi capsule)",
-      notes              = "Source label WZC. Zhou 2026 Results states 'If combined with WZC, theta_WZC = 0.731; if not combined with WZC, theta_WZC = 1', so the effect enters as the multiplier 0.731^CONMED_WUZHI on CL/F -- a 26.9% reduction in apparent clearance. 27 of 410 samples (6.6%) were taken under concomitant Wuzhi capsule (Table 1). The paper attributes the direction to inhibition of CYP3A and P-glycoprotein by the Schisandra extract (Discussion). Note that Zhou 2026 spells out WZC as 'compound Salvia miltiorrhiza polyphenolic acid capsule' in Results; this is an error in the source -- Wuzhi capsule is a Schisandra sphenanthera preparation, and the paper's own Discussion and reference 27 both discuss it as such.",
-      source_name        = "WZC"
+      notes = "Source label WZC. Zhou 2026 Results states 'If combined with WZC, theta_WZC = 0.731; if not combined with WZC, theta_WZC = 1', so the effect enters as the multiplier 0.731^CONMED_WUZHI on CL/F -- a 26.9% reduction in apparent clearance. 27 of 410 samples (6.6%) were taken under concomitant Wuzhi capsule (Table 1). The paper attributes the direction to inhibition of CYP3A and P-glycoprotein by the Schisandra extract (Discussion). Note that Zhou 2026 spells out WZC as 'compound Salvia miltiorrhiza polyphenolic acid capsule' in Results; this is an error in the source -- Wuzhi capsule is a Schisandra sphenanthera preparation, and the paper's own Discussion and reference 27 both discuss it as such.",
+      source_name = "WZC"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser status (1 = carries at least one CYP3A5*1 allele, genotype *1/*1 or *1/*3; 0 = CYP3A5*3/*3 non-expresser)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 non-expresser)",
-      notes              = "VALUE INVERSION relative to the source. Zhou 2026 Results codes the opposite orientation: 'if CYP3A5 genotype is *3*3, theta_CYP3A5 = 0.768; if CYP3A5 genotype is *1*1/*1*3, theta_CYP3A5 = 1'. The canonical register mandates the expresser-equals-1 orientation and explicitly instructs papers using a *3/*3 indicator to record values under CYP3A5_EXPR with the inversion documented, so the published multiplier is applied here to (1 - CYP3A5_EXPR). The direction of the effect is unchanged from the paper: non-expressers have 0.768 times the apparent clearance of expressers (23.2% lower CL/F), equivalently expressers clear 1/0.768 = 1.30 times faster. Zhou 2026 pooled *1/*1 (4.4% of samples) with *1/*3 (35.6%) into the single expresser reference group; 60.0% of samples are *3/*3 non-expressers. Genotype was determined by PCR and Sanger sequencing of rs776746 and the distribution satisfies Hardy-Weinberg equilibrium (Table 3: chi-squared 0.395, p = 0.821).",
-      source_name        = "CYP3A5"
+      notes = "VALUE INVERSION relative to the source. Zhou 2026 Results codes the opposite orientation: 'if CYP3A5 genotype is *3*3, theta_CYP3A5 = 0.768; if CYP3A5 genotype is *1*1/*1*3, theta_CYP3A5 = 1'. The canonical register mandates the expresser-equals-1 orientation and explicitly instructs papers using a *3/*3 indicator to record values under CYP3A5_EXPR with the inversion documented, so the published multiplier is applied here to (1 - CYP3A5_EXPR). The direction of the effect is unchanged from the paper: non-expressers have 0.768 times the apparent clearance of expressers (23.2% lower CL/F), equivalently expressers clear 1/0.768 = 1.30 times faster. Zhou 2026 pooled *1/*1 (4.4% of samples) with *1/*3 (35.6%) into the single expresser reference group; 60.0% of samples are *3/*3 non-expressers. Genotype was determined by PCR and Sanger sequencing of rs776746 and the distribution satisfies Hardy-Weinberg equilibrium (Table 3: chi-squared 0.395, p = 0.821).",
+      source_name = "CYP3A5"
     )
   )
 
@@ -63,68 +63,68 @@ Zhou_2026_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Median 71 kg [IQR 61-79] (Zhou 2026 Table 1). Screened but not retained on CL/F or V/F by the stepwise PK covariate search, and subsequently dropped from the machine-learning feature set for multicollinearity with BMI (Table S3: VIF 4.945)."
+      units = "kg",
+      type = "continuous",
+      notes = "Median 71 kg [IQR 61-79] (Zhou 2026 Table 1). Screened but not retained on CL/F or V/F by the stepwise PK covariate search, and subsequently dropped from the machine-learning feature set for multicollinearity with BMI (Table S3: VIF 4.945)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Median 24.40 kg/m^2 [IQR 22.45-27.90] (Zhou 2026 Table 1). Retained in the machine-learning feature set in preference to body weight, but not retained in the population PK model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Median 24.40 kg/m^2 [IQR 22.45-27.90] (Zhou 2026 Table 1). Retained in the machine-learning feature set in preference to body weight, but not retained in the population PK model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Median 35.05 g/L [IQR 29.00-40.20] (Zhou 2026 Table 1). A machine-learning feature only; not retained on CL/F or V/F. Hypoalbuminaemia is prominent in nephrotic syndrome and the Discussion argues it should raise the free fraction, but the effect did not reach the OFV criterion in the PK covariate search."
+      units = "g/L",
+      type = "continuous",
+      notes = "Median 35.05 g/L [IQR 29.00-40.20] (Zhou 2026 Table 1). A machine-learning feature only; not retained on CL/F or V/F. Hypoalbuminaemia is prominent in nephrotic syndrome and the Discussion argues it should raise the free fraction, but the effect did not reach the OFV criterion in the PK covariate search."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Source column CCR; median 109.61 mL/min [IQR 82.43-143.35] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Source column CCR; median 109.61 mL/min [IQR 82.43-143.35] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Median 6.40 mmol/L [IQR 5.00-8.57] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Median 6.40 mmol/L [IQR 5.00-8.57] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
     ),
     TBIL = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Median 10.00 umol/L [IQR 7.29-13.59] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Median 10.00 umol/L [IQR 7.29-13.59] (Zhou 2026 Table 1). A machine-learning feature only; not retained in the population PK model."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 44 years [IQR 31-53] (Zhou 2026 Table 1). Screened but not retained in the population PK model and not selected into the machine-learning feature set."
+      units = "years",
+      type = "continuous",
+      notes = "Median 44 years [IQR 31-53] (Zhou 2026 Table 1). Screened but not retained in the population PK model and not selected into the machine-learning feature set."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "41.5% female (Zhou 2026 Table 1). Screened but not retained in the population PK model."
+      units = "(binary)",
+      type = "binary",
+      notes = "41.5% female (Zhou 2026 Table 1). Screened but not retained in the population PK model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 141L,
-    n_studies      = 1L,
-    age_range      = "18 years and older; median 44 years (IQR 31-53)",
-    age_median     = "44 years",
-    weight_range   = "median 71 kg (IQR 61-79)",
-    weight_median  = "71 kg",
+    species = "human",
+    n_subjects = 141L,
+    n_studies = 1L,
+    age_range = "18 years and older; median 44 years (IQR 31-53)",
+    age_median = "44 years",
+    weight_range = "median 71 kg (IQR 61-79)",
+    weight_median = "71 kg",
     sex_female_pct = 41.5,
     race_ethnicity = c(Han = 67.1, `Kazakh/Uyghur` = 27.1, Hui = 4.6, Other = 1.2),
-    disease_state  = "Adult patients with nephrotic syndrome receiving oral immediate-release tacrolimus as immunosuppressive therapy, sampled at steady state during routine therapeutic drug monitoring",
-    dose_range     = "Oral immediate-release tacrolimus capsules, initial total daily dose 0.05-0.1 mg/kg divided into a morning and an evening dose (q12h) on an empty stomach, then adjusted to the therapeutic drug monitoring result; observed total daily dose median 3.00 mg (IQR 3.00-4.00)",
-    regions        = "Single centre, First Affiliated Hospital of Xinjiang Medical University, Urumqi, Xinjiang, People's Republic of China",
-    notes          = "Retrospective cohort of 182 consecutive patients screened; 141 patients contributing 410 steady-state trough samples formed the internal dataset (enrolled January 2018 to December 2019) from which this model was estimated. A temporal external validation set (enrolled January 2020 to December 2023) contributed a further 12 patients and 41 samples. Table 1 percentages are per-sample (N = 410), not per-patient. Samples were drawn after at least 3 days of continuous dosing; trough target for adult nephrotic syndrome is 5-10 ng/mL, and 46.6% of samples were below, 49.3% within and 4.1% above that window. Median time on tacrolimus at sampling 59 days (IQR 19-139). CYP3A5 rs776746 genotype distribution *1/*1 4.4%, *1/*3 35.6%, *3/*3 60.0%. Estimated in NONMEM 7.3 by FOCE; 500-sample non-parametric bootstrap and 1000-dataset NPDE used for evaluation, with all bootstrap-vs-estimate deviations within 5%. Ethics approval K201912-07."
+    disease_state = "Adult patients with nephrotic syndrome receiving oral immediate-release tacrolimus as immunosuppressive therapy, sampled at steady state during routine therapeutic drug monitoring",
+    dose_range = "Oral immediate-release tacrolimus capsules, initial total daily dose 0.05-0.1 mg/kg divided into a morning and an evening dose (q12h) on an empty stomach, then adjusted to the therapeutic drug monitoring result; observed total daily dose median 3.00 mg (IQR 3.00-4.00)",
+    regions = "Single centre, First Affiliated Hospital of Xinjiang Medical University, Urumqi, Xinjiang, People's Republic of China",
+    notes = "Retrospective cohort of 182 consecutive patients screened; 141 patients contributing 410 steady-state trough samples formed the internal dataset (enrolled January 2018 to December 2019) from which this model was estimated. A temporal external validation set (enrolled January 2020 to December 2023) contributed a further 12 patients and 41 samples. Table 1 percentages are per-sample (N = 410), not per-patient. Samples were drawn after at least 3 days of continuous dosing; trough target for adult nephrotic syndrome is 5-10 ng/mL, and 46.6% of samples were below, 49.3% within and 4.1% above that window. Median time on tacrolimus at sampling 59 days (IQR 19-139). CYP3A5 rs776746 genotype distribution *1/*1 4.4%, *1/*3 35.6%, *3/*3 60.0%. Estimated in NONMEM 7.3 by FOCE; 500-sample non-parametric bootstrap and 1000-dataset NPDE used for evaluation, with all bootstrap-vs-estimate deviations within 5%. Ethics approval K201912-07."
   )
 
   ini({

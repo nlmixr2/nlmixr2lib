@@ -17,7 +17,12 @@ Hyland_2009_midazolam_rugt1a4 <- function() {
 
   compartmentData <- list(
     midazolam = list(analyte = "midazolam", units = "umol/L", specimen = "administration site", verified = TRUE),
-    mdzg = list(analyte = "midazolam N-glucuronide", units = "pmol/mg protein", specimen = "not applicable", verified = TRUE)
+    mdzg = list(
+      analyte = "midazolam N-glucuronide",
+      units = "pmol/mg protein",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(

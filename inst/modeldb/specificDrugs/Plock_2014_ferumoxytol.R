@@ -1,6 +1,6 @@
 Plock_2014_ferumoxytol <- function() {
   description <- "Two-compartment population PK model with Michaelis-Menten elimination for IV ferumoxytol in healthy adults and adults with chronic kidney disease (Plock 2014). Encodes the typical non-dialysing-patient form; the haemodialysis-driven time-varying central volume (VSLOPE) and the within-session weight-loss effect on V1 (WLO) are described in the vignette but not enabled in this model file."
-  reference   <- paste(
+  reference <- paste(
     "Plock N, Facius A, Lahu G, Wood N, Frigo T, Deveney A, Aceves P.",
     "Population Pharmacokinetic Meta-Analysis to Bridge Ferumoxytol Plasma",
     "Pharmacokinetics Across Populations. Clin Pharmacokinet. 2015;54(4):385-395.",
@@ -8,60 +8,60 @@ Plock_2014_ferumoxytol <- function() {
     sep = " "
   )
   vignette <- "Plock_2014_ferumoxytol"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ferumoxytol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ferumoxytol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ferumoxytol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Plock 2014 Eq 1 linear centered relation on V1:",
         "V1 = V1_pop * (1 + (WT - 80) * 0.614 / 100).",
         "Reference value 80 kg is the cohort-pooled median (Table 3:",
         "median 79 kg in HV studies A and B, 83.9 kg in CKD study C;",
         "pooled n-weighted central tendency ~80 kg)."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = paste(
+      notes = paste(
         "Plock 2014 Eq 2 fractional-change relation on V1 with female as the",
         "non-reference category: V1 = V1_pop * (1 + SEXF * -18.3 / 100).",
         "Source paper encoded SEX as 1 = male / 2 = female; here mapped to the",
         "canonical SEXF (1 = female, 0 = male)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 111,
-    n_studies      = 3,
-    age_range      = "18-77 years (pooled across the three studies; study C [CKD] median 64 years)",
-    age_median     = "studies A and B (HV) medians 31 and 30 years; study C (CKD) median 64 years",
-    weight_range   = "46.5-115 kg (pooled across studies A, B, C; Table 3)",
-    weight_median  = "studies A and B (HV) medians both 79 kg; study C (CKD) median 83.9 kg",
+    species = "human",
+    n_subjects = 111,
+    n_studies = 3,
+    age_range = "18-77 years (pooled across the three studies; study C [CKD] median 64 years)",
+    age_median = "studies A and B (HV) medians 31 and 30 years; study C (CKD) median 64 years",
+    weight_range = "46.5-115 kg (pooled across studies A, B, C; Table 3)",
+    weight_median = "studies A and B (HV) medians both 79 kg; study C (CKD) median 83.9 kg",
     sex_female_pct = 45,
     race_ethnicity = c(White = 16, Black = 73, Hispanic = 9, Asian_Other = 2),
-    disease_state  = "Healthy volunteers (studies A and B) and adults with chronic kidney disease stage 5D on haemodialysis (study C). Used to bridge ferumoxytol PK from healthy and CKD-on-HD populations to the broader iron-deficiency-anaemia population.",
-    dose_range     = "Study A: ascending 1, 2, 4 mg/kg single IV (rates 30 mg/20 s, 30 mg/10 s, 30 mg/s; one cohort 60 mg/min). Study B: 2 x 510 mg IV (17 mL over 17 s) administered 24 h apart. Study C: 125 or 250 mg single IV over 5 min within 30 min after dialysis start.",
-    regions        = "United States.",
-    notes          = paste(
+    disease_state = "Healthy volunteers (studies A and B) and adults with chronic kidney disease stage 5D on haemodialysis (study C). Used to bridge ferumoxytol PK from healthy and CKD-on-HD populations to the broader iron-deficiency-anaemia population.",
+    dose_range = "Study A: ascending 1, 2, 4 mg/kg single IV (rates 30 mg/20 s, 30 mg/10 s, 30 mg/s; one cohort 60 mg/min). Study B: 2 x 510 mg IV (17 mL over 17 s) administered 24 h apart. Study C: 125 or 250 mg single IV over 5 min within 30 min after dialysis start.",
+    regions = "United States.",
+    notes = paste(
       "Pooled meta-analysis of three Phase I studies (Table 1). 91 HV PK",
       "subjects from studies A (n=33) and B (n=58) and 20 CKD-stage-5D-on-HD",
       "subjects from study C. 1,686 observations after pre-dose exclusion,",

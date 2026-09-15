@@ -15,43 +15,98 @@ Ayyar_2024_givosiran <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "givosiran", units = "nmol", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "givosiran", units = "nmol", specimen = "plasma", verified = FALSE),
-    central_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "plasma", verified = FALSE),
-    target           = list(analyte = "ASGPR receptor", units = "nmol", specimen = "not applicable", verified = FALSE),
-    complex          = list(analyte = "givosiran - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    complex_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
-    liver            = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver_asn1       = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver_endo       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver_endo_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver_deep       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    liver_deep_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
-    cyto             = list(analyte = "givosiran", units = "nmol", specimen = "not applicable", verified = FALSE),
-    cyto_asn1        = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "not applicable", verified = FALSE),
-    risc             = list(analyte = "RISC-loaded siRNA (givosiran + AS(N-1)3' metabolite)", units = "nmol", specimen = "not applicable", verified = FALSE),
-    kidney_vas       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    kidney_vas_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
-    kidney           = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    kidney_asn1      = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
-    kidney_deep      = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
-    kidney_deep_asn1 = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE)
+    depot = list(analyte = "givosiran", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "givosiran", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    target = list(analyte = "ASGPR receptor", units = "nmol", specimen = "not applicable", verified = FALSE),
+    complex = list(
+      analyte = "givosiran - ASGPR complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    complex_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite - ASGPR complex",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    liver = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    liver_endo = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_endo_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    liver_deep = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_deep_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    cyto = list(analyte = "givosiran", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cyto_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    risc = list(
+      analyte = "RISC-loaded siRNA (givosiran + AS(N-1)3' metabolite)",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    kidney_vas = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_vas_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    kidney = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    kidney_deep = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_deep_asn1 = list(
+      analyte = "AS(N-1)3' givosiran metabolite",
+      units = "nmol",
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adult",
-    weight_range   = "70 kg reference adult (model parameters scaled / calibrated to a 70 kg human)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adult",
+    weight_range = "70 kg reference adult (model parameters scaled / calibrated to a 70 kg human)",
     sex_female_pct = NA_real_,
-    species        = "Human (70 kg). The paper additionally fits a rat (0.25 kg) parameterization including the ALAS1 mRNA silencing PD layer and a cynomolgus monkey parameterization; both are summarized in the assumptions section of the validation vignette but are not packaged in this file.",
-    disease_state  = "Adults with acute hepatic porphyria (AHP) - validation cohort is the published Phase 1 SC dose-ranging study (Ayyar 2024 reference 26).",
-    dose_range     = "0.35, 1, 2.5, 5 mg/kg SC single dose (validation cohort, Fig 6). Model is structurally suitable for IV bolus / short infusion as well; SC bioavailability fixed F = 0.9.",
-    regions        = "Multi-source - rat and monkey datasets digitized from published literature; human single-dose PK from a published Phase 1 study (ENVISION program for givosiran).",
-    notes          = "Pooled time-course data fit with the Nelder-Mead simplex algorithm (without inter-individual variability) in Monolix 2020R1; final human predictions in Fig 6 use Monte Carlo simulations with assumed 20% CV on ka, Vc, and kint (Ayyar 2024 p.184-185, Methods). The packaged model retains those 20% CV IIV terms and otherwise operates as a typical-value mechanistic simulator.",
-    scope_note     = "Mechanistic translational PK model: parameters are mechanistic constants. Human values are scaled allometrically from rat (or monkey) and calibrated within < ~20% to match observed Phase 1 plasma profiles. No residual error is fitted to the human cohort - the published prediction interval (Fig 6 shaded region) is generated from the IIV terms alone. PD (ALAS1 mRNA silencing in liver) was characterized in rat only and is not included in this human-parameter file."
+    species = "Human (70 kg). The paper additionally fits a rat (0.25 kg) parameterization including the ALAS1 mRNA silencing PD layer and a cynomolgus monkey parameterization; both are summarized in the assumptions section of the validation vignette but are not packaged in this file.",
+    disease_state = "Adults with acute hepatic porphyria (AHP) - validation cohort is the published Phase 1 SC dose-ranging study (Ayyar 2024 reference 26).",
+    dose_range = "0.35, 1, 2.5, 5 mg/kg SC single dose (validation cohort, Fig 6). Model is structurally suitable for IV bolus / short infusion as well; SC bioavailability fixed F = 0.9.",
+    regions = "Multi-source - rat and monkey datasets digitized from published literature; human single-dose PK from a published Phase 1 study (ENVISION program for givosiran).",
+    notes = "Pooled time-course data fit with the Nelder-Mead simplex algorithm (without inter-individual variability) in Monolix 2020R1; final human predictions in Fig 6 use Monte Carlo simulations with assumed 20% CV on ka, Vc, and kint (Ayyar 2024 p.184-185, Methods). The packaged model retains those 20% CV IIV terms and otherwise operates as a typical-value mechanistic simulator.",
+    scope_note = "Mechanistic translational PK model: parameters are mechanistic constants. Human values are scaled allometrically from rat (or monkey) and calibrated within < ~20% to match observed Phase 1 plasma profiles. No residual error is fitted to the human cohort - the published prediction interval (Fig 6 shaded region) is generated from the IIV terms alone. PD (ALAS1 mRNA silencing in liver) was characterized in rat only and is not included in this human-parameter file."
   )
 
   ini({

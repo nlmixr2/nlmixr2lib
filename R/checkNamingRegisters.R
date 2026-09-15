@@ -19,9 +19,33 @@
 # be noise rather than provenance. Kept as an explicit list (operator ruling
 # 2026-09-01) so that a NEW example-less entry still fails the check.
 .exampleExempt <- c(
-  "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lkel", "lvss", "lf", "lalag",
-  "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel", "vss", "f", "alag",
-  "propSd", "addSd", "lnSd", "logitSd", "probitSd"
+  "lka",
+  "lcl",
+  "lvc",
+  "lvp",
+  "lvp2",
+  "lq",
+  "lq2",
+  "lkel",
+  "lvss",
+  "lf",
+  "lalag",
+  "ka",
+  "cl",
+  "vc",
+  "vp",
+  "vp2",
+  "q",
+  "q2",
+  "kel",
+  "vss",
+  "f",
+  "alag",
+  "propSd",
+  "addSd",
+  "lnSd",
+  "logitSd",
+  "probitSd"
 )
 
 # Covariate canonicals are ALL CAPS. The exemption list is NOT kept here: it
@@ -40,7 +64,9 @@
   }
   rest <- lines[seq(start[[1]] + 1L, length(lines))]
   nextSection <- grep("^## ", rest)
-  if (length(nextSection)) rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  if (length(nextSection)) {
+    rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  }
   nested <- rest[grepl("^[[:space:]]+- ", rest)]
   unique(unlist(lapply(nested, .allMatches, pat = "`([^`]+)`")))
 }
@@ -52,8 +78,15 @@
 # check still green. Kept as a closed set so a typo is caught rather than
 # silently minting a new type; a genuinely new type is one edit here.
 .knownTypes <- c(
-  "compartment", "continuous", "binary", "categorical", "count",
-  "metabolite-suffix", "paper-named-param", "log-transformed-pk", "bare-pk"
+  "compartment",
+  "continuous",
+  "binary",
+  "categorical",
+  "count",
+  "metabolite-suffix",
+  "paper-named-param",
+  "log-transformed-pk",
+  "bare-pk"
 )
 
 # The other side of `.knownTypes`. That vector is the UNION over all three
@@ -74,7 +107,9 @@
   }
   rest <- lines[seq(start[[1]] + 1L, length(lines))]
   nextSection <- grep("^## ", rest)
-  if (length(nextSection)) rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  if (length(nextSection)) {
+    rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  }
   # Only the schema block's own `type:` field; the prose below it discusses
   # `Type:` in backticked capitalised form and must not be read as a list.
   decl <- grep("^[[:space:]]*type:[[:space:]]*[^[:space:]]", rest, value = TRUE)
@@ -103,30 +138,44 @@
   for (i in seq_along(lines)) {
     ln <- lines[[i]]
     if (grepl("^## [^#]", ln)) {
-      if (!is.null(cur)) out <- c(out, list(cur))
+      if (!is.null(cur)) {
+        out <- c(out, list(cur))
+      }
       cur <- NULL
       sec <- trimws(sub("^## ", "", ln))
     } else if (startsWith(ln, "### ")) {
-      if (!is.null(cur)) out <- c(out, list(cur))
+      if (!is.null(cur)) {
+        out <- c(out, list(cur))
+      }
       head <- trimws(sub(" \\(.*$", "", sub("^### ", "", ln)))
       nms <- trimws(strsplit(head, ",")[[1]])
       nms <- nms[nzchar(nms)]
-      if (!length(nms)) nms <- ""
+      if (!length(nms)) {
+        nms <- ""
+      }
       # `###` is also used for policy notes and for PATTERNS such as
       # `<tissue>_slab<n>`. Those are not canonicals: they have no example
       # models and no source token, so they would fake up two issue classes.
-      pseudo <- grepl("[*<`]", head) || grepl(" -- ", head) ||
-        grepl("[[:space:]]", nms[[1]])
+      pseudo <- grepl("[*<`]", head) || grepl(" -- ", head) || grepl("[[:space:]]", nms[[1]])
       # A DEPRECATED entry is a tombstone pointing at the canonical that
       # replaced it. It has no example models and no current use BY DESIGN,
       # so it is exempt from those two checks but still has to parse and
       # still has to resolve its cross-references.
       deprecated <- grepl("DEPRECATED", ln, fixed = TRUE)
-      cur <- list(name = nms[[1]], names = nms, section = sec, line = i,
-                  pseudo = pseudo, deprecated = deprecated,
-                  examples = character(), xrefs = character(),
-                  hasExampleField = FALSE, inEx = FALSE,
-                  hasTypeField = FALSE, type = NA_character_)
+      cur <- list(
+        name = nms[[1]],
+        names = nms,
+        section = sec,
+        line = i,
+        pseudo = pseudo,
+        deprecated = deprecated,
+        examples = character(),
+        xrefs = character(),
+        hasExampleField = FALSE,
+        inEx = FALSE,
+        hasTypeField = FALSE,
+        type = NA_character_
+      )
     } else if (!is.null(cur)) {
       st <- trimws(ln)
       if (startsWith(st, "- **Type:**")) {
@@ -151,10 +200,13 @@
       cur$xrefs <- c(cur$xrefs, .allMatches(ln, "\\[\\[([^]]+)\\]\\]"))
     }
   }
-  if (!is.null(cur)) out <- c(out, list(cur))
+  if (!is.null(cur)) {
+    out <- c(out, list(cur))
+  }
   out
 }
 
+# nolint start: cyclocomp_linter. Long-standing complexity; refactor separately.
 #' Check the naming registers for structural defects
 #'
 #' Validates `inst/references/*.md`, the registers that define canonical
@@ -196,17 +248,21 @@ checkNamingRegisters <- function(root = NULL) {
     modeldbDir <- file.path(root, "inst", "modeldb")
     refDir <- file.path(root, "inst", "references")
   }
-  empty <- data.frame(register = character(), check = character(),
-                      name = character(), line = integer(),
-                      detail = character(), stringsAsFactors = FALSE)
+  empty <- data.frame(
+    register = character(),
+    check = character(),
+    name = character(),
+    line = integer(),
+    detail = character(),
+    stringsAsFactors = FALSE
+  )
   if (!dir.exists(modeldbDir) || !dir.exists(refDir)) {
     return(empty)
   }
   modelFiles <- list.files(modeldbDir, pattern = "[.]R$", recursive = TRUE)
   onDisk <- basename(modelFiles)
   srcTokens <- unique(unlist(lapply(file.path(modeldbDir, modelFiles), function(f) {
-    .allMatches(paste(readLines(f, warn = FALSE), collapse = "\n"),
-                "([A-Za-z_][A-Za-z0-9_.]*)")
+    .allMatches(paste(readLines(f, warn = FALSE), collapse = "\n"), "([A-Za-z_][A-Za-z0-9_.]*)")
   })))
 
   # Accumulate into an explicit environment rather than using `<<-` from the
@@ -218,16 +274,25 @@ checkNamingRegisters <- function(root = NULL) {
   acc$iss <- list()
   add <- function(register, check, name, line, detail) {
     acc$iss[[length(acc$iss) + 1L]] <- data.frame(
-      register = register, check = check, name = name, line = line,
-      detail = detail, stringsAsFactors = FALSE)
+      register = register,
+      check = check,
+      name = name,
+      line = line,
+      detail = detail,
+      stringsAsFactors = FALSE
+    )
   }
 
   for (f in .registerFiles()) {
     path <- file.path(refDir, f)
-    if (!file.exists(path)) next
+    if (!file.exists(path)) {
+      next
+    }
     ents <- .parseRegister(path)
     real <- Filter(function(e) !isTRUE(e$pseudo), ents)
-    if (!length(real)) next
+    if (!length(real)) {
+      next
+    }
     canon <- unique(unlist(lapply(ents, `[[`, "names")))
 
     # Covariate canonicals are globally unique. A COMPARTMENT token may
@@ -242,8 +307,13 @@ checkNamingRegisters <- function(root = NULL) {
     nms <- unlist(lapply(real, `[[`, "names"))
     for (k in unique(keys[duplicated(keys)])) {
       sel <- which(keys == k)
-      add(f, "duplicate-canonical", nms[sel][[1]], lns[sel][[1]],
-          paste("also at line", paste(lns[sel][-1], collapse = ", ")))
+      add(
+        f,
+        "duplicate-canonical",
+        nms[sel][[1]],
+        lns[sel][[1]],
+        paste("also at line", paste(lns[sel][-1], collapse = ", "))
+      )
     }
 
     # Case convention, covariate register only: parameter canonicals are
@@ -258,25 +328,24 @@ checkNamingRegisters <- function(root = NULL) {
         # A DEPRECATED tombstone records a name that WAS used, so its case is
         # history rather than a choice; flagging it would push authors to
         # delete deprecation records to get the check green.
-        if (isTRUE(e$deprecated)) next
+        if (isTRUE(e$deprecated)) {
+          next
+        }
         for (nm in e$names) {
           if (nzchar(nm) && nm != toupper(nm) && !(nm %in% exempt)) {
-            add(f, "case-convention", nm, e$line,
-                "not ALL CAPS and not listed under `## Case convention`")
+            add(f, "case-convention", nm, e$line, "not ALL CAPS and not listed under `## Case convention`")
           }
         }
       }
       for (nm in setdiff(exempt, nms)) {
-        add(f, "stale-case-exemption", nm, NA_integer_,
-            "listed under `## Case convention` but has no `###` entry")
+        add(f, "stale-case-exemption", nm, NA_integer_, "listed under `## Case convention` but has no `###` entry")
       }
     }
 
     for (e in real) {
       miss <- setdiff(e$examples, onDisk)
       if (length(miss)) {
-        add(f, "orphan-example-model", e$name, e$line,
-            paste("cites absent file(s):", paste(miss, collapse = ", ")))
+        add(f, "orphan-example-model", e$name, e$line, paste("cites absent file(s):", paste(miss, collapse = ", ")))
       }
       tok <- e$name
       # Suffix sections register the SUFFIX (`dox`), which appears in model
@@ -286,34 +355,38 @@ checkNamingRegisters <- function(root = NULL) {
       # construction, e.g. `gs443902` appears only as
       # `lkmet_gs443902_peripheral1`, and matching just the ends reported it
       # as registered-but-unused while two models were using it.
-      used <- tok %in% srcTokens ||
+      used <- tok %in%
+        srcTokens ||
         any(endsWith(srcTokens, paste0("_", tok))) ||
         any(startsWith(srcTokens, paste0(tok, "_"))) ||
         any(grepl(paste0("_", tok, "_"), srcTokens, fixed = TRUE))
       if (nchar(tok) >= 3L && !used && !isTRUE(e$deprecated)) {
         add(f, "registered-but-unused", tok, e$line, "no model on disk uses it")
       }
-      if (!isTRUE(e$hasExampleField) && !(tok %in% .exampleExempt) &&
-          !isTRUE(e$deprecated)) {
+      if (!isTRUE(e$hasExampleField) && !(tok %in% .exampleExempt) && !isTRUE(e$deprecated)) {
         add(f, "no-example-model", tok, e$line, "no `Example models:` line")
       }
       # A DEPRECATED tombstone is exempt: it is a pointer to the replacement
       # canonical, not a declaration of a name that is still in use.
       if (!isTRUE(e$hasTypeField) && !isTRUE(e$deprecated)) {
         add(f, "no-type", tok, e$line, "no `Type:` line")
-      } else if (!is.na(e$type) && nzchar(e$type) &&
-                 !(e$type %in% .knownTypes)) {
-        add(f, "unknown-type", tok, e$line,
-            paste0("Type `", e$type, "` is not one of: ",
-                   paste(.knownTypes, collapse = ", ")))
+      } else if (!is.na(e$type) && nzchar(e$type) && !(e$type %in% .knownTypes)) {
+        add(
+          f,
+          "unknown-type",
+          tok,
+          e$line,
+          paste0("Type `", e$type, "` is not one of: ", paste(.knownTypes, collapse = ", "))
+        )
       }
       for (x in unique(e$xrefs)) {
         t <- gsub('^["\']+|["\']+$', "", trimws(x))
         # Prose placeholders such as [[<name>]] or [[...]] are not links.
-        if (!nzchar(t) || grepl("[<.]", t)) next
+        if (!nzchar(t) || grepl("[<.]", t)) {
+          next
+        }
         if (!(t %in% canon)) {
-          add(f, "broken-xref", e$name, e$line,
-              paste0("[[", t, "]] has no entry"))
+          add(f, "broken-xref", e$name, e$line, paste0("[[", t, "]] has no entry"))
         }
       }
     }
@@ -325,3 +398,4 @@ checkNamingRegisters <- function(root = NULL) {
   rownames(res) <- NULL
   res
 }
+# nolint end

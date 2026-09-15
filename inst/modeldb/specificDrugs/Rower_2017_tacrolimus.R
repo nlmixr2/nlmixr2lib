@@ -25,31 +25,31 @@ Rower_2017_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form effect on apparent volume of distribution with ",
         "exponent 0.775 and reference 5.7 years (model-building cohort ",
         "median; Table 1). In the canonical (CL/F, V/F) parameterisation ",
         "the same AGE exponent appears on CL/F because the source paper ",
         "estimated (ke, V) and CL/F = ke * V; see the model description."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, BSA-normalised (bedside Schwartz)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance, BSA-normalised (bedside Schwartz)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form effect on apparent elimination rate (and therefore ",
         "on CL/F in the canonical form) with exponent 0.850 and reference ",
         "122.4 mL/min/1.73 m^2 (model-building cohort median; Table 1). ",
@@ -58,14 +58,14 @@ Rower_2017_tacrolimus <- function() {
         "carried forward or back up to 48 hours, beyond which the ",
         "population median was imputed (Methods, PK modelling section)."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     CONMED_AZOLE = list(
-      description        = "Concomitant azole antifungal therapy indicator (fluconazole in the source cohort)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant azole antifungal therapy indicator (fluconazole in the source cohort)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant azole antifungal)",
-      notes              = paste0(
+      notes = paste0(
         "Fluconazole coadministration reduces tacrolimus apparent ",
         "elimination by 34% (Table 2 final model: ke = 0.0408 /h without ",
         "fluconazole and 0.0268 /h with fluconazole; fractional change ",
@@ -76,38 +76,38 @@ Rower_2017_tacrolimus <- function() {
         "antifungals -- interpret it as fluconazole-specific in this model. ",
         "Time-varying within subject."
       ),
-      source_name        = "FLUC"
+      source_name = "FLUC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "0.1-17.7 years (model building); 0.3-18.4 years (validation cohort)",
-    age_median     = "5.7 years (model building); 2.0 years (validation)",
-    weight_range   = "7.0-77.2 kg (model building); 4.9-63.0 kg (validation)",
-    weight_median  = "28.9 kg (model building); 11.2 kg (validation)",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "0.1-17.7 years (model building); 0.3-18.4 years (validation cohort)",
+    age_median = "5.7 years (model building); 2.0 years (validation)",
+    weight_range = "7.0-77.2 kg (model building); 4.9-63.0 kg (validation)",
+    weight_median = "28.9 kg (model building); 11.2 kg (validation)",
     sex_female_pct = 36.7,
     race_ethnicity = c(White_Caucasian = 93.3, Black_African_American = 3.3, Other = 3.3),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Paediatric heart transplant recipients, within the first 6 weeks ",
       "post-transplant; on tacrolimus + mycophenolate immunosuppression ",
       "with milrinone for post-transplant cardiac support."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Oral / enteral immediate-release tacrolimus, ",
       "0.02-0.49 mg/kg/day (model-building cohort; typically split twice ",
       "daily). Administered either orally or via nasogastric / nasojejunal ",
       "tube; the source paper did not detect an administration-route effect."
     ),
-    regions        = "Single centre, Primary Children's Hospital, Salt Lake City, Utah, USA",
+    regions = "Single centre, Primary Children's Hospital, Salt Lake City, Utah, USA",
     n_concentrations_modelbuild = 395L,
     n_concentrations_validation = 330L,
     creatinine_clearance_baseline = "median 122.4 mL/min/1.73 m^2 (range 15.6-442.2; bedside Schwartz)",
     fluconazole_coadministered_pct_modelbuild = 50.0,
     transplant_indications = c(CongenitalHeartDisease = 14L, Cardiomyopathy = 16L, Arrhythmia = 0L),
-    notes          = paste0(
+    notes = paste0(
       "Retrospective inpatient data, 2007-2015. Model-building cohort = 30 ",
       "(2007-2013); external-validation cohort = 18 (2014-2015). ",
       "Bioanalytical assay: whole-blood tacrolimus by LC-MS/MS at ARUP ",

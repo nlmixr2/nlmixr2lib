@@ -18,7 +18,8 @@ Zhang_2025_remdesivir <- function() {
     "as the initial central remdesivir concentration rather than as a mass.",
     "Renal impairment enters as a single binary covariate pooling every",
     "impairment stratum. Fitted by SAEM in Monolix to DIGITISED MEAN",
-    "concentration profiles, not to individual patient data.")
+    "concentration profiles, not to individual patient data."
+  )
   reference <- "Zhang S, Jeong S, Jiang B, Ho H. Pharmacokinetic simulations for remdesivir and its metabolites in healthy subjects and patients with renal impairment. Front Pharmacol. 2025;16:1488961. doi:10.3389/fphar.2025.1488961"
   vignette <- "Zhang_2025_remdesivir"
 
@@ -50,34 +51,34 @@ Zhang_2025_remdesivir <- function() {
   # (plasma) concentrations were fitted to data; the peripheral states are
   # unobserved.
   compartmentData <- list(
-    central                = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1            = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "blood cell", verified = TRUE),
-    central_gs704277       = list(analyte = "GS-704277", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1_gs704277   = list(analyte = "GS-704277", units = "ng/mL", specimen = "blood cell", verified = TRUE),
-    central_gs441524       = list(analyte = "GS-441524", units = "ng/mL", specimen = "plasma", verified = TRUE),
-    peripheral1_gs441524   = list(analyte = "GS-441524", units = "ng/mL", specimen = "blood cell", verified = TRUE)
+    central = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "remdesivir (GS-5734)", units = "ng/mL", specimen = "blood cell", verified = TRUE),
+    central_gs704277 = list(analyte = "GS-704277", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1_gs704277 = list(analyte = "GS-704277", units = "ng/mL", specimen = "blood cell", verified = TRUE),
+    central_gs441524 = list(analyte = "GS-441524", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    peripheral1_gs441524 = list(analyte = "GS-441524", units = "ng/mL", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list(
     RENALIMP = list(
-      description        = "Renal impairment of any degree.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Renal impairment of any degree.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = matched healthy control",
-      notes              = "Zhang 2025 Methods 2.3: 'Renal impairment was included as a categorical covariate in the model, with 0 representing controls and 1 indicating renal impairment. To maintain simplicity, varying degrees of renal impairment were not further distinguished as separate covariates.' The underlying Zhang 2020 phase I trial classified impairment by eGFR as mild (60-89 mL/min/1.73 m^2), moderate (30-59), severe (15-29) and kidney failure (< 15), and all four strata are pooled into RENALIMP = 1 here. The covariate values encoded in this model are the healthy-control and SEVERE-renal-impairment columns of Zhang 2025 Table 1, so RENALIMP = 1 reproduces the severe stratum specifically; the paper reports no separate parameter column for the mild or moderate strata. Zhang 2025 Results 3.1 names KC,IM, KP,IM and KP,NUC as the parameters the covariate was assigned to, but Table 1 additionally differs between the two columns in QIM, QNUC, KC,NUC and KP,NTP; Table 1 is transcribed here in full because its caption states that the simulation results were derived from those values. See the vignette Errata.",
-      source_name        = "Renal Impairment"
+      notes = "Zhang 2025 Methods 2.3: 'Renal impairment was included as a categorical covariate in the model, with 0 representing controls and 1 indicating renal impairment. To maintain simplicity, varying degrees of renal impairment were not further distinguished as separate covariates.' The underlying Zhang 2020 phase I trial classified impairment by eGFR as mild (60-89 mL/min/1.73 m^2), moderate (30-59), severe (15-29) and kidney failure (< 15), and all four strata are pooled into RENALIMP = 1 here. The covariate values encoded in this model are the healthy-control and SEVERE-renal-impairment columns of Zhang 2025 Table 1, so RENALIMP = 1 reproduces the severe stratum specifically; the paper reports no separate parameter column for the mild or moderate strata. Zhang 2025 Results 3.1 names KC,IM, KP,IM and KP,NUC as the parameters the covariate was assigned to, but Table 1 additionally differs between the two columns in QIM, QNUC, KC,NUC and KP,NTP; Table 1 is transcribed here in full because its caption states that the simulation results were derived from those values. See the vignette Errata.",
+      source_name = "Renal Impairment"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 1L,
-    age_range      = "Not reported in Zhang 2025.",
-    disease_state  = "Adults with varying degrees of renal impairment and matched healthy controls, enrolled in the Gilead phase I, open-label, parallel-group renal-impairment study of Zhang et al. (2020): mild (n = 12), moderate (n = 11) or severe (n = 10) renal impairment, and kidney failure (n = 6 on dialysis, n = 4 without dialysis). Healthy matched controls served as the reference group; Zhang 2025 does not report the control group size, so n_subjects counts only the 43 renally impaired participants.",
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 1L,
+    age_range = "Not reported in Zhang 2025.",
+    disease_state = "Adults with varying degrees of renal impairment and matched healthy controls, enrolled in the Gilead phase I, open-label, parallel-group renal-impairment study of Zhang et al. (2020): mild (n = 12), moderate (n = 11) or severe (n = 10) renal impairment, and kidney failure (n = 6 on dialysis, n = 4 without dialysis). Healthy matched controls served as the reference group; Zhang 2025 does not report the control group size, so n_subjects counts only the 43 renally impaired participants.",
     renal_function = "Classified by eGFR: mild 60-89 mL/min/1.73 m^2, moderate 30-59, severe 15-29, kidney failure < 15. Remdesivir is contraindicated below eGFR 30 mL/min/1.73 m^2 in labelling, so the severe and kidney-failure strata are off-label exposures studied specifically to characterise them.",
-    dose_range     = "Single intravenous doses, assigned by impairment stratum (Zhang 2025 Results 3.1): 100 mg for mild or moderate impairment, 40 mg for severe impairment or predialysis kidney failure, and 20 mg for postdialysis or non-dialysis kidney failure.",
-    notes          = "IMPORTANT PROVENANCE LIMITATION. Zhang 2025 did not have access to individual patient data: Methods 2.1 states that the profiles 'were digitized using the open-source software Engauge Digitizer (Version 12.1)' and that 'Due to the absence of individual patient-level data, only the mean drug concentration values from the profile curves were extracted.' The mixed-effects model was therefore fitted by SAEM (Monolix, Lixoft) to DIGITISED MEAN concentration-time curves, one per analyte per renal stratum, rather than to individual observations. Any between-subject variance the fit produced describes scatter between mean curves, not between patients, which is why the parameter estimates in Table 1 are reported without random-effect magnitudes and why no IIV is carried in this model file. Data source: Zhang S, Humeniuk R, Ling J, et al., the Gilead phase I renal-impairment study cited by Zhang 2025 as 'Zhang et al. (2020)'."
+    dose_range = "Single intravenous doses, assigned by impairment stratum (Zhang 2025 Results 3.1): 100 mg for mild or moderate impairment, 40 mg for severe impairment or predialysis kidney failure, and 20 mg for postdialysis or non-dialysis kidney failure.",
+    notes = "IMPORTANT PROVENANCE LIMITATION. Zhang 2025 did not have access to individual patient data: Methods 2.1 states that the profiles 'were digitized using the open-source software Engauge Digitizer (Version 12.1)' and that 'Due to the absence of individual patient-level data, only the mean drug concentration values from the profile curves were extracted.' The mixed-effects model was therefore fitted by SAEM (Monolix, Lixoft) to DIGITISED MEAN concentration-time curves, one per analyte per renal stratum, rather than to individual observations. Any between-subject variance the fit produced describes scatter between mean curves, not between patients, which is why the parameter estimates in Table 1 are reported without random-effect magnitudes and why no IIV is carried in this model file. Data source: Zhang S, Humeniuk R, Ling J, et al., the Gilead phase I renal-impairment study cited by Zhang 2025 as 'Zhang et al. (2020)'."
   )
 
   ini({

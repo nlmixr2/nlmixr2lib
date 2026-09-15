@@ -48,8 +48,8 @@ Menon_2024_parkinsonPathogenesis <- function() {
   paper_specific_compartments <- c("alpha_syn", "fagg", "pfree", "pcomplex", "ros")
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; mechanistic disease-pathogenesis model, no drug input)",
+    time = "h",
+    dosing = "(none; mechanistic disease-pathogenesis model, no drug input)",
     concentration = "(dimensionless; all state variables scaled by 50 pM per Supinfo2 Section 1.4)"
   )
 
@@ -58,27 +58,52 @@ Menon_2024_parkinsonPathogenesis <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fagg      = list(analyte = "alpha-syn aggregate species", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pcomplex  = list(analyte = "proteasome-aggregate complex", units = NA_character_, specimen = "administration site", verified = FALSE),
-    pfree     = list(analyte = "free proteasome components", units = NA_character_, specimen = "administration site", verified = FALSE),
-    alpha_syn = list(analyte = "misfolded alpha-synuclein monomer", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ros       = list(analyte = "cytoplasmic reactive oxygen species", units = NA_character_, specimen = "administration site", verified = FALSE)
+    fagg = list(
+      analyte = "alpha-syn aggregate species",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pcomplex = list(
+      analyte = "proteasome-aggregate complex",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pfree = list(
+      analyte = "free proteasome components",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    alpha_syn = list(
+      analyte = "misfolded alpha-synuclein monomer",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    ros = list(
+      analyte = "cytoplasmic reactive oxygen species",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "in silico (dopaminergic neuron cell-level mechanistic model)",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "(not applicable; typical-value cellular mechanistic model, not fit to individual subjects)",
-    weight_range   = "(not applicable)",
+    species = "in silico (dopaminergic neuron cell-level mechanistic model)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "(not applicable; typical-value cellular mechanistic model, not fit to individual subjects)",
+    weight_range = "(not applicable)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Parkinson's disease pathogenesis (dopaminergic-neuron intracellular network). The healthy vs. diseased distinction is a bistable-switch state of the model itself: at low k0 the system rests in a low-alpha_syn healthy attractor; a pulse or step increase in k0 (or in other network parameters) triggers a switch to a high-alpha_syn diseased attractor characterised by elevated misfolded alpha-synuclein and (depending on the proteasomal-module parameters) sustained proteasome-sequestration oscillations.",
-    dose_range     = "(not applicable)",
-    regions        = "(not applicable)",
-    notes          = "Menon 2024 is explicitly labelled a 'Perspective' paper. It presents an original combined ODE system assembled from two published upstream modules -- Cloutier & Wellstead 2012 (ROS positive-feedback module) and Sneppen et al. 2009 (proteasome sequestration module) -- and analyses the emergent systems landscape (bistability, Hopf bifurcations, pulse/step-triggered switching, intervention reversibility). Parameter values in Supinfo3 span 10 figure scenarios (Fig 1B, 1CD, 2A-I, S1-S8) that vary k3, kagg, krem, sigma, gamma, nu, and m to expose different qualitative behaviours. The Fig 2(A) values used here as the default correspond to the supercritical-Hopf-no-bistable-overlap scenario used in the paper's main-text analysis of pulse-triggered switching. The paper reports simulations in MATLAB via ode15s; MATLAB code is at https://github.com/gm1613/parkinsons_disease_models. This nlmixr2lib encoding uses rxode2 as the ODE engine; qualitative behaviours (bistable switch, sustained oscillations, intervention reversal) are reproduced in the validation vignette. All concentrations non-dimensionalised (scale factor 50 pM per Supinfo2 Section 1.4)."
+    disease_state = "Parkinson's disease pathogenesis (dopaminergic-neuron intracellular network). The healthy vs. diseased distinction is a bistable-switch state of the model itself: at low k0 the system rests in a low-alpha_syn healthy attractor; a pulse or step increase in k0 (or in other network parameters) triggers a switch to a high-alpha_syn diseased attractor characterised by elevated misfolded alpha-synuclein and (depending on the proteasomal-module parameters) sustained proteasome-sequestration oscillations.",
+    dose_range = "(not applicable)",
+    regions = "(not applicable)",
+    notes = "Menon 2024 is explicitly labelled a 'Perspective' paper. It presents an original combined ODE system assembled from two published upstream modules -- Cloutier & Wellstead 2012 (ROS positive-feedback module) and Sneppen et al. 2009 (proteasome sequestration module) -- and analyses the emergent systems landscape (bistability, Hopf bifurcations, pulse/step-triggered switching, intervention reversibility). Parameter values in Supinfo3 span 10 figure scenarios (Fig 1B, 1CD, 2A-I, S1-S8) that vary k3, kagg, krem, sigma, gamma, nu, and m to expose different qualitative behaviours. The Fig 2(A) values used here as the default correspond to the supercritical-Hopf-no-bistable-overlap scenario used in the paper's main-text analysis of pulse-triggered switching. The paper reports simulations in MATLAB via ode15s; MATLAB code is at https://github.com/gm1613/parkinsons_disease_models. This nlmixr2lib encoding uses rxode2 as the ODE engine; qualitative behaviours (bistable switch, sustained oscillations, intervention reversal) are reproduced in the validation vignette. All concentrations non-dimensionalised (scale factor 50 pM per Supinfo2 Section 1.4)."
   )
 
   ini({

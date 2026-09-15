@@ -50,12 +50,17 @@ vandenMaagdenberg_2025_a2ar_tme_qsp <- function() {
   # remaining seven are paper-mechanistic and do not generalise, so they are
   # declared here rather than added to the compartment register.
   paper_specific_compartments <- c(
-    "depot_mab", "central_mab", "central_a2ari",
-    "tcell_naive", "tcell_ctl", "pdl1", "adenosine"
+    "depot_mab",
+    "central_mab",
+    "central_a2ari",
+    "tcell_naive",
+    "tcell_ctl",
+    "pdl1",
+    "adenosine"
   )
 
   units <- list(
-    time   = "day",
+    time = "day",
     dosing = paste(
       "mg for both agents. The anti-PD-L1 antibody is dosed into depot_mab",
       "(intraperitoneal); the A2AR inhibitor is dosed into central_a2ari",
@@ -74,14 +79,29 @@ vandenMaagdenberg_2025_a2ar_tme_qsp <- function() {
   )
 
   compartmentData <- list(
-    depot_mab     = list(analyte = "anti-PD-L1 monoclonal antibody", units = "mg", specimen = "administration site", verified = TRUE),
-    central_mab   = list(analyte = "anti-PD-L1 monoclonal antibody", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot_mab = list(
+      analyte = "anti-PD-L1 monoclonal antibody",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_mab = list(
+      analyte = "anti-PD-L1 monoclonal antibody",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
     central_a2ari = list(analyte = "A2A receptor inhibitor", units = "mg", specimen = "plasma", verified = TRUE),
-    tumor         = list(analyte = "tumor", units = "uL", specimen = "not applicable", verified = TRUE),
-    tcell_naive   = list(analyte = "naive CD8 T cell", units = "cells", specimen = "not applicable", verified = TRUE),
-    tcell_ctl     = list(analyte = "cytotoxic CD8 T-lymphocyte", units = "cells", specimen = "not applicable", verified = TRUE),
-    pdl1          = list(analyte = "PD-L1", units = "nM", specimen = "not applicable", verified = TRUE),
-    adenosine     = list(analyte = "adenosine", units = "nM", specimen = "tissue", verified = TRUE)
+    tumor = list(analyte = "tumor", units = "uL", specimen = "not applicable", verified = TRUE),
+    tcell_naive = list(analyte = "naive CD8 T cell", units = "cells", specimen = "not applicable", verified = TRUE),
+    tcell_ctl = list(
+      analyte = "cytotoxic CD8 T-lymphocyte",
+      units = "cells",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    pdl1 = list(analyte = "PD-L1", units = "nM", specimen = "not applicable", verified = TRUE),
+    adenosine = list(analyte = "adenosine", units = "nM", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list()
@@ -97,10 +117,10 @@ vandenMaagdenberg_2025_a2ar_tme_qsp <- function() {
         "rather than carrying a switch covariate.",
         sep = " "
       ),
-      units              = NA_character_,
-      type               = "categorical",
+      units = NA_character_,
+      type = "categorical",
       reference_category = "MCA205-2",
-      notes              = paste(
+      notes = paste(
         "Not retained as a covariate column: the source paper reports only the",
         "MCA205-2 coefficients (Methods, 'Quantitative Systems Pharmacology",
         "Model'). The other three studies' coefficients are in Voronova 2021",
@@ -111,9 +131,9 @@ vandenMaagdenberg_2025_a2ar_tme_qsp <- function() {
   )
 
   population <- list(
-    species    = "mouse (MCA205 syngeneic tumour model)",
+    species = "mouse (MCA205 syngeneic tumour model)",
     n_subjects = NA_integer_,
-    n_studies  = 1L,
+    n_studies = 1L,
     disease_state = "subcutaneous MCA205 syngeneic tumour",
     dose_range = paste(
       "Anti-PD-L1 monoclonal antibody 5 mg/kg intraperitoneally twice weekly",

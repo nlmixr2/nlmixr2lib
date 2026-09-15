@@ -8,95 +8,95 @@ Yin_2020_pexidartinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "pexidartinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "pexidartinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pexidartinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pexidartinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pexidartinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 80 kg (Yin 2020 Table 2 / Figure 2 caption: 'median value of 80 kg'). Allometric power scaling: (WT/80)^0.75 on CL/F and Q/F (fixed at theoretical); (WT/80)^1.0 on Vc/F and Vp/F (fixed at theoretical). Time-fixed per subject in the source analysis (baseline weight).",
-      source_name        = "WT"
+      notes = "Reference 80 kg (Yin 2020 Table 2 / Figure 2 caption: 'median value of 80 kg'). Allometric power scaling: (WT/80)^0.75 on CL/F and Q/F (fixed at theoretical); (WT/80)^1.0 on Vc/F and Vp/F (fixed at theoretical). Time-fixed per subject in the source analysis (baseline weight).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; the reference subject in Yin 2020 Figure 2 caption is male)",
-      notes              = "Multiplicative effect on CL/F: exp(theta14) = 0.869 when SEXF = 1 (female), 1.0 when SEXF = 0 (male). Yin 2020 Table 2 reports the female effect as 0.869 (95% CI 0.808-0.934).",
-      source_name        = "Female"
+      notes = "Multiplicative effect on CL/F: exp(theta14) = 0.869 when SEXF = 1 (female), 1.0 when SEXF = 0 (male). Yin 2020 Table 2 reports the female effect as 0.869 (95% CI 0.808-0.934).",
+      source_name = "Female"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator, 1 = Asian, 0 = non-Asian (the Yin 2020 reference race category)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator, 1 = Asian, 0 = non-Asian (the Yin 2020 reference race category)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; the reference subject in Yin 2020 Figure 2 caption is non-Asian)",
-      notes              = "Multiplicative effect on CL/F: exp(theta10) = 1.27 when RACE_ASIAN = 1 (Asian), 1.0 when RACE_ASIAN = 0. Yin 2020 Table 2 reports the Asian effect as 1.27 (95% CI 1.05-1.54). Asian subjects (N = 8) were a small subgroup of the pooled 375-subject analysis dataset; the effect was retained but Yin 2020 Results explicitly notes the wide 95% confidence interval.",
-      source_name        = "Asian"
+      notes = "Multiplicative effect on CL/F: exp(theta10) = 1.27 when RACE_ASIAN = 1 (Asian), 1.0 when RACE_ASIAN = 0. Yin 2020 Table 2 reports the Asian effect as 1.27 (95% CI 1.05-1.54). Asian subjects (N = 8) were a small subgroup of the pooled 375-subject analysis dataset; the effect was retained but Yin 2020 Results explicitly notes the wide 95% confidence interval.",
+      source_name = "Asian"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (calculated)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (calculated)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 90 mL/min. Piecewise power effect on CL/F: factor = (CRCL/90)^(-0.0941) when CRCL < 90 mL/min, factor = 1 when CRCL >= 90 mL/min. Yin 2020 parameterises the renal-function effect as ( CRCL <90 / 90 )^theta9 (Table 2 row 3); the floor at CRCL = 90 means the effect is inactive at and above the reference. Yin 2020 Results explicitly notes the limited evaluation of CRCL effect because the analysis dataset contained a relatively narrow CRCL range and a small number of renally impaired subjects. Time-fixed per subject in the source analysis (baseline).",
-      source_name        = "CRCL"
+      notes = "Reference 90 mL/min. Piecewise power effect on CL/F: factor = (CRCL/90)^(-0.0941) when CRCL < 90 mL/min, factor = 1 when CRCL >= 90 mL/min. Yin 2020 parameterises the renal-function effect as ( CRCL <90 / 90 )^theta9 (Table 2 row 3); the floor at CRCL = 90 means the effect is inactive at and above the reference. Yin 2020 Results explicitly notes the limited evaluation of CRCL effect because the analysis dataset contained a relatively narrow CRCL range and a small number of renally impaired subjects. Time-fixed per subject in the source analysis (baseline).",
+      source_name = "CRCL"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 80 U/L. Piecewise power effect on CL/F: factor = (AST/80)^0.0709 when AST > 80 U/L, factor = 1 when AST <= 80 U/L. Yin 2020 parameterises the hepatic-enzyme effect as ( AST >80 / 80 )^theta11 (Table 2 row 5); the floor at AST = 80 means the effect is inactive at and below the reference. Time-fixed per subject in the source analysis (baseline).",
-      source_name        = "AST"
+      notes = "Reference 80 U/L. Piecewise power effect on CL/F: factor = (AST/80)^0.0709 when AST > 80 U/L, factor = 1 when AST <= 80 U/L. Yin 2020 parameterises the hepatic-enzyme effect as ( AST >80 / 80 )^theta11 (Table 2 row 5); the floor at AST = 80 means the effect is inactive at and below the reference. Time-fixed per subject in the source analysis (baseline).",
+      source_name = "AST"
     ),
     TBILI = list(
-      description        = "Baseline total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 20.5 umol/L (Yin 2020 Table 2 row 6). Piecewise power effect on CL/F: factor = (TBILI/20.5)^0.244 when TBILI > 20.5 umol/L, factor = 1 when TBILI <= 20.5 umol/L. Yin 2020 parameterises the hyperbilirubinaemia effect as ( TBIL >20.5 / 20.5 )^theta12 (Table 2 row 6); the floor at TBILI = 20.5 means the effect is inactive at and below the reference. Source paper reports total bilirubin in SI umol/L (the canonical TBILI unit; no inline conversion needed). Time-fixed per subject (baseline).",
-      source_name        = "TBIL"
+      notes = "Reference 20.5 umol/L (Yin 2020 Table 2 row 6). Piecewise power effect on CL/F: factor = (TBILI/20.5)^0.244 when TBILI > 20.5 umol/L, factor = 1 when TBILI <= 20.5 umol/L. Yin 2020 parameterises the hyperbilirubinaemia effect as ( TBIL >20.5 / 20.5 )^theta12 (Table 2 row 6); the floor at TBILI = 20.5 means the effect is inactive at and below the reference. Source paper reports total bilirubin in SI umol/L (the canonical TBILI unit; no inline conversion needed). Time-fixed per subject (baseline).",
+      source_name = "TBIL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator, 1 = healthy subject (Phase 1 clinical pharmacology study), 0 = patient with TGCT or other solid tumour",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator, 1 = healthy subject (Phase 1 clinical pharmacology study), 0 = patient with TGCT or other solid tumour",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient cohort; the reference subject in Yin 2020 Figure 2 caption is a patient)",
-      notes              = "Time-fixed per subject. Yin 2020 codes this indicator as 'StHT' (study with healthy subjects). Multiplicative effect on CL/F: exp(theta13) = 1.26 when DIS_HEALTHY = 1 (healthy subject), 1.0 when DIS_HEALTHY = 0 (patient). Yin 2020 Table 2 reports the StHT effect as 1.26 (95% CI 1.16-1.36); Results states this corresponds to a 21% lower steady-state AUC0-24 in healthy subjects vs patients. The residual-error magnitude also switches with DIS_HEALTHY: 29.7% CV for patients vs 19.6% CV for healthy subjects (Table 2 Sigma rows). The N = 375 analysis dataset pooled 159 healthy subjects (seven Phase 1 clinical pharmacology studies U114-U121) with 216 patients (PLX108-01 and ENLIVEN).",
-      source_name        = "StHT"
+      notes = "Time-fixed per subject. Yin 2020 codes this indicator as 'StHT' (study with healthy subjects). Multiplicative effect on CL/F: exp(theta13) = 1.26 when DIS_HEALTHY = 1 (healthy subject), 1.0 when DIS_HEALTHY = 0 (patient). Yin 2020 Table 2 reports the StHT effect as 1.26 (95% CI 1.16-1.36); Results states this corresponds to a 21% lower steady-state AUC0-24 in healthy subjects vs patients. The residual-error magnitude also switches with DIS_HEALTHY: 29.7% CV for patients vs 19.6% CV for healthy subjects (Table 2 Sigma rows). The N = 375 analysis dataset pooled 159 healthy subjects (seven Phase 1 clinical pharmacology studies U114-U121) with 216 patients (PLX108-01 and ENLIVEN).",
+      source_name = "StHT"
     ),
     FORM_PEX_PHASE1 = list(
-      description        = "Pexidartinib formulation indicator, 1 = subject received the Phase 1 clinical formulation (used in PLX108-01 and U114), 0 = subject received the Phase 3 / commercial formulation (used in U116-U121 and ENLIVEN)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pexidartinib formulation indicator, 1 = subject received the Phase 1 clinical formulation (used in PLX108-01 and U114), 0 = subject received the Phase 3 / commercial formulation (used in U116-U121 and ENLIVEN)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 3 / commercial formulation; the typical-value bioavailability reference at F1 = 1.0)",
-      notes              = "Per-dose-occasion indicator (a subject can in principle carry both values across studies, though within a single study the formulation is fixed). Fixed-effect multiplier on the depot bioavailability: F1_Phase1 = 0.855 (held fixed in Yin 2020 final model) when FORM_PEX_PHASE1 = 1, F1 = 1.0 when FORM_PEX_PHASE1 = 0. The Phase-1-formulation IIV (Omega 6.6 = 0.101, 32.6% CV) applies only when FORM_PEX_PHASE1 = 1 and has no effect when FORM_PEX_PHASE1 = 0 (Phase 3 / commercial). For typical simulations of the approved 800 mg/day TGCT regimen used in ENLIVEN, set FORM_PEX_PHASE1 = 0 for every subject. Yin 2020 Results: 'A formulation effect on F1 was fixed in the model to account for a 17% higher observed pexidartinib exposure with the phase 3 formulation compared with the phase 1 formulation' (1 / 0.855 = 1.17).",
-      source_name        = "FORM"
+      notes = "Per-dose-occasion indicator (a subject can in principle carry both values across studies, though within a single study the formulation is fixed). Fixed-effect multiplier on the depot bioavailability: F1_Phase1 = 0.855 (held fixed in Yin 2020 final model) when FORM_PEX_PHASE1 = 1, F1 = 1.0 when FORM_PEX_PHASE1 = 0. The Phase-1-formulation IIV (Omega 6.6 = 0.101, 32.6% CV) applies only when FORM_PEX_PHASE1 = 1 and has no effect when FORM_PEX_PHASE1 = 0 (Phase 3 / commercial). For typical simulations of the approved 800 mg/day TGCT regimen used in ENLIVEN, set FORM_PEX_PHASE1 = 0 for every subject. Yin 2020 Results: 'A formulation effect on F1 was fixed in the model to account for a 17% higher observed pexidartinib exposure with the phase 3 formulation compared with the phase 1 formulation' (1 / 0.855 = 1.17).",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 375L,
-    n_observations  = 8430L,
-    n_studies       = 9L,
-    age_range       = "adults (>= 18 years); paper does not report a single pooled-cohort numeric range",
-    weight_range    = "5th, 25th, 75th, 95th percentile and median 80 kg per Yin 2020 Figure 2 caption (53, ~, ~, ~, 80 kg); the explicit low percentile is 53 kg (~36% AUC increase vs the 80 kg reference)",
-    weight_median   = "80 kg (pooled-cohort median; Yin 2020 Figure 2 caption)",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = c(Asian = round(8 / 375 * 100, 1), `non-Asian` = round(367 / 375 * 100, 1)),
-    disease_state   = "Pooled cohort of healthy subjects and adult patients with tenosynovial giant cell tumour (TGCT) or other advanced solid tumours. 159 healthy subjects enrolled in seven Phase 1 clinical pharmacology studies (relative bioavailability, dose proportionality, drug-drug interaction with itraconazole / rifampin / esomeprazole, and food effect; doses 200-2400 mg single doses). 132 patients in Study PLX108-01 (Phase 1 dose-ranging in TGCT or other solid tumour; 200-1200 mg/day). 84 patients in Study PLX108-10 ENLIVEN (Phase 3 in TGCT; Part 1: 1000 mg/day for 2 weeks then 800 mg/day; Part 2: 800 mg/day).",
-    dose_range      = "Single doses 200-2400 mg in healthy subjects; multiple doses 200-1200 mg/day in PLX108-01; 800 mg/day (400 mg BID) in ENLIVEN after the 2-week 1000 mg/day Part 1 lead-in.",
-    regions         = "International (PLX108-01 and ENLIVEN multi-regional)",
+    species = "human",
+    n_subjects = 375L,
+    n_observations = 8430L,
+    n_studies = 9L,
+    age_range = "adults (>= 18 years); paper does not report a single pooled-cohort numeric range",
+    weight_range = "5th, 25th, 75th, 95th percentile and median 80 kg per Yin 2020 Figure 2 caption (53, ~, ~, ~, 80 kg); the explicit low percentile is 53 kg (~36% AUC increase vs the 80 kg reference)",
+    weight_median = "80 kg (pooled-cohort median; Yin 2020 Figure 2 caption)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = c(Asian = round(8 / 375 * 100, 1), `non-Asian` = round(367 / 375 * 100, 1)),
+    disease_state = "Pooled cohort of healthy subjects and adult patients with tenosynovial giant cell tumour (TGCT) or other advanced solid tumours. 159 healthy subjects enrolled in seven Phase 1 clinical pharmacology studies (relative bioavailability, dose proportionality, drug-drug interaction with itraconazole / rifampin / esomeprazole, and food effect; doses 200-2400 mg single doses). 132 patients in Study PLX108-01 (Phase 1 dose-ranging in TGCT or other solid tumour; 200-1200 mg/day). 84 patients in Study PLX108-10 ENLIVEN (Phase 3 in TGCT; Part 1: 1000 mg/day for 2 weeks then 800 mg/day; Part 2: 800 mg/day).",
+    dose_range = "Single doses 200-2400 mg in healthy subjects; multiple doses 200-1200 mg/day in PLX108-01; 800 mg/day (400 mg BID) in ENLIVEN after the 2-week 1000 mg/day Part 1 lead-in.",
+    regions = "International (PLX108-01 and ENLIVEN multi-regional)",
     sampling_window = "Healthy-subject studies: serial PK samples up to 144 or 192 hours post-dose. PLX108-01: 5-6 PK samples per patient on Cycle 1 Day 1 and Cycle 1 Day 15, predose samples on Days 1, 8, and 16 of Cycle 1. ENLIVEN: 7 PK samples on Cycle 1 Day 15, random samples on Cycle 3 Day 1 and Cycle 5 Day 1.",
-    assay           = "Validated liquid chromatography-tandem mass spectrometry method; LLOQ 2.5 ng/mL.",
-    iov_structure   = "Yin 2020 Table 2 reports inter-occasion variability (IOV) on KA across 5 occasions (Omega 7.7 = 1.83, 229% CV) and on F1 across 10 occasions (Omega 12.12 = 0.0652, 25.9% CV). This model file does NOT encode the IOV structurally -- the source paper does not define an operational occasion column for the model-library use case, and the nlmixr2lib convention (Andrews 2017 / Brooks 2021 tacrolimus precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations.",
-    notes           = "Pooled population PK analysis of nine clinical studies (375 subjects, 8430 PK samples). Reference subject in Yin 2020 Figure 2 (covariate forest plot): male, non-Asian, patient cohort, WT 80 kg, CRCL >= 90 mL/min, AST <= 80 U/L, TBIL <= 20.5 umol/L."
+    assay = "Validated liquid chromatography-tandem mass spectrometry method; LLOQ 2.5 ng/mL.",
+    iov_structure = "Yin 2020 Table 2 reports inter-occasion variability (IOV) on KA across 5 occasions (Omega 7.7 = 1.83, 229% CV) and on F1 across 10 occasions (Omega 12.12 = 0.0652, 25.9% CV). This model file does NOT encode the IOV structurally -- the source paper does not define an operational occasion column for the model-library use case, and the nlmixr2lib convention (Andrews 2017 / Brooks 2021 tacrolimus precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations.",
+    notes = "Pooled population PK analysis of nine clinical studies (375 subjects, 8430 PK samples). Reference subject in Yin 2020 Figure 2 (covariate forest plot): male, non-Asian, patient cohort, WT 80 kg, CRCL >= 90 mL/min, AST <= 80 U/L, TBIL <= 20.5 umol/L."
   )
 
   ini({

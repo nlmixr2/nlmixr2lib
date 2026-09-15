@@ -6,101 +6,107 @@ Crass_2024_pegcetacoplan_hemoglobin <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Enters only the carried-forward PK layer (power exponents on CL and Vc referenced to 70 kg). Body weight was screened as a covariate on the hemoglobin PK/PD parameters and was not retained (Crass 2024 Sect. 3.4.2: 'There were no meaningful effects on Hb with all other covariates (i.e., prior eculizumab treatment, race, age, body weight, and baseline C3 level)').",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline body weight. Enters only the carried-forward PK layer (power exponents on CL and Vc referenced to 70 kg). Body weight was screened as a covariate on the hemoglobin PK/PD parameters and was not retained (Crass 2024 Sect. 3.4.2: 'There were no meaningful effects on Hb with all other covariates (i.e., prior eculizumab treatment, race, age, body weight, and baseline C3 level)').",
+      source_name = "BWT"
     ),
     DIS_PNH = list(
-      description        = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = non-PNH participant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = non-PNH participant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-PNH participant)",
-      notes              = "Time-fixed per subject. Enters only the carried-forward PK layer, where it applies the fractional clearance increase e_dis_pnh_cl = 0.257. Every subject in the hemoglobin PK/PD analysis set is a patient with PNH (DIS_PNH = 1), so the term is inert in this cohort; it is retained so the PK layer is byte-for-byte the same structure as the parent model `Crass_2024_pegcetacoplan`.",
-      source_name        = "PNH"
+      notes = "Time-fixed per subject. Enters only the carried-forward PK layer, where it applies the fractional clearance increase e_dis_pnh_cl = 0.257. Every subject in the hemoglobin PK/PD analysis set is a patient with PNH (DIS_PNH = 1), so the term is inert in this cohort; it is retained so the PK layer is byte-for-byte the same structure as the parent model `Crass_2024_pegcetacoplan`.",
+      source_name = "PNH"
     ),
     FORM_PEGCET_LYOPHILIZED = list(
-      description        = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ready-to-use solution formulations)",
-      notes              = "Per-regimen categorical indicator. Enters only the carried-forward PK layer, scaling subcutaneous bioavailability by (1 + 0.220 x FORM_PEGCET_LYOPHILIZED). Retained so the PK layer matches the parent model `Crass_2024_pegcetacoplan`.",
-      source_name        = "FORM (level 4 = POWDER)"
+      notes = "Per-regimen categorical indicator. Enters only the carried-forward PK layer, scaling subcutaneous bioavailability by (1 + 0.220 x FORM_PEGCET_LYOPHILIZED). Retained so the PK layer matches the parent model `Crass_2024_pegcetacoplan`.",
+      source_name = "FORM (level 4 = POWDER)"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance estimated with the Cockcroft-Gault equation, in mL/min (NOT body-surface-area normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance estimated with the Cockcroft-Gault equation, in mL/min (NOT body-surface-area normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Enters the maximal hemoglobin response as a power term referenced to 120 mL/min (ESM Table 1 Hb control stream: MCRCL=120; TVEMAX = THETA(2)*((CRCL/MCRCL)**THETA(6))), with exponent 0.641. The control stream substitutes the 120 mL/min reference whenever BCRCL is missing or non-positive. Crass 2024 ESM Table 4 footnote defines CrCl as 'creatinine clearance calculated using the Cockcroft-Gault equation', which returns raw mL/min rather than mL/min/1.73 m^2; the canonical CRCL column accommodates both forms (see the register entry's Delattre 2010 / Chen 2023 / Wada 2023 precedents for raw Cockcroft-Gault use). The paper cites the 5th percentile as 40 mL/min and the 95th percentile as 191 mL/min in this cohort (Sect. 3.4.2).",
-      source_name        = "BCRCL"
+      notes = "Time-fixed baseline value. Enters the maximal hemoglobin response as a power term referenced to 120 mL/min (ESM Table 1 Hb control stream: MCRCL=120; TVEMAX = THETA(2)*((CRCL/MCRCL)**THETA(6))), with exponent 0.641. The control stream substitutes the 120 mL/min reference whenever BCRCL is missing or non-positive. Crass 2024 ESM Table 4 footnote defines CrCl as 'creatinine clearance calculated using the Cockcroft-Gault equation', which returns raw mL/min rather than mL/min/1.73 m^2; the canonical CRCL column accommodates both forms (see the register entry's Delattre 2010 / Chen 2023 / Wada 2023 precedents for raw Cockcroft-Gault use). The paper cites the 5th percentile as 40 mL/min and the 95th percentile as 191 mL/min in this cohort (Sect. 3.4.2).",
+      source_name = "BCRCL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Applies a fractional change to the maximal hemoglobin response, `emax * (1 + e_sexf_emax * SEXF)` with e_sexf_emax = -0.337 (ESM Table 1 Hb control stream TVEMAX line; ESM Table 4 theta 7). The source column is already coded SEXF (1 = female), matching the canonical orientation directly, so no value transformation is needed. At the reference CrCl of 120 mL/min this gives a 33.8% maximal increase in females versus 51.0% in males (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 56% female (Sect. 3.1.2).",
-      source_name        = "SEXF"
+      notes = "Time-fixed per subject. Applies a fractional change to the maximal hemoglobin response, `emax * (1 + e_sexf_emax * SEXF)` with e_sexf_emax = -0.337 (ESM Table 1 Hb control stream TVEMAX line; ESM Table 4 theta 7). The source column is already coded SEXF (1 = female), matching the canonical orientation directly, so no value transformation is needed. At the reference CrCl of 120 mL/min this gives a 33.8% maximal increase in females versus 51.0% in males (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 56% female (Sect. 3.1.2).",
+      source_name = "SEXF"
     ),
     CONMED_ECULIZUMAB_BL = list(
-      description        = "Eculizumab (complement C5 inhibitor) treatment status at baseline: 1 = receiving eculizumab at study entry, 0 = eculizumab-naive at study entry.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eculizumab (complement C5 inhibitor) treatment status at baseline: 1 = receiving eculizumab at study entry, 0 = eculizumab-naive at study entry.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (eculizumab-naive at baseline; the PADDOCK, PALOMINO, and PRINCE cohorts)",
-      notes              = "Time-fixed per subject. Present in the source TVEMAX line as `TVEMAX = TVEMAX*(1+THETA(7)*SEXF)*(1+THETA(8)*BECU)` with THETA(8) entered as `(0 FIX)` in ESM Table 1, so the baseline-eculizumab effect on the maximal hemoglobin response is fixed at zero and is not reported in ESM Table 4. The term is retained in the model with `e_conmed_eculizumab_bl_emax <- fixed(0)` so the structural form matches the published control stream and the fixed status is visible; it is what makes Crass 2024 Table 2 report the same 51% Emax for eculizumab-naive and eculizumab-treated patients. The PK/PD analysis set is 54% eculizumab-treated / 46% eculizumab-naive at baseline (Sect. 3.1.2).",
-      source_name        = "BECU"
+      notes = "Time-fixed per subject. Present in the source TVEMAX line as `TVEMAX = TVEMAX*(1+THETA(7)*SEXF)*(1+THETA(8)*BECU)` with THETA(8) entered as `(0 FIX)` in ESM Table 1, so the baseline-eculizumab effect on the maximal hemoglobin response is fixed at zero and is not reported in ESM Table 4. The term is retained in the model with `e_conmed_eculizumab_bl_emax <- fixed(0)` so the structural form matches the published control stream and the fixed status is visible; it is what makes Crass 2024 Table 2 report the same 51% Emax for eculizumab-naive and eculizumab-treated patients. The PK/PD analysis set is 54% eculizumab-treated / 46% eculizumab-naive at baseline (Sect. 3.1.2).",
+      source_name = "BECU"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the full covariate model on the hemoglobin PK/PD parameters and eliminated by the backward-elimination step (alpha = 0.001); no effect is reported in ESM Table 4 or Crass 2024 Table 2. Crass 2024 Sect. 3.4.2 states there were no meaningful effects on Hb from age. Analysis-set median 45 years (range 19-81 years).",
-      source_name        = "AGE"
+      notes = "Screened in the full covariate model on the hemoglobin PK/PD parameters and eliminated by the backward-elimination step (alpha = 0.001); no effect is reported in ESM Table 4 or Crass 2024 Table 2. Crass 2024 Sect. 3.4.2 states there were no meaningful effects on Hb from age. Analysis-set median 45 years (range 19-81 years).",
+      source_name = "AGE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "The source Hb control stream derives RASN (RACE 3 or 4) and JPN (RACE 4) in its $PK block, but neither enters the final TVEMAX / TVEC50 / TVBASEHGB expressions; race was screened and not retained (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 39% White and 38% Asian (Sect. 3.1.2). Recorded here for provenance only.",
-      source_name        = "RACE"
+      notes = "The source Hb control stream derives RASN (RACE 3 or 4) and JPN (RACE 4) in its $PK block, but neither enters the final TVEMAX / TVEC50 / TVBASEHGB expressions; race was screened and not retained (Crass 2024 Sect. 3.4.2). The PK/PD analysis set is 39% White and 38% Asian (Sect. 3.1.2). Recorded here for provenance only.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 165,
-    n_studies      = 5,
-    age_median     = "45 years",
-    age_range      = "19-81 years",
+    species = "human",
+    n_subjects = 165,
+    n_studies = 5,
+    age_median = "45 years",
+    age_range = "19-81 years",
     sex_female_pct = 56,
     race_ethnicity = c(White = 39, Asian = 38),
-    disease_state  = "adults with paroxysmal nocturnal hemoglobinuria; 54% receiving eculizumab at baseline (PHAROAH, PEGASUS) and 46% complement C5-inhibitor naive (PADDOCK, PALOMINO, PRINCE)",
-    dose_range     = "Subcutaneous 25-1080 mg, once daily or twice weekly (including the approved 1080 mg twice-weekly regimen)",
-    regions        = "Multinational; the PRINCE cohort is predominantly Asian (36/50, 72%)",
-    notes          = "Crass 2024 Sect. 3.1.2 and Table 1. 4498 hemoglobin samples were analysed. Median baseline complement C3 across the PNH studies was 0.910 g/L (range 0.47-1.64 g/L). The PK/PD models were fitted sequentially, conditioned on individual empirical Bayes estimates of the PK parameters from the population PK model (Sect. 2.2)."
+    disease_state = "adults with paroxysmal nocturnal hemoglobinuria; 54% receiving eculizumab at baseline (PHAROAH, PEGASUS) and 46% complement C5-inhibitor naive (PADDOCK, PALOMINO, PRINCE)",
+    dose_range = "Subcutaneous 25-1080 mg, once daily or twice weekly (including the approved 1080 mg twice-weekly regimen)",
+    regions = "Multinational; the PRINCE cohort is predominantly Asian (36/50, 72%)",
+    notes = "Crass 2024 Sect. 3.1.2 and Table 1. 4498 hemoglobin samples were analysed. Median baseline complement C3 across the PNH studies was 0.910 g/L (range 0.47-1.64 g/L). The PK/PD models were fitted sequentially, conditioned on individual empirical Bayes estimates of the PK parameters from the population PK model (Sect. 2.2)."
   )
 
   ini({

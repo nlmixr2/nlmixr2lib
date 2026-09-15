@@ -38,18 +38,18 @@ Kloprogge_2018_lumefantrine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Kloprogge 2018 pooled the",
         "PK model-building dataset across children, non-pregnant adults,",
         "and pregnant women (n = 1,347; Table 1 'Model building data'",
@@ -62,14 +62,14 @@ Kloprogge_2018_lumefantrine <- function() {
         "V = theta(n) * (WT/42)').",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Pregnancy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pregnancy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pregnant (second or third trimester), 0 = non-pregnant.",
         "Time-fixed per subject. Kloprogge 2018 enrolled 3.1% pregnant",
         "women (n = 42 of 1,347 in the PK model-building dataset; Table",
@@ -87,14 +87,14 @@ Kloprogge_2018_lumefantrine <- function() {
         "substantially altered. Reference category 0 = non-pregnant.",
         sep = " "
       ),
-      source_name        = "PREG"
+      source_name = "PREG"
     ),
     PARA = list(
-      description        = "Plasmodium falciparum parasitaemia at admission (asexual parasites/uL)",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Plasmodium falciparum parasitaemia at admission (asexual parasites/uL)",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only (time-fixed) parasitaemia. Kloprogge 2018",
         "Table 1 'Model building data' row reports median 9,450 (range",
         "13-450,000; interquartile range 2,240-38,700) parasites/uL.",
@@ -128,14 +128,14 @@ Kloprogge_2018_lumefantrine <- function() {
         "convention.",
         sep = " "
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     ),
     DOSE = list(
-      description        = "Per-dose lumefantrine amount administered (mg)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-dose lumefantrine amount administered (mg)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose lumefantrine amount in milligrams, supplied as a",
         "per-dose-record covariate aligned with the corresponding event-",
         "table dosing row (use case (b) of the canonical DOSE entry,",
@@ -152,21 +152,21 @@ Kloprogge_2018_lumefantrine <- function() {
         "each dose event in the rxode2 event table, alongside amt (mg).",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1347L,
-    n_studies       = 26L,
-    n_pregnant      = 42L,
-    age_range       = "0.5-78.0 years (Table 1, PK LF model building data)",
-    age_median      = "16.6 years (Table 1)",
-    weight_range    = "6-150 kg (Table 1, PK LF model building data)",
-    weight_median   = "42 kg (Table 1; centering reference in Table 2 footnote)",
-    sex_female_pct  = 44.1,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 1347L,
+    n_studies = 26L,
+    n_pregnant = 42L,
+    age_range = "0.5-78.0 years (Table 1, PK LF model building data)",
+    age_median = "16.6 years (Table 1)",
+    weight_range = "6-150 kg (Table 1, PK LF model building data)",
+    weight_median = "42 kg (Table 1; centering reference in Table 2 footnote)",
+    sex_female_pct = 44.1,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria. Pooled WWARN meta-",
       "analysis of 26 published clinical studies across 12 countries",
       "(Benin, Guinea-Bissau, Tanzania, Uganda, Kenya, Mali, Mozambique,",
@@ -175,7 +175,7 @@ Kloprogge_2018_lumefantrine <- function() {
       "(median gestational age 23.0 weeks, range 13.1-38.0).",
       sep = " "
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Standard fixed-dose Coartem (Novartis): 20 mg artemether + 120 mg",
       "lumefantrine per tablet; weight-band tablet count administered",
       "twice daily for 3 days at 0, 8, 24, 36, 48, and 60 hours, with",
@@ -185,8 +185,8 @@ Kloprogge_2018_lumefantrine <- function() {
       "range 3.2-20.9 mg/kg (median 10.2; Table 1).",
       sep = " "
     ),
-    regions         = "Africa (Benin, Guinea-Bissau, Tanzania, Uganda, Kenya, Mali, Mozambique, Liberia), Oceania (Papua New Guinea), Southeast Asia (Laos, Thailand, Cambodia)",
-    notes           = paste(
+    regions = "Africa (Benin, Guinea-Bissau, Tanzania, Uganda, Kenya, Mali, Mozambique, Liberia), Oceania (Papua New Guinea), Southeast Asia (Laos, Thailand, Cambodia)",
+    notes = paste(
       "Demographics from Kloprogge 2018 Table 1 row 'PK LF model data,",
       "Model building data'. Concentration-time data from patients",
       "contributing 2 or more venous plasma samples per patient were",

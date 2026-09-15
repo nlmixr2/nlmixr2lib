@@ -15,67 +15,67 @@ Kyhl_2016_nalmefene <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (additive) effect on central volume, centered at 28 years.",
-      source_name        = "AGE"
+      notes = "Linear (additive) effect on central volume, centered at 28 years.",
+      source_name = "AGE"
     ),
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance with reference LBM 56.28 kg and exponent 0.626.",
-      source_name        = "LBM"
+      notes = "Power effect on clearance with reference LBM 56.28 kg and exponent 0.626.",
+      source_name = "LBM"
     ),
     FED = list(
-      description        = "Fed vs. fasted state at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed vs. fasted state at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Multiplicative effect on oral bioavailability.",
-      source_name        = "FED"
+      notes = "Multiplicative effect on oral bioavailability.",
+      source_name = "FED"
     ),
     FORM_TABLET = list(
-      description        = "Tablet vs. solution formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tablet vs. solution formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (solution)",
-      notes              = "Switches between tablet and solution absorption rate constants.",
-      source_name        = "TABLET"
+      notes = "Switches between tablet and solution absorption rate constants.",
+      source_name = "TABLET"
     ),
     RIA_ASSAY = list(
-      description        = "Assay type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Assay type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LC-MS/MS)",
-      notes              = "Switches the additive residual-error magnitude between radioimmunoassay (RIA) and LC-MS/MS measurements.",
-      source_name        = "RIA_ASSAY"
+      notes = "Switches the additive residual-error magnitude between radioimmunoassay (RIA) and LC-MS/MS measurements.",
+      source_name = "RIA_ASSAY"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = "TODO: from source paper",
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper (model centers AGE at 28 years)",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "TODO: from source paper (LBM reference 56.28 kg)",
+    n_subjects = "TODO: from source paper",
+    n_studies = "TODO: from source paper",
+    age_range = "TODO: from source paper",
+    age_median = "TODO: from source paper (model centers AGE at 28 years)",
+    weight_range = "TODO: from source paper",
+    weight_median = "TODO: from source paper (LBM reference 56.28 kg)",
     sex_female_pct = "TODO: from source paper",
     race_ethnicity = "TODO: from source paper",
-    disease_state  = "Healthy volunteers",
-    dose_range     = "TODO: from source paper (oral tablet and oral solution formulations, fed and fasted)",
-    regions        = "TODO: from source paper",
-    notes          = "Pooled analysis of healthy-volunteer studies. Concentrations quantified by two assays (RIA and LC-MS/MS) with distinct additive residual-error magnitudes."
+    disease_state = "Healthy volunteers",
+    dose_range = "TODO: from source paper (oral tablet and oral solution formulations, fed and fasted)",
+    regions = "TODO: from source paper",
+    notes = "Pooled analysis of healthy-volunteer studies. Concentrations quantified by two assays (RIA and LC-MS/MS) with distinct additive residual-error magnitudes."
   )
 
   # Notes:

@@ -17,19 +17,19 @@ Hennig_2007_itraconazole <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_ohi = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_CAPSULE = list(
-      description        = "Itraconazole oral formulation indicator (1 = Sporanox capsule, 0 = Sporanox oral solution)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Itraconazole oral formulation indicator (1 = Sporanox capsule, 0 = Sporanox oral solution)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral solution; F_rel fixed to 1 in the source model)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator (cross-over: each subject received both",
         "formulations on two separate occasions 72 h apart).",
         "Selects between two formulation-specific typical-value absorption",
@@ -45,24 +45,24 @@ Hennig_2007_itraconazole <- function() {
         "PREP = 0 = oral solution; the canonical FORM_CAPSULE column has the",
         "same orientation."
       ),
-      source_name        = "PREP"
+      source_name = "PREP"
     )
   )
 
   population <- list(
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "16-61 years",
-    age_median     = "25 years",
-    weight_range   = "46-86 kg",
-    weight_median  = "57 kg",
-    height_range   = "149-186 cm",
-    height_median  = "169 cm",
-    lbw_range      = "36-64 kg (Cheymol formula)",
-    lbw_median     = "46 kg",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "16-61 years",
+    age_median = "25 years",
+    weight_range = "46-86 kg",
+    weight_median = "57 kg",
+    height_range = "149-186 cm",
+    height_median = "169 cm",
+    lbw_range = "36-64 kg (Cheymol formula)",
+    lbw_median = "46 kg",
     sex_female_pct = 40,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult cystic fibrosis patients in hospital for management of a chest",
       "exacerbation, recruited from the Department of Thoracic Medicine,",
       "The Prince Charles Hospital, Brisbane. Patients were not taking",
@@ -74,7 +74,7 @@ Hennig_2007_itraconazole <- function() {
       "at least 2 h after the itraconazole dose to ensure capsule",
       "absorption."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 200 mg oral itraconazole on each of two occasions 72 h apart",
       "(cross-over): two 100 mg Sporanox capsules and 20 mL of 10 mg/mL",
       "Sporanox oral solution. The simulation chapter of the paper extends",
@@ -83,8 +83,8 @@ Hennig_2007_itraconazole <- function() {
       "predictions, but the parameter estimates were obtained from the",
       "single-dose cross-over data."
     ),
-    regions        = "Brisbane, Queensland, Australia (single-site).",
-    notes          = paste(
+    regions = "Brisbane, Queensland, Australia (single-site).",
+    notes = paste(
       "Hennig 2007 Table 2 baseline demographics. Median (range) age 25",
       "(16-61) years, weight 57 (46-86) kg, height 169 (149-186) cm,",
       "lean body weight 46 (36-64) kg, 13 (7-21) co-medications per",

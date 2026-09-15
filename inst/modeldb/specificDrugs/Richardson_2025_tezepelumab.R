@@ -33,8 +33,8 @@ Richardson_2025_tezepelumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "tezepelumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tezepelumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "tezepelumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tezepelumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "tezepelumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
@@ -44,12 +44,12 @@ Richardson_2025_tezepelumab <- function() {
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = 106,
-    n_studies     = 4,
+    species = "human",
+    n_subjects = 106,
+    n_studies = 4,
     disease_state = "not reported (Phase 1 studies; tezepelumab is developed for severe asthma)",
-    dose_range    = "not reported",
-    notes         = paste(
+    dose_range = "not reported",
+    notes = paste(
       "106 participants after filtering to subcutaneous administration only,",
       "contributing 1,477 observation records, pooled from NCT00757042,",
       "NCT00972179, NCT02512900 and NCT01913028 (Richardson 2025 Table 1 and",

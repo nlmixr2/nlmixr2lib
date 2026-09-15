@@ -12,10 +12,30 @@ Olivo_2025_vancomycin_invitro <- function() {
   # biological matrix. All four states are latent PD bookkeeping states of an
   # in vitro time-kill system, so none has a biological specimen.
   compartmentData <- list(
-    gro = list(analyte = "Staphylococcus aureus ATCC 43300, active (growing, vancomycin-susceptible) subpopulation", units = "log10 CFU/mL", specimen = "not applicable", verified = TRUE),
-    pers = list(analyte = "Staphylococcus aureus ATCC 43300, dormant (non-replicating, vancomycin-insusceptible) subpopulation", units = "log10 CFU/mL", specimen = "not applicable", verified = TRUE),
-    aroff = list(analyte = "adaptive-resistance OFF subpopulation fraction", units = "fraction", specimen = "not applicable", verified = TRUE),
-    aron = list(analyte = "adaptive-resistance ON subpopulation fraction", units = "fraction", specimen = "not applicable", verified = TRUE)
+    gro = list(
+      analyte = "Staphylococcus aureus ATCC 43300, active (growing, vancomycin-susceptible) subpopulation",
+      units = "log10 CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    pers = list(
+      analyte = "Staphylococcus aureus ATCC 43300, dormant (non-replicating, vancomycin-insusceptible) subpopulation",
+      units = "log10 CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    aroff = list(
+      analyte = "adaptive-resistance OFF subpopulation fraction",
+      units = "fraction",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    aron = list(
+      analyte = "adaptive-resistance ON subpopulation fraction",
+      units = "fraction",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

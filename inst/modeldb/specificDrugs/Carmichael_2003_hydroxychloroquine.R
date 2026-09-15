@@ -1,43 +1,43 @@
 Carmichael_2003_hydroxychloroquine <- function() {
   description <- "One-compartment first-order-absorption population PK model with an absorption lag time for oral hydroxychloroquine (HCQ) whole-blood concentrations in 123 adult rheumatoid arthritis patients (74 on HCQ alone plus 49 on HCQ + methotrexate) pooled from four Australian studies, with bioavailability fixed at the value 0.746 estimated from a nine-patient IV/oral crossover sub-study and a linear additive shift in central volume of distribution for concomitant methotrexate coadministration (V_MTX = 1070 L added to the base V of 605 L when MTX is present) (Carmichael 2003)."
-  reference   <- "Carmichael SJ, Charles B, Tett SE. Population Pharmacokinetics of Hydroxychloroquine in Patients With Rheumatoid Arthritis. Ther Drug Monit. 2003;25(6):671-681. doi:10.1097/00007691-200312000-00005. PMID 14639053."
-  vignette    <- "Carmichael_2003_hydroxychloroquine"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  reference <- "Carmichael SJ, Charles B, Tett SE. Population Pharmacokinetics of Hydroxychloroquine in Patients With Rheumatoid Arthritis. Ther Drug Monit. 2003;25(6):671-681. doi:10.1097/00007691-200312000-00005. PMID 14639053."
+  vignette <- "Carmichael_2003_hydroxychloroquine"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "hydroxychloroquine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "hydroxychloroquine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "hydroxychloroquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_MTX = list(
-      description        = "Concomitant methotrexate coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant methotrexate coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HCQ single-agent therapy; no concomitant methotrexate)",
-      notes              = "Time-fixed per subject within the analysis window (patients are stratified into the HCQ-alone cohort of 74 patients or the HCQ + MTX cohort of 49 patients per Materials and Methods 'Patients'). Enters as a linear additive shift on the typical central volume of distribution per equation 3: V_i = V + V_MTX * MTX where V_MTX = 1070 L (Results 'Population Pharmacokinetic Model Including Patients Taking MTX' paragraph 3 and Table 2 row d). The paper's Discussion attributes the 175% higher V in the HCQ + MTX cohort partly to sparser early samples in that group rather than to a true drug-drug interaction; clearance was unchanged.",
-      source_name        = "MTX"
+      notes = "Time-fixed per subject within the analysis window (patients are stratified into the HCQ-alone cohort of 74 patients or the HCQ + MTX cohort of 49 patients per Materials and Methods 'Patients'). Enters as a linear additive shift on the typical central volume of distribution per equation 3: V_i = V + V_MTX * MTX where V_MTX = 1070 L (Results 'Population Pharmacokinetic Model Including Patients Taking MTX' paragraph 3 and Table 2 row d). The paper's Discussion attributes the 175% higher V in the HCQ + MTX cohort partly to sparser early samples in that group rather than to a true drug-drug interaction; clearance was unchanged.",
+      source_name = "MTX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 123L,
+    species = "human",
+    n_subjects = 123L,
     n_subjects_hcq_alone = 74L,
-    n_subjects_hcq_mtx   = 49L,
-    n_studies      = 4L,
+    n_subjects_hcq_mtx = 49L,
+    n_studies = 4L,
     n_observations = 780L,
-    age_range      = "20-81 years",
-    weight_range   = "44-89 kg",
+    age_range = "20-81 years",
+    weight_range = "44-89 kg",
     sex_female_pct = 71.5,
     race_ethnicity = "not reported",
-    disease_state  = "Adults with rheumatoid arthritis (RA), diagnosed by 1958 American Rheumatoid Association criteria or 1987 American College of Rheumatology criteria. HCQ was used as second-line therapy. 49 patients received concomitant methotrexate.",
-    dose_range     = "155 mg (n=44) or 310 mg (n=21) oral HCQ base every 24 hours in the single-agent cohort, and 155 mg (n=25) or 310 mg (n=24) oral HCQ base every 24 hours in the HCQ + MTX cohort. Nine bioavailability-study patients received a single 155-mg oral dose and, in a randomized crossover, a 30-minute IV infusion of 155 mg HCQ. Doses of 155 and 310 mg base correspond to 200 mg and 400 mg HCQ sulfate (Plaquenil tablets, Winthrop Laboratories).",
-    regions        = "Australia (all studies coordinated from the Department of Clinical Pharmacology, St. Vincent's Hospital, Darlinghurst, Sydney, NSW).",
-    notes          = "Demographics summarised from Table 1: bioavailability sub-study (n=9, 2 male / 7 female, age 50.2 +/- 16.1 yr, weight 72.6 +/- 13.3 kg, 590 samples), HCQ single-agent cohort (n=74, 23 male / 51 female, age 53.9 +/- 14.8 yr, weight 69.2 +/- 12.4 kg, 461 samples), HCQ + MTX cohort (n=49, 12 male / 37 female, age 56.8 +/- 12.6 yr, weight 71.0 +/- 16.3 kg, 319 samples). Sampling schedules per subgroup: (a) bioavailability sub-study patients had samples every 15 minutes for 8 hours plus 24-h and 32-h samples after single-dose HCQ; (b) 22 single-agent HCQ patients had 1-6 trough samples collected between 22 and 192 days after therapy start; (c) 43 single-agent HCQ patients had a single trough sample at 180 days; (d) HCQ + MTX patients had a single trough sample at each of 7 hospital visits over 6 months. All whole-blood HCQ concentrations were assayed by HPLC (Tett et al reference 20). Analyses used NONMEM v5.1 level 1.1 with first-order conditional estimation (FOCE) including eta-epsilon interaction. Race / ethnicity was not reported in the paper."
+    disease_state = "Adults with rheumatoid arthritis (RA), diagnosed by 1958 American Rheumatoid Association criteria or 1987 American College of Rheumatology criteria. HCQ was used as second-line therapy. 49 patients received concomitant methotrexate.",
+    dose_range = "155 mg (n=44) or 310 mg (n=21) oral HCQ base every 24 hours in the single-agent cohort, and 155 mg (n=25) or 310 mg (n=24) oral HCQ base every 24 hours in the HCQ + MTX cohort. Nine bioavailability-study patients received a single 155-mg oral dose and, in a randomized crossover, a 30-minute IV infusion of 155 mg HCQ. Doses of 155 and 310 mg base correspond to 200 mg and 400 mg HCQ sulfate (Plaquenil tablets, Winthrop Laboratories).",
+    regions = "Australia (all studies coordinated from the Department of Clinical Pharmacology, St. Vincent's Hospital, Darlinghurst, Sydney, NSW).",
+    notes = "Demographics summarised from Table 1: bioavailability sub-study (n=9, 2 male / 7 female, age 50.2 +/- 16.1 yr, weight 72.6 +/- 13.3 kg, 590 samples), HCQ single-agent cohort (n=74, 23 male / 51 female, age 53.9 +/- 14.8 yr, weight 69.2 +/- 12.4 kg, 461 samples), HCQ + MTX cohort (n=49, 12 male / 37 female, age 56.8 +/- 12.6 yr, weight 71.0 +/- 16.3 kg, 319 samples). Sampling schedules per subgroup: (a) bioavailability sub-study patients had samples every 15 minutes for 8 hours plus 24-h and 32-h samples after single-dose HCQ; (b) 22 single-agent HCQ patients had 1-6 trough samples collected between 22 and 192 days after therapy start; (c) 43 single-agent HCQ patients had a single trough sample at 180 days; (d) HCQ + MTX patients had a single trough sample at each of 7 hospital visits over 6 months. All whole-blood HCQ concentrations were assayed by HPLC (Tett et al reference 20). Analyses used NONMEM v5.1 level 1.1 with first-order conditional estimation (FOCE) including eta-epsilon interaction. Race / ethnicity was not reported in the paper."
   )
 
   ini({

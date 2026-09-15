@@ -33,24 +33,29 @@ Qin_2025_ropeginterferon <- function() {
   )
   vignette <- "Qin_2025_ropeginterferon"
   units <- list(
-    time          = "day (NOT hour: Qin 2025 Table 2 labels the rate constants h^-1, but the values are per day. The Methods text itself reports kdec in day^-1, and three independent anchors confirm the day reading -- see the vignette Errata)",
-    dosing        = "ug (micrograms of ropeginterferon alfa-2b, subcutaneous)",
+    time = "day (NOT hour: Qin 2025 Table 2 labels the rate constants h^-1, but the values are per day. The Methods text itself reports kdec in day^-1, and three independent anchors confirm the day reading -- see the vignette Errata)",
+    dosing = "ug (micrograms of ropeginterferon alfa-2b, subcutaneous)",
     concentration = "ug/L total serum ropeg (Cc), which is numerically identical to the ng/mL that Qin 2025 reports. Doses in ug with vc in L give ug/L directly, so no conversion constant appears in model()"
   )
 
   compartmentData <- list(
-    depot        = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "serum",                             verified = FALSE),
-    total_target = list(analyte = "ropeg target (total, free plus drug-bound binding capacity)", units = "ug/L (= ng/mL)", specimen = "serum", verified = FALSE)
+    depot = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "serum", verified = FALSE),
+    total_target = list(
+      analyte = "ropeg target (total, free plus drug-bound binding capacity)",
+      units = "ug/L (= ng/mL)",
+      specimen = "serum",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Baseline body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final population PK model",
         "(Qin 2025 Results 3.2.1: 'Body mass index (BMI) was included as",
         "a covariate of clearance'). Enters as the paper's Equation (1)",
@@ -67,14 +72,14 @@ Qin_2025_ropeginterferon <- function() {
         "retained BMI, so a downstream user must supply BMI itself rather",
         "than deriving clearance from weight."
       ),
-      source_name        = "BMI (body mass index)"
+      source_name = "BMI (body mass index)"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator; 1 = healthy volunteer, 0 = patient with polycythaemia vera.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator; 1 = healthy volunteer, 0 = patient with polycythaemia vera.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with polycythaemia vera; the 78 phase II participants of A19-201 and A20-202)",
-      notes              = paste(
+      notes = paste(
         "Gates the chronic decline of the target pool, NOT any structural",
         "PK parameter. Qin 2025 Methods 2.4.1 states it directly: 'In",
         "healthy subjects who received only a single dose, as well as in",
@@ -88,16 +93,16 @@ Qin_2025_ropeginterferon <- function() {
         "healthy-versus-patient effect on CL, Vc or Ka, this column",
         "changes nothing else in the model."
       ),
-      source_name        = "healthy-volunteer study flag (A17-101 / A17-102 versus A19-201 / A20-202); the source control stream name is not published"
+      source_name = "healthy-volunteer study flag (A17-101 / A17-102 versus A19-201 / A20-202); the source control stream name is not published"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened in the stepwise covariate search (Qin 2025 Table 1 lists",
         "it among the assessed demographics) but NOT retained in the final",
         "population PK model, which kept BMI alone on clearance. Pooled",
@@ -110,69 +115,69 @@ Qin_2025_ropeginterferon <- function() {
     ),
     BSA = list(
       description = "Baseline body surface area.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained. Pooled median 1.73 m^2, range 1.39-2.09 (Qin 2025 Table 1, Overall)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but not retained. Pooled median 1.73 m^2, range 1.39-2.09 (Qin 2025 Table 1, Overall)."
     ),
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained. Pooled median 43.5 years, range 21.0-72.0 (Qin 2025 Table 1, Overall); the healthy phase I cohorts are much younger (median 27-30 years) than the PV cohorts (median 54-56 years)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained. Pooled median 43.5 years, range 21.0-72.0 (Qin 2025 Table 1, Overall); the healthy phase I cohorts are much younger (median 27-30 years) than the PV cohorts (median 54-56 years)."
     ),
     SEXF = list(
       description = "Female-sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Qin 2025 Equation (2) is written with sex as the worked example of a categorical covariate, but no categorical covariate survived into the final model. Pooled 47/126 female (37.3%) (Table 1, Overall)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Qin 2025 Equation (2) is written with sex as the worked example of a categorical covariate, but no categorical covariate survived into the final model. Pooled 47/126 female (37.3%) (Table 1, Overall)."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance.",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened but not retained. Pooled median 111 mL/min, range 43.3-169 (Qin 2025 Table 1, Overall)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened but not retained. Pooled median 111 mL/min, range 43.3-169 (Qin 2025 Table 1, Overall)."
     ),
     CREAT = list(
       description = "Baseline serum creatinine.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Pooled median 67.2 umol/L, range 41.0-106 (Qin 2025 Table 1, Overall)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained. Pooled median 67.2 umol/L, range 41.0-106 (Qin 2025 Table 1, Overall)."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase activity.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained on any PK parameter. Pooled median 17.1 U/L, range 7.00-51.0, 8 records missing (Qin 2025 Table 1, Overall). ALT increase IS a modelled exposure-safety endpoint in the companion Qin_2025_ropeginterferon_alt_increase model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained on any PK parameter. Pooled median 17.1 U/L, range 7.00-51.0, 8 records missing (Qin 2025 Table 1, Overall). ALT increase IS a modelled exposure-safety endpoint in the companion Qin_2025_ropeginterferon_alt_increase model."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase activity.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained on any PK parameter. Pooled median 20.0 U/L, range 11.4-36.0, 8 records missing (Qin 2025 Table 1, Overall)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained on any PK parameter. Pooled median 20.0 U/L, range 11.4-36.0, 8 records missing (Qin 2025 Table 1, Overall)."
     ),
     HGB = list(
       description = "Baseline haemoglobin concentration.",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Pooled median 153 g/L, range 116-219 (Qin 2025 Table 1, Overall)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained. Pooled median 153 g/L, range 116-219 (Qin 2025 Table 1, Overall)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 126L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 126L,
+    n_studies = 4L,
     n_observations = "not reported as a record count; PK sampling was pre-dose and 1, 3, 6, 9, 12, 24, 36, 48, 72, 96, 120, 144, 168, 192, 240, 288, 336, 504 and 672 h post-dose in both phase I studies, and weeks 0 and 28 (A19-201) or weeks 0 and 12 (A20-202) pre-dose plus 48, 96 and 168 h post-dose with trough concentrations at every visit in the phase II studies",
-    age_range      = "median 43.5 years, range 21.0-72.0 pooled (Qin 2025 Table 1, Overall); healthy phase I median 27.0-30.0 years, PV phase II median 54.0-56.0 years",
-    weight_range   = "median 62.8 kg, range 43.6-91.0 (Qin 2025 Table 1, Overall)",
-    bmi_range      = "median 23.1 kg/m^2, range 17.4-32.2 (Qin 2025 Table 1, Overall); this median is the centring value of the clearance covariate model",
+    age_range = "median 43.5 years, range 21.0-72.0 pooled (Qin 2025 Table 1, Overall); healthy phase I median 27.0-30.0 years, PV phase II median 54.0-56.0 years",
+    weight_range = "median 62.8 kg, range 43.6-91.0 (Qin 2025 Table 1, Overall)",
+    bmi_range = "median 23.1 kg/m^2, range 17.4-32.2 (Qin 2025 Table 1, Overall); this median is the centring value of the clearance covariate model",
     sex_female_pct = 37.3,
     race_ethnicity = "Chinese (A17-101 n = 18 healthy; A20-202 n = 49 PV) and Japanese (A19-201 n = 29 PV); A17-102 enrolled 30 healthy Japanese and Caucasian participants. Qin 2025 Methods 2.1: 'Only participants from Japan and China who were administered ropeg were included in the analyses.'",
-    disease_state  = "48 healthy volunteers and 78 patients with polycythaemia vera. All A20-202 patients and all but two A19-201 patients carried the JAK2 V617F driver mutation; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline JAK2 V617F allele burden median 77.8% (A19-201) and 61.2% (A20-202)",
-    dose_range     = "phase I single subcutaneous doses of 90-270 ug (A17-101) and 100-300 ug (A17-102); phase II subcutaneous doses every 2 weeks, A19-201 starting at 100 ug (or 50 ug on prior cytoreductive therapy) titrated in 50 ug steps to a 500 ug maximum (slow titration) and A20-202 starting at 250 ug with titration to 350 ug at week 2 and 500 ug from week 4 (fast titration)",
-    regions        = "China (A17-101, A20-202) and Japan (A17-102, A19-201); A17-102 also enrolled Caucasian participants who were excluded from these analyses",
+    disease_state = "48 healthy volunteers and 78 patients with polycythaemia vera. All A20-202 patients and all but two A19-201 patients carried the JAK2 V617F driver mutation; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline JAK2 V617F allele burden median 77.8% (A19-201) and 61.2% (A20-202)",
+    dose_range = "phase I single subcutaneous doses of 90-270 ug (A17-101) and 100-300 ug (A17-102); phase II subcutaneous doses every 2 weeks, A19-201 starting at 100 ug (or 50 ug on prior cytoreductive therapy) titrated in 50 ug steps to a 500 ug maximum (slow titration) and A20-202 starting at 250 ug with titration to 350 ug at week 2 and 500 ug from week 4 (fast titration)",
+    regions = "China (A17-101, A20-202) and Japan (A17-102, A19-201); A17-102 also enrolled Caucasian participants who were excluded from these analyses",
     trial_registration = "A17-102 NCT03546465; A19-201 NCT04182100; A20-202 NCT05485948; A17-101 CTR20190451 (chinadrugtrials.org.cn)",
-    notes          = paste0(
+    notes = paste0(
       "Ropeginterferon alfa-2b is approved for polycythaemia vera by ",
       "the EMA (2019), the FDA (2021) and in Japan (2023) and China. ",
       "The pooled analysis set spans a 10-fold single-dose range in ",

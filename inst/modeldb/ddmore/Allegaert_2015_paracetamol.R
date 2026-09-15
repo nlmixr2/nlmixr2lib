@@ -11,7 +11,7 @@ Allegaert_2015_paracetamol <- function() {
   )
   vignette <- "Allegaert_2015_paracetamol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000267"
+  ddmore_id <- "DDMODEL00000267"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -19,71 +19,71 @@ Allegaert_2015_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
     central_gluc = list(analyte = "APAP-glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
     central_sulf = list(analyte = "APAP-sulphate", units = "mg", specimen = "plasma", verified = FALSE),
-    urine_gluc   = list(analyte = "APAP-glucuronide", units = "mg", specimen = "urine", verified = FALSE),
-    urine_sulf   = list(analyte = "APAP-sulphate", units = "mg", specimen = "urine", verified = FALSE),
-    urine_apap   = list(analyte = "APAP", units = "mg", specimen = "urine", verified = FALSE),
-    peripheral2  = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE)
+    urine_gluc = list(analyte = "APAP-glucuronide", units = "mg", specimen = "urine", verified = FALSE),
+    urine_sulf = list(analyte = "APAP-sulphate", units = "mg", specimen = "urine", verified = FALSE),
+    urine_apap = list(analyte = "APAP", units = "mg", specimen = "urine", verified = FALSE),
+    peripheral2 = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear allometric exponent of 1.0 on the inter-compartmental clearance Q1 (THETA(6) * (BW/70)^1 in the .mod). Reference weight 70 kg. Source column is `BW` (body weight, kg) -- same orientation, no transformation; rename to `WT` before passing the dataset to rxSolve.",
-      source_name        = "BW"
+      notes = "Linear allometric exponent of 1.0 on the inter-compartmental clearance Q1 (THETA(6) * (BW/70)^1 in the .mod). Reference weight 70 kg. Source column is `BW` (body weight, kg) -- same orientation, no transformation; rename to `WT` before passing the dataset to rxSolve.",
+      source_name = "BW"
     ),
     OCC = list(
-      description        = "Five-level integer state column encoding pregnancy / postpartum / non-pregnant-volunteer status with a within-volunteer split for oral contraceptive use.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Five-level integer state column encoding pregnancy / postpartum / non-pregnant-volunteer status with a within-volunteer split for oral contraceptive use.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "3 (one year post delivery; baseline value of CL_gluc and V_central)",
-      notes              = "Allegaert 2015 NONMEM column with five mutually-exclusive levels: 1 = pregnant, 2 = 2 weeks postpartum, 3 = 1 year postpartum, 4 = non-pregnant volunteer not on birth control, 5 = non-pregnant volunteer on birth control. Decomposed inside `model()` into binary indicators `oc1` .. `oc5` that drive the per-occasion typical-value covariate effects on V_central (OCC = 1), CL_glucuronide (OCC = 1 and OCC = 2), Q2 (OCC = 2), and the residual-error switch on the plasma APAP observation (OCC = 5).",
-      source_name        = "OCC"
+      notes = "Allegaert 2015 NONMEM column with five mutually-exclusive levels: 1 = pregnant, 2 = 2 weeks postpartum, 3 = 1 year postpartum, 4 = non-pregnant volunteer not on birth control, 5 = non-pregnant volunteer on birth control. Decomposed inside `model()` into binary indicators `oc1` .. `oc5` that drive the per-occasion typical-value covariate effects on V_central (OCC = 1), CL_glucuronide (OCC = 1 and OCC = 2), Q2 (OCC = 2), and the residual-error switch on the plasma APAP observation (OCC = 5).",
+      source_name = "OCC"
     ),
     TERM_BIRTH = list(
-      description        = "Term-vs-preterm birth indicator (1 = term birth, >= 37 weeks gestation; 0 = preterm).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Term-vs-preterm birth indicator (1 = term birth, >= 37 weeks gestation; 0 = preterm).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (preterm)",
-      notes              = "Selects between two typical-value sulphate-formation clearances via `CL_sulf = TERM_BIRTH * cl_sulf_term + (1 - TERM_BIRTH) * cl_sulf_preterm` (.mod $PK line `CLS=(TERM*THETA(3)+(1-TERM)*THETA(10))*EXP(ETA(3))`). Both arms are estimated parameters; neither category is the multiplicative reference. The .mod's $THETA comments label TH3 as 'CL formation APAP-S for TERM=0' and TH10 as 'CL formation APAP-S for TERM=1', but the $PK code applies TH3 when TERM=1 and TH10 when TERM=0 -- the code-level usage is taken as authoritative because `(TERM*TH3 + (1-TERM)*TH10)` evaluates that way.",
-      source_name        = "TERM"
+      notes = "Selects between two typical-value sulphate-formation clearances via `CL_sulf = TERM_BIRTH * cl_sulf_term + (1 - TERM_BIRTH) * cl_sulf_preterm` (.mod $PK line `CLS=(TERM*THETA(3)+(1-TERM)*THETA(10))*EXP(ETA(3))`). Both arms are estimated parameters; neither category is the multiplicative reference. The .mod's $THETA comments label TH3 as 'CL formation APAP-S for TERM=0' and TH10 as 'CL formation APAP-S for TERM=1', but the $PK code applies TH3 when TERM=1 and TH10 when TERM=0 -- the code-level usage is taken as authoritative because `(TERM*TH3 + (1-TERM)*TH10)` evaluates that way.",
+      source_name = "TERM"
     ),
     CONMED_BIRTHCONTROL = list(
-      description        = "Oral hormonal contraceptive use indicator (1 = on oral contraceptive, 0 = not).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral hormonal contraceptive use indicator (1 = on oral contraceptive, 0 = not).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no oral contraceptive)",
-      notes              = "Multiplicative scalar on the OCC-adjusted glucuronide-formation clearance (.mod $PK lines 39-43): `CL_gluc <- THETA(12) * CL_gluc_OCC` when BC == 1. Independent of OCC: a postpartum woman on contraceptives has both an OCC-2 typical-value adjustment AND the CONMED_BIRTHCONTROL = 1 multiplier applied. The estrogen component of combined oral contraceptives is plausibly the driver via UGT2B7 induction.",
-      source_name        = "BC"
+      notes = "Multiplicative scalar on the OCC-adjusted glucuronide-formation clearance (.mod $PK lines 39-43): `CL_gluc <- THETA(12) * CL_gluc_OCC` when BC == 1. Independent of OCC: a postpartum woman on contraceptives has both an OCC-2 typical-value adjustment AND the CONMED_BIRTHCONTROL = 1 multiplier applied. The estrogen component of combined oral contraceptives is plausibly the driver via UGT2B7 induction.",
+      source_name = "BC"
     ),
     URINE_FLOW = list(
-      description        = "Instantaneous urine flow rate over the urine-collection interval.",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Instantaneous urine flow rate over the urine-collection interval.",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear effect on renal clearance of unchanged paracetamol with centering at 100 mL/h: `CL_renal_apap = THETA(4) + THETA(16) * (URINE_FLOW - 100)` (.mod $PK lines 45-47), gated by `URINE_FLOW > 0` (urine-flow == 0 sets the slope contribution to zero, treated as 'no urine produced during the interval').",
-      source_name        = "UF"
+      notes = "Linear effect on renal clearance of unchanged paracetamol with centering at 100 mL/h: `CL_renal_apap = THETA(4) + THETA(16) * (URINE_FLOW - 100)` (.mod $PK lines 45-47), gated by `URINE_FLOW > 0` (urine-flow == 0 sets the slope contribution to zero, treated as 'no urine produced during the interval').",
+      source_name = "UF"
     )
   )
 
   population <- list(
-    n_subjects     = 69L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    n_subjects = 69L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 100,
-    disease_state  = "Young women across five reproductive states (DDMODEL00000267 .mod $INPUT comment for OCC): pregnant (OCC = 1), 2 weeks postpartum (OCC = 2), 1 year postpartum (OCC = 3), non-pregnant volunteer not on birth control (OCC = 4), non-pregnant volunteer on birth control (OCC = 5). The intent of the analysis is to quantify how pregnancy, time post partum, and oral-contraceptive use modify paracetamol disposition in this population.",
-    dose_range     = "Single-dose intravenous propacetamol (a paracetamol pro-drug; 1 g propacetamol is approximately equivalent to 0.5 g paracetamol on a molar basis), administered as a short infusion (the bundle's Simulated_APAP_YoungWomen.csv ships 1 g and 2 g propacetamol-equivalent doses delivered over ~20-30 min). Multiple-dose regimens are present in the simulated dataset for some subjects.",
-    regions        = NA_character_,
-    notes          = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication is not on disk in this worktree, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC -> CONMED_BIRTHCONTROL, TERM -> TERM_BIRTH, UF -> URINE_FLOW, BW -> WT) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
+    disease_state = "Young women across five reproductive states (DDMODEL00000267 .mod $INPUT comment for OCC): pregnant (OCC = 1), 2 weeks postpartum (OCC = 2), 1 year postpartum (OCC = 3), non-pregnant volunteer not on birth control (OCC = 4), non-pregnant volunteer on birth control (OCC = 5). The intent of the analysis is to quantify how pregnancy, time post partum, and oral-contraceptive use modify paracetamol disposition in this population.",
+    dose_range = "Single-dose intravenous propacetamol (a paracetamol pro-drug; 1 g propacetamol is approximately equivalent to 0.5 g paracetamol on a molar basis), administered as a short infusion (the bundle's Simulated_APAP_YoungWomen.csv ships 1 g and 2 g propacetamol-equivalent doses delivered over ~20-30 min). Multiple-dose regimens are present in the simulated dataset for some subjects.",
+    regions = NA_character_,
+    notes = "n_subjects (69) and n_obs (1118) come from the Output_real_OriginalModelCode.lst run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively. The Allegaert 2015 BMC Anesthesiol publication is not on disk in this worktree, so finer-grained demographics (age range, weight range, region, baseline-renal/hepatic profile) are recorded as NA. The .mod's covariate columns (OCC, BC -> CONMED_BIRTHCONTROL, TERM -> TERM_BIRTH, UF -> URINE_FLOW, BW -> WT) reveal the variability axes the model resolves but do not by themselves constrain the underlying demographic distributions. See the validation vignette's Errata section for the full caveat list."
   )
 
   ini({

@@ -1,7 +1,7 @@
 Csajka_2005_ephedrine_caffeine <- function() {
   description <- "Mechanistic simultaneous population PK model for co-administered ephedrine, its N-demethylation metabolite norephedrine, and caffeine in healthy adults after single oral doses (Csajka 2005). Caffeine is described by a 1-compartment first-order-absorption model with a fractional decrease in apparent clearance during oral contraceptive therapy. Ephedrine uses a 1-compartment depot + central + cumulative-urine model with an absorption lag time, renal clearance, and saturable Michaelis-Menten conversion to norephedrine; norephedrine is carried as a pseudo-concentration state because its volume of distribution V_NE is unidentifiable, so the reported parameter is the compound Vmax/V_NE and the norephedrine elimination is first order. The interaction term reproduces the paper's indirect-action absorption model (equation 10b/10e final form): the caffeine amount in the absorption compartment depresses ephedrine ka by an asymptotic fraction d, with caffeine acting as the f(C) inhibitor on its own absorption-compartment amount. Parameter values are the pharmaceutical-formulation defaults from Table 3; herbal-formulation alternatives (bioavailability F_E,herbal = 0.78 instead of F_E,pharm = 0.59, plus a 22.2-min caffeine absorption lag) are documented in inline comments and can be applied by overriding lfdepot and ltlag_caf at simulation time."
-  reference   <- "Csajka C, Haller CA, Benowitz NL, Verotta D. Mechanistic pharmacokinetic modelling of ephedrine, norephedrine and caffeine in healthy subjects. Br J Clin Pharmacol. 2005;59(3):335-345. doi:10.1111/j.1365-2125.2005.02254.x"
-  vignette    <- "Csajka_2005_ephedrine_caffeine"
+  reference <- "Csajka C, Haller CA, Benowitz NL, Verotta D. Mechanistic pharmacokinetic modelling of ephedrine, norephedrine and caffeine in healthy subjects. Br J Clin Pharmacol. 2005;59(3):335-345. doi:10.1111/j.1365-2125.2005.02254.x"
+  vignette <- "Csajka_2005_ephedrine_caffeine"
 
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
@@ -10,47 +10,52 @@ Csajka_2005_ephedrine_caffeine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_caf    = list(analyte = "caffeine", units = "mg", specimen = "administration site", verified = FALSE),
-    central_caf  = list(analyte = "caffeine", units = "mg", specimen = "plasma", verified = FALSE),
-    depot        = list(analyte = "ephedrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "norephedrine", units = "mg", specimen = "plasma", verified = FALSE),
-    urine        = list(analyte = "ephedrine", units = "mg", specimen = "urine", verified = FALSE),
+    depot_caf = list(analyte = "caffeine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_caf = list(analyte = "caffeine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ephedrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "norephedrine", units = "mg", specimen = "plasma", verified = FALSE),
+    urine = list(analyte = "ephedrine", units = "mg", specimen = "urine", verified = FALSE),
     central_neph = list(analyte = "norephedrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_BIRTHCONTROL = list(
-      description        = "Oral hormonal contraceptive use indicator (1 = currently taking, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral hormonal contraceptive use indicator (1 = currently taking, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no oral contraceptive)",
-      notes              = "Csajka 2005 Methods 'Caffeine pharmacokinetics' parameterises the OC effect as CL_C(OC) = CL_C * (1 - d_OC_CL * OC), with d_OC_CL = 0.54 (Table 3), so OC users have caffeine apparent clearance reduced by 54% (population mean 0.083 -> 0.038 L/min). Six of 24 subjects (25%; two from Study 1 and four from Study 2) were on oral contraceptives. The covariate affects only caffeine CL; no effect on ephedrine or norephedrine.",
-      source_name        = "OC"
+      notes = "Csajka 2005 Methods 'Caffeine pharmacokinetics' parameterises the OC effect as CL_C(OC) = CL_C * (1 - d_OC_CL * OC), with d_OC_CL = 0.54 (Table 3), so OC users have caffeine apparent clearance reduced by 54% (population mean 0.083 -> 0.038 L/min). Six of 24 subjects (25%; two from Study 1 and four from Study 2) were on oral contraceptives. The covariate affects only caffeine CL; no effect on ephedrine or norephedrine.",
+      source_name = "OC"
     )
   )
 
   covariatesDataExcluded <- list(
     URINE_PH = list(
       description = "Voiding-interval urine pH",
-      units       = "pH units",
-      type        = "continuous",
-      notes       = "Csajka 2005 reports an inverse linear association between individual measurements of urine pH and empirical-Bayes individual estimates of ephedrine renal clearance (CL_R = 0.4723 - 0.0172 * pH, P = 0.013, Results 'Ephedrine and norephedrine pharmacokinetics'). This was an exploratory post-hoc regression on EBE estimates and was NOT incorporated as a covariate in the population model; the final model carries CL_RE as a fixed-effect population mean with no pH covariate. Documented here so the post-hoc finding is not lost to future users."
+      units = "pH units",
+      type = "continuous",
+      notes = "Csajka 2005 reports an inverse linear association between individual measurements of urine pH and empirical-Bayes individual estimates of ephedrine renal clearance (CL_R = 0.4723 - 0.0172 * pH, P = 0.013, Results 'Ephedrine and norephedrine pharmacokinetics'). This was an exploratory post-hoc regression on EBE estimates and was NOT incorporated as a covariate in the population model; the final model carries CL_RE as a fixed-effect population mean with no pH covariate. Documented here so the post-hoc finding is not lost to future users."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 2L,
-    age_range      = "22-39 years (Study 1 25-38; Study 2 22-39)",
-    weight_range   = "52-91.5 kg (Study 1 52-88.9; Study 2 58.6-91.5)",
-    height_range   = "144-188 cm (Study 2 only; not reported for Study 1)",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 2L,
+    age_range = "22-39 years (Study 1 25-38; Study 2 22-39)",
+    weight_range = "52-91.5 kg (Study 1 52-88.9; Study 2 58.6-91.5)",
+    height_range = "144-188 cm (Study 2 only; not reported for Study 1)",
     sex_female_pct = 58.3,
-    race_ethnicity = c(White = 62.5, Black_or_African_American = 6.25, Asian_or_Pacific_Islander = 18.75, Hispanic_or_Latino = 12.5),
-    disease_state  = "Healthy adults. 6 of 24 subjects (25%) were on concurrent oral contraceptive therapy. Race / ethnicity reported only for Study 2 (n=16: 10 Caucasian, 1 African American, 3 Asian / Pacific Islander, 2 Latino); Study 1 (n=8) race not reported.",
-    dose_range     = "Study 1 (n=8): single oral dose of a commercial herbal supplement (Metabolift, two capsules) containing 17.3 mg ephedrine, 0.2 mg norephedrine, 5.3 mg pseudoephedrine, 0.42 mg norepseudoephedrine, and 175 mg caffeine. Study 2 (n=16): single oral 25 mg ephedrine sulphate (West-ward Pharmaceutical Corp.) or 200 mg caffeine sulphate alone and together; cross-over.",
-    regions        = "USA (University of California, San Francisco)",
-    notes          = "Csajka 2005 Table 1 demographics. 379 ephedrine, 352 norephedrine, 417 caffeine plasma samples and 40 urinary ephedrine collections (0-14 h Study 1; 0-24 h Study 2). NONMEM FOCE-INTERACTION with ADVAN6. Pharmaceutical-formulation parameters are the defaults in this model; the herbal formulation differs in caffeine absorption lag (22.2 min vs 0) and apparent ephedrine bioavailability (F_E,herbal 0.78 vs F_E,pharm 0.59) per Table 3."
+    race_ethnicity = c(
+      White = 62.5,
+      Black_or_African_American = 6.25,
+      Asian_or_Pacific_Islander = 18.75,
+      Hispanic_or_Latino = 12.5
+    ),
+    disease_state = "Healthy adults. 6 of 24 subjects (25%) were on concurrent oral contraceptive therapy. Race / ethnicity reported only for Study 2 (n=16: 10 Caucasian, 1 African American, 3 Asian / Pacific Islander, 2 Latino); Study 1 (n=8) race not reported.",
+    dose_range = "Study 1 (n=8): single oral dose of a commercial herbal supplement (Metabolift, two capsules) containing 17.3 mg ephedrine, 0.2 mg norephedrine, 5.3 mg pseudoephedrine, 0.42 mg norepseudoephedrine, and 175 mg caffeine. Study 2 (n=16): single oral 25 mg ephedrine sulphate (West-ward Pharmaceutical Corp.) or 200 mg caffeine sulphate alone and together; cross-over.",
+    regions = "USA (University of California, San Francisco)",
+    notes = "Csajka 2005 Table 1 demographics. 379 ephedrine, 352 norephedrine, 417 caffeine plasma samples and 40 urinary ephedrine collections (0-14 h Study 1; 0-24 h Study 2). NONMEM FOCE-INTERACTION with ADVAN6. Pharmaceutical-formulation parameters are the defaults in this model; the herbal formulation differs in caffeine absorption lag (22.2 min vs 0) and apparent ephedrine bioavailability (F_E,herbal 0.78 vs F_E,pharm 0.59) per Table 3."
   )
 
   ini({

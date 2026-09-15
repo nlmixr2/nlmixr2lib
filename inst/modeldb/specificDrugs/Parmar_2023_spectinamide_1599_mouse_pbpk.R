@@ -34,8 +34,8 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
   )
   vignette <- "Parmar_2023_spectinamides_pbpk"
   units <- list(
-    time          = "h",
-    dosing        = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
+    time = "h",
+    dosing = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
 
@@ -52,34 +52,69 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    venous               = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    arterial             = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    lung_extracellular   = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    lung_cellular        = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    elf                  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    spleen_extracellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_cellular      = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    liver_extracellular  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    liver_cellular       = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    kidney_extracellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    kidney_cellular      = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_extracellular  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_cellular       = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
-    depot                = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot2               = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "administration site", verified = FALSE)
+    venous = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    arterial = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    lung_extracellular = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    lung_cellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    elf = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    spleen_extracellular = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_cellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_extracellular = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    liver_cellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_extracellular = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    kidney_cellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_extracellular = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_cellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    depot = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot2 = list(
+      analyte = "Spectinamide 1599",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (BALB/c, 20 g)",
-    n_subjects     = 552L,
-    n_studies      = 4L,
-    age_range      = NA_character_,
-    weight_range   = "20 g reference body weight (Parmar 2023 Table 2)",
+    species = "mouse (BALB/c, 20 g)",
+    n_subjects = 552L,
+    n_studies = 4L,
+    age_range = NA_character_,
+    weight_range = "20 g reference body weight (Parmar 2023 Table 2)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy BALB/c mice for all model-parameterisation and",
       "model-qualification data (plasma + lung + liver + spleen + kidney +",
       "ELF). Mycobacterium tuberculosis-infected BALB/c mice (studies 1A /",
@@ -88,15 +123,15 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
       "difference between healthy and infected animals, so no",
       "disease-status effect is encoded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous 10 mg/kg single dose and QD5; subcutaneous 50 and",
       "200 mg/kg single dose, QD5 / BIW / TIW; intrapulmonary aerosol 10,",
       "50 and 150 mg/kg single dose, QD5 / BIW / TIW (Parmar 2023 Table 1).",
       "Infected-mouse subcutaneous regimens spanned 1-200 mg/kg per dose at",
       "BID / QD / TIW / BIW / QW for 4 weeks."
     ),
-    regions        = "USA (University of Tennessee Health Science Center; Colorado State University BSL-3 for infected animals)",
-    notes          = paste(
+    regions = "USA (University of Tennessee Health Science Center; Colorado State University BSL-3 for infected animals)",
+    notes = paste(
       "n_subjects counts the BALB/c mice in Parmar 2023 Table 1 that",
       "contributed spectinamide 1599 data: 168 healthy mice for the IV and",
       "SC datasets, 234 healthy mice for the intrapulmonary-aerosol",

@@ -21,8 +21,8 @@ Dodds_2005_rfxiii_cyno <- function() {
   paper_specific_compartments <- c("A2", "A2B2", "B")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg (IV bolus of rA2 dimer; doses are weight-normalised throughout)",
+    time = "h",
+    dosing = "mg/kg (IV bolus of rA2 dimer; doses are weight-normalised throughout)",
     concentration = "mg/L (each assay output: ELISA reading in mass/volume on plasma)"
   )
 
@@ -31,9 +31,9 @@ Dodds_2005_rfxiii_cyno <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    A2   = list(analyte = "rA2 dimer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    A2 = list(analyte = "rA2 dimer", units = NA_character_, specimen = "plasma", verified = FALSE),
     A2B2 = list(analyte = "heterotetramer (A2B2)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    B    = list(analyte = "Factor XIII B monomer", units = NA_character_, specimen = "plasma", verified = FALSE)
+    B = list(analyte = "Factor XIII B monomer", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -45,17 +45,17 @@ Dodds_2005_rfxiii_cyno <- function() {
   )
 
   population <- list(
-    species        = "cynomolgus monkey (Macaca fascicularis, Chinese origin)",
-    n_subjects     = 30L,
-    n_studies      = 2L,
+    species = "cynomolgus monkey (Macaca fascicularis, Chinese origin)",
+    n_subjects = 30L,
+    n_studies = 2L,
     weight_typical = "~3.5 kg (Dodds 2005 Results: 'normal cynomolgus monkeys ~3.5 kg = 270 mL blood volume')",
-    dose_range     = "Single-dose study: 0.5, 1.0, 5.0 mg/kg IV bolus rA2 (n = 4 per dose). Multiple-dose study: 0.3, 3.0, 6.0 mg/kg IV bolus rA2 once daily for 14 days (n = 6 per dose).",
+    dose_range = "Single-dose study: 0.5, 1.0, 5.0 mg/kg IV bolus rA2 (n = 4 per dose). Multiple-dose study: 0.3, 3.0, 6.0 mg/kg IV bolus rA2 once daily for 14 days (n = 6 per dose).",
     n_observations = 1674L,
-    sampling       = "Single-dose: 0.25, 1, 2, 4, 8, 24, 72, 120, 168, 240, 336, 504, 672 h post-dose. Multiple-dose: pre-dose and 15 min post-dose on Days 2, 7, 10; 0, 0.25, 6, 24 h on Day 1; pre-dose and 0.25, 6, 24, 48 h post-dose on Day 14.",
-    assays         = "Three validated ELISAs measured from the same plasma space: total A2 (anti-A2 capture and detect; sees A2 + A2B2; sensitivity 0.79 mg/L), A2B2 tetramer (anti-B capture, anti-A detect; sensitivity 1.5 mg/L), and free B (anti-mouse capture of monoclonal anti-free-B + biotinylated anti-B detect; sensitivity 0.313 mg/L).",
-    disease_state  = "Healthy preclinical animals (no FXIII deficiency).",
-    regions        = "USDA-regulated laboratory (location not stated in the paper).",
-    notes          = "Subject counts derived from Dodds 2005 Study Design section. Weight range and per-subject ages / sex are not reported in the paper; the 3.5 kg figure is the paper's own typical-monkey reference used to compare model volumes against blood volume."
+    sampling = "Single-dose: 0.25, 1, 2, 4, 8, 24, 72, 120, 168, 240, 336, 504, 672 h post-dose. Multiple-dose: pre-dose and 15 min post-dose on Days 2, 7, 10; 0, 0.25, 6, 24 h on Day 1; pre-dose and 0.25, 6, 24, 48 h post-dose on Day 14.",
+    assays = "Three validated ELISAs measured from the same plasma space: total A2 (anti-A2 capture and detect; sees A2 + A2B2; sensitivity 0.79 mg/L), A2B2 tetramer (anti-B capture, anti-A detect; sensitivity 1.5 mg/L), and free B (anti-mouse capture of monoclonal anti-free-B + biotinylated anti-B detect; sensitivity 0.313 mg/L).",
+    disease_state = "Healthy preclinical animals (no FXIII deficiency).",
+    regions = "USDA-regulated laboratory (location not stated in the paper).",
+    notes = "Subject counts derived from Dodds 2005 Study Design section. Weight range and per-subject ages / sex are not reported in the paper; the 3.5 kg figure is the paper's own typical-monkey reference used to compare model volumes against blood volume."
   )
 
   ini({

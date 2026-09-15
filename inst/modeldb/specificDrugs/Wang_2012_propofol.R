@@ -9,47 +9,47 @@ Wang_2012_propofol <- function() {
     sep = " "
   )
   vignette <- "Wang_2012_propofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; time-fixed within each study).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; time-fixed within each study).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used (i) as the allometric scaler on CL via the bodyweight-dependent exponent k = k0 - kmax * WT^hill / (k50^hill + WT^hill) with reference 70 kg, (ii) linearly on Q3 and V3 (reference 70 kg), (iii) as a power on V2 with estimated exponent m = 0.55 (reference 70 kg), and (iv) linearly on V1 only when postnatal age is less than 100 days (reference 70 kg); V1 is constant otherwise. Source range 0.68-122.7 kg pooled across the seven studies (Table I).",
-      source_name        = "WT"
+      notes = "Used (i) as the allometric scaler on CL via the bodyweight-dependent exponent k = k0 - kmax * WT^hill / (k50^hill + WT^hill) with reference 70 kg, (ii) linearly on Q3 and V3 (reference 70 kg), (iii) as a power on V2 with estimated exponent m = 0.55 (reference 70 kg), and (iv) linearly on V1 only when postnatal age is less than 100 days (reference 70 kg); V1 is constant otherwise. Source range 0.68-122.7 kg pooled across the seven studies (Table I).",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a binary switch on the V1 covariate model: V1 = V1p * (WT/70) when PNA < 100 days (~3.286 months), V1 = V1p otherwise (Wang 2012 Results paragraph identifying the V1 linear-body-weight relationship for children younger than 100 days, Table IV V1 row). The canonical PNA register stores PNA in months; the source paper's 100-day threshold is converted internally as 100 / 30.4375. Source range encompasses neonates with PNA 1-25 days (median 8 days) through adults at 81 years (Table I; Methods 'Neonates (24)' subsection).",
-      source_name        = "PNA"
+      notes = "Used as a binary switch on the V1 covariate model: V1 = V1p * (WT/70) when PNA < 100 days (~3.286 months), V1 = V1p otherwise (Wang 2012 Results paragraph identifying the V1 linear-body-weight relationship for children younger than 100 days, Table IV V1 row). The canonical PNA register stores PNA in months; the source paper's 100-day threshold is converted internally as 100 / 30.4375. Source range encompasses neonates with PNA 1-25 days (median 8 days) through adults at 81 years (Table I; Methods 'Neonates (24)' subsection).",
+      source_name = "PNA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 174L,
-    n_studies      = 7L,
-    age_range      = "1 day to 81 years",
-    weight_range   = "0.68-122.7 kg",
+    species = "human",
+    n_subjects = 174L,
+    n_studies = 7L,
+    age_range = "1 day to 81 years",
+    weight_range = "0.68-122.7 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Pooled paediatric and adult cohorts spanning preterm and term neonates, infants, toddlers, children, adolescents, and adults receiving propofol for procedural sedation, post-operative sedation, anaesthesia induction, or as an investigational pharmacokinetic study drug in healthy volunteers.",
-    dose_range     = "Cohort-specific regimens (Methods): neonates 3 mg/kg IV bolus for chest-tube removal / placement or endotracheal intubation; infants 2-4 mg/kg/h IV infusion for post-craniofacial-surgery sedation (median 12.5 h); toddlers 4 mg/kg IV bolus before bathing of minor burns; children 3 mg/kg IV bolus, or 3.5 mg/kg loading dose followed by maintenance infusions of 0.15 or 0.20 then 0.125 mg/kg/min; adolescents 2-10 mg/kg/h IV infusion for scoliosis surgery (median 6.8 h); adult women 2.5 mg/kg IV bolus over 60 s for gynaecological-surgery induction; adult healthy volunteers IV bolus plus 60-min infusion at 25, 50, 100, or 200 mg/kg/min.",
-    regions        = "Netherlands (pooled studies from Leiden University, Erasmus MC Sophia Children's Hospital, St. Antonius Hospital Nieuwegein, and other Dutch and Belgian centres).",
-    notes          = "4,396 propofol plasma concentration observations contributed across the seven cohorts (Table I 'Samples c' column gives per-subject sample counts 4-21). Cohort sizes after exclusions (Table I): neonates 25, infants 20, toddlers 12, children 53, adolescents 14, female adults 24, healthy adult volunteers 24. Concentrations were logarithmically transformed and fitted simultaneously in NONMEM VI (FOCEI) because the concentration range across cohorts spanned more than 1,000 fold (Methods, 'Pharmacokinetic Modeling')."
+    disease_state = "Pooled paediatric and adult cohorts spanning preterm and term neonates, infants, toddlers, children, adolescents, and adults receiving propofol for procedural sedation, post-operative sedation, anaesthesia induction, or as an investigational pharmacokinetic study drug in healthy volunteers.",
+    dose_range = "Cohort-specific regimens (Methods): neonates 3 mg/kg IV bolus for chest-tube removal / placement or endotracheal intubation; infants 2-4 mg/kg/h IV infusion for post-craniofacial-surgery sedation (median 12.5 h); toddlers 4 mg/kg IV bolus before bathing of minor burns; children 3 mg/kg IV bolus, or 3.5 mg/kg loading dose followed by maintenance infusions of 0.15 or 0.20 then 0.125 mg/kg/min; adolescents 2-10 mg/kg/h IV infusion for scoliosis surgery (median 6.8 h); adult women 2.5 mg/kg IV bolus over 60 s for gynaecological-surgery induction; adult healthy volunteers IV bolus plus 60-min infusion at 25, 50, 100, or 200 mg/kg/min.",
+    regions = "Netherlands (pooled studies from Leiden University, Erasmus MC Sophia Children's Hospital, St. Antonius Hospital Nieuwegein, and other Dutch and Belgian centres).",
+    notes = "4,396 propofol plasma concentration observations contributed across the seven cohorts (Table I 'Samples c' column gives per-subject sample counts 4-21). Cohort sizes after exclusions (Table I): neonates 25, infants 20, toddlers 12, children 53, adolescents 14, female adults 24, healthy adult volunteers 24. Concentrations were logarithmically transformed and fitted simultaneously in NONMEM VI (FOCEI) because the concentration range across cohorts spanned more than 1,000 fold (Methods, 'Pharmacokinetic Modeling')."
   )
 
   ini({

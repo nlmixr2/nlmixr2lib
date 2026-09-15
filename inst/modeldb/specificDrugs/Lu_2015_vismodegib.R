@@ -1,79 +1,86 @@
 Lu_2015_vismodegib <- function() {
   description <- "Semi-mechanism-based one-compartment population pharmacokinetic model for vismodegib (GDC-0449, oral Hedgehog pathway inhibitor) in adults with advanced solid tumors and healthy volunteers. First-order absorption, first-order elimination of unbound drug, and saturable fast-equilibrium binding to alpha-1-acid glycoprotein (AAG) jointly describe total and unbound plasma vismodegib concentrations. AAG is supplied as a time-varying covariate (uM); covariates retained on disposition are age (power on CLunbound, reference 60 years) and body weight (power on Vc, reference 75 kg); formulation (Phase I dry-blend capsule vs Phase II wet-granulation commercial capsule) and population (healthy volunteer vs patient) shift Ka and relative bioavailability F (Lu 2015)."
-  reference   <- "Lu T, Wang B, Gao Y, Dresser M, Graham RA, Jin JY. Semi-Mechanism-Based Population Pharmacokinetic Modeling of the Hedgehog Pathway Inhibitor Vismodegib. CPT Pharmacometrics Syst Pharmacol. 2015;4(11):680-689. doi:10.1002/psp4.12039"
-  vignette    <- "Lu_2015_vismodegib"
-  units       <- list(time = "day", dosing = "mg", concentration = "umol/L")
+  reference <- "Lu T, Wang B, Gao Y, Dresser M, Graham RA, Jin JY. Semi-Mechanism-Based Population Pharmacokinetic Modeling of the Hedgehog Pathway Inhibitor Vismodegib. CPT Pharmacometrics Syst Pharmacol. 2015;4(11):680-689. doi:10.1002/psp4.12039"
+  vignette <- "Lu_2015_vismodegib"
+  units <- list(time = "day", dosing = "mg", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "vismodegib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "vismodegib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "vismodegib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the apparent clearance of unbound drug: CLunbound = exp(lcl + etalcl) * (AGE / 60)^e_age_cl. Reference 60 years is the median patient age in the Lu 2015 cohort (Table 2 footnote / Eq. 5).",
-      source_name        = "AGE"
+      notes = "Power effect on the apparent clearance of unbound drug: CLunbound = exp(lcl + etalcl) * (AGE / 60)^e_age_cl. Reference 60 years is the median patient age in the Lu 2015 cohort (Table 2 footnote / Eq. 5).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Baseline body weight (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the central volume of distribution: Vc = exp(lvc + etalvc) * (WT / 75)^e_wt_vc. Reference 75 kg is the patient-cohort weight reference in Lu 2015 Eq. 5 / Table 2 footnote.",
-      source_name        = "WT"
+      notes = "Power effect on the central volume of distribution: Vc = exp(lvc + etalvc) * (WT / 75)^e_wt_vc. Reference 75 kg is the patient-cohort weight reference in Lu 2015 Eq. 5 / Table 2 footnote.",
+      source_name = "WT"
     ),
     AAG = list(
-      description        = "Plasma alpha-1-acid glycoprotein (AAG; orosomucoid) concentration. Time-varying covariate that drives the saturable fast-equilibrium binding of vismodegib in plasma.",
-      units              = "uM",
-      type               = "continuous",
+      description = "Plasma alpha-1-acid glycoprotein (AAG; orosomucoid) concentration. Time-varying covariate that drives the saturable fast-equilibrium binding of vismodegib in plasma.",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Lu 2015 reports AAG in micromolar (uM) throughout (typical baseline 31.1 uM in patients, 20.2 uM in healthy volunteers; Methods + Results paragraph 1 of Study Population). The canonical register lists AAG in g/L; users converting from g/L should multiply by 1000 / AAG_MW where AAG MW is ~41 kDa (so 1 g/L ~ 24.4 uM). The covariate enters as a STRUCTURAL term inside the saturable-binding mass balance (Methods, Structural model + Discussion paragraph on Widmer 2006 parameterisation), NOT as a multiplicative effect on a PK parameter. Missing AAG values were imputed by Lu 2015 using Last Observation Carried Forward (LOCF); when supplying simulated covariate columns, hold AAG constant within a dosing interval unless time-varying data are available.",
-        sep = " "),
-      source_name        = "AAG"
+        sep = " "
+      ),
+      source_name = "AAG"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient with advanced solid tumor / locally-advanced or metastatic basal cell carcinoma).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator (1 = healthy volunteer, 0 = patient with advanced solid tumor / locally-advanced or metastatic basal cell carcinoma).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patient pooled across SHH3925g, SHH4610g, SHH4476g)",
-      notes              = "Two effects in Lu 2015 Eq. 4: (a) multiplicative shift on ka (estimable only in combination with formulation); typical ka in the Phase II / patient reference 9.025 day^-1 is multiplied by exp(0.671) = 1.96 for HV. (b) multiplicative shift on F applied only to the Phase I formulation (FORM_VISMO_PHASEI = 1); F = exp(log(0.346) + 0.881 * DIS_HEALTHY) for the Phase I formulation, so Phase I in patients has F = 0.346 and Phase I in HV has F = 0.836 (Lu 2015 Table 1). HV cohort enrolled in SHH4433g + SHH4683g.",
-      source_name        = "HV"
+      notes = "Two effects in Lu 2015 Eq. 4: (a) multiplicative shift on ka (estimable only in combination with formulation); typical ka in the Phase II / patient reference 9.025 day^-1 is multiplied by exp(0.671) = 1.96 for HV. (b) multiplicative shift on F applied only to the Phase I formulation (FORM_VISMO_PHASEI = 1); F = exp(log(0.346) + 0.881 * DIS_HEALTHY) for the Phase I formulation, so Phase I in patients has F = 0.346 and Phase I in HV has F = 0.836 (Lu 2015 Table 1). HV cohort enrolled in SHH4433g + SHH4683g.",
+      source_name = "HV"
     ),
     FORM_VISMO_PHASEI = list(
-      description        = "Vismodegib formulation indicator (1 = Phase I development formulation, dry-blend capsules; 0 = Phase II / commercial formulation, wet-granulation capsules).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Vismodegib formulation indicator (1 = Phase I development formulation, dry-blend capsules; 0 = Phase II / commercial formulation, wet-granulation capsules).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase II / commercial wet-granulation capsule; F fixed at 1 and ka = exp(lka) day^-1 reference per Lu 2015 Eq. 4)",
-      notes              = "Per-subject formulation indicator (each subject received a single formulation across their PK profile). Two effects on absorption (Lu 2015 Eq. 4): (a) multiplicative shift on ka via exp(-0.602) = 0.55x; (b) multiplicative shift on F: F = 1 (Phase II reference) vs F = exp(log(0.346) + 0.881 * DIS_HEALTHY) (Phase I, value depends on healthy-volunteer status). The Phase I formulation was used in SHH3925g and the Phase I cohort of SHH4610g (24.4% of subjects, Lu 2015 Results paragraph 1); the Phase II formulation was used in SHH4476g, SHH4433g, and SHH4683g (75.6% of subjects).",
-      source_name        = NULL
+      notes = "Per-subject formulation indicator (each subject received a single formulation across their PK profile). Two effects on absorption (Lu 2015 Eq. 4): (a) multiplicative shift on ka via exp(-0.602) = 0.55x; (b) multiplicative shift on F: F = 1 (Phase II reference) vs F = exp(log(0.346) + 0.881 * DIS_HEALTHY) (Phase I, value depends on healthy-volunteer status). The Phase I formulation was used in SHH3925g and the Phase I cohort of SHH4610g (24.4% of subjects, Lu 2015 Results paragraph 1); the Phase II formulation was used in SHH4476g, SHH4433g, and SHH4683g (75.6% of subjects).",
+      source_name = NULL
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 225L,
-    n_studies      = 5L,
-    age_range      = "26-89 years (patient cohort median 59.7 years); 47-65 years (HV cohort)",
-    age_median     = "60 years (patient reference; Lu 2015 Eq. 5 typical value)",
-    weight_range   = "Not reported in detail; reference 75 kg (Lu 2015 Eq. 5)",
-    weight_median  = "75 kg (reference covariate value, Lu 2015 Eq. 5)",
+    species = "human",
+    n_subjects = 225L,
+    n_studies = 5L,
+    age_range = "26-89 years (patient cohort median 59.7 years); 47-65 years (HV cohort)",
+    age_median = "60 years (patient reference; Lu 2015 Eq. 5 typical value)",
+    weight_range = "Not reported in detail; reference 75 kg (Lu 2015 Eq. 5)",
+    weight_median = "75 kg (reference covariate value, Lu 2015 Eq. 5)",
     sex_female_pct = 46.2,
     race_ethnicity = "Patients: predominantly Caucasian (97.1%); HV cohort comprised of women of non-childbearing potential (WONCBP), all Caucasian.",
-    disease_state  = "Adults with advanced solid tumors including locally-advanced or metastatic basal cell carcinoma (n = 204 patients across SHH3925g, SHH4610g, SHH4476g) pooled with healthy women of non-childbearing potential (n = 21 across SHH4433g, SHH4683g).",
-    dose_range     = "Oral vismodegib once daily 150-540 mg, with single-dose and multiple-dose data; 150 mg QD is the approved dose for the Phase II / commercial formulation.",
-    regions        = "United States (FDA-approved indication is metastatic or locally-advanced basal cell carcinoma in adults).",
+    disease_state = "Adults with advanced solid tumors including locally-advanced or metastatic basal cell carcinoma (n = 204 patients across SHH3925g, SHH4610g, SHH4476g) pooled with healthy women of non-childbearing potential (n = 21 across SHH4433g, SHH4683g).",
+    dose_range = "Oral vismodegib once daily 150-540 mg, with single-dose and multiple-dose data; 150 mg QD is the approved dose for the Phase II / commercial formulation.",
+    regions = "United States (FDA-approved indication is metastatic or locally-advanced basal cell carcinoma in adults).",
     n_observations = 4942L,
-    cohort_split   = "Patients 204 (90.7%) / healthy volunteers 21 (9.3%); Phase I formulation 55 (24.4%) / Phase II formulation 170 (75.6%).",
-    studies        = c("SHH3925g (NCT00607724)", "SHH4610g (NCT00968981)", "SHH4476g (NCT00833417)", "SHH4433g", "SHH4683g (NCT00991718)"),
-    notes          = "Population pooled across five Phase I / Phase II clinical studies (Lu 2015 Methods / Results). External validation used SHH4871g (NCT01173536), a dedicated QT study with 21 HVs receiving 150 mg QD Phase II formulation (470 total concentrations). 47.9% of AAG records were missing across all data (11.4% after excluding insensitive sub-day-sampling and HV data) and were imputed by LOCF. Mean baseline AAG: 31.1 uM in patients, 20.2 uM in HVs."
+    cohort_split = "Patients 204 (90.7%) / healthy volunteers 21 (9.3%); Phase I formulation 55 (24.4%) / Phase II formulation 170 (75.6%).",
+    studies = c(
+      "SHH3925g (NCT00607724)",
+      "SHH4610g (NCT00968981)",
+      "SHH4476g (NCT00833417)",
+      "SHH4433g",
+      "SHH4683g (NCT00991718)"
+    ),
+    notes = "Population pooled across five Phase I / Phase II clinical studies (Lu 2015 Methods / Results). External validation used SHH4871g (NCT01173536), a dedicated QT study with 21 HVs receiving 150 mg QD Phase II formulation (470 total concentrations). 47.9% of AAG records were missing across all data (11.4% after excluding insensitive sub-day-sampling and HV data) and were imputed by LOCF. Mean baseline AAG: 31.1 uM in patients, 20.2 uM in HVs."
   )
 
   ini({

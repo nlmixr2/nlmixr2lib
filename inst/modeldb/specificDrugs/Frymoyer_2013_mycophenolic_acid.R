@@ -16,22 +16,22 @@ Frymoyer_2013_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation using ideal body weight (NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation using ideal body weight (NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cockcroft-Gault raw mL/min, per Frymoyer 2013 Methods 'Patients' subsection: 'Creatinine clearance (CLcr) was estimated by the Cockcroft-Gault equation using ideal body weight'. Cohort median 86 mL/min (range 30-197 mL/min; Table 1). Enters CL as a power scaling CL = 1610 * (CRCL/86)^0.207 (Table 3; Results 'Final population PK model' equation).",
-      source_name        = "CLcr"
+      notes = "Cockcroft-Gault raw mL/min, per Frymoyer 2013 Methods 'Patients' subsection: 'Creatinine clearance (CLcr) was estimated by the Cockcroft-Gault equation using ideal body weight'. Cohort median 86 mL/min (range 30-197 mL/min; Table 1). Enters CL as a power scaling CL = 1610 * (CRCL/86)^0.207 (Table 3; Results 'Final population PK model' equation).",
+      source_name = "CLcr"
     ),
     MIX_LAGGED_ABS = list(
-      description        = paste(
+      description = paste(
         "Per-subject latent mixture-model class indicator from the",
         "Frymoyer 2013 absorption model. 1 = subject in the",
         "delayed-absorption Group 2 subpopulation (lag time fixed at 1.96",
@@ -43,10 +43,10 @@ Frymoyer_2013_mycophenolic_acid <- function() {
         "allowed for two sub-populations with different absorption lag",
         "time')."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Group 1 = no-delay majority class; 91 % of the Frymoyer 2013 source cohort)",
-      notes              = paste(
+      notes = paste(
         "The population probability of Group 2 (delayed absorption) is the",
         "estimated mixture fraction P2 = 0.09 (Table 3; identified 8 of",
         "132 subjects in the source cohort). Group 1 (no-delay) is the",
@@ -60,33 +60,33 @@ Frymoyer_2013_mycophenolic_acid <- function() {
         "subpopulations (an extended mixture model) but reported no",
         "improvement; only ALAG differs by class."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment; the binary indicator is MIX_LAGGED_ABS = as.integer(MIXTURE == 2))"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment; the binary indicator is MIX_LAGGED_ABS = as.integer(MIXTURE == 2))"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 132L,
-    n_studies       = 3L,
-    n_observations  = "1171 quantifiable unbound MPA concentrations across 179 intensive PK profiles (80 intravenous, 99 oral); 47 subjects had paired oral and IV profiles; 8 plasma unbound MPA concentrations were below the level of quantification (1 ng/mL) and included in the analysis.",
-    age_range       = "19-69 years",
-    age_median      = "52 years (Table 1)",
-    weight_range    = "50-149 kg (actual body weight)",
-    weight_median   = "80 kg (Table 1; actual)",
-    bsa_range       = "1.5-2.8 m^2",
-    bsa_median      = "2.0 m^2 (Table 1)",
-    crcl_range      = "30-197 mL/min",
-    crcl_median     = "86 mL/min (Cockcroft-Gault using ideal body weight; Table 1)",
-    albumin_range   = "2.0-4.3 g/dL",
-    albumin_median  = "2.9 g/dL (Table 1)",
+    species = "human",
+    n_subjects = 132L,
+    n_studies = 3L,
+    n_observations = "1171 quantifiable unbound MPA concentrations across 179 intensive PK profiles (80 intravenous, 99 oral); 47 subjects had paired oral and IV profiles; 8 plasma unbound MPA concentrations were below the level of quantification (1 ng/mL) and included in the analysis.",
+    age_range = "19-69 years",
+    age_median = "52 years (Table 1)",
+    weight_range = "50-149 kg (actual body weight)",
+    weight_median = "80 kg (Table 1; actual)",
+    bsa_range = "1.5-2.8 m^2",
+    bsa_median = "2.0 m^2 (Table 1)",
+    crcl_range = "30-197 mL/min",
+    crcl_median = "86 mL/min (Cockcroft-Gault using ideal body weight; Table 1)",
+    albumin_range = "2.0-4.3 g/dL",
+    albumin_median = "2.9 g/dL (Table 1)",
     bilirubin_range = "0.1-20 mg/dL (10 subjects with total bilirubin > 3 mg/dL)",
-    sex_female_pct  = 38,
-    race_ethnicity  = "Not reported (single-centre US adult HCT cohort).",
-    disease_state   = "Adult recipients of nonmyeloablative fludarabine-based allogeneic haematopoietic cell transplantation receiving mycophenolate mofetil (MMF) + ciclosporin for acute GVHD immunosuppression. Underlying diseases include non-Hodgkin's lymphoma (23 %), Hodgkin's lymphoma (11 %), chronic myelogenous leukaemia (14 %), acute leukaemia (33 %), myelodysplastic syndrome (14 %) and other (5 %). Stem-cell source: umbilical cord blood (62 %), peripheral blood stem cells (32 %), bone marrow (6 %). Renal impairment per FDA definitions: 33 % mild (CrCl > 50-80 mL/min), 5 % moderate (30-50 mL/min), 0 % severe.",
-    dose_range      = "MMF (Cellcept) 1 g every 12 h (n = 98), 1 g every 8 h (n = 19), or 1.5 g every 12 h (n = 15), administered oral or intravenously. MMF doses are converted to MPA-equivalent mass for the model via F_MW = 0.739 (oral MMF, MW 433.5; MPA MW 320.3) and F_MW = 0.682 (IV MMF, MW 469.96 for the hydrochloride salt; MPA MW 320.3) -- Frymoyer 2013 Methods / Population PK analysis paragraph 1.",
-    regions         = "USA (University of Minnesota / University of California San Francisco retrospective meta-analysis pooling three previously published intensive-PK studies).",
-    co_medication   = "100 % ciclosporin (concomitant by inclusion criterion); 95 % fluoroquinolones; 72 % fluconazole; 58 % proton pump inhibitors; 27 % glucocorticoids; 19 % ursodiol; 12 % hormonal contraceptives; 2 % seizure prophylaxis. 38 % were on at least one potential UGT inducer (corticosteroid / hormonal contraceptive / anticonvulsant) at the time of PK sampling.",
-    notes           = "Retrospective pooling of three previously published intensive-PK studies (Frymoyer 2013 references [4, 30, 31]). PK sampling performed one or two times within the first 15 days post-transplant at steady state. Pharmacogenetic variants tested but not retained in the final PK model: UGT1A8*2 (rs1042597), UGT1A8*3 (rs17863762), UGT1A9 98T>C, UGT1A9 -2152C>T (rs17868320), UGT1A9 -275T>A (rs6714486), UGT1A10*2 (rs10187694), UGT2B7 802C>T (rs7439366), MRP2 -24C>T (rs717620), MRP2 3972C>T (rs3740066), MRP2 1249G>A (rs2273697); for UGT1A9*2 and UGT1A10*2 no variant alleles were observed. Continuous covariates screened (forward addition) but not retained after backward elimination: body weight, body surface area, albumin, CSA trough concentration, day of PK sampling relative to stem cell infusion. Categorical covariates screened but not retained: gender, total bilirubin, concomitant medications (CSA, fluoroquinolones, fluconazole, proton pump inhibitors, glucocorticoids, ursodiol, hormonal contraceptives, seizure prophylaxis), genotype. Only CRCL survived backward elimination (P < 0.01)."
+    sex_female_pct = 38,
+    race_ethnicity = "Not reported (single-centre US adult HCT cohort).",
+    disease_state = "Adult recipients of nonmyeloablative fludarabine-based allogeneic haematopoietic cell transplantation receiving mycophenolate mofetil (MMF) + ciclosporin for acute GVHD immunosuppression. Underlying diseases include non-Hodgkin's lymphoma (23 %), Hodgkin's lymphoma (11 %), chronic myelogenous leukaemia (14 %), acute leukaemia (33 %), myelodysplastic syndrome (14 %) and other (5 %). Stem-cell source: umbilical cord blood (62 %), peripheral blood stem cells (32 %), bone marrow (6 %). Renal impairment per FDA definitions: 33 % mild (CrCl > 50-80 mL/min), 5 % moderate (30-50 mL/min), 0 % severe.",
+    dose_range = "MMF (Cellcept) 1 g every 12 h (n = 98), 1 g every 8 h (n = 19), or 1.5 g every 12 h (n = 15), administered oral or intravenously. MMF doses are converted to MPA-equivalent mass for the model via F_MW = 0.739 (oral MMF, MW 433.5; MPA MW 320.3) and F_MW = 0.682 (IV MMF, MW 469.96 for the hydrochloride salt; MPA MW 320.3) -- Frymoyer 2013 Methods / Population PK analysis paragraph 1.",
+    regions = "USA (University of Minnesota / University of California San Francisco retrospective meta-analysis pooling three previously published intensive-PK studies).",
+    co_medication = "100 % ciclosporin (concomitant by inclusion criterion); 95 % fluoroquinolones; 72 % fluconazole; 58 % proton pump inhibitors; 27 % glucocorticoids; 19 % ursodiol; 12 % hormonal contraceptives; 2 % seizure prophylaxis. 38 % were on at least one potential UGT inducer (corticosteroid / hormonal contraceptive / anticonvulsant) at the time of PK sampling.",
+    notes = "Retrospective pooling of three previously published intensive-PK studies (Frymoyer 2013 references [4, 30, 31]). PK sampling performed one or two times within the first 15 days post-transplant at steady state. Pharmacogenetic variants tested but not retained in the final PK model: UGT1A8*2 (rs1042597), UGT1A8*3 (rs17863762), UGT1A9 98T>C, UGT1A9 -2152C>T (rs17868320), UGT1A9 -275T>A (rs6714486), UGT1A10*2 (rs10187694), UGT2B7 802C>T (rs7439366), MRP2 -24C>T (rs717620), MRP2 3972C>T (rs3740066), MRP2 1249G>A (rs2273697); for UGT1A9*2 and UGT1A10*2 no variant alleles were observed. Continuous covariates screened (forward addition) but not retained after backward elimination: body weight, body surface area, albumin, CSA trough concentration, day of PK sampling relative to stem cell infusion. Categorical covariates screened but not retained: gender, total bilirubin, concomitant medications (CSA, fluoroquinolones, fluconazole, proton pump inhibitors, glucocorticoids, ursodiol, hormonal contraceptives, seizure prophylaxis), genotype. Only CRCL survived backward elimination (P < 0.01)."
   )
 
   ini({

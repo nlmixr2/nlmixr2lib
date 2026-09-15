@@ -26,9 +26,9 @@ Ojara_2024_lamivudine <- function() {
   # verified = TRUE: analyte and specimen read off the Equation 1-3 variable
   # definitions and the Figure 1 model schematic.
   compartmentData <- list(
-    depot   = list(analyte = "lamivudine", units = "mg",    specimen = "administration site", verified = TRUE),
-    central = list(analyte = "lamivudine", units = "mg",    specimen = "plasma",              verified = TRUE),
-    milk    = list(analyte = "lamivudine", units = "ug/mL", specimen = "milk",                verified = TRUE)
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = TRUE),
+    milk = list(analyte = "lamivudine", units = "ug/mL", specimen = "milk", verified = TRUE)
   )
 
   # The final model carries no covariates. Results, "Population
@@ -42,62 +42,62 @@ Ojara_2024_lamivudine <- function() {
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Maternal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Maternal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on both clearance and the central volume of distribution using linear, exponential and power functional forms with the covariate centred on the cohort median (Methods, 'Population pharmacokinetic analysis'). The weight effect on Vc reached the forward-inclusion and backward-elimination significance criteria but was imprecisely estimated (%RSE > 30%, Table S1) and was therefore not retained. Cohort median (range) 64.0 kg (50.0, 89.0) per Table 1.",
-      source_name        = "Maternal weight"
+      notes = "Screened on both clearance and the central volume of distribution using linear, exponential and power functional forms with the covariate centred on the cohort median (Methods, 'Population pharmacokinetic analysis'). The weight effect on Vc reached the forward-inclusion and backward-elimination significance criteria but was imprecisely estimated (%RSE > 30%, Table S1) and was therefore not retained. Cohort median (range) 64.0 kg (50.0, 89.0) per Table 1.",
+      source_name = "Maternal weight"
     ),
     AGE = list(
-      description        = "Maternal age",
-      units              = "years",
-      type               = "continuous",
+      description = "Maternal age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on clearance only (Methods, 'Population pharmacokinetic analysis'); not significant and not retained. Cohort median (range) 30 years (19, 40) per Table 1.",
-      source_name        = "Maternal age"
+      notes = "Screened on clearance only (Methods, 'Population pharmacokinetic analysis'); not significant and not retained. Cohort median (range) 30 years (19, 40) per Table 1.",
+      source_name = "Maternal age"
     ),
     CRCL = list(
-      description        = "Creatinine clearance predicted from serum creatinine by the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance predicted from serum creatinine by the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on clearance (Methods, 'Population pharmacokinetic analysis'). Reached the stepwise significance criteria but was imprecisely estimated (%RSE > 30%, Table S1) and was therefore not retained; the Discussion attributes the imprecision to the small sample size and notes that earlier lamivudine publications did find a significant creatinine-clearance effect on clearance. Reported as mL/min (uncorrected for body surface area) because the Cockcroft-Gault equation returns an absolute clearance. Cohort median (range) 134.6 mL/min (89.2, 184.7) per Table 1.",
-      source_name        = "CRCL"
+      notes = "Screened on clearance (Methods, 'Population pharmacokinetic analysis'). Reached the stepwise significance criteria but was imprecisely estimated (%RSE > 30%, Table S1) and was therefore not retained; the Discussion attributes the imprecision to the small sample size and notes that earlier lamivudine publications did find a significant creatinine-clearance effect on clearance. Reported as mL/min (uncorrected for body surface area) because the Cockcroft-Gault equation returns an absolute clearance. Cohort median (range) 134.6 mL/min (89.2, 184.7) per Table 1.",
+      source_name = "CRCL"
     ),
     BMI = list(
-      description        = "Maternal body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Maternal body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on both clearance and the central volume of distribution (Methods, 'Population pharmacokinetic analysis'); not retained. Cohort median (range) 24.8 kg/m^2 (20.0, 30.5) per Table 1.",
-      source_name        = "BMI"
+      notes = "Screened on both clearance and the central volume of distribution (Methods, 'Population pharmacokinetic analysis'); not retained. Cohort median (range) 24.8 kg/m^2 (20.0, 30.5) per Table 1.",
+      source_name = "BMI"
     ),
     TPP = list(
-      description        = "Time postpartum at the pharmacokinetic sampling visit",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Time postpartum at the pharmacokinetic sampling visit",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on the milk-to-plasma concentration ratio ppc: \"The postpartum day of PK sampling (visit day) was evaluated as a covariate on the milk-to-plasma ratio\" (Methods) and \"The postpartum day of PK sampling did not significantly affect the milk-to-plasma ratio\" (Results). The paper records this covariate in DAYS postpartum, not the canonical weeks: visit 1 median (range) 13.0 (7.00, 43.0) days and visit 2 73.5 (36.0, 84.0) days per Table 1 (the Results text gives the visit-2 median as 74.0 days). Divide by 7 to obtain the canonical unit. Not retained, so the choice of unit is documentation only.",
-      source_name        = "Visit day"
+      notes = "Screened on the milk-to-plasma concentration ratio ppc: \"The postpartum day of PK sampling (visit day) was evaluated as a covariate on the milk-to-plasma ratio\" (Methods) and \"The postpartum day of PK sampling did not significantly affect the milk-to-plasma ratio\" (Results). The paper records this covariate in DAYS postpartum, not the canonical weeks: visit 1 median (range) 13.0 (7.00, 43.0) days and visit 2 73.5 (36.0, 84.0) days per Table 1 (the Results text gives the visit-2 median as 74.0 days). Divide by 7 to obtain the canonical unit. Not retained, so the choice of unit is documentation only.",
+      source_name = "Visit day"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35,
-    n_studies      = 1,
-    age_range      = "19-40 years",
-    age_median     = "30 years",
-    weight_range   = "50.0-89.0 kg",
-    weight_median  = "64.0 kg",
+    species = "human",
+    n_subjects = 35,
+    n_studies = 1,
+    age_range = "19-40 years",
+    age_median = "30 years",
+    weight_range = "50.0-89.0 kg",
+    weight_median = "64.0 kg",
     sex_female_pct = 100,
-    disease_state  = "Breastfeeding women living with HIV receiving first-line antiretroviral therapy, recruited antenatally and sampled postpartum. Lamivudine was given with nevirapine plus zidovudine (150 mg twice-daily group) or with efavirenz plus tenofovir disoproxil fumarate (300 mg once-daily group).",
-    dose_range     = "Lamivudine 150 mg orally twice daily (12-hourly, n = 10) or 300 mg orally once daily (24-hourly, n = 25), at steady state.",
-    regions        = "Uganda (Infectious Diseases Institute, Makerere University, and affiliated clinics in Kampala); enrolled 2016-2017.",
+    disease_state = "Breastfeeding women living with HIV receiving first-line antiretroviral therapy, recruited antenatally and sampled postpartum. Lamivudine was given with nevirapine plus zidovudine (150 mg twice-daily group) or with efavirenz plus tenofovir disoproxil fumarate (300 mg once-daily group).",
+    dose_range = "Lamivudine 150 mg orally twice daily (12-hourly, n = 10) or 300 mg orally once daily (24-hourly, n = 25), at steady state.",
+    regions = "Uganda (Infectious Diseases Institute, Makerere University, and affiliated clinics in Kampala); enrolled 2016-2017.",
     renal_function = "Elevated creatinine clearance typical of the postpartum period: median (range) 134.6 mL/min (89.2, 184.7) by Cockcroft-Gault (Table 1).",
     infant_partner = "Each mother had one breastfed infant, freely breastfed throughout. Infant weight median (range) 3.60 kg (2.40, 5.58) at visit 1 and 5.17 kg (3.90, 7.13) at visit 2 (Table 1). Infant plasma concentrations were measured but were NOT part of the fitted model; they were used only to check the predicted infant steady-state exposure (Results, 'Estimation of infant breast milk exposure').",
-    notes          = "Baseline demographics from Table 1. Mothers attended two of three possible visits at 1-2, 4-6 and 10-12 weeks postpartum; visit 1 median 13.0 days and visit 2 median 73.5 days postpartum. Sampling depended on the mother's habitual dosing time: 14 morning-dosing mothers gave plasma at 0, 1, 2, 4 and 8 h and breast milk at 0, 2, 4 and 8 h post directly-observed dose, while 21 evening-dosing mothers gave paired plasma and breast milk at 12, 16 and 20 h post self-reported dose. Breast milk was obtained by manual expression of 1 mL. The dataset contributing to this model comprises 248 maternal plasma and 256 breast-milk concentrations (plus 151 infant plasma concentrations that were not fitted). Concentrations were measured by a validated LC-MS/MS assay on dried blood and dried breast-milk spots with an LLOQ of 5 ng/mL for plasma and 16.6 ng/mL for breast milk. Steady state was assumed but not explicitly verified (Discussion, limitations). Estimation used FOCE with interaction in NONMEM 7.4.3; parameter precision came from a 1000-sample nonparametric bootstrap."
+    notes = "Baseline demographics from Table 1. Mothers attended two of three possible visits at 1-2, 4-6 and 10-12 weeks postpartum; visit 1 median 13.0 days and visit 2 median 73.5 days postpartum. Sampling depended on the mother's habitual dosing time: 14 morning-dosing mothers gave plasma at 0, 1, 2, 4 and 8 h and breast milk at 0, 2, 4 and 8 h post directly-observed dose, while 21 evening-dosing mothers gave paired plasma and breast milk at 12, 16 and 20 h post self-reported dose. Breast milk was obtained by manual expression of 1 mL. The dataset contributing to this model comprises 248 maternal plasma and 256 breast-milk concentrations (plus 151 infant plasma concentrations that were not fitted). Concentrations were measured by a validated LC-MS/MS assay on dried blood and dried breast-milk spots with an LLOQ of 5 ng/mL for plasma and 16.6 ng/mL for breast milk. Steady state was assumed but not explicitly verified (Discussion, limitations). Estimation used FOCE with interaction in NONMEM 7.4.3; parameter precision came from a 1000-sample nonparametric bootstrap."
   )
 
   ini({

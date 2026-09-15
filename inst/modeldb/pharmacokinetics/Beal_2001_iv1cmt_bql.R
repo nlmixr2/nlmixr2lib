@@ -14,13 +14,13 @@ Beal_2001_iv1cmt_bql <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "None (methodology paper; simulation-only toy model with no drug, no patients, no fitted estimates).",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    disease_state  = "N/A (Monte Carlo simulation study; not a fit of any real molecule).",
-    dose_range     = "Single unit-valued IV bolus dose at t = 0 (Beal 2001 section 2.2, page 486).",
-    regions        = "N/A",
-    scope_note     = paste(
+    species = "None (methodology paper; simulation-only toy model with no drug, no patients, no fitted estimates).",
+    n_subjects = 20L,
+    n_studies = 1L,
+    disease_state = "N/A (Monte Carlo simulation study; not a fit of any real molecule).",
+    dose_range = "Single unit-valued IV bolus dose at t = 0 (Beal 2001 section 2.2, page 486).",
+    regions = "N/A",
+    scope_note = paste(
       "Filed under inst/modeldb/pharmacokinetics/ (not specificDrugs/) at the operator's direction",
       "(sidecar zotero-077-beal_2001_unknown request-001 q1=B, response 2026-06-21).",
       "The paper is a methodology reference introducing the M1-M7 estimation methods for handling",
@@ -28,7 +28,7 @@ Beal_2001_iv1cmt_bql <- function() {
       "specific drug. The typical values CL = 0.693 and Vd = 1 are scale-fixed teaching constants",
       "chosen by Beal so that time is measured in half-lives and the dose is dimensionless."
     ),
-    notes          = paste(
+    notes = paste(
       "Section 2.2 (page 486): 'The clearance CL is taken to be .693, so that the units of time",
       "may be regarded as half-lives, and the volume of distribution Vd is taken to be 1.",
       "A single unit-valued dose is given at time 0. For each individual, the observation times",

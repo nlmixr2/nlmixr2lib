@@ -8,50 +8,50 @@ Ferron_2013_cabazitaxel <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear scaling on CL with reference 1.84 m^2 (median of pooled cohort, Ferron 2013 Table 3 footnote and Equation 9). Ferron 2013 does not report which BSA formula was used; assume DuBois (commonly applied in oncology).",
-      source_name        = "BSA"
+      notes = "Linear scaling on CL with reference 1.84 m^2 (median of pooled cohort, Ferron 2013 Table 3 footnote and Equation 9). Ferron 2013 does not report which BSA formula was used; assume DuBois (commonly applied in oncology).",
+      source_name = "BSA"
     ),
     TUMTP_BREAST = list(
-      description        = "Tumor-type indicator for breast cancer (TT1 in the source)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for breast cancer (TT1 in the source)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types: prostate, gastrointestinal, other)",
-      notes              = "Multiplicative reduction on CL for breast-cancer patients (Ferron 2013 Equation 9: CL = 48.5 * BSA/1.84 * (1 - 0.543 * TT1)). Source column TT1 is renamed to canonical TUMTP_BREAST per inst/references/covariate-columns.md. The breast-cancer effect is confounded with study (34 of 37 breast-cancer patients came from a single Phase II study, ARD6191); see vignette Assumptions and deviations.",
-      source_name        = "TT1"
+      notes = "Multiplicative reduction on CL for breast-cancer patients (Ferron 2013 Equation 9: CL = 48.5 * BSA/1.84 * (1 - 0.543 * TT1)). Source column TT1 is renamed to canonical TUMTP_BREAST per inst/references/covariate-columns.md. The breast-cancer effect is confounded with study (34 of 37 breast-cancer patients came from a single Phase II study, ARD6191); see vignette Assumptions and deviations.",
+      source_name = "TT1"
     )
   )
 
   population <- list(
-    n_subjects     = 170L,
-    n_studies      = 5L,
-    age_range      = "25-83 years",
-    age_median     = "63 years",
-    weight_range   = "35-133 kg",
-    weight_median  = "74.8 kg",
-    bsa_range      = "1.30-2.53 m^2",
-    bsa_median     = "1.84 m^2",
-    bmi_range      = "13.3-40.5 kg/m^2",
-    bmi_median     = "26.2 kg/m^2",
+    n_subjects = 170L,
+    n_studies = 5L,
+    age_range = "25-83 years",
+    age_median = "63 years",
+    weight_range = "35-133 kg",
+    weight_median = "74.8 kg",
+    bsa_range = "1.30-2.53 m^2",
+    bsa_median = "1.84 m^2",
+    bmi_range = "13.3-40.5 kg/m^2",
+    bmi_median = "26.2 kg/m^2",
     sex_female_pct = 35.3,
     race_ethnicity = c(Caucasian = 84.7, Black = 2.4, Oriental = 5.3, Hispanic = 4.1, Other = 3.5),
-    disease_state  = "Advanced solid tumors (prostate 45.3%, breast 21.8%, gastrointestinal 13.5%, other 19.4%); includes the Phase III TROPIC trial in metastatic castration-resistant prostate cancer refractory to docetaxel.",
-    dose_range     = "10-30 mg/m^2 cabazitaxel as a 1-h IV infusion every 3 weeks or once weekly for the first 4 weeks of a 5-week treatment cycle",
-    regions        = "Multinational (TROPIC trial NCT00417079 plus four supporting studies)",
+    disease_state = "Advanced solid tumors (prostate 45.3%, breast 21.8%, gastrointestinal 13.5%, other 19.4%); includes the Phase III TROPIC trial in metastatic castration-resistant prostate cancer refractory to docetaxel.",
+    dose_range = "10-30 mg/m^2 cabazitaxel as a 1-h IV infusion every 3 weeks or once weekly for the first 4 weeks of a 5-week treatment cycle",
+    regions = "Multinational (TROPIC trial NCT00417079 plus four supporting studies)",
     renal_function = "CrCl median 89.2 mL/min; 59 mild renal impairment (50 <= CrCl <= 80), 14 moderate (30 <= CrCl < 50), 1 severe (CrCl < 30).",
-    co_medication  = "Concomitant CYP inducers (mainly prednisone/prednisolone): 0% in cycle 1; up to 94% in subsequent cycles of the EFC6193 (TROPIC) study.",
-    sampling       = "2,322 measurable cabazitaxel plasma concentrations from 170 patients with 4-50 sampling points across 1-3 cycles per patient (Ferron 2013 Tables 1, 2, 3 and Methods). LLOQ 1.0 ng/mL; concentrations below LLOQ excluded from the analysis.",
-    notes          = "Pooled five studies (TED6188 Phase I, TED6189 Phase I, TED6190 Phase I, ARD6191 Phase II in taxane-resistant breast cancer, EFC6193/TROPIC Phase III in mCRPC). Baseline demographics from Ferron 2013 Table 3."
+    co_medication = "Concomitant CYP inducers (mainly prednisone/prednisolone): 0% in cycle 1; up to 94% in subsequent cycles of the EFC6193 (TROPIC) study.",
+    sampling = "2,322 measurable cabazitaxel plasma concentrations from 170 patients with 4-50 sampling points across 1-3 cycles per patient (Ferron 2013 Tables 1, 2, 3 and Methods). LLOQ 1.0 ng/mL; concentrations below LLOQ excluded from the analysis.",
+    notes = "Pooled five studies (TED6188 Phase I, TED6189 Phase I, TED6190 Phase I, ARD6191 Phase II in taxane-resistant breast cancer, EFC6193/TROPIC Phase III in mCRPC). Baseline demographics from Ferron 2013 Table 3."
   )
 
   ini({

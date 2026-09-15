@@ -44,12 +44,15 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
   # Goteti_2024_SLE_mbma / Hanan_2026_peginterferon_alfa_eot_mbma
   # precedent.
   paper_specific_etas <- c(
-    "eta_isv_a", "eta_isv_alpha", "eta_isv_b", "eta_isv_beta"
+    "eta_isv_a",
+    "eta_isv_alpha",
+    "eta_isv_b",
+    "eta_isv_beta"
   )
 
   units <- list(
-    time          = "month",
-    dosing        = paste(
+    time = "month",
+    dosing = paste(
       "(no rxode2 dose events; the COC regimen enters only as the two",
       "covariate columns DOSE_EE_UG, the daily ethinyl estradiol dose",
       "in ug, and DOSE_PROGESTIN_UMOL, the daily progestin dose in",
@@ -67,16 +70,16 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
 
   covariateData <- list(
     DOSE_EE_UG = list(
-      description        = paste(
+      description = paste(
         "Daily ethinyl estradiol (EE) dose of the combined oral",
         "contraceptive, in ug. Constant within a treatment arm.",
         "Enters as a power effect on the second-phase intercept B,",
         "normalized to a 30 ug reference."
       ),
-      units              = "ug",
-      type               = "continuous",
+      units = "ug",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA treatment-arm-level covariate. Chen 2024 Eq. 6:",
         "log(B_i) = log(theta_B,pop) + log(DOSE_EE_UG / 30) *",
         "theta_EEdose,B + eta_B,i, i.e. B_i = theta_B,pop *",
@@ -105,19 +108,19 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
         "algebraic with no PK compartment, following the DOSE_AGT_UG /",
         "DOSE_ISOPROTERENOL_UG precedent."
       ),
-      source_name        = "EE dose (mcg)"
+      source_name = "EE dose (mcg)"
     ),
     DOSE_PROGESTIN_UMOL = list(
-      description        = paste(
+      description = paste(
         "Daily progestin dose of the combined oral contraceptive",
         "expressed on a MOLAR basis, in umol. Constant within a",
         "treatment arm. Enters as a power effect on the initial-phase",
         "slope alpha, normalized to a 0.48 umol reference."
       ),
-      units              = "umol",
-      type               = "continuous",
+      units = "umol",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "MBMA treatment-arm-level covariate. Chen 2024 Eq. 5:",
         "log(alpha_i) = log(theta_alpha,pop) +",
         "log(DOSE_PROGESTIN_UMOL / 0.48) * theta_ProgestinAMT,alpha +",
@@ -157,7 +160,7 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
         "algebraic with no PK compartment, following the DOSE_AGT_UG /",
         "DOSE_ISOPROTERENOL_UG precedent."
       ),
-      source_name        = "Progestin dose by MW"
+      source_name = "Progestin dose by MW"
     )
   )
 
@@ -168,11 +171,11 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
   # "declared but not referenced" convention warning.
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = "Treatment-arm mean body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Treatment-arm mean body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY excluded covariate that reached statistical",
         "significance: Chen 2024 Results states 'Mean BMI showed a",
         "significant effect on A. However, BMI was not included in the",
@@ -185,74 +188,74 @@ Chen_2024_combinedOralContraceptives_btb_mbma <- function() {
         "",
         "Arm-level means span 21.4-27.6 kg/m2 (Table S2)."
       ),
-      source_name        = "Mean BMI (kg/m2)"
+      source_name = "Mean BMI (kg/m2)"
     ),
     AGE = list(
-      description        = "Treatment-arm mean age.",
-      units              = "year",
-      type               = "continuous",
+      description = "Treatment-arm mean age.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as one of the study-level average demographics",
         "(Chen 2024 Methods 'Model-based meta-analysis') and not",
         "retained; no point estimate reported. Arm-level means span",
         "16.4-40.2 years (Table 1, Table S2)."
       ),
-      source_name        = "Mean age (year)"
+      source_name = "Mean age (year)"
     ),
     WT = list(
-      description        = "Treatment-arm mean body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Treatment-arm mean body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained; no point estimate reported.",
         "Arm-level means span 46.0-68.3 kg (Table S2)."
       ),
-      source_name        = "Mean BW (kg)"
+      source_name = "Mean BW (kg)"
     ),
     HT = list(
-      description        = "Treatment-arm mean height.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Treatment-arm mean height.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained; no point estimate reported.",
         "Arm-level means span 153.1-168.0 cm (Table S2). Table 1",
         "labels this row 'Mean HT (m)' but prints centimetre values",
         "(e.g. 166.20); the unit label is a typo - see the vignette",
         "Errata."
       ),
-      source_name        = "Mean HT"
+      source_name = "Mean HT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112188L,
-    n_studies      = 25L,
-    n_arms         = 33L,
+    species = "human",
+    n_subjects = 112188L,
+    n_studies = 25L,
+    n_arms = 33L,
     n_observations = 228L,
-    age_range      = paste(
+    age_range = paste(
       "treatment-arm mean age 16.4-40.2 years (Chen 2024 Table 1",
       "total row and Table S2); the 16.4-year arm is an adolescent",
       "cohort. Individual ages are not available - this is aggregate",
       "published data."
     ),
-    weight_range   = "treatment-arm mean body weight 46.0-68.3 kg (Table S2)",
+    weight_range = "treatment-arm mean body weight 46.0-68.3 kg (Table S2)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "healthy women using a combined oral contraceptive for pregnancy",
       "prevention. Alternative COC indications were an exclusion",
       "criterion."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "conventional 21/7 monophasic COC regimens: ethinyl estradiol",
       "15, 20, 30 or 35 ug/day combined with desogestrel 150 ug,",
       "drospirenone 3000 ug, gestodene 60 or 75 ug, or levonorgestrel",
       "100 or 150 ug per day (Chen 2024 Table 1, Table S2)."
     ),
-    notes          = paste(
+    notes = paste(
       "Aggregate published data, not individual patient data. The",
       "observation unit is the TREATMENT ARM within a study: 228 BTB",
       "observations from 33 arms of 25 trials (Chen 2024 Results",

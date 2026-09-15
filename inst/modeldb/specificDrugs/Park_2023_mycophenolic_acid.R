@@ -16,42 +16,42 @@ Park_2023_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area on the day of blood sampling.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area on the day of blood sampling.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centered-linear effect on the apparent volume of distribution: Vd/F = 89.83 * (1 + 0.854 * (BSA - 1.11)), per Park 2023 Equation 2. The centering value 1.11 m^2 is described in the text immediately below Equation 2 as 'the median value of BSA for patients in this study'; Park 2023 Table 1 independently reports the cohort median BSA as 1.12 m^2. The 1.11 m^2 value from the equation is used here because the covariate model was estimated against it (see vignette Errata). Park 2023 does not state which BSA formula (DuBois, Mosteller, Haycock) was used to derive the covariate; the register entry requires this to be recorded as 'unspecified' when the source is silent. Cohort median 1.12 m^2, range 0.49-1.60 m^2 (Table 1). The simulation in Park 2023 Figure 5 spans BSA 0.5, 1.0 and 1.5 m^2. Note this is a centered-linear parameterization rather than the power scaling (BSA/ref)^exponent documented as the common form in the BSA register entry; the linear form can go negative for BSA below 1.11 - 1/0.854 = -0.06 m^2, which is outside any physiological range, so no clamping is required.",
-      source_name        = "BSA"
+      notes = "Centered-linear effect on the apparent volume of distribution: Vd/F = 89.83 * (1 + 0.854 * (BSA - 1.11)), per Park 2023 Equation 2. The centering value 1.11 m^2 is described in the text immediately below Equation 2 as 'the median value of BSA for patients in this study'; Park 2023 Table 1 independently reports the cohort median BSA as 1.12 m^2. The 1.11 m^2 value from the equation is used here because the covariate model was estimated against it (see vignette Errata). Park 2023 does not state which BSA formula (DuBois, Mosteller, Haycock) was used to derive the covariate; the register entry requires this to be recorded as 'unspecified' when the source is silent. Cohort median 1.12 m^2, range 0.49-1.60 m^2 (Table 1). The simulation in Park 2023 Figure 5 spans BSA 0.5, 1.0 and 1.5 m^2. Note this is a centered-linear parameterization rather than the power scaling (BSA/ref)^exponent documented as the common form in the BSA register entry; the linear form can go negative for BSA below 1.11 - 1/0.854 = -0.06 m^2, which is outside any physiological range, so no clamping is required.",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = 80L,
-    age_range      = "1.7-15.6 years",
-    age_median     = "9.7 years",
-    age_group      = c(age_1_to_11_pct = 70.0, age_12_to_17_pct = 30.0),
-    weight_range   = "9.9-51.0 kg",
-    weight_median  = "31.2 kg",
-    height_range   = "83.6-176.9 cm",
-    height_median  = "136.0 cm",
-    bsa_range      = "0.49-1.60 m^2",
-    bsa_median     = "1.12 m^2 (Table 1); the covariate model in Equation 2 is centered on 1.11 m^2",
+    age_range = "1.7-15.6 years",
+    age_median = "9.7 years",
+    age_group = c(age_1_to_11_pct = 70.0, age_12_to_17_pct = 30.0),
+    weight_range = "9.9-51.0 kg",
+    weight_median = "31.2 kg",
+    height_range = "83.6-176.9 cm",
+    height_median = "136.0 cm",
+    bsa_range = "0.49-1.60 m^2",
+    bsa_median = "1.12 m^2 (Table 1); the covariate model in Equation 2 is centered on 1.11 m^2",
     sex_female_pct = 40.0,
     race_ethnicity = "Not reported. Single-center Korean study (Seoul National University Hospital); the cohort is presumed predominantly Korean but Park 2023 does not tabulate race or ethnicity.",
-    disease_state  = "Pediatric recipients of allogeneic haematopoietic stem cell transplantation started on mycophenolate mofetil for prophylaxis (16 patients, 80.0%) or treatment (4 patients, 20.0%) of acute graft-versus-host disease. Underlying diagnoses: acute lymphoblastic leukemia (7, 35.0%), acute myeloid leukemia (5, 25.0%), aplastic anemia (2, 10.0%), non-Hodgkin lymphoma (2, 10.0%), congenital neutropenia (1, 5.0%), haemophagocytic lymphohistiocytosis (1, 5.0%), Krabbe disease (1, 5.0%), therapy-related myelodysplastic syndrome (1, 5.0%). Conditioning: BuFluCy (15, 75.0%), TBI-FluCyATG (2, 10.0%), BuFluATG / BuFludaVPATG / FluMelATG (1 each, 5.0%). Donor source haploidentical family (16, 80.0%) or matched unrelated (4, 20.0%). ABO compatible (16, 80.0%) or incompatible (4, 20.0%). Renal and hepatic function were essentially normal: SCr median 0.42 mg/dL (0.32-0.72), eGFR median 112.6 mL/min/1.73 m^2 (86.3-165.3), total bilirubin median 0.5 mg/dL (0.4-2.0), albumin median 3.8 g/dL (3.3-4.2). Acute GVHD developed in 11 patients (55.0%), 4 with grade III-IV.",
-    dose_range     = "Oral mycophenolate mofetil 15-20 mg/kg twice daily as capsule (6 patients, 30.0%) or oral suspension (14 patients, 70.0%). Median total daily dose 1100 mg/day (range 380-2000); median 17.9 mg/kg/dose (range 16.1-19.8). Doses in this model file are MMF mass in mg with no MMF-to-MPA molecular-weight conversion applied.",
-    regions        = "Single center: Seoul National University Hospital, Seoul, Republic of Korea.",
-    co_medication  = "All 20 patients (100.0%) had previous (4, 20.0%) or concomitant (16, 80.0%) tacrolimus on the day of blood sampling. Ciprofloxacin 15 (75.0%), esomeprazole 4 (20.0%), famotidine 4 (20.0%), lansoprazole 3 (15.0%), itraconazole 2 (10.0%), voriconazole 1 (5.0%). Proton-pump inhibitor use (35%) is noted in the Discussion as a plausible contributor to low MPA exposure but was not retained as a covariate.",
-    notes          = "Prospective single-center study conducted 1 September 2020 - 30 June 2022 (IRB No. 2006-120-1133). Sampling was a limited-sampling strategy at pre-dose (0 h) and 1, 2 and 6 h post-dose, drawn at least 3 days after MMF initiation so that MPA had reached steady state; median time post-HSCT 31 days (20-181), median MMF duration 23 days (16-123). Serum total MPA was assayed by particle-enhanced turbidimetric inhibition immunoassay (PETINIA) on a Dimension EXL 200 with a lower limit of quantification of 0.1 mg/L. Estimation was FOCE-I in NONMEM 7.5.0. Enterohepatic recirculation of MPA-7-O-glucuronide back to MPA was investigated during model building but minimization terminated due to model instability, so it is absent from the final model (Park 2023 Discussion, limitations). Genetic polymorphisms (e.g. UGT2B7) were not screened. Baseline demographics per Park 2023 Table 1; final-model parameter estimates per Park 2023 Table 4 and Equation 2."
+    disease_state = "Pediatric recipients of allogeneic haematopoietic stem cell transplantation started on mycophenolate mofetil for prophylaxis (16 patients, 80.0%) or treatment (4 patients, 20.0%) of acute graft-versus-host disease. Underlying diagnoses: acute lymphoblastic leukemia (7, 35.0%), acute myeloid leukemia (5, 25.0%), aplastic anemia (2, 10.0%), non-Hodgkin lymphoma (2, 10.0%), congenital neutropenia (1, 5.0%), haemophagocytic lymphohistiocytosis (1, 5.0%), Krabbe disease (1, 5.0%), therapy-related myelodysplastic syndrome (1, 5.0%). Conditioning: BuFluCy (15, 75.0%), TBI-FluCyATG (2, 10.0%), BuFluATG / BuFludaVPATG / FluMelATG (1 each, 5.0%). Donor source haploidentical family (16, 80.0%) or matched unrelated (4, 20.0%). ABO compatible (16, 80.0%) or incompatible (4, 20.0%). Renal and hepatic function were essentially normal: SCr median 0.42 mg/dL (0.32-0.72), eGFR median 112.6 mL/min/1.73 m^2 (86.3-165.3), total bilirubin median 0.5 mg/dL (0.4-2.0), albumin median 3.8 g/dL (3.3-4.2). Acute GVHD developed in 11 patients (55.0%), 4 with grade III-IV.",
+    dose_range = "Oral mycophenolate mofetil 15-20 mg/kg twice daily as capsule (6 patients, 30.0%) or oral suspension (14 patients, 70.0%). Median total daily dose 1100 mg/day (range 380-2000); median 17.9 mg/kg/dose (range 16.1-19.8). Doses in this model file are MMF mass in mg with no MMF-to-MPA molecular-weight conversion applied.",
+    regions = "Single center: Seoul National University Hospital, Seoul, Republic of Korea.",
+    co_medication = "All 20 patients (100.0%) had previous (4, 20.0%) or concomitant (16, 80.0%) tacrolimus on the day of blood sampling. Ciprofloxacin 15 (75.0%), esomeprazole 4 (20.0%), famotidine 4 (20.0%), lansoprazole 3 (15.0%), itraconazole 2 (10.0%), voriconazole 1 (5.0%). Proton-pump inhibitor use (35%) is noted in the Discussion as a plausible contributor to low MPA exposure but was not retained as a covariate.",
+    notes = "Prospective single-center study conducted 1 September 2020 - 30 June 2022 (IRB No. 2006-120-1133). Sampling was a limited-sampling strategy at pre-dose (0 h) and 1, 2 and 6 h post-dose, drawn at least 3 days after MMF initiation so that MPA had reached steady state; median time post-HSCT 31 days (20-181), median MMF duration 23 days (16-123). Serum total MPA was assayed by particle-enhanced turbidimetric inhibition immunoassay (PETINIA) on a Dimension EXL 200 with a lower limit of quantification of 0.1 mg/L. Estimation was FOCE-I in NONMEM 7.5.0. Enterohepatic recirculation of MPA-7-O-glucuronide back to MPA was investigated during model building but minimization terminated due to model instability, so it is absent from the final model (Park 2023 Discussion, limitations). Genetic polymorphisms (e.g. UGT2B7) were not screened. Baseline demographics per Park 2023 Table 1; final-model parameter estimates per Park 2023 Table 4 and Equation 2."
   )
 
   ini({

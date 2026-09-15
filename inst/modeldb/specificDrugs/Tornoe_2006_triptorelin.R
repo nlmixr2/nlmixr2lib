@@ -29,8 +29,14 @@ Tornoe_2006_triptorelin <- function() {
 
   paper_specific_compartments <- c("feedback", "lhpool", "lh", "testosterone")
   paper_specific_etas <- c(
-    "etalksc1", "etalksc2", "etalogitfburst",
-    "etalkrel", "etalec50", "etalkef", "etallmax", "etall50"
+    "etalksc1",
+    "etalksc2",
+    "etalogitfburst",
+    "etalkrel",
+    "etalec50",
+    "etalkef",
+    "etallmax",
+    "etall50"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -38,29 +44,29 @@ Tornoe_2006_triptorelin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "triptorelin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1     = list(analyte = "triptorelin", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "triptorelin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "triptorelin", units = "mg", specimen = "plasma", verified = FALSE),
-    feedback     = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
-    lhpool       = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
-    lh           = list(analyte = "LH", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "triptorelin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "triptorelin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "triptorelin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "triptorelin", units = "mg", specimen = "plasma", verified = FALSE),
+    feedback = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lhpool = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lh = list(analyte = "LH", units = "mg", specimen = "plasma", verified = FALSE),
     testosterone = list(analyte = "testosterone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "20-74 years (median 41)",
-    weight_range   = "60-111 kg (median 80)",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "20-74 years (median 41)",
+    weight_range = "60-111 kg (median 80)",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult males",
-    dose_range     = "Single subcutaneous (s.c.) injection of 3.75 mg Decapeptyl Depot",
-    regions        = "Not reported",
-    notes          = paste(
+    disease_state = "Healthy adult males",
+    dose_range = "Single subcutaneous (s.c.) injection of 3.75 mg Decapeptyl Depot",
+    regions = "Not reported",
+    notes = paste(
       "Triptorelin sub-study: 30 healthy males (s.c. arm) of a 58-subject",
       "single-dose, unblinded, randomized, parallel-group study",
       "investigating PK/PD/tolerability of Decapeptyl Depot after single",

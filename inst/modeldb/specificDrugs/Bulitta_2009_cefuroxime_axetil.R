@@ -36,33 +36,33 @@ Bulitta_2009_cefuroxime_axetil <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    stomach   = list(analyte = "cefuroxime axetil", units = "mg", specimen = "administration site", verified = FALSE),
+    stomach = list(analyte = "cefuroxime axetil", units = "mg", specimen = "administration site", verified = FALSE),
     intestine = list(analyte = "cefuroxime axetil", units = "mg", specimen = "administration site", verified = FALSE),
-    central   = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 24L,
-    n_studies       = 1L,
-    age_range       = "18-31 years",
-    age_median      = "24.5 years (mean)",
-    weight_range    = "58.2-93.6 kg",
-    weight_median   = "73.8 kg (mean)",
-    height_range    = "166-193 cm (mean 179, SD 8.0)",
-    sex_female_pct  = 0,
-    race_ethnicity  = "Caucasian (24/24)",
-    disease_state   = "Healthy volunteers",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18-31 years",
+    age_median = "24.5 years (mean)",
+    weight_range = "58.2-93.6 kg",
+    weight_median = "73.8 kg (mean)",
+    height_range = "166-193 cm (mean 179, SD 8.0)",
+    sex_female_pct = 0,
+    race_ethnicity = "Caucasian (24/24)",
+    disease_state = "Healthy volunteers",
+    dose_range = paste(
       "Single oral dose of 300.72 mg cefuroxime axetil suspension",
       "(equivalent to 250 mg cefuroxime) with 240 mL water immediately",
       "after a standardized high-fat breakfast (Bulitta 2009 'Study",
       "design and drug administration')."
     ),
-    regions         = "Germany (Institute for Biomedical and Pharmaceutical Research, Nurnberg)",
-    notes           = paste(
+    regions = "Germany (Institute for Biomedical and Pharmaceutical Research, Nurnberg)",
+    notes = paste(
       "Single-dose, single-centre healthy-volunteer bioavailability",
       "study (Bulitta 2009 'Subjects'). Blood samples drawn at predose",
       "and 0.5, 1, 1.5, 2, 2.33, 2.67, 3, 3.33, 3.67, 4, 4.5, 5, 6, 8,",

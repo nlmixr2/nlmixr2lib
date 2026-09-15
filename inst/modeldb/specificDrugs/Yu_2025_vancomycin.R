@@ -17,20 +17,20 @@ Yu_2025_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1: mean 21.49 kg, median 24 kg (range 1.25-74). Enters both CL and V allometrically with a 70 kg reference and exponents fixed at 0.75 and 1.0 respectively (Yu 2025 Eqs. 8, 9, 12, 13; Sect. 2.4.1 states the exponents were fixed). Note that the 70 kg reference is far outside this cohort's weight range, so the typical values in Table 3 (CL 8.22 L/h, V 113 L) describe a hypothetical 70 kg subject rather than a typical study child; the paper makes this explicit in Sect. 4 by dividing 8.22 L/h by 70 kg to obtain 0.117 L/h/kg for comparison with the international literature.",
-      source_name        = "WT"
+      notes = "Yu 2025 Table 1: mean 21.49 kg, median 24 kg (range 1.25-74). Enters both CL and V allometrically with a 70 kg reference and exponents fixed at 0.75 and 1.0 respectively (Yu 2025 Eqs. 8, 9, 12, 13; Sect. 2.4.1 states the exponents were fixed). Note that the 70 kg reference is far outside this cohort's weight range, so the typical values in Table 3 (CL 8.22 L/h, V 113 L) describe a hypothetical 70 kg subject rather than a typical study child; the paper makes this explicit in Sect. 4 by dividing 8.22 L/h by 70 kg to obtain 0.117 L/h/kg for comparison with the international literature.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the height-based Schwartz equation, BSA-normalized: eGFR (mL/min/1.73 m^2) = k * height (cm) / serum creatinine (mg/dL)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the height-based Schwartz equation, BSA-normalized: eGFR (mL/min/1.73 m^2) = k * height (cm) / serum creatinine (mg/dL)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Eq. 2 with k = 0.33 for preterm infants younger than 1 year, 0.45 for infants younger than 1 year, 0.55 for children 1-12 years, 0.55 for girls older than 12 years, and 0.7 for boys older than 12 years; serum creatinine was converted from umol/L to mg/dL by Eq. 1 (1 mg/dL = 88.4 umol/L). Yu 2025 Table 1: mean 163.83, median 173.42 mL/min/1.73 m^2 (range 31.9-260.82). The reference value 173.42 in Eq. 12 is the cohort median, per Sect. 2.4.2 ('continuous covariates were standardized by the median'). Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the height-based (original, not bedside) Schwartz estimate. Renal strata used in the Sect. 2.6 Monte Carlo simulation: normal >= 90, mild 60-89, moderate 30-59 mL/min/1.73 m^2; children with eGFR <= 30 were excluded because they usually received renal replacement therapy.",
-      source_name        = "eGFR"
+      notes = "Yu 2025 Eq. 2 with k = 0.33 for preterm infants younger than 1 year, 0.45 for infants younger than 1 year, 0.55 for children 1-12 years, 0.55 for girls older than 12 years, and 0.7 for boys older than 12 years; serum creatinine was converted from umol/L to mg/dL by Eq. 1 (1 mg/dL = 88.4 umol/L). Yu 2025 Table 1: mean 163.83, median 173.42 mL/min/1.73 m^2 (range 31.9-260.82). The reference value 173.42 in Eq. 12 is the cohort median, per Sect. 2.4.2 ('continuous covariates were standardized by the median'). Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the height-based (original, not bedside) Schwartz estimate. Renal strata used in the Sect. 2.6 Monte Carlo simulation: normal >= 90, mild 60-89, moderate 30-59 mL/min/1.73 m^2; children with eGFR <= 30 were excluded because they usually received renal replacement therapy.",
+      source_name = "eGFR"
     )
   )
 
@@ -43,57 +43,57 @@ Yu_2025_vancomycin <- function() {
   # (dOFV -1.15, -0.38 and -1.15 respectively); sex failed even the forward screen.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1: mean 5.17 years, median 4 (range 0.0027-15). Table 2 model 2: an exponential effect on CL gave dOFV -21.28 (p < 0.05) in the univariate forward step, the second-largest single-covariate drop after eGFR, but model 7 (CL-eGFR-Age) added only -1.15 on top of eGFR (p > 0.05). Not retained.",
-      source_name        = "Age"
+      notes = "Yu 2025 Table 1: mean 5.17 years, median 4 (range 0.0027-15). Table 2 model 2: an exponential effect on CL gave dOFV -21.28 (p < 0.05) in the univariate forward step, the second-largest single-covariate drop after eGFR, but model 7 (CL-eGFR-Age) added only -1.15 on top of eGFR (p > 0.05). Not retained.",
+      source_name = "Age"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1: mean 52.13 U/L, median 21.7 (range 5-805). Table 2 model 3: dOFV -4.60 (p < 0.05) univariately; model 8 (CL-eGFR-ALT) added -0.38 (p > 0.05). Not retained.",
-      source_name        = "ALT"
+      notes = "Yu 2025 Table 1: mean 52.13 U/L, median 21.7 (range 5-805). Table 2 model 3: dOFV -4.60 (p < 0.05) univariately; model 8 (CL-eGFR-ALT) added -0.38 (p > 0.05). Not retained.",
+      source_name = "ALT"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1: mean 4.66 mmol/L, median 4.2 (range 0.3-25.4). Table 2 model 4: dOFV -5.01 (p < 0.05) univariately; model 9 (CL-eGFR-BUN) added -1.15 (p > 0.05). Not retained.",
-      source_name        = "BUN"
+      notes = "Yu 2025 Table 1: mean 4.66 mmol/L, median 4.2 (range 0.3-25.4). Table 2 model 4: dOFV -5.01 (p < 0.05) univariately; model 9 (CL-eGFR-BUN) added -1.15 (p > 0.05). Not retained.",
+      source_name = "BUN"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Yu 2025 Table 1: 41 of 100 patients (41%) female. The only categorical covariate screened; Sect. 2.4.2 Eq. 11 gives the linear form used for binary covariates. Table 2 model 5: dOFV -1.67 (p > 0.05), failing even the forward alpha = 0.05 screen; model 10 (CL-eGFR-Sex) added -1.35 (p > 0.05). Not retained. Sex nevertheless enters the model indirectly through the Schwartz k coefficient for children older than 12 years (0.55 for girls, 0.7 for boys).",
-      source_name        = "Sex"
+      notes = "Yu 2025 Table 1: 41 of 100 patients (41%) female. The only categorical covariate screened; Sect. 2.4.2 Eq. 11 gives the linear form used for binary covariates. Table 2 model 5: dOFV -1.67 (p > 0.05), failing even the forward alpha = 0.05 screen; model 10 (CL-eGFR-Sex) added -1.35 (p > 0.05). Not retained. Sex nevertheless enters the model indirectly through the Schwartz k coefficient for children older than 12 years (0.55 for girls, 0.7 for boys).",
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 100L,
-    n_studies        = 1L,
-    n_sites          = 1L,
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
+    n_sites = 1L,
     n_concentrations = 124L,
-    age_range        = "0.0027-15 years (eligibility was younger than 18 years)",
-    age_median       = "4 years (mean 5.17)",
-    weight_range     = "1.25-74 kg",
-    weight_median    = "24 kg (mean 21.49)",
-    height_median    = "106.5 cm (mean 107.98; range 37-178)",
-    sex_female_pct   = 41,
-    race_ethnicity   = "Not reported; single-center Chinese cohort",
-    disease_state    = "Pediatric inpatients with confirmed or suspected Gram-positive infection receiving intravenous vancomycin. Excluded: renal replacement therapy, extracorporeal membrane oxygenation, undetectable vancomycin concentrations, or incomplete clinical data.",
-    dose_range       = "Clinician-chosen empirical regimens; vancomycin 0.5 g/vial diluted in 0.9% saline or 5% glucose and given as a 60-minute intravenous intermittent infusion. The Sect. 2.6 Monte Carlo simulation used the Chinese 2020 guideline dose of 60 mg/kg/day as 20 mg/kg every 8 h or 15 mg/kg every 6 h.",
-    regions          = "China (Anhui Provincial Children's Hospital, Hefei, Anhui)",
-    renal_function   = "Schwartz eGFR median 173.42 mL/min/1.73 m^2 (mean 163.83, range 31.9-260.82); serum creatinine median 30.1 umol/L (mean 51.24, range 12.6-997.2)",
-    notes            = "Single-center retrospective therapeutic-drug-monitoring study, September 2021 to November 2023 (Yu 2025 Sect. 2.1). Sampling was sparse and dominated by steady-state troughs drawn 30 minutes before the fourth dose per the Chinese Expert Consensus on Therapeutic Drug Monitoring in Children, giving only 124 concentrations from 100 patients (median slightly above one sample per subject). Plasma vancomycin was measured by enzyme amplification immunoassay on a Siemens Viva-ProE analyzer; the lower limit of quantification was 2 mg/L and measurable samples below it were retained in the modeling. Model fit in NONMEM 7.4.1 with FOCE-I, PsN 5.1.2 for covariate screening and validation; stepwise covariate selection by forward inclusion at alpha = 0.05 (dOFV 3.84) then backward elimination at alpha = 0.01 (dOFV 6.63). Validation was internal only (goodness of fit, 1000-replicate bootstrap with 997 successful runs, and a 200-replicate VPC); no external dataset was used. The paper reports that the VPC 95th percentile was poorly reproduced and recommends against using the model to predict concentrations above 20 mg/L."
+    age_range = "0.0027-15 years (eligibility was younger than 18 years)",
+    age_median = "4 years (mean 5.17)",
+    weight_range = "1.25-74 kg",
+    weight_median = "24 kg (mean 21.49)",
+    height_median = "106.5 cm (mean 107.98; range 37-178)",
+    sex_female_pct = 41,
+    race_ethnicity = "Not reported; single-center Chinese cohort",
+    disease_state = "Pediatric inpatients with confirmed or suspected Gram-positive infection receiving intravenous vancomycin. Excluded: renal replacement therapy, extracorporeal membrane oxygenation, undetectable vancomycin concentrations, or incomplete clinical data.",
+    dose_range = "Clinician-chosen empirical regimens; vancomycin 0.5 g/vial diluted in 0.9% saline or 5% glucose and given as a 60-minute intravenous intermittent infusion. The Sect. 2.6 Monte Carlo simulation used the Chinese 2020 guideline dose of 60 mg/kg/day as 20 mg/kg every 8 h or 15 mg/kg every 6 h.",
+    regions = "China (Anhui Provincial Children's Hospital, Hefei, Anhui)",
+    renal_function = "Schwartz eGFR median 173.42 mL/min/1.73 m^2 (mean 163.83, range 31.9-260.82); serum creatinine median 30.1 umol/L (mean 51.24, range 12.6-997.2)",
+    notes = "Single-center retrospective therapeutic-drug-monitoring study, September 2021 to November 2023 (Yu 2025 Sect. 2.1). Sampling was sparse and dominated by steady-state troughs drawn 30 minutes before the fourth dose per the Chinese Expert Consensus on Therapeutic Drug Monitoring in Children, giving only 124 concentrations from 100 patients (median slightly above one sample per subject). Plasma vancomycin was measured by enzyme amplification immunoassay on a Siemens Viva-ProE analyzer; the lower limit of quantification was 2 mg/L and measurable samples below it were retained in the modeling. Model fit in NONMEM 7.4.1 with FOCE-I, PsN 5.1.2 for covariate screening and validation; stepwise covariate selection by forward inclusion at alpha = 0.05 (dOFV 3.84) then backward elimination at alpha = 0.01 (dOFV 6.63). Validation was internal only (goodness of fit, 1000-replicate bootstrap with 997 successful runs, and a 200-replicate VPC); no external dataset was used. The paper reports that the VPC 95th percentile was poorly reproduced and recommends against using the model to predict concentrations above 20 mg/L."
   )
 
   ini({

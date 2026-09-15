@@ -48,22 +48,22 @@ Felmlee_2010_ghb_rat <- function() {
   units <- list(time = "min", dosing = "mg", concentration = "mg/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "GHB", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "GHB", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "GHB", units = "mg", specimen = "tissue", verified = TRUE),
     peripheral2 = list(analyte = "GHB", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "GHB", units = "mg", specimen = "tissue", verified = TRUE),
-    ulf1        = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE),
-    ulf2        = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE),
-    urine       = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE)
+    kidney = list(analyte = "GHB", units = "mg", specimen = "tissue", verified = TRUE),
+    ulf1 = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE),
+    ulf2 = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE),
+    urine = list(analyte = "GHB", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only Table I parameter reported per kilogram is the glomerular",
         "filtration rate (10 mL/min/kg), so body weight enters the model",
         "only through gfr = exp(lgfr) * WT. Every other volume and flow in",
@@ -72,14 +72,14 @@ Felmlee_2010_ghb_rat <- function() {
         "Surgery); 0.3 kg is the value at which the model reproduces the",
         "published Table II simulations."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     INH_MCT_KM_RATIO = list(
-      description        = "MCT-inhibitor concentration ratio [I]/Ki acting on the reabsorption Michaelis-Menten constant",
-      units              = "unitless",
-      type               = "continuous",
+      description = "MCT-inhibitor concentration ratio [I]/Ki acting on the reabsorption Michaelis-Menten constant",
+      units = "unitless",
+      type = "continuous",
       reference_category = "0 = no inhibitor present",
-      notes              = paste(
+      notes = paste(
         "Source paper Eqs. 11-13 modify the Eq. 4 reabsorption term for a",
         "steady-state transport inhibitor with R = [I]/Ki. Set together with",
         "INH_MCT_CONC_RATIO to select the mechanism:",
@@ -88,42 +88,42 @@ Felmlee_2010_ghb_rat <- function() {
         "uncompetitive (Eq. 13) INH_MCT_KM_RATIO = 0, INH_MCT_CONC_RATIO = R.",
         "Both zero recovers the fitted model, Eq. 4."
       ),
-      source_name        = "R"
+      source_name = "R"
     ),
     INH_MCT_CONC_RATIO = list(
-      description        = "MCT-inhibitor concentration ratio [I]/Ki acting on the proximal-tubule substrate concentration",
-      units              = "unitless",
-      type               = "continuous",
+      description = "MCT-inhibitor concentration ratio [I]/Ki acting on the proximal-tubule substrate concentration",
+      units = "unitless",
+      type = "continuous",
       reference_category = "0 = no inhibitor present",
-      notes              = paste(
+      notes = paste(
         "Companion to INH_MCT_KM_RATIO; see that entry for the",
         "mechanism-selection table (source paper Eqs. 11-13)."
       ),
-      source_name        = "R"
+      source_name = "R"
     )
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley)",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "adult (exact age not reported)",
-    weight_range   = "280-320 g",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "adult (exact age not reported)",
+    weight_range = "280-320 g",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Sprague-Dawley rats (Harlan, Indianapolis, IN) with",
       "cannulas implanted in the right jugular vein, housed individually",
       "for 2-3 days after surgery and then in metabolic cages for the",
       "duration of the study."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "GHB 200, 400, 600 or 1,000 mg/kg as a single intravenous bolus into",
       "the jugular vein cannula, N = 7-10 rats per dose group. Plasma",
       "sampled at 0, 5, 10, 20, 30, 60, 90, 120, 180, 240, 300 and 360 min;",
       "urine collected over 0-60, 60-120, 120-240 and 240-360 min."
     ),
-    regions        = "USA (University at Buffalo)",
-    notes          = paste(
+    regions = "USA (University at Buffalo)",
+    notes = paste(
       "n_subjects is the toxicokinetic dataset used to fit the model (four",
       "dose groups of 7-10 rats each; the source paper reports the range",
       "rather than the exact per-group counts, so 34 is the midpoint of the",

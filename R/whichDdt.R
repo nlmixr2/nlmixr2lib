@@ -13,20 +13,19 @@
   .dd2 <- end
   .ddtCentral1 <- str2lang(paste0(.dd1, central, .dd2, " <- ."))
   .ddtCentral2 <- str2lang(paste0(.dd1, central, .dd2, " = ."))
-  .w <- which(vapply(seq_along(modelLines),
+  .w <- which(vapply(
+    seq_along(modelLines),
     function(i) {
       .cur <- modelLines[[i]]
       rxode2::.matchesLangTemplate(.cur, .ddtCentral1) ||
         rxode2::.matchesLangTemplate(.cur, .ddtCentral2)
-    }, logical(1), USE.NAMES = FALSE))
+    },
+    logical(1),
+    USE.NAMES = FALSE
+  ))
   # Modify ODE for central compartment
   if (length(.w) != 1) {
-    stop("'",
-      .dd1,
-      central,
-      .dd2,
-      "' not found or duplicated in model",
-      call. = FALSE)
+    stop("'", .dd1, central, .dd2, "' not found or duplicated in model", call. = FALSE)
   }
   .w
 }

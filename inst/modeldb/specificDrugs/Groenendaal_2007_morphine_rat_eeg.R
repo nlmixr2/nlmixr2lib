@@ -44,18 +44,18 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
   vignette <- "Groenendaal_2007_morphine_rat_eeg"
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal, time-fixed. Enters the blood-PK layer only, as the linear",
         "centred form of the companion paper's Equation 7,",
         "P_i = theta1 * (1 + theta2 * (BW_i - median BW)), on CL and on V2",
@@ -65,14 +65,14 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
         "mean 0.294 kg). See the vignette Assumptions section.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CONMED_ELACRIDAR = list(
-      description        = "Continuous co-infusion of the P-glycoprotein inhibitor GF120918 (elacridar)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous co-infusion of the P-glycoprotein inhibitor GF120918 (elacridar)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = vehicle co-infusion",
-      notes              = paste(
+      notes = paste(
         "Experimentally administered Pgp blockade, not a clinical",
         "co-medication. Regimen (companion paper, Experimental procedures):",
         "6 mg/kg 1-min intravenous bolus in dimethyl sulphoxide followed by a",
@@ -83,7 +83,7 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
         "keo only (lead paper Table 1); k1e was unaffected.",
         sep = " "
       ),
-      source_name        = "GF120918"
+      source_name = "GF120918"
     )
   )
 
@@ -92,11 +92,11 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
   # raise a "declared but not referenced" convention warning).
   covariatesDataExcluded <- list(
     STUDY_EEG_MD = list(
-      description        = "Experimental sub-study: EEG-microdialysis animals versus EEG-only animals",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Experimental sub-study: EEG-microdialysis animals versus EEG-only animals",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = EEG-only experiment",
-      notes              = paste(
+      notes = paste(
         "Lead paper Equation 6, P_i = theta1 * (1 - METHOD_i) + theta2 * METHOD_i,",
         "with METHOD = 1 for EEG-MD and 0 for EEG. Screened on E0 and Emax to",
         "check whether removing three EEG electrodes and implanting a",
@@ -106,7 +106,7 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
         "was estimated.' Not retained; no point estimate is reported.",
         sep = " "
       ),
-      source_name        = "METHOD"
+      source_name = "METHOD"
     )
   )
 
@@ -116,23 +116,23 @@ Groenendaal_2007_morphine_rat_eeg <- function() {
   # are written in concentration units), so their units are ng/mL rather than
   # an amount and their specimen is "not applicable".
   compartmentData <- list(
-    central     = list(analyte = "morphine", units = "ng",    specimen = "whole blood",    verified = TRUE),
-    peripheral1 = list(analyte = "morphine", units = "ng",    specimen = "whole blood",    verified = TRUE),
-    peripheral2 = list(analyte = "morphine", units = "ng",    specimen = "whole blood",    verified = TRUE),
-    effect1     = list(analyte = "morphine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    effect2     = list(analyte = "morphine", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    central = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
+    peripheral1 = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
+    peripheral2 = list(analyte = "morphine", units = "ng", specimen = "whole blood", verified = TRUE),
+    effect1 = list(analyte = "morphine", units = "ng/mL", specimen = "not applicable", verified = TRUE),
+    effect2 = list(analyte = "morphine", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species       = "rat (male Wistar)",
-    n_subjects    = 68,
-    n_studies     = 1,
-    weight_range  = "0.25-0.35 kg",
+    species = "rat (male Wistar)",
+    n_subjects = 68,
+    n_studies = 1,
+    weight_range = "0.25-0.35 kg",
     weight_median = "0.30 kg",
     sex_female_pct = 0,
     disease_state = "healthy, chronically instrumented conscious rats",
-    dose_range    = "4, 10 or 40 mg/kg morphine hydrochloride as a 10-min intravenous infusion",
-    regions       = "Leiden, The Netherlands (single laboratory)",
+    dose_range = "4, 10 or 40 mg/kg morphine hydrochloride as a 10-min intravenous infusion",
+    regions = "Leiden, The Netherlands (single laboratory)",
     co_medication = paste(
       "All animals received a continuous midazolam infusion (5.5 mg/kg/h,",
       "Wagner loading scheme) to prevent opioid-induced seizure activity, giving",

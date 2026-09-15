@@ -9,28 +9,28 @@ Mould_2007_alemtuzumab_wbc <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
-    WBC         = list(analyte = "alemtuzumab", units = "mg", specimen = "not applicable", verified = FALSE)
+    WBC = list(analyte = "alemtuzumab", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 67,
-    n_studies        = 4,
-    age_range        = "41-75 years",
-    age_median       = "59 years",
-    weight_range     = "45-167 kg",
-    weight_median    = "72 kg",
-    sex_female_pct   = 26.9,
-    race_ethnicity   = "Not reported in the published analysis",
-    disease_state    = "B-cell chronic lymphocytic leukaemia (B-CLL), mostly relapsed/refractory",
-    dose_range       = "3-240 mg alemtuzumab as 2-h IV infusion; escalation 3 -> 10 -> 30 mg then 30 mg three times weekly (CAM005, CAM213) or 7.5-240 mg weekly for 4 weeks (CAM002)",
-    regions          = "United States and Europe (pooled Schering AG clinical studies)",
-    baseline_wbc     = "median 37.8 x 10^9/L (range 1.3-522); the typical-value baseline implied by the PD parameters is Kin/Kout = 1.56 / 0.029 = 53.8 x 10^9/L (Mould 2007 Results, PD section)",
-    notes            = "Same pooled four-study cohort (CAM002, CAM005, CAM211, CAM213) used for the PK model in Mould_2007_alemtuzumab (PK only). The PD layer was fit sequentially: 67 patients, 1067 WBC observations (Methods, Database assembly). No covariates were tested on PD parameters (Methods, Pharmacodynamic modelling)."
+    species = "human",
+    n_subjects = 67,
+    n_studies = 4,
+    age_range = "41-75 years",
+    age_median = "59 years",
+    weight_range = "45-167 kg",
+    weight_median = "72 kg",
+    sex_female_pct = 26.9,
+    race_ethnicity = "Not reported in the published analysis",
+    disease_state = "B-cell chronic lymphocytic leukaemia (B-CLL), mostly relapsed/refractory",
+    dose_range = "3-240 mg alemtuzumab as 2-h IV infusion; escalation 3 -> 10 -> 30 mg then 30 mg three times weekly (CAM005, CAM213) or 7.5-240 mg weekly for 4 weeks (CAM002)",
+    regions = "United States and Europe (pooled Schering AG clinical studies)",
+    baseline_wbc = "median 37.8 x 10^9/L (range 1.3-522); the typical-value baseline implied by the PD parameters is Kin/Kout = 1.56 / 0.029 = 53.8 x 10^9/L (Mould 2007 Results, PD section)",
+    notes = "Same pooled four-study cohort (CAM002, CAM005, CAM211, CAM213) used for the PK model in Mould_2007_alemtuzumab (PK only). The PD layer was fit sequentially: 67 patients, 1067 WBC observations (Methods, Database assembly). No covariates were tested on PD parameters (Methods, Pharmacodynamic modelling)."
   )
 
   ini({

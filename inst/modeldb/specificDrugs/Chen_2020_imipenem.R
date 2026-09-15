@@ -32,19 +32,19 @@ Chen_2020_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation.",
         "The review does not state whether the value is BSA-normalised;",
         "Cockcroft-Gault natively returns raw mL/min and the review's",
@@ -52,10 +52,10 @@ Chen_2020_imipenem <- function() {
         "estimated by Cockcroft and Gault equation' with no normalisation",
         "mentioned, so raw mL/min is used here."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 59.1 mL/min. Enters CL as the power term",
         "(CLcr/59.1)^0.295 (Zhang 2025 Table 3). The review does not report",
         "this cohort's renal function distribution, so whether 59.1 is the",
@@ -66,14 +66,14 @@ Chen_2020_imipenem <- function() {
         "precedent: Bai 2024 imipenem, Wang 2024 imipenem, Couffignal 2014",
         "imipenem."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 65.0 kg, equal to the cohort median of 65 kg (range",
         "37.5-110.0; Zhang 2025 Table 1). Enters CL as the power term",
         "(BW/65.0)^0.306. Note that the exponent is 0.306, well below the",
@@ -81,14 +81,14 @@ Chen_2020_imipenem <- function() {
         "on either volume -- both are departures from the usual allometric",
         "parameterisation and are reproduced as printed."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     ECMO_STATUS = list(
-      description        = "Extracorporeal membrane oxygenation support during imipenem therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extracorporeal membrane oxygenation support during imipenem therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no ECMO support",
-      notes              = paste(
+      notes = paste(
         "Zhang 2025 Table 3 prints the covariate model as two branches:",
         "with ECMO, CL = 8.88 * (CLcr/59.1)^0.295 * (BW/65.0)^0.306 *",
         "e^1.16 * e^eta_CL; without ECMO, the same expression without the",
@@ -104,7 +104,7 @@ Chen_2020_imipenem <- function() {
         "re-verified against the primary before the model is used to",
         "support ECMO dosing. Recorded in the vignette Errata."
       ),
-      source_name        = "ECMO"
+      source_name = "ECMO"
     )
   )
 
@@ -112,42 +112,102 @@ Chen_2020_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    AGE  = list(description = "Age",                    units = "years",        type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 67 years, range 20-97 (Table 1)."),
-    SEXF = list(description = "Female sex",             units = "(binary)",     type = "binary",     notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 80/247 female (Table 1). Zhang 2025 Results notes that sex was screened in 10 of the review's studies and retained in none."),
-    HT   = list(description = "Height",                 units = "cm",           type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    BMI  = list(description = "Body mass index",        units = "kg/m^2",       type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    CREAT = list(description = "Serum creatinine",      units = "umol/L",       type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3); the derived CLcr was retained instead. Units not stated by the review."),
-    ALT  = list(description = "Alanine transaminase",   units = "U/L",          type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    AST  = list(description = "Aspartate transaminase", units = "U/L",          type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    ALB  = list(description = "Serum albumin",          units = "g/L",          type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    TBIL = list(description = "Total bilirubin",        units = "umol/L",       type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    HGB  = list(description = "Haemoglobin",            units = "g/L",          type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    PLT  = list(description = "Platelet count",         units = "10^9 cells/L", type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    RRT_CRRT_STATUS = list(description = "Continuous renal replacement therapy", units = "(binary)", type = "binary", notes = "Screened, not retained (Zhang 2025 Table 3). ECMO was retained but CRRT was not.")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 67 years, range 20-97 (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 80/247 female (Table 1). Zhang 2025 Results notes that sex was screened in 10 of the review's studies and retained in none."
+    ),
+    HT = list(
+      description = "Height",
+      units = "cm",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    CREAT = list(
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3); the derived CLcr was retained instead. Units not stated by the review."
+    ),
+    ALT = list(
+      description = "Alanine transaminase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    AST = list(
+      description = "Aspartate transaminase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    TBIL = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    HGB = list(
+      description = "Haemoglobin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    PLT = list(
+      description = "Platelet count",
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    RRT_CRRT_STATUS = list(
+      description = "Continuous renal replacement therapy",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). ECMO was retained but CRRT was not."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 247L,
-    n_studies        = 1L,
-    age_median       = "67 years (range 20-97)",
-    weight_median    = "65 kg (range 37.5-110.0)",
-    sex_female_pct   = 32.4,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 247L,
+    n_studies = 1L,
+    age_median = "67 years (range 20-97)",
+    weight_median = "65 kg (range 37.5-110.0)",
+    sex_female_pct = 32.4,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Critically ill adults receiving imipenem-cilastatin, with and",
       "without extracorporeal membrane oxygenation support. This is the",
       "largest cohort among the 18 studies in the Zhang 2025 review."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "250 mg every 12 h; 500 mg every 6, 8 or 12 h; 500 mg in the morning",
       "with 250 mg at night; and 1000 mg every 6, 8 or 12 h (Zhang 2025",
       "Supplementary Table S1). The infusion duration is not reported by",
       "the review."
     ),
-    regions          = "China",
+    regions = "China",
     n_concentrations = 580L,
-    notes            = paste(
+    notes = paste(
       "Retrospective study (Zhang 2025 Table 1, study 8); 247 patients, 580",
       "samples, sex split 167 male / 80 female. Two sampling schemes were",
       "pooled: routine therapeutic drug monitoring at 3 h and 0.5 h before",

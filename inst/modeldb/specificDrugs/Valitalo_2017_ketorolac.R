@@ -16,49 +16,49 @@ Valitalo_2017_ketorolac <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central_r_enant     = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    central_r_enant = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_r_enant = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2_r_enant = list(analyte = "R-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
-    central_s_enant     = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
+    central_s_enant = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_s_enant = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2_s_enant = list(analyte = "S-ketorolac", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of CL (exponent 0.536) and all three volumes (V1, V2, V3; shared exponent 0.807) for both enantiomers, with reference weight 71 kg (Valitalo 2017 Table 2 footnotes a-d). The allometric exponents were estimated, not fixed.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of CL (exponent 0.536) and all three volumes (V1, V2, V3; shared exponent 0.807) for both enantiomers, with reference weight 71 kg (Valitalo 2017 Table 2 footnotes a-d). The allometric exponents were estimated, not fixed.",
+      source_name = "WT"
     ),
     PREG = list(
-      description        = "Indicator for woman currently in the at-delivery state (1 = at delivery / immediately post-Caesarean section, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for woman currently in the at-delivery state (1 = at delivery / immediately post-Caesarean section, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (nonpregnant; covers postpartum women, nonpregnant females, and males)",
-      notes              = "Source NONMEM column is `WAD` (women at delivery) which carries the pregnancy-physiology effect at the time of Caesarean delivery; renamed to the canonical PREG per inst/references/covariate-columns.md. Postpartum women 4-5 months after delivery had reverted to PREG = 0. Multiplicative coefficient 0.554 on CL (+55%) and 0.273 on each of V1/V2/V3 (+27%) for both enantiomers (Valitalo 2017 Table 2 final model).",
-      source_name        = "WAD"
+      notes = "Source NONMEM column is `WAD` (women at delivery) which carries the pregnancy-physiology effect at the time of Caesarean delivery; renamed to the canonical PREG per inst/references/covariate-columns.md. Postpartum women 4-5 months after delivery had reverted to PREG = 0. Multiplicative coefficient 0.554 on CL (+55%) and 0.273 on each of V1/V2/V3 (+27%) for both enantiomers (Valitalo 2017 Table 2 final model).",
+      source_name = "WAD"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source NONMEM column is `MS` (male subject) with values inverted: SEXF = 1 - MS. The Valitalo 2017 typical-value parameters in Table 2 are reported for a 71-kg nonpregnant female (MS = 0, WAD = 0); to preserve those published structural values we apply the male-sex effect via (1 + e_sexf_cl * (1 - SEXF)) with e_sexf_cl = 0.363 (+36% CL in men vs women of the same body weight; Valitalo 2017 Table 2 final model). Effect applied identically to R- and S-enantiomer clearances.",
-      source_name        = "MS"
+      notes = "Source NONMEM column is `MS` (male subject) with values inverted: SEXF = 1 - MS. The Valitalo 2017 typical-value parameters in Table 2 are reported for a 71-kg nonpregnant female (MS = 0, WAD = 0); to preserve those published structural values we apply the male-sex effect via (1 + e_sexf_cl * (1 - SEXF)) with e_sexf_cl = 0.363 (+36% CL in men vs women of the same body weight; Valitalo 2017 Table 2 final model). Effect applied identically to R- and S-enantiomer clearances.",
+      source_name = "MS"
     )
   )
 
   population <- list(
-    n_subjects     = 67L,
-    n_studies      = 2L,
-    age_range      = "19-44 years",
-    weight_range   = "40-106 kg",
+    n_subjects = 67L,
+    n_studies = 2L,
+    age_range = "19-44 years",
+    weight_range = "40-106 kg",
     sex_female_pct = 82,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Postoperative analgesia. Pooled analysis of two single-IV-bolus studies:",
       "(i) Leuven (Belgium): 41 women immediately post-Caesarean (at delivery),",
       "8 of those women restudied 4-5 months postpartum (paired session, same",
@@ -66,14 +66,14 @@ Valitalo_2017_ketorolac <- function() {
       "(Finland): 12 men and 6 nonpregnant women, ASA physical status I-II,",
       "undergoing minor eye surgery."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single IV bolus of racemic ketorolac tromethamine: 30 mg (Leuven; equivalent",
       "to 20.345 mg pure ketorolac per dose) or 0.5 mg/kg over 30 s (Helsinki).",
       "Each dose was modelled as half going to the R-enantiomer compartment and",
       "half to the S-enantiomer compartment (no interconversion assumed)."
     ),
-    regions        = "Leuven, Belgium and Helsinki, Finland",
-    notes          = paste(
+    regions = "Leuven, Belgium and Helsinki, Finland",
+    notes = paste(
       "Demographics from Valitalo 2017 Table 1: women at delivery n = 41, age",
       "33 (25-44) y, weight 73.9 (40-106) kg; postpartum n = 8 (subset of",
       "the 41 women restudied), age 31.5 (25-35) y, weight 60.8 (48.8-87.2) kg;",

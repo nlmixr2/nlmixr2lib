@@ -16,27 +16,27 @@ Chang_2011_PF04455242_human <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "PF04455242", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "PF04455242", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF04455242", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 69L,
-    n_studies      = 3L,
-    age_range      = "healthy adult",
+    species = "human",
+    n_subjects = 69L,
+    n_studies = 3L,
+    age_range = "healthy adult",
     sex_female_pct = 0,
-    disease_state  = "healthy male adult volunteers (proof-of-mechanism study); single- and multiple-dose PK studies pooled with the POM study for the population PK fit",
-    dose_range     = paste(
+    disease_state = "healthy male adult volunteers (proof-of-mechanism study); single- and multiple-dose PK studies pooled with the POM study for the population PK fit",
+    dose_range = paste(
       "PK pool: PF-04455242 0.5-30 mg PO single dose (n=18 subjects, 22 in reference (22))",
       "and PF-04455242 every-6-hour multiple dose followed by a single dose on day 7 (n=27 subjects, reference (23)).",
       "POM study: PF-04455242 18 or 30 mg PO at t=-1 h followed by spiradoline 3.2 ug/kg IM at t=0 (n=24 healthy male subjects, 8 per arm).",
       sep = " "
     ),
-    regions        = "Pfizer Inc., USA (Clinical Pharmacology Primary Care Business Unit)",
-    notes          = paste(
+    regions = "Pfizer Inc., USA (Clinical Pharmacology Primary Care Business Unit)",
+    notes = paste(
       "PK was fit on 943 PF-04455242 concentrations from the single- and multiple-dose phase 1 studies.",
       "The PD layer (this file) is the reduced antagonism model from Eq. 11 (paper Methods 'Clinical POM Prediction' and 'Clinical PK-PD Model') in which the spiradoline-driven STIMplacebo is described empirically by a Weibull function (Eq. 12) digitised from a placebo-arm prolactin time course.",
       "Sequential PK-PD: individual PF-04455242 concentrations were predicted using the population PK model and combined with the prolactin observations from the POM study.",

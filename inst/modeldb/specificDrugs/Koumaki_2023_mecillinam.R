@@ -30,23 +30,23 @@ Koumaki_2023_mecillinam <- function() {
     sep = " "
   )
   vignette <- "Koumaki_2023_mecillinam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mecillinam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mecillinam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mecillinam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear per-kg scaling of CL, Q, Vc and Vp (weight exponent 1,",
         "NOT 0.75 allometry): Koumaki 2023 Table 1 reports every",
         "structural parameter already normalised per kilogram",
@@ -59,7 +59,7 @@ Koumaki_2023_mecillinam <- function() {
         "fitted to the U.S. NCHS 2015-2018 adult weight percentiles",
         "(reference 11), stratified by sex."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -69,33 +69,33 @@ Koumaki_2023_mecillinam <- function() {
   # sex effect on any PK parameter was estimated.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Not a PK covariate. Koumaki 2023 'Monte Carlo simulations'",
         "used sex only to select which NCHS body-weight distribution to",
         "sample from (5,000 females and 5,000 males); no sex effect on",
         "CL, Q, Vc or Vp was estimated or reported. Sex enters the",
         "simulated exposure exclusively through WT."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "Adults; not reported in Koumaki 2023 (see Gambertoglio 1980 for the original cohort).",
-    weight_range   = "Not reported in Koumaki 2023; the original dose was 10 mg/kg, so body weight was recorded but the range was not carried into the reanalysis.",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "Adults; not reported in Koumaki 2023 (see Gambertoglio 1980 for the original cohort).",
+    weight_range = "Not reported in Koumaki 2023; the original dose was 10 mg/kg, so body weight was recorded but the range was not carried into the reanalysis.",
     sex_female_pct = "Not reported in Koumaki 2023.",
     race_ethnicity = "Not reported in Koumaki 2023.",
-    disease_state  = "Healthy volunteers. The model was subsequently applied by Monte Carlo simulation to patients with systemic infections (urosepsis, pyelonephritis, bacteraemia) caused by Enterobacterales, including ESBL- and carbapenemase-producing strains.",
-    dose_range     = "Estimation data: single 10 mg/kg dose as a 15-min IV infusion. Simulated regimens: 1,000 mg TID, 1,000 mg QID and 1,200 mg QID as 20-min, 2-h and 4-h infusions, plus continuous infusion of 150-4,800 mg/day.",
-    regions        = "United States (Gambertoglio 1980 source data, San Francisco); analysis performed in Greece and the United Kingdom.",
-    notes          = paste(
+    disease_state = "Healthy volunteers. The model was subsequently applied by Monte Carlo simulation to patients with systemic infections (urosepsis, pyelonephritis, bacteraemia) caused by Enterobacterales, including ESBL- and carbapenemase-producing strains.",
+    dose_range = "Estimation data: single 10 mg/kg dose as a 15-min IV infusion. Simulated regimens: 1,000 mg TID, 1,000 mg QID and 1,200 mg QID as 20-min, 2-h and 4-h infusions, plus continuous infusion of 150-4,800 mg/day.",
+    regions = "United States (Gambertoglio 1980 source data, San Francisco); analysis performed in Greece and the United Kingdom.",
+    notes = paste(
       "IMPORTANT: parameters were NOT estimated from individual-level",
       "data. Koumaki 2023 'Population pharmacokinetic model' reanalysed",
       "the AGGREGATE concentration mean and SD values published by",

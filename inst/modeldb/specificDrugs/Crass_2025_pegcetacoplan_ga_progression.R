@@ -39,60 +39,60 @@ Crass_2025_pegcetacoplan_ga_progression <- function() {
   # are Box-Cox transformed inside model() before entering the exponential.
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; this model has no drug input -- it describes untreated GA progression)",
+    time = "day",
+    dosing = "(none; this model has no drug input -- it describes untreated GA progression)",
     concentration = "(GA lesion area, mm^2; observations lesionStudy and lesionFellow)"
   )
 
   covariateData <- list(
     DIS_GA_UNILATERAL = list(
-      description        = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA (GA present in both eyes at baseline). Time-fixed per subject. In Crass 2025 this is a prespecified structural covariate carried on both the study-eye initial lesion area and the study-eye time slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA (GA present in both eyes at baseline). Time-fixed per subject. In Crass 2025 this is a prespecified structural covariate carried on both the study-eye initial lesion area and the study-eye time slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (bilateral GA). 81% of the pooled Crass 2025 population had bilateral disease at baseline (paper Table 1).",
-      notes              = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study, so a subject with DIS_GA_UNILATERAL = 1 contributes study-eye records only in the source dataset. The covariate does not act on either fellow-eye parameter.",
-      source_name        = "UNILATGA"
+      notes = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study, so a subject with DIS_GA_UNILATERAL = 1 contributes study-eye records only in the source dataset. The covariate does not act on either fellow-eye parameter.",
+      source_name = "UNILATGA"
     ),
     DIS_GA_NONSUBFOVEAL = list(
-      description        = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject; assessed at baseline by fundus autofluorescence.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject; assessed at baseline by fundus autofluorescence.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subfoveal involvement). 63% of study eyes had subfoveal lesions at baseline (paper Table 1).",
-      notes              = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 3, dOFV 1.343).",
-      source_name        = "NOFOV"
+      notes = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 3, dOFV 1.343).",
+      source_name = "NOFOV"
     ),
     DIS_GA_UNIFOCAL = list(
-      description        = "1 = unifocal study-eye GA lesion (a single atrophic patch); 0 = multifocal lesion (two or more patches). Time-fixed per subject; assessed at baseline by fundus autofluorescence.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unifocal study-eye GA lesion (a single atrophic patch); 0 = multifocal lesion (two or more patches). Time-fixed per subject; assessed at baseline by fundus autofluorescence.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (multifocal). 70% of study eyes were multifocal at baseline (paper Table 1).",
-      notes              = "Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 1, dOFV 0.584).",
-      source_name        = "UNIFOC"
+      notes = "Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 1, dOFV 0.584).",
+      source_name = "UNIFOC"
     ),
     DRUSEN_GT20 = list(
-      description        = "1 = more than 20 intermediate or large drusen groups (drusen diameter >= 63 micrometres, AREDS simplified severity scale) present in the study eye at baseline; 0 = 20 or fewer. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = more than 20 intermediate or large drusen groups (drusen diameter >= 63 micrometres, AREDS simplified severity scale) present in the study eye at baseline; 0 = 20 or fewer. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (20 or fewer intermediate or large drusen groups). 45% of study eyes had more than 20 at baseline (paper Table 1); two OAKS patients had missing data.",
-      notes              = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count; the >= 63 micrometre size threshold follows Ferris 2005 (AREDS report No. 18). Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 4, dOFV 3.007).",
-      source_name        = "MOREDR"
+      notes = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count; the >= 63 micrometre size threshold follows Ferris 2005 (AREDS report No. 18). Acts on the study-eye time slope only; the corresponding effect on initial lesion area was removed in backward elimination (Table S2 step 4, dOFV 3.007).",
+      source_name = "MOREDR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1501L,
-    n_studies      = 3L,
-    age_range      = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
-    age_median     = "79 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 1501L,
+    n_studies = 3L,
+    age_range = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
+    age_median = "79 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 62,
     race_ethnicity = c(White = 94, Black = 0.4, Asian = 0.5, Other = 0.2, Missing = 5),
-    disease_state  = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 82% pseudodrusen, 45% with more than 20 intermediate or large drusen groups.",
-    dose_range     = "n/a for this model -- the estimation dataset for the disease-progression model comprised only sham-treated study eyes and untreated fellow eyes (498 of the 1501 patients received sham; the remaining patients contributed fellow-eye records only). The parent trials randomised patients 2:2:1:1 to intravitreal pegcetacoplan 15 mg monthly, pegcetacoplan 15 mg every other month, sham monthly, or sham every other month.",
-    regions        = "(not reported in Crass 2025)",
-    notes          = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses, leaving 1501. Median baseline lesion area 8 mm^2 (range 2-18) in study eyes. Follow-up: 12 months of treatment plus 6 months off-treatment in FILLY, 24 months of treatment in OAKS and DERBY. Covariates screened by the authors but NOT retained in the final model: low-luminance deficit (removed on initial lesion area, Table S2 step 2, dOFV 1.339; and on time slope, step 5, dOFV 4.663) and, in prespecified post hoc analyses on the final PK/PD model, concomitant anti-vascular endothelial growth factor medication (used by 8% of study eyes and 16% of fellow eyes) and anti-polyethylene-glycol antidrug antibodies (prevalence 67% for the PEG moiety and 5% for the peptide moiety) -- neither was predicted to have a clinically meaningful impact (paper Figures 5 and 6)."
+    disease_state = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 82% pseudodrusen, 45% with more than 20 intermediate or large drusen groups.",
+    dose_range = "n/a for this model -- the estimation dataset for the disease-progression model comprised only sham-treated study eyes and untreated fellow eyes (498 of the 1501 patients received sham; the remaining patients contributed fellow-eye records only). The parent trials randomised patients 2:2:1:1 to intravitreal pegcetacoplan 15 mg monthly, pegcetacoplan 15 mg every other month, sham monthly, or sham every other month.",
+    regions = "(not reported in Crass 2025)",
+    notes = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses, leaving 1501. Median baseline lesion area 8 mm^2 (range 2-18) in study eyes. Follow-up: 12 months of treatment plus 6 months off-treatment in FILLY, 24 months of treatment in OAKS and DERBY. Covariates screened by the authors but NOT retained in the final model: low-luminance deficit (removed on initial lesion area, Table S2 step 2, dOFV 1.339; and on time slope, step 5, dOFV 4.663) and, in prespecified post hoc analyses on the final PK/PD model, concomitant anti-vascular endothelial growth factor medication (used by 8% of study eyes and 16% of fellow eyes) and anti-polyethylene-glycol antidrug antibodies (prevalence 67% for the PEG moiety and 5% for the peptide moiety) -- neither was predicted to have a clinically meaningful impact (paper Figures 5 and 6)."
   )
 
   ini({

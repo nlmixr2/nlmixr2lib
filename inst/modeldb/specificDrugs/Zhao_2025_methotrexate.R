@@ -24,7 +24,7 @@ Zhao_2025_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Zhao_2025_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Zhao 2025 Results 3.2 ("A
@@ -38,17 +38,17 @@ Zhao_2025_methotrexate <- function() {
   # (Methods 2.3 quantitative range 0.3-2,600 umol/L; Table 1 MTX
   # concentration median 1.2 umol/L, range 0.01-55.80 umol/L).
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "serum", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "BSA-normalized estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. Methods 2.2: 'eGFR was determined via the 2008",
         "Schwartz bedside formula for children and the 2021 CKD-EPI formula",
         "for adults', so the estimating equation differs by age stratum",
@@ -69,14 +69,14 @@ Zhao_2025_methotrexate <- function() {
         "children. Therefore, it was not included as a tested covariate.'",
         "Cystatin-C-based eGFR was likewise unavailable (Discussion)."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BW. Power-form effects on BOTH CL and Vc, each",
         "normalized to the cohort median, per Zhao 2025 Eqs. 5-6:",
         "'CL = ... x (BW/47)^0.39 x ...' and 'Vc = 72.04 x (BW/47)^0.31'.",
@@ -94,14 +94,14 @@ Zhao_2025_methotrexate <- function() {
         "this protocol (1.3 g/m^2), so a simulation must carry BSA for the",
         "dose amount even though only WT enters the model."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column TBIL. Power-form effect on CL normalized to the cohort",
         "median, per Zhao 2025 Eq. 5: 'CL = ... x (TBIL/15.3)^-0.05 x ...'.",
         "The 15.3 umol/L reference is the cohort median reported in Table 1",
@@ -118,14 +118,14 @@ Zhao_2025_methotrexate <- function() {
         "range 3.4-78.5 umol/L the multiplier spans only",
         "(3.4/15.3)^-0.05 = 1.08 to (78.5/15.3)^-0.05 = 0.92."
       ),
-      source_name        = "TBIL"
+      source_name = "TBIL"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column ALB. Power-form effect on CL normalized to the cohort",
         "median, per Zhao 2025 Eq. 5: 'CL = ... x (ALB/40.9)^-0.18'. The",
         "40.9 g/L reference is the cohort median reported in Table 1 (median",
@@ -144,14 +144,14 @@ Zhao_2025_methotrexate <- function() {
         "(Table 2 model 7, delta OFV -16.701, P < 0.01) and the weakest term",
         "on backward elimination (+16.701, P < 0.001)."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CONMED_BLEOMYCIN = list(
-      description        = "Concomitant bleomycin indicator (1 = co-medicated with bleomycin, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant bleomycin indicator (1 = co-medicated with bleomycin, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant bleomycin)",
-      notes              = paste(
+      notes = paste(
         "Source column BLM. Enters CL as an EXPONENTIAL term, not a power",
         "term, per Zhao 2025 Eq. 5: 'CL = ... x e^BLM x ...' with",
         "'BLM = 0.08 when combined with BLM, otherwise = 0'. Encoded here as",
@@ -172,7 +172,7 @@ Zhao_2025_methotrexate <- function() {
         "excretion of MTX, and the underlying mechanism of this finding",
         "requires further investigation.'"
       ),
-      source_name        = "BLM"
+      source_name = "BLM"
     )
   )
 
@@ -183,9 +183,9 @@ Zhao_2025_methotrexate <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Collected per Methods 2.2 (demographic information) and listed among",
         "the factors reported to influence MTX PK in the Introduction, but not",
         "retained. Table 1 median 14.00 years (range 3.00-48.00); Results 3.1",
@@ -194,9 +194,9 @@ Zhao_2025_methotrexate <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected per Methods 2.2 but not retained. Table 1 reports",
         "'Sex (Male/Female) 357/148'; Results 3.1 states '505 patients (357",
         "females and 148 males)'. The two statements disagree on which count",
@@ -206,9 +206,9 @@ Zhao_2025_methotrexate <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Collected per Methods 2.2 but not retained. Table 1 median 155.00 cm",
         "(range 103.00-194.00). Height is nonetheless an input to the 2008",
         "bedside Schwartz equation used to derive the retained CRCL covariate",
@@ -217,18 +217,18 @@ Zhao_2025_methotrexate <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Collected per Methods 2.2 but not retained. Table 1 median 19.19",
         "kg/m^2 (range 11.14-36.53)."
       )
     ),
     BSA = list(
       description = "Body surface area (Mosteller equation)",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Significant on CL (delta OFV -116.073, P < 0.01) but deliberately",
         "superseded by body weight because the two are collinear and BW won on",
         "-2LL, AIC and BIC (Results 3.2). Methods 2.2: 'BSA was calculated",
@@ -240,9 +240,9 @@ Zhao_2025_methotrexate <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and superseded by eGFR. Results 3.2: 'Compared to SCR",
         "(delta OFV = -61.22, P < 0.01), eGFR (delta OFV = -122.058,",
         "P < 0.01) was a more significant predictor of MTX CL'. Table 1 median",
@@ -251,9 +251,9 @@ Zhao_2025_methotrexate <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Tested and not retained. Discussion: 'Consistent with previous",
         "studies ... we did not observe the effect of ALT, AST and ALP on PPK",
         "parameters of MTX.' Table 1 median 26.00 U/L (range 8.00-663.00)."
@@ -261,36 +261,36 @@ Zhao_2025_methotrexate <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Tested and not retained (same Discussion sentence as AST). Table 1",
         "median 17.00 U/L (range 3.00-530.00)."
       )
     ),
     ALP = list(
       description = "Alkaline phosphatase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Tested and not retained (same Discussion sentence as AST). Table 1",
         "median 110.00 U/L (range 20.00-593.00)."
       )
     ),
     LDH = list(
       description = "Lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Collected per Methods 2.2 (biological parameters) but not retained.",
         "Table 1 median 212.00 U/L (range 80.00-1,059.00)."
       )
     ),
     CONMED_NSAID = list(
       description = "Concomitant non-steroidal anti-inflammatory drug indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested and not retained. Discussion: 'non-steroidal",
         "anti-inflammatory drugs may reduce MTX CL by inhibiting renal",
         "prostaglandin synthesis, competing with protein binding, and",
@@ -304,18 +304,18 @@ Zhao_2025_methotrexate <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 505L,
-    n_studies      = 1L,
-    age_range      = "3 to 48 years",
-    age_median     = "14 years (26.7% adults, 73.3% children)",
-    weight_range   = "14 to 121 kg",
-    weight_median  = "47 kg",
-    height_range   = "103 to 194 cm (median 155)",
-    bmi_range      = "11.14 to 36.53 kg/m^2 (median 19.19)",
-    bsa_range      = "0.63 to 2.47 m^2 (median 1.42; Mosteller equation)",
+    species = "human",
+    n_subjects = 505L,
+    n_studies = 1L,
+    age_range = "3 to 48 years",
+    age_median = "14 years (26.7% adults, 73.3% children)",
+    weight_range = "14 to 121 kg",
+    weight_median = "47 kg",
+    height_range = "103 to 194 cm (median 155)",
+    bmi_range = "11.14 to 36.53 kg/m^2 (median 19.19)",
+    bsa_range = "0.63 to 2.47 m^2 (median 1.42; Mosteller equation)",
     sex_female_pct = 100 * 148 / 505,
-    disease_state  = paste(
+    disease_state = paste(
       "Intracranial germ cell tumors (iGCTs), a rare CNS neoplasm of",
       "adolescents peaking at ages 12-16 and accounting for about 3%-5% of",
       "paediatric primary CNS tumours. Treatment regimen (Methods 2.1): MTX",
@@ -337,7 +337,7 @@ Zhao_2025_methotrexate <- function() {
       "median 17 U/L (range 3-530); ALP median 110 U/L (range 20-593); total",
       "protein median 62.80 g/L (range 46.90-87.80)."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Proportions of the concomitant-medication records in Table 1:",
       "non-steroidal anti-inflammatory drugs 1,580 (98.50%), vancomycin",
       "1,436 (89.53%), bleomycin 941 (58.67%), dexamethasone 751 (46.82%),",
@@ -350,7 +350,7 @@ Zhao_2025_methotrexate <- function() {
       "not retained; they have no canonical covariate column and so are not",
       "listed in covariatesDataExcluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "High-dose intravenous methotrexate >= 0.5 g/m^2 (inclusion criterion,",
       "Methods 2.1), standard dose 1.3 g/m^2: one third of the total dose as",
       "a bolus intravenous infusion over 1 h, the remaining two thirds infused",
@@ -358,8 +358,8 @@ Zhao_2025_methotrexate <- function() {
       "discontinuation, 5 doses every 6 h, adjusted on serum MTX",
       "concentration."
     ),
-    regions        = "China (Beijing Puren Hospital, Beijing).",
-    notes          = paste(
+    regions = "China (Beijing Puren Hospital, Beijing).",
+    notes = paste(
       "Retrospective therapeutic-drug-monitoring data from patients",
       "hospitalized between February 2015 and July 2018; 5,470 serum MTX",
       "concentrations from 505 patients (median 1.2 umol/L, range",

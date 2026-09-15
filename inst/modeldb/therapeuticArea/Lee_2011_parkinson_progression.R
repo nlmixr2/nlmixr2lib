@@ -49,36 +49,36 @@ Lee_2011_parkinson_progression <- function() {
   paper_specific_etas <- c("etaslope", "etasymeff")
 
   units <- list(
-    time          = "month (4 weeks; see description and vignette Errata for the source-paper week-vs-month unit discrepancy)",
-    dosing        = "(none; the drug effect is encoded via the ON_TREATMENT covariate, not via drug input)",
+    time = "month (4 weeks; see description and vignette Errata for the source-paper week-vs-month unit discrepancy)",
+    dosing = "(none; the drug effect is encoded via the ON_TREATMENT covariate, not via drug input)",
     concentration = "(change from baseline in total UPDRS score, unitless; observation d_updrs)"
   )
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Binary treatment-arm indicator. 0 = placebo arm; 1 = active drug arm. Time-fixed per subject in the source Lee 2011 parallel-group analyses (the indicator records the subject's randomization assignment, not a per-record drug-presence flag). In the source Lee 2011 paper this is the generic Trt indicator that toggles both the drug-effect-on-disease-progression slope (beta1) and the drug-effect-on-short-term-symptomatic-effect magnitude (gamma1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary treatment-arm indicator. 0 = placebo arm; 1 = active drug arm. Time-fixed per subject in the source Lee 2011 parallel-group analyses (the indicator records the subject's randomization assignment, not a per-record drug-presence flag). In the source Lee 2011 paper this is the generic Trt indicator that toggles both the drug-effect-on-disease-progression slope (beta1) and the drug-effect-on-short-term-symptomatic-effect magnitude (gamma1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm).",
-      notes              = "The default parameter values in this file's ini() are from the TEMPO study (rasagiline 1 or 2 mg/day pooled into a single active arm) Table II non-informative-prior Bayesian posterior means, so ON_TREATMENT = 1 in this file predicts the rasagiline-active disease trajectory. For levodopa-arm simulation, refer to the ELLDOPA Table II fit documented in the validation vignette's Errata / Assumptions and deviations section; for the TEMPO power-prior sensitivity (alpha_0 in {0.1, 0.5, 1.0}) refer to the same section.",
-      source_name        = "Trt"
+      notes = "The default parameter values in this file's ini() are from the TEMPO study (rasagiline 1 or 2 mg/day pooled into a single active arm) Table II non-informative-prior Bayesian posterior means, so ON_TREATMENT = 1 in this file predicts the rasagiline-active disease trajectory. For levodopa-arm simulation, refer to the ELLDOPA Table II fit documented in the validation vignette's Errata / Assumptions and deviations section; for the TEMPO power-prior sensitivity (alpha_0 in {0.1, 0.5, 1.0}) refer to the same section.",
+      source_name = "Trt"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "Mean age 64 years (TEMPO study; Lee 2011 Data section). Range not reported in Lee 2011.",
-    age_median     = "mean 64 years (TEMPO; Lee 2011 Data section)",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "Mean age 64 years (TEMPO study; Lee 2011 Data section). Range not reported in Lee 2011.",
+    age_median = "mean 64 years (TEMPO; Lee 2011 Data section)",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = "More than 90% Caucasian (Lee 2011 Data section). Exact percentages not reported.",
-    disease_state  = "Early Parkinson's disease (TEMPO study: TVP-1012 in Early Monotherapy for Parkinson's disease Outpatients trial; double-blinded, randomized, fixed-dose parallel group). The full source Lee 2011 paper additionally analyses the ELLDOPA study (carbidopa/levodopa in de novo PD outpatients); the ELLDOPA-specific parameter estimates are documented in the validation vignette but not in this file's default ini().",
-    dose_range     = "n/a (this model has no drug input; the drug effect is captured via the ON_TREATMENT covariate). In the underlying TEMPO trial the active arm was rasagiline 1 or 2 mg/day, pooled into a single 'active drug' arm in the Lee 2011 analysis because the two dose levels overlapped in disease-progression profile (Lee 2011 Data section). The companion ELLDOPA trial used carbidopa/levodopa 12.5/50, 25/100, or 50/200 mg three times daily.",
-    regions        = "(not reported in Lee 2011)",
-    notes          = "Exact subject counts, demographic breakdowns, and per-arm enrollment numbers are not reported in the Lee 2011 methodology paper (it does not retabulate the TEMPO or ELLDOPA baseline tables). Study durations: 26 weeks (= 6.5 months in the model's 4-week-month time axis) for TEMPO and 24 weeks (= 6 months) for ELLDOPA (Lee 2011 Data section). Both studies enrolled predominantly male patients (Lee 2011 Data section: 'more male patients were enrolled than female patients in both studies'); exact percentages are not given. The Lee 2011 analysis combined the two rasagiline dose levels (1 mg/day and 2 mg/day) into a single 'active drug' arm because the two doses overlapped in disease-progression time profile."
+    disease_state = "Early Parkinson's disease (TEMPO study: TVP-1012 in Early Monotherapy for Parkinson's disease Outpatients trial; double-blinded, randomized, fixed-dose parallel group). The full source Lee 2011 paper additionally analyses the ELLDOPA study (carbidopa/levodopa in de novo PD outpatients); the ELLDOPA-specific parameter estimates are documented in the validation vignette but not in this file's default ini().",
+    dose_range = "n/a (this model has no drug input; the drug effect is captured via the ON_TREATMENT covariate). In the underlying TEMPO trial the active arm was rasagiline 1 or 2 mg/day, pooled into a single 'active drug' arm in the Lee 2011 analysis because the two dose levels overlapped in disease-progression profile (Lee 2011 Data section). The companion ELLDOPA trial used carbidopa/levodopa 12.5/50, 25/100, or 50/200 mg three times daily.",
+    regions = "(not reported in Lee 2011)",
+    notes = "Exact subject counts, demographic breakdowns, and per-arm enrollment numbers are not reported in the Lee 2011 methodology paper (it does not retabulate the TEMPO or ELLDOPA baseline tables). Study durations: 26 weeks (= 6.5 months in the model's 4-week-month time axis) for TEMPO and 24 weeks (= 6 months) for ELLDOPA (Lee 2011 Data section). Both studies enrolled predominantly male patients (Lee 2011 Data section: 'more male patients were enrolled than female patients in both studies'); exact percentages are not given. The Lee 2011 analysis combined the two rasagiline dose levels (1 mg/day and 2 mg/day) into a single 'active drug' arm because the two doses overlapped in disease-progression time profile."
   )
 
   ini({

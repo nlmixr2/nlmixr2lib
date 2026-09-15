@@ -1,75 +1,75 @@
 Nemoto_2017_ethanol <- function() {
   description <- "Bayesian population PK model for orally ingested ethanol (alcohol) in 34 healthy Japanese adults (Nemoto 2017). One-compartment model with first-order absorption and Michaelis-Menten elimination; covariates: sex, age, body weight, ALDH2 and ADH1B genotypes. Final model fit by a fully conditional MCMC Bayesian analysis with informative priors derived from Seng et al. 2014 (Chinese + Indian cohort)."
-  reference   <- "Nemoto A, Masaaki M, Yamaoka K. A Bayesian Approach for Population Pharmacokinetic Modeling of Alcohol in Japanese Individuals. Curr Ther Res Clin Exp. 2017;85:1-7. doi:10.1016/j.curtheres.2017.04.001"
-  vignette    <- "Nemoto_2017_ethanol"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Nemoto A, Masaaki M, Yamaoka K. A Bayesian Approach for Population Pharmacokinetic Modeling of Alcohol in Japanese Individuals. Curr Ther Res Clin Exp. 2017;85:1-7. doi:10.1016/j.curtheres.2017.04.001"
+  vignette <- "Nemoto_2017_ethanol"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ethanol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ethanol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ethanol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form scaling with reference 61.3 kg per Nemoto 2017 Table II (structural model row for the final model).",
-      source_name        = "WT"
+      notes = "Power-form scaling with reference 61.3 kg per Nemoto 2017 Table II (structural model row for the final model).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form scaling with reference 29.4 y (the median age of the analysis cohort) per Nemoto 2017 Results page 4 and Table II.",
-      source_name        = "age"
+      notes = "Power-form scaling with reference 29.4 y (the median age of the analysis cohort) per Nemoto 2017 Results page 4 and Table II.",
+      source_name = "age"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Additive shift on ka (-1.3 1/h) and on Vd/F (-12.2 L) when SEXF = 1, per Nemoto 2017 Table II final-model structural equations.",
-      source_name        = "FEMALE"
+      notes = "Additive shift on ka (-1.3 1/h) and on Vd/F (-12.2 L) when SEXF = 1, per Nemoto 2017 Table II final-model structural equations.",
+      source_name = "FEMALE"
     ),
     ALDH2_S2_CARRIER = list(
-      description        = "Carrier of at least one ALDH2*2 inactive variant allele (1 = ALDH2*1/*2 or *2/*2; 0 = ALDH2*1/*1 wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Carrier of at least one ALDH2*2 inactive variant allele (1 = ALDH2*1/*2 or *2/*2; 0 = ALDH2*1/*1 wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ALDH2*1/*1 wild-type)",
-      notes              = "Additive shift on Vd/F (-20.4 L) when ALDH2_S2_CARRIER = 1 per Nemoto 2017 Table II final model. The analysis cohort comprised 21/34 (62%) ALDH2*1/*1 wild-type and 13/34 (38%) ALDH2*1/*2 heterozygous subjects; no ALDH2*2/*2 homozygotes were enrolled, so only the heterozygote-vs-wild-type contrast is informed by data. Applying the indicator to ALDH2*2/*2 homozygotes is an untested extrapolation. Time-fixed per subject (germline genotype).",
-      source_name        = "ALDH2"
+      notes = "Additive shift on Vd/F (-20.4 L) when ALDH2_S2_CARRIER = 1 per Nemoto 2017 Table II final model. The analysis cohort comprised 21/34 (62%) ALDH2*1/*1 wild-type and 13/34 (38%) ALDH2*1/*2 heterozygous subjects; no ALDH2*2/*2 homozygotes were enrolled, so only the heterozygote-vs-wild-type contrast is informed by data. Applying the indicator to ALDH2*2/*2 homozygotes is an untested extrapolation. Time-fixed per subject (germline genotype).",
+      source_name = "ALDH2"
     ),
     ADH1B_S2_HOM = list(
-      description        = "Homozygous ADH1B*2/*2 indicator (1 = *2/*2; 0 = *2/*1 heterozygous)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Homozygous ADH1B*2/*2 indicator (1 = *2/*2; 0 = *2/*1 heterozygous)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADH1B*2/*1 heterozygous)",
-      notes              = "Switch between two Vmax values per Nemoto 2017 Table II structural model: Vmax = 7790 mg/h for *2/*1 carriers (reference) vs 7966 mg/h for *2/*2 homozygotes. The Nemoto 2017 Japanese cohort distribution across ADH1B genotypes is not tabulated in the paper; the structural model is silent on ADH1B*1/*1 wild-type subjects, who would conventionally be assigned ADH1B_S2_HOM = 0 (the heterozygous Vmax value) when applying the model. Time-fixed per subject (germline genotype).",
-      source_name        = "ADH1B"
+      notes = "Switch between two Vmax values per Nemoto 2017 Table II structural model: Vmax = 7790 mg/h for *2/*1 carriers (reference) vs 7966 mg/h for *2/*2 homozygotes. The Nemoto 2017 Japanese cohort distribution across ADH1B genotypes is not tabulated in the paper; the structural model is silent on ADH1B*1/*1 wild-type subjects, who would conventionally be assigned ADH1B_S2_HOM = 0 (the heterozygous Vmax value) when applying the model. Time-fixed per subject (germline genotype).",
+      source_name = "ADH1B"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 34L,
-    n_observations  = 157L,
-    n_studies       = 1L,
-    age_range       = "20-62 years",
-    age_median      = "29.4 years (centring value used in the model)",
-    weight_range    = "not reported; reference WT 61.3 kg used as centring value",
-    weight_median   = "61.3 kg (centring value used in the model)",
-    sex_female_pct  = 38.2,
-    race_ethnicity  = "Japanese (single-cohort)",
-    disease_state   = "Healthy adult volunteers",
-    dose_range      = "14 g ethanol (350 mL beer) ingested over 10 minutes in the fasted state",
-    regions         = "Japan (Osaka University cohort)",
-    notes           = "ALDH2 distribution: 21/34 (62%) *1/*1, 13/34 (38%) *1/*2, 0/34 (0%) *2/*2 (Nemoto 2017 Methods 'Dataset', page 2). ADH1B genotype distribution within the Nemoto 2017 cohort is not tabulated; the Vmax structural model uses two values, one per *2/*1 vs *2/*2 ADH1B genotype, with no value provided for ADH1B*1/*1. Blood alcohol concentration observations sampled at 5, 10, 20, 30, and 60 minutes post-dose (early-absorption and around the peak); no elimination-phase data available (Nemoto 2017 Table I and Methods). Posterior estimates from a fully conditional MCMC Bayesian analysis with priors derived from Seng et al. 2014 popPK of ethanol in Chinese + Indian subjects (Nemoto 2017 'Prior information' and Table II)."
+    species = "human",
+    n_subjects = 34L,
+    n_observations = 157L,
+    n_studies = 1L,
+    age_range = "20-62 years",
+    age_median = "29.4 years (centring value used in the model)",
+    weight_range = "not reported; reference WT 61.3 kg used as centring value",
+    weight_median = "61.3 kg (centring value used in the model)",
+    sex_female_pct = 38.2,
+    race_ethnicity = "Japanese (single-cohort)",
+    disease_state = "Healthy adult volunteers",
+    dose_range = "14 g ethanol (350 mL beer) ingested over 10 minutes in the fasted state",
+    regions = "Japan (Osaka University cohort)",
+    notes = "ALDH2 distribution: 21/34 (62%) *1/*1, 13/34 (38%) *1/*2, 0/34 (0%) *2/*2 (Nemoto 2017 Methods 'Dataset', page 2). ADH1B genotype distribution within the Nemoto 2017 cohort is not tabulated; the Vmax structural model uses two values, one per *2/*1 vs *2/*2 ADH1B genotype, with no value provided for ADH1B*1/*1. Blood alcohol concentration observations sampled at 5, 10, 20, 30, and 60 minutes post-dose (early-absorption and around the peak); no elimination-phase data available (Nemoto 2017 Table I and Methods). Posterior estimates from a fully conditional MCMC Bayesian analysis with priors derived from Seng et al. 2014 popPK of ethanol in Chinese + Indian subjects (Nemoto 2017 'Prior information' and Table II)."
   )
 
   ini({

@@ -8,57 +8,57 @@ Jeong_2022_torsemide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "torsemide", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "torsemide", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "torsemide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "torsemide", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "torsemide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SLCO1B1_HAP15_HET = list(
-      description        = "SLCO1B1 *15 haplotype heterozygote indicator (intermediate transporter, IT)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype heterozygote indicator (intermediate transporter, IT)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no *15 allele; ET phenotype: *1a/*1a, *1a/*1b, or *1b/*1b)",
-      notes              = "Time-fixed per subject. In Jeong 2022 (Table 1) the IT phenotype pools *1a/*15 (n = 4) and *1b/*15 (n = 19); together 23 of 112 subjects (20.5%) are IT carriers. Paired with SLCO1B1_HAP15_HOM to encode the three-level OATP1B1 phenotype (ET / IT / PT) with ET as the implicit reference (both indicators = 0).",
-      source_name        = "OATP1B1 phenotype"
+      notes = "Time-fixed per subject. In Jeong 2022 (Table 1) the IT phenotype pools *1a/*15 (n = 4) and *1b/*15 (n = 19); together 23 of 112 subjects (20.5%) are IT carriers. Paired with SLCO1B1_HAP15_HOM to encode the three-level OATP1B1 phenotype (ET / IT / PT) with ET as the implicit reference (both indicators = 0).",
+      source_name = "OATP1B1 phenotype"
     ),
     SLCO1B1_HAP15_HOM = list(
-      description        = "SLCO1B1 *15 haplotype homozygote indicator (poor transporter, PT)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SLCO1B1 *15 haplotype homozygote indicator (poor transporter, PT)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no *15 allele; ET phenotype: *1a/*1a, *1a/*1b, or *1b/*1b)",
-      notes              = "Time-fixed per subject. In Jeong 2022 (Table 1) only 3 of 112 subjects (2.68%) carry the *15/*15 PT genotype, so the dV/F coefficient for PT carries a wide 95% bootstrap CI (-1.00 to -0.10; Table 5). Paired with SLCO1B1_HAP15_HET.",
-      source_name        = "OATP1B1 phenotype"
+      notes = "Time-fixed per subject. In Jeong 2022 (Table 1) only 3 of 112 subjects (2.68%) carry the *15/*15 PT genotype, so the dV/F coefficient for PT carries a wide 95% bootstrap CI (-1.00 to -0.10; Table 5). Paired with SLCO1B1_HAP15_HET.",
+      source_name = "OATP1B1 phenotype"
     ),
     CYP2C9_EM = list(
-      description        = "CYP2C9 extensive-metabolizer phenotype indicator: 1 if *1/*1 (wild-type homozygote, EM), 0 if *1/*3 or *1/*13 (reduced-function-allele carrier, IM)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C9 extensive-metabolizer phenotype indicator: 1 if *1/*1 (wild-type homozygote, EM), 0 if *1/*3 or *1/*13 (reduced-function-allele carrier, IM)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C9 intermediate metabolizer; carrier of *3 or *13)",
-      notes              = "Time-fixed per subject. In Jeong 2022 (Table 1) the EM phenotype is *1/*1 (n = 97, 86.6%) and the IM phenotype pools *1/*3 (n = 12, 10.7%) and *1/*13 (n = 3, 2.7%); together 15 of 112 subjects (13.4%) are IM. No CYP2C9 poor metabolizers (*3/*3, *3/*13, or *13/*13) were observed in the cohort. The Jeong 2022 final model uses IM as the reference and a linear-deviation positive coefficient on EM for both CL/F and CL2/F (apparent inter-compartmental clearance), reflecting that EMs metabolize torsemide ~51% faster than IMs (Table 4).",
-      source_name        = "CYP2C9 phenotype"
+      notes = "Time-fixed per subject. In Jeong 2022 (Table 1) the EM phenotype is *1/*1 (n = 97, 86.6%) and the IM phenotype pools *1/*3 (n = 12, 10.7%) and *1/*13 (n = 3, 2.7%); together 15 of 112 subjects (13.4%) are IM. No CYP2C9 poor metabolizers (*3/*3, *3/*13, or *13/*13) were observed in the cohort. The Jeong 2022 final model uses IM as the reference and a linear-deviation positive coefficient on EM for both CL/F and CL2/F (apparent inter-compartmental clearance), reflecting that EMs metabolize torsemide ~51% faster than IMs (Table 4).",
+      source_name = "CYP2C9 phenotype"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 112L,
-    n_studies        = 4L,
-    n_observations   = 1344L,
-    age_range        = "19-29 years",
-    age_mean         = "23.38 years",
-    weight_range     = "44-88.4 kg",
-    weight_mean      = "67.84 kg",
-    height_range     = "159.9-188.1 cm",
-    height_mean      = "173.78 cm",
-    sex_female_pct   = 0,
-    race_ethnicity   = "Korean (single-ancestry East Asian cohort recruited at Chonnam National University, Gwangju).",
-    disease_state    = "Healthy adult males with no history of congenital or chronic disease; all clinical chemistry, hematology, and urine parameters within normal ranges prior to dosing.",
-    dose_range       = "Oral torsemide 5 mg (n = 28), 10 mg (n = 28), or 20 mg (n = 56) single dose; no dose-proportionality deviations across 5-20 mg.",
-    regions          = "Republic of Korea (Chonnam National University Bioequivalence and Bridging Study Centre, Gwangju).",
+    species = "human",
+    n_subjects = 112L,
+    n_studies = 4L,
+    n_observations = 1344L,
+    age_range = "19-29 years",
+    age_mean = "23.38 years",
+    weight_range = "44-88.4 kg",
+    weight_mean = "67.84 kg",
+    height_range = "159.9-188.1 cm",
+    height_mean = "173.78 cm",
+    sex_female_pct = 0,
+    race_ethnicity = "Korean (single-ancestry East Asian cohort recruited at Chonnam National University, Gwangju).",
+    disease_state = "Healthy adult males with no history of congenital or chronic disease; all clinical chemistry, hematology, and urine parameters within normal ranges prior to dosing.",
+    dose_range = "Oral torsemide 5 mg (n = 28), 10 mg (n = 28), or 20 mg (n = 56) single dose; no dose-proportionality deviations across 5-20 mg.",
+    regions = "Republic of Korea (Chonnam National University Bioequivalence and Bridging Study Centre, Gwangju).",
     oatp1b1_distribution = "ET (*1a/*1a, *1a/*1b, *1b/*1b) n = 86 (76.8%); IT (*1a/*15, *1b/*15) n = 23 (20.5%); PT (*15/*15) n = 3 (2.7%). Jeong 2022 Table 1.",
-    cyp2c9_distribution  = "EM (*1/*1) n = 97 (86.6%); IM (*1/*3) n = 12 (10.7%); IM (*1/*13) n = 3 (2.7%). No PM (*3/*3, *3/*13, *13/*13) observed. Jeong 2022 Table 1.",
-    notes            = "Pooled retrospective analysis of four open-label single-dose two-period crossover bioequivalence studies (2004, 2005, 2006, 2007) using a single reference torsemide tablet formulation. Only samples following the reference formulation were included. Serum torsemide measured by HPLC-UV (assay range 0.02-10 ug/mL). Blood sampled at 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, and 12 h post-dose (12 timepoints per subject including pre-dose). Biochemical covariates (albumin, total proteins, creatinine, CrCl, BMI, BSA, AST, ALT, ALP, GFR, BUN, cholesterol, total bilirubin) were tested but not retained in the final model because of the narrow physiological range in healthy young males. Jeong 2022 Methods Section 2.2 and Results Section 3.1."
+    cyp2c9_distribution = "EM (*1/*1) n = 97 (86.6%); IM (*1/*3) n = 12 (10.7%); IM (*1/*13) n = 3 (2.7%). No PM (*3/*3, *3/*13, *13/*13) observed. Jeong 2022 Table 1.",
+    notes = "Pooled retrospective analysis of four open-label single-dose two-period crossover bioequivalence studies (2004, 2005, 2006, 2007) using a single reference torsemide tablet formulation. Only samples following the reference formulation were included. Serum torsemide measured by HPLC-UV (assay range 0.02-10 ug/mL). Blood sampled at 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, and 12 h post-dose (12 timepoints per subject including pre-dose). Biochemical covariates (albumin, total proteins, creatinine, CrCl, BMI, BSA, AST, ALT, ALP, GFR, BUN, cholesterol, total bilirubin) were tested but not retained in the final model because of the narrow physiological range in healthy young males. Jeong 2022 Methods Section 2.2 and Results Section 3.1."
   )
 
   ini({

@@ -27,10 +27,10 @@ Langdon_2010_PF00821385_dog <- function() {
   )
   vignette <- "Langdon_2010_PF00821385"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    dosing_notes  = paste(
+    dosing_notes = paste(
       "Oral gavage. Doses in the source paper are mg/kg; convert to total",
       "mg by multiplying by individual body weight (cohort 16.3 - 16.4 kg).",
       sep = " "
@@ -41,21 +41,21 @@ Langdon_2010_PF00821385_dog <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "beagle dog (Pfizer laboratory colony, conscious freely-moving)",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    weight_range   = "16.3 - 16.4 kg",
-    weight_median  = "approximately 16.35 kg",
+    species = "beagle dog (Pfizer laboratory colony, conscious freely-moving)",
+    n_subjects = 18L,
+    n_studies = 1L,
+    weight_range = "16.3 - 16.4 kg",
+    weight_median = "approximately 16.35 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy laboratory beagle (no induced disease).",
-    dose_range     = paste(
+    disease_state = "Healthy laboratory beagle (no induced disease).",
+    dose_range = paste(
       "Oral gavage single doses 0.5, 1.5, 5, 15, 20, 40, 100, and 120 mg/kg.",
       "PD experiments (4 dogs): vehicle plus 1.5, 5, and 15 mg/kg per animal",
       "on separate occasions. Subsequent PK experiment in the same 4 PD",
@@ -66,8 +66,8 @@ Langdon_2010_PF00821385_dog <- function() {
       "concentrations contributed to the canine popPK fit.",
       sep = " "
     ),
-    regions        = "United Kingdom (Pfizer Sandwich laboratory colony).",
-    notes          = paste(
+    regions = "United Kingdom (Pfizer Sandwich laboratory colony).",
+    notes = paste(
       "Cardiovascular telemetry data (heart rate, blood pressure) acquired",
       "as 1-minute means via implanted Konigsberg pressure transducers and",
       "subcutaneous ECG electrodes; 1-minute means were preprocessed into",

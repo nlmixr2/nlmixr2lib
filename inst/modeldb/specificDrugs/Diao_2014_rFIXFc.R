@@ -8,38 +8,38 @@ Diao_2014_rFIXFc <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 73 kg (Diao 2014 Table 3, typical 73 kg patient). Body-weight power exponents were estimated (not fixed): 0.436 on CL and 0.396 on V1 (Diao 2014 Table 3 and Discussion p. 475). The paper found BW to be the only statistically significant covariate; its impact was limited (IIV on CL and V1 dropped by only 3.4 and 2.5 percentage points after including BW). BW does not enter Q2, V2, Q3, or V3 in the final model.",
-      source_name        = "BW"
+      notes = "Reference weight 73 kg (Diao 2014 Table 3, typical 73 kg patient). Body-weight power exponents were estimated (not fixed): 0.436 on CL and 0.396 on V1 (Diao 2014 Table 3 and Discussion p. 475). The paper found BW to be the only statistically significant covariate; its impact was limited (IIV on CL and V1 dropped by only 3.4 and 2.5 percentage points after including BW). BW does not enter Q2, V2, Q3, or V3 in the final model.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 135L,
-    n_studies      = 2L,
-    age_range      = "12.1-76.8 years",
-    age_median     = "31.3 years",
-    weight_range   = "45.0-186.7 kg",
-    weight_median  = "73.3 kg",
+    species = "human",
+    n_subjects = 135L,
+    n_studies = 2L,
+    age_range = "12.1-76.8 years",
+    age_median = "31.3 years",
+    weight_range = "45.0-186.7 kg",
+    weight_median = "73.3 kg",
     sex_female_pct = 0,
     race_ethnicity = c(White = 60.7, Asian = 22.2, Black = 8.9, Other = 7.4, AmericanIndianAlaskaNative = 0.74),
-    disease_state  = "Previously treated patients with severe to moderate haemophilia B (endogenous FIX <= 2 IU/dL); HIV-positive in 3.7%, HCV-positive in 38.5%; FIX genotype 55.5% missense, 17.8% nonsense, 13.3% frameshift, 3.0% splice mutation, 10.4% other; haematocrit median 0.44, albumin median 46 g/L, IgG1 median 7.19 mg/mL.",
-    dose_range     = "Phase 1/2a: 12.5, 25, 50, or 100 IU/kg rFIXFc single IV dose (~10-min infusion); phase 3 B-LONG: 50 or 100 IU/kg PK dose plus weekly (Arm 1, 20-100 IU/kg), individualised-interval (Arm 2, starting at 100 IU/kg), on-demand (Arm 3, 20-100 IU/kg), or perisurgical (Arm 4, 40-100 IU/kg) regimens.",
-    regions        = "Multinational phase 3 (B-LONG, NCT01027364) plus single phase 1/2a study (NCT00716716).",
+    disease_state = "Previously treated patients with severe to moderate haemophilia B (endogenous FIX <= 2 IU/dL); HIV-positive in 3.7%, HCV-positive in 38.5%; FIX genotype 55.5% missense, 17.8% nonsense, 13.3% frameshift, 3.0% splice mutation, 10.4% other; haematocrit median 0.44, albumin median 46 g/L, IgG1 median 7.19 mg/mL.",
+    dose_range = "Phase 1/2a: 12.5, 25, 50, or 100 IU/kg rFIXFc single IV dose (~10-min infusion); phase 3 B-LONG: 50 or 100 IU/kg PK dose plus weekly (Arm 1, 20-100 IU/kg), individualised-interval (Arm 2, starting at 100 IU/kg), on-demand (Arm 3, 20-100 IU/kg), or perisurgical (Arm 4, 40-100 IU/kg) regimens.",
+    regions = "Multinational phase 3 (B-LONG, NCT01027364) plus single phase 1/2a study (NCT00716716).",
     n_observations = "1,400 FIX activity records from 135 baseline pharmacokinetic profiles plus 21 repeat profiles at week 26 in the Arm 1 sequential PK subgroup (modelling dataset); 1,027 trough/peak records (validation dataset).",
     reference_subject = "73 kg patient. (WT / 73)^0.436 for CL and (WT / 73)^0.396 for V1 both equal 1.",
-    notes          = "Baseline characteristics in Diao 2014 Table 1; modelling/validation dataset summary in Table 2. Haemophilia B is X-linked and all subjects were male. Dependent variable was baseline- and residual-corrected FIX activity (Diao 2014 Eqs. 1-2), measured by one-stage aPTT clotting assay (LLOQ 1 IU/dL)."
+    notes = "Baseline characteristics in Diao 2014 Table 1; modelling/validation dataset summary in Table 2. Haemophilia B is X-linked and all subjects were male. Dependent variable was baseline- and residual-corrected FIX activity (Diao 2014 Eqs. 1-2), measured by one-stage aPTT clotting assay (LLOQ 1 IU/dL)."
   )
 
   ini({

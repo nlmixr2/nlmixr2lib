@@ -15,7 +15,8 @@ Chairat_2016_oseltamivir <- function() {
     "per 10 mL/min increase). Obesity itself was not a retained covariate in",
     "the formal model. Residual error is additive on log-transformed",
     "concentrations of OS and OC (encoded here as a log-normal residual on",
-    "Cc and Cc_oselcarb).")
+    "Cc and Cc_oselcarb)."
+  )
   reference <- "Chairat K, Jittamala P, Hanpithakpong W, Day NPJ, White NJ, Pukrittayakamee S, Tarning J. Population pharmacokinetics of oseltamivir and oseltamivir carboxylate in obese and non-obese volunteers. Br J Clin Pharmacol. 2016;81(6):1103-1112. doi:10.1111/bcp.12892"
   vignette <- "Chairat_2016_oseltamivir"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -31,37 +32,37 @@ Chairat_2016_oseltamivir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
-    metabolism       = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "not applicable", verified = FALSE),
+    depot = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    metabolism = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "not applicable", verified = FALSE),
     central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance computed by the Cockcroft-Gault formula with fat-free mass (FFM, Janmahasatian 2005) substituted for total body weight; NOT BSA-normalised. Chairat 2016 Methods Eq. 9 (FFM) and the CG variant used as CLCR(FFM).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance computed by the Cockcroft-Gault formula with fat-free mass (FFM, Janmahasatian 2005) substituted for total body weight; NOT BSA-normalised. Chairat 2016 Methods Eq. 9 (FFM) and the CG variant used as CLCR(FFM).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear covariate on apparent oseltamivir carboxylate clearance CL/FOC: CL/FOC = exp(lcl_oselcarb) * (1 + e_crcl_cl_oselcarb * (CRCL - 73)). The 0.00384 per mL/min coefficient is 3.84% per 10 mL/min, i.e. Chairat 2016 Table 1 covariate-effect row and Eq. 11. Centering 73 mL/min is the population median CLCR(FFM) used by the paper; the cohort range was 48.0-114 mL/min (Chairat 2016 Discussion paragraph 3).",
-      source_name        = "CLCR(FFM)"
+      notes = "Linear covariate on apparent oseltamivir carboxylate clearance CL/FOC: CL/FOC = exp(lcl_oselcarb) * (1 + e_crcl_cl_oselcarb * (CRCL - 73)). The 0.00384 per mL/min coefficient is 3.84% per 10 mL/min, i.e. Chairat 2016 Table 1 covariate-effect row and Eq. 11. Centering 73 mL/min is the population median CLCR(FFM) used by the paper; the cohort range was 48.0-114 mL/min (Chairat 2016 Discussion paragraph 3).",
+      source_name = "CLCR(FFM)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "18-60 years",
-    weight_range   = "Non-obese median BMI 22.2 kg/m^2 (range 18.8-24.2); obese median BMI 33.8 kg/m^2 (range 30.8-43.2); pooled BMI range 18.8-43.2 kg/m^2.",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "18-60 years",
+    weight_range = "Non-obese median BMI 22.2 kg/m^2 (range 18.8-24.2); obese median BMI 33.8 kg/m^2 (range 30.8-43.2); pooled BMI range 18.8-43.2 kg/m^2.",
     sex_female_pct = NA_real_,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult Thai volunteers; 12 obese (BMI >= 30 kg/m^2) and 12 non-obese (BMI < 30 kg/m^2). Volunteers eligible if healthy male or non-pregnant female aged 18-60 years.",
-    dose_range     = "Single oral 75 mg and 150 mg oseltamivir (fasted) in a randomised cross-over design with a 7-day washout between visits.",
-    regions        = "Thailand (Hospital for Tropical Diseases, Faculty of Tropical Medicine, Mahidol University, Bangkok).",
+    disease_state = "Healthy adult Thai volunteers; 12 obese (BMI >= 30 kg/m^2) and 12 non-obese (BMI < 30 kg/m^2). Volunteers eligible if healthy male or non-pregnant female aged 18-60 years.",
+    dose_range = "Single oral 75 mg and 150 mg oseltamivir (fasted) in a randomised cross-over design with a 7-day washout between visits.",
+    regions = "Thailand (Hospital for Tropical Diseases, Faculty of Tropical Medicine, Mahidol University, Bangkok).",
     n_observations = "624 venous plasma samples total; 103 (16.5%) oseltamivir concentrations and 15 (2.40%) oseltamivir carboxylate concentrations were below the LLOQ (1 ng/mL OS, 10 ng/mL OC). Beal M3 method was evaluated but the final model used omitted-LLOQ data.",
-    sampling       = "Pre-dose and 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 10, 12 and 24 h post-dose.",
-    notes          = "Open-label, crossover, randomised PK study. ClinicalTrials.gov NCT01049763. Full clinical and NCA details in Jittamala et al. 2014 (Antimicrob Agents Chemother 58:1615-1621). Demographic baselines from Chairat 2016 Methods and Results."
+    sampling = "Pre-dose and 0.5, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 10, 12 and 24 h post-dose.",
+    notes = "Open-label, crossover, randomised PK study. ClinicalTrials.gov NCT01049763. Full clinical and NCA details in Jittamala et al. 2014 (Antimicrob Agents Chemother 58:1615-1621). Demographic baselines from Chairat 2016 Methods and Results."
   )
 
   ini({

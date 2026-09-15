@@ -1,8 +1,8 @@
 Duffull_2025_mab_tmdd_simplified <- function() {
   description <- "Two-compartment TMDD model for an unnamed monoclonal antibody (mAb) simplified under the target-saturated limit, and the model the Duffull 2025 tutorial adopted to resolve the instability of its full counterpart (Equations 2, 4 and 5; Table 2 'Simplified model' column). Because the free-antibody amount in the central compartment exceeds Km*Vc by roughly two orders of magnitude over the 24 h observation window, the binding saturation fraction LC/(LC + Km*Vc) is set to 1: the binding constant Km drops out of the model entirely and target-mediated removal of antibody becomes kint*Rtot, independent of antibody amount. The total target still has zero-order synthesis and first-order internalisation, and kdeg survives only through the drug-free initial condition ksyn*Vc/kdeg. Cc is the free antibody concentration and Ctotal_target is the total target concentration, both nmol/L. All parameters were estimated with relative standard errors below 30% under the reduced clinical sampling design that made the full model unidentifiable. IMPORTANT: this approximation is valid only while the target remains saturated -- it makes target-mediated antibody removal a constant-rate sink, so the free-antibody state can be driven negative once antibody washes out. Restrict simulations to the 24 h window the source validated. The full model is packaged as Duffull_2025_mab_tmdd_qss."
-  reference   <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
-  vignette    <- "Duffull_2025_tmdd_model_instability"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  reference <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
+  vignette <- "Duffull_2025_tmdd_model_instability"
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: analyte and units are SOURCE-CONFIRMED from the Notes
   # paragraph under Duffull 2025 Equations 1-3 and from Figure 3, whose
@@ -10,9 +10,24 @@ Duffull_2025_mab_tmdd_simplified <- function() {
   # names the sampling matrix. verified = FALSE therefore records the
   # unverified specimen, not an unverified analyte.
   compartmentData <- list(
-    central      = list(analyte = "monoclonal antibody (unnamed), free",       units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "monoclonal antibody (unnamed), free",       units = "nmol", specimen = "plasma", verified = FALSE),
-    total_target = list(analyte = "target receptor, free plus antibody-bound", units = "nmol", specimen = "plasma", verified = FALSE)
+    central = list(
+      analyte = "monoclonal antibody (unnamed), free",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1 = list(
+      analyte = "monoclonal antibody (unnamed), free",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    total_target = list(
+      analyte = "target receptor, free plus antibody-bound",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
@@ -20,14 +35,14 @@ Duffull_2025_mab_tmdd_simplified <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "human (implied, not stated: the source frames the case example as a monoclonal antibody with sparse sampling 'common in mAb clinical trials')",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    disease_state  = "Not reported. The source is a pharmacometric tutorial on resolving model instability; neither the antibody nor its target is named, and no demographics are given.",
-    dose_range     = "Single intravenous bolus into the central compartment (Duffull 2025 Section 2.1.5). The dose amount is not stated in the text; Figure 3 shows the free-drug amount in the central compartment starting at 10000 nmol, so the simulated dose is 10 umol.",
-    samples        = "This simplified model was estimated on the REDUCED sampling design: 400 free drug and 480 total target concentrations from 80 subjects (Duffull 2025 Section 2.1.1). The reduced design is the one under which the full model's Km was not deterministically identifiable.",
-    designs        = "Reduced clinical design: 0, 0.5, 3, 5, 12, 24 h post-dose (6 times) (Duffull 2025 Section 2.1.3).",
-    notes          = "The tutorial's datasets are SIMULATED, not observed: the reported observation counts are exactly the sampling grids times 80 subjects (80 x 6 = 480 total target, 80 x 5 = 400 free drug). Unlike the full model's nominal column, the values in Table 2's 'Simplified model' column ARE estimates: Section 2.1.5 reports that this model achieved 'full convergence, with both the estimation minimization (S) and covariance (C) steps completed' and that 'all parameters were estimated precisely with RSE for all parameters being well below 30%'."
+    species = "human (implied, not stated: the source frames the case example as a monoclonal antibody with sparse sampling 'common in mAb clinical trials')",
+    n_subjects = 80L,
+    n_studies = 1L,
+    disease_state = "Not reported. The source is a pharmacometric tutorial on resolving model instability; neither the antibody nor its target is named, and no demographics are given.",
+    dose_range = "Single intravenous bolus into the central compartment (Duffull 2025 Section 2.1.5). The dose amount is not stated in the text; Figure 3 shows the free-drug amount in the central compartment starting at 10000 nmol, so the simulated dose is 10 umol.",
+    samples = "This simplified model was estimated on the REDUCED sampling design: 400 free drug and 480 total target concentrations from 80 subjects (Duffull 2025 Section 2.1.1). The reduced design is the one under which the full model's Km was not deterministically identifiable.",
+    designs = "Reduced clinical design: 0, 0.5, 3, 5, 12, 24 h post-dose (6 times) (Duffull 2025 Section 2.1.3).",
+    notes = "The tutorial's datasets are SIMULATED, not observed: the reported observation counts are exactly the sampling grids times 80 subjects (80 x 6 = 480 total target, 80 x 5 = 400 free drug). Unlike the full model's nominal column, the values in Table 2's 'Simplified model' column ARE estimates: Section 2.1.5 reports that this model achieved 'full convergence, with both the estimation minimization (S) and covariance (C) steps completed' and that 'all parameters were estimated precisely with RSE for all parameters being well below 30%'."
   )
 
   ini({

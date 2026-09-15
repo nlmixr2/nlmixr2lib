@@ -34,18 +34,18 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
   )
   vignette <- "Chen_2021_lorlatinib_exposure_response"
   units <- list(
-    time          = "n/a (static landmark safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
-    dosing        = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
+    time = "n/a (static landmark safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
+    dosing = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
     concentration = "prob_hypertriglyceridemia (probability of grade >= 3 hypertriglyceridemia, 0-1; also logit_hypertriglyceridemia)"
   )
 
   covariateData <- list(
     TRIG = list(
-      description        = "Baseline serum triglyceride concentration (BTG).",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum triglyceride concentration (BTG).",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT centred: Chen 2021 fits the raw covariate value, so the",
         "intercept -5.113 is the logit at TRIG = 0 mg/dL, TE = 0 days and",
         "a non-Asian patient rather than at any clinically meaningful",
@@ -60,14 +60,14 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
         "of TCHOL in the companion hypercholesterolemia model, and it is",
         "the strongest predictor in this model (P < 0.0001)."
       ),
-      source_name        = "BTG (baseline triglycerides)"
+      source_name = "BTG (baseline triglycerides)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (ASN1); 1 = Asian, 0 = other.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (ASN1); 1 = Asian, 0 = other.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; Chen 2021 Table 3 abbreviation list defines the covariate simply as 'ASN1, Asian', so the complement is the pooled non-Asian group)",
-      notes              = paste(
+      notes = paste(
         "The only demographic covariate retained in any of the five Chen",
         "2021 models. Enters as a plain log-odds shift, odds ratio 2.749",
         "for Asian versus non-Asian. Safety analysis set (N = 328) race:",
@@ -82,14 +82,14 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
         "and did NOT retain it: the effect here is on baseline lipid",
         "susceptibility, not on drug exposure."
       ),
-      source_name        = "ASN1 (Asian)"
+      source_name = "ASN1 (Asian)"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time on study from the first lorlatinib dose up to the event (TE).",
-      units              = "h",
-      type               = "continuous",
+      description = "Time on study from the first lorlatinib dose up to the event (TE).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Canonical units are hours, so model() divides by 24 to recover",
         "the DAYS in which Chen 2021 estimates the coefficient (0.003 per",
         "day, odds ratio 1.003 per day) -- exactly the convention the",
@@ -100,16 +100,16 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
         "time-varying clock, and the model is a landmark regression rather",
         "than a time-to-event model."
       ),
-      source_name        = "TE (time from first dose up to the event, days)"
+      source_name = "TE (time from first dose up to the event, days)"
     )
   )
 
   covariatesDataExcluded <- list(
     CTROUGH = list(
       description = "Individual lorlatinib trough plasma concentration at steady state.",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ng/mL",
+      type = "continuous",
+      notes = paste(
         "One of the nine lorlatinib exposure metrics screened for this",
         "endpoint (Chen 2021 Methods, 'Selection of lorlatinib exposure",
         "metrics'). Chen 2021 Results states plainly: 'For the safety end",
@@ -123,9 +123,9 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
     ),
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened across all four safety endpoints but retained only in",
         "the companion weight-gain model. Safety analysis set median",
         "66.79 kg, range 31.80-155.50 (Chen 2021 Table 1)."
@@ -134,20 +134,20 @@ Chen_2021_lorlatinib_hypertriglyceridemia <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 298L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 298L,
+    n_studies = 1L,
     n_observations = "298 evaluable binary grade->=-3-hypertriglyceridemia records (one per patient) out of the 328-patient safety analysis set; the 30-patient shortfall is the Chen 2021 Table 3 'n/N' column (298/328) and matches exactly the 30 patients with a missing baseline triglyceride value in Table 2",
-    age_range      = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
-    weight_range   = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
+    age_range = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
+    weight_range = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
     sex_female_pct = 58.0,
     race_ethnicity = c(White = 51.0, Asian = 34.0, Other = 4.0, Black = 2.0, Missing = 9.0),
-    disease_state  = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
-    dose_range     = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
-    regions        = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
+    disease_state = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
+    dose_range = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
+    regions = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
     baseline_triglycerides = "median 107.50 mg/dL, range 28.00-451.40, mean 123.98 (SD 66.59), 30 missing (Chen 2021 Table 2, safety population)",
     concomitant_medication = "concomitant statin therapy 266/328 (81%), steroid therapy 139 (42%), narcotics 164 (50%) (Chen 2021 Table 1)",
-    notes          = paste0(
+    notes = paste0(
       "Hypertriglyceridemia was the second most common ",
       "treatment-related adverse event in the phase II portion (60% ",
       "any grade, 16% grade 3-4) and so cleared Chen 2021's 10% ",

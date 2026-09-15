@@ -18,24 +18,24 @@ Plan_2012_pain <- function() {
 
   covariateData <- list(
     CONMED_PARA = list(
-      description        = "Concomitant paracetamol (acetaminophen) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paracetamol (acetaminophen) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant paracetamol)",
-      notes              = "Source column PCM. Acts as additive shift on logit(lambda/10): PHL = logit(TVLAM) + e_conmed_para * CONMED_PARA. New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
-      source_name        = "PCM"
+      notes = "Source column PCM. Acts as additive shift on logit(lambda/10): PHL = logit(TVLAM) + e_conmed_para * CONMED_PARA. New canonical entry registered in inst/references/covariate-columns.md alongside this model.",
+      source_name = "PCM"
     )
   )
 
   population <- list(
-    n_subjects     = 231,
-    n_studies      = 3,
-    age_range      = "(not extracted; Plan 2012 publication not on disk for cross-check)",
-    weight_range   = "(not extracted)",
+    n_subjects = 231,
+    n_studies = 3,
+    age_range = "(not extracted; Plan 2012 publication not on disk for cross-check)",
+    weight_range = "(not extracted)",
     sex_female_pct = "(not extracted)",
-    disease_state  = "Neuropathic pain (placebo arm)",
-    dose_range     = "(placebo arm only; no drug exposure)",
-    notes          = "Pooled placebo arm of three Phase III neuropathic-pain trials. Daily 11-point Likert pain measurements over 18 weeks; 22,492 measurements total. Demographic detail (age, weight, sex split) not derivable from the DDMORE bundle; the linked Plan 2012 publication (doi:10.1038/clpt.2011.301) was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time. n_subjects (231) is taken from the DDMORE RDF model-has-description-long field."
+    disease_state = "Neuropathic pain (placebo arm)",
+    dose_range = "(placebo arm only; no drug exposure)",
+    notes = "Pooled placebo arm of three Phase III neuropathic-pain trials. Daily 11-point Likert pain measurements over 18 weeks; 22,492 measurements total. Demographic detail (age, weight, sex split) not derivable from the DDMORE bundle; the linked Plan 2012 publication (doi:10.1038/clpt.2011.301) was not on disk in /home/bill/github/mab_human_consensus/literature for cross-check at extraction time. n_subjects (231) is taken from the DDMORE RDF model-has-description-long field."
   )
 
   ini({

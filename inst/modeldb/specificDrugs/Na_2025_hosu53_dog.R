@@ -35,10 +35,10 @@ Na_2025_hosu53_dog <- function() {
   # molecular weight, so mg/kg doses cannot be converted here; see the
   # vignette "Assumptions and deviations" section.
   compartmentData <- list(
-    depot       = list(analyte = "HOSU-53", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "HOSU-53", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "HOSU-53", units = "nmol", specimen = "plasma", verified = TRUE),
-    dho         = list(analyte = "dihydroorotate", units = "umol/L", specimen = "plasma", verified = TRUE)
+    dho = list(analyte = "dihydroorotate", units = "umol/L", specimen = "plasma", verified = TRUE)
   )
 
   # Na 2025 Section 2.7 screened dose level, sex, salt form, and vehicle
@@ -49,49 +49,49 @@ Na_2025_hosu53_dog <- function() {
   # model references none of them.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator. Screened on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator. Screened on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Both sexes contributed to the dog dataset. Section 3.3 and the Discussion report that sex was not a significant covariate on any PK or PD parameter."
+      notes = "Both sexes contributed to the dog dataset. Section 3.3 and the Discussion report that sex was not a significant covariate on any PK or PD parameter."
     ),
     DOSE_HOSU53_MGKG = list(
-      description        = "Administered HOSU-53 dose level in mg/kg. Screened as a categorical covariate on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered HOSU-53 dose level in mg/kg. Screened as a categorical covariate on the PK and PD parameters (Na 2025 Section 2.7); not retained.",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Included dog dose levels were 0.2, 0.3, 0.6, and 3 mg/kg. Na 2025 Section 3.2 reports dose-proportional exposure in dogs over 0.3-3 mg/kg, consistent with the linear-elimination structure retained here."
+      notes = "Included dog dose levels were 0.2, 0.3, 0.6, and 3 mg/kg. Na 2025 Section 3.2 reports dose-proportional exposure in dogs over 0.3-3 mg/kg, consistent with the linear-elimination structure retained here."
     ),
     FORM_HOSU53_SALT = list(
-      description        = "HOSU-53 salt form administered (sodium salt vs lysine salt). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HOSU-53 salt form administered (sodium salt vs lysine salt). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sodium salt)",
-      notes              = "Na 2025 Section 2.1 reports bridging PK studies between the sodium and lysine salts that 'demonstrated near-identical results'; the covariate screen confirmed no significant effect."
+      notes = "Na 2025 Section 2.1 reports bridging PK studies between the sodium and lysine salts that 'demonstrated near-identical results'; the covariate screen confirmed no significant effect."
     ),
     FORM_HOSU53_VEHICLE = list(
-      description        = "Dosing vehicle used for the oral formulation (40% HPBCD, deionized water, or 50 mM Tris buffer). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Dosing vehicle used for the oral formulation (40% HPBCD, deionized water, or 50 mM Tris buffer). Screened on the PK parameters (Na 2025 Section 2.7); not retained.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "40% hydroxypropyl-beta-cyclodextrin (HPBCD)",
-      notes              = "Vehicle was varied across the dog studies (Na 2025 Section 2.4) and included in the covariate screen because of its expected effect on solubility and absorption; not significant."
+      notes = "Vehicle was varied across the dog studies (Na 2025 Section 2.4) and included in the covariate screen because of its expected effect on solubility and absorption; not significant."
     )
   )
 
   population <- list(
-    species          = "beagle dog",
-    n_subjects       = 39L,
-    n_studies        = 4L,
-    n_pk_samples     = 507L,
-    n_pd_samples     = 431L,
-    sex              = "male and female",
-    disease_state    = "healthy beagle dogs (non-GLP PK/PD and GLP toxicokinetic/toxicodynamic studies)",
-    dose_range       = "0.2, 0.3, 0.6, and 3 mg/kg PO (0.2/0.3/0.6/3 mg/kg = 8/12/10/9 dogs); an initial single-dose study used 10 mg/kg PO and 3 mg/kg IV. All PO dosing was by gavage and all IV dosing was by bolus.",
-    excluded_arms    = "The 1 mg/kg PO QD arm of the 28-day GLP study was excluded from the modelling dataset because of adverse findings (decreased food consumption, lower body weights, intestinal mucosal epithelial cell loss) (Na 2025 Section 3.1).",
-    blq_handling     = "No HOSU-53 PK samples were below the limit of quantification (excluding pre-dose). 92 of 431 DHO PD samples (21.3%), including pre-dose samples, were below the limit of quantification and were excluded from the analysis (Na 2025 Section 3.1).",
-    assay_range      = "UHPLC-MS/MS calibration range 5.0-5000 ng/mL for HOSU-53 and 10.0-30,000 ng/mL for DHO in dog plasma (Na 2025 Supplementary Materials).",
-    noael            = "0.6 mg/kg PO QD in the 28-day GLP repeat-dose study; the highest non-severely toxic dose (HNSTD) was 0.6 mg/kg/day (Na 2025 Sections 3.2 and 4).",
-    notes            = "Study-level detail is in Na 2025 Supplementary Table S1. Modelling was performed with the SAEM algorithm in Monolix 2024R1; parameter precision was assessed by nonparametric bootstrap."
+    species = "beagle dog",
+    n_subjects = 39L,
+    n_studies = 4L,
+    n_pk_samples = 507L,
+    n_pd_samples = 431L,
+    sex = "male and female",
+    disease_state = "healthy beagle dogs (non-GLP PK/PD and GLP toxicokinetic/toxicodynamic studies)",
+    dose_range = "0.2, 0.3, 0.6, and 3 mg/kg PO (0.2/0.3/0.6/3 mg/kg = 8/12/10/9 dogs); an initial single-dose study used 10 mg/kg PO and 3 mg/kg IV. All PO dosing was by gavage and all IV dosing was by bolus.",
+    excluded_arms = "The 1 mg/kg PO QD arm of the 28-day GLP study was excluded from the modelling dataset because of adverse findings (decreased food consumption, lower body weights, intestinal mucosal epithelial cell loss) (Na 2025 Section 3.1).",
+    blq_handling = "No HOSU-53 PK samples were below the limit of quantification (excluding pre-dose). 92 of 431 DHO PD samples (21.3%), including pre-dose samples, were below the limit of quantification and were excluded from the analysis (Na 2025 Section 3.1).",
+    assay_range = "UHPLC-MS/MS calibration range 5.0-5000 ng/mL for HOSU-53 and 10.0-30,000 ng/mL for DHO in dog plasma (Na 2025 Supplementary Materials).",
+    noael = "0.6 mg/kg PO QD in the 28-day GLP repeat-dose study; the highest non-severely toxic dose (HNSTD) was 0.6 mg/kg/day (Na 2025 Sections 3.2 and 4).",
+    notes = "Study-level detail is in Na 2025 Supplementary Table S1. Modelling was performed with the SAEM algorithm in Monolix 2024R1; parameter precision was assessed by nonparametric bootstrap."
   )
 
   ini({

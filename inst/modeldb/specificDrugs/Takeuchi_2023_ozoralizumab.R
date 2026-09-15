@@ -8,70 +8,70 @@ Takeuchi_2023_ozoralizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ozoralizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ozoralizumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ozoralizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F (exponent 0.847) and Vd/F (exponent 0.469) with reference (population median) weight 56.65 kg (Takeuchi 2023 final-model equations, p. 422).",
-      source_name        = "WT"
+      notes = "Power scaling on CL/F (exponent 0.847) and Vd/F (exponent 0.469) with reference (population median) weight 56.65 kg (Takeuchi 2023 final-model equations, p. 422).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (Japanese formula)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (Japanese formula)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F (exponent 0.191) with reference (population median) eGFR 85.95 mL/min/1.73 m^2 (Takeuchi 2023 final-model equation, p. 422). Calculated using the Japanese eGFR formula 194 * Scr^-1.094 * age^-0.287 (multiplied by 0.739 for women), per Methods (p. 420). Stored under the canonical CRCL; the source column name is eGFR.",
-      source_name        = "eGFR"
+      notes = "Power scaling on CL/F (exponent 0.191) with reference (population median) eGFR 85.95 mL/min/1.73 m^2 (Takeuchi 2023 final-model equation, p. 422). Calculated using the Japanese eGFR formula 194 * Scr^-1.094 * age^-0.287 (multiplied by 0.739 for women), per Methods (p. 420). Stored under the canonical CRCL; the source column name is eGFR.",
+      source_name = "eGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The paper's own reference category is female (see notes).",
-      notes              = "Takeuchi 2023 encodes sex as a male-indicator (Male = 1 for male, 0 for female) with female as the reference category for the published TVCL = 9.20 mL/h and TVVd = 4.91 L. To store under the canonical SEXF (1 = female, 0 = male) while preserving Takeuchi's female-reference TVCL/TVVd, the effect is applied in model() as (1 + e_male_cl * (1 - SEXF)) and (1 + e_male_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the paper's male-vs-female fractional increase. The cohort is 76% female (Table 2), consistent with female being the typical-patient reference.",
-      source_name        = "SEX"
+      notes = "Takeuchi 2023 encodes sex as a male-indicator (Male = 1 for male, 0 for female) with female as the reference category for the published TVCL = 9.20 mL/h and TVVd = 4.91 L. To store under the canonical SEXF (1 = female, 0 = male) while preserving Takeuchi's female-reference TVCL/TVVd, the effect is applied in model() as (1 + e_male_cl * (1 - SEXF)) and (1 + e_male_vc * (1 - SEXF)), so SEXF = 1 yields factor 1 and SEXF = 0 yields the paper's male-vs-female fractional increase. The cohort is 76% female (Table 2), consistent with female being the typical-patient reference.",
+      source_name = "SEX"
     ),
     CONMED_MTX = list(
-      description        = "Concomitant methotrexate use indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant methotrexate use indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant methotrexate) in the canonical column. The paper's own reference category is with-MTX (see notes).",
-      notes              = "Takeuchi 2023 encodes MTX use as MTX = 1 for yes, 0 for no, with concomitant-MTX as the reference category for the published TVCL = 9.20 mL/h. The OHZORA trial mandated MTX co-administration and the NATSUZORA trial excluded it, so MTX = 1 corresponds to OHZORA enrollment. To store under the canonical CONMED_MTX (1 = on MTX, 0 = not) while preserving Takeuchi's with-MTX-reference TVCL, the effect is applied in model() as (1 + e_nomtx_cl * (1 - CONMED_MTX)), so CONMED_MTX = 1 (on MTX) yields factor 1 and CONMED_MTX = 0 (no MTX) yields a 12.6% increase in CL/F.",
-      source_name        = "MTX"
+      notes = "Takeuchi 2023 encodes MTX use as MTX = 1 for yes, 0 for no, with concomitant-MTX as the reference category for the published TVCL = 9.20 mL/h. The OHZORA trial mandated MTX co-administration and the NATSUZORA trial excluded it, so MTX = 1 corresponds to OHZORA enrollment. To store under the canonical CONMED_MTX (1 = on MTX, 0 = not) while preserving Takeuchi's with-MTX-reference TVCL, the effect is applied in model() as (1 + e_nomtx_cl * (1 - CONMED_MTX)), so CONMED_MTX = 1 (on MTX) yields factor 1 and CONMED_MTX = 0 (no MTX) yields a 12.6% increase in CL/F.",
+      source_name = "MTX"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Takeuchi 2023 final-model covariate (Table 3). Source column ADA (1 = positive, 0 = negative) renamed to canonical ADA_POS per covariate-columns.md. ADA status is defined per Methods: positive if antibody titer increased by >= 0.95 after dosing or the patient became positive after dosing; negative otherwise.",
-      source_name        = "ADA"
+      notes = "Takeuchi 2023 final-model covariate (Table 3). Source column ADA (1 = positive, 0 = negative) renamed to canonical ADA_POS per covariate-columns.md. ADA status is defined per Methods: positive if antibody titer increased by >= 0.95 after dosing or the patient became positive after dosing; negative otherwise.",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 494L,
-    n_studies      = 2L,
-    age_range      = "21 - 84 years (mean 56, SD 12; Table 2)",
-    age_median     = "not reported (mean 56 years reported instead)",
-    weight_range   = "35 - 112 kg (mean 59, SD 13; Table 2)",
-    weight_median  = "56.65 kg (population median used as the reference weight in the final-model equations, p. 422)",
+    n_subjects = 494L,
+    n_studies = 2L,
+    age_range = "21 - 84 years (mean 56, SD 12; Table 2)",
+    age_median = "not reported (mean 56 years reported instead)",
+    weight_range = "35 - 112 kg (mean 59, SD 13; Table 2)",
+    weight_median = "56.65 kg (population median used as the reference weight in the final-model equations, p. 422)",
     sex_female_pct = 76,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "Rheumatoid arthritis",
-    dose_range     = "30 or 80 mg subcutaneously every 4 weeks for up to 52 weeks",
-    regions        = "Japan",
-    studies        = "OHZORA (Phase II/III with concomitant MTX, jRCT2080223971; n = 363) and NATSUZORA (Phase III without MTX, jRCT2080223973; n = 131); 3412 plasma concentrations after exclusion of placebo, criteria violations, BLQ/missing samples, and CWRES > 6 outliers.",
+    disease_state = "Rheumatoid arthritis",
+    dose_range = "30 or 80 mg subcutaneously every 4 weeks for up to 52 weeks",
+    regions = "Japan",
+    studies = "OHZORA (Phase II/III with concomitant MTX, jRCT2080223971; n = 363) and NATSUZORA (Phase III without MTX, jRCT2080223973; n = 131); 3412 plasma concentrations after exclusion of placebo, criteria violations, BLQ/missing samples, and CWRES > 6 outliers.",
     renal_function = "Baseline eGFR (Japanese formula): mean 88, SD 20, range 35 - 174 mL/min/1.73 m^2; population median 85.95 (Table 2; reference value in final-model equation).",
-    co_medication  = "Concomitant MTX in 363 of 494 patients (74%); 0 of 131 NATSUZORA patients on MTX, 363 of 363 OHZORA patients on MTX.",
-    ada_status     = "ADA-positive 185 of 494 (37%; 33% in OHZORA, 49% in NATSUZORA per Table 2).",
-    notes          = "Baseline demographics and study design per Takeuchi 2023 Tables 1 and 2 (p. 419-420)."
+    co_medication = "Concomitant MTX in 363 of 494 patients (74%); 0 of 131 NATSUZORA patients on MTX, 363 of 363 OHZORA patients on MTX.",
+    ada_status = "ADA-positive 185 of 494 (37%; 33% in OHZORA, 49% in NATSUZORA per Table 2).",
+    notes = "Baseline demographics and study design per Takeuchi 2023 Tables 1 and 2 (p. 419-420)."
   )
 
   ini({

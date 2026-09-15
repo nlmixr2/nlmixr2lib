@@ -6,29 +6,44 @@ SemereGebreyesus_2024_rifabutin <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "Rifabutin", units = "mg", specimen = "administration site", verified = TRUE
+      analyte = "Rifabutin",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "Rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "Rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_desacetylrbn = list(
-      analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "25-O-desacetyl rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_desacetylrbn = list(
-      analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = TRUE
+      analyte = "25-O-desacetyl rifabutin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling applied a priori to ALL clearance and volume",
         "parameters of BOTH parent and metabolite, with exponents fixed at",
         "0.75 (clearances) and 1.0 (volumes) and normalization to the 10 kg",
@@ -43,14 +58,14 @@ SemereGebreyesus_2024_rifabutin <- function() {
         "Baseline in the source analysis (Table 1 demographics are at first",
         "pharmacokinetic sampling, week 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     WAZ = list(
-      description        = "Weight-for-age z-score",
-      units              = "unitless (z-score; standard-deviation units)",
-      type               = "continuous",
+      description = "Weight-for-age z-score",
+      units = "unitless (z-score; standard-deviation units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column name ZWFA. Calculated with WHO growth charts for",
         "children aged 10 years or younger and US CDC growth charts for those",
         "over 10 years (Semere Gebreyesus 2024 Methods 'Population",
@@ -69,14 +84,14 @@ SemereGebreyesus_2024_rifabutin <- function() {
         "here is an extraction-side reading -- see the model-file comment on",
         "e_waz_fdepot and the vignette 'Assumptions and deviations' section."
       ),
-      source_name        = "ZWFA"
+      source_name = "ZWFA"
     ),
     CONMED_LPV = list(
-      description        = "Concomitant lopinavir/ritonavir (LPV/r)-based antiretroviral therapy indicator (1 = on LPV/r, 0 = rifabutin-containing TB treatment alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lopinavir/ritonavir (LPV/r)-based antiretroviral therapy indicator (1 = on LPV/r, 0 = rifabutin-containing TB treatment alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant lopinavir/ritonavir)",
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING within subject in the source design: the under-1-year",
         "and 1-to-3-year cohorts received 2 weeks of rifabutin-containing TB",
         "treatment alone and then started LPV/r-based ART, so the same child",
@@ -94,14 +109,14 @@ SemereGebreyesus_2024_rifabutin <- function() {
         "same column used by Hoglund_2015_lumefantrine.R,",
         "Hoglund_2015_artemether.R and Kay_2020_lumefantrine.R."
       ),
-      source_name        = "LPV/r co-treatment"
+      source_name = "LPV/r co-treatment"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used ONLY through the paper's own dichotomization at 3 years:",
         "children aged 3 years or younger absorb 72.3 percent more slowly",
         "(Table 2 row 'Age effect (<=3 years old) on Ka' = -72.3 percent;",
@@ -114,14 +129,14 @@ SemereGebreyesus_2024_rifabutin <- function() {
         "estimated at 8 months, the youngest age in the data set), so AGE",
         "carries no clearance effect in this model."
       ),
-      source_name        = "age group"
+      source_name = "age group"
     ),
     OCC = list(
-      description        = "Integer-valued pharmacokinetic sampling-occasion indicator (1..4)",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued pharmacokinetic sampling-occasion indicator (1..4)",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Between-occasion variability (BOV) was estimated for all three",
         "absorption parameters -- bioavailability, absorption rate constant",
         "and absorption lag time (Semere Gebreyesus 2024 Results 'Structural",
@@ -144,28 +159,28 @@ SemereGebreyesus_2024_rifabutin <- function() {
         "For single-occasion simulations pass OCC = 1 so the first BOV eta",
         "applies."
       ),
-      source_name        = "occasion (visit week)"
+      source_name = "occasion (visit week)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28,
-    n_studies      = 3,
-    age_range      = "0.67-15.0 years",
-    age_median     = "10 years",
-    weight_range   = "4.5-45.0 kg",
-    weight_median  = "11 kg",
+    species = "human",
+    n_subjects = 28,
+    n_studies = 3,
+    age_range = "0.67-15.0 years",
+    age_median = "10 years",
+    weight_range = "4.5-45.0 kg",
+    weight_median = "11 kg",
     sex_female_pct = NULL,
     race_ethnicity = c(Black_African = 100),
-    disease_state  = "HIV/tuberculosis co-infected children requiring protease-inhibitor-based antiretroviral therapy. Approximately 60 percent were severely underweight (weight-for-age z-score < -3; overall median -3.33, range -5.15 to -1.32). In the 3-to-15-year cohort 4 of 15 were WHO HIV stage 4 and the remainder stage 3. Neutropenia occurred in 12 children on 26 occasions (10 grade 1, 6 grade 2, 8 grade 3, 2 grade 4).",
-    dose_range     = "Oral rifabutin suspension (20 mg/mL, compounded from Mycobutin capsules). Under-1-year cohort: 20 mg/kg/day for 2 weeks of TB-only treatment, then 5 mg/kg/day once LPV/r-based ART started. 1-to-3-year cohort: 15-20 mg/kg/day for 2 weeks of TB-only treatment, then 2.5 mg/kg/day with LPV/r. 3-to-15-year cohort (ART-experienced): 2.5 mg/kg/day with LPV/r from study entry.",
-    regions        = "Nigeria (APIN PEPFAR pediatric ART program); external validation cohort from South Africa",
-    cohorts        = "Three prospective age cohorts: under 1 year (n = 3), 1-3 years (n = 10), 3-15 years (n = 15).",
+    disease_state = "HIV/tuberculosis co-infected children requiring protease-inhibitor-based antiretroviral therapy. Approximately 60 percent were severely underweight (weight-for-age z-score < -3; overall median -3.33, range -5.15 to -1.32). In the 3-to-15-year cohort 4 of 15 were WHO HIV stage 4 and the remainder stage 3. Neutropenia occurred in 12 children on 26 occasions (10 grade 1, 6 grade 2, 8 grade 3, 2 grade 4).",
+    dose_range = "Oral rifabutin suspension (20 mg/mL, compounded from Mycobutin capsules). Under-1-year cohort: 20 mg/kg/day for 2 weeks of TB-only treatment, then 5 mg/kg/day once LPV/r-based ART started. 1-to-3-year cohort: 15-20 mg/kg/day for 2 weeks of TB-only treatment, then 2.5 mg/kg/day with LPV/r. 3-to-15-year cohort (ART-experienced): 2.5 mg/kg/day with LPV/r from study entry.",
+    regions = "Nigeria (APIN PEPFAR pediatric ART program); external validation cohort from South Africa",
+    cohorts = "Three prospective age cohorts: under 1 year (n = 3), 1-3 years (n = 10), 3-15 years (n = 15).",
     sampling_design = "Intensive sampling at 0, 2, 4, 8, 12 and 24 h post dose during weeks 2 and 4 for all age groups; additionally week 6 in the under-1-year cohort and week 8 in the 3-to-15-year cohort. Sparse samples at weeks 6 and 12 (0 h and either 3-5 h or 24-26 h post dose) in the 1-to-3-year cohort. Week-2 intensive samples in the two younger cohorts were taken during rifabutin-containing TB-only treatment; all other visits were during LPV/r co-treatment. 462 samples in total, of which 16 (1.7 percent) were below the limit of quantification.",
-    assay          = "LC-MS/MS quantifying rifabutin and des-rifabutin concurrently at the University of Cape Town; calibration range 3.91-1000.0 ug/L for rifabutin and 0.780-200 ug/L for des-rifabutin.",
+    assay = "LC-MS/MS quantifying rifabutin and des-rifabutin concurrently at the University of Cape Town; calibration range 3.91-1000.0 ug/L for rifabutin and 0.780-200 ug/L for des-rifabutin.",
     external_validation = "Six South African children aged 2 (0.83-3.0) years, weight 11 (9.0-12.0) kg, weight-for-age z-score -1.06 (-1.85 to 0.951), on LPV/r-based ART with rifabutin 5 mg/kg/day thrice weekly (Moultrie et al.). 36 samples, none below the limit of quantification. After validation these data were added to the analysis and the parameters re-estimated, so the Table 2 estimates encoded here reflect the pooled 28 + 6 child data set.",
-    notes          = "Baseline demographics are Table 1 of Semere Gebreyesus 2024, reported at first pharmacokinetic sampling (week 2). Sex was not reported in Table 1, so sex_female_pct is NULL. Creatinine clearance (modified Schwartz) and CD4 count were tested as covariates but not retained. Fifteen profiles had pre-dose concentrations below one third of the corresponding 24 h concentration and were handled by the Dansirikul B2 initialization method (dosing history discarded, model initialized to the observed concentration); that data-handling device is a fitting-time construct and is not part of the packaged structural model."
+    notes = "Baseline demographics are Table 1 of Semere Gebreyesus 2024, reported at first pharmacokinetic sampling (week 2). Sex was not reported in Table 1, so sex_female_pct is NULL. Creatinine clearance (modified Schwartz) and CD4 count were tested as covariates but not retained. Fifteen profiles had pre-dose concentrations below one third of the corresponding 24 h concentration and were handled by the Dansirikul B2 initialization method (dosing history discarded, model initialized to the observed concentration); that data-handling device is a fitting-time construct and is not part of the packaged structural model."
   )
 
   ini({

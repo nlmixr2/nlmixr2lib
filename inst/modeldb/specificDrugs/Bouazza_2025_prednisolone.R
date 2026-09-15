@@ -22,112 +22,112 @@ Bouazza_2025_prednisolone <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on both unbound clearance and unbound central volume, with",
         "exponents fixed to 0.75 and 1 respectively (Bouazza 2025 Methods section 2.3,",
         "citing Anderson and Holford). Reference weight 70 kg, as printed in the Table 2",
         "parameter labels 'CLU/F (L.h-1.70 kg-1)' and 'VU/F (L.70 kg-1)'. Cohort median",
         "56.1 kg, IQR 46.8-66.5, range 17.3-113.5 (Bouazza 2025 Table 1)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened but not retained in the final model (Bouazza 2025 Results section 3.2: 'No other additional covariates resulted in a significant decrease in the OFV')."
+      units = "year",
+      type = "continuous",
+      notes = "Screened but not retained in the final model (Bouazza 2025 Results section 3.2: 'No other additional covariates resulted in a significant decrease in the OFV')."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. The Discussion notes that corticosteroid-binding globulin is about 20% higher in women, but no sex effect on prednisolone PK was detected in this cohort."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. The Discussion notes that corticosteroid-binding globulin is about 20% higher in women, but no sex effect on prednisolone PK was detected in this cohort."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (Schwartz formula under 18 years, MDRD at 18 years and over)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened but not retained. The Discussion notes that only two patients had eGFR below 30 mL/min, limiting the power to detect a renal-function effect."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened but not retained. The Discussion notes that only two patients had eGFR below 30 mL/min, limiting the power to detect a renal-function effect."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained as a PK covariate (Bouazza 2025 Methods section 2.3, Results section 3.2)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained as a PK covariate (Bouazza 2025 Methods section 2.3, Results section 3.2)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
     ),
     GGT = list(
       description = "Gamma-glutamyl transferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained (Bouazza 2025 Methods section 2.3, Results section 3.2)."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "prednisone",
-      units    = "nmol",
+      analyte = "prednisone",
+      units = "nmol",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "prednisolone",
-      units    = "nmol",
+      analyte = "prednisolone",
+      units = "nmol",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 66,
+    n_studies = 1,
     n_observations = "242 plasma prednisolone concentrations; median 3 per patient (range 1-11); 35 (14%) below the limit of quantification and handled as left-censored data",
-    age_range      = "6-63 years",
-    age_median     = "23 years (IQR 14.2-31.2)",
-    weight_range   = "17.3-113.5 kg",
-    weight_median  = "56.1 kg (IQR 46.8-66.5)",
+    age_range = "6-63 years",
+    age_median = "23 years (IQR 14.2-31.2)",
+    weight_range = "17.3-113.5 kg",
+    weight_median = "56.1 kg (IQR 46.8-66.5)",
     sex_female_pct = 80.3,
     race_ethnicity = c(
-      Caucasian            = 29.2,
-      `North African`      = 15.4,
-      Turkish              = 1.5,
-      Asian                = 20.0,
+      Caucasian = 29.2,
+      `North African` = 15.4,
+      Turkish = 1.5,
+      Asian = 20.0,
       `Sub-Saharan African` = 18.5,
       `Central/South American` = 1.5,
-      Caribbean            = 10.8,
-      Mixed                = 3.1
+      Caribbean = 10.8,
+      Mixed = 3.1
     ),
-    disease_state  = "Active systemic lupus erythematosus (34 juvenile-onset, 32 adult-onset; 51.5% newly diagnosed, 48.5% in relapse; 74.2% renal involvement) meeting ACR or SLICC classification criteria",
-    dose_range     = "Oral prednisone at least 0.5 mg/kg/day at initiation; median 0.94 mg/kg/day (IQR 0.65-1.06, range 0.38-2.3)",
-    regions        = "France (28 paediatric and adult university-hospital centres)",
-    co_medication  = "Methylprednisolone bolus 57.6%, mycophenolate mofetil 53.0%, hydroxychloroquine 87.9%",
-    notes          = paste(
+    disease_state = "Active systemic lupus erythematosus (34 juvenile-onset, 32 adult-onset; 51.5% newly diagnosed, 48.5% in relapse; 74.2% renal involvement) meeting ACR or SLICC classification criteria",
+    dose_range = "Oral prednisone at least 0.5 mg/kg/day at initiation; median 0.94 mg/kg/day (IQR 0.65-1.06, range 0.38-2.3)",
+    regions = "France (28 paediatric and adult university-hospital centres)",
+    co_medication = "Methylprednisolone bolus 57.6%, mycophenolate mofetil 53.0%, hydroxychloroquine 87.9%",
+    notes = paste(
       "Prospective, observational, multicentre study (NCT03187743, EUDRACT 2017-002050-36),",
       "enrolment April 2018 to January 2022, 3-month follow-up per patient. Baseline",
       "characteristics from Bouazza 2025 Table 1. Sampling was opportunistic: 5 min to 32 h",

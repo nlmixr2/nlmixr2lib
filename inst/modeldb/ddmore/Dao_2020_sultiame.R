@@ -14,8 +14,8 @@ Dao_2020_sultiame <- function() {
   ddmore_id <- "DDMODEL00000298"
   replicate_of <- NULL
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -24,24 +24,24 @@ Dao_2020_sultiame <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "sultiame", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "sultiame", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sultiame", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sultiame", units = "mg", specimen = "plasma", verified = FALSE),
     erythrocytes = list(analyte = "sultiame", units = "mg", specimen = "blood cell", verified = FALSE),
-    urine        = list(analyte = "sultiame", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "sultiame", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 4L,
-    n_studies      = 1L,
-    age_range      = "Healthy adult volunteers",
-    weight_range   = "Healthy adult volunteers",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = "Healthy adult volunteers",
+    weight_range = "Healthy adult volunteers",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy adult volunteers receiving single oral doses of sultiame.",
-    dose_range     = "Single oral doses of 50, 100, and 200 mg sultiame in the DDMORE bundle's simulated event table; the linked publication (Dao 2020, Pharmacology Research & Perspectives 8(2):e00558) describes a Phase 1 dose-ranging PK study in healthy volunteers.",
-    regions        = "Switzerland (University Hospital of Lausanne, per .lst NONMEM license)",
-    notes          = "n_subjects = 4 is the count of distinct individuals in the NONMEM run (Output_real_sultiame_nonlinear_PK.lst, 'TOT. NO. OF INDIVIDUALS: 4', 433 observations). The full Dao 2020 publication is not on disk for this extraction; the population characteristics above summarise what the DDMORE bundle and the publication's title disclose. Individual demographics (age, weight, sex) are not reproduced in the bundle's simulated dataset (Simulated_data_PK_sultiame.csv); the underlying Export_PK_Nonmem_urine.csv referenced by the .mod has WT and AGE columns but they are not used by the structural model."
+    disease_state = "Healthy adult volunteers receiving single oral doses of sultiame.",
+    dose_range = "Single oral doses of 50, 100, and 200 mg sultiame in the DDMORE bundle's simulated event table; the linked publication (Dao 2020, Pharmacology Research & Perspectives 8(2):e00558) describes a Phase 1 dose-ranging PK study in healthy volunteers.",
+    regions = "Switzerland (University Hospital of Lausanne, per .lst NONMEM license)",
+    notes = "n_subjects = 4 is the count of distinct individuals in the NONMEM run (Output_real_sultiame_nonlinear_PK.lst, 'TOT. NO. OF INDIVIDUALS: 4', 433 observations). The full Dao 2020 publication is not on disk for this extraction; the population characteristics above summarise what the DDMORE bundle and the publication's title disclose. Individual demographics (age, weight, sex) are not reproduced in the bundle's simulated dataset (Simulated_data_PK_sultiame.csv); the underlying Export_PK_Nonmem_urine.csv referenced by the .mod has WT and AGE columns but they are not used by the structural model."
   )
 
   ini({

@@ -8,7 +8,7 @@ Mo_2025_everolimus <- function() {
     sep = " "
   )
   vignette <- "Mo_2025_everolimus"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Everolimus is assayed in whole blood (the everolimus
@@ -16,8 +16,8 @@ Mo_2025_everolimus <- function() {
   # dose simulation is a whole-blood trough range).
   compartmentData <- list(
     # `depot` is the intestinal compartment G of Mo 2025 Fig. 1.
-    depot       = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "everolimus", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "everolimus", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "everolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
@@ -30,47 +30,47 @@ Mo_2025_everolimus <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at screening",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the continuous-covariate exploration but not retained in the final model (Mo 2025 Methods 'Population pharmacokinetic modeling'; Results 'Model development'). Cohort value 31.0 +/- 10.8 years (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the continuous-covariate exploration but not retained in the final model (Mo 2025 Methods 'Population pharmacokinetic modeling'; Results 'Model development'). Cohort value 31.0 +/- 10.8 years (Table 1)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 67.3 +/- 8.7 kg (Table 1); inclusion required at least 55 kg. Mo 2025 Discussion notes that weight HAS been identified as a significant covariate in pediatric everolimus populations (their reference 19) and attributes its absence here to the narrow healthy-adult-male weight range."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 67.3 +/- 8.7 kg (Table 1); inclusion required at least 55 kg. Mo 2025 Discussion notes that weight HAS been identified as a significant covariate in pediatric everolimus populations (their reference 19) and attributes its absence here to the narrow healthy-adult-male weight range."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 171.8 +/- 6.6 cm (Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 171.8 +/- 6.6 cm (Table 1)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 22.7 +/- 2.3 kg/m^2 (Table 1); inclusion required 18.5-27.0 kg/m^2."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Mo 2025 Results 'Model development'). Cohort value 22.7 +/- 2.3 kg/m^2 (Table 1); inclusion required 18.5-27.0 kg/m^2."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
-    age_range      = "19-55 years by protocol inclusion criterion; cohort 31.0 +/- 10.8 years (mean +/- SD, Mo 2025 Table 1)",
-    age_median     = "31.0 years (mean)",
-    weight_range   = "at least 55 kg by protocol inclusion criterion; cohort 67.3 +/- 8.7 kg (mean +/- SD, Mo 2025 Table 1)",
-    weight_median  = "67.3 kg (mean)",
-    height_range   = "171.8 +/- 6.6 cm (mean +/- SD, Mo 2025 Table 1); full range not tabulated",
-    height_median  = "171.8 cm (mean)",
-    bmi_range      = "18.5-27.0 kg/m^2 by protocol inclusion criterion; cohort 22.7 +/- 2.3 kg/m^2 (mean +/- SD, Mo 2025 Table 1)",
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
+    age_range = "19-55 years by protocol inclusion criterion; cohort 31.0 +/- 10.8 years (mean +/- SD, Mo 2025 Table 1)",
+    age_median = "31.0 years (mean)",
+    weight_range = "at least 55 kg by protocol inclusion criterion; cohort 67.3 +/- 8.7 kg (mean +/- SD, Mo 2025 Table 1)",
+    weight_median = "67.3 kg (mean)",
+    height_range = "171.8 +/- 6.6 cm (mean +/- SD, Mo 2025 Table 1); full range not tabulated",
+    height_median = "171.8 cm (mean)",
+    bmi_range = "18.5-27.0 kg/m^2 by protocol inclusion criterion; cohort 22.7 +/- 2.3 kg/m^2 (mean +/- SD, Mo 2025 Table 1)",
     sex_female_pct = 0,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adult Korean male volunteers; participants with clinically significant hepatic, renal, neurological, immunological, respiratory, psychiatric, or gastrointestinal disorders were excluded, as were those with a history of hypersensitivity to everolimus or other rapamycin-related compounds. Concomitant medication was prohibited unless deemed necessary by the principal investigator.",
-    dose_range     = "Single oral 5 mg dose in each of two periods of a 2x2 crossover: everolimus 5 mg dispersible tablet (SVG-101, test) and everolimus 5 mg tablet (Afinitor, Novartis Korea, reference), separated by a washout of at least 10 days. Only the 5 mg test-formulation occasion contributed to the population PK model.",
-    regions        = "Republic of Korea (Severance Hospital, Yonsei University Health System, Seoul)",
-    notes          = "26 participants enrolled and randomized 1:1 to the R-T (n = 13) and T-R (n = 13) sequences; 842 concentration samples from the test formulation were used for the population PK analysis (all 26 subjects). One subject withdrew after completing the PK schedule through day 4 but their test-formulation data were retained for model development, so the NCA in Tables 2 and 3 is based on n = 25 while the model is based on n = 26. Sampling at pre-dose and 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 24, 32, 48, 72, 96, 120, and 144 h post-dose. Estimation in Monolix 2023R1 (SAEM), with below-the-limit-of-quantification records handled by left censoring (censoring/limit columns) rather than exclusion. Dose linearity over the studied range was assumed, so CL/F and Vd/F are treated as dose-independent."
+    disease_state = "Healthy adult Korean male volunteers; participants with clinically significant hepatic, renal, neurological, immunological, respiratory, psychiatric, or gastrointestinal disorders were excluded, as were those with a history of hypersensitivity to everolimus or other rapamycin-related compounds. Concomitant medication was prohibited unless deemed necessary by the principal investigator.",
+    dose_range = "Single oral 5 mg dose in each of two periods of a 2x2 crossover: everolimus 5 mg dispersible tablet (SVG-101, test) and everolimus 5 mg tablet (Afinitor, Novartis Korea, reference), separated by a washout of at least 10 days. Only the 5 mg test-formulation occasion contributed to the population PK model.",
+    regions = "Republic of Korea (Severance Hospital, Yonsei University Health System, Seoul)",
+    notes = "26 participants enrolled and randomized 1:1 to the R-T (n = 13) and T-R (n = 13) sequences; 842 concentration samples from the test formulation were used for the population PK analysis (all 26 subjects). One subject withdrew after completing the PK schedule through day 4 but their test-formulation data were retained for model development, so the NCA in Tables 2 and 3 is based on n = 25 while the model is based on n = 26. Sampling at pre-dose and 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 10, 24, 32, 48, 72, 96, 120, and 144 h post-dose. Estimation in Monolix 2023R1 (SAEM), with below-the-limit-of-quantification records handled by left censoring (censoring/limit columns) rather than exclusion. Dose linearity over the studied range was assumed, so CL/F and Vd/F are treated as dose-independent."
   )
 
   ini({

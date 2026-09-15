@@ -18,54 +18,54 @@ Chandasana_2024b_abacavir <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric) effect on CL/F and V2/F with reference weight 15.6 kg (Chandasana 2024 Table 1). Both exponents were FIXED in the source model. Weight range 4.6-61.3 kg in the pooled six-study model-development population; 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort. Q/F and V3/F are NOT weight-scaled in the source model - Table 1 lists weight exponents only for CL/F and V2/F.",
-      source_name        = "WT"
+      notes = "Power (allometric) effect on CL/F and V2/F with reference weight 15.6 kg (Chandasana 2024 Table 1). Both exponents were FIXED in the source model. Weight range 4.6-61.3 kg in the pooled six-study model-development population; 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort. Q/F and V3/F are NOT weight-scaled in the source model - Table 1 lists weight exponents only for CL/F and V2/F.",
+      source_name = "WT"
     ),
     STUDY_ARROW_PART2 = list(
-      description        = "ARROW PK Substudy Part 2 study indicator (1 = record from ARROW PK Substudy Part 2, 0 = any other pooled study, including IMPAACT 2019)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ARROW PK Substudy Part 2 study indicator (1 = record from ARROW PK Substudy Part 2, 0 = any other pooled study, including IMPAACT 2019)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all pooled studies other than ARROW PK Substudy Part 2; relative bioavailability fixed at 1)",
-      notes              = "A study-specific relative bioavailability term (F1) was included to describe the substantially higher observed abacavir exposure in the ARROW PK Substudy Part 2 despite administration of similar doses and formulations (Chandasana 2024 'ABC Pediatric PopPK Model'). The effect is formulation-specific within that substudy: 1.62 for the tablet and 1.75 for the oral solution (Chandasana 2024 Table 1), so it is applied jointly with FORM_SOLUTION. IMPAACT 2019 records carry STUDY_ARROW_PART2 = 0 and therefore relative bioavailability 1.",
-      source_name        = "F1 study term"
+      notes = "A study-specific relative bioavailability term (F1) was included to describe the substantially higher observed abacavir exposure in the ARROW PK Substudy Part 2 despite administration of similar doses and formulations (Chandasana 2024 'ABC Pediatric PopPK Model'). The effect is formulation-specific within that substudy: 1.62 for the tablet and 1.75 for the oral solution (Chandasana 2024 Table 1), so it is applied jointly with FORM_SOLUTION. IMPAACT 2019 records carry STUDY_ARROW_PART2 = 0 and therefore relative bioavailability 1.",
+      source_name = "F1 study term"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral-solution formulation indicator (1 = abacavir oral solution, 0 = solid oral dosage form: tablet or dispersible tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral-solution formulation indicator (1 = abacavir oral solution, 0 = solid oral dosage form: tablet or dispersible tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (solid oral dosage form)",
-      notes              = "Used only in combination with STUDY_ARROW_PART2 to select between the two ARROW PK Substudy Part 2 relative-bioavailability estimates (tablet 1.62, solution 1.75; Chandasana 2024 Table 1). Outside that substudy the source model applies no formulation effect on abacavir bioavailability, so this covariate has no effect when STUDY_ARROW_PART2 = 0.",
-      source_name        = "F1 formulation term"
+      notes = "Used only in combination with STUDY_ARROW_PART2 to select between the two ARROW PK Substudy Part 2 relative-bioavailability estimates (tablet 1.62, solution 1.75; Chandasana 2024 Table 1). Outside that substudy the source model applies no formulation effect on abacavir bioavailability, so this covariate has no effect when STUDY_ARROW_PART2 = 0.",
+      source_name = "F1 formulation term"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion variability on CL/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Chandasana 2024 Table 1 reports a single inter-occasion variability magnitude on CL/F (29.2% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_lcl_<k> pattern with additional ~ fix(0.08182) slots.",
-      source_name        = "OCC"
+      notes = "Chandasana 2024 Table 1 reports a single inter-occasion variability magnitude on CL/F (29.2% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_lcl_<k> pattern with additional ~ fix(0.08182) slots.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 169L,
-    n_studies      = 6L,
-    age_range      = "5 months to 13 years",
-    weight_range   = "4.6-61.3 kg",
-    disease_state  = "Children living with HIV-1 receiving oral abacavir",
-    dose_range     = "Oral abacavir; in the IMPAACT 2019 confirmatory simulations 180 mg (>=6 to <10 kg), 240 mg (>=10 to <14 kg), 300 mg (>=14 to <20 kg) and 360 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 600 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
-    notes          = "Model-development population: a pooled analysis of six clinical studies reported in the US FDA clinical pharmacology review for Ziagen and Epivir (Chandasana 2024 reference 16), summarised in Chandasana 2024 'ABC Pediatric PopPK Model' and Table 1. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 590 abacavir intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated."
+    species = "human",
+    n_subjects = 169L,
+    n_studies = 6L,
+    age_range = "5 months to 13 years",
+    weight_range = "4.6-61.3 kg",
+    disease_state = "Children living with HIV-1 receiving oral abacavir",
+    dose_range = "Oral abacavir; in the IMPAACT 2019 confirmatory simulations 180 mg (>=6 to <10 kg), 240 mg (>=10 to <14 kg), 300 mg (>=14 to <20 kg) and 360 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 600 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
+    notes = "Model-development population: a pooled analysis of six clinical studies reported in the US FDA clinical pharmacology review for Ziagen and Epivir (Chandasana 2024 reference 16), summarised in Chandasana 2024 'ABC Pediatric PopPK Model' and Table 1. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 590 abacavir intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated."
   )
 
   ini({

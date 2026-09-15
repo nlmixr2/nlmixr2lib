@@ -1,71 +1,71 @@
 PerezRuixo_2006_tipifarnib <- function() {
   description <- "Three-compartment population PK model for oral and IV tipifarnib in healthy subjects and adult cancer patients (Perez-Ruixo 2006). Sequential zero-order release into the depot (duration D1) followed by first-order absorption (Ka) into the central compartment, with absorption lag time, linear elimination, two peripheral compartments, and bioavailability fixed at 26.7 percent. Covariate effects retained in the final model are total bilirubin on CL (power exponent -0.103 centred at 9 umol/L) and body weight on V2 (linear scaling, exponent fixed at 1, centred at 70 kg); healthy-vs-cancer cohort multipliers apply to CL, V2, Q4, V4, and Ka; a solution-vs-solid formulation indicator scales D1, Ka, and tlag. The mixture-model lag-time subpopulation (71.7 percent subpop 1 vs 28.3 percent subpop 2) is collapsed to the typical subpop-1 lag time for library simulation use; correlated IIVs with paper-reported correlation 1 (Q3-V3, CL-Q4, CL-V4) are encoded as derived etas via the published variance-expansion factors."
-  reference   <- "Perez-Ruixo JJ, Piotrovskij V, Zhang S, Hayes S, De Porre P, Zannikos P. Population pharmacokinetics of tipifarnib in healthy subjects and adult cancer patients. Br J Clin Pharmacol. 2006;62(1):81-96. doi:10.1111/j.1365-2125.2006.02615.x"
-  vignette    <- "PerezRuixo_2006_tipifarnib"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Perez-Ruixo JJ, Piotrovskij V, Zhang S, Hayes S, De Porre P, Zannikos P. Population pharmacokinetics of tipifarnib in healthy subjects and adult cancer patients. Br J Clin Pharmacol. 2006;62(1):81-96. doi:10.1111/j.1365-2125.2006.02615.x"
+  vignette <- "PerezRuixo_2006_tipifarnib"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tipifarnib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tipifarnib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear scaling on V2 (central volume of distribution) with reference 70 kg (population denominator used by Perez-Ruixo 2006 Table 4 footnote and Methods covariate equation). The power coefficient on body weight was estimated and not statistically different from 1; the paper therefore fixed the exponent at 1 (Perez-Ruixo 2006 Results, second paragraph after backward elimination, and Table 3 footnote 2). Combined-data-set median body weight 70.0 kg (range 34.0-145).",
-      source_name        = "WGT"
+      notes = "Linear scaling on V2 (central volume of distribution) with reference 70 kg (population denominator used by Perez-Ruixo 2006 Table 4 footnote and Methods covariate equation). The power coefficient on body weight was estimated and not statistically different from 1; the paper therefore fixed the exponent at 1 (Perez-Ruixo 2006 Results, second paragraph after backward elimination, and Table 3 footnote 2). Combined-data-set median body weight 70.0 kg (range 34.0-145).",
+      source_name = "WGT"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin at baseline",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on systemic clearance with reference 9 umol/L (combined-data-set median; Perez-Ruixo 2006 Table 4 footnote a). The covariate equation is CL = 21.9 * (TBILI / 9)^-0.103. A 2-fold increase in TBILI corresponds to a 6.9 percent decrease in CL (Discussion). Combined-data-set median 10.0 umol/L (range 2.0-116).",
-      source_name        = "TBIL"
+      notes = "Power-form effect on systemic clearance with reference 9 umol/L (combined-data-set median; Perez-Ruixo 2006 Table 4 footnote a). The covariate equation is CL = 21.9 * (TBILI / 9)^-0.103. A 2-fold increase in TBILI corresponds to a 6.9 percent decrease in CL (Discussion). Combined-data-set median 10.0 umol/L (range 2.0-116).",
+      source_name = "TBIL"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult cancer patient; reference cohort is the pooled advanced-cancer cohort across phase 1, 2, and 3 studies)",
-      notes              = "Multiplicative ratio-form effects on five structural parameters: CL multiplier 1.21, V2 multiplier 0.55, Q4 multiplier 8.83, V4 multiplier 2.66, and Ka multiplier 2.31; Q3, V3, D1, tlag, and F are equal between cancer patients and healthy subjects (Perez-Ruixo 2006 Table 4 'Ratio healthy subjects : cancer subjects' column). The reference complement is the cancer-patient cohort, so DIS_HEALTHY = 0 leaves all ratio multipliers inactive.",
-      source_name        = "HEALTHY"
+      notes = "Multiplicative ratio-form effects on five structural parameters: CL multiplier 1.21, V2 multiplier 0.55, Q4 multiplier 8.83, V4 multiplier 2.66, and Ka multiplier 2.31; Q3, V3, D1, tlag, and F are equal between cancer patients and healthy subjects (Perez-Ruixo 2006 Table 4 'Ratio healthy subjects : cancer subjects' column). The reference complement is the cancer-patient cohort, so DIS_HEALTHY = 0 leaves all ratio multipliers inactive.",
+      source_name = "HEALTHY"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral solution formulation indicator (paper's 'liquid' formulation)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral solution formulation indicator (paper's 'liquid' formulation)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (solid oral formulation: capsule or tablet; the two solid forms had statistically indistinguishable absorption parameters in Perez-Ruixo 2006 and are pooled as the reference)",
-      notes              = "Per-dose-record indicator. Multiplicative ratio-form effects relative to the solid reference: D1 multiplier 0.348 (faster zero-order release from the solution), Ka multiplier 2.07, and tlag multiplier 0.183 (Perez-Ruixo 2006 Table 4 footnotes i, j, k). Bioavailability (F) is identical between solid and solution formulations (Discussion, 'Tipifarnib oral bioavailability did not differ between formulations'). The IV-administration routes (1 h, 2 h, 24 h infusions) are encoded by directing the dose to the central compartment with the paper's reported infusion duration; FORM_SOLUTION applies only to oral dose records.",
-      source_name        = "FORM"
+      notes = "Per-dose-record indicator. Multiplicative ratio-form effects relative to the solid reference: D1 multiplier 0.348 (faster zero-order release from the solution), Ka multiplier 2.07, and tlag multiplier 0.183 (Perez-Ruixo 2006 Table 4 footnotes i, j, k). Bioavailability (F) is identical between solid and solution formulations (Discussion, 'Tipifarnib oral bioavailability did not differ between formulations'). The IV-administration routes (1 h, 2 h, 24 h infusions) are encoded by directing the dose to the central compartment with the paper's reported infusion duration; FORM_SOLUTION applies only to oral dose records.",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1083L,
-    n_studies      = 15L,
-    age_range      = "18-89 years (combined-data-set range)",
-    age_median     = "60 years",
-    weight_range   = "34.0-145 kg (combined-data-set range)",
-    weight_median  = "70.0 kg",
+    species = "human",
+    n_subjects = 1083L,
+    n_studies = 15L,
+    age_range = "18-89 years (combined-data-set range)",
+    age_median = "60 years",
+    weight_range = "34.0-145 kg (combined-data-set range)",
+    weight_median = "70.0 kg",
     sex_female_pct = 44.3,
     race_ethnicity = c(Caucasian = 93.6, African_American = 1.8, Other = 4.5),
-    disease_state  = "Pooled cohort: 1035 adult cancer patients with advanced solid tumors or haematological malignancies (advanced breast, small-cell lung, urothelial transitional-cell, superficial bladder, advanced colorectal, advanced pancreatic, and acute myeloid leukaemia) and 48 healthy subjects.",
-    dose_range     = "Oral 25-1300 mg single dose or twice-daily; IV 1, 2, or 24 h infusions of 50-500 mg (combined data set: 7339 plasma concentrations).",
-    regions        = "Multinational (15 pooled phase 1, 2, and 3 studies).",
+    disease_state = "Pooled cohort: 1035 adult cancer patients with advanced solid tumors or haematological malignancies (advanced breast, small-cell lung, urothelial transitional-cell, superficial bladder, advanced colorectal, advanced pancreatic, and acute myeloid leukaemia) and 48 healthy subjects.",
+    dose_range = "Oral 25-1300 mg single dose or twice-daily; IV 1, 2, or 24 h infusions of 50-500 mg (combined data set: 7339 plasma concentrations).",
+    regions = "Multinational (15 pooled phase 1, 2, and 3 studies).",
     n_observations = 7339L,
-    formulations   = "Three oral formulations (solution, capsule, tablet) plus 1-h, 2-h, and 24-h IV infusions. The solid forms (capsule and tablet) shared a common absorption profile in the final model; the solution differed in D1, Ka, and tlag.",
+    formulations = "Three oral formulations (solution, capsule, tablet) plus 1-h, 2-h, and 24-h IV infusions. The solid forms (capsule and tablet) shared a common absorption profile in the final model; the solution differed in D1, Ka, and tlag.",
     index_test_split = "Index data set: 7 phase 1 studies, 166 subjects (154 cancer + 12 healthy), 3445 concentrations; test data set: 5 phase 2 + 2 phase 3 + 1 phase 1 study, 917 subjects (881 cancer + 36 healthy), 3894 concentrations. The final model was fit to the combined data set (Table 4).",
-    notes          = "Demographic counts and ranges from Perez-Ruixo 2006 Table 2 (combined data set). Sex distribution: 603 male, 480 female. Per Table 2 the missing-covariate percentage for sex is 0; for the race composite the combined data set lists 1014 Caucasian, 20 African-American, and 49 Other (with 0 percent missing). The 7339 plasma concentrations include 3445 from the index development data set and 3894 from the test data set (final-model fit used the combined merged data set after dropping two outliers from each data set, total 7283 retained)."
+    notes = "Demographic counts and ranges from Perez-Ruixo 2006 Table 2 (combined data set). Sex distribution: 603 male, 480 female. Per Table 2 the missing-covariate percentage for sex is 0; for the race composite the combined data set lists 1014 Caucasian, 20 African-American, and 49 Other (with 0 percent missing). The 7339 plasma concentrations include 3445 from the index development data set and 3894 from the test data set (final-model fit used the combined merged data set after dropping two outliers from each data set, total 7283 retained)."
   )
 
   ini({

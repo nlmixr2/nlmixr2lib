@@ -31,8 +31,8 @@ Djerada_2014_nefopam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Nefopam", units = "mg", specimen = "plasma", verified = FALSE),
     central_dnef = list(analyte = "Desmethyl-nefopam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -41,9 +41,9 @@ Djerada_2014_nefopam <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Table 1: global 83 +/- 8 years (range 65-99).",
         "Screened per Methods (stepwise covariate modelling, forward",
         "LRT P = 0.05, backward LRT P = 0.01, RSE < 20%);",
@@ -52,11 +52,11 @@ Djerada_2014_nefopam <- function() {
       )
     ),
     SEXF = list(
-      description       = "Female sex indicator (1 = female, 0 = male)",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes             = paste(
+      notes = paste(
         "Source coded sex as 1 = male, 2 = female (Methods).",
         "Global sex ratio (M:F) = 0.45 => 15 males, 33 females",
         "(Table 1). Canonical SEXF = 1 - (source_sex - 1)",
@@ -66,63 +66,63 @@ Djerada_2014_nefopam <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Table 1: global 63 +/- 13 kg (range 40-100).",
         "Screened; not retained in the final model."
       )
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Table 1: global 161 +/- 7 cm (range 144-183).",
         "Screened; not retained in the final model."
       )
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Table 1: global 23.9 +/- 4.7 kg/m^2 (range 15.6-39.1).",
         "Screened; not retained in the final model."
       )
     ),
     LBW = list(
       description = "Lean body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened per Methods (author-cited derivation) alongside FFM,",
         "IBW, and BSA. None retained in the final model."
       )
     ),
     FFM = list(
       description = "Fat-free mass",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened; not retained in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained in the final model."
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened; not retained in the final model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained in the final model."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened; not retained in the final model."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened; not retained in the final model."
     ),
     GFR_IO = list(
       description = "Glomerular filtration rate estimated from iohexol plasma clearance",
-      units       = "mL/min per 1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min per 1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Iohexol was administered as a 1 min IV infusion of 5 mL of",
         "Omnipaque 180 starting 29 min after nefopam infusion began;",
         "iohexol plasma clearance is a gold-standard GFR marker in the",
@@ -140,18 +140,18 @@ Djerada_2014_nefopam <- function() {
     ),
     GFR_MDRD = list(
       description = "Glomerular filtration rate estimated with the 4-variable Modification of Diet in Renal Disease equation",
-      units       = "mL/min per 1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min per 1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as an alternative renal-function descriptor.",
         "Not retained in the final model."
       )
     ),
     GFR_CG = list(
       description = "Glomerular filtration rate estimated with the Cockroft-Gault formula",
-      units       = "mL/min per 1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min per 1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Used to classify patients into normal / moderate / severe",
         "renal-function subgroups a priori (Methods).",
         "Screened as a continuous covariate on PK parameters; not",
@@ -161,18 +161,18 @@ Djerada_2014_nefopam <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48,
-    n_studies      = 1,
-    age_range      = "65-99 years",
-    age_median     = "83 years (mean +/- SD = 83 +/- 8)",
-    weight_range   = "40-100 kg",
-    weight_median  = "63 kg (mean +/- SD = 63 +/- 13)",
-    height_range   = "144-183 cm (mean +/- SD = 161 +/- 7)",
-    bmi_range      = "15.6-39.1 kg/m^2 (mean +/- SD = 23.9 +/- 4.7)",
+    species = "human",
+    n_subjects = 48,
+    n_studies = 1,
+    age_range = "65-99 years",
+    age_median = "83 years (mean +/- SD = 83 +/- 8)",
+    weight_range = "40-100 kg",
+    weight_median = "63 kg (mean +/- SD = 63 +/- 13)",
+    height_range = "144-183 cm (mean +/- SD = 161 +/- 7)",
+    bmi_range = "15.6-39.1 kg/m^2 (mean +/- SD = 23.9 +/- 4.7)",
     sex_female_pct = 68.75,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Elderly patients scheduled for postoperative repair of a",
       "fractured hip; enrolled between June 2006 and August 2011.",
       "Renal function stratified as normal (Cockroft-Gault GFR",
@@ -181,9 +181,9 @@ Djerada_2014_nefopam <- function() {
       "Iohexol-clearance GFR (GFR_IO) global mean 48.36 +/- 24.19",
       "mL/min (range 10.77-131.50)."
     ),
-    dose_range    = "20 mg nefopam hydrochloride diluted in 0.9% saline as a single 30 min IV infusion; iohexol 5 mL of Omnipaque 180 as a 1 min IV infusion starting 29 min after nefopam infusion for GFR estimation.",
-    regions       = "France (single-centre: Reims University Hospital).",
-    notes         = paste(
+    dose_range = "20 mg nefopam hydrochloride diluted in 0.9% saline as a single 30 min IV infusion; iohexol 5 mL of Omnipaque 180 as a 1 min IV infusion starting 29 min after nefopam infusion for GFR estimation.",
+    regions = "France (single-centre: Reims University Hospital).",
+    notes = paste(
       "Table 1 baseline demographics: global (n=48) age 83 +/- 8",
       "years, weight 63 +/- 13 kg, height 161 +/- 7 cm,",
       "BMI 23.9 +/- 4.7 kg/m^2, sex ratio (male:female) = 0.45",

@@ -17,25 +17,35 @@ Mohamed_2012_gentamicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_growing = list(analyte = "Escherichia coli ATCC 25922 (drug-susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resting = list(analyte = "Escherichia coli ATCC 25922 (insusceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    ar_off       = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ar_on        = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cgent        = list(analyte = "gentamicin", units = NA_character_, specimen = "bile", verified = FALSE)
+    bact_growing = list(
+      analyte = "Escherichia coli ATCC 25922 (drug-susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resting = list(
+      analyte = "Escherichia coli ATCC 25922 (insusceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    ar_off = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ar_on = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cgent = list(analyte = "gentamicin", units = NA_character_, specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Escherichia coli ATCC 25922; MIC 2 mg/L by macrodilution)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Gram-negative neonatal infection (in-vitro time-kill experiments; linked downstream to a published 3-compartment neonatal popPK of gentamicin for dosing predictions)",
-    model_system     = "In-vitro time-kill curve experiments in cation-adjusted Mueller-Hinton broth at 35 C (48 static experiments + 25 dynamic experiments in a 2-compartment kinetic flask)",
+    species = "in vitro (Escherichia coli ATCC 25922; MIC 2 mg/L by macrodilution)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Gram-negative neonatal infection (in-vitro time-kill experiments; linked downstream to a published 3-compartment neonatal popPK of gentamicin for dosing predictions)",
+    model_system = "In-vitro time-kill curve experiments in cation-adjusted Mueller-Hinton broth at 35 C (48 static experiments + 25 dynamic experiments in a 2-compartment kinetic flask)",
     initial_inoculum = "approximately 5e5 CFU/mL; mean across experiments 4.83e5 CFU/mL (high-inoculum subset pre-grown 12 h to ~1e9 CFU/mL)",
-    dose_range       = "Static gentamicin 0.125-16 mg/L; dynamic peak concentrations 2.0, 3.9, 7.8, 16 mg/L (simulating neonatal 1, 2, 4, 8 mg/kg doses) at 6-, 12-, or 24-h intervals",
-    n_observations   = 1695L,
-    notes            = paste(
+    dose_range = "Static gentamicin 0.125-16 mg/L; dynamic peak concentrations 2.0, 3.9, 7.8, 16 mg/L (simulating neonatal 1, 2, 4, 8 mg/kg doses) at 6-, 12-, or 24-h intervals",
+    n_observations = 1695L,
+    notes = paste(
       "Semi-mechanistic PKPD model fitted to bacterial counts (natural log of CFU/mL) jointly from static and dynamic in-vitro time-kill experiments using the NONMEM Laplacian method with ADVAN9; bacterial counts below the limit of detection (10 CFU/mL) were handled with the M3 method.",
       "kdeath was fixed to 0.179 /h from the prior Nielsen et al. semi-mechanistic antibiotic model (Nielsen 2007 / ref 36 in the paper); the data did not strongly identify it.",
       "koff was fixed to 0.0139 /h (50-h half-life of return to susceptibility), the lowest value that did not worsen model fit; lower values increased OFV.",

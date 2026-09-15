@@ -3,8 +3,8 @@ Chakraborty_2012_canakinumab <- function() {
   reference <- "Chakraborty A, Tannenbaum S, Rordorf C, Lowe PJ, Floch D, Gram H, Roy S. Pharmacokinetic and pharmacodynamic properties of canakinumab, a human anti-interleukin-1b monoclonal antibody. Clin Pharmacokinet. 2012;51(6):e1-e18. doi:10.2165/11599820-000000000-00000."
   vignette <- "Chakraborty_2012_canakinumab"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL (total canakinumab); pg/mL (total IL-1b)"
   )
 
@@ -13,44 +13,44 @@ Chakraborty_2012_canakinumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
-    central_il1b     = list(analyte = "IL-1b", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central_il1b = list(analyte = "IL-1b", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_il1b = list(analyte = "IL-1b", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred power covariate on CLD (exponent 0.695), VC (0.684), and VP (0.798). All effects centred at 70 kg (Chakraborty 2012 Table IV; equation 10 page e15).",
-      source_name        = "Body weight (WT)"
+      notes = "Centred power covariate on CLD (exponent 0.695), VC (0.684), and VP (0.798). All effects centred at 70 kg (Chakraborty 2012 Table IV; equation 10 page e15).",
+      source_name = "Body weight (WT)"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred power covariate on subcutaneous ka (exponent -0.555); reference 34 years (Chakraborty 2012 Table IV; described page e14-e15).",
-      source_name        = "Age"
+      notes = "Centred power covariate on subcutaneous ka (exponent -0.555); reference 34 years (Chakraborty 2012 Table IV; described page e14-e15).",
+      source_name = "Age"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centred power covariate on CLD (exponent -0.916); reference 43 g/L (Chakraborty 2012 Table IV; equation 11 page e15).",
-      source_name        = "Serum albumin"
+      notes = "Centred power covariate on CLD (exponent -0.916); reference 43 g/L (Chakraborty 2012 Table IV; equation 11 page e15).",
+      source_name = "Serum albumin"
     )
   )
 
   population <- list(
-    n_subjects        = 233L,
-    n_studies         = 6L,
-    study_names       = c(
+    n_subjects = 233L,
+    n_studies = 6L,
+    study_names = c(
       "CACZ885B2101 (healthy + mild asthma)",
       "CACZ885A1101 / NCT00421226 (Japanese healthy volunteers)",
       "CACZ885A2101 / NCT00619905 (rheumatoid arthritis)",
@@ -58,18 +58,18 @@ Chakraborty_2012_canakinumab <- function() {
       "CACZ885A2102 / NCT00487708 (CAPS phase II, adult and paediatric)",
       "CACZ885D2304 / NCT00465985 (CAPS phase III)"
     ),
-    age_range         = "4-74 years (paediatric and adult); reference 34 years for ka",
-    age_median        = "34 years (typical CAPS patient)",
-    weight_range      = "Includes paediatric to adult subjects; reference 70 kg",
-    weight_median     = "70 kg (typical CAPS patient)",
-    sex_female_pct    = 42.1,
-    sex_notes         = "135 male and 98 female subjects in the population analysis (Chakraborty 2012 Section 5.3, page e15).",
-    race_ethnicity    = "Mixed: predominantly White (Caucasian healthy volunteers and patients) and East Asian (Japanese healthy volunteers); other categories not separately reported in the model.",
-    disease_state     = "Cryopyrin-associated periodic syndromes (CAPS, primary indication; NALP3 mutations); also healthy volunteers, rheumatoid arthritis, mild asthma, and psoriasis cohorts contributing to the model fit.",
-    dose_range        = "Single and multiple intravenous (0.3-10 mg/kg) and subcutaneous (75-600 mg, 2 mg/kg) administrations across the six studies (Chakraborty 2012 Table I and Table III).",
-    regions           = "Multinational (Europe, North America, Japan).",
+    age_range = "4-74 years (paediatric and adult); reference 34 years for ka",
+    age_median = "34 years (typical CAPS patient)",
+    weight_range = "Includes paediatric to adult subjects; reference 70 kg",
+    weight_median = "70 kg (typical CAPS patient)",
+    sex_female_pct = 42.1,
+    sex_notes = "135 male and 98 female subjects in the population analysis (Chakraborty 2012 Section 5.3, page e15).",
+    race_ethnicity = "Mixed: predominantly White (Caucasian healthy volunteers and patients) and East Asian (Japanese healthy volunteers); other categories not separately reported in the model.",
+    disease_state = "Cryopyrin-associated periodic syndromes (CAPS, primary indication; NALP3 mutations); also healthy volunteers, rheumatoid arthritis, mild asthma, and psoriasis cohorts contributing to the model fit.",
+    dose_range = "Single and multiple intravenous (0.3-10 mg/kg) and subcutaneous (75-600 mg, 2 mg/kg) administrations across the six studies (Chakraborty 2012 Table I and Table III).",
+    regions = "Multinational (Europe, North America, Japan).",
     albumin_reference = "43 g/L (median in CAPS analysis cohort)",
-    notes             = "CAPS is the primary regulatory indication; the model parameters in this file are the typical-CAPS-patient estimates from Chakraborty 2012 Table IV. Per-population multipliers for Caucasian HV, Japanese HV, RA, asthma, and psoriasis cohorts are reported in Table IV but not encoded as covariates here -- the validation vignette tabulates them for reference. The cell-line covariate (NS0 vs Sp2/0) acts on ka and F1 only; this file uses the Sp2/0 (commercial Ilaris) values."
+    notes = "CAPS is the primary regulatory indication; the model parameters in this file are the typical-CAPS-patient estimates from Chakraborty 2012 Table IV. Per-population multipliers for Caucasian HV, Japanese HV, RA, asthma, and psoriasis cohorts are reported in Table IV but not encoded as covariates here -- the validation vignette tabulates them for reference. The cell-line covariate (NS0 vs Sp2/0) acts on ka and F1 only; this file uses the Sp2/0 (commercial Ilaris) values."
   )
 
   ini({

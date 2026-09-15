@@ -8,98 +8,106 @@ Wade_2015_certolizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "certolizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "certolizumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "certolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ADA_POS = list(
-      description        = "Anti-certolizumab antibody positivity (per CZP concentration, time-varying)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-certolizumab antibody positivity (per CZP concentration, time-varying)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (anti-CZP antibody negative)",
-      notes              = "Wade 2015 codes this time-varying at the per-concentration level (ATB present/absent per CZP concentration, not per subject). A concentration is classified ADA-positive if measured anti-CZP antibody > 2.4 units/mL; negative otherwise. Source column label 'ATB'; renamed to the canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ATB"
+      notes = "Wade 2015 codes this time-varying at the per-concentration level (ATB present/absent per CZP concentration, not per subject). A concentration is classified ADA-positive if measured anti-CZP antibody > 2.4 units/mL; negative otherwise. Source column label 'ATB'; renamed to the canonical ADA_POS per covariate-columns.md.",
+      source_name = "ATB"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on both CL/F and V/F: (1 + theta * (BSA - 1.76)). Reference 1.76 m^2 is the typical BSA used in Table 3 footnotes. The Wade 2015 paper does not state the BSA computation formula; assume the formula used in the source studies' case-report forms.",
-      source_name        = "BSA"
+      notes = "Linear-deviation effect on both CL/F and V/F: (1 + theta * (BSA - 1.76)). Reference 1.76 m^2 is the typical BSA used in Table 3 footnotes. The Wade 2015 paper does not state the BSA computation formula; assume the formula used in the source studies' case-report forms.",
+      source_name = "BSA"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Non-linear piecewise-linear effect on CL/F with break at 41 g/L (population median). Form: (1 + theta7 * (ALB - 41)) for ALB <= 41 and (1 + theta8 * (ALB - 41)) for ALB > 41 per Table 3 footnotes. Baseline value (time-fixed).",
-      source_name        = "ALB"
+      notes = "Non-linear piecewise-linear effect on CL/F with break at 41 g/L (population median). Form: (1 + theta7 * (ALB - 41)) for ALB <= 41 and (1 + theta8 * (ALB - 41)) for ALB > 41 per Table 3 footnotes. Baseline value (time-fixed).",
+      source_name = "ALB"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Non-linear piecewise-linear effect on CL/F with break at 8 mg/L (population median). Form: (1 + theta10 * (CRP - 8)) for CRP <= 8 and (1 + theta11 * (CRP - 8)) for CRP > 8 per Table 3 footnotes. Standard CRP assay (baseline; Crohn's disease cohort with median CRP well above the hs-CRP sensitivity range).",
-      source_name        = "CRP"
+      notes = "Non-linear piecewise-linear effect on CL/F with break at 8 mg/L (population median). Form: (1 + theta10 * (CRP - 8)) for CRP <= 8 and (1 + theta11 * (CRP - 8)) for CRP > 8 per Table 3 footnotes. Standard CRP assay (baseline; Crohn's disease cohort with median CRP well above the hs-CRP sensitivity range).",
+      source_name = "CRP"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White, Indian Asian, Hispanic, or Other (pooled reference per Wade 2015 Table 3 footnotes)",
-      notes              = "Multiplicative fractional effect on V/F: (1 + theta14 * RACE_BLACK). Source NONMEM coding: IF(RACE.EQ.2) VRACE = (1 + theta14). N = 29 Black subjects in the model-development cohort (Table 2).",
-      source_name        = "RACE"
+      notes = "Multiplicative fractional effect on V/F: (1 + theta14 * RACE_BLACK). Source NONMEM coding: IF(RACE.EQ.2) VRACE = (1 + theta14). N = 29 Black subjects in the model-development cohort (Table 2).",
+      source_name = "RACE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (Wade 2015: excludes Japanese and Indian Asian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (Wade 2015: excludes Japanese and Indian Asian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White, Indian Asian, Hispanic, or Other (pooled reference per Wade 2015 Table 3 footnotes)",
-      notes              = "Multiplicative fractional effect on V/F: (1 + theta15 * RACE_ASIAN). Source NONMEM coding: IF(RACE.EQ.3) VRACE = (1 + theta15). In Wade 2015 coding Japanese (RACE.EQ.8) and Indian Asian (RACE.EQ.4) are separate categories -- the RACE_ASIAN column here captures only RACE.EQ.3 (N = 11 subjects in Table 2). Indian Asian is folded into the reference group; Japanese has its own indicator RACE_JAPANESE.",
-      source_name        = "RACE"
+      notes = "Multiplicative fractional effect on V/F: (1 + theta15 * RACE_ASIAN). Source NONMEM coding: IF(RACE.EQ.3) VRACE = (1 + theta15). In Wade 2015 coding Japanese (RACE.EQ.8) and Indian Asian (RACE.EQ.4) are separate categories -- the RACE_ASIAN column here captures only RACE.EQ.3 (N = 11 subjects in Table 2). Indian Asian is folded into the reference group; Japanese has its own indicator RACE_JAPANESE.",
+      source_name = "RACE"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese race/ethnicity indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese race/ethnicity indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White, Indian Asian, Hispanic, or Other (pooled reference per Wade 2015 Table 3 footnotes)",
-      notes              = "Multiplicative fractional effect on V/F: (1 + theta13 * RACE_JAPANESE). Source NONMEM coding: IF(RACE.EQ.8) VRACE = (1 + theta13). N = 89 Japanese subjects in the model-development cohort (Table 2); the largest non-reference race category.",
-      source_name        = "RACE"
+      notes = "Multiplicative fractional effect on V/F: (1 + theta13 * RACE_JAPANESE). Source NONMEM coding: IF(RACE.EQ.8) VRACE = (1 + theta13). N = 89 Japanese subjects in the model-development cohort (Table 2); the largest non-reference race category.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    n_subjects     = 2157L,
-    n_studies      = 9L,
-    age_range      = "16-80 years",
-    age_median     = "35 years",
-    weight_range   = "31-151 kg",
-    weight_median  = "65 kg",
-    bmi_range      = "13-56 kg/m^2",
-    bmi_median     = "23 kg/m^2",
-    bsa_range      = "1.2-2.7 m^2",
-    bsa_median     = "1.8 m^2",
+    n_subjects = 2157L,
+    n_studies = 9L,
+    age_range = "16-80 years",
+    age_median = "35 years",
+    weight_range = "31-151 kg",
+    weight_median = "65 kg",
+    bmi_range = "13-56 kg/m^2",
+    bmi_median = "23 kg/m^2",
+    bsa_range = "1.2-2.7 m^2",
+    bsa_median = "1.8 m^2",
     sex_female_pct = 55.5,
-    race_ethnicity = c(White = 91.1, Black = 1.3, Asian = 0.5, Indian = 0.8, Hispanic = 0.2, Japanese = 4.1, Other = 1.9),
-    disease_state  = "Moderately to severely active Crohn's disease (active or maintenance treatment populations pooled)",
-    dose_range     = "100, 200, or 400 mg SC every 2 weeks (Q2W) or every 4 weeks (Q4W); most data from 400 mg SC Q2W / Q4W regimens",
-    regions        = "Multinational (9 pooled studies: C87005, C87031, C87032, C87037, C87042, C87043, C87047, C87048, C87085).",
+    race_ethnicity = c(
+      White = 91.1,
+      Black = 1.3,
+      Asian = 0.5,
+      Indian = 0.8,
+      Hispanic = 0.2,
+      Japanese = 4.1,
+      Other = 1.9
+    ),
+    disease_state = "Moderately to severely active Crohn's disease (active or maintenance treatment populations pooled)",
+    dose_range = "100, 200, or 400 mg SC every 2 weeks (Q2W) or every 4 weeks (Q4W); most data from 400 mg SC Q2W / Q4W regimens",
+    regions = "Multinational (9 pooled studies: C87005, C87031, C87032, C87037, C87042, C87043, C87047, C87048, C87085).",
     baseline_covariates = list(
-      crcl_mean_ml_min    = 112,
-      crp_mean_mg_L       = 20,
-      crp_median_mg_L     = 8,
-      albumin_mean_g_L    = 41,
-      albumin_median_g_L  = 41,
+      crcl_mean_ml_min = 112,
+      crp_mean_mg_L = 20,
+      crp_median_mg_L = 8,
+      albumin_mean_g_L = 41,
+      albumin_median_g_L = 41,
       lymphocytes_median_10e9_L = 1.5,
-      cdai_median         = 290
+      cdai_median = 290
     ),
     ada_positive_pct_concentrations = 2.0,
-    ada_positive_pct_subjects       = 6.4,
-    immunosuppressant_use_pct       = 41.2,
-    notes          = "Baseline demographics from Wade 2015 Table 2. Population CZP concentration data: 13,561 total observations across 2157 subjects (median 6 samples per subject, range 1-17). Anti-CZP antibodies detected in 139 subjects (6.4%) contributing 270 ADA-positive concentrations (2.0% of all observations). Reference covariate values for typical-subject predictions: BSA = 1.76 m^2, ALB = 41 g/L, CRP = 8 mg/L, ADA-negative, non-Japanese / non-Black / non-Asian (i.e., White, Indian Asian, Hispanic, or Other)."
+    ada_positive_pct_subjects = 6.4,
+    immunosuppressant_use_pct = 41.2,
+    notes = "Baseline demographics from Wade 2015 Table 2. Population CZP concentration data: 13,561 total observations across 2157 subjects (median 6 samples per subject, range 1-17). Anti-CZP antibodies detected in 139 subjects (6.4%) contributing 270 ADA-positive concentrations (2.0% of all observations). Reference covariate values for typical-subject predictions: BSA = 1.76 m^2, ALB = 41 g/L, CRP = 8 mg/L, ADA-negative, non-Japanese / non-Black / non-Asian (i.e., White, Indian Asian, Hispanic, or Other)."
   )
 
   ini({

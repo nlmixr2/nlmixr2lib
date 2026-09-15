@@ -33,18 +33,18 @@ Patel_2011_fluconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "fluconazole", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "fluconazole", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     FILT_AGE_HI = list(
-      description        = "Indicator that the in-use CVVHDF hemofilter membrane has been operating for more than 48 hours; reduces CL_CVVHDF efficiency to 36.8 percent of the fresh-filter baseline (Patel 2011 Table 2: ffCL_CVVHDF = 0.368, bootstrap 95 percent CI 0.326-0.426; Delta-OBJ = -11.46 vs base model).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the in-use CVVHDF hemofilter membrane has been operating for more than 48 hours; reduces CL_CVVHDF efficiency to 36.8 percent of the fresh-filter baseline (Patel 2011 Table 2: ffCL_CVVHDF = 0.368, bootstrap 95 percent CI 0.326-0.426; Delta-OBJ = -11.46 vs base model).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Patel 2011 Methods state that filter age was encoded from the recorded",
         "filter-swap timestamps. Of the 10 enrolled patients, 1 (patient 4)",
         "had the hemofilter in use for more than 48 hours at the start of the",
@@ -58,19 +58,19 @@ Patel_2011_fluconazole <- function() {
         "datasets that resolve mid-profile filter swaps would carry",
         "FILT_AGE_HI as a within-subject time-varying covariate."
       ),
-      source_name        = "FILT_AGE_HI"
+      source_name = "FILT_AGE_HI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "51-76 years (median 67)",
-    weight_range   = "50-104 kg (median 80)",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "51-76 years (median 67)",
+    weight_range = "50-104 kg (median 80)",
     sex_female_pct = 50.0,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill anuric adults requiring continuous venovenous",
       "hemodiafiltration (CVVHDF) for renal failure of any cause and",
       "prescribed fluconazole for a suspected fungal infection. Diagnoses",
@@ -82,19 +82,19 @@ Patel_2011_fluconazole <- function() {
       "abnormally elevated ALT or AST (4x upper limit). Serum albumin",
       "11-30 g/L (low in all 10 patients)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "200 mg intravenous fluconazole twice daily as a 60-min infusion. PK",
       "sampling: plasma at 0.5, 1, 2, 3, 4, 6, 8, and 12 h after the dose;",
       "CVVHDF effluent collected hourly over 12 h. Patients 3, 4, and 8 were",
       "sampled on the first day of treatment (initial profile); the other 7",
       "patients were sampled on day 3 or day 5 (steady-state profile)."
     ),
-    regions        = paste(
+    regions = paste(
       "Royal Brisbane and Women's Hospital, Queensland, Australia",
       "(28-month enrollment window). The University of Queensland REC and",
       "Royal Brisbane Hospital REC approved the protocol."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Patel 2011 Table 1. Dialysis prescription",
       "(uniform across patients): predilution filtration solution 2 L/h plus",
       "dialysate 1 L/h giving 3 L/h CVVHDF effluent, 999 mL/h fluid input /",

@@ -12,11 +12,11 @@ Yang_2026_lurasidone <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Age at the pharmacokinetic observation",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the pharmacokinetic observation",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F as a LINEAR centred effect, not the power model that Yang 2026 Section 2.5",
         "describes generically for continuous covariates: the final model equation printed in",
         "Section 3.3 is CL/F = 339 * [1 - 0.0125 * (AGE - 22)] * (1 + 0.477 * VPA) * exp(eta).",
@@ -30,14 +30,14 @@ Yang_2026_lurasidone <- function() {
         "outside 13-70 years should be avoided rather than clamped, since clamping would depart",
         "from the published model."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CONMED_VPA = list(
-      description        = "Concomitant valproate (valproic acid / sodium valproate) co-medication",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant valproate (valproic acid / sodium valproate) co-medication",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant valproate)",
-      notes              = paste(
+      notes = paste(
         "Yang 2026 Section 3.3: 'VPA denotes valproate comedication status (binary categorical",
         "variable): 0 = no comedication, 1 = comedication.' Enters CL/F multiplicatively as",
         "(1 + 0.477 * CONMED_VPA), i.e. a 47.7% INCREASE in apparent clearance and therefore",
@@ -52,38 +52,42 @@ Yang_2026_lurasidone <- function() {
         "APPARENT clearance of the TOTAL drug that the assay measures. Users should therefore not",
         "read this coefficient as a change in unbound exposure."
       ),
-      source_name        = "VPA"
+      source_name = "VPA"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "lurasidone", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "lurasidone",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "lurasidone", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "lurasidone",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 156,
+    species = "human",
+    n_subjects = 156,
     n_observations = 212,
-    n_studies      = 1,
-    age_range      = "13-70 years",
-    age_median     = "22 years",
-    weight_range   = "36-138 kg",
-    weight_median  = "65.5 kg",
+    n_studies = 1,
+    age_range = "13-70 years",
+    age_median = "22 years",
+    weight_range = "36-138 kg",
+    weight_median = "65.5 kg",
     sex_female_pct = 69.9,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "hospitalised psychiatric patients (ICD-10 diagnoses; schizophrenia and bipolar disorder)",
-    dose_range     = "20-120 mg once daily oral (median 60 mg/day)",
-    regions        = "China (Guangdong)",
-    age_groups     = "60 adolescents (13-17 years), 92 adults (18-64 years), 4 elderly (>= 65 years)",
-    co_medication  = "valproate 59/156 (28%); lithium carbonate 93/156 (44%)",
-    notes          = paste(
+    disease_state = "hospitalised psychiatric patients (ICD-10 diagnoses; schizophrenia and bipolar disorder)",
+    dose_range = "20-120 mg once daily oral (median 60 mg/day)",
+    regions = "China (Guangdong)",
+    age_groups = "60 adolescents (13-17 years), 92 adults (18-64 years), 4 elderly (>= 65 years)",
+    co_medication = "valproate 59/156 (28%); lithium carbonate 93/156 (44%)",
+    notes = paste(
       "Retrospective analysis of routine therapeutic drug monitoring (TDM) data from Han Chinese",
       "psychiatric inpatients at The Affiliated Brain Hospital of Guangzhou Medical University.",
       "Baseline demographics are Yang 2026 Table 1; sex is reported there as 47 male / 109 female",

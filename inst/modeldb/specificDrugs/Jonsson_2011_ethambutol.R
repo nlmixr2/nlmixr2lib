@@ -18,54 +18,54 @@ Jonsson_2011_ethambutol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    transit1    = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
-    depot       = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with theory-based fixed exponents on a 50 kg reference: 3/4 on CL/F and Q/F, 1 on V1/F and V2/F. Jonsson 2011 Results paragraph 'The initial inclusion of allometrically scaled body weight with fixed exponents on all volume and clearance terms resulted in a drop in OFV of 24 units (P < 0.001) and body weight was retained in the model.' Cohort mean WT 47 kg, range 29-86 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Allometric scaling with theory-based fixed exponents on a 50 kg reference: 3/4 on CL/F and Q/F, 1 on V1/F and V2/F. Jonsson 2011 Results paragraph 'The initial inclusion of allometrically scaled body weight with fixed exponents on all volume and clearance terms resulted in a drop in OFV of 24 units (P < 0.001) and body weight was retained in the model.' Cohort mean WT 47 kg, range 29-86 kg (Table 1).",
+      source_name = "WT"
     ),
     HIV_POS = list(
-      description        = "HIV-1 antibody-positive comorbidity indicator (1 = HIV-positive, 0 = HIV-negative).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 antibody-positive comorbidity indicator (1 = HIV-positive, 0 = HIV-negative).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = "13% HIV-positive in the Jonsson 2011 combined cohort (24 of 189 patients per Table 1). Multiplicative shift on bioavailability `f(transit1) <- 1 + e_hiv_pos_f * HIV_POS`; the Table 2 estimate of -0.154 corresponds to a 15.4% reduction in ethambutol bioavailability for HIV-positive subjects (Table 2 footnote a: 'Typical value of F = 1 - 0.154 x HIV, with HIV being 0 and 1 for negative and positive, respectively').",
-      source_name        = "HIV"
+      notes = "13% HIV-positive in the Jonsson 2011 combined cohort (24 of 189 patients per Table 1). Multiplicative shift on bioavailability `f(transit1) <- 1 + e_hiv_pos_f * HIV_POS`; the Table 2 estimate of -0.154 corresponds to a 15.4% reduction in ethambutol bioavailability for HIV-positive subjects (Table 2 footnote a: 'Typical value of F = 1 - 0.154 x HIV, with HIV being 0 and 1 for negative and positive, respectively').",
+      source_name = "HIV"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Values 1, 2, 3, 4 identify the dosing / sampling occasion within subject. The DP Marais SANTA Centre cohort (60 subjects) was sampled on four occasions over a 2-week window (paper Methods 'Patients' paragraph 2: 'Patients were sampled over a 2-week period on four occasions at least 2 weeks after the start of therapy'); the Brewelskloof Hospital cohort (129 subjects) was sampled on a single occasion. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the 4 IOV etas on log-CL. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
-      source_name        = "OCC"
+      notes = "Values 1, 2, 3, 4 identify the dosing / sampling occasion within subject. The DP Marais SANTA Centre cohort (60 subjects) was sampled on four occasions over a 2-week window (paper Methods 'Patients' paragraph 2: 'Patients were sampled over a 2-week period on four occasions at least 2 weeks after the start of therapy'); the Brewelskloof Hospital cohort (129 subjects) was sampled on a single occasion. Decomposed inside `model()` into binary indicators `oc1` .. `oc4` that multiplex the 4 IOV etas on log-CL. For single-occasion records pass OCC = 1 so the first IOV eta applies.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 189L,
-    n_studies      = 2L,
-    age_range      = "16-72 years (median 36)",
-    age_median     = "36 years",
-    weight_range   = "29-86 kg (median 47)",
-    weight_median  = "47 kg",
+    species = "human",
+    n_subjects = 189L,
+    n_studies = 2L,
+    age_range = "16-72 years (median 36)",
+    age_median = "36 years",
+    weight_range = "29-86 kg (median 47)",
+    weight_median = "47 kg",
     sex_female_pct = 46,
     race_ethnicity = c(Black = 16, Coloured = 83, White = 1),
     hiv_positive_pct = 13,
-    disease_state  = "Adults with pulmonary tuberculosis pooled across two South African centers (DP Marais SANTA Centre and Brewelskloof Hospital). 13% HIV-positive (24 of 189; HIV is a within-cohort comorbidity rather than the primary indication). 18% had BMIs < 16 kg/m^2 (severe malnutrition); 47% had BMIs >= 18.5 kg/m^2 (not malnourished).",
-    dose_range     = "Oral ethambutol 800-1500 mg daily, multiple-dose at steady state, combined with a standard antitubercular backbone (isoniazid, pyrazinamide, rifampin; streptomycin in some). DP Marais SANTA Centre: 5 days/week (drug-free Saturday/Sunday). Brewelskloof Hospital: daily.",
-    regions        = "South Africa (two centers near Cape Town and Worcester).",
-    notes          = "1,869 plasma ethambutol concentrations across 189 patients analyzed by NONMEM VI (FOCEI with interaction). Estimated baseline creatinine clearance 79 mL/min, range 23-150 (Cockcroft-Gault, truncated at 150); renal function was tested as a covariate on CL/F but not retained in the final model. Demographics from Table 1; final parameter estimates from Table 2."
+    disease_state = "Adults with pulmonary tuberculosis pooled across two South African centers (DP Marais SANTA Centre and Brewelskloof Hospital). 13% HIV-positive (24 of 189; HIV is a within-cohort comorbidity rather than the primary indication). 18% had BMIs < 16 kg/m^2 (severe malnutrition); 47% had BMIs >= 18.5 kg/m^2 (not malnourished).",
+    dose_range = "Oral ethambutol 800-1500 mg daily, multiple-dose at steady state, combined with a standard antitubercular backbone (isoniazid, pyrazinamide, rifampin; streptomycin in some). DP Marais SANTA Centre: 5 days/week (drug-free Saturday/Sunday). Brewelskloof Hospital: daily.",
+    regions = "South Africa (two centers near Cape Town and Worcester).",
+    notes = "1,869 plasma ethambutol concentrations across 189 patients analyzed by NONMEM VI (FOCEI with interaction). Estimated baseline creatinine clearance 79 mL/min, range 23-150 (Cockcroft-Gault, truncated at 150); renal function was tested as a covariate on CL/F but not retained in the final model. Demographics from Table 1; final parameter estimates from Table 2."
   )
 
   ini({

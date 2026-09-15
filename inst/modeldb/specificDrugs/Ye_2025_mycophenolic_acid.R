@@ -15,37 +15,37 @@ Ye_2025_mycophenolic_acid <- function() {
   # biological matrix. Verified against Ye 2025 Methods (plasma MPA by
   # LC-MS/MS) and the two-compartment-plus-lag structure in Results.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the final model. Power effect on the apparent peripheral volume of distribution: Vp/F = 1287.12 * (WT/41.13)^2.05. The normalising weight 41.13 kg is printed inside the covariate equation in Ye 2025 online supplemental table 5 and equals the model-group mean weight reported in Table 1 (41.13 +/- 11.31 kg). Ye 2025 online supplemental table 5 prints the relationship as V2,i = V2,pop * (body weight / 41.13) with the estimated coefficient omitted; the same table omits the estimated coefficient from every other screened relationship as well (e.g. V_i = V_pop * e^(dsDNA) with no theta), so the omission is that table's notation and not a claim that the exponent is 1. Table 3 supplies the coefficient as theta_v2,weight = 2.05 (RSE 11.99%, bootstrap 95% CI 0.39-2.60), which is read here as the power exponent -- see vignette Errata. Body weight was NOT retained on clearance, so steady-state AUC in this model does not depend on weight. Ye 2025 also screened gender, age, white blood cell count, blood neutrophil count, platelet count, lymphocyte count, haematocrit, haemoglobin, ALT, AST, alkaline phosphatase, total bilirubin, albumin, glucose, blood urea nitrogen, SLEDAI-2K and cystatin C; none was retained. Creatinine clearance was listed as a candidate but could not be computed because 24-hour urine collection was impractical in this largely outpatient cohort (Discussion).",
-      source_name        = "body weight"
+      notes = "The only covariate retained in the final model. Power effect on the apparent peripheral volume of distribution: Vp/F = 1287.12 * (WT/41.13)^2.05. The normalising weight 41.13 kg is printed inside the covariate equation in Ye 2025 online supplemental table 5 and equals the model-group mean weight reported in Table 1 (41.13 +/- 11.31 kg). Ye 2025 online supplemental table 5 prints the relationship as V2,i = V2,pop * (body weight / 41.13) with the estimated coefficient omitted; the same table omits the estimated coefficient from every other screened relationship as well (e.g. V_i = V_pop * e^(dsDNA) with no theta), so the omission is that table's notation and not a claim that the exponent is 1. Table 3 supplies the coefficient as theta_v2,weight = 2.05 (RSE 11.99%, bootstrap 95% CI 0.39-2.60), which is read here as the power exponent -- see vignette Errata. Body weight was NOT retained on clearance, so steady-state AUC in this model does not depend on weight. Ye 2025 also screened gender, age, white blood cell count, blood neutrophil count, platelet count, lymphocyte count, haematocrit, haemoglobin, ALT, AST, alkaline phosphatase, total bilirubin, albumin, glucose, blood urea nitrogen, SLEDAI-2K and cystatin C; none was retained. Creatinine clearance was listed as a candidate but could not be computed because 24-hour urine collection was impractical in this largely outpatient cohort (Discussion).",
+      source_name = "body weight"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
     n_observations = 1170L,
-    n_profiles     = 146L,
-    age_mean       = "12.22 +/- 2.33 years (model group); 13.90 +/- 2.18 years (external validation group)",
-    weight_mean    = "41.13 +/- 11.31 kg (model group); 39.54 +/- 7.14 kg (external validation group)",
+    n_profiles = 146L,
+    age_mean = "12.22 +/- 2.33 years (model group); 13.90 +/- 2.18 years (external validation group)",
+    weight_mean = "41.13 +/- 11.31 kg (model group); 39.54 +/- 7.14 kg (external validation group)",
     sex_female_pct = 90.2,
     race_ethnicity = "Not tabulated. Single-centre Chinese study (The First Affiliated Hospital, Sun Yat-sen University, Guangzhou); candidate SNPs were selected on a minor-allele-frequency > 5% threshold in Han Chinese reference data, so the cohort is Han Chinese.",
-    disease_state  = "Paediatric lupus nephritis. All patients met the 2019 American College of Rheumatology SLE classification criteria and the diagnostic criteria for lupus nephritis (persistent proteinuria >= 0.5 g/day, active cellular casts, or biopsy evidence). SLEDAI-2K < 5 (inactive) in 78/146 profiles (53.4%), >= 5 (active) in 44/146 (30.1%), not graded in 24/146 (16.4%). Mean plasma albumin 41.76 g/L, with only 5/146 profiles (3.4%) below the 31 g/L threshold at which free rather than total MPA monitoring is recommended.",
-    dose_range     = "Oral mycophenolate mofetil 125-750 mg every 12 hours as capsule (CellCept, 41 profiles) or dispersible tablet (Saikeping, 105 profiles); mean total daily dose 739.81 +/- 247.37 mg/day. Doses in this model file are MMF mass in mg with no MMF-to-MPA molecular-weight conversion applied.",
-    regions        = "Single centre: The First Affiliated Hospital, Sun Yat-sen University, Guangzhou, China.",
-    co_medication  = "Corticosteroids in 51/51 patients (100%), mean 12.86 mg/kg/day; tacrolimus 9/51 (17.6%); hydroxychloroquine 18/51 (35.3%); biological agents 7/51 (13.7%).",
-    notes          = "Prospective study, September 2021 - January 2023, with a separate nine-patient external validation cohort recruited under the same criteria (MDPE 9.09%, MAPE 24.82%, F20 52.5%, F30 72.5%). Sampling was at steady state (MMF for at least 7 days; mean treatment duration 48.66 days) pre-dose and at 0.5, 1.5, 2.5, 4, 6, 9 and 12 hours post-dose -- eight samples per profile, consistent with the reported 1170 samples across 146 profiles (1170/146 = 8.01). Plasma total MPA was assayed by validated LC-MS/MS, calibration range 0.1-50 ug/mL, LLOQ 0.1 ug/mL. Estimation was first-order conditional estimation-extended least squares in Phoenix NLME 8.3. Twenty-nine SNPs across 13 candidate genes were genotyped and eight variants in UGT1A9 (rs6717546, rs13418420, rs7586110, rs2070959, rs6759892), UGT2B7 (rs7438135), ABCC2 (rs7910642) and CES1 (rs12149373) were associated with MPA exposure in the univariate analysis, but no genetic covariate survived the stepwise popPK covariate search and none appears in the final model. Enterohepatic recirculation of MPA could not be modelled (no samples around the second peak, few patients with a pronounced EHC process). Baseline demographics per Ye 2025 Table 1; final-model parameter estimates per Ye 2025 Table 3; covariate functional form per Ye 2025 online supplemental table 5."
+    disease_state = "Paediatric lupus nephritis. All patients met the 2019 American College of Rheumatology SLE classification criteria and the diagnostic criteria for lupus nephritis (persistent proteinuria >= 0.5 g/day, active cellular casts, or biopsy evidence). SLEDAI-2K < 5 (inactive) in 78/146 profiles (53.4%), >= 5 (active) in 44/146 (30.1%), not graded in 24/146 (16.4%). Mean plasma albumin 41.76 g/L, with only 5/146 profiles (3.4%) below the 31 g/L threshold at which free rather than total MPA monitoring is recommended.",
+    dose_range = "Oral mycophenolate mofetil 125-750 mg every 12 hours as capsule (CellCept, 41 profiles) or dispersible tablet (Saikeping, 105 profiles); mean total daily dose 739.81 +/- 247.37 mg/day. Doses in this model file are MMF mass in mg with no MMF-to-MPA molecular-weight conversion applied.",
+    regions = "Single centre: The First Affiliated Hospital, Sun Yat-sen University, Guangzhou, China.",
+    co_medication = "Corticosteroids in 51/51 patients (100%), mean 12.86 mg/kg/day; tacrolimus 9/51 (17.6%); hydroxychloroquine 18/51 (35.3%); biological agents 7/51 (13.7%).",
+    notes = "Prospective study, September 2021 - January 2023, with a separate nine-patient external validation cohort recruited under the same criteria (MDPE 9.09%, MAPE 24.82%, F20 52.5%, F30 72.5%). Sampling was at steady state (MMF for at least 7 days; mean treatment duration 48.66 days) pre-dose and at 0.5, 1.5, 2.5, 4, 6, 9 and 12 hours post-dose -- eight samples per profile, consistent with the reported 1170 samples across 146 profiles (1170/146 = 8.01). Plasma total MPA was assayed by validated LC-MS/MS, calibration range 0.1-50 ug/mL, LLOQ 0.1 ug/mL. Estimation was first-order conditional estimation-extended least squares in Phoenix NLME 8.3. Twenty-nine SNPs across 13 candidate genes were genotyped and eight variants in UGT1A9 (rs6717546, rs13418420, rs7586110, rs2070959, rs6759892), UGT2B7 (rs7438135), ABCC2 (rs7910642) and CES1 (rs12149373) were associated with MPA exposure in the univariate analysis, but no genetic covariate survived the stepwise popPK covariate search and none appears in the final model. Enterohepatic recirculation of MPA could not be modelled (no samples around the second peak, few patients with a pronounced EHC process). Baseline demographics per Ye 2025 Table 1; final-model parameter estimates per Ye 2025 Table 3; covariate functional form per Ye 2025 online supplemental table 5."
   )
 
   ini({

@@ -26,7 +26,7 @@ Altcheh_2023_benznidazole <- function() {
     sep = " "
   )
   vignette <- "Altcheh_2023_benznidazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Benznidazole was measured in whole dried blood
@@ -34,17 +34,17 @@ Altcheh_2023_benznidazole <- function() {
   # plasma (Altcheh 2023 Methods, "Measurement of benznidazole in blood
   # samples"), so the central compartment specimen is blood.
   compartmentData <- list(
-    depot   = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "benznidazole", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Altcheh 2023",
         "Results, 'Covariate modeling'). Enters CL/F allometrically as",
         "(WT/70)^0.75 with the exponent FIXED at the theory-based 3/4",
@@ -57,7 +57,7 @@ Altcheh_2023_benznidazole <- function() {
         "following each child's own percentile (Altcheh 2023 Methods,",
         "'Covariate model')."
       ),
-      source_name        = "Wt"
+      source_name = "Wt"
     )
   )
 
@@ -71,11 +71,11 @@ Altcheh_2023_benznidazole <- function() {
   # given register entries here because no equation uses them.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on V/F and CL/F. Altcheh 2023 Results: 'Addition of age",
         "as a covariate for V/F did not improve the fit beyond the effect",
         "of weight.' CL/F correlates strongly with age (Fig 4) but only",
@@ -83,27 +83,27 @@ Altcheh_2023_benznidazole <- function() {
         "retained covariate. Register canonical carries years; the paper",
         "tabulates age in months (Table 1)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'gender' and not retained. Neither Cmax nor trough",
         "concentrations differed between girls and boys (Mann-Whitney",
         "p > 0.05; Altcheh 2023 Results). Cohort was 47/81 (58.0%) female",
         "(Table 1)."
       ),
-      source_name        = "gender"
+      source_name = "gender"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on CL/F via an empirical sigmoidal PMA-CL/F relationship",
         "and not retained; the allometric weight model fit marginally",
         "better and was chosen for parsimony (Altcheh 2023 Results,",
@@ -113,21 +113,21 @@ Altcheh_2023_benznidazole <- function() {
         "is time-varying and carried in MONTHS, matching the register",
         "default."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 81L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 81L,
+    n_studies = 1L,
     n_observations = 383L,
-    age_range      = "0-12 years (14 newborns < 1 month of age; 41/81 under 2 years)",
-    age_median     = "16 months (IQR 2.76-75.6); mean 42.3 months (SD 47.3)",
-    weight_range   = "not reported as a range; median 12 kg (IQR 8.1-23)",
-    weight_mean    = "16.69 kg (SD 12.8)",
+    age_range = "0-12 years (14 newborns < 1 month of age; 41/81 under 2 years)",
+    age_median = "16 months (IQR 2.76-75.6); mean 42.3 months (SD 47.3)",
+    weight_range = "not reported as a range; median 12 kg (IQR 8.1-23)",
+    weight_mean = "16.69 kg (SD 12.8)",
     sex_female_pct = round(100 * 47 / 81, 1),
-    disease_state  = paste(
+    disease_state = paste(
       "Children 0-12 years with Chagas disease (Trypanosoma cruzi",
       "infection), treatment-naive, all asymptomatic without cardiac",
       "symptoms or other organ involvement. Diagnosis by at least two",
@@ -138,14 +138,14 @@ Altcheh_2023_benznidazole <- function() {
       "cardiovascular / hepatic / neurologic / endocrine or other major",
       "systemic disease, immunocompromise."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral benznidazole 7.5 mg/kg/day divided into two daily doses for",
       "60 days (actual administered dose mean 7.35 mg/kg, SD 0.65;",
       "Table 1). Formulation assigned by a 14 kg enrolment weight",
       "cut-off: 12.5 mg dispersible pediatric tablet below, 100 mg",
       "non-dispersible tablet at or above (LAFEPE, Brazil)."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Sparse design, 5 blood samples per child at random times within",
       "pre-specified windows: Day 0 at 2-5 h after the first dose; Day 7",
       "and Day 30 at steady state, each between pre-dose and 8 h",
@@ -156,12 +156,12 @@ Altcheh_2023_benznidazole <- function() {
       "Whole dried blood spots on Whatman 903 paper, LC-ESI-MS/MS,",
       "linear 50-20,000 ng/mL, LLOQ 50 ng/mL."
     ),
-    regions        = paste(
+    regions = paste(
       "Five pediatric centers in Argentina (PEDCHAGAS Network), all in",
       "areas with certified vector control to avoid confounding by",
       "re-infection. Enrolment May 2011 - August 2012."
     ),
-    notes          = paste(
+    notes = paste(
       "Open-label single-group interventional trial, ClinicalTrials.gov",
       "NCT01549236. Baseline demographics from Altcheh 2023 Table 1;",
       "final parameter estimates from Table 2 and the three displayed",

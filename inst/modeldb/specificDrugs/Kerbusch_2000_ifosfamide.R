@@ -17,26 +17,26 @@ Kerbusch_2000_ifosfamide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central  = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
     enz_pool = list(analyte = "CYP3A4", units = "umol", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    age_range      = "23 to 72 years",
-    age_median     = "49 years (mean)",
-    weight_range   = "49 to 82 kg",
-    weight_median  = "59 kg (mean)",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "23 to 72 years",
+    age_median = "49 years (mean)",
+    weight_range = "49 to 82 kg",
+    weight_median = "59 kg (mean)",
     sex_female_pct = 40,
     race_ethnicity = "not reported",
-    disease_state  = "Soft tissue sarcoma (rhabdomyosarcoma n=3, neurofibrosarcoma n=1, osteosarcoma n=3, synoviumsarcoma n=2, leiomyosarcoma n=4, endometriumsarcoma n=2).",
-    dose_range     = "9 or 12 g/m^2 ifosfamide as a 72-h continuous IV infusion, once every 4 weeks (one patient stopped at 48 h due to severe neurotoxicity, receiving 66% of the planned dose).",
-    regions        = "Netherlands (Netherlands Cancer Institute, Amsterdam; Leiden University Medical Center)",
-    notes          = "Open non-randomised phase II trial. Baseline demographics from Kerbusch 2000 Results paragraph 1. Comedication: mesna and bicarbonate (supportive care), anti-emetics, methylene blue (neurotoxicity antidote), plus 21 other drugs (mean 7 per patient) including anticoagulants, H2 antagonists, glucocorticosteroids, tricyclic antidepressants; none reported as CYP3A4 inhibitors or inducers."
+    disease_state = "Soft tissue sarcoma (rhabdomyosarcoma n=3, neurofibrosarcoma n=1, osteosarcoma n=3, synoviumsarcoma n=2, leiomyosarcoma n=4, endometriumsarcoma n=2).",
+    dose_range = "9 or 12 g/m^2 ifosfamide as a 72-h continuous IV infusion, once every 4 weeks (one patient stopped at 48 h due to severe neurotoxicity, receiving 66% of the planned dose).",
+    regions = "Netherlands (Netherlands Cancer Institute, Amsterdam; Leiden University Medical Center)",
+    notes = "Open non-randomised phase II trial. Baseline demographics from Kerbusch 2000 Results paragraph 1. Comedication: mesna and bicarbonate (supportive care), anti-emetics, methylene blue (neurotoxicity antidote), plus 21 other drugs (mean 7 per patient) including anticoagulants, H2 antagonists, glucocorticosteroids, tricyclic antidepressants; none reported as CYP3A4 inhibitors or inducers."
   )
 
   ini({

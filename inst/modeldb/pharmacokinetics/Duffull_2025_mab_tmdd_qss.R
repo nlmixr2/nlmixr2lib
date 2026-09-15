@@ -1,8 +1,8 @@
 Duffull_2025_mab_tmdd_qss <- function() {
   description <- "Two-compartment target-mediated drug disposition (TMDD) model with quasi-steady-state target binding confined to the central compartment, for an unnamed monoclonal antibody (mAb) and its soluble target; case example 1 of the Duffull 2025 model-instability tutorial (Equations 1-3; Table 2 'Nominal value' column). Free antibody exchanges with a peripheral compartment by first-order rate constants and is removed both by linear clearance and by saturable target-mediated internalisation of the antibody-target complex. The total target (free target plus antibody-target complex) is a dynamic state with zero-order synthesis and first-order degradation, initialised at its drug-free steady state ksyn*Vc/kdeg. Cc is the free antibody concentration and Ctotal_target is the total target concentration, both nmol/L. This is the FULL model that the tutorial shows to be structurally identifiable under a rich design but NOT deterministically identifiable under the reduced clinical design (Km relative standard error 1495.65%); the target-saturated simplification that the authors adopted instead is packaged separately as Duffull_2025_mab_tmdd_simplified. Parameter values are the nominal set used for the Fisher-information evaluations, not a fit to observed patient data: the tutorial's datasets were generated under the stated sampling designs."
-  reference   <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
-  vignette    <- "Duffull_2025_tmdd_model_instability"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  reference <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
+  vignette <- "Duffull_2025_tmdd_model_instability"
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte and units are SOURCE-CONFIRMED from the
@@ -15,9 +15,24 @@ Duffull_2025_mab_tmdd_qss <- function() {
   # concentrations" and "total target concentrations"). verified = FALSE
   # therefore records the unverified specimen, not an unverified analyte.
   compartmentData <- list(
-    central      = list(analyte = "monoclonal antibody (unnamed), free",       units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "monoclonal antibody (unnamed), free",       units = "nmol", specimen = "plasma", verified = FALSE),
-    total_target = list(analyte = "target receptor, free plus antibody-bound", units = "nmol", specimen = "plasma", verified = FALSE)
+    central = list(
+      analyte = "monoclonal antibody (unnamed), free",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1 = list(
+      analyte = "monoclonal antibody (unnamed), free",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    total_target = list(
+      analyte = "target receptor, free plus antibody-bound",
+      units = "nmol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
@@ -30,14 +45,14 @@ Duffull_2025_mab_tmdd_qss <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "human (implied, not stated: the source frames the case example as a monoclonal antibody with sparse sampling 'common in mAb clinical trials')",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    disease_state  = "Not reported. The source is a pharmacometric tutorial on resolving model instability; neither the antibody nor its target is named, and no demographics are given.",
-    dose_range     = "Single intravenous bolus into the central compartment (Duffull 2025 Section 2.1.5). The dose amount is not stated in the text; Figure 3 shows the free-drug amount in the central compartment starting at 10000 nmol, so the simulated dose is 10 umol.",
-    samples        = "Complete sampling design: 640 free drug and 720 total target concentrations from 80 subjects. Reduced sampling design: 400 free drug and 480 total target concentrations from the same 80 subjects (Duffull 2025 Section 2.1.1).",
-    designs        = "Hypothetical rich design used for the structural-identifiability template data set: 0, 0.01, 0.2, 0.6, 3, 50, 64, 81, 91 h post-dose (9 times). Reduced clinical design used for the deterministic-identifiability analysis: 0, 0.5, 3, 5, 12, 24 h post-dose (6 times) (Duffull 2025 Section 2.1.3).",
-    notes          = "The tutorial's datasets are SIMULATED, not observed: the reported observation counts are exactly the sampling grids times 80 subjects (80 x 9 = 720 total target, 80 x 6 = 480 total target), and the free-drug counts are one time point fewer in each case (80 x 8 = 640, 80 x 5 = 400). The model structure was 'adapted from a previously published TMDD example in the tutorial for $DESIGN in NONMEM' (Duffull 2025 Section 2.1.1, reference [24] = Bauer 2019), which is not on disk; the structure and every parameter value used here come from Duffull 2025 itself (Equations 1-3 and Table 2), so no value is inherited from the unavailable upstream tutorial."
+    species = "human (implied, not stated: the source frames the case example as a monoclonal antibody with sparse sampling 'common in mAb clinical trials')",
+    n_subjects = 80L,
+    n_studies = 1L,
+    disease_state = "Not reported. The source is a pharmacometric tutorial on resolving model instability; neither the antibody nor its target is named, and no demographics are given.",
+    dose_range = "Single intravenous bolus into the central compartment (Duffull 2025 Section 2.1.5). The dose amount is not stated in the text; Figure 3 shows the free-drug amount in the central compartment starting at 10000 nmol, so the simulated dose is 10 umol.",
+    samples = "Complete sampling design: 640 free drug and 720 total target concentrations from 80 subjects. Reduced sampling design: 400 free drug and 480 total target concentrations from the same 80 subjects (Duffull 2025 Section 2.1.1).",
+    designs = "Hypothetical rich design used for the structural-identifiability template data set: 0, 0.01, 0.2, 0.6, 3, 50, 64, 81, 91 h post-dose (9 times). Reduced clinical design used for the deterministic-identifiability analysis: 0, 0.5, 3, 5, 12, 24 h post-dose (6 times) (Duffull 2025 Section 2.1.3).",
+    notes = "The tutorial's datasets are SIMULATED, not observed: the reported observation counts are exactly the sampling grids times 80 subjects (80 x 9 = 720 total target, 80 x 6 = 480 total target), and the free-drug counts are one time point fewer in each case (80 x 8 = 640, 80 x 5 = 400). The model structure was 'adapted from a previously published TMDD example in the tutorial for $DESIGN in NONMEM' (Duffull 2025 Section 2.1.1, reference [24] = Bauer 2019), which is not on disk; the structure and every parameter value used here come from Duffull 2025 itself (Equations 1-3 and Table 2), so no value is inherited from the unavailable upstream tutorial."
   )
 
   ini({

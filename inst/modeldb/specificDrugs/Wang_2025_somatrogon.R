@@ -10,18 +10,18 @@ Wang_2025_somatrogon <- function() {
   # `cHat[i] = x[2,i]/theta[i,3]` (central amount / Vc), i.e. compartment 1 =
   # depot (subcutaneous injection site), 2 = central (plasma), 3 = peripheral.
   compartmentData <- list(
-    depot       = list(analyte = "somatrogon", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "somatrogon", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "somatrogon", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL/F, Q/F, Vc/F and Vp/F with reference weight 15 kg.",
         "The reference value is not printed in the article; it is read from the",
         "NONMEM control stream shipped as Wang 2025 Data S3, which defines",
@@ -32,14 +32,14 @@ Wang_2025_somatrogon <- function() {
         "so the article and Stan code alone do not disclose the normalizer.",
         "Both exponents are estimated, not fixed at the 0.75/1 allometric defaults."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug (anti-somatrogon) antibody positive status at the time of the observation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug (anti-somatrogon) antibody positive status at the time of the observation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = paste(
+      notes = paste(
         "Time-varying: the article's ADAT column is the ADA status at each",
         "observation, dichotomized positive (1) / negative (0) (Methods, 'Modeling",
         "approach'). ADA-positive occasions carry both a proportional shift in CL/F",
@@ -53,25 +53,25 @@ Wang_2025_somatrogon <- function() {
         "the first year of dosing (article Table 3); only the first year of",
         "observations was used for estimation."
       ),
-      source_name        = "ADAT"
+      source_name = "ADAT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 42,
+    n_studies = 1,
     n_observations = 560,
-    age_range      = "3-11 years",
-    age_median     = "5.5 years",
-    weight_range   = "10-26.3 kg",
-    weight_median  = "14.8 kg",
+    age_range = "3-11 years",
+    age_median = "5.5 years",
+    weight_range = "10-26.3 kg",
+    weight_median = "14.8 kg",
     sex_female_pct = 33.3,
     race_ethnicity = c(White = 95.2, `African American` = 2.4, `Other or Missing` = 2.4),
-    disease_state  = "Pediatric growth hormone deficiency (GHD)",
-    dose_range     = "3.05-17.5 mg/week (0.228-0.711 mg/kg/week) by once-weekly subcutaneous injection; median 6.74 mg/week (0.482 mg/kg/week)",
-    regions        = "Not reported in the article",
-    notes          = paste(
+    disease_state = "Pediatric growth hormone deficiency (GHD)",
+    dose_range = "3.05-17.5 mg/week (0.228-0.711 mg/kg/week) by once-weekly subcutaneous injection; median 6.74 mg/week (0.482 mg/kg/week)",
+    regions = "Not reported in the article",
+    notes = paste(
       "Baseline demographics from Wang 2025 Table 3, column 'Phase II (004)'.",
       "Posterior sampling used the 560 observations from the 42 pediatric",
       "participants of the Phase II study CP-4-004 (Results, first paragraph).",

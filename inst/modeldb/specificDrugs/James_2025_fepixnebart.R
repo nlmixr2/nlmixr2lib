@@ -15,51 +15,51 @@ James_2025_fepixnebart <- function() {
   paper_specific_compartments <- c("epiregulin")
 
   compartmentData <- list(
-    central     = list(analyte = "fepixnebart", units = "mg",    specimen = "serum",          verified = TRUE),
-    peripheral1 = list(analyte = "fepixnebart", units = "mg",    specimen = "not applicable", verified = TRUE),
-    epiregulin  = list(analyte = "epiregulin",  units = "pg/mL", specimen = "serum",          verified = TRUE)
+    central = list(analyte = "fepixnebart", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "fepixnebart", units = "mg", specimen = "not applicable", verified = TRUE),
+    epiregulin = list(analyte = "epiregulin", units = "pg/mL", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q, Vc and Vp with a reference individual of 70 kg (James 2025 Table 3 footnote b and Sect. 2.4). All four exponents were ESTIMATED rather than fixed at their theoretical 0.75 / 1 values: estimating the Vc and Vp exponents dropped the objective function by 31.18 points (Sect. 3.3). Cohort mean 90.4 kg, range 47-148 kg (Table 1).",
-      source_name        = "Body weight"
+      notes = "Allometric scaling on CL, Q, Vc and Vp with a reference individual of 70 kg (James 2025 Table 3 footnote b and Sect. 2.4). All four exponents were ESTIMATED rather than fixed at their theoretical 0.75 / 1 values: estimating the Vc and Vp exponents dropped the objective function by 31.18 points (Sect. 3.3). Cohort mean 90.4 kg, range 47-148 kg (Table 1).",
+      source_name = "Body weight"
     ),
     SEXF = list(
-      description        = "Sex: 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex: 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Female sex raises both CL and Vc. James 2025 Table 3 footnotes c and d give the log-scale increments directly: CLSEX = 0.153 and VCSEX = 0.162 for female patients, 0 for male patients; the Table 3 body reports the corresponding fold changes exp(0.153) = 1.17 on CL and exp(0.162) = 1.18 on Vc. Cohort 53.1% female (Table 1).",
-      source_name        = "SEX"
+      notes = "Female sex raises both CL and Vc. James 2025 Table 3 footnotes c and d give the log-scale increments directly: CLSEX = 0.153 and VCSEX = 0.162 for female patients, 0 for male patients; the Table 3 body reports the corresponding fold changes exp(0.153) = 1.17 on CL and exp(0.162) = 1.18 on Vc. Cohort 53.1% female (Table 1).",
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Body-surface-area-adjusted glomerular filtration rate estimated with the six-variable Modification of Diet in Renal Disease (MDRD-6) study equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Body-surface-area-adjusted glomerular filtration rate estimated with the six-variable Modification of Diet in Renal Disease (MDRD-6) study equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "MDRD-6 estimated GFR, BSA-normalized (James 2025 Sect. 2.5). Enters the log-scale CL as 0.21 * log(CRCL / 88) / (log(119) - log(65)), i.e. a log-linear term rescaled so the coefficient spans the 95% percentile range of the observed GFR: 88 is the cohort median and 65-119 mL/min/1.73 m^2 the 95% range (Table 3 footnote c). The Table 3 body reports the resulting fold change across that range, 1.23. Cohort mean 88.6, range 52.0-138 mL/min/1.73 m^2 (Table 1).",
-      source_name        = "GFR"
+      notes = "MDRD-6 estimated GFR, BSA-normalized (James 2025 Sect. 2.5). Enters the log-scale CL as 0.21 * log(CRCL / 88) / (log(119) - log(65)), i.e. a log-linear term rescaled so the coefficient spans the 95% percentile range of the observed GFR: 88 is the cohort median and 65-119 mL/min/1.73 m^2 the 95% range (Table 3 footnote c). The Table 3 body reports the resulting fold change across that range, 1.23. Cohort mean 88.6, range 52.0-138 mL/min/1.73 m^2 (Table 1).",
+      source_name = "GFR"
     ),
     DIS_DPN = list(
-      description        = "Pain indication: 1 = painful diabetic peripheral neuropathic pain (DPNP), 0 = other indication",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pain indication: 1 = painful diabetic peripheral neuropathic pain (DPNP), 0 = other indication",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (chronic low back pain, the reference indication)",
-      notes              = "One of the two non-reference levels of the three-level pain indication in James 2025 (CLBP reference, DPNP, OA). Table 3 footnote d: VCSTUDY = -0.102 for DPNP, additive on the log scale, giving the tabulated fold change exp(-0.102) = 0.903 on Vc. n = 124 of 386 (Table 1). Paired with DIS_OA; both are 0 for the CLBP reference group.",
-      source_name        = "Disease (study)"
+      notes = "One of the two non-reference levels of the three-level pain indication in James 2025 (CLBP reference, DPNP, OA). Table 3 footnote d: VCSTUDY = -0.102 for DPNP, additive on the log scale, giving the tabulated fold change exp(-0.102) = 0.903 on Vc. n = 124 of 386 (Table 1). Paired with DIS_OA; both are 0 for the CLBP reference group.",
+      source_name = "Disease (study)"
     ),
     DIS_OA = list(
-      description        = "Pain indication: 1 = osteoarthritis knee pain, 0 = other indication",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pain indication: 1 = osteoarthritis knee pain, 0 = other indication",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (chronic low back pain, the reference indication)",
-      notes              = "The second non-reference level of the three-level pain indication. Table 3 footnote d: VCSTUDY = 0.00735 for OA, giving the tabulated fold change exp(0.00735) = 1.01 on Vc -- an essentially null effect whose 408.2% RSE the paper reports without comment; it is retained because the paper retained the whole three-level term. n = 113 of 386 (Table 1). Paired with DIS_DPN.",
-      source_name        = "Disease (study)"
+      notes = "The second non-reference level of the three-level pain indication. Table 3 footnote d: VCSTUDY = 0.00735 for OA, giving the tabulated fold change exp(0.00735) = 1.01 on Vc -- an essentially null effect whose 408.2% RSE the paper reports without comment; it is retained because the paper retained the whole three-level term. n = 113 of 386 (Table 1). Paired with DIS_DPN.",
+      source_name = "Disease (study)"
     )
   )
 
@@ -70,33 +70,33 @@ James_2025_fepixnebart <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL (dOFV -3.33, p = 0.0680), EC50 (dOFV -0.48, p = 0.4888) and Vc (dOFV -2.54, p = 0.1108); not retained (James 2025 Table 2, runs 301 / 307 / 312). Cohort mean 59.4 years, range 20-84."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL (dOFV -3.33, p = 0.0680), EC50 (dOFV -0.48, p = 0.4888) and Vc (dOFV -2.54, p = 0.1108); not retained (James 2025 Table 2, runs 301 / 307 / 312). Cohort mean 59.4 years, range 20-84."
     ),
     ADA_POS = list(
       description = "Time-varying treatment-emergent anti-drug antibody status: 1 = ADA-positive at the current time, 0 = ADA-negative",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a TIME-VARYING covariate on CL (dOFV -2.73, p = 0.0983) and Vc (dOFV -0.02, p = 0.9004); not retained (James 2025 Table 2, runs 304 / 315). 70 of 255 fepixnebart-treated participants developed treatment-emergent ADAs, 69 of them neutralizing, highest titer 1:2560 (Sect. 3.2) -- so the negative finding is not for want of ADA-positive subjects."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a TIME-VARYING covariate on CL (dOFV -2.73, p = 0.0983) and Vc (dOFV -0.02, p = 0.9004); not retained (James 2025 Table 2, runs 304 / 315). 70 of 255 fepixnebart-treated participants developed treatment-emergent ADAs, 69 of them neutralizing, highest titer 1:2560 (Sect. 3.2) -- so the negative finding is not for want of ADA-positive subjects."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 386L,
-    n_studies      = 3L,
-    age_range      = "20-84 years",
-    age_mean       = "59.4 years",
-    weight_range   = "47-148 kg",
-    weight_mean    = "90.4 kg",
+    species = "human",
+    n_subjects = 386L,
+    n_studies = 3L,
+    age_range = "20-84 years",
+    age_mean = "59.4 years",
+    weight_range = "47-148 kg",
+    weight_mean = "90.4 kg",
     sex_female_pct = 53.1,
-    disease_state  = "Chronic pain: chronic low back pain (n = 149), painful diabetic peripheral neuropathy (n = 124), and osteoarthritis knee pain (n = 113).",
+    disease_state = "Chronic pain: chronic low back pain (n = 149), painful diabetic peripheral neuropathy (n = 124), and osteoarthritis knee pain (n = 113).",
     renal_function = "MDRD-6 estimated GFR mean 88.6 mL/min/1.73 m^2, range 52.0-138 (Table 1).",
-    dose_range     = "750 mg intravenous loading dose followed by three 500 mg intravenous doses every 2 weeks (4 infusions in total), each infused over 1 h.",
-    n_observations_drug       = 2444L,
+    dose_range = "750 mg intravenous loading dose followed by three 500 mg intravenous doses every 2 weeks (4 infusions in total), each infused over 1 h.",
+    n_observations_drug = 2444L,
     n_observations_epiregulin = 2436L,
-    notes          = "Pooled from three 26-week phase 2 proof-of-concept, randomized, double-blind, placebo-controlled studies (NCT04456686 osteoarthritis, NCT04476108 DPNP, NCT04529096 CLBP), each with an 8-week double-blind treatment period and an 18-week follow-up. Participants were randomized 2:1 to fepixnebart or placebo, so the 386-subject dataset includes placebo recipients who contribute epiregulin baseline data; 255 received fepixnebart. Demographics from James 2025 Table 1 (mean (range))."
+    notes = "Pooled from three 26-week phase 2 proof-of-concept, randomized, double-blind, placebo-controlled studies (NCT04456686 osteoarthritis, NCT04476108 DPNP, NCT04529096 CLBP), each with an 8-week double-blind treatment period and an 18-week follow-up. Participants were randomized 2:1 to fepixnebart or placebo, so the 386-subject dataset includes placebo recipients who contribute epiregulin baseline data; 255 received fepixnebart. Demographics from James 2025 Table 1 (mean (range))."
   )
 
   ini({

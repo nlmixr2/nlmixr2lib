@@ -27,27 +27,27 @@ Dinh_2022_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation.",
         "The review's abbreviation list glosses 'CLcrCG' with no",
         "normalisation mentioned, so raw mL/min is used here."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNCENTRED EXPONENTIAL FORM. Zhang 2025 Table 3 prints",
         "CL = 4.79 * e^(0.00642 * CLcr) with no centring term, so the",
         "tabulated typical clearance of 4.79 L/h is the value at",
@@ -67,7 +67,7 @@ Dinh_2022_imipenem <- function() {
         "extrapolation is unguarded. Stored under the canonical CRCL",
         "column."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
@@ -75,31 +75,51 @@ Dinh_2022_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    AGE  = list(description = "Age",               units = "years",    type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 57.5 +/- 19.9 years (Table 1)."),
-    SEXF = list(description = "Female sex",        units = "(binary)", type = "binary",     notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 6/24 female (Table 1)."),
-    WT   = list(description = "Actual body weight", units = "kg",      type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 51.3 +/- 8.6 kg (Table 1)."),
-    ALB  = list(description = "Serum albumin",     units = "g/L",      type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 57.5 +/- 19.9 years (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort 6/24 female (Table 1)."
+    ),
+    WT = list(
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 51.3 +/- 8.6 kg (Table 1)."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 24L,
-    n_studies        = 1L,
-    age_mean         = "57.5 +/- 19.9 years (mean +/- SD)",
-    weight_mean      = "51.3 +/- 8.6 kg (mean +/- SD)",
-    sex_female_pct   = 25.0,
-    race_ethnicity   = NULL,
-    disease_state    = "Critically ill adults receiving imipenem-cilastatin",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_mean = "57.5 +/- 19.9 years (mean +/- SD)",
+    weight_mean = "51.3 +/- 8.6 kg (mean +/- SD)",
+    sex_female_pct = 25.0,
+    race_ethnicity = NULL,
+    disease_state = "Critically ill adults receiving imipenem-cilastatin",
+    dose_range = paste(
       "500 mg imipenem intravenously every 6 or 8 h, or 1000 mg every 8 h",
       "(Zhang 2025 Supplementary Table S1). Zhang 2025 Results notes this",
       "as one of five studies reporting a maximum daily dose of 4000 mg,",
       "above the 1000-2000 mg/day the review gives as the usual",
       "recommendation. The infusion duration is not reported."
     ),
-    regions          = "Vietnam",
+    regions = "Vietnam",
     n_concentrations = 139L,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 14); 24 patients, 139",
       "samples, sex split 18 male / 6 female. Blood was sampled at 0,",
       "0.25, 0.67, 1.5 and 7 h after administration and assayed by HPLC-UV",

@@ -14,8 +14,8 @@ Guo_2016_taurocholate_schh <- function() {
 
   compartmentData <- list(
     buffer = list(analyte = "taurocholate (d8-TCA)", units = "pmol", specimen = "administration site", verified = TRUE),
-    cells  = list(analyte = "taurocholate (d8-TCA)", units = "pmol", specimen = "tissue", verified = TRUE),
-    bile   = list(analyte = "taurocholate (d8-TCA)", units = "pmol", specimen = "bile", verified = TRUE)
+    cells = list(analyte = "taurocholate (d8-TCA)", units = "pmol", specimen = "tissue", verified = TRUE),
+    bile = list(analyte = "taurocholate (d8-TCA)", units = "pmol", specimen = "bile", verified = TRUE)
   )
 
   covariateData <- list(

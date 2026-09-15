@@ -8,76 +8,76 @@ Ravva_2009_varenicline <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "varenicline", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "varenicline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F with reference 100 mL/min (Ravva 2009 Table 4 final-model q_CRCL; the reference equals the population-typical 'normal renal function' value cited in the Discussion). Estimated from serum creatinine, total body weight, age and sex via the Cockcroft-Gault formula (Ravva 2009 Methods); raw mL/min, NOT BSA-normalized. Per-paper documentation: same canonical CRCL column used in the precedent raw-Cockcroft-Gault encoding from Delattre_2010_amikacin.R. Cohort range: 15.6 to 268 mL/min, truncated at 150 to drop physiologically improbable Cockcroft-Gault upper values (Ravva 2009 Results and Table 2 footnote).",
-      source_name        = "CLcr"
+      notes = "Power scaling on CL/F with reference 100 mL/min (Ravva 2009 Table 4 final-model q_CRCL; the reference equals the population-typical 'normal renal function' value cited in the Discussion). Estimated from serum creatinine, total body weight, age and sex via the Cockcroft-Gault formula (Ravva 2009 Methods); raw mL/min, NOT BSA-normalized. Per-paper documentation: same canonical CRCL column used in the precedent raw-Cockcroft-Gault encoding from Delattre_2010_amikacin.R. Cohort range: 15.6 to 268 mL/min, truncated at 150 to drop physiologically improbable Cockcroft-Gault upper values (Ravva 2009 Results and Table 2 footnote).",
+      source_name = "CLcr"
     ),
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V2/F (estimated exponent), and on V3/F and Q/F (fixed allometric exponents 1 and 0.75) with reference 70 kg (Ravva 2009 Table 4 final-model q_WT and Methods/Results text on the V3/Q allometric scaling). Cohort range 41-129 kg.",
-      source_name        = "WT"
+      notes = "Power scaling on V2/F (estimated exponent), and on V3/F and Q/F (fixed allometric exponents 1 and 0.75) with reference 70 kg (Ravva 2009 Table 4 final-model q_WT and Methods/Results text on the V3/Q allometric scaling). Cohort range 41-129 kg.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V2/F with reference 45 years (Ravva 2009 Table 4 final-model q_AGE; 45 years is the population reference cited in the Results paragraph defining the typical individual). Cohort range 18-76 years; %RSE 54% (95% CI includes 0), so the effect is poorly defined and should be viewed as exploratory.",
-      source_name        = "AGE"
+      notes = "Power scaling on V2/F with reference 45 years (Ravva 2009 Table 4 final-model q_AGE; 45 years is the population reference cited in the Results paragraph defining the typical individual). Cohort range 18-76 years; %RSE 54% (95% CI includes 0), so the effect is poorly defined and should be viewed as exploratory.",
+      source_name = "AGE"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (reference race for Ravva 2009 typical individual)",
-      notes              = "Power-of-categorical-indicator form: typical CL/F is multiplied by q_Black^RACE_BLACK and V2/F by q_Black,V2^RACE_BLACK (Ravva 2009 Table 4 q_Black; Methods 'Race entered the model as power functions with a separate dichotomous (0,1) covariate serving as an on-off switch for each category'). Cohort prevalence 12.6%.",
-      source_name        = "Race (Black)"
+      notes = "Power-of-categorical-indicator form: typical CL/F is multiplied by q_Black^RACE_BLACK and V2/F by q_Black,V2^RACE_BLACK (Ravva 2009 Table 4 q_Black; Methods 'Race entered the model as power functions with a separate dichotomous (0,1) covariate serving as an on-off switch for each category'). Cohort prevalence 12.6%.",
+      source_name = "Race (Black)"
     ),
     RACE_OTHER = list(
-      description        = "Composite 'Other' race indicator pooling Hispanic, Asian, and Other (Ravva 2009 grouping)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite 'Other' race indicator pooling Hispanic, Asian, and Other (Ravva 2009 grouping)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (reference race for Ravva 2009 typical individual)",
-      notes              = "Power-of-categorical-indicator form: typical CL/F is multiplied by q_Other^RACE_OTHER and V2/F by q_Other,V2^RACE_OTHER (Ravva 2009 Table 4 q_Other; Methods 'Because the number of subjects in the Hispanic, Asian and Other races was small (<=5% of total population studied), these categories were grouped together'). Composite cohort prevalence ~7% (Hispanic + Asian 1.22% + Other 5.22%).",
-      source_name        = "Race (Hispanic + Asian + Other)"
+      notes = "Power-of-categorical-indicator form: typical CL/F is multiplied by q_Other^RACE_OTHER and V2/F by q_Other,V2^RACE_OTHER (Ravva 2009 Table 4 q_Other; Methods 'Because the number of subjects in the Hispanic, Asian and Other races was small (<=5% of total population studied), these categories were grouped together'). Composite cohort prevalence ~7% (Hispanic + Asian 1.22% + Other 5.22%).",
+      source_name = "Race (Hispanic + Asian + Other)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1878L,
-    n_studies       = 9L,
-    age_range       = "18-76 years",
-    age_median      = "44.2 years",
-    age_mean        = "44.0 years",
-    weight_range    = "41.0-129 kg",
-    weight_median   = "77.0 kg",
-    weight_mean     = "78.0 kg",
-    height_range    = "135-202 cm",
-    bmi_range       = "16.0-44.8 kg/m^2",
-    crcl_range      = "15.6-268 mL/min (truncated at upper 150 mL/min for modelling)",
-    crcl_median     = "107 mL/min",
-    crcl_mean       = "112 mL/min",
-    sex_female_pct  = 49.2,
-    race_ethnicity  = c(White = 81.0, Black = 12.6, Asian = 1.22, Other = 5.22),
-    disease_state   = "Adult smokers (target population for varenicline smoking-cessation therapy); about 15% with mild-to-severe renal impairment.",
-    dose_range      = "0.3 to 3 mg/day oral immediate-release tablet, once-daily (q.d.) or twice-daily (b.i.d.); primary therapeutic regimen 1 mg b.i.d.",
-    regions         = "Multinational; nine clinical trials pooled (4 phase-I, 2 phase-II, 3 phase-III).",
-    samples         = "11935 plasma varenicline concentrations across 1878 subjects after removal of 664 BLQ records (4% of total).",
-    notes           = "Baseline demographics from Ravva 2009 Table 2; study design summary from Table 1. Pooled population PK analysis across the varenicline clinical development programme."
+    species = "human",
+    n_subjects = 1878L,
+    n_studies = 9L,
+    age_range = "18-76 years",
+    age_median = "44.2 years",
+    age_mean = "44.0 years",
+    weight_range = "41.0-129 kg",
+    weight_median = "77.0 kg",
+    weight_mean = "78.0 kg",
+    height_range = "135-202 cm",
+    bmi_range = "16.0-44.8 kg/m^2",
+    crcl_range = "15.6-268 mL/min (truncated at upper 150 mL/min for modelling)",
+    crcl_median = "107 mL/min",
+    crcl_mean = "112 mL/min",
+    sex_female_pct = 49.2,
+    race_ethnicity = c(White = 81.0, Black = 12.6, Asian = 1.22, Other = 5.22),
+    disease_state = "Adult smokers (target population for varenicline smoking-cessation therapy); about 15% with mild-to-severe renal impairment.",
+    dose_range = "0.3 to 3 mg/day oral immediate-release tablet, once-daily (q.d.) or twice-daily (b.i.d.); primary therapeutic regimen 1 mg b.i.d.",
+    regions = "Multinational; nine clinical trials pooled (4 phase-I, 2 phase-II, 3 phase-III).",
+    samples = "11935 plasma varenicline concentrations across 1878 subjects after removal of 664 BLQ records (4% of total).",
+    notes = "Baseline demographics from Ravva 2009 Table 2; study design summary from Table 1. Pooled population PK analysis across the varenicline clinical development programme."
   )
 
   ini({

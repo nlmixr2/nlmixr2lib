@@ -39,10 +39,10 @@ Wu_2023_SPI_62 <- function() {
   vignette <- "Wu_2023_SPI_62"
 
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L",
-    dosing_notes  = paste(
+    dosing_notes = paste(
       "Amounts are carried internally in nmol and volumes in L, so C = A / V is in nmol/L,",
       "which is identical to nM -- the unit in which Wu 2023 reports Kon (nM^-1 h^-1), Koff",
       "(h^-1), and IC50 (nM). Rtotal is an amount (nmol), matching Table 2. Convert an mg dose",
@@ -67,13 +67,13 @@ Wu_2023_SPI_62 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SPI-62", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SPI-62", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SPI-62", units = "nmol", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "drug-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
+    complex = list(analyte = "drug-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -81,9 +81,9 @@ Wu_2023_SPI_62 <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened graphically against the individual random effects of Vcentral, CL, and IC50",
         "(Wu 2023 ESM Fig. S2; distribution in ESM Fig. S1) but NOT retained: Sect. 3.2 reports",
         "p > 0.05 for all plots, so formal forward-addition / backward-elimination covariate",
@@ -94,9 +94,9 @@ Wu_2023_SPI_62 <- function() {
     ),
     WT = list(
       description = "Body weight at study entry.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened graphically (Wu 2023 ESM Figs. S1-S2) but NOT retained (Sect. 3.2, p > 0.05).",
         "No allometric scaling is applied in this model. Cohort mean +/- SD 76.5 +/- 12.1 kg.",
         sep = " "
@@ -104,24 +104,24 @@ Wu_2023_SPI_62 <- function() {
       source_name = "body weight"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Screened graphically as the categorical covariate 'gender' (Wu 2023 ESM Fig. S2) but",
         "NOT retained (Sect. 3.2, p > 0.05). Cohort composition 33 males and 11 females",
         "(25.0% female).",
         sep = " "
       ),
-      source_name        = "gender"
+      source_name = "gender"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator (1 = White, 0 = non-White).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator (1 = White, 0 = non-White).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-White",
-      notes              = paste(
+      notes = paste(
         "Screened graphically as the categorical covariate 'race' (Wu 2023 ESM Fig. S2) but NOT",
         "retained (Sect. 3.2, p > 0.05). The paper reports the race composition of the 44",
         "analysis subjects as 26 White, 14 Black, 3 Asian, and 1 Native American; it does not",
@@ -131,42 +131,42 @@ Wu_2023_SPI_62 <- function() {
         "introduced here, because no race term enters model().",
         sep = " "
       ),
-      source_name        = "race"
+      source_name = "race"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator (1 = Black, 0 = other).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator (1 = Black, 0 = other).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = other",
-      notes              = "Screened but NOT retained; see the RACE_WHITE note. 14 of 44 subjects.",
-      source_name        = "race"
+      notes = "Screened but NOT retained; see the RACE_WHITE note. 14 of 44 subjects.",
+      source_name = "race"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator (1 = Asian, 0 = other).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (1 = Asian, 0 = other).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = other",
-      notes              = "Screened but NOT retained; see the RACE_WHITE note. 3 of 44 subjects.",
-      source_name        = "race"
+      notes = "Screened but NOT retained; see the RACE_WHITE note. 3 of 44 subjects.",
+      source_name = "race"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 2L,
-    study_names    = c(
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 2L,
+    study_names = c(
       "SAD -- SPI-62 (ASP3662) first-in-human single ascending dose in healthy adults; 24 of 48 randomised subjects contributed (the 1, 3, 6, and 10 mg cohorts; n = 6 active per cohort)",
       "MAD -- SPI-62 (ASP3662) multiple ascending dose in healthy adults; 20 subjects from the low-dose cohorts only (0.2, 0.4, 0.7, and 2 mg)"
     ),
-    age_range      = "adults; mean +/- SD 35.9 +/- 9.65 years (individual min-max not tabulated; distribution in ESM Fig. S1).",
-    weight_range   = "mean +/- SD 76.5 +/- 12.1 kg (individual min-max not tabulated; distribution in ESM Fig. S1).",
+    age_range = "adults; mean +/- SD 35.9 +/- 9.65 years (individual min-max not tabulated; distribution in ESM Fig. S1).",
+    weight_range = "mean +/- SD 76.5 +/- 12.1 kg (individual min-max not tabulated; distribution in ESM Fig. S1).",
     sex_female_pct = 25.0,
-    sex_notes      = "33 males and 11 females among the 44 analysis subjects (Wu 2023 Sect. 2.2.1).",
+    sex_notes = "33 males and 11 females among the 44 analysis subjects (Wu 2023 Sect. 2.2.1).",
     race_ethnicity = c(White = 59.1, Black = 31.8, Asian = 6.8, `Native American` = 2.3),
-    race_notes     = "Counts as reported in Wu 2023 Sect. 2.2.1: 26 White, 14 Black, 3 Asian, 1 Native American (percentages of 44).",
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = paste(
+    race_notes = "Counts as reported in Wu 2023 Sect. 2.2.1: 26 White, 14 Black, 3 Asian, 1 Native American (percentages of 44).",
+    disease_state = "Healthy adult volunteers.",
+    dose_range = paste(
       "SAD: 1, 3, 6, and 10 mg single oral dose (the 30 and 60 mg cohorts exist in the trial but",
       "were excluded from this analysis). MAD low-dose arms: 3 mg loading dose on day 1 then 0.2",
       "mg once daily on days 2-14; 0.4 mg once daily on days 1-14; and 0.7 or 2 mg single dose on",
@@ -175,14 +175,14 @@ Wu_2023_SPI_62 <- function() {
       ">= 20 mg groups degraded the fit at the low doses that are the intended clinical range.",
       sep = " "
     ),
-    regions        = "Not reported.",
-    data_records   = paste(
+    regions = "Not reported.",
+    data_records = paste(
       "996 SPI-62 plasma concentrations (222 below the limit of quantification, imputed as",
       "LLOQ/2) and 279 observed baseline-corrected hepatic HSD-1 activity values (one outlier",
       "excluded). LLOQ was 0.1 ng/mL in the SAD trial and 4 pg/mL in the MAD trial.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Secondary analysis of the two SPI-62 phase 1 trials; the underlying datasets are",
       "proprietary and were not released. PK and PD data were fit simultaneously. The PK model",
       "structure is the same two-compartment-plus-three-transit TMDD model the same group",

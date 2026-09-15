@@ -8,56 +8,56 @@ Leger_2004_topotecan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "topotecan", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "topotecan", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (not allometric) scaling on central volume: V1 = e_wt_vc * WT (Leger 2004 Table 3 final covariate model: V1 = 0.58 * body weight). Cohort mean 70 kg (range 42-117 kg) per Leger 2004 Table 1.",
-      source_name        = "WT"
+      notes = "Linear (not allometric) scaling on central volume: V1 = e_wt_vc * WT (Leger 2004 Table 3 final covariate model: V1 = 0.58 * body weight). Cohort mean 70 kg (range 42-117 kg) per Leger 2004 Table 1.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Computed via the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Cohort mean 80 mL/min (range 33-167) per Leger 2004 Table 1. In model() the value is converted from mL/min to L/h via the constant 0.06 (= 60 min/h divided by 1000 mL/L) because Leger 2004 Table 3 footnote states the structural formula uses CrCl in L/h.",
-      source_name        = "CRCL"
+      notes = "Computed via the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Cohort mean 80 mL/min (range 33-167) per Leger 2004 Table 1. In model() the value is converted from mL/min to L/h via the constant 0.06 (= 60 min/h divided by 1000 mL/L) because Leger 2004 Table 3 footnote states the structural formula uses CrCl in L/h.",
+      source_name = "CRCL"
     ),
     WHO_PS = list(
-      description        = "World Health Organization performance status (integer score)",
-      units              = "(integer score 0-3 in this cohort)",
-      type               = "continuous",
+      description = "World Health Organization performance status (integer score)",
+      units = "(integer score 0-3 in this cohort)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-ordinal effect on CL: typical CL is multiplied by (1 - 0.12 * WHO_PS), so a WHO_PS = 2 patient has 24% lower CL than a WHO_PS = 0 patient (Leger 2004 Discussion). Distribution in cohort (Leger 2004 Table 1): WHO PS 0 / 1 / 2 / 3 = 79 / 98 / 11 / 2 patients (N = 190).",
-      source_name        = "PS"
+      notes = "Linear-ordinal effect on CL: typical CL is multiplied by (1 - 0.12 * WHO_PS), so a WHO_PS = 2 patient has 24% lower CL than a WHO_PS = 0 patient (Leger 2004 Discussion). Distribution in cohort (Leger 2004 Table 1): WHO PS 0 / 1 / 2 / 3 = 79 / 98 / 11 / 2 patients (N = 190).",
+      source_name = "PS"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 190L,
-    n_studies      = 6L,
-    age_range      = "18-76 years",
-    age_median     = "55 years",
-    weight_range   = "42-117 kg",
-    weight_median  = "70 kg",
-    bsa_range      = "1.36-2.44 m^2 (DuBois formula)",
-    bsa_median     = "1.80 m^2",
+    species = "human",
+    n_subjects = 190L,
+    n_studies = 6L,
+    age_range = "18-76 years",
+    age_median = "55 years",
+    weight_range = "42-117 kg",
+    weight_median = "70 kg",
+    bsa_range = "1.36-2.44 m^2 (DuBois formula)",
+    bsa_median = "1.80 m^2",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported (French and Dutch oncology centres)",
-    disease_state  = "Adult cancer patients (predominantly ovarian cancer and other solid tumours; some studies combined with cisplatin)",
-    dose_range     = "Oral 0.15-2.7 mg/m^2/day or IV infusion over 30 min 0.2-2.4 mg/m^2/day for 5-21 consecutive days",
-    regions        = "France (Toulouse, Institut Claudius-Regaud) and the Netherlands (Rotterdam, Erasmus MC - Daniel den Hoed Cancer Center)",
+    disease_state = "Adult cancer patients (predominantly ovarian cancer and other solid tumours; some studies combined with cisplatin)",
+    dose_range = "Oral 0.15-2.7 mg/m^2/day or IV infusion over 30 min 0.2-2.4 mg/m^2/day for 5-21 consecutive days",
+    regions = "France (Toulouse, Institut Claudius-Regaud) and the Netherlands (Rotterdam, Erasmus MC - Daniel den Hoed Cancer Center)",
     renal_function = "Cockcroft-Gault creatinine clearance mean 80 mL/min (range 33-167); serum creatinine mean 87 umol/L (range 41-162)",
     performance_status = "WHO PS distribution 0 / 1 / 2 / 3 = 79 / 98 / 11 / 2",
-    notes          = "Baseline demographics per Leger 2004 Table 1. Pooled data from five separate clinical trials (173 patients) plus 17 patients with drug monitoring for other reasons, total 190 patients. IV (n=72) administered over 30-min infusions; oral (n=118) administered as gelatin capsules. Total 2064 plasma samples (median 15 per patient in cycle 1)."
+    notes = "Baseline demographics per Leger 2004 Table 1. Pooled data from five separate clinical trials (173 patients) plus 17 patients with drug monitoring for other reasons, total 190 patients. IV (n=72) administered over 30-min infusions; oral (n=118) administered as gelatin capsules. Total 2064 plasma samples (median 15 per patient in cycle 1)."
   )
 
   ini({

@@ -42,10 +42,10 @@ Zhang_2025_bietti_crystalline_dystrophy_mbma <- function() {
   vignette <- "Zhang_2025_bietti_crystalline_dystrophy_mbma"
 
   units <- list(
-    time          = "year",
-    dosing        = "n/a (no dosing; untreated natural history)",
+    time = "year",
+    dosing = "n/a (no dosing; untreated natural history)",
     concentration = "n/a (no drug concentration)",
-    response      = "LogMAR (change from baseline in best-corrected visual acuity; observation bcvacfb)"
+    response = "LogMAR (change from baseline in best-corrected visual acuity; observation bcvacfb)"
   )
 
   # Every covariate Zhang 2025 examined was screened OUT: no covariate
@@ -59,59 +59,59 @@ Zhang_2025_bietti_crystalline_dystrophy_mbma <- function() {
   # population$notes and in the validation vignette instead.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age of the subject at the first BCVA recording.",
-      units              = "year",
-      type               = "continuous",
+      description = "Age of the subject at the first BCVA recording.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on the slope in Zhang 2025 supplement appendix 6 run 201 (dOFV -3.131, short of the -3.84 forward-inclusion threshold) and not retained. Cohort median 49.0 y [15.0, 76.0] (supplement appendix 2).",
-      source_name        = "age"
+      notes = "Screened on the slope in Zhang 2025 supplement appendix 6 run 201 (dOFV -3.131, short of the -3.84 forward-inclusion threshold) and not retained. Cohort median 49.0 y [15.0, 76.0] (supplement appendix 2).",
+      source_name = "age"
     ),
     SCORE_BCVA = list(
-      description        = "Baseline best-corrected visual acuity. NOTE: Zhang 2025 records BCVA on the LogMAR scale (higher = worse vision), NOT on the ETDRS-letter scale (0-100, higher = better) that the covariate register's SCORE_BCVA entry defines. Because the covariate was screened out and is never referenced in model(), no scale reconciliation was required and none was performed.",
-      units              = "LogMAR",
-      type               = "continuous",
+      description = "Baseline best-corrected visual acuity. NOTE: Zhang 2025 records BCVA on the LogMAR scale (higher = worse vision), NOT on the ETDRS-letter scale (0-100, higher = better) that the covariate register's SCORE_BCVA entry defines. Because the covariate was screened out and is never referenced in model(), no scale reconciliation was required and none was performed.",
+      units = "LogMAR",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The single closest covariate to significance: Zhang 2025 supplement appendix 6 run 203 gave dOFV -3.969, which passed the forward-inclusion threshold of -3.84, but backward elimination (run 209) returned dOFV +3.969, short of the 6.63 retention threshold, so it was dropped. Cohort median 0.150 LogMAR [-0.200, 2.60] (supplement appendix 2).",
-      source_name        = "bcva"
+      notes = "The single closest covariate to significance: Zhang 2025 supplement appendix 6 run 203 gave dOFV -3.969, which passed the forward-inclusion threshold of -3.84, but backward elimination (run 209) returned dOFV +3.969, short of the 6.63 retention threshold, so it was dropped. Cohort median 0.150 LogMAR [-0.200, 2.60] (supplement appendix 2).",
+      source_name = "bcva"
     ),
     SEXF = list(
-      description        = "Sex. 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex. 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male).",
-      notes              = "Screened on the slope in Zhang 2025 supplement appendix 6 run 208 (dOFV -0.568) and not retained. Cohort 77/117 female (65.8%) (Zhang 2025 table 1).",
-      source_name        = "sex"
+      notes = "Screened on the slope in Zhang 2025 supplement appendix 6 run 208 (dOFV -0.568) and not retained. Cohort 77/117 female (65.8%) (Zhang 2025 table 1).",
+      source_name = "sex"
     ),
     RACE_ASIAN_NORTHEAST = list(
-      description        = "East Asian heritage indicator. 1 = East Asian, 0 = non-East Asian.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "East Asian heritage indicator. 1 = East Asian, 0 = non-East Asian.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-East Asian).",
-      notes              = "Screened on the slope in Zhang 2025 supplement appendix 6 run 205 ('ethnicity on K', dOFV -0.829) and not retained. Cohort 80/117 East Asian (68.4%) (Zhang 2025 table 1). Zhang 2025 dichotomises race as East Asian vs non-East Asian, which matches the RACE_ASIAN_NORTHEAST definition (worldwide Chinese, Japanese or Korean heritage).",
-      source_name        = "ethnicity"
+      notes = "Screened on the slope in Zhang 2025 supplement appendix 6 run 205 ('ethnicity on K', dOFV -0.829) and not retained. Cohort 80/117 East Asian (68.4%) (Zhang 2025 table 1). Zhang 2025 dichotomises race as East Asian vs non-East Asian, which matches the RACE_ASIAN_NORTHEAST definition (worldwide Chinese, Japanese or Korean heritage).",
+      source_name = "ethnicity"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 117L,
-    n_eyes         = 193L,
-    n_studies      = 14L,
-    age_range      = "15.0-76.0 years (Zhang 2025 supplement appendix 2, age at the first BCVA recording)",
-    age_median     = "49.0 years (Zhang 2025 supplement appendix 2)",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 117L,
+    n_eyes = 193L,
+    n_studies = 14L,
+    age_range = "15.0-76.0 years (Zhang 2025 supplement appendix 2, age at the first BCVA recording)",
+    age_median = "49.0 years (Zhang 2025 supplement appendix 2)",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 65.8,
     race_ethnicity = c(`East Asian` = 68.4, `Non-East Asian` = 31.6),
-    disease_state  = "Bietti crystalline corneoretinal dystrophy (BCD), an autosomal-recessive progressive retinal degeneration caused by biallelic CYP4V2 mutations. All eyes untreated (a study-inclusion criterion was that the population had not previously been treated); there is no approved therapy for BCD.",
-    dose_range     = "n/a (untreated natural history; the model has no drug input)",
-    regions        = "Six of the 14 included studies enrolled East Asian populations (China, Japan, Korea) and nine enrolled non-East Asian populations; one study contributed patients to both strata, which is why the two study counts sum to 15 rather than 14 (Zhang 2025 Results and table 1).",
-    onset_age_range  = "11.0-76.0 years (Zhang 2025 supplement appendix 2; where the age of onset was missing the age at the first BCVA recording was substituted)",
+    disease_state = "Bietti crystalline corneoretinal dystrophy (BCD), an autosomal-recessive progressive retinal degeneration caused by biallelic CYP4V2 mutations. All eyes untreated (a study-inclusion criterion was that the population had not previously been treated); there is no approved therapy for BCD.",
+    dose_range = "n/a (untreated natural history; the model has no drug input)",
+    regions = "Six of the 14 included studies enrolled East Asian populations (China, Japan, Korea) and nine enrolled non-East Asian populations; one study contributed patients to both strata, which is why the two study counts sum to 15 rather than 14 (Zhang 2025 Results and table 1).",
+    onset_age_range = "11.0-76.0 years (Zhang 2025 supplement appendix 2; where the age of onset was missing the age at the first BCVA recording was substituted)",
     onset_age_median = "47.0 years (Zhang 2025 supplement appendix 2)",
-    disease_duration_range  = "0.500-47.0 years (Zhang 2025 supplement appendix 2; duration = age - age of onset + longest visit)",
+    disease_duration_range = "0.500-47.0 years (Zhang 2025 supplement appendix 2; duration = age - age of onset + longest visit)",
     disease_duration_median = "8.00 years (Zhang 2025 supplement appendix 2)",
-    baseline_bcva  = "Median 0.150 LogMAR [-0.200, 2.60] (Zhang 2025 supplement appendix 2). Of the 193 study eyes, 151 had baseline BCVA < 0.5 LogMAR and 42 had >= 0.5 LogMAR (supplement appendix 10).",
-    notes          = paste0(
+    baseline_bcva = "Median 0.150 LogMAR [-0.200, 2.60] (Zhang 2025 supplement appendix 2). Of the 193 study eyes, 151 had baseline BCVA < 0.5 LogMAR and 42 had >= 0.5 LogMAR (supplement appendix 10).",
+    notes = paste0(
       "Individual eye-level BCVA time courses were reconstructed from 14 ",
       "published studies retrieved by a PRISMA-style search of PubMed, ",
       "MEDLINE, EMBASE, CINAHL and CNKI updated 20 November 2023 (Zhang ",

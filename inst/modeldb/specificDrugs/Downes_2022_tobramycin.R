@@ -15,42 +15,42 @@ Downes_2022_tobramycin <- function() {
   # repository default for a mathematical peripheral compartment and is not a
   # paper-sourced claim.
   compartmentData <- list(
-    central     = list(analyte = "tobramycin", units = "mg", specimen = "serum",  verified = TRUE),
+    central = list(analyte = "tobramycin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "tobramycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Downes 2022 Results, 'Model development': clearance and Q were allometrically scaled for weight to 0.75 and normalized to 70 kg, while central (V1) and peripheral (V2) volumes were scaled linearly for weight, also normalized to 70 kg. Table 1 gives a first-course median of 11.2 kg (IQR 8.2-14.7) and an all-courses median of 12.4 kg (IQR 9.7-14.8); the 70 kg normalizer is the conventional adult reference weight and is far outside the observed range, so the reported thetas are extrapolated adult-equivalent values and only the weight-normalized quantities quoted in the text (0.252 L/hr/kg^0.75 for CL and 0.308 L/kg for V1) are within the fitted range.",
-      source_name        = "WT"
+      notes = "Downes 2022 Results, 'Model development': clearance and Q were allometrically scaled for weight to 0.75 and normalized to 70 kg, while central (V1) and peripheral (V2) volumes were scaled linearly for weight, also normalized to 70 kg. Table 1 gives a first-course median of 11.2 kg (IQR 8.2-14.7) and an all-courses median of 12.4 kg (IQR 9.7-14.8); the 70 kg normalizer is the conventional adult reference weight and is far outside the observed range, so the reported thetas are extrapolated adult-equivalent values and only the weight-normalized quantities quoted in the text (0.252 L/hr/kg^0.75 for CL and 0.308 L/kg for V1) are within the fitted range.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at the start of the tobramycin course",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the start of the tobramycin course",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Included a priori on clearance based on prior published pediatric cystic-fibrosis tobramycin models (Downes 2022 Materials and Methods, 'Covariate selection'). Evaluated both as a Hill function and as an exponential covariate normalized to the population median; the retained form in Table 2 is the power (exponential-on-log) form (AGE/2.7)^0.136. The 2.7-year normalizer is the value printed in the Table 2 parameterization footnote and is close to but not identical with the Table 1 all-courses baseline median of 2.6 years (IQR 1.2-4); the difference is consistent with 2.7 being the median across analysis records rather than across first courses (first-course median 2.2 years, IQR 0.8-3.8). Eligibility restricted the cohort to less than 5 years of age, and Downes 2022 Discussion warns explicitly that the parameterization may differ beyond the observed age range.",
-      source_name        = "AGE"
+      notes = "Included a priori on clearance based on prior published pediatric cystic-fibrosis tobramycin models (Downes 2022 Materials and Methods, 'Covariate selection'). Evaluated both as a Hill function and as an exponential covariate normalized to the population median; the retained form in Table 2 is the power (exponential-on-log) form (AGE/2.7)^0.136. The 2.7-year normalizer is the value printed in the Table 2 parameterization footnote and is close to but not identical with the Table 1 all-courses baseline median of 2.6 years (IQR 1.2-4); the difference is consistent with 2.7 being the median across analysis records rather than across first courses (first-course median 2.2 years, IQR 0.8-3.8). Eligibility restricted the cohort to less than 5 years of age, and Downes 2022 Discussion warns explicitly that the parameterization may differ beyond the observed age range.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the bedside Schwartz equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the bedside Schwartz equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Included a priori on clearance (Downes 2022 Materials and Methods, 'Covariate selection'), calculated by the bedside Schwartz equation, and allowed to vary over the first 48 h of therapy when creatinine was measured more than once, so the covariate is time-varying in the source analysis. The 128 mL/min/1.73 m^2 normalizer is the value printed in the Table 2 parameterization footnote and sits between the Table 1 first-course median of 126 (IQR 110-149) and all-courses median of 129 (IQR 110-148), again consistent with a median taken across analysis records. Renal impairment (eGFR < 60 mL/min/1.73 m^2) was an exclusion criterion and only 3 of 58 first courses (5.2%) had an eGFR below 90, so the cohort is essentially normal-to-supranormal in renal function and the model carries no information about renal impairment. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the creatinine-based bedside Schwartz estimate.",
-      source_name        = "GFR"
+      notes = "Included a priori on clearance (Downes 2022 Materials and Methods, 'Covariate selection'), calculated by the bedside Schwartz equation, and allowed to vary over the first 48 h of therapy when creatinine was measured more than once, so the covariate is time-varying in the source analysis. The 128 mL/min/1.73 m^2 normalizer is the value printed in the Table 2 parameterization footnote and sits between the Table 1 first-course median of 126 (IQR 110-149) and all-courses median of 129 (IQR 110-148), again consistent with a median taken across analysis records. Renal impairment (eGFR < 60 mL/min/1.73 m^2) was an exclusion criterion and only 3 of 58 first courses (5.2%) had an eGFR below 90, so the cohort is essentially normal-to-supranormal in renal function and the model carries no information about renal impairment. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the creatinine-based bedside Schwartz estimate.",
+      source_name = "GFR"
     ),
     CONMED_VANCOMYCIN = list(
-      description        = "Concomitant intravenous vancomycin coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant intravenous vancomycin coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant vancomycin)",
-      notes              = "Dichotomized (Y/N) as a TIME-VARYING covariate, allowed to vary over the course of tobramycin therapy (Downes 2022 Materials and Methods, 'Covariate selection'). Entered the model by forward selection from an exploratory screen of five nephrotoxic comedications and was the only one retained. Multiplicative factor 0.708^CONMED_VANCOMYCIN on clearance, i.e. a 29.2% (95% CI 3.7-55.7%) reduction in tobramycin CL when vancomycin is coadministered. Downes 2022 flags this as a novel and fragile finding: only 5 of 58 patients over 8 of 111 courses received concomitant vancomycin, the %RSE on the theta is 19.1, and the bootstrap 95% CI (0.462-1.24) crosses 1. The authors' own Monte Carlo simulations deliberately set all simulated patients to CONMED_VANCOMYCIN = 0 so as not to over-state the effect (Results, 'Target attainment'), and the Discussion states further studies are needed. Users reproducing the paper's target-attainment analysis should likewise hold this at 0.",
-      source_name        = "VAN"
+      notes = "Dichotomized (Y/N) as a TIME-VARYING covariate, allowed to vary over the course of tobramycin therapy (Downes 2022 Materials and Methods, 'Covariate selection'). Entered the model by forward selection from an exploratory screen of five nephrotoxic comedications and was the only one retained. Multiplicative factor 0.708^CONMED_VANCOMYCIN on clearance, i.e. a 29.2% (95% CI 3.7-55.7%) reduction in tobramycin CL when vancomycin is coadministered. Downes 2022 flags this as a novel and fragile finding: only 5 of 58 patients over 8 of 111 courses received concomitant vancomycin, the %RSE on the theta is 19.1, and the bootstrap 95% CI (0.462-1.24) crosses 1. The authors' own Monte Carlo simulations deliberately set all simulated patients to CONMED_VANCOMYCIN = 0 so as not to over-state the effect (Results, 'Target attainment'), and the Discussion states further studies are needed. Users reproducing the paper's target-attainment analysis should likewise hold this at 0.",
+      source_name = "VAN"
     )
   )
 
@@ -64,64 +64,64 @@ Downes_2022_tobramycin <- function() {
   # an actually-used covariate, alongside the four screened-only siblings.
   covariatesDataExcluded <- list(
     CONMED_TICARCLAV = list(
-      description        = "Concomitant ticarcillin-clavulanate coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ticarcillin-clavulanate coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant ticarcillin-clavulanate)",
-      notes              = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
-      source_name        = "ticarcillin/clavulanate"
+      notes = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
+      source_name = "ticarcillin/clavulanate"
     ),
     CONMED_TMPSMX = list(
-      description        = "Concomitant trimethoprim-sulfamethoxazole coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant trimethoprim-sulfamethoxazole coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant trimethoprim-sulfamethoxazole)",
-      notes              = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
-      source_name        = "trimethoprim-sulfamethoxazole"
+      notes = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
+      source_name = "trimethoprim-sulfamethoxazole"
     ),
     CONMED_PIPTAZO = list(
-      description        = "Concomitant piperacillin-tazobactam coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant piperacillin-tazobactam coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant piperacillin-tazobactam)",
-      notes              = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
-      source_name        = "piperacillin-tazobactam"
+      notes = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics.",
+      source_name = "piperacillin-tazobactam"
     ),
     CONMED_NSAID = list(
-      description        = "Concomitant non-steroidal anti-inflammatory drug coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant non-steroidal anti-inflammatory drug coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant NSAID)",
-      notes              = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics. Downes 2022 additionally tested the nephrotoxin exposures as a class effect, grouping the agents as none versus >= 1 agent and as 0-1 versus >= 2 agents; neither composite was retained either.",
-      source_name        = "NSAID"
+      notes = "Screened on tobramycin CL in the exploratory nephrotoxin forward selection and not retained. Listed in Table 1 footnote c as one of the concurrent nephrotoxic medications counted for the baseline characteristics. Downes 2022 additionally tested the nephrotoxin exposures as a class effect, grouping the agents as none versus >= 1 agent and as 0-1 versus >= 2 agents; neither composite was retained either.",
+      source_name = "NSAID"
     ),
     CONMED_ACYCLOVIR = list(
-      description        = "Concomitant acyclovir coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant acyclovir coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant acyclovir)",
-      notes              = "Counted toward the concurrent-nephrotoxic-medication tally reported in Table 1 (footnote c) but NOT screened individually on clearance: the Materials and Methods forward-selection list names only vancomycin, ticarcillin/clavulanate, trimethoprim-sulfamethoxazole, piperacillin-tazobactam and NSAIDs. Recorded here so the composition of the Table 1 nephrotoxin count is auditable.",
-      source_name        = "acyclovir"
+      notes = "Counted toward the concurrent-nephrotoxic-medication tally reported in Table 1 (footnote c) but NOT screened individually on clearance: the Materials and Methods forward-selection list names only vancomycin, ticarcillin/clavulanate, trimethoprim-sulfamethoxazole, piperacillin-tazobactam and NSAIDs. Recorded here so the composition of the Table 1 nephrotoxin count is auditable.",
+      source_name = "acyclovir"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 58L,
-    n_courses        = 111L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 58L,
+    n_courses = 111L,
+    n_studies = 1L,
     n_concentrations = 224L,
-    age_range        = "less than 5 years by eligibility; Table 1 first-course median 2.2 years (IQR 0.8-3.8), all-courses median 2.6 years (IQR 1.2-4)",
-    age_median       = "2.2 years at first course (IQR 0.8-3.8)",
-    weight_range     = "first-course IQR 8.2-14.7 kg (full range not reported)",
-    weight_median    = "11.2 kg at first course (IQR 8.2-14.7)",
-    height_median    = "85.8 cm at first course (IQR 70.5-95.5)",
-    sex_female_pct   = 43,
-    disease_state    = "Cystic fibrosis with a pulmonary exacerbation requiring hospitalization and intravenous tobramycin. Excluded: estimated GFR < 60 mL/min/1.73 m^2 by bedside Schwartz, extracorporeal membrane oxygenation, postmenstrual age < 44 weeks, and concurrent nebulized tobramycin. Concurrent nephrotoxic medications at tobramycin initiation in 34.5% of first courses (1 agent 31.0%, 2 or more 3.4%).",
-    dose_range       = "Clinician-chosen intravenous regimens; the CHOP formulary starting dose for this age group was 3.3 mg/kg every 8 h as a 30-minute infusion, and the observed first-course median was 3.2 mg/kg/dose (IQR 3.1-3.3). The model's simulation application in Downes 2022 projects 10-15 mg/kg once-daily extended-interval regimens, which the cohort did NOT receive.",
-    regions          = "United States (Children's Hospital of Philadelphia, Philadelphia PA)",
-    renal_function   = "Bedside-Schwartz eGFR first-course median 126 mL/min/1.73 m^2 (IQR 110-149); only 3 of 58 (5.2%) below 90 mL/min/1.73 m^2. Serum creatinine median 0.3 mg/dL (IQR 0.2-0.3).",
-    notes            = "Retrospective single-center analysis of standard-of-care therapeutic-drug-monitoring data collected 2011-03-01 to 2018-09-01 (Downes 2022 Table 1; Materials and Methods). 61 patients / 115 courses were screened and 4 courses in 3 patients excluded (2 in premature infants, 2 with no concentrations), leaving 58 patients over 111 courses; 35 patients contributed one course, 13 two, and 10 three or more. Only concentrations drawn within the first 48 h of a course were used. Of 228 collected concentrations 4 were excluded as mistimed, leaving 224, of which 53 (23.7%) were below the 0.6 mg/L limit of quantification and were handled by the Beal M3 likelihood method. Because sampling was routine TDM peaks and troughs, Q and V2 were not identifiable from these data alone: Downes 2022 digitized the individual concentration-time profiles of 6 richly sampled adult cystic-fibrosis patients from Figure 2 of an earlier publication with WebPlotDigitizer, fit them to obtain prior distributions, and estimated the pediatric model by MAP-Bayesian penalized likelihood with informative priors on Q and V2. Fit in NONMEM 7.4 with the PDx-Pop 5.2.1 interface; covariate selection by backward elimination from a full model at a critical OFV change of 6.63, then an exploratory forward selection for nephrotoxic comedications at the same threshold. Inter-occasion variability on CL was evaluated and rejected (it raised the AIC, left the CL and V1 inter-individual variances and the point estimates unchanged, reduced residual variance only from 0.334 to 0.328, and inflated every %RSE). Bootstrap n = 1000 overall, plus n = 500 stratified by vancomycin receipt, by age band and by eGFR band, with all point estimates inside the bootstrap 95% CIs."
+    age_range = "less than 5 years by eligibility; Table 1 first-course median 2.2 years (IQR 0.8-3.8), all-courses median 2.6 years (IQR 1.2-4)",
+    age_median = "2.2 years at first course (IQR 0.8-3.8)",
+    weight_range = "first-course IQR 8.2-14.7 kg (full range not reported)",
+    weight_median = "11.2 kg at first course (IQR 8.2-14.7)",
+    height_median = "85.8 cm at first course (IQR 70.5-95.5)",
+    sex_female_pct = 43,
+    disease_state = "Cystic fibrosis with a pulmonary exacerbation requiring hospitalization and intravenous tobramycin. Excluded: estimated GFR < 60 mL/min/1.73 m^2 by bedside Schwartz, extracorporeal membrane oxygenation, postmenstrual age < 44 weeks, and concurrent nebulized tobramycin. Concurrent nephrotoxic medications at tobramycin initiation in 34.5% of first courses (1 agent 31.0%, 2 or more 3.4%).",
+    dose_range = "Clinician-chosen intravenous regimens; the CHOP formulary starting dose for this age group was 3.3 mg/kg every 8 h as a 30-minute infusion, and the observed first-course median was 3.2 mg/kg/dose (IQR 3.1-3.3). The model's simulation application in Downes 2022 projects 10-15 mg/kg once-daily extended-interval regimens, which the cohort did NOT receive.",
+    regions = "United States (Children's Hospital of Philadelphia, Philadelphia PA)",
+    renal_function = "Bedside-Schwartz eGFR first-course median 126 mL/min/1.73 m^2 (IQR 110-149); only 3 of 58 (5.2%) below 90 mL/min/1.73 m^2. Serum creatinine median 0.3 mg/dL (IQR 0.2-0.3).",
+    notes = "Retrospective single-center analysis of standard-of-care therapeutic-drug-monitoring data collected 2011-03-01 to 2018-09-01 (Downes 2022 Table 1; Materials and Methods). 61 patients / 115 courses were screened and 4 courses in 3 patients excluded (2 in premature infants, 2 with no concentrations), leaving 58 patients over 111 courses; 35 patients contributed one course, 13 two, and 10 three or more. Only concentrations drawn within the first 48 h of a course were used. Of 228 collected concentrations 4 were excluded as mistimed, leaving 224, of which 53 (23.7%) were below the 0.6 mg/L limit of quantification and were handled by the Beal M3 likelihood method. Because sampling was routine TDM peaks and troughs, Q and V2 were not identifiable from these data alone: Downes 2022 digitized the individual concentration-time profiles of 6 richly sampled adult cystic-fibrosis patients from Figure 2 of an earlier publication with WebPlotDigitizer, fit them to obtain prior distributions, and estimated the pediatric model by MAP-Bayesian penalized likelihood with informative priors on Q and V2. Fit in NONMEM 7.4 with the PDx-Pop 5.2.1 interface; covariate selection by backward elimination from a full model at a critical OFV change of 6.63, then an exploratory forward selection for nephrotoxic comedications at the same threshold. Inter-occasion variability on CL was evaluated and rejected (it raised the AIC, left the CL and V1 inter-individual variances and the point estimates unchanged, reduced residual variance only from 0.334 to 0.328, and inflated every %RSE). Bootstrap n = 1000 overall, plus n = 500 stratified by vancomycin receipt, by age band and by eGFR band, with all point estimates inside the bootstrap 95% CIs."
   )
 
   ini({

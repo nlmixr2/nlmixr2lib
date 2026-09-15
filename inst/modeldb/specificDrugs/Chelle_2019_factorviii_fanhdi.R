@@ -8,49 +8,49 @@ Chelle_2019_factorviii_fanhdi <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorviii fanhdi", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorviii fanhdi", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorviii fanhdi", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, V1, and V2 with reference FFM = 50.5 kg, the derivation-cohort median (Chelle 2019 Eq. 5; Table 1 derivation-population median = 50.5 kg). The paper computes FFM from a dual-energy x-ray-absorptiometry-validated formula that spans ages 3-82 years (Chelle 2019 Discussion; reference 22 in the paper). When body height is missing, the paper imputes HT from a multilinear regression on body weight and age before computing FFM. Treated as time-fixed at baseline.",
-      source_name        = "FFM"
+      notes = "Power scaling on CL, V1, and V2 with reference FFM = 50.5 kg, the derivation-cohort median (Chelle 2019 Eq. 5; Table 1 derivation-population median = 50.5 kg). The paper computes FFM from a dual-energy x-ray-absorptiometry-validated formula that spans ages 3-82 years (Chelle 2019 Discussion; reference 22 in the paper). When body height is missing, the paper imputes HT from a multilinear regression on body weight and age before computing FFM. Treated as time-fixed at baseline.",
+      source_name = "FFM"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Piecewise-linear effect on CL only (Chelle 2019 Eq. 5): for AGE <= 25 years the typical CL is independent of age; for AGE > 25 years the typical CL scales as (1 + e_age_cl * (AGE - 25)/25) with e_age_cl = -0.302, so older patients have lower CL. Reference 25 years is the derivation-cohort median (Chelle 2019 Table 1). The paper used age as a surrogate for von Willebrand factor (vWF) protection of FVIII activity, since vWF data were unavailable for many subjects (Chelle 2019 Discussion).",
-      source_name        = "AGE"
+      notes = "Piecewise-linear effect on CL only (Chelle 2019 Eq. 5): for AGE <= 25 years the typical CL is independent of age; for AGE > 25 years the typical CL scales as (1 + e_age_cl * (AGE - 25)/25) with e_age_cl = -0.302, so older patients have lower CL. Reference 25 years is the derivation-cohort median (Chelle 2019 Table 1). The paper used age as a surrogate for von Willebrand factor (vWF) protection of FVIII activity, since vWF data were unavailable for many subjects (Chelle 2019 Discussion).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 92L,
-    n_studies      = 1L,
-    age_range      = "1-72 years",
-    age_median     = "25 years (mean 26.1, SD 18.3)",
-    weight_range   = "9.68-119 kg",
-    weight_median  = "63.5 kg (mean 59.9, SD 25.9)",
-    height_range   = "73.8-188 cm (n = 87 reported; HT imputed for 5 subjects)",
-    height_median  = "167 cm (mean 155.4, SD 26.6)",
-    bmi_range      = "11.1-39.3 kg/m^2 (n = 87)",
-    bmi_median     = "23.9 kg/m^2 (mean 23.4, SD 5.5)",
-    ffm_range      = "7.5-73.0 kg (n = 87)",
-    ffm_median     = "50.5 kg (mean 45.3, SD 18.0); used as the FFM covariate-centering reference",
+    species = "human",
+    n_subjects = 92L,
+    n_studies = 1L,
+    age_range = "1-72 years",
+    age_median = "25 years (mean 26.1, SD 18.3)",
+    weight_range = "9.68-119 kg",
+    weight_median = "63.5 kg (mean 59.9, SD 25.9)",
+    height_range = "73.8-188 cm (n = 87 reported; HT imputed for 5 subjects)",
+    height_median = "167 cm (mean 155.4, SD 26.6)",
+    bmi_range = "11.1-39.3 kg/m^2 (n = 87)",
+    bmi_median = "23.9 kg/m^2 (mean 23.4, SD 5.5)",
+    ffm_range = "7.5-73.0 kg (n = 87)",
+    ffm_median = "50.5 kg (mean 45.3, SD 18.0); used as the FFM covariate-centering reference",
     sex_female_pct = 0,
     race_ethnicity = "not reported in source",
-    disease_state  = "Hemophilia A; 87.0% (80 / 92) had severe disease with endogenous FVIII activity < 0.01 IU/mL; remaining patients had endogenous FVIII up to 0.169 IU/mL. Patients with current FVIII inhibitors were excluded; patients with a history of inhibitors (now negative) were included.",
-    dose_range     = "Single intravenous infusion of Fanhdi or Alphanate; one occasion per subject; 1-8 post-infusion FVIII activity samples per subject (median 5, mean 4.2, SD 1.5; total 386 observations) measured by one-stage clotting assay (LLOQ 0.01 IU/mL; 13 / 386 = 3.4% observations BLQ handled via M3 censoring during estimation)",
-    regions        = "12 hemophilia centers worldwide; the three largest (67 / 92 subjects) were Campinas (Brazil), Valencia (Spain), and Santiago (Chile); the remaining 25 subjects from 9 other centers",
-    notes          = "Data were extracted from the WAPPS-Hemo (Web-Accessible Population Pharmacokinetic Service - Hemophilia) database on 16 February 2018 under clinicaltrials.gov NCT02061072 / NCT03533504 (McMaster University HIREB). Hemophilia A is X-linked recessive so the cohort is all-male (92 / 92). The paper additionally reports an external-evaluation cohort of 49 patients (Chelle 2019 Table 1, 'Evaluation population'); only the 92-subject derivation cohort is encoded here. The model's intended use is as a prior for Bayesian forecasting on the WAPPS-Hemo platform; for that purpose the paper also published comparative results vs the McEneny-King 2019 generic plasma-derived-FVIII WAPPS model on the same 49-subject external cohort."
+    disease_state = "Hemophilia A; 87.0% (80 / 92) had severe disease with endogenous FVIII activity < 0.01 IU/mL; remaining patients had endogenous FVIII up to 0.169 IU/mL. Patients with current FVIII inhibitors were excluded; patients with a history of inhibitors (now negative) were included.",
+    dose_range = "Single intravenous infusion of Fanhdi or Alphanate; one occasion per subject; 1-8 post-infusion FVIII activity samples per subject (median 5, mean 4.2, SD 1.5; total 386 observations) measured by one-stage clotting assay (LLOQ 0.01 IU/mL; 13 / 386 = 3.4% observations BLQ handled via M3 censoring during estimation)",
+    regions = "12 hemophilia centers worldwide; the three largest (67 / 92 subjects) were Campinas (Brazil), Valencia (Spain), and Santiago (Chile); the remaining 25 subjects from 9 other centers",
+    notes = "Data were extracted from the WAPPS-Hemo (Web-Accessible Population Pharmacokinetic Service - Hemophilia) database on 16 February 2018 under clinicaltrials.gov NCT02061072 / NCT03533504 (McMaster University HIREB). Hemophilia A is X-linked recessive so the cohort is all-male (92 / 92). The paper additionally reports an external-evaluation cohort of 49 patients (Chelle 2019 Table 1, 'Evaluation population'); only the 92-subject derivation cohort is encoded here. The model's intended use is as a prior for Bayesian forecasting on the WAPPS-Hemo platform; for that purpose the paper also published comparative results vs the McEneny-King 2019 generic plasma-derived-FVIII WAPPS model on the same 49-subject external cohort."
   )
 
   ini({

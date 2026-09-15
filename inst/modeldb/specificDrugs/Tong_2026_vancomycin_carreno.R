@@ -29,17 +29,17 @@ Tong_2026_vancomycin_carreno <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY covariate in this model -- no parameter is scaled by body size, which Tong 2026",
         "highlights in the Discussion as unusual for an obese-patient model. Supplied as a data item;",
         "the InsightRX pipeline supplies it in L/h and the control stream converts inline within the",
@@ -52,32 +52,32 @@ Tong_2026_vancomycin_carreno <- function() {
         "0.10-10.9) rather than creatinine clearance for this cohort.",
         sep = " "
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2709L,
-    n_studies      = 19L,
-    age_range      = "18.2 to 90+ years",
-    age_median     = "60.0 years",
-    weight_range   = "43.8-318.0 kg",
-    weight_median  = "133.0 kg",
+    species = "human",
+    n_subjects = 2709L,
+    n_studies = 19L,
+    age_range = "18.2 to 90+ years",
+    age_median = "60.0 years",
+    weight_range = "43.8-318.0 kg",
+    weight_median = "133.0 kg",
     sex_female_pct = 57.1,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) with BMI >= 40 kg/m2 receiving intravenous vancomycin under",
       "routine model-informed precision dosing; at least two doses and at least one measured",
       "concentration required. Patients undergoing haemodialysis at any point during treatment were",
       "excluded, as were patients dosed with a model other than their site's default.",
       sep = " "
     ),
-    dose_range     = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
-    regions        = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
+    dose_range = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
+    regions = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
     renal_function = "Serum creatinine median 0.95 mg/dL (range 0.10-10.9); haemodialysis patients excluded",
     n_concentrations = 6572L,
-    notes          = paste(
+    notes = paste(
       "APPLICATION population from Tong 2026 Table 1 (BMI >= 40 kg/m2 cohort: 2709 patients, 2964",
       "treatment courses, 6572 samples), i.e. the cohort this model was USED to dose as the",
       "pre-intervention default -- NOT the cohort it was estimated from. The DEVELOPMENT population is",

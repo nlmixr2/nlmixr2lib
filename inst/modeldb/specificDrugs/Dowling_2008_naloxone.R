@@ -1,6 +1,6 @@
 Dowling_2008_naloxone <- function() {
   description <- "Three-compartment population PK model for naloxone in six healthy male volunteers receiving 0.8 mg intravenous, 0.8 mg intramuscular, 0.8 mg intranasal, 2 mg intravenous, and 2 mg intranasal doses in an open-label crossover design (Dowling 2008). Intramuscular and intranasal absorption are modeled as first-order via separate depot compartments (Ka_im 0.65 1/h, F_im 0.36; Ka_in 1.52 1/h, F_in 0.038); intravenous doses go directly to the central compartment (F 1, structural anchor). Fat-free mass (Janmahasatian 2005 formula, called LBW2005 in the paper) is allometrically scaled on clearance with fixed exponent 0.75, and body weight is linearly scaled on central volume (exponent 1); both effects use a 70 kg reference."
-  reference   <- paste(
+  reference <- paste(
     "Dowling J, Isbister GK, Kirkpatrick CMJ, Naidoo D, Graudins A.",
     "Population pharmacokinetics of intravenous, intramuscular, and",
     "intranasal naloxone in human volunteers.",
@@ -8,54 +8,54 @@ Dowling_2008_naloxone <- function() {
     "doi:10.1097/FTD.0b013e3181816214",
     sep = " "
   )
-  vignette  <- "Dowling_2008_naloxone"
-  units     <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  vignette <- "Dowling_2008_naloxone"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linearly scaled on central volume V2 with fixed exponent 1 and a 70 kg reference (Results Section: V2 = TVV2 * (WT/70) * EXP(ETA2)). Per Patient Data: n=6 male volunteers, median weight 80 kg, range 75-100 kg.",
-      source_name        = "WT"
+      notes = "Linearly scaled on central volume V2 with fixed exponent 1 and a 70 kg reference (Results Section: V2 = TVV2 * (WT/70) * EXP(ETA2)). Per Patient Data: n=6 male volunteers, median weight 80 kg, range 75-100 kg.",
+      source_name = "WT"
     ),
     FFM = list(
-      description        = "Fat-free mass computed from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass computed from body weight, height, and sex via the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper calls this covariate LBW2005 (lean body weight, 2005 formula) but the formula it cites is Janmahasatian's fat-free mass; nlmixr2lib canonicalises the Janmahasatian output as FFM (see inst/references/covariate-columns.md). Allometrically scaled on clearance CL with fixed exponent 0.75 and a 70 kg reference (Results Section: CL = TVCL * (LBW2005/70)^0.75 * EXP(ETA1)). Derivation for adult males: FFM = 9.27e3 * WT / (6.68e3 + 216 * BMI) with BMI = WT / height_m^2 (Janmahasatian 2005).",
-      source_name        = "LBW2005"
+      notes = "The paper calls this covariate LBW2005 (lean body weight, 2005 formula) but the formula it cites is Janmahasatian's fat-free mass; nlmixr2lib canonicalises the Janmahasatian output as FFM (see inst/references/covariate-columns.md). Allometrically scaled on clearance CL with fixed exponent 0.75 and a 70 kg reference (Results Section: CL = TVCL * (LBW2005/70)^0.75 * EXP(ETA1)). Derivation for adult males: FFM = 9.27e3 * WT / (6.68e3 + 216 * BMI) with BMI = WT / height_m^2 (Janmahasatian 2005).",
+      source_name = "LBW2005"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6L,
-    n_studies      = 1L,
-    age_range      = "24-45 years (median 25)",
-    age_median     = "25 years",
-    weight_range   = "75-100 kg (median 80)",
-    weight_median  = "80 kg",
-    height_range   = "1.75-1.93 m (median 1.78)",
+    species = "human",
+    n_subjects = 6L,
+    n_studies = 1L,
+    age_range = "24-45 years (median 25)",
+    age_median = "25 years",
+    weight_range = "75-100 kg (median 80)",
+    weight_median = "80 kg",
+    height_range = "1.75-1.93 m (median 1.78)",
     sex_female_pct = 0,
     race_ethnicity = NULL,
-    disease_state  = "Healthy adult male volunteers with no prior or current opioid dependence, opioid analgesic use, cardiorespiratory disease, upper respiratory tract infection, or abnormal nasal anatomy.",
-    dose_range     = "0.8 mg IV, 0.8 mg IM, 0.8 mg IN, 2 mg IV, and 2 mg IN across five crossover occasions per subject (minimum 2-day washout).",
-    regions        = "Australia (Prince of Wales Hospital, Sydney).",
-    notes          = "Open-label crossover study; 128 plasma concentrations retained above the LOQ of 1 ug/L (82 IV, 39 IM, 7 IN). Only two of six subjects had detectable concentrations above the LOQ after 2 mg IN naloxone; 0.8 mg IN produced no detectable concentrations above the LOQ (final IN dataset: two occasions). One IV 0.8 mg record was excluded for administration error. LOQ/2 imputation applied to the first sub-LOQ observation per profile (Beal M3 alternative). Race / ethnicity not reported. Sample times: 5, 10, 15, 30, 45, 60, 90, 120, 180, 240 minutes post-dose per arm. Table 1: population parameter estimates and 95% percentiles (1000 non-parametric bootstraps)."
+    disease_state = "Healthy adult male volunteers with no prior or current opioid dependence, opioid analgesic use, cardiorespiratory disease, upper respiratory tract infection, or abnormal nasal anatomy.",
+    dose_range = "0.8 mg IV, 0.8 mg IM, 0.8 mg IN, 2 mg IV, and 2 mg IN across five crossover occasions per subject (minimum 2-day washout).",
+    regions = "Australia (Prince of Wales Hospital, Sydney).",
+    notes = "Open-label crossover study; 128 plasma concentrations retained above the LOQ of 1 ug/L (82 IV, 39 IM, 7 IN). Only two of six subjects had detectable concentrations above the LOQ after 2 mg IN naloxone; 0.8 mg IN produced no detectable concentrations above the LOQ (final IN dataset: two occasions). One IV 0.8 mg record was excluded for administration error. LOQ/2 imputation applied to the first sub-LOQ observation per profile (Beal M3 alternative). Race / ethnicity not reported. Sample times: 5, 10, 15, 30, 45, 60, 90, 120, 180, 240 minutes post-dose per arm. Table 1: population parameter estimates and 95% percentiles (1000 non-parametric bootstraps)."
   )
 
   ini({

@@ -9,37 +9,37 @@ Panoilia_2015_bevacizumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "VEGF165", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in source analysis. Allometric power scaling with fixed exponents 0.75 on CL/Q and 1 on V1/V2, centred at 70 kg (study median, Panoilia 2015 Methods Eq 3 and Results page 797).",
-      source_name        = "Actual body weight"
+      notes = "Time-fixed in source analysis. Allometric power scaling with fixed exponents 0.75 on CL/Q and 1 on V1/V2, centred at 70 kg (study median, Panoilia 2015 Methods Eq 3 and Results page 797).",
+      source_name = "Actual body weight"
     )
   )
 
   population <- list(
-    n_subjects        = 19L,
-    n_studies         = 1L,
-    age_range         = "37-73 years",
-    age_median        = "60 years",
-    weight_range      = "50-94 kg",
-    weight_median     = "70 kg",
-    sex_female_pct    = 42,
-    race_ethnicity    = "Greek (single-country observational study); race not formally reported.",
-    disease_state     = "Adults with stage IV colorectal cancer (mCRC); ECOG performance status <= 2.",
-    dose_range        = "5 mg/kg IV every 2 weeks (BEV-FOLFIRI / BEV-FOLFOX), 7.5 mg/kg IV every 3 weeks (BEV-CAPIRI), or 10 mg/kg every 2 weeks (1 patient).",
-    regions           = "Greece",
-    n_observations    = "86 total bevacizumab + 93 free VEGF165 serum concentrations (median 4 samples per patient, range 2-10).",
-    co_medication     = "BEV-FOLFIRI (5-FU/leucovorin/irinotecan), BEV-FOLFOX (5-FU/leucovorin/oxaliplatin), or BEV-CAPIRI (capecitabine/irinotecan).",
-    notes             = "Three-centre prospective observational study in Greece. SNPs (rs699947 / -2578C/A, rs1570360 / -1154G/A, rs2010963 / -634G/C) were tested but no SNP covariate was retained in the final TMDD model after randomization-test correction (Panoilia 2015 Discussion)."
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "37-73 years",
+    age_median = "60 years",
+    weight_range = "50-94 kg",
+    weight_median = "70 kg",
+    sex_female_pct = 42,
+    race_ethnicity = "Greek (single-country observational study); race not formally reported.",
+    disease_state = "Adults with stage IV colorectal cancer (mCRC); ECOG performance status <= 2.",
+    dose_range = "5 mg/kg IV every 2 weeks (BEV-FOLFIRI / BEV-FOLFOX), 7.5 mg/kg IV every 3 weeks (BEV-CAPIRI), or 10 mg/kg every 2 weeks (1 patient).",
+    regions = "Greece",
+    n_observations = "86 total bevacizumab + 93 free VEGF165 serum concentrations (median 4 samples per patient, range 2-10).",
+    co_medication = "BEV-FOLFIRI (5-FU/leucovorin/irinotecan), BEV-FOLFOX (5-FU/leucovorin/oxaliplatin), or BEV-CAPIRI (capecitabine/irinotecan).",
+    notes = "Three-centre prospective observational study in Greece. SNPs (rs699947 / -2578C/A, rs1570360 / -1154G/A, rs2010963 / -634G/C) were tested but no SNP covariate was retained in the final TMDD model after randomization-test correction (Panoilia 2015 Discussion)."
   )
 
   ini({

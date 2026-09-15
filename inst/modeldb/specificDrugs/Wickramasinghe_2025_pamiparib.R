@@ -12,50 +12,50 @@ Wickramasinghe_2025_pamiparib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "pamiparib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "pamiparib", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "pamiparib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Post-operative creatinine clearance, measured after surgical tumour resection. Raw creatinine clearance in mL/min, NOT normalised to 1.73 m^2 body surface area. The paper reports post-operative creatinine clearance (its column 'PCC') separately from pre-dose creatinine clearance and from CKD-EPI-estimated GFR; the final covariate model uses the post-operative creatinine clearance value.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Post-operative creatinine clearance, measured after surgical tumour resection. Raw creatinine clearance in mL/min, NOT normalised to 1.73 m^2 body surface area. The paper reports post-operative creatinine clearance (its column 'PCC') separately from pre-dose creatinine clearance and from CKD-EPI-estimated GFR; the final covariate model uses the post-operative creatinine clearance value.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters V/F through an UNCENTERED exponential effect V/F = theta2 * exp(e_crcl_vc * CRCL), so exp(lvc) is the extrapolated V/F at CRCL = 0 rather than a typical value. Table 2 footnote gives the population median post-operative creatinine clearance as 111.5 mL/min, at which the typical V/F is 44 L; Table 1 reports the post-operative creatinine clearance median as 111 mL/min (range 59-169). Section 2.2.2 states that continuous covariates were centered on their medians, but the Table 2 footnote equation and the reported theta2 = 15 L are only mutually consistent in the uncentered form, so the uncentered form is encoded here. Eligibility required eGFR >= 30 mL/min/1.73 m^2 (CKD-EPI) and either serum creatinine <= 1.5 x ULN or creatinine clearance >= 60 mL/min, so the cohort excludes moderate-to-severe renal impairment.",
-      source_name        = "PCC"
+      notes = "Time-fixed per subject. Enters V/F through an UNCENTERED exponential effect V/F = theta2 * exp(e_crcl_vc * CRCL), so exp(lvc) is the extrapolated V/F at CRCL = 0 rather than a typical value. Table 2 footnote gives the population median post-operative creatinine clearance as 111.5 mL/min, at which the typical V/F is 44 L; Table 1 reports the post-operative creatinine clearance median as 111 mL/min (range 59-169). Section 2.2.2 states that continuous covariates were centered on their medians, but the Table 2 footnote equation and the reported theta2 = 15 L are only mutually consistent in the uncentered form, so the uncentered form is encoded here. Eligibility required eGFR >= 30 mL/min/1.73 m^2 (CKD-EPI) and either serum creatinine <= 1.5 x ULN or creatinine clearance >= 60 mL/min, so the cohort excludes moderate-to-severe renal impairment.",
+      source_name = "PCC"
     ),
     AGE = list(
-      description        = "Age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters CL/F through an UNCENTERED exponential effect CL/F = theta3 * exp(e_age_cl * AGE), so exp(lcl) is the extrapolated CL/F at age 0 rather than a typical value. Table 2 footnote gives the population median age as 60 years, at which the typical CL/F is 2.59 L/h. Table 1 reports age median 60 years (range 31-80); eligibility required age > 18 years.",
-      source_name        = "Age"
+      notes = "Time-fixed per subject. Enters CL/F through an UNCENTERED exponential effect CL/F = theta3 * exp(e_age_cl * AGE), so exp(lcl) is the extrapolated CL/F at age 0 rather than a typical value. Table 2 footnote gives the population median age as 60 years, at which the typical CL/F is 2.59 L/h. Table 1 reports age median 60 years (range 31-80); eligibility required age > 18 years.",
+      source_name = "Age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "31-80 years",
-    age_median     = "60 years",
-    weight_range   = "45-129 kg",
-    weight_median  = "80 kg",
-    height_range   = "155-193 cm",
-    height_median  = "173 cm",
-    bsa_range      = "1.41-2.53 m^2",
-    bsa_median     = "1.99 m^2",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "31-80 years",
+    age_median = "60 years",
+    weight_range = "45-129 kg",
+    weight_median = "80 kg",
+    height_range = "155-193 cm",
+    height_median = "173 cm",
+    bsa_range = "1.41-2.53 m^2",
+    bsa_median = "1.99 m^2",
     sex_female_pct = 51.2,
     race_ethnicity = c(White = 92.7, `Non-white` = 7.3),
-    disease_state  = "Newly diagnosed or recurrent glioblastoma; ECOG performance status <= 2; adequate bone marrow, hepatic and renal function.",
-    dose_range     = "60 mg oral pamiparib twice daily for 3 days (9 doses) before surgical tumour resection. Plasma sampled pre-dose and at 0.5, 1, 2, 4, 7 and 24 h after the 9th dose.",
-    regions        = "United States (Barrow Neurological Institute, St. Joseph's Hospital and Medical Center, Phoenix AZ; single centre).",
+    disease_state = "Newly diagnosed or recurrent glioblastoma; ECOG performance status <= 2; adequate bone marrow, hepatic and renal function.",
+    dose_range = "60 mg oral pamiparib twice daily for 3 days (9 doses) before surgical tumour resection. Plasma sampled pre-dose and at 0.5, 1, 2, 4, 7 and 24 h after the 9th dose.",
+    regions = "United States (Barrow Neurological Institute, St. Joseph's Hospital and Medical Center, Phoenix AZ; single centre).",
     renal_function = "Post-operative creatinine clearance median 111 mL/min (range 59-169); pre-dose median 98 mL/min (range 39-154). Post-operative GFR median 101 mL/min (range 48-117).",
     hepatic_function = "Pre-dose total bilirubin median 0.5 mg/dL (range 0.3-1.8); pre-dose AST median 19 IU/L, ALT median 24 IU/L; pre-dose plasma albumin median 4.1 mg/dL.",
-    co_medication  = "36 of 41 patients received co-administered drugs during the trial; 34 of 41 received dexamethasone (median total dose 19 mg, range 0-66). No concomitant medication was retained as a significant covariate.",
-    notes          = "Phase 0/II study NCT04614909. Baseline demographics from Table 1. Estimation by SAEM in Monolix 2024R1 on log-transformed concentrations; covariate screening by generalized additive modelling followed by stepwise covariate modelling (forward dOFV > 3.875, backward dOFV > 10.828). Parameter precision assessed by 500-replicate nonparametric bootstrap (Table 3)."
+    co_medication = "36 of 41 patients received co-administered drugs during the trial; 34 of 41 received dexamethasone (median total dose 19 mg, range 0-66). No concomitant medication was retained as a significant covariate.",
+    notes = "Phase 0/II study NCT04614909. Baseline demographics from Table 1. Estimation by SAEM in Monolix 2024R1 on log-transformed concentrations; covariate screening by generalized additive modelling followed by stepwise covariate modelling (forward dOFV > 3.875, backward dOFV > 10.828). Parameter precision assessed by 500-replicate nonparametric bootstrap (Table 3)."
   )
 
   ini({

@@ -26,8 +26,7 @@
 #' @param label parameter label; `NA_character_` leaves it unset
 #' @return `ui` with `name` promoted to a population parameter
 #' @noRd
-.iniAddTheta <- function(ui, name, est = 0.1, lower = -Inf, upper = Inf,
-                         label = NA_character_) {
+.iniAddTheta <- function(ui, name, est = 0.1, lower = -Inf, upper = Inf, label = NA_character_) {
   checkmate::assertString(name, min.chars = 1L)
   # a label can arrive carrying the name of the vector element it came from
   # (ifelse() keeps names); label() wants a bare string
@@ -38,16 +37,31 @@
     if (is.infinite(lower) && lower < 0 && is.infinite(upper) && upper > 0) {
       .exprs <- c(.exprs, list(str2lang(paste0(name, " <- ", deparse1(est)))))
     } else {
-      .exprs <- c(.exprs, list(str2lang(paste0(
-        name, " <- c(", deparse1(lower), ", ", deparse1(est), ", ",
-        deparse1(upper), ")"
-      ))))
+      .exprs <- c(
+        .exprs,
+        list(str2lang(paste0(
+          name,
+          " <- c(",
+          deparse1(lower),
+          ", ",
+          deparse1(est),
+          ", ",
+          deparse1(upper),
+          ")"
+        )))
+      )
     }
   }
   if (!is.na(label)) {
-    .exprs <- c(.exprs, list(str2lang(paste0(
-      name, " <- label(", deparse1(label), ")"
-    ))))
+    .exprs <- c(
+      .exprs,
+      list(str2lang(paste0(
+        name,
+        " <- label(",
+        deparse1(label),
+        ")"
+      )))
+    )
   }
   if (length(.exprs) == 0L) {
     return(ui)

@@ -33,22 +33,22 @@ Gaspar_2025_fexofenadine <- function() {
   )
   vignette <- "Gaspar_2025_fexofenadine"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste0(
+      description = paste0(
         "Creatinine clearance estimated with the Cockcroft-Gault equation. ",
         "Enters CL/F as a power function normalized to the population median ",
         "of 77.2."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Gaspar 2025 Methods 2.3.2 states CLcr was 'calculated using the ",
         "Cockcroft-Gault equation'; Table 2 labels the column 'Estimated ",
         "creatinine clearance, mL/min/1.73 m^2' with a median of 77.2 ",
@@ -67,17 +67,17 @@ Gaspar_2025_fexofenadine <- function() {
         "'CLcr (100 mL/min)'. This model uses the Table 3 footnote (77.2) -- ",
         "see the model file comment on `e_crcl_cl` for the full rationale."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     AGE = list(
-      description        = paste0(
+      description = paste0(
         "Age at inclusion. Enters CL/F as a power function normalized to the ",
         "population median of 71 years; older age lowers CL/F."
       ),
-      units              = "years",
-      type               = "continuous",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Gaspar 2025 Table 2: median 71 years (range 25-97) in the 449 ",
         "OptimAT hospitalized patients and 23 years (range 20-36) in the 10 ",
         "Geneva cocktail healthy volunteers; 0 percent missing in both ",
@@ -89,17 +89,17 @@ Gaspar_2025_fexofenadine <- function() {
         "median from Table 2, and pooling the 10 volunteers shifts the median ",
         "of the 459 subjects negligibly."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CONMED_PGP_INH = list(
-      description        = paste0(
+      description = paste0(
         "1 = subject concomitantly treated with a P-glycoprotein inhibitor, ",
         "0 = no Pgp-inhibitor coadministration. Lowers CL/F by 32 percent."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant Pgp inhibitor)",
-      notes              = paste0(
+      notes = paste0(
         "Gaspar 2025 Table 2: 14.0 percent of the 449 OptimAT patients and 0 ",
         "percent of the 10 healthy volunteers (Results 3.1 rounds this to ",
         "'approximately 15 percent'). The Table 2 footnote a lists the pooled ",
@@ -113,7 +113,7 @@ Gaspar_2025_fexofenadine <- function() {
         "log-additive shift on log(CL/F) (Table 3 footnote equation term ",
         "beta_PGP * PGP_i), i.e. a multiplicative exp(-0.38) = 0.684 factor."
       ),
-      source_name        = "PGP"
+      source_name = "PGP"
     )
   )
 
@@ -121,7 +121,9 @@ Gaspar_2025_fexofenadine <- function() {
   # final model. Documentation only -- none is referenced in model().
   covariatesDataExcluded <- list(
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       notes = paste0(
         "Screened per Methods 2.3.2 ('demographic factors (e.g., body ",
         "weight, age, gender)'). Methods Eq. 1 names 70 kg as the weight ",
@@ -133,7 +135,9 @@ Gaspar_2025_fexofenadine <- function() {
       )
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste0(
         "Screened as 'gender' (Methods 2.3.2); not retained. Table 2 reports ",
         "69 percent male in OptimAT and 100 percent male among the 10 ",
@@ -141,15 +145,21 @@ Gaspar_2025_fexofenadine <- function() {
       )
     ),
     HT = list(
-      description = "Height", units = "cm", type = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       notes = "Table 2 demographic (median 172 cm OptimAT, 170 cm volunteers); not retained."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Table 2 demographic (median 26.5 OptimAT, 22 volunteers); not retained."
     ),
     SMOKE_CURRENT = list(
-      description = "Current-smoker indicator", units = "(binary)", type = "binary",
+      description = "Current-smoker indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste0(
         "Screened as the 'environmental influences (e.g., smoking status)' ",
         "term in Methods 2.3.2; not retained. Table 2: 24.3 percent smokers ",
@@ -157,37 +167,51 @@ Gaspar_2025_fexofenadine <- function() {
       )
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened laboratory covariate (Methods 2.3.2); not retained. Table 2 median 27 U/L (5-424)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened laboratory covariate (Methods 2.3.2); not retained. Table 2 median 26 U/L (6-286)."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened laboratory covariate (Methods 2.3.2); not retained. Table 2 median 8 umol/L (3-41)."
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       notes = paste0(
         "Listed among the screened laboratory measurements in Methods 2.3.2; ",
         "not retained, and no albumin summary appears in Table 2."
       )
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "U/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "U/L",
+      type = "continuous",
       notes = paste0(
         "Listed among the screened laboratory measurements in Methods 2.3.2; ",
         "not retained, and no GGT summary appears in Table 2."
       )
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "U/L", type = "continuous",
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened laboratory covariate (Methods 2.3.2); not retained. Table 2 median 67 U/L (14-1406)."
     ),
     BUN = list(
-      description = "Blood urea", units = "(not reported)", type = "continuous",
+      description = "Blood urea",
+      units = "(not reported)",
+      type = "continuous",
       notes = paste0(
         "Screened as 'urea' (Methods 2.3.2); not retained, and no urea ",
         "summary or unit appears in Table 2."
@@ -195,7 +219,8 @@ Gaspar_2025_fexofenadine <- function() {
     ),
     STUDY_OPTIMAT = list(
       description = "1 = OptimAT hospitalized patient, 0 = Geneva cocktail healthy volunteer",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = paste0(
         "Methods 2.3.2: 'Population type (pooled healthy volunteers vs ",
         "hospitalized patients) was treated as a unique covariate.' It was ",
@@ -208,7 +233,8 @@ Gaspar_2025_fexofenadine <- function() {
     ),
     CONMED_PGP_IND = list(
       description = "1 = subject concomitantly treated with a P-glycoprotein inducer, 0 = otherwise",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = paste0(
         "Collected and categorized (Methods 2.3.2: Pgp-modulating drug use ",
         "was 'categorized as no interaction, Pgp inhibitor, or Pgp inducer'; ",
@@ -226,35 +252,41 @@ Gaspar_2025_fexofenadine <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "fexofenadine", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "fexofenadine",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "fexofenadine", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "fexofenadine",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "fexofenadine", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "fexofenadine",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 459L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 459L,
+    n_studies = 2L,
     n_observations = paste0(
       "1089 fexofenadine concentrations (1059 from 449 OptimAT patients, 30 ",
       "from 10 Geneva cocktail healthy volunteers), sampled at baseline and ",
       "2, 3 and 6 h post-dose (Methods 2.2, Results 3.1)"
     ),
-    age_range      = "25-97 years (OptimAT patients); 20-36 years (healthy volunteers)",
-    age_median     = "71 years (OptimAT patients); 23 years (healthy volunteers)",
-    weight_range   = "37-130 kg (OptimAT patients); 69-86 kg (healthy volunteers)",
-    weight_median  = "77.2 kg (OptimAT patients); 70.1 kg (healthy volunteers)",
+    age_range = "25-97 years (OptimAT patients); 20-36 years (healthy volunteers)",
+    age_median = "71 years (OptimAT patients); 23 years (healthy volunteers)",
+    weight_range = "37-130 kg (OptimAT patients); 69-86 kg (healthy volunteers)",
+    weight_median = "77.2 kg (OptimAT patients); 70.1 kg (healthy volunteers)",
     sex_female_pct = 31,
     race_ethnicity = c(Caucasian = 94.8, Hispanic = 2.0, Asian = 1.3, African = 1.1, Other = 0.9),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Hospitalized polymorbid older adults enrolled in the OptimAT ",
       "antithrombotic-optimization cohort (Geneva University Hospitals, ",
       "January 2018 - July 2021), pooled with healthy volunteers from the ",
@@ -267,16 +299,16 @@ Gaspar_2025_fexofenadine <- function() {
       "percent, stage 3 (30-59) 20.1 percent, stage 4 (15-29) 3.7 percent, ",
       "stage 5 (< 15) 5.1 percent"
     ),
-    co_medication  = paste0(
+    co_medication = paste0(
       "Pgp inhibitors 14.0 percent, Pgp inducers 2.0 percent (OptimAT, ",
       "Table 2); none in the healthy volunteers. Fexofenadine was dosed as ",
       "part of a six-drug phenotyping cocktail also containing bupropion 25 ",
       "mg, flurbiprofen 25 mg, dextromethorphan 10 mg, omeprazole 5 mg and ",
       "midazolam 1 mg (Methods 2.2)"
     ),
-    dose_range     = "single 25 mg oral fexofenadine dose (Geneva cocktail capsule)",
-    regions        = "Switzerland (single centre, Geneva University Hospitals)",
-    notes          = paste0(
+    dose_range = "single 25 mg oral fexofenadine dose (Geneva cocktail capsule)",
+    regions = "Switzerland (single centre, Geneva University Hospitals)",
+    notes = paste0(
       "Concentrations were measured in 10 uL capillary whole-blood dried ",
       "blood spots collected by finger prick onto Whatman 903 cards and ",
       "quantified by LC-MS/MS (Methods 2.2; assay of Bosilkovska 2014). The ",

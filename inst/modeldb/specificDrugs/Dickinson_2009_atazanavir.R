@@ -8,36 +8,36 @@ Dickinson_2009_atazanavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_RTV_AUC = list(
-      description        = "Ritonavir AUC over the 0-24 h dosing interval (per-subject, time-fixed within an evaluated regimen)",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Ritonavir AUC over the 0-24 h dosing interval (per-subject, time-fixed within an evaluated regimen)",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters atazanavir CL/F via the power form CL = exp(lcl) * (CONMED_RTV_AUC / 7.52)^e_aucrtv_cl, centred at the cohort median 7.52 mg*h/L (Dickinson 2009 Table 1 / Results page 1236). Computed by the source authors using non-compartmental methods (WinNonlin 5.2) on the ritonavir concentration-time data. Set per-subject; for simulation users without observed ritonavir AUC, the cohort median (7.52) reproduces typical-value behaviour. Healthy volunteers 7.36 mg*h/L (range 4.31-13.42); HIV-infected 7.59 mg*h/L (range 2.41-22.05); pooled 7.52 (2.41-22.05) per Table 1.",
-      source_name        = "RTVAUC"
+      notes = "Enters atazanavir CL/F via the power form CL = exp(lcl) * (CONMED_RTV_AUC / 7.52)^e_aucrtv_cl, centred at the cohort median 7.52 mg*h/L (Dickinson 2009 Table 1 / Results page 1236). Computed by the source authors using non-compartmental methods (WinNonlin 5.2) on the ritonavir concentration-time data. Set per-subject; for simulation users without observed ritonavir AUC, the cohort median (7.52) reproduces typical-value behaviour. Healthy volunteers 7.36 mg*h/L (range 4.31-13.42); HIV-infected 7.59 mg*h/L (range 2.41-22.05); pooled 7.52 (2.41-22.05) per Table 1.",
+      source_name = "RTVAUC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 46L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 46L,
+    n_studies = 3L,
     n_observations = 538L,
-    age_range      = "22-62 years",
-    age_median     = "43 years",
-    weight_range   = "46-115 kg",
-    weight_median  = "76 kg",
+    age_range = "22-62 years",
+    age_median = "43 years",
+    weight_range = "46-115 kg",
+    weight_median = "76 kg",
     sex_female_pct = 19.6,
     race_ethnicity = c(Caucasian = 72, BlackAfrican = 15, Hispanic = 13),
-    disease_state  = "HIV-infected adults (n=30) and healthy volunteers (n=16); stable on atazanavir/ritonavir for >=2 weeks prior to PK sampling.",
-    dose_range     = "Oral atazanavir/ritonavir 300/100 mg once daily, fed (16-20 g fat). 18 of 46 also received saquinavir 1600 mg once daily; 6 of 46 received tenofovir 300 mg once daily. Lower-dose regimens (200/100 and 150/100 mg once daily) used only for external validation.",
-    regions        = "United Kingdom (St Stephen's Centre, Chelsea and Westminster Foundation Trust, London)",
-    notes          = "Three pooled clinical studies in adults. Sampling pre-dose and 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 24 h post-dose; healthy volunteers had additional samples at 16 and 20 h. Plasma atazanavir and ritonavir quantified by HPLC-MS/MS. Median (range) ritonavir AUC0-24 was 7.52 mg*h/L (2.41-22.05) (Table 1). Model fit with NONMEM VI 2.0 (FOCE-I) per Methods / Data analysis."
+    disease_state = "HIV-infected adults (n=30) and healthy volunteers (n=16); stable on atazanavir/ritonavir for >=2 weeks prior to PK sampling.",
+    dose_range = "Oral atazanavir/ritonavir 300/100 mg once daily, fed (16-20 g fat). 18 of 46 also received saquinavir 1600 mg once daily; 6 of 46 received tenofovir 300 mg once daily. Lower-dose regimens (200/100 and 150/100 mg once daily) used only for external validation.",
+    regions = "United Kingdom (St Stephen's Centre, Chelsea and Westminster Foundation Trust, London)",
+    notes = "Three pooled clinical studies in adults. Sampling pre-dose and 0.5, 1, 2, 3, 4, 6, 8, 10, 12, 24 h post-dose; healthy volunteers had additional samples at 16 and 20 h. Plasma atazanavir and ritonavir quantified by HPLC-MS/MS. Median (range) ritonavir AUC0-24 was 7.52 mg*h/L (2.41-22.05) (Table 1). Model fit with NONMEM VI 2.0 (FOCE-I) per Methods / Data analysis."
   )
 
   ini({

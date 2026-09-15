@@ -9,61 +9,65 @@ SchaedeliStark_2024_balovaptan <- function() {
   #   RUVprop = RUVearly - (RUVearly - RUVlate) * (1 - exp(-RUVrate * TAD))
   # The two SDs are not the canonical single `propSd`, and the third is the
   # decay rate constant of that time course, so all three are declared here.
-  paper_specific_residual_sds <- c("propSd_early", "propSd_late",
-                                   "propSd_exp_kdes")
+  paper_specific_residual_sds <- c("propSd_early", "propSd_late", "propSd_exp_kdes")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Fig. 3 of the source.
   compartmentData <- list(
-    depot      = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit5   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    transit6   = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
-    central    = list(analyte = "balovaptan", units = "mg", specimen = "plasma", verified = TRUE),
-    moderator1 = list(analyte = NA_character_, units = "(unitless fraction)", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    transit6 = list(analyte = "balovaptan", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "balovaptan", units = "mg", specimen = "plasma", verified = TRUE),
+    moderator1 = list(
+      analyte = NA_character_,
+      units = "(unitless fraction)",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Directly proportional (exponent fixed to 1.00) scaling of the baseline central volume, normalised to a 76 kg reference. 76 kg was the median weight of the neurotypical adult volunteers in the pooled dataset. Weight was NOT retained on CL/F: the estimated exponent (0.256) lost significance once the age maturation function was added.",
-      source_name        = "WT"
+      notes = "Directly proportional (exponent fixed to 1.00) scaling of the baseline central volume, normalised to a 76 kg reference. 76 kg was the median weight of the neurotypical adult volunteers in the pooled dataset. Weight was NOT retained on CL/F: the estimated exponent (0.256) lost significance once the age maturation function was added.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the asymptotic CL/F maturation function. Reaches 50% of adult CL/F at AGE50 = 5.34 years and ~90% at 14 years; effectively at plateau by 20 years, and no further age effect up to 65 years.",
-      source_name        = "AGE"
+      notes = "Drives the asymptotic CL/F maturation function. Reaches 50% of adult CL/F at AGE50 = 5.34 years and ~90% at 14 years; effectively at plateau by 20 years, and no further age effect up to 65 years.",
+      source_name = "AGE"
     ),
     FED = list(
-      description        = "Fed state at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Multiplicative power-form effect on the mean transit time: MTT = MTT_fasted * 3.39^FED. The factor was fixed (not estimated) because only 4.3% of the participants with PK data were fasted. Both phase II ASD studies dosed with food, so the paper's own typical-participant simulations (Figs. 5 and 6) correspond to FED = 1.",
-      source_name        = "FOOD"
+      notes = "Multiplicative power-form effect on the mean transit time: MTT = MTT_fasted * 3.39^FED. The factor was fixed (not estimated) because only 4.3% of the participants with PK data were fasted. Both phase II ASD studies dosed with food, so the paper's own typical-participant simulations (Figs. 5 and 6) correspond to FED = 1.",
+      source_name = "FOOD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 370,
-    n_studies      = 5,
-    age_range      = "5-64 years (median 19)",
-    weight_range   = "18.8-152.0 kg (median 72.8)",
+    species = "human",
+    n_subjects = 370,
+    n_studies = 5,
+    age_range = "5-64 years (median 19)",
+    weight_range = "18.8-152.0 kg (median 72.8)",
     sex_female_pct = 8.1,
-    disease_state  = "autism spectrum disorder with IQ >= 70 (n = 315) and neurotypical adults (n = 55)",
-    dose_range     = "1.5-52 mg once daily, oral",
-    regions        = "not reported",
-    notes          = "Pooled from three phase I studies in neurotypical adults (NCT01418963 n = 24, NCT03579719 n = 15, NCT03586726 n = 16; rich sampling, 5-52 mg) and two phase II ASD studies (VANILLA NCT01793441 n = 146 adults; aV1ation NCT02901431 n = 169 children and adolescents 5-17 years; sparse sampling, 1.5-10 mg). 3985 PK observations. The model was subsequently used to simulate IV infusion dosing and brain V1a receptor occupancy for a phase II malignant-cerebral-edema trial (NCT05399550); no IV data were fitted."
+    disease_state = "autism spectrum disorder with IQ >= 70 (n = 315) and neurotypical adults (n = 55)",
+    dose_range = "1.5-52 mg once daily, oral",
+    regions = "not reported",
+    notes = "Pooled from three phase I studies in neurotypical adults (NCT01418963 n = 24, NCT03579719 n = 15, NCT03586726 n = 16; rich sampling, 5-52 mg) and two phase II ASD studies (VANILLA NCT01793441 n = 146 adults; aV1ation NCT02901431 n = 169 children and adolescents 5-17 years; sparse sampling, 1.5-10 mg). 3985 PK observations. The model was subsequently used to simulate IV infusion dosing and brain V1a receptor occupancy for a phase II malignant-cerebral-edema trial (NCT05399550); no IV data were fitted."
   )
 
   ini({

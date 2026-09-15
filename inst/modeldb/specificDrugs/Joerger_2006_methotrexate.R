@@ -1,118 +1,128 @@
 Joerger_2006_methotrexate <- function() {
   description <- "Population PK model for methotrexate (MTX) and its principal circulating metabolite 7-hydroxy-methotrexate (7-OH-MTX) in adult cancer patients receiving high-dose intravenous MTX therapy (Joerger 2006). Joint parent + metabolite model: linear 3-compartment MTX (central + two peripheral compartments) with first-order elimination from the central compartment, feeding a linear 2-compartment 7-OH-MTX disposition through a fixed metabolic fraction of 10 percent. Additive-linear covariate effects of baseline creatinine clearance (Cockcroft-Gault, raw mL/min, truncated at 140), concurrent benzimidazole-class proton-pump-inhibitor comedication, and prior NSAID administration on both MTX and 7-OH-MTX total clearance."
-  reference   <- "Joerger M, Huitema ADR, van den Bongard HJGD, Baas P, Schornagel JH, Schellens JHM, Beijnen JH. Determinants of the elimination of methotrexate and 7-hydroxy-methotrexate following high-dose infusional therapy to cancer patients. Br J Clin Pharmacol. 2006;62(1):71-80. doi:10.1111/j.1365-2125.2005.02513.x"
-  vignette    <- "Joerger_2006_methotrexate"
-  units       <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  reference <- "Joerger M, Huitema ADR, van den Bongard HJGD, Baas P, Schornagel JH, Schellens JHM, Beijnen JH. Determinants of the elimination of methotrexate and 7-hydroxy-methotrexate following high-dose infusional therapy to cancer patients. Br J Clin Pharmacol. 2006;62(1):71-80. doi:10.1111/j.1365-2125.2005.02513.x"
+  vignette <- "Joerger_2006_methotrexate"
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central            = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral2        = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    central_7ohmtx     = list(analyte = "7-hydroxy-methotrexate (7-OH-MTX)", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1_7ohmtx = list(analyte = "7-hydroxy-methotrexate (7-OH-MTX)", units = "umol", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "methotrexate (MTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    central_7ohmtx = list(
+      analyte = "7-hydroxy-methotrexate (7-OH-MTX)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1_7ohmtx = list(
+      analyte = "7-hydroxy-methotrexate (7-OH-MTX)",
+      units = "umol",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline creatinine clearance estimated from serum creatinine via the Cockcroft-Gault formula and truncated at 140 mL/min. Time-fixed per cycle; the baseline value before each high-dose MTX cycle is used.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance estimated from serum creatinine via the Cockcroft-Gault formula and truncated at 140 mL/min. Time-fixed per cycle; the baseline value before each high-dose MTX cycle is used.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Raw Cockcroft-Gault (not BSA-normalized), to match Joerger 2006 Methods 'Population pharmacokinetic analysis' ('CL_CREA according to the Cockcroft-Gault formula, and with values > 140 mL/min truncated at this value'). Median 87.5 mL/min, range 40-140 mL/min in the source cohort (Table 1). Centered at 87 mL/min in the covariate equations (Joerger 2006 Eqs 1 and 2). Cockroft-Gault precedent for raw mL/min CRCL is established in Delattre_2010_amikacin.R.",
-      source_name        = "CL_CREA"
+      notes = "Raw Cockcroft-Gault (not BSA-normalized), to match Joerger 2006 Methods 'Population pharmacokinetic analysis' ('CL_CREA according to the Cockcroft-Gault formula, and with values > 140 mL/min truncated at this value'). Median 87.5 mL/min, range 40-140 mL/min in the source cohort (Table 1). Centered at 87 mL/min in the covariate equations (Joerger 2006 Eqs 1 and 2). Cockroft-Gault precedent for raw mL/min CRCL is established in Delattre_2010_amikacin.R.",
+      source_name = "CL_CREA"
     ),
     CONMED_PPI = list(
-      description        = "Concurrent benzimidazole-class proton-pump-inhibitor (omeprazole 20-40 mg daily or lansoprazole 30 mg daily) at the time of high-dose MTX administration; 1 = on PPI, 0 = no PPI.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent benzimidazole-class proton-pump-inhibitor (omeprazole 20-40 mg daily or lansoprazole 30 mg daily) at the time of high-dose MTX administration; 1 = on PPI, 0 = no PPI.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant benzimidazole-class PPI use)",
-      notes              = "13 of 76 patients (17 percent) were taking benzimidazole-class PPIs concurrently with HDMTX (Joerger 2006 Results page 75: 10 on omeprazole 20-40 mg daily, 3 on lansoprazole 30 mg daily). No difference was demonstrable between omeprazole and lansoprazole effects, nor between dose strata (Results page 77 paragraph after Equations 1 and 2), so the indicator is a class-level binary. Joerger 2006 names the column PPI in Equations 1 and 2.",
-      source_name        = "PPI"
+      notes = "13 of 76 patients (17 percent) were taking benzimidazole-class PPIs concurrently with HDMTX (Joerger 2006 Results page 75: 10 on omeprazole 20-40 mg daily, 3 on lansoprazole 30 mg daily). No difference was demonstrable between omeprazole and lansoprazole effects, nor between dose strata (Results page 77 paragraph after Equations 1 and 2), so the indicator is a class-level binary. Joerger 2006 names the column PPI in Equations 1 and 2.",
+      source_name = "PPI"
     ),
     CONMED_NSAID = list(
-      description        = "Prior NSAID exposure (diclofenac 75-300 mg daily in 5 patients, ibuprofen 100 mg three times daily in 1 patient) within the days leading up to high-dose MTX administration; 1 = prior NSAID, 0 = no prior NSAID. NSAIDs were discontinued on the day of HDMTX in all patients.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior NSAID exposure (diclofenac 75-300 mg daily in 5 patients, ibuprofen 100 mg three times daily in 1 patient) within the days leading up to high-dose MTX administration; 1 = prior NSAID, 0 = no prior NSAID. NSAIDs were discontinued on the day of HDMTX in all patients.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior NSAID use)",
-      notes              = "6 of 76 patients (8 percent) had prior NSAID exposure (Joerger 2006 Results page 75). Joerger 2006 names the column NSAID in Equations 1 and 2. Despite being stopped on the day of HDMTX, the prior NSAID exposure still significantly impaired MTX and 7-OH-MTX clearance.",
-      source_name        = "NSAID"
+      notes = "6 of 76 patients (8 percent) had prior NSAID exposure (Joerger 2006 Results page 75). Joerger 2006 names the column NSAID in Equations 1 and 2. Despite being stopped on the day of HDMTX, the prior NSAID exposure still significantly impaired MTX and 7-OH-MTX clearance.",
+      source_name = "NSAID"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight (kg).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate on CL and Vd of MTX and 7-OH-MTX (Joerger 2006 Methods 'Population pharmacokinetic analysis'); not retained in the final model. Cohort median 78 kg (BSA median 1.94 m^2, range 1.56-2.45)."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested as a candidate covariate on CL and Vd of MTX and 7-OH-MTX (Joerger 2006 Methods 'Population pharmacokinetic analysis'); not retained in the final model. Cohort median 78 kg (BSA median 1.94 m^2, range 1.56-2.45)."
     ),
     AGE = list(
       description = "Patient age (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate; not retained. Cohort median 51.1 years, range 17.1-77.0 (Joerger 2006 Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Tested as a candidate covariate; not retained. Cohort median 51.1 years, range 17.1-77.0 (Joerger 2006 Table 1)."
     ),
     SEXF = list(
       description = "Patient sex (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a candidate covariate; not retained. Cohort 62 males / 14 females (Joerger 2006 Table 1). Joerger 2006 reports the source column as GEN with GEN = 0 for females and GEN = 1 for males; SEXF inverts the encoding to match the nlmixr2lib canonical (SEXF = 1 for female)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a candidate covariate; not retained. Cohort 62 males / 14 females (Joerger 2006 Table 1). Joerger 2006 reports the source column as GEN with GEN = 0 for females and GEN = 1 for males; SEXF inverts the encoding to match the nlmixr2lib canonical (SEXF = 1 for female)."
     ),
     BSA = list(
       description = "Body surface area (m^2).",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate on Vd of MTX and 7-OH-MTX (Joerger 2006 Methods); not retained. Cohort median 1.94 m^2, range 1.56-2.45."
+      units = "m^2",
+      type = "continuous",
+      notes = "Tested as a candidate covariate on Vd of MTX and 7-OH-MTX (Joerger 2006 Methods); not retained. Cohort median 1.94 m^2, range 1.56-2.45."
     ),
     AST = list(
       description = "Aspartate aminotransferase (U/L), surrogate marker for hepatic function.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate; not retained. Cohort median 17 U/L (Joerger 2006 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested as a candidate covariate; not retained. Cohort median 17 U/L (Joerger 2006 Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase (U/L), surrogate marker for hepatic function.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate; not retained. Cohort median 20 U/L (Joerger 2006 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested as a candidate covariate; not retained. Cohort median 20 U/L (Joerger 2006 Table 1)."
     ),
     BILIRUBIN = list(
       description = "Total bilirubin (umol/L), surrogate marker for hepatic function.",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate; not retained. Cohort median 6.0 umol/L (Joerger 2006 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Tested as a candidate covariate; not retained. Cohort median 6.0 umol/L (Joerger 2006 Table 1)."
     ),
     ALKPHOS = list(
       description = "Alkaline phosphatase (U/L), surrogate marker for hepatic function.",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested as a candidate covariate; not retained. Cohort median 92 U/L (Joerger 2006 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested as a candidate covariate; not retained. Cohort median 92 U/L (Joerger 2006 Table 1)."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 76,
-    n_studies       = 1,
-    n_cycles        = 304,
-    age_range       = "17.1-77.0 years",
-    age_median      = "51.1 years",
+    species = "human",
+    n_subjects = 76,
+    n_studies = 1,
+    n_cycles = 304,
+    age_range = "17.1-77.0 years",
+    age_median = "51.1 years",
     sex_distribution = "62 males / 14 females",
-    bsa_range       = "1.56-2.45 m^2",
-    bsa_median      = "1.94 m^2",
-    crcl_range      = "40-140 mL/min (raw Cockcroft-Gault, truncated at 140)",
-    crcl_median     = "87.5 mL/min",
+    bsa_range = "1.56-2.45 m^2",
+    bsa_median = "1.94 m^2",
+    crcl_range = "40-140 mL/min (raw Cockcroft-Gault, truncated at 140)",
+    crcl_median = "87.5 mL/min",
     serum_creatinine_range = "32-433 umol/L",
-    disease_state   = "Solid tumours treated at The Netherlands Cancer Institute. Diagnoses: malignant pleural mesothelioma (n = 29), gastro-oesophageal cancer (n = 20), non-Hodgkin lymphoma (n = 12), head and neck cancer (n = 10), choriocarcinoma (n = 2), one each of acute lymphocytic leukaemia, trophoblastic tumour, and osteosarcoma.",
-    dose_range      = "Intravenous methotrexate 300 mg/m^2 to 12 g/m^2 over 1-24 h infusion. 61 of 76 patients (80 percent) received MTX 1000-5000 mg/m^2 over a 1-6 h infusion. Routine HDMTX-supportive care (aggressive hydration, urine alkalinization to pH = 7, oral leucovorin rescue 15 mg every 6 h starting 24 h after MTX, escalated leucovorin if plasma MTX > 0.1 umol/L at 48 h).",
-    co_medication   = "Concurrent benzimidazole-class proton-pump inhibitors (omeprazole or lansoprazole, n = 13) and prior NSAIDs (diclofenac or ibuprofen, n = 6) were retained as covariates on CL. Concurrent corticosteroids (all n = 12 NHL patients), 5-fluorouracil, vinca alkaloids, L-asparaginase, and intravenous doxorubicin (40 mg every 2 weeks; mesothelioma study) were tested but not retained.",
-    regions         = "The Netherlands (single-centre, The Netherlands Cancer Institute / Antoni van Leeuwenhoek Hospital / Slotervaart Hospital, Amsterdam).",
-    n_observations  = "21 of 76 patients had intensive sampling (end of infusion plus 3, 6, 8 h; 34 sampled cycles); remaining 55 had routine 24 h and 48 h samples only (270 cycles). HPLC LLOQ 0.04 umol/L for both MTX and 7-OH-MTX; within- and between-day CV <= 7 percent.",
-    notes           = "Cohort baseline demographics in Joerger 2006 Table 1 (page 74). Two outliers (ID-36 and ID-63) with markedly decreased CL_MTX were retained per the source; ID-63 (29-year-old male, mesothelioma, 3 g 3-h MTX infusion plus doxorubicin) developed CTC grade 3 anuric renal failure on day 2, requiring continuous veno-venous haemofiltration, and died 20 days post-HDMTX (treatment-related mortality 1.3 percent)."
+    disease_state = "Solid tumours treated at The Netherlands Cancer Institute. Diagnoses: malignant pleural mesothelioma (n = 29), gastro-oesophageal cancer (n = 20), non-Hodgkin lymphoma (n = 12), head and neck cancer (n = 10), choriocarcinoma (n = 2), one each of acute lymphocytic leukaemia, trophoblastic tumour, and osteosarcoma.",
+    dose_range = "Intravenous methotrexate 300 mg/m^2 to 12 g/m^2 over 1-24 h infusion. 61 of 76 patients (80 percent) received MTX 1000-5000 mg/m^2 over a 1-6 h infusion. Routine HDMTX-supportive care (aggressive hydration, urine alkalinization to pH = 7, oral leucovorin rescue 15 mg every 6 h starting 24 h after MTX, escalated leucovorin if plasma MTX > 0.1 umol/L at 48 h).",
+    co_medication = "Concurrent benzimidazole-class proton-pump inhibitors (omeprazole or lansoprazole, n = 13) and prior NSAIDs (diclofenac or ibuprofen, n = 6) were retained as covariates on CL. Concurrent corticosteroids (all n = 12 NHL patients), 5-fluorouracil, vinca alkaloids, L-asparaginase, and intravenous doxorubicin (40 mg every 2 weeks; mesothelioma study) were tested but not retained.",
+    regions = "The Netherlands (single-centre, The Netherlands Cancer Institute / Antoni van Leeuwenhoek Hospital / Slotervaart Hospital, Amsterdam).",
+    n_observations = "21 of 76 patients had intensive sampling (end of infusion plus 3, 6, 8 h; 34 sampled cycles); remaining 55 had routine 24 h and 48 h samples only (270 cycles). HPLC LLOQ 0.04 umol/L for both MTX and 7-OH-MTX; within- and between-day CV <= 7 percent.",
+    notes = "Cohort baseline demographics in Joerger 2006 Table 1 (page 74). Two outliers (ID-36 and ID-63) with markedly decreased CL_MTX were retained per the source; ID-63 (29-year-old male, mesothelioma, 3 g 3-h MTX infusion plus doxorubicin) developed CTC grade 3 anuric renal failure on day 2, requiring continuous veno-venous haemofiltration, and died 20 days post-HDMTX (treatment-related mortality 1.3 percent)."
   )
 
   ini({

@@ -16,15 +16,15 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
     sep = " "
   )
   vignette <- "Olafuyi_2025_propyleneGlycol"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales the central volume only. Olafuyi 2025 Table 1 reports the adult",
         "steady-state volume of distribution per kilogram (Vss = 0.80 L/kg), so",
         "vc = 0.80 * WT. Because the paper's dose-response work is expressed in",
@@ -36,32 +36,32 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
         "neither clearance arm is weight-scaled here (see the vignette",
         "Assumptions and deviations section)."
       ),
-      source_name        = "Body weight (Simcyp virtual healthy-volunteer population)"
+      source_name = "Body weight (Simcyp virtual healthy-volunteer population)"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "propyleneGlycol", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "propyleneGlycol", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "propyleneGlycol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 200L,
-    n_studies      = 2L,
-    age_range      = "Adults (Simcyp built-in virtual healthy-volunteer population)",
-    weight_range   = "Not reported; Simcyp virtual healthy-volunteer body-weight distribution",
+    species = "human",
+    n_subjects = 200L,
+    n_studies = 2L,
+    age_range = "Adults (Simcyp built-in virtual healthy-volunteer population)",
+    weight_range = "Not reported; Simcyp virtual healthy-volunteer body-weight distribution",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported (Simcyp built-in virtual healthy-volunteer population)",
-    disease_state  = "Healthy adults; propylene glycol administered as a pharmaceutical excipient",
-    dose_range     = paste(
+    disease_state = "Healthy adults; propylene glycol administered as a pharmaceutical excipient",
+    dose_range = paste(
       "Simulated intravenous PG doses of 0.75-7500 mg/kg per event, given 6-, 8-,",
       "12-, and 24-hourly (Methods, 'Determination of Dose and Clearance",
       "Relationship'). Figures 4 and 5 simulate 0.75, 200, 500, and 1000 mg/kg",
       "per event; the proposed safe adult total daily dose is 100-200 mg/kg/day."
     ),
-    regions        = "Not applicable (simulation study; UK-based investigators)",
-    notes          = paste(
+    regions = "Not applicable (simulation study; UK-based investigators)",
+    notes = paste(
       "Simulation population: 200 virtual subjects per scenario from the Simcyp",
       "(Version 20) built-in healthy-volunteer population. The compound layer was",
       "built from PG physicochemical properties (Table 1) plus alcohol-",

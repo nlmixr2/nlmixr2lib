@@ -36,26 +36,46 @@ Weber_2015_fluticasone_inhaled <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    LC1         = list(analyte = "fluticasone propionate undissolved particles", units = "ug", specimen = "administration site", verified = FALSE),
-    LC2         = list(analyte = "fluticasone propionate dissolved drug", units = "ug", specimen = "administration site", verified = FALSE),
-    LP1         = list(analyte = "fluticasone propionate undissolved particles", units = "ug", specimen = "administration site", verified = FALSE),
-    LP2         = list(analyte = "fluticasone propionate dissolved drug", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = FALSE),
+    LC1 = list(
+      analyte = "fluticasone propionate undissolved particles",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    LC2 = list(
+      analyte = "fluticasone propionate dissolved drug",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    LP1 = list(
+      analyte = "fluticasone propionate undissolved particles",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    LP2 = list(
+      analyte = "fluticasone propionate dissolved drug",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    age_range      = "Healthy adult volunteers (specifics not reported in Weber 2015 Methods)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    age_range = "Healthy adult volunteers (specifics not reported in Weber 2015 Methods)",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Healthy adult volunteers without respiratory disease.",
-    dose_range     = paste(
+    disease_state = "Healthy adult volunteers without respiratory disease.",
+    dose_range = paste(
       "Single inhaled dose; absolute dose level not specified.",
       "The PK model is scale-invariant in the emitted dose (no saturable",
       "elimination); reproducing the paper's reported AUC and Cmax T/R",
@@ -70,7 +90,7 @@ Weber_2015_fluticasone_inhaled <- function() {
       "test (T) products differ from the reference in F_Lung, F_C,",
       "and/or k_diss."
     ),
-    notes          = paste(
+    notes = paste(
       "Structural model, typical parameter values, and BSV (Weber 2015",
       "Table I) are taken from the previously validated FP inhalation",
       "model of Weber and Hochhaus 2013 Mol Pharm 10(8):2873-85",

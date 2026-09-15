@@ -29,7 +29,7 @@ Nguyen_2021_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
@@ -40,17 +40,17 @@ Nguyen_2021_imipenem <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation.",
         "The review does not state whether the value is BSA-normalised;",
         "Cockcroft-Gault natively returns raw mL/min and the review's",
         "abbreviation list glosses 'CLcrCG' with no normalisation",
         "mentioned, so raw mL/min is used here."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 75.54 mL/min. Enters CL as the power term",
         "(CLcr/75.54)^0.532 (Zhang 2025 Table 3). The review does not",
         "report this cohort's renal function distribution, so whether",
@@ -64,7 +64,7 @@ Nguyen_2021_imipenem <- function() {
         "Cockcroft-Gault mL/min when the source does not BSA-normalise --",
         "precedent: Bai 2024 imipenem, Wang 2024 imipenem."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
@@ -72,34 +72,54 @@ Nguyen_2021_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    AGE  = list(description = "Age",                 units = "years",   type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 65 years, IQR 60-72 (Table 1)."),
-    SEXF = list(description = "Female sex",          units = "(binary)", type = "binary",    notes = "Screened, not retained (Zhang 2025 Table 3). Cohort is 41 male / 3 female (Table 1), so the term is near-unidentifiable in this study."),
-    WT   = list(description = "Total body weight",   units = "kg",      type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 50 kg, IQR 47-55 (Table 1)."),
-    BMI  = list(description = "Body mass index",     units = "kg/m^2",  type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 65 years, IQR 60-72 (Table 1)."
+    ),
+    SEXF = list(
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort is 41 male / 3 female (Table 1), so the term is near-unidentifiable in this study."
+    ),
+    WT = list(
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort median 50 kg, IQR 47-55 (Table 1)."
+    ),
+    BMI = list(
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 44L,
-    n_studies        = 1L,
-    age_median       = "65 years (IQR 60-72)",
-    weight_median    = "50 kg (IQR 47-55)",
-    sex_female_pct   = 6.8,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_median = "65 years (IQR 60-72)",
+    weight_median = "50 kg (IQR 47-55)",
+    sex_female_pct = 6.8,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Adults hospitalised for acute exacerbations of chronic obstructive",
       "pulmonary disease (AECOPD) and treated with imipenem-cilastatin.",
       "This is the only AECOPD cohort among the 18 studies in the Zhang",
       "2025 review."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "500 mg imipenem intravenously every 6, 8 or 12 h, or 1000 mg every",
       "8 or 12 h (Zhang 2025 Supplementary Table S1). The infusion",
       "duration is not reported by the review."
     ),
-    regions          = "Vietnam",
+    regions = "Vietnam",
     n_concentrations = 84L,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 10); 44 patients, 84",
       "samples, sex split 41 male / 3 female. Blood was sampled 0.5 h after",
       "the infusion of the third dose and 1-2 h before the fourth dose, and",

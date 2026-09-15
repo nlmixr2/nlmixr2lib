@@ -49,18 +49,18 @@ Nakashima_2015_valproic_acid <- function() {
   )
   vignette <- "Nakashima_2015_valproic_acid_seizure_control"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Patient age. Enters the logit intercept linearly, at 0.98 per YEAR.",
-      units              = "years",
-      type               = "continuous",
+      description = "Patient age. Enters the logit intercept linearly, at 0.98 per YEAR.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Eq 6 prints the age term as (Age/10) x 1.0, but ",
         "Table 3 labels the row 'Age (years)' with estimate 0.98. The two ",
         "readings differ 10-fold and Table 4 settles it: inverting Eq 6 at ",
@@ -70,28 +70,28 @@ Nakashima_2015_valproic_acid <- function() {
         "The printed /10 is therefore a typesetting artefact. Cohort ",
         "15.2 +/- 8.2 [0.8-36.9] years (Table 1)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Acts on the PK layer only (apparent oral clearance).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Acts on the PK layer only (apparent oral clearance).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Eq 7 / Table 2 'Gender on CL/F' = 0.917, applied as a ",
         "power form 0.917^SEXF (i.e. females have 8.3% lower CL/F). Sex was ",
         "screened by Nakashima 2015 on the PD logit and dropped in backward ",
         "elimination (Table 2), so it carries no PD coefficient here. ",
         "Cohort 29 of 77 female (37.7%; Table 1)."
       ),
-      source_name        = "female"
+      source_name = "female"
     ),
     DOSE_VPA_MGD = list(
-      description        = "Patient's own TOTAL daily valproic acid dose, not normalised by body weight. Drives both apparent clearance and apparent volume in the fixed PK layer.",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Patient's own TOTAL daily valproic acid dose, not normalised by body weight. Drives both apparent clearance and apparent volume in the fixed PK layer.",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Eqs 6-7 scale both Vd/F and CL/F by (Dose/1000)^theta ",
         "with Dose the daily VPA dose in mg/day, so 1000 mg/day is the ",
         "reference. Must be strictly positive. Distinct from the per-",
@@ -100,26 +100,26 @@ Nakashima_2015_valproic_acid <- function() {
         "once-daily dosing. Cohort 1120.0 +/- 592.5 [50-3200] mg/day of ",
         "sustained-release VPA (Table 1)."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine indicator; 1 = co-administered, 0 = not. Acts on BOTH the PK layer (induction of VPA clearance) and the PD logit intercept.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine indicator; 1 = co-administered, 0 = not. Acts on BOTH the PK layer (induction of VPA clearance) and the PD logit intercept.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = paste0(
+      notes = paste0(
         "PK: Ogusu 2014 Table 2 'CBZ on CL/F' = 1.19, power form ",
         "1.19^CONMED_CBZ (+19% CL/F). PD: Nakashima 2015 Table 3 intercept ",
         "row 'CBZ' = -1.75 log-odds. Cohort 47 of 77 (61.0%; Table 1)."
       ),
-      source_name        = "CBZ"
+      source_name = "CBZ"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'PB on CL/F' = 1.12, power form ",
         "1.12^CONMED_PB (+12% CL/F). Phenobarbital was screened on the PD ",
         "logit by Nakashima 2015 and was not significant (Table 2, DOBF ",
@@ -127,68 +127,68 @@ Nakashima_2015_valproic_acid <- function() {
         "Eq 6; it DOES carry one in the <= 18 y companion (Eq 7). Cohort 31 ",
         "of 77 (40.3%; Table 1)."
       ),
-      source_name        = "PB"
+      source_name = "PB"
     ),
     CONMED_PHT = list(
-      description        = "Concomitant phenytoin indicator; 1 = co-administered, 0 = not. Acts on BOTH the PK layer (induction of VPA clearance) and the PD exposure slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenytoin indicator; 1 = co-administered, 0 = not. Acts on BOTH the PK layer (induction of VPA clearance) and the PD exposure slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenytoin)",
-      notes              = paste0(
+      notes = paste0(
         "PK: Ogusu 2014 Table 2 'PHT on CL/F' = 1.43, power form ",
         "1.43^CONMED_PHT (+43% CL/F, the largest induction coefficient in ",
         "that model). PD: Nakashima 2015 Table 3 slope row 'PHT' = -3.62, ",
         "i.e. phenytoin makes the exposure-response slope more negative. ",
         "Cohort 22 of 77 (28.6%; Table 1)."
       ),
-      source_name        = "PHT"
+      source_name = "PHT"
     ),
     CONMED_CLB = list(
-      description        = "Concomitant clobazam indicator; 1 = co-administered, 0 = not. Acts on the PK layer only.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clobazam indicator; 1 = co-administered, 0 = not. Acts on the PK layer only.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clobazam)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'CLB on CL/F' = 0.906, power form ",
         "0.906^CONMED_CLB (-9.4% CL/F; the only AED in that model that ",
         "LOWERS VPA clearance). Clobazam was screened on the PD logit by ",
         "Nakashima 2015 and was not significant (Table 2, DOBF 0.27 / ",
         "0.48). Cohort 33 of 77 (42.9%; Table 1)."
       ),
-      source_name        = "CLB"
+      source_name = "CLB"
     ),
     CONMED_CZP = list(
-      description        = "Concomitant clonazepam indicator; 1 = co-administered, 0 = not. Acts on the PD logit intercept only.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clonazepam indicator; 1 = co-administered, 0 = not. Acts on the PD logit intercept only.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clonazepam)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Table 3 intercept row 'CZP' = -1.18 log-odds. Not ",
         "a PK covariate: clonazepam was not retained in the Ogusu 2014 ",
         "clearance model. The authors state the mechanism for the CZP ",
         "association is unclear (Discussion). Cohort 21 of 77 (27.3%; ",
         "Table 1)."
       ),
-      source_name        = "CZP"
+      source_name = "CZP"
     ),
     CONMED_TPM = list(
-      description        = "Concomitant topiramate indicator; 1 = co-administered, 0 = not. Acts on the PD exposure slope only.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant topiramate indicator; 1 = co-administered, 0 = not. Acts on the PD exposure slope only.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant topiramate)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Table 3 slope row 'TPM' = -1.73. Not a PK ",
         "covariate: topiramate was not retained in the Ogusu 2014 clearance ",
         "model. Cohort 10 of 77 (13.0%; Table 1)."
       ),
-      source_name        = "TPM"
+      source_name = "TPM"
     ),
     SEIZURE_LOCUS_PARTIAL = list(
-      description        = "Seizure-locus indicator from the ILAE classification; 1 = partial (focal) seizures present, 0 = generalized. Acts on the PD exposure slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Seizure-locus indicator from the ILAE classification; 1 = partial (focal) seizures present, 0 = generalized. Acts on the PD exposure slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (generalized seizure locus)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Table 3 slope row 'Partial seizure' = +2.41, i.e. ",
         "partial-onset patients have a LESS negative exposure-response ",
         "slope than generalized patients. Eq 6's gloss defines it: 'partial ",
@@ -200,14 +200,14 @@ Nakashima_2015_valproic_acid <- function() {
         "only 10 patients -- the +2.41 estimate has a wide bootstrap CI ",
         "(-0.53 to 7.82, Table 3) that spans zero."
       ),
-      source_name        = "partial seizure"
+      source_name = "partial seizure"
     ),
     SNP_SCN1A_RS3812718_GA = list(
-      description        = "SCN1A rs3812718 (IVS5-91 G>A) heterozygous G/A genotype indicator; 1 = G/A, 0 = otherwise. Acts on BOTH the PD logit intercept and the PD exposure slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SCN1A rs3812718 (IVS5-91 G>A) heterozygous G/A genotype indicator; 1 = G/A, 0 = otherwise. Acts on BOTH the PD logit intercept and the PD exposure slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 in combination with SNP_SCN1A_RS3812718_AA = 0, i.e. the G/G genotype group (9 of 77)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Table 3: intercept -5.87, slope +10.1. Paired with ",
         "SNP_SCN1A_RS3812718_AA; both are 0 for the G/G reference. ",
         "Genotyped by custom TaqMan allelic discrimination (Methods, ",
@@ -216,14 +216,14 @@ Nakashima_2015_valproic_acid <- function() {
         "11.7%, G/A 53.2%, A/A 35.1%; A-allele frequency 61.7%; consistent ",
         "with Hardy-Weinberg equilibrium (Results, Table 1)."
       ),
-      source_name        = "SCN1A G/A genotype"
+      source_name = "SCN1A G/A genotype"
     ),
     SNP_SCN1A_RS3812718_AA = list(
-      description        = "SCN1A rs3812718 (IVS5-91 G>A) homozygous A/A genotype indicator; 1 = A/A, 0 = otherwise. Acts on BOTH the PD logit intercept and the PD exposure slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SCN1A rs3812718 (IVS5-91 G>A) homozygous A/A genotype indicator; 1 = A/A, 0 = otherwise. Acts on BOTH the PD logit intercept and the PD exposure slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 in combination with SNP_SCN1A_RS3812718_GA = 0, i.e. the G/G genotype group (9 of 77)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Table 3: intercept -4.88, slope +9.48. Paired with ",
         "SNP_SCN1A_RS3812718_GA; both are 0 for the G/G reference. The ",
         "authors read the A allele as associated with reduced VPA efficacy ",
@@ -231,16 +231,16 @@ Nakashima_2015_valproic_acid <- function() {
         "associated with carbamazepine-resistant epilepsy. Cohort 27 of 77 ",
         "(35.1%; Table 1)."
       ),
-      source_name        = "SCN1A A/A genotype"
+      source_name = "SCN1A A/A genotype"
     )
   )
 
   covariatesDataExcluded <- list(
     MENT_DISABLED = list(
       description = "Complication with intellectual disability; 1 = present, 0 = absent.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened by Nakashima 2015 on both the logit intercept and the ",
         "slope and significant in FORWARD inclusion (Table 2, DOBF 11.84 ",
         "and 12.45) but dropped in BACKWARD elimination (DOBF 0.01 and ",
@@ -254,9 +254,9 @@ Nakashima_2015_valproic_acid <- function() {
     ),
     SEIZURE_TYPE_SYMPTOMATIC = list(
       description = "Seizure aetiology; 1 = symptomatic, 0 = cryptogenic. NOT the same axis as SEIZURE_LOCUS_PARTIAL.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened by Nakashima 2015 and not significant at either step ",
         "(Table 2 'Seizure type', DOBF 3.05 intercept and 0.67 slope, both ",
         "NS), so it never entered the model and no point estimate exists. ",
@@ -271,7 +271,7 @@ Nakashima_2015_valproic_acid <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "valproic acid", units = "mg", specimen = "serum", verified = TRUE)
   )
 
@@ -284,23 +284,23 @@ Nakashima_2015_valproic_acid <- function() {
   # would be a different canonical.
 
   population <- list(
-    species        = "human",
-    n_subjects     = 77L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 77L,
+    n_studies = 1L,
     n_observations = "729 VPA concentration measurement points; one binary efficacy outcome per patient",
-    age_range      = "0.8-36.9 years",
-    age_median     = "mean 15.2 +/- 8.2 years (median not reported)",
+    age_range = "0.8-36.9 years",
+    age_median = "mean 15.2 +/- 8.2 years (median not reported)",
     sex_female_pct = 37.7,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Epilepsy on maintenance sustained-release valproic acid; seizure ",
       "locus partial 87.0% / generalized 13.0%; seizure type symptomatic ",
       "49.4% / cryptogenic 50.6%; intellectual disability 76.6%. Idiopathic ",
       "epilepsy and severe retardation were exclusion criteria."
     ),
-    dose_range     = "1120.0 +/- 592.5 [50-3200] mg/day sustained-release valproic acid",
-    regions        = "Japan (Kumamoto Saishunso National Hospital), June 1989 to April 2011",
-    notes          = paste0(
+    dose_range = "1120.0 +/- 592.5 [50-3200] mg/day sustained-release valproic acid",
+    regions = "Japan (Kumamoto Saishunso National Hospital), June 1989 to April 2011",
+    notes = paste0(
       "Retrospective single-centre cohort; the same patients as the ",
       "upstream Ogusu 2014 population PK analysis (Nakashima 2015 Methods: ",
       "'conducted among the same epileptic patients reported in our ",

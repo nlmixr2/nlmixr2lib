@@ -20,17 +20,17 @@ Shah_2023_benzylpenicillin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "benzylpenicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "benzylpenicillin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "benzylpenicillin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Added a priori to all primary PK parameters by allometric scaling,",
         "normalised to a reference weight of 70 kg (Shah 2023 Section 4,",
         "Materials and Methods: 'Weight was added to primary pharmacokinetic",
@@ -40,14 +40,14 @@ Shah_2023_benzylpenicillin <- function() {
         "structural theta per 70 kg. Cohort median 70.0 kg (IQR 65.7-90.0,",
         "range 60.0-120.0; Table 1)."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on clearance normalised to 70 umol/L (Shah 2023",
         "Equation (1)). Table 1 prints the units as 'mmol/L', but the reported",
         "median of 70 (IQR 52-103.5, range 34-486) is only physiologically",
@@ -57,7 +57,7 @@ Shah_2023_benzylpenicillin <- function() {
         "column must share the same unit; umol/L is used here. Time-varying in",
         "the source dataset (routine ICU biochemistry)."
       ),
-      source_name        = "Serum creatinine"
+      source_name = "Serum creatinine"
     )
   )
 
@@ -68,9 +68,9 @@ Shah_2023_benzylpenicillin <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Tested on V1 (Table S1 run 6, dOFV 0), CL (run 7, dOFV -4.0) and V2",
         "(run 8, dOFV -0.2). The CL effect met the dOFV threshold but was",
         "rejected for a 5119% RSE on the covariate coefficient. Cohort median",
@@ -79,18 +79,18 @@ Shah_2023_benzylpenicillin <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Tested on V1 (Table S1 run 5, dOFV -0.8); rejected. Cohort median",
         "26.1 kg/m^2 (IQR 22.1-27.9; Table 1)."
       )
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Tested on CL (Table S1 runs 17-18, dOFV -0.3 and 0) and V1 (run 19,",
         "dOFV 0); rejected. Cohort was 6 male : 6 female (Table 1). The source",
         "paper reports the covariate as 'SEX' without stating the reference",
@@ -100,9 +100,9 @@ Shah_2023_benzylpenicillin <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Tested on V1 (Table S1 run 9, dOFV -0.6), Q (run 10, dOFV -1.6) and",
         "V2 (run 11, dOFV -2.3); all rejected. Cohort median 28 g/L (IQR",
         "24-34; Table 1)."
@@ -110,9 +110,9 @@ Shah_2023_benzylpenicillin <- function() {
     ),
     BODYTEMP = list(
       description = "Body temperature",
-      units       = "degC",
-      type        = "continuous",
-      notes       = paste(
+      units = "degC",
+      type = "continuous",
+      notes = paste(
         "Tested on V1 (Table S1 run 12, dOFV -2.9), V2 (run 13, dOFV -10.2)",
         "and Q (run 14, dOFV -1.9). The V2 effect met the dOFV threshold but",
         "was rejected for a large increase in the uncertainty of the other",
@@ -122,9 +122,9 @@ Shah_2023_benzylpenicillin <- function() {
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score",
-      units       = "points",
-      type        = "continuous",
-      notes       = paste(
+      units = "points",
+      type = "continuous",
+      notes = paste(
         "Tested on V1 (Table S1 run 15, dOFV -0.8) and V2 (run 16, dOFV -0.2);",
         "rejected. Cohort median 14 points (IQR 12.5-18, range 5-23; Table 1).",
         "Documentation-only label -- APACHE II is not a ratified canonical",
@@ -135,9 +135,9 @@ Shah_2023_benzylpenicillin <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Deliberately NOT tested by the authors. Shah 2023 Section 3:",
         "'unlike the two studies noted, we have chosen not to test CrCl as a",
         "covariate effect on clearance, as this was not directly measured",
@@ -150,46 +150,46 @@ Shah_2023_benzylpenicillin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    n_samples      = 77,
-    age_range      = "25.7-71.7 years",
-    age_median     = "57.7 years",
-    weight_range   = "60.0-120.0 kg",
-    weight_median  = "70.0 kg",
-    height_range   = "150.0-188.0 cm",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    n_samples = 77,
+    age_range = "25.7-71.7 years",
+    age_median = "57.7 years",
+    weight_range = "60.0-120.0 kg",
+    weight_median = "70.0 kg",
+    height_range = "150.0-188.0 cm",
     sex_female_pct = 50,
     race_ethnicity = c(
       `White British` = 50.0,
-      `White Irish`   = 8.3,
-      Asian           = 16.7,
-      Caribbean       = 8.3,
+      `White Irish` = 8.3,
+      Asian = 16.7,
+      Caribbean = 8.3,
       `Other/Not stated` = 16.7
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Critical illness requiring intensive care; treated infection sources",
       "were lower respiratory tract infection (7), skin/soft-tissue infection",
       "or abscess (5), infective endocarditis (1) and sepsis of unknown",
       "source (1)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1.2 g IV 4-hourly (8 patients), 1.2 g IV 6-hourly (2 patients),",
       "2.4 g IV 4-hourly (2 patients)"
     ),
-    regions        = "United Kingdom (single centre: St George's Hospital, London)",
+    regions = "United Kingdom (single centre: St George's Hospital, London)",
     renal_function = paste(
       "Serum creatinine median 70 umol/L (IQR 52-103.5, range 34-486);",
       "three participants had acute kidney injury. One patient received renal",
       "replacement therapy; only samples drawn after renal recovery and",
       "cessation of RRT were analysed"
     ),
-    severity       = paste(
+    severity = paste(
       "APACHE II median 14 points (IQR 12.5-18, range 5-23); 5 patients on",
       "vasopressors; 1 intubated and ventilated, 3 non-invasive ventilation,",
       "10 spontaneous ventilation (ventilation categories overlap over time)"
     ),
-    notes          = paste(
+    notes = paste(
       "Sub-study of the ABDose observational antibiotic PK/PD study",
       "(REC 14/LO/1999). Baseline demographics: Shah 2023 Table 1. Sampling",
       "was opportunistic within a dosing interval (Table 3). Twelve patients",

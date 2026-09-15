@@ -21,8 +21,8 @@ Marcantonio_2022_panitumumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Panitumumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 420 mg = 2800 nmol.",
+    time = "day",
+    dosing = "Panitumumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 420 mg = 2800 nmol.",
     concentration = "Free panitumumab plasma concentration Cc = Ab_00_c / Vc in nM; central volume Vc = 3 L, peripheral Vp = 13 L. Target engagement = drug-bound R1 / (drug-bound R1 + free R1)."
   )
 
@@ -31,41 +31,131 @@ Marcantonio_2022_panitumumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    R1_c    = list(analyte = "membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1_c    = list(analyte = "soluble EGFR (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    R1_c = list(analyte = "membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1_c = list(
+      analyte = "soluble EGFR (central), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
     Ab_00_c = list(analyte = "free panitumumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0R_c = list(analyte = "panitumumab bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R0_c = list(analyte = "membrane EGFR bound to panitumumab (central)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_RR_c = list(analyte = "panitumumab dimer bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0S_c = list(analyte = "soluble panitumumab (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_S0_c = list(analyte = "panitumumab bound to soluble EGFR (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_RS_c = list(analyte = "soluble panitumumab bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SR_c = list(analyte = "membrane EGFR bound to soluble panitumumab (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_SS_c = list(analyte = "soluble panitumumab and membrane EGFR complex (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1_p    = list(analyte = "membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1_p    = list(analyte = "soluble EGFR (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_0R_c = list(
+      analyte = "panitumumab bound to membrane EGFR (central)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_R0_c = list(
+      analyte = "membrane EGFR bound to panitumumab (central)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_RR_c = list(
+      analyte = "panitumumab dimer bound to membrane EGFR (central)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_0S_c = list(
+      analyte = "soluble panitumumab (central), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_S0_c = list(
+      analyte = "panitumumab bound to soluble EGFR (central), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_RS_c = list(
+      analyte = "soluble panitumumab bound to membrane EGFR (central)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SR_c = list(
+      analyte = "membrane EGFR bound to soluble panitumumab (central), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_SS_c = list(
+      analyte = "soluble panitumumab and membrane EGFR complex (central)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    R1_p = list(analyte = "membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1_p = list(
+      analyte = "soluble EGFR (peripheral), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
     Ab_00_p = list(analyte = "free panitumumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0R_p = list(analyte = "panitumumab bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R0_p = list(analyte = "membrane EGFR bound to panitumumab (peripheral)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_RR_p = list(analyte = "panitumumab dimer bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0S_p = list(analyte = "soluble panitumumab (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_S0_p = list(analyte = "panitumumab bound to soluble EGFR (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_RS_p = list(analyte = "soluble panitumumab bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SR_p = list(analyte = "membrane EGFR bound to soluble panitumumab (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    Ab_SS_p = list(analyte = "soluble panitumumab and membrane EGFR complex (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot   = list(analyte = "panitumumab", units = NA_character_, specimen = "administration site", verified = FALSE)
+    Ab_0R_p = list(
+      analyte = "panitumumab bound to membrane EGFR (peripheral)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_R0_p = list(
+      analyte = "membrane EGFR bound to panitumumab (peripheral)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_RR_p = list(
+      analyte = "panitumumab dimer bound to membrane EGFR (peripheral)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_0S_p = list(
+      analyte = "soluble panitumumab (peripheral), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_S0_p = list(
+      analyte = "panitumumab bound to soluble EGFR (peripheral), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_RS_p = list(
+      analyte = "soluble panitumumab bound to membrane EGFR (peripheral)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SR_p = list(
+      analyte = "membrane EGFR bound to soluble panitumumab (peripheral), not modelled",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    Ab_SS_p = list(
+      analyte = "soluble panitumumab and membrane EGFR complex (peripheral)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    depot = list(analyte = "panitumumab", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with metastatic KRAS wild-type colorectal cancer.",
-    dose_range     = "Clinically approved dose: 6 mg/kg IV every 2 weeks (equal to 420 mg for a 70 kg patient); Vectibix USPI. Marcantonio 2022 predicts an effective dose (98% TE peripheral) of 162 mg Q2W IV.",
-    regions        = NA_character_,
-    notes          = "See Marcantonio 2022 trastuzumab sibling for shared 2-cpt anti-receptor structure and Case Study 2 methodology."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with metastatic KRAS wild-type colorectal cancer.",
+    dose_range = "Clinically approved dose: 6 mg/kg IV every 2 weeks (equal to 420 mg for a 70 kg patient); Vectibix USPI. Marcantonio 2022 predicts an effective dose (98% TE peripheral) of 162 mg Q2W IV.",
+    regions = NA_character_,
+    notes = "See Marcantonio 2022 trastuzumab sibling for shared 2-cpt anti-receptor structure and Case Study 2 methodology."
   )
 
   ini({

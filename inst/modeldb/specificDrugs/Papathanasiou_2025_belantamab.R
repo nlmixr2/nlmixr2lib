@@ -8,96 +8,96 @@ Papathanasiou_2025_belantamab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "belantamab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "belantamab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "belantamab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power exponent 0.929 on Vc and Vp (shared via theta_V_WTBL) and 0.542 on CL and Q (shared via theta_CL_WTBL); reference 75 kg per Papathanasiou 2025 typical-patient definition (Methods, Sect. 2.3). Source column WTBL maps to canonical WT.",
-      source_name        = "WTBL"
+      notes = "Time-fixed baseline. Power exponent 0.929 on Vc and Vp (shared via theta_V_WTBL) and 0.542 on CL and Q (shared via theta_CL_WTBL); reference 75 kg per Papathanasiou 2025 typical-patient definition (Methods, Sect. 2.3). Source column WTBL maps to canonical WT.",
+      source_name = "WTBL"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power exponent -0.459 on Vc; reference 27 kg/m^2 per Papathanasiou 2025 typical-patient definition. Source column IBMIBL maps to canonical BMI.",
-      source_name        = "IBMIBL"
+      notes = "Time-fixed baseline. Power exponent -0.459 on Vc; reference 27 kg/m^2 per Papathanasiou 2025 typical-patient definition. Source column IBMIBL maps to canonical BMI.",
+      source_name = "IBMIBL"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline (SI units, g/L). Power exponents -0.698 on CL, -0.302 on Vc, +0.567 on Vp; reference 40 g/L per Papathanasiou 2025 typical-patient definition. Source column ALBBL maps to canonical ALB.",
-      source_name        = "ALBBL"
+      notes = "Time-fixed baseline (SI units, g/L). Power exponents -0.698 on CL, -0.302 on Vc, +0.567 on Vp; reference 40 g/L per Papathanasiou 2025 typical-patient definition. Source column ALBBL maps to canonical ALB.",
+      source_name = "ALBBL"
     ),
     IGG = list(
-      description        = "Baseline serum immunoglobulin G concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum immunoglobulin G concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power exponents +0.170 on CL and +0.192 on Imax; reference 15 g/L per Papathanasiou 2025 typical-patient definition. Source column IGGBL maps to canonical IGG. The published TI50 equation in Table 2 also references an IgG-on-TI50 exponent (theta_TI50_IGGBL), but the parameter table provides no value for it; that term is therefore omitted (see vignette Assumptions and deviations).",
-      source_name        = "IGGBL"
+      notes = "Time-fixed baseline. Power exponents +0.170 on CL and +0.192 on Imax; reference 15 g/L per Papathanasiou 2025 typical-patient definition. Source column IGGBL maps to canonical IGG. The published TI50 equation in Table 2 also references an IgG-on-TI50 exponent (theta_TI50_IGGBL), but the parameter table provides no value for it; that term is therefore omitted (see vignette Assumptions and deviations).",
+      source_name = "IGGBL"
     ),
     SBCMA = list(
-      description        = "Baseline serum soluble B-cell maturation antigen (sBCMA) concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum soluble B-cell maturation antigen (sBCMA) concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. 1 ng/mL is numerically equivalent to 1 ug/L (the unit reported in Papathanasiou 2025 Table 1). Power exponents +0.113 on CL, +0.0401 on Vc, +0.160 on Imax; reference 50 ng/mL per Papathanasiou 2025 typical-patient definition. Source column SBCMABL maps to canonical SBCMA.",
-      source_name        = "SBCMABL"
+      notes = "Time-fixed baseline. 1 ng/mL is numerically equivalent to 1 ug/L (the unit reported in Papathanasiou 2025 Table 1). Power exponents +0.113 on CL, +0.0401 on Vc, +0.160 on Imax; reference 50 ng/mL per Papathanasiou 2025 typical-patient definition. Source column SBCMABL maps to canonical SBCMA.",
+      source_name = "SBCMABL"
     ),
     RACE_ASIAN = list(
-      description        = "Indicator for Asian race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Asian race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; pooled White, Black/African American, and Other)",
-      notes              = "Multiplicative factor 0.913 on CL when RACE_ASIAN = 1 (Papathanasiou 2025 Table 2). Reference is non-Asian race; mutually exclusive with RACE_BLACK in the source dataset.",
-      source_name        = "RACE"
+      notes = "Multiplicative factor 0.913 on CL when RACE_ASIAN = 1 (Papathanasiou 2025 Table 2). Reference is non-Asian race; mutually exclusive with RACE_BLACK in the source dataset.",
+      source_name = "RACE"
     ),
     RACE_BLACK = list(
-      description        = "Indicator for Black/African American race",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Black/African American race",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; pooled White, Asian, and Other)",
-      notes              = "Multiplicative factor 0.861 on CL when RACE_BLACK = 1 (Papathanasiou 2025 Table 2). Reference is non-Black/African American race; mutually exclusive with RACE_ASIAN in the source dataset.",
-      source_name        = "RACE"
+      notes = "Multiplicative factor 0.861 on CL when RACE_BLACK = 1 (Papathanasiou 2025 Table 2). Reference is non-Black/African American race; mutually exclusive with RACE_ASIAN in the source dataset.",
+      source_name = "RACE"
     ),
     COMBO_BELAMAF = list(
-      description        = "Belantamab mafodotin combination therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Belantamab mafodotin combination therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (belantamab mafodotin monotherapy)",
-      notes              = "Multiplicative factor 1.44 on the typical Imax when COMBO_BELAMAF = 1 (Papathanasiou 2025 Table 2: theta_IMAX_COMBO). Pools the Bor-Dex / Len-Dex combination backbones tested in DREAMM-6 and DREAMM-7; the Pom-Dex backbone (DREAMM-8) was used only for external validation and would also be encoded as COMBO_BELAMAF = 1 if simulating that regimen.",
-      source_name        = "COMBO"
+      notes = "Multiplicative factor 1.44 on the typical Imax when COMBO_BELAMAF = 1 (Papathanasiou 2025 Table 2: theta_IMAX_COMBO). Pools the Bor-Dex / Len-Dex combination backbones tested in DREAMM-6 and DREAMM-7; the Pom-Dex backbone (DREAMM-8) was used only for external validation and would also be encoded as COMBO_BELAMAF = 1 if simulating that regimen.",
+      source_name = "COMBO"
     )
   )
 
   population <- list(
-    n_subjects     = 977L,
-    n_studies      = 6L,
-    age_range      = "32 - 89 years",
-    age_median     = "66 years",
-    weight_range   = "37 - 170 kg",
-    weight_median  = "74.0 kg",
+    n_subjects = 977L,
+    n_studies = 6L,
+    age_range = "32 - 89 years",
+    age_median = "66 years",
+    weight_range = "37 - 170 kg",
+    weight_median = "74.0 kg",
     sex_female_pct = 43.6,
     race_ethnicity = c(White = 78.1, `Black/African American` = 6.2, Asian = 13.6, Other = 0.8, Missing = 1.2),
-    disease_state  = "Relapsed/refractory multiple myeloma (RRMM); patients had received >= 1 prior line of therapy depending on the study setting (DREAMM-2 4L+, DREAMM-3 3L+, DREAMM-6/-7 2L+).",
-    dose_range     = "Belantamab mafodotin IV every 21 days; pivotal labelled regimen 2.5 mg/kg q3w (cycle-1 reference dose used for exposure simulations); studies also included 1.9, 2.5, and 3.4 mg/kg q3w cohorts.",
-    regions        = "Global: Europe 42.3%, Northeast Asia 9.3%, North America 20.8%, Rest of world 27.6% (Table 1).",
-    treatment_mix  = "Monotherapy 59.7%, bortezomib + dexamethasone 35.7%, lenalidomide + dexamethasone 4.6% (DREAMM-8 pomalidomide + dexamethasone cohort, n = 150, was held out for external validation only).",
+    disease_state = "Relapsed/refractory multiple myeloma (RRMM); patients had received >= 1 prior line of therapy depending on the study setting (DREAMM-2 4L+, DREAMM-3 3L+, DREAMM-6/-7 2L+).",
+    dose_range = "Belantamab mafodotin IV every 21 days; pivotal labelled regimen 2.5 mg/kg q3w (cycle-1 reference dose used for exposure simulations); studies also included 1.9, 2.5, and 3.4 mg/kg q3w cohorts.",
+    regions = "Global: Europe 42.3%, Northeast Asia 9.3%, North America 20.8%, Rest of world 27.6% (Table 1).",
+    treatment_mix = "Monotherapy 59.7%, bortezomib + dexamethasone 35.7%, lenalidomide + dexamethasone 4.6% (DREAMM-8 pomalidomide + dexamethasone cohort, n = 150, was held out for external validation only).",
     biomarker_summary = "Median (range): sBCMA 56.0 (2.08 - 2030) ng/mL; serum IgG 13.1 (0.350 - 119) g/L; albumin 39.0 (19.0 - 57.0) g/L; BMI 26.7 (14.0 - 48.4) kg/m^2; beta-2 microglobulin 297 (94.9 - 5190) nmol/L (Table 1).",
     renal_distribution = "Normal (eGFR >= 90 mL/min) 31.9%, mild 42.0%, moderate 23.0%, severe 2.8%, end-stage 0.3% (NCI-ODWG / MDRD; Table 1).",
     hepatic_distribution = "Normal 84.5%, mild 11.9%, moderate 0.5%, severe 0.1% (NCI-ODWG; Table 1).",
     external_validation = "DREAMM-8 (NCT04484623; n = 150 patients, 1221 ADC samples) belantamab mafodotin + pomalidomide + dexamethasone; not used for parameter estimation.",
     reference_subject = "65-year-old male, 75 kg WT, 27 kg/m^2 BMI, sBCMA 50 ng/mL, IgG 15 g/L, albumin 40 g/L, monotherapy, non-Asian non-Black race (Methods, Sect. 2.3).",
-    notes          = "Pooled analysis of DREAMM-2 (NCT03525678; n = 218), DREAMM-3 (NCT04162210; n = 217), DREAMM-6 (NCT03544281; n = 152), DREAMM-7 (NCT04246047; n = 242), DREAMM-12 (NCT04398745; n = 23), and DREAMM-14 (NCT05064358; n = 125). 8880 ADC concentrations entered estimation. Sex was not retained as a covariate because of collinearity with body weight."
+    notes = "Pooled analysis of DREAMM-2 (NCT03525678; n = 218), DREAMM-3 (NCT04162210; n = 217), DREAMM-6 (NCT03544281; n = 152), DREAMM-7 (NCT04246047; n = 242), DREAMM-12 (NCT04398745; n = 23), and DREAMM-14 (NCT05064358; n = 125). 8880 ADC concentrations entered estimation. Sex was not retained as a covariate because of collinearity with body weight."
   )
 
   ini({

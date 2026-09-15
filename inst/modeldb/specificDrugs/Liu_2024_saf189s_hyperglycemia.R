@@ -41,18 +41,18 @@ Liu_2024_saf189s_hyperglycemia <- function() {
   )
   vignette <- "Liu_2024_saf189s"
   units <- list(
-    time          = "n/a (static landmark exposure-safety regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_SAF189S covariate column)",
+    time = "n/a (static landmark exposure-safety regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_SAF189S covariate column)",
     concentration = "prob_hyperglycemia (probability of any-grade hyperglycemia, 0-1; also logit_hyperglycemia)"
   )
 
   covariateData <- list(
     AUC_SAF189S = list(
-      description        = "Individual SAF-189s area under the plasma concentration-time curve over the 24 h dosing interval at steady state (AUCss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's FIRST dose level (Liu 2024 Methods, E-R analysis).",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Individual SAF-189s area under the plasma concentration-time curve over the 24 h dosing interval at steady state (AUCss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's FIRST dose level (Liu 2024 Methods, E-R analysis).",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) exposure, at STEADY STATE, computed at the",
         "FIRST dose the patient received. The first-dose basis is stated",
         "outright by the Figure 9 and Figure 10 axis labels ('AUCss",
@@ -82,23 +82,23 @@ Liu_2024_saf189s_hyperglycemia <- function() {
         "once-daily dose is 2,374 ng*h/mL, and the Figure 10 x-axis",
         "spans 174.0-8,338.1 ng*h/mL."
       ),
-      source_name        = "AUCss estimated by the first dose"
+      source_name = "AUCss estimated by the first dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 296L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 296L,
+    n_studies = 1L,
     n_observations = "296 binary event records (one per patient; first-occurrence landmark analysis, no repeated measures)",
-    age_range      = "SAF001: phase I median 51 years (28.0-68.0), phase II median 54.1 years (20.0-84.0) (Liu 2024 Supplementary Table 1)",
-    weight_range   = "median 63.2 kg, range 37.3-92.5 across the PK-evaluable cohort",
+    age_range = "SAF001: phase I median 51 years (28.0-68.0), phase II median 54.1 years (20.0-84.0) (Liu 2024 Supplementary Table 1)",
+    weight_range = "median 63.2 kg, range 37.3-92.5 across the PK-evaluable cohort",
     sex_female_pct = 51.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "ALK-positive or ROS1-positive advanced non-small cell lung cancer; hyperglycemia graded by CTCAE",
-    dose_range     = "SAF-189s 20, 40, 80, 120, 160 or 210 mg orally once daily in 21-day cycles",
-    regions        = "China",
-    notes          = paste0(
+    disease_state = "ALK-positive or ROS1-positive advanced non-small cell lung cancer; hyperglycemia graded by CTCAE",
+    dose_range = "SAF-189s 20, 40, 80, 120, 160 or 210 mg orally once daily in 21-day cycles",
+    regions = "China",
+    notes = paste0(
       "The exposure-safety analysis set is the 296 SAF001 patients with ",
       "safety follow-up (Liu 2024 Results, Exposure-safety analysis), a ",
       "different set from both the 317 PK-evaluable subjects and the ",

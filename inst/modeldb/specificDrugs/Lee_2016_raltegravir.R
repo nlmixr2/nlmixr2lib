@@ -24,7 +24,8 @@ Lee_2016_raltegravir <- function() {
     "covariates (age, sex, weight, body surface area, serum albumin /",
     "creatinine / bilirubin / liver enzymes, ethnicity, or UGT1A1 * 6 /",
     "* 28 / * 60 and CYP3A5 * 3 genotypes) were retained in the final",
-    "model.")
+    "model."
+  )
   reference <- paste(
     "Lee LS, Seng KY, Wang LZ, Yong WP, Hee KH, Soh TI, Wong A, Cheong PF,",
     "Soong R, Sapari NS, Soo R, Fan L, Lee SC, Goh BC.",
@@ -42,25 +43,25 @@ Lee_2016_raltegravir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1     = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
     central_gluc = list(analyte = "raltegravir glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "39-79 years",
-    age_median     = "59 years",
-    weight_range   = "42.4-81.1 kg",
-    weight_median  = "55 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "39-79 years",
+    age_median = "59 years",
+    weight_range = "42.4-81.1 kg",
+    weight_median = "55 kg",
     sex_female_pct = 21,
     race_ethnicity = "Asian: 75% Chinese, 21% Malay, 4% Indian (Singapore-recruited cohort; Table 1)",
-    disease_state  = paste(
+    disease_state = paste(
       "Asian patients with advanced-stage gastro-intestinal cancers requiring",
       "FOLFIRI chemotherapy (folinic acid, 5-fluorouracil, irinotecan).",
       "Inclusion required Karnofsky performance status > 70% and adequate",
@@ -68,23 +69,23 @@ Lee_2016_raltegravir <- function() {
       "between 2009 and 2011.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral dose of 400 mg raltegravir as a UGT1A1 phenotyping probe,",
       "administered fasted one day before FOLFIRI cycle 1. Serial blood",
       "samples were collected at baseline and at 0.5, 1, 2, 4, 6, 8, and",
       "24 h post-dose.",
       sep = " "
     ),
-    regions        = "Singapore (single centre, National University Health System)",
-    co_medication  = paste(
+    regions = "Singapore (single centre, National University Health System)",
+    co_medication = paste(
       "Intravenous midazolam 1 mg co-administered as a CYP3A4 probe on the",
       "same day; FOLFIRI started the day after raltegravir. The midazolam",
       "PK model was not refit in this paper but reused from the authors'",
       "prior publication (Hee 2015, reference 16 in the source).",
       sep = " "
     ),
-    trial_id       = "ClinicalTrials.gov NCT00808184",
-    notes          = paste(
+    trial_id = "ClinicalTrials.gov NCT00808184",
+    notes = paste(
       "Baseline demographics from Table 1 of Lee 2016. The eta-shrinkage",
       "values reported for the final raltegravir parameters are CL_RAL/F",
       "24.1%, V_RAL/F 23.7%, MTT 15.5%, F 1.4% (parent model) and CL_GLU",

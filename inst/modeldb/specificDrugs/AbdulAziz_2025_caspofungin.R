@@ -15,11 +15,11 @@ AbdulAziz_2025_caspofungin <- function() {
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass computed with the Janmahasatian et al. equation from body weight, height and sex; reported by the source under the label 'lean body weight' (LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass computed with the Janmahasatian et al. equation from body weight, height and sex; reported by the source under the label 'lean body weight' (LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The ONLY covariate retained in the final model, and only on the",
         "central volume. Enters as the power term (FFM / 58.9)^1.24; the",
         "58.9 kg standardisation is the cohort median lean body weight",
@@ -48,7 +48,7 @@ AbdulAziz_2025_caspofungin <- function() {
         "improved the fit (Results, 'Population pharmacokinetic model",
         "building')."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     )
   )
 
@@ -70,15 +70,15 @@ AbdulAziz_2025_caspofungin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 36.5 years (range 20.0-62.0; Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 36.5 years (range 20.0-62.0; Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and one of the three covariates that survived initial",
         "screening -- sex was tested on the volume of distribution alongside",
         "lean body weight -- but it did not improve the model fit and was not",
@@ -91,27 +91,27 @@ AbdulAziz_2025_caspofungin <- function() {
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened, not retained. One of three body-weight descriptors tested against each other; fat-free mass won. Cohort median 68.0 kg (range 55.0-80.0; Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained. One of three body-weight descriptors tested against each other; fat-free mass won. Cohort median 68.0 kg (range 55.0-80.0; Table 1)."
     ),
     WT = list(
       description = "Total (actual) body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened, not retained -- the source's 'body weight measures' screen preferred fat-free mass over total body weight. Cohort median 84.0 kg (range 55.0-130.0; Table 1). The Discussion notes that earlier caspofungin studies found total body weight and fat-free mass predictive, and frames the fat-free-mass result as this paper's novel contribution."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened, not retained -- the source's 'body weight measures' screen preferred fat-free mass over total body weight. Cohort median 84.0 kg (range 55.0-130.0; Table 1). The Discussion notes that earlier caspofungin studies found total body weight and fat-free mass predictive, and frames the fat-free-mass result as this paper's novel contribution."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 25.8 kg/m^2 (range 19.5-38; Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 25.8 kg/m^2 (range 19.5-38; Table 1)."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated with the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened, not retained. Cohort median 57.0 mL/min (range 31.0-260.0;",
         "Table 1) -- a span from renal impairment to markedly augmented renal",
         "clearance. Reported as RAW Cockcroft-Gault mL/min, NOT BSA-normalized",
@@ -123,9 +123,9 @@ AbdulAziz_2025_caspofungin <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened and one of the three covariates that survived initial",
         "screening -- albumin was tested on clearance -- but it did not",
         "improve the fit and was not retained (Results, 'Population",
@@ -139,27 +139,27 @@ AbdulAziz_2025_caspofungin <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 9.8 mmol/L (range 3.4-24.3; Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 9.8 mmol/L (range 3.4-24.3; Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 12.0 umol/L (range 10.0-27.0; Table 1). Patients with bilirubin > 150 umol/L were excluded at enrolment, so the tested range is narrow by design."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 12.0 umol/L (range 10.0-27.0; Table 1). Patients with bilirubin > 150 umol/L were excluded at enrolment, so the tested range is narrow by design."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score at ICU admission",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened, not retained. Cohort median 16.5 on admission (range 10-32; Table 1)."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened, not retained. Cohort median 16.5 on admission (range 10-32; Table 1)."
     ),
     RRT_CRRT_STATUS = list(
       description = "Continuous / extended renal-replacement-therapy treatment-status indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as 'receipt of RRT', not retained. 5 of 8 patients (62.5%)",
         "received concomitant renal replacement therapy during",
         "pharmacokinetic sampling -- 4 on CVVHD and 1 on SLED (Table 1), both",
@@ -173,17 +173,17 @@ AbdulAziz_2025_caspofungin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    n_samples      = 64L,
-    age_median     = "36.5 years (range 20.0-62.0; Table 1). Eligibility 18-90 years.",
-    weight_median  = "84.0 kg actual body weight (range 55.0-130.0; Table 1)",
-    ffm_median     = "58.9 kg lean body weight / Janmahasatian fat-free mass (range 37.3-81; Table 1). This is the 58.9 kg standardisation in the volume covariate model.",
-    bmi_median     = "25.8 kg/m^2 (range 19.5-38; Table 1)",
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
+    n_samples = 64L,
+    age_median = "36.5 years (range 20.0-62.0; Table 1). Eligibility 18-90 years.",
+    weight_median = "84.0 kg actual body weight (range 55.0-130.0; Table 1)",
+    ffm_median = "58.9 kg lean body weight / Janmahasatian fat-free mass (range 37.3-81; Table 1). This is the 58.9 kg standardisation in the volume covariate model.",
+    bmi_median = "25.8 kg/m^2 (range 19.5-38; Table 1)",
     sex_female_pct = 37.5,
     race_ethnicity = "Not reported. Table 1 tabulates age, weight descriptors, BMI, sex, severity scores, laboratory values, ECMO indication / mode / flow and renal replacement therapy only.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults in the intensive care unit receiving caspofungin",
       "while undergoing ECMO therapy for cardiac and/or respiratory failure.",
       "ECMO indication: acute respiratory distress syndrome 3 (37.5%), lung",
@@ -192,7 +192,7 @@ AbdulAziz_2025_caspofungin <- function() {
       "on the sampling day (range 5.0-15.0). All patients were",
       "hypoalbuminaemic (albumin 17-33 g/L)."
     ),
-    ecmo_support   = paste(
+    ecmo_support = paste(
       "ALL 8 patients were cannulated onto ECMO -- veno-venous in 6 (75.0%)",
       "and veno-arterial in 2 (25.0%), median flow rate 3.5 (range 2.9-5.7).",
       "Median time to pharmacokinetic sampling after ECMO initiation was 3.5",
@@ -208,11 +208,11 @@ AbdulAziz_2025_caspofungin <- function() {
       "ECMO-vs-no-ECMO contrast."
     ),
     renal_function = "Cockcroft-Gault creatinine clearance median 57.0 mL/min (range 31.0-260.0). 5 of 8 (62.5%) on concomitant renal replacement therapy during sampling (4 CVVHD, 1 SLED). Neither creatinine clearance nor receipt of RRT was retained as a covariate.",
-    dose_range     = "All patients received a 70 mg loading dose on day 1 as a 1 h intravenous infusion, followed by a daily maintenance dose of 50 mg (6 patients) or 70 mg (2 patients). Monte Carlo dosing simulations additionally explored loading doses of 50-200 mg with maintenance doses of 50, 70 or 100 mg daily.",
-    regions        = "Australia, New Zealand, South Korea and Switzerland (six ICUs; ASAP ECMO study program, November 2012 - November 2019)",
-    sampling       = "Serial arterial-line sampling over a SINGLE dosing interval, once the patient had been stabilised on ECMO: 0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 6, 8, 12 and 24 h after commencement of the infusion. 64 total concentration-time points from 8 patients. Assay limit 0.1 mg/L, linear 0.1-20 mg/L, precision and accuracy within 12%.",
+    dose_range = "All patients received a 70 mg loading dose on day 1 as a 1 h intravenous infusion, followed by a daily maintenance dose of 50 mg (6 patients) or 70 mg (2 patients). Monte Carlo dosing simulations additionally explored loading doses of 50-200 mg with maintenance doses of 50, 70 or 100 mg daily.",
+    regions = "Australia, New Zealand, South Korea and Switzerland (six ICUs; ASAP ECMO study program, November 2012 - November 2019)",
+    sampling = "Serial arterial-line sampling over a SINGLE dosing interval, once the patient had been stabilised on ECMO: 0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 6, 8, 12 and 24 h after commencement of the infusion. 64 total concentration-time points from 8 patients. Assay limit 0.1 mg/L, linear 0.1-20 mg/L, precision and accuracy within 12%.",
     protein_binding = "Not fitted. Caspofungin is highly protein-bound, which is the mechanism by which the authors hypothesised ECMO circuit sequestration; TOTAL plasma concentrations were assayed and the model predicts total drug. The AUC/MIC targets the paper simulates against are likewise defined on total drug ('the target ratio of total drug area under the concentration-time curve').",
-    notes          = paste(
+    notes = paste(
       "Structural model selection: one- and two-compartment models with",
       "first-order elimination were both fitted; the two-compartment model was",
       "rejected because it did not improve the fit (no decrease in BICc).",

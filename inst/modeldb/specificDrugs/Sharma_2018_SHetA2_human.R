@@ -30,8 +30,8 @@ Sharma_2018_SHetA2_human <- function() {
   )
   vignette <- "Sharma_2018_SHetA2"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -39,23 +39,23 @@ Sharma_2018_SHetA2_human <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human (allometrically-scaled projection; no clinical PK data fit)",
-    n_subjects     = 0L,
-    n_studies      = 0L,
-    age_range      = "(projection; reference adult)",
-    weight_median  = "70 kg (interspecies-scaling reference)",
+    species = "human (allometrically-scaled projection; no clinical PK data fit)",
+    n_subjects = 0L,
+    n_studies = 0L,
+    age_range = "(projection; reference adult)",
+    weight_median = "70 kg (interspecies-scaling reference)",
     sex_female_pct = NA,
-    disease_state  = "Projection for first-in-human dosing in Phase 0 clinical trial of SHetA2 (IRB #5407, planned at the time of publication)",
-    dose_range     = "Proposed starting dose 2 mg/kg PO; escalating toward 10 mg/kg PO (target plasma Cmax 4 uM = 1600 ng/mL) per Sharma 2018 Discussion. The published GastroPlus simulation used a single 10 mg/kg dose in an 85-kg subject under the fasted state for n=100 virtual subjects (Fig 6).",
-    regions        = "USA (planned clinical trial)",
-    notes          = paste(
+    disease_state = "Projection for first-in-human dosing in Phase 0 clinical trial of SHetA2 (IRB #5407, planned at the time of publication)",
+    dose_range = "Proposed starting dose 2 mg/kg PO; escalating toward 10 mg/kg PO (target plasma Cmax 4 uM = 1600 ng/mL) per Sharma 2018 Discussion. The published GastroPlus simulation used a single 10 mg/kg dose in an 85-kg subject under the fasted state for n=100 virtual subjects (Fig 6).",
+    regions = "USA (planned clinical trial)",
+    notes = paste(
       "Disposition parameters scaled to a 70-kg human via simple",
       "allometry P = a * BW^b fit on log-log plots across mouse, rat, and",
       "dog values (Sharma 2018 Fig 5; R^2 = 0.91-0.99 across all four",

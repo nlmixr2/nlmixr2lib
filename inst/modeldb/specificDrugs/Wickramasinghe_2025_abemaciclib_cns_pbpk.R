@@ -42,23 +42,23 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
   vignette <- "Wickramasinghe_2025_spatial_cns_pbpk"
 
   units <- list(
-    time          = "h",
-    dosing        = "n/a (no dose events; plasma enters as the CP_ABEMACICLIB_UM covariate)",
+    time = "h",
+    dosing = "n/a (no dose events; plasma enters as the CP_ABEMACICLIB_UM covariate)",
     concentration = "umol/L"
   )
 
   covariateData <- list(
     CP_ABEMACICLIB_UM = list(
-      description        = paste(
+      description = paste(
         "Instantaneous total abemaciclib plasma concentration, supplied as a",
         "time-varying covariate column. This is the input function of the",
         "9-CNS model: it drives cerebral delivery through the Qbrain term and",
         "is never depleted by CNS uptake."
       ),
-      units              = "umol/L",
-      type               = "continuous",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Table S2 supplies a 1010-point population-mean profile over 0-168 h",
         "for glioblastoma patients receiving twice-daily oral abemaciclib",
         "(peak 0.4191 at 124.61 h; median inter-peak interval 11.4 h). The",
@@ -66,28 +66,28 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
         "between the supplied times, as the app does",
         "(rxSolve(covsInterpolation = \"linear\"))."
       ),
-      source_name        = "Plasma1"
+      source_name = "Plasma1"
     )
   )
 
   compartmentData <- list(
-    brain_vascular        = list(analyte = "abemaciclib", units = "umol/L", specimen = "plasma", verified = TRUE),
-    brain_csf_adjacent    = list(analyte = "abemaciclib", units = "umol/L", specimen = "tissue", verified = TRUE),
-    brain_deep            = list(analyte = "abemaciclib", units = "umol/L", specimen = "tissue", verified = TRUE),
-    tumor_rim             = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor",  verified = TRUE),
-    tumor_bulk            = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor",  verified = TRUE),
-    tumor_core            = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor",  verified = TRUE),
-    brain_csf_ventricular = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF",    verified = TRUE),
-    brain_csf_sas_cranial = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF",    verified = TRUE),
-    brain_csf_sas_spinal  = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF",    verified = TRUE)
+    brain_vascular = list(analyte = "abemaciclib", units = "umol/L", specimen = "plasma", verified = TRUE),
+    brain_csf_adjacent = list(analyte = "abemaciclib", units = "umol/L", specimen = "tissue", verified = TRUE),
+    brain_deep = list(analyte = "abemaciclib", units = "umol/L", specimen = "tissue", verified = TRUE),
+    tumor_rim = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor", verified = TRUE),
+    tumor_bulk = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor", verified = TRUE),
+    tumor_core = list(analyte = "abemaciclib", units = "umol/L", specimen = "tumor", verified = TRUE),
+    brain_csf_ventricular = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF", verified = TRUE),
+    brain_csf_sas_cranial = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF", verified = TRUE),
+    brain_csf_sas_spinal = list(analyte = "abemaciclib", units = "umol/L", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 39,
+    species = "human",
+    n_subjects = 39,
     disease_state = "glioblastoma (recurrent / newly diagnosed) undergoing tumor resection",
-    dose_range    = "twice-daily oral abemaciclib; the dose amount is not stated in this paper",
-    notes         = paste(
+    dose_range = "twice-daily oral abemaciclib; the dose amount is not stated in this paper",
+    notes = paste(
       "The driving plasma profile in Table S2 is the population-mean",
       "abemaciclib concentration-time profile determined in glioblastoma",
       "patients and is attributed to reference 7 (Li 2025 Clin Pharmacol",
@@ -532,4 +532,3 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
     Cccsfu <- fuccsf * Cccsf
   })
 }
-

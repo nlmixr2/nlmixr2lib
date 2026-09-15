@@ -22,18 +22,18 @@ Sokolov_2023_dapagliflozin <- function() {
   )
   vignette <- "Sokolov_2023_dapagliflozin"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (no drug dosing events; dapagliflozin exposure enters through the per-subject AUC_DAPA covariate)",
+    time = "week",
+    dosing = "n/a (no drug dosing events; dapagliflozin exposure enters through the per-subject AUC_DAPA covariate)",
     concentration = "n/a (multi-output PD-only model; rins, rglu and rhba1c are unitless ratios to the pre-treatment baseline, and hba1c is in % NGSP)",
-    AUC_DAPA      = "ng*h/mL"
+    AUC_DAPA = "ng*h/mL"
   )
   covariateData <- list(
     AUC_DAPA = list(
-      description        = "Steady-state 24 h dapagliflozin AUC supplied as a per-subject (time-fixed) drug-exposure covariate.",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Steady-state 24 h dapagliflozin AUC supplied as a per-subject (time-fixed) drug-exposure covariate.",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject steady-state 24 h dapagliflozin exposure. Sokolov 2023",
         "Table 1 states the values were taken from a previously performed",
         "population PK analysis (Melin et al. 2022) and supplied to the",
@@ -44,14 +44,14 @@ Sokolov_2023_dapagliflozin <- function() {
         "dose reported in the Figure 10 caption: 51.4 (1 mg), 130.6",
         "(2.5 mg), 294.5 (5 mg) and 594.3 (10 mg) ng*h/mL once daily."
       ),
-      source_name        = "AUC"
+      source_name = "AUC"
     ),
     HBA1C = list(
-      description        = "Baseline (pre-treatment) HbA1c, per-subject and time-fixed",
-      units              = "% (NGSP)",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) HbA1c, per-subject and time-fixed",
+      units = "% (NGSP)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to convert the fitted ratio-to-baseline HbA1c (rhba1c)",
         "into an absolute HbA1c trajectory: hba1c = HBA1C * rhba1c. The",
         "Sokolov 2023 model itself was fitted entirely on the ratio scale",
@@ -60,32 +60,32 @@ Sokolov_2023_dapagliflozin <- function() {
         "in Figure 10 use the pooled mean baseline HbA1c = 8.48 %; Table 4",
         "reports study medians of 8.4, 8.4 and 8.3 %."
       ),
-      source_name        = "HbA1c"
+      source_name = "HbA1c"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 1661L,
+    species = "human",
+    n_subjects = 1661L,
     n_subjects_estimation = 883L,
     n_subjects_validation = 778L,
-    n_measurements       = 12460L,
-    n_studies            = 3L,
-    studies              = paste(
+    n_measurements = 12460L,
+    n_studies = 3L,
+    studies = paste(
       "Estimation: NCT01498185 (phase 2 dose-ranging, N = 70, first 7 inpatient",
       "days only) pooled with NCT02460978 (DEPICT-2, phase 3, 24-week",
       "double-blind period). External validation: NCT02268214 (DEPICT-1,",
       "phase 3, 24-week double-blind period), not used in model development."
     ),
-    age_range            = "18-75 years (study medians 30, 43 and 43 years; Table 4)",
-    weight_range         = "44.6-184.8 kg (study medians 74.8, 80.8 and 76.8 kg; Table 4)",
-    bmi_range            = "18.2-65.8 kg/m^2 (study medians 23.9, 27.8 and 26.9 kg/m^2; Table 4)",
-    sex_female_pct       = c(NCT01498185 = 42.9, NCT02268214 = 52.1, NCT02460978 = 56.0),
-    race_ethnicity       = paste(
+    age_range = "18-75 years (study medians 30, 43 and 43 years; Table 4)",
+    weight_range = "44.6-184.8 kg (study medians 74.8, 80.8 and 76.8 kg; Table 4)",
+    bmi_range = "18.2-65.8 kg/m^2 (study medians 23.9, 27.8 and 26.9 kg/m^2; Table 4)",
+    sex_female_pct = c(NCT01498185 = 42.9, NCT02268214 = 52.1, NCT02460978 = 56.0),
+    race_ethnicity = paste(
       "Predominantly White (88.6 %, 95.6 % and 78.4 % by study); NCT02460978",
       "enrolled 19.7 % Asian patients (Table 4)."
     ),
-    disease_state        = paste(
+    disease_state = paste(
       "Adults with inadequately controlled type 1 diabetes on background",
       "basal-bolus insulin (multiple daily injections or continuous",
       "subcutaneous insulin infusion). Phase 3 randomisation required HbA1c",
@@ -93,9 +93,9 @@ Sokolov_2023_dapagliflozin <- function() {
       "24 h mean CGM glucose 170-190 mg/dL, total daily insulin dose",
       "48-54 units, eGFR 89-91 mL/min/1.73 m^2, diabetes duration 17-19 years."
     ),
-    dose_range           = "Dapagliflozin 1, 2.5, 5 or 10 mg once daily, or placebo; exposure enters through AUC_DAPA.",
-    regions              = "Multi-national (NCT01498185, DEPICT-1 and DEPICT-2 trial programmes).",
-    notes                = paste(
+    dose_range = "Dapagliflozin 1, 2.5, 5 or 10 mg once daily, or placebo; exposure enters through AUC_DAPA.",
+    regions = "Multi-national (NCT01498185, DEPICT-1 and DEPICT-2 trial programmes).",
+    notes = paste(
       "Non-linear mixed-effects model fitted in Monolix 2020R1 using a",
       "three-step sequential strategy (Supplementary 'Structural model' and",
       "'Model development'). Step 1 fits Equation 1 (basal insulin dose ratio",

@@ -31,8 +31,11 @@ Thoueille_2026_salmeterol <- function() {
   # mirror Table 2's own row labels. The study -> tier mapping is in the
   # STUDY_SALM covariate notes and in the model() comments.
   paper_specific_residual_sds <- c(
-    "expSdUrineSalLow", "expSdUrineSalMid", "expSdUrineSalHigh",
-    "expSdUrineOhsalMid", "expSdUrineOhsalHigh"
+    "expSdUrineSalLow",
+    "expSdUrineSalMid",
+    "expSdUrineSalHigh",
+    "expSdUrineOhsalMid",
+    "expSdUrineOhsalHigh"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -40,21 +43,21 @@ Thoueille_2026_salmeterol <- function() {
   # names PARENT_PLASMA / PLASMA_PERIPH / METAB_PLASMA / PARENT_URINE /
   # METAB_URINE / UR_PROD) and Figure 2 of the paper.
   compartmentData <- list(
-    central      = list(analyte = "salmeterol", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1  = list(analyte = "salmeterol", units = "nmol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "salmeterol", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "salmeterol", units = "nmol", specimen = "plasma", verified = TRUE),
     central_ohsal = list(analyte = "alpha-hydroxysalmeterol", units = "nmol", specimen = "plasma", verified = TRUE),
-    urine        = list(analyte = "salmeterol", units = "nmol", specimen = "urine", verified = TRUE),
-    urine_ohsal  = list(analyte = "alpha-hydroxysalmeterol", units = "nmol", specimen = "urine", verified = TRUE),
-    urine_vol    = list(analyte = "not applicable", units = "L", specimen = "urine", verified = TRUE)
+    urine = list(analyte = "salmeterol", units = "nmol", specimen = "urine", verified = TRUE),
+    urine_ohsal = list(analyte = "alpha-hydroxysalmeterol", units = "nmol", specimen = "urine", verified = TRUE),
+    urine_vol = list(analyte = "not applicable", units = "L", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     ATHLETE = list(
-      description        = "Athlete or healthy endurance-trained individual indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Athlete or healthy endurance-trained individual indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participants pooled with chronic asthmatics)",
-      notes              = paste(
+      notes = paste(
         "1 = athlete or healthy endurance-trained individual; 0 = the pooled",
         "reference group. The paper first fit a rich model with a separate PK",
         "parameter per individual type (healthy / chronic asthmatic /",
@@ -68,14 +71,14 @@ Thoueille_2026_salmeterol <- function() {
         "DPI) was retained on either parameter. Data S1 $PK derives the",
         "indicator as ATHLETES = 1 when the source column TYPE == 3."
       ),
-      source_name        = "TYPE (category 3 of healthy / asthmatic / athlete-endurance-trained)"
+      source_name = "TYPE (category 3 of healthy / asthmatic / athlete-endurance-trained)"
     ),
     USG_CORRECTED = list(
-      description        = "Urine-specific-gravity-corrected urine concentration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Urine-specific-gravity-corrected urine concentration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (urine concentration not corrected for specific gravity)",
-      notes              = paste(
+      notes = paste(
         "1 = the urine concentration was corrected for urine specific gravity",
         "(USG) per the WADA technical document, using",
         "corrected = (1.020 - 1) / (USG + 0.002 - 1) x observed (Methods 2.1);",
@@ -90,14 +93,14 @@ Thoueille_2026_salmeterol <- function() {
         "The paper's own Figure 3 / Table 3 / Table S1 simulations report",
         "USG-corrected concentrations, i.e. USG_CORRECTED = 1."
       ),
-      source_name        = "USG (0/1 flag in the NONMEM $INPUT record)"
+      source_name = "USG (0/1 flag in the NONMEM $INPUT record)"
     ),
     STUDY_SALM = list(
-      description        = "Source-study identifier in the Thoueille 2026 pooled salmeterol analysis",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Source-study identifier in the Thoueille 2026 pooled salmeterol analysis",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "n/a -- selects a residual-error magnitude tier only",
-      notes              = paste(
+      notes = paste(
         "Data S1 $INPUT column SID. Values used by the final model:",
         "1 = Jacobson & Hostrup 2022 (urine, DPI, healthy + athletes);",
         "2 = Jessen 2021 (plasma + urine with recorded urine volumes,",
@@ -114,29 +117,29 @@ Thoueille_2026_salmeterol <- function() {
         "studies. Set STUDY_SALM to any of 1 / 5 / 6 to simulate with the",
         "lowest reported urine residual magnitudes."
       ),
-      source_name        = "SID"
+      source_name = "SID"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 85,
-    n_studies      = 6,
-    age_range      = "Adult (per-study demographics not reported in the pooled analysis)",
-    weight_range   = "Not reported",
+    species = "human",
+    n_subjects = 85,
+    n_studies = 6,
+    age_range = "Adult (per-study demographics not reported in the pooled analysis)",
+    weight_range = "Not reported",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy participants, chronic asthmatics, and healthy",
       "endurance-trained individuals / athletes. All assumed to have normal",
       "renal function (Methods 2.2.1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Inhaled salmeterol 50-400 ug: 50 ug and 100 ug MDI, 100 ug / 200 ug /",
       "400 ug DPI, single dose, plus a 200 ug 7-day self-administration arm",
       "(Table 1)."
     ),
-    regions        = "Australia, Belgium, Cyprus, Denmark (study locations of the pooled sources)",
-    notes          = paste(
+    regions = "Australia, Belgium, Cyprus, Denmark (study locations of the pooled sources)",
+    notes = paste(
       "Six studies pooled (Table 1): Jacobson & Hostrup 2022 (7 healthy +",
       "14 athletes), Jessen 2021 (11 endurance-trained), Jacobson 2017",
       "(10 healthy), Hostrup 2012 (10 healthy + 10 asthmatics), Deventer 2011",

@@ -8,61 +8,61 @@ Chigutsa_2011_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the Chigutsa 2011 cohort (weight-banded dosing only; no within-treatment body weight remodelling). Used for allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with reference weight 70 kg per Anderson and Holford (Annu Rev Pharmacol Toxicol 2008;48:303-32; cited as Chigutsa 2011 Methods reference 3).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject in the Chigutsa 2011 cohort (weight-banded dosing only; no within-treatment body weight remodelling). Used for allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1.0) with reference weight 70 kg per Anderson and Holford (Annu Rev Pharmacol Toxicol 2008;48:303-32; cited as Chigutsa 2011 Methods reference 3).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Effects on apparent central volume V/F (-30%; Chigutsa 2011 Table 2 row 'Effect of female sex on V/F (%) -30 (-21, -35)') and on mean transit time MTT (+30%, encoded per Results body text page 4124 stating 'women had a 30% LONGER mean transit time, showing that women have a longer absorption delay than men.' Table 2 row 'Effect of female sex on MTT (%)' prints -30 (-21, -35), but the CI bounds are bit-identical to the V/F row immediately above which is the canonical signature of a typesetting row-duplication error; per sidecar request-001 (2026-06-17) the body text +30% is the source of truth. See vignette Errata for the full discussion).",
-      source_name        = "SEXF"
+      notes = "Time-fixed per subject. Effects on apparent central volume V/F (-30%; Chigutsa 2011 Table 2 row 'Effect of female sex on V/F (%) -30 (-21, -35)') and on mean transit time MTT (+30%, encoded per Results body text page 4124 stating 'women had a 30% LONGER mean transit time, showing that women have a longer absorption delay than men.' Table 2 row 'Effect of female sex on MTT (%)' prints -30 (-21, -35), but the CI bounds are bit-identical to the V/F row immediately above which is the canonical signature of a typesetting row-duplication error; per sidecar request-001 (2026-06-17) the body text +30% is the source of truth. See vignette Errata for the full discussion).",
+      source_name = "SEXF"
     ),
     DOSE = list(
-      description        = "Per-record administered rifampicin daily dose (mg).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-record administered rifampicin daily dose (mg).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to derive a binary high-dose indicator (DOSE >= 600 mg) for the dose effect on mean transit time MTT (-27% relative to the 450 mg reference). The Chigutsa 2011 cohort received weight-banded doses: 38-54 kg -> 450 mg (3 Rifafour tablets), 55-70 kg -> 600 mg (4 tablets), >70 kg -> 750 mg (5 tablets). Per-record because rxode2 routes the simulated dose amount via the standard amt column.",
-      source_name        = "DOSE"
+      notes = "Used to derive a binary high-dose indicator (DOSE >= 600 mg) for the dose effect on mean transit time MTT (-27% relative to the 450 mg reference). The Chigutsa 2011 cohort received weight-banded doses: 38-54 kg -> 450 mg (3 Rifafour tablets), 55-70 kg -> 600 mg (4 tablets), >70 kg -> 750 mg (5 tablets). Per-record because rxode2 routes the simulated dose amount via the standard amt column.",
+      source_name = "DOSE"
     ),
     SNP_SLCO1B1_RS4149032_COUNT = list(
-      description        = "Count of SLCO1B1 rs4149032 variant alleles per subject (0 = homozygous common allele wild-type, 1 = heterozygous one variant allele, 2 = homozygous two variant alleles). rs4149032 is an intronic SLCO1B1 SNP; Chigutsa 2011 Discussion notes it is in linkage disequilibrium with the functional SLCO1B1 variant C463A (rs11045819) in Caucasians but NOT in Africans, where the haplotype patterns differ due to greater genetic diversity.",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Count of SLCO1B1 rs4149032 variant alleles per subject (0 = homozygous common allele wild-type, 1 = heterozygous one variant allele, 2 = homozygous two variant alleles). rs4149032 is an intronic SLCO1B1 SNP; Chigutsa 2011 Discussion notes it is in linkage disequilibrium with the functional SLCO1B1 variant C463A (rs11045819) in Caucasians but NOT in Africans, where the haplotype patterns differ due to greater genetic diversity.",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (germline genotype). Distribution in the Chigutsa 2011 cohort (Results paragraph 'The SLCO1B1 rs4149032 polymorphism...'): 31 of 60 homozygous variant (52%), 22 heterozygous (37%), 7 homozygous common (12%); overall variant allele frequency 0.70 (0.93 in the black African subcohort, 0.59 in the mixed-race subcohort). Used in model() as a decomposition: het_4149032 <- (SNP_SLCO1B1_RS4149032_COUNT == 1) and hom_4149032 <- (SNP_SLCO1B1_RS4149032_COUNT == 2). Independently estimated non-additive multiplicative bioavailability effects: -18% in HET, -28% in HOM variant; relative to WT homozygous reference. Follows the Schipani 2011 nevirapine count-decomposition precedent for non-additive het / hom shifts.",
-      source_name        = "rs4149032 genotype"
+      notes = "Time-fixed per subject (germline genotype). Distribution in the Chigutsa 2011 cohort (Results paragraph 'The SLCO1B1 rs4149032 polymorphism...'): 31 of 60 homozygous variant (52%), 22 heterozygous (37%), 7 homozygous common (12%); overall variant allele frequency 0.70 (0.93 in the black African subcohort, 0.59 in the mixed-race subcohort). Used in model() as a decomposition: het_4149032 <- (SNP_SLCO1B1_RS4149032_COUNT == 1) and hom_4149032 <- (SNP_SLCO1B1_RS4149032_COUNT == 2). Independently estimated non-additive multiplicative bioavailability effects: -18% in HET, -28% in HOM variant; relative to WT homozygous reference. Follows the Schipani 2011 nevirapine count-decomposition precedent for non-additive het / hom shifts.",
+      source_name = "rs4149032 genotype"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 57L,
-    n_studies      = 1L,
-    age_range      = "18 - 55 years (median 29)",
-    age_median     = "29 years",
-    weight_range   = "41 - 69 kg (median 52)",
-    weight_median  = "52 kg",
+    species = "human",
+    n_subjects = 57L,
+    n_studies = 1L,
+    age_range = "18 - 55 years (median 29)",
+    age_median = "29 years",
+    weight_range = "41 - 69 kg (median 52)",
+    weight_median = "52 kg",
     sex_female_pct = 40,
     race_ethnicity = "40% black African (mainly Xhosa); 60% mixed ancestry (mainly Caucasian and African origins)",
-    disease_state  = "Adults with sputum smear-positive pulmonary tuberculosis (Cape Town, South Africa). 16% co-infected with HIV.",
-    dose_range     = "Oral rifampicin 450 mg (38-54 kg), 600 mg (55-70 kg), or 750 mg (>70 kg) once daily, administered as fixed-dose-combination Rifafour tablets (each containing 150 mg rifampicin, 75 mg isoniazid, 400 mg pyrazinamide, 275 mg ethambutol) under directly observed administration after at least 1 month of treatment.",
-    regions        = "South Africa (Cape Town; Delft Community Health Centre)",
+    disease_state = "Adults with sputum smear-positive pulmonary tuberculosis (Cape Town, South Africa). 16% co-infected with HIV.",
+    dose_range = "Oral rifampicin 450 mg (38-54 kg), 600 mg (55-70 kg), or 750 mg (>70 kg) once daily, administered as fixed-dose-combination Rifafour tablets (each containing 150 mg rifampicin, 75 mg isoniazid, 400 mg pyrazinamide, 275 mg ethambutol) under directly observed administration after at least 1 month of treatment.",
+    regions = "South Africa (Cape Town; Delft Community Health Centre)",
     sampling_design = "Sparse steady-state sampling: 4-8 plasma samples per patient collected randomly over a 7-h window after the morning dose; 24 of 57 patients had a second occasion sampled approximately 1 month after the first. Total 437 plasma concentrations. BLQ data (12% of observations, all in the absorption phase < 2 h post-dose) handled by Beal's M3 method in the original NONMEM fit.",
-    assay          = "Plasma rifampicin by HPLC-MS/MS; LLOQ 0.08 mg/L.",
-    notes          = "Cohort participants were enrolled in a parallel randomised micronutrient (vitamin A and zinc vs placebo) substudy; the micronutrient arm assignment had no significant effect on rifampicin PK and is not encoded as a covariate. The full Chigutsa 2011 Table 2 reports BSV on F, CL, and MTT (CL-MTT block correlation 0.86) and WSV on F, CL, V, and MTT (V-MTT block correlation -0.40); this model file carries the BSV layer but omits the WSV / inter-occasion-variability layer (forward simulation users do not need IOV for a single-occasion simulation; see vignette Errata)."
+    assay = "Plasma rifampicin by HPLC-MS/MS; LLOQ 0.08 mg/L.",
+    notes = "Cohort participants were enrolled in a parallel randomised micronutrient (vitamin A and zinc vs placebo) substudy; the micronutrient arm assignment had no significant effect on rifampicin PK and is not encoded as a covariate. The full Chigutsa 2011 Table 2 reports BSV on F, CL, and MTT (CL-MTT block correlation 0.86) and WSV on F, CL, V, and MTT (V-MTT block correlation -0.40); this model file carries the BSV layer but omits the WSV / inter-occasion-variability layer (forward simulation users do not need IOV for a single-occasion simulation; see vignette Errata)."
   )
 
   ini({

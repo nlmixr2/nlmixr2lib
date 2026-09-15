@@ -8,26 +8,26 @@ Debord_2001_cyclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cyclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cyclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cyclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cyclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cyclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "Not reported (adult renal transplant recipients)",
-    weight_range   = "Not reported",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "Not reported (adult renal transplant recipients)",
+    weight_range = "Not reported",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported (single-centre French cohort: Hopital Dupuytren, Limoges and CHU Bretonneau, Tours)",
-    disease_state  = "Stable renal transplant recipients",
-    dose_range     = "Oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily",
+    disease_state = "Stable renal transplant recipients",
+    dose_range = "Oral cyclosporin microemulsion (Neoral) 75-175 mg twice daily",
     administration = "Oral, twice daily",
-    regions        = "France (single centre, Limoges and Tours)",
-    notes          = "Blood samples drawn just before administration (C0) and at 20, 40, 60, 90, 120, 180, 240, 360 and 540 min after administration (Methods page 377-378). Cyclosporin assayed by LC-MS; intra-assay CVs < 11%, inter-assay CVs < 15%; LOQ 10 ug/L over linearity range up to 2500 ug/L."
+    regions = "France (single centre, Limoges and Tours)",
+    notes = "Blood samples drawn just before administration (C0) and at 20, 40, 60, 90, 120, 180, 240, 360 and 540 min after administration (Methods page 377-378). Cyclosporin assayed by LC-MS; intra-assay CVs < 11%, inter-assay CVs < 15%; LOQ 10 ug/L over linearity range up to 2500 ug/L."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

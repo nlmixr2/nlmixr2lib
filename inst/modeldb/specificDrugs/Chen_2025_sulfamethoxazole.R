@@ -32,15 +32,15 @@ Chen_2025_sulfamethoxazole <- function() {
     sep = " "
   )
   vignette <- "Chen_2025_cotrimoxazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters BOTH clearance and volume LINEARLY (exponent exactly 1),",
         "because Table 5 reports the typical values per kilogram: tv V in",
         "L/kg and tv CL in L/kg/h. Weight is therefore not visible as a",
@@ -54,17 +54,17 @@ Chen_2025_sulfamethoxazole <- function() {
         "same weight.",
         "Cohort median 60.0 kg (Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated with the Cockcroft-Gault equation.",
         "RAW mL/min, NOT normalized to 1.73 m^2 body surface area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power term (CRCL / 75.7)^0.17 on clearance (Eq. 2). The text after",
         "the equations states explicitly that '75.7 represents the median",
         "CrCL value', matching the cohort median in Table 2 (75.7 mL/min,",
@@ -79,14 +79,14 @@ Chen_2025_sulfamethoxazole <- function() {
         "30-49, 50-79 and 80-120 mL/min (Table 7).",
         sep = " "
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy during co-trimoxazole treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy during co-trimoxazole treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CRRT)",
-      notes              = paste(
+      notes = paste(
         "1 = receiving CRRT, 0 = not. Enters clearance as",
         "exp(dCLdCRRT * (CRRT == 1)) (Eq. 2), i.e. a multiplicative factor of",
         "exp(0.59) = 1.80 rather than a directly reported ratio; the",
@@ -103,52 +103,52 @@ Chen_2025_sulfamethoxazole <- function() {
         "subjects because the power term is evaluated unconditionally.",
         sep = " "
       ),
-      source_name        = "CRRT"
+      source_name = "CRRT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
-      notes              = "Screened but not retained in the sulfamethoxazole model (Methods covariate list; absent from Table 3, Eq. 2 and Table 5). Cohort median 64 years (Table 2). Retained in the TRIMETHOPRIM search chain but likewise absent from that final model - see modellib('Chen_2025_trimethoprim')."
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained in the sulfamethoxazole model (Methods covariate list; absent from Table 3, Eq. 2 and Table 5). Cohort median 64 years (Table 2). Retained in the TRIMETHOPRIM search chain but likewise absent from that final model - see modellib('Chen_2025_trimethoprim')."
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 170.0 cm (Table 2)."
+      description = "Height",
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 170.0 cm (Table 2)."
     ),
     SEXF = list(
-      description        = "Female sex",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = "Screened as 'gender' but not retained (Methods covariate list). 18 of 79 patients female (Table 2)."
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'gender' but not retained (Methods covariate list). 18 of 79 patients female (Table 2)."
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 34.4 g/L (Table 2). The Discussion notes a literature correlation between albumin and sulfamethoxazole clearance that this cohort did not reproduce."
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 34.4 g/L (Table 2). The Discussion notes a literature correlation between albumin and sulfamethoxazole clearance that this cohort did not reproduce."
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 21.7 umol/L (Table 2)."
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 21.7 umol/L (Table 2)."
     ),
     DBIL = list(
-      description        = "Direct bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
-      notes              = "Screened but not retained (Methods covariate list). Cohort median 10.9 umol/L (Table 2)."
+      description = "Direct bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods covariate list). Cohort median 10.9 umol/L (Table 2)."
     ),
     HEPIMP_SEV = list(
-      description        = "Hepatic impairment severity (Child-Pugh class)",
-      units              = "(categorical)",
-      type               = "categorical",
-      notes              = "Screened as the Child-Pugh classification (A/B/C) but not retained (Methods covariate list; Results 'Liver function ... did not exhibit statistically significant effects'). Child-Pugh A 54, B 18, C 7 (Table 2). Total protein, ALT, AST, GGT and ALP were screened alongside it and are likewise absent from the final model; NAT2 acetylator phenotype (rapid/intermediate/slow) and CYP2C9 metabolizer phenotype (normal/intermediate/poor) were genotyped and screened with no significant effect (Results, Discussion). None of these carries a reported point estimate, so none can be encoded."
+      description = "Hepatic impairment severity (Child-Pugh class)",
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened as the Child-Pugh classification (A/B/C) but not retained (Methods covariate list; Results 'Liver function ... did not exhibit statistically significant effects'). Child-Pugh A 54, B 18, C 7 (Table 2). Total protein, ALT, AST, GGT and ALP were screened alongside it and are likewise absent from the final model; NAT2 acetylator phenotype (rapid/intermediate/slow) and CYP2C9 metabolizer phenotype (normal/intermediate/poor) were genotyped and screened with no significant effect (Results, Discussion). None of these carries a reported point estimate, so none can be encoded."
     )
   )
 
@@ -157,15 +157,15 @@ Chen_2025_sulfamethoxazole <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 79,
-    n_studies      = 1,
-    age_median     = "64 years (54-73)",
-    height_median  = "170.0 cm (165-175)",
-    weight_median  = "60.0 kg (55-70)",
+    species = "human",
+    n_subjects = 79,
+    n_studies = 1,
+    age_median = "64 years (54-73)",
+    height_median = "170.0 cm (165-175)",
+    weight_median = "60.0 kg (55-70)",
     sex_female_pct = 22.8,
     race_ethnicity = "Not reported; single-center Chinese cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (>= 18 years) with a confirmed diagnosis of Pneumocystis",
       "jirovecii pneumonia receiving intravenous co-trimoxazole, in intensive",
       "care units and general inpatient wards. Patients taking hepatic enzyme",
@@ -191,14 +191,14 @@ Chen_2025_sulfamethoxazole <- function() {
       "(8.8%), poor 4 (5.1%). Neither had a statistically significant effect.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Routine care rather than protocol-assigned; intravenous infusions of",
       "approximately 1 h given every 6, 8 or 12 h. The Monte Carlo",
       "simulations explore co-trimoxazole 50, 55, 65, 70 and 90 mg/kg/day",
       "given twice, three times or four times daily.",
       sep = " "
     ),
-    regions        = "China (Fujian Medical University Union Hospital, Fuzhou), March 2023 to October 2024.",
+    regions = "China (Fujian Medical University Union Hospital, Fuzhou), March 2023 to October 2024.",
     n_observations = paste(
       "232 post-dose plasma concentrations from 79 patients: two to three",
       "samples per patient (an end-of-infusion peak, a pre-dose trough and/or",
@@ -206,7 +206,7 @@ Chen_2025_sulfamethoxazole <- function() {
       "LC-MS/MS over a calibrated range of 3.12-400.0 mg/L.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective single-center study; demographics from Table 2. Estimation",
       "was by first-order conditional estimation with extended least squares",
       "in Phoenix NLME 8.0, and the reported parameter precision comes from",

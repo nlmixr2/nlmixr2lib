@@ -35,9 +35,9 @@ Zingmark_2003_clomethiazole <- function() {
     sep = " "
   )
   vignette <- "Zingmark_2003_clomethiazole"
-  units    <- list(
-    time          = "h",
-    dosing        = "mg (clomethiazole free base)",
+  units <- list(
+    time = "h",
+    dosing = "mg (clomethiazole free base)",
     concentration = "umol/L"
   )
 
@@ -45,17 +45,17 @@ Zingmark_2003_clomethiazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "clomethiazole", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "clomethiazole", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "clomethiazole", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline weight. Acts linearly on V1 and V2",
         "(1.3%/kg and 1.4%/kg respectively, centred at 75 kg) and",
         "piecewise-linearly on CL (0.9%/kg in non-inducer patients,",
@@ -68,18 +68,18 @@ Zingmark_2003_clomethiazole <- function() {
         "section, Eq. 13). Cohort: median 75 kg (range 31-157 kg)",
         "per Zingmark 2003 Table 2."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_CYP3A4_IND = list(
-      description        = paste(
+      description = paste(
         "Concomitant 'liver enzyme inducing' drug indicator",
         "(binary; 1 = at least one of carbamazepine, phenytoin,",
         "or rifampicin coadministered at study entry, 0 = none)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no enzyme inducer)",
-      notes              = paste(
+      notes = paste(
         "Zingmark 2003 defines the indicator as patients on any of",
         "carbamazepine, phenytoin, or rifampicin (Pharmacokinetics",
         "section, paragraph describing the piecewise WT-CL",
@@ -104,27 +104,27 @@ Zingmark_2003_clomethiazole <- function() {
         "canonical CYP3A4_IND to CONMED_CYP3A4_IND on 2026-06-19",
         "per the canonical-register standardization audit."
       ),
-      source_name        = "Liver enzyme inducers (Table 2)"
+      source_name = "Liver enzyme inducers (Table 2)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 774L,
-    n_studies       = 3L,
-    age_range       = "19-90 years",
-    age_median      = "74 years",
-    weight_range    = "31-157 kg",
-    weight_median   = "75 kg",
-    sex_female_pct  = 50.8,
-    race_ethnicity  = c(
+    species = "human",
+    n_subjects = 774L,
+    n_studies = 3L,
+    age_range = "19-90 years",
+    age_median = "74 years",
+    weight_range = "31-157 kg",
+    weight_median = "75 kg",
+    sex_female_pct = 50.8,
+    race_ethnicity = c(
       Caucasian = 83.6,
-      Black     = 10.9,
-      Oriental  =  2.6,
-      Hispanic  =  2.2,
-      Other     =  0.7
+      Black = 10.9,
+      Oriental = 2.6,
+      Hispanic = 2.2,
+      Other = 0.7
     ),
-    disease_state   = paste(
+    disease_state = paste(
       "Acute stroke within 12 h of onset; three phase III",
       "randomized double-blind placebo-controlled trials:",
       "CLASS-I (acute ischaemic stroke with limb weakness,",
@@ -133,7 +133,7 @@ Zingmark_2003_clomethiazole <- function() {
       "CLASS-T (ischaemic stroke treated with t-PA). NIH",
       "stroke-scale score median 16 (range 1-34)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Three-phase IV infusion of clomethiazole edisilate over",
       "24 h: 6 mg/kg over 0.25 h, then 31 mg/kg from 0.25 to 8",
       "h, then 31 mg/kg from 8 to 24 h (total 68 mg/kg",
@@ -145,8 +145,8 @@ Zingmark_2003_clomethiazole <- function() {
       "applied at data-assembly time -- the model parameters",
       "describe free-base clomethiazole in plasma."
     ),
-    regions         = "United States and Canada (166 centres)",
-    co_medication   = paste(
+    regions = "United States and Canada (166 centres)",
+    co_medication = paste(
       "Concomitant medications coded as present/absent at",
       "study entry per Zingmark 2003 Table 2 (liver enzyme",
       "inducers 100/1546; CYP2E1 substrates 590/1546;",
@@ -158,7 +158,7 @@ Zingmark_2003_clomethiazole <- function() {
       "inducer pool reached the backward-elimination",
       "significance criterion in the PK covariate model."
     ),
-    notes           = paste(
+    notes = paste(
       "Of the 1546 patients enrolled across CLASS-I (n=1200",
       "target), CLASS-H (n=200), and CLASS-T (n=200), 774",
       "were randomised to active clomethiazole and",

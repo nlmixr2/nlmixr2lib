@@ -39,26 +39,26 @@ TerHeine_2018_everolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "everolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "everolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = paste(
+      description = paste(
         "Fat-free mass derived from total body weight, height, and sex",
         "via the Janmahasatian (2005) formula as referenced by Holford",
         "et al. (paper reference 36). Time-fixed at baseline."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference FFM = 57.2 kg, corresponding to a 70 kg, 1.80 m adult",
         "male (BMI = 21.6, male Janmahasatian formula yields exactly 57.2",
         "kg). Per Methods 'Structural model development', all flow",
@@ -70,19 +70,19 @@ TerHeine_2018_everolimus <- function() {
         "described the PK / body-size relationship (Results 'Base model",
         "development')."
       ),
-      source_name        = "Fat-free mass (derived from weight, length, sex per Janmahasatian / Holford et al.)"
+      source_name = "Fat-free mass (derived from weight, length, sex per Janmahasatian / Holford et al.)"
     ),
     HCT = list(
-      description        = paste(
+      description = paste(
         "Hematocrit expressed as a volume fraction (0 - 1). Enters the",
         "hepatic plasma flow via QHP = QH * (1 - HCT) in the well-stirred",
         "liver model and the whole-blood-to-plasma back-conversion in the",
         "vignette."
       ),
-      units              = "fraction (0 - 1)",
-      type               = "continuous",
+      units = "fraction (0 - 1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Hematocrit drives two distinct effects in the source paper: (1)",
         "hepatic plasma flow via QHP = QH * (1 - HCT) inside the",
         "well-stirred liver model (Methods Equation 3), and (2) the",
@@ -93,18 +93,18 @@ TerHeine_2018_everolimus <- function() {
         "mg/L, Kns = 0.153). Cohort range 0.28 - 0.50 (Table 1; transplant",
         "median 0.36, cancer median 0.38)."
       ),
-      source_name        = "Ht (fraction)"
+      source_name = "Ht (fraction)"
     ),
     PRED_DOSE = list(
-      description        = paste(
+      description = paste(
         "Concomitant oral prednisolone daily dose (mg/day). Used as a",
         "threshold-form covariate at >= 20 mg/day (binary high-dose",
         "indicator) on apparent intrinsic clearance."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Methods 'Covariate analysis' tested concomitant high-dose",
         "prednisolone (defined as >= 20 mg/day, a known CYP3A4 inducer)",
         "as a binary covariate on apparent intrinsic clearance.",
@@ -115,21 +115,21 @@ TerHeine_2018_everolimus <- function() {
         "prednisolone). Transplant cohort: 7.5 - 40 mg/day (mean 14.5,",
         "median 10; Table 1)."
       ),
-      source_name        = "Prednisolone dose (total daily dose, mg/day)"
+      source_name = "Prednisolone dose (total daily dose, mg/day)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 126L,
-    n_studies      = 5L,
-    age_range      = "19 - 80 years",
-    age_median     = "53 years (transplant), 62 years (cancer)",
-    weight_range   = "45 - 110.3 kg",
-    weight_median  = "79 kg (transplant), 73 kg (cancer)",
+    species = "human",
+    n_subjects = 126L,
+    n_studies = 5L,
+    age_range = "19 - 80 years",
+    age_median = "53 years (transplant), 62 years (cancer)",
+    weight_range = "45 - 110.3 kg",
+    weight_median = "79 kg (transplant), 73 kg (cancer)",
     sex_female_pct = 54.0,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Two pooled adult subpopulations: (1) 71 oncology patients with",
       "metastatic thyroid or breast cancer on everolimus (Afinitor) 10",
       "mg once daily (clinicaltrials.gov NCT01118065 and NCT01948960);",
@@ -137,7 +137,7 @@ TerHeine_2018_everolimus <- function() {
       "3 mg twice daily for prophylaxis of allograft rejection (Dutch",
       "Trial Register NTR567 and NTR1615; clinicaltrials.gov NCT02387151)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oncology cohort: everolimus 10 mg orally once daily (Afinitor;",
       "all 71 subjects).",
       "Transplant cohort: everolimus 1.5 - 3 mg orally twice daily",
@@ -147,8 +147,8 @@ TerHeine_2018_everolimus <- function() {
       "after alemtuzumab induction; the remainder were on",
       "everolimus + prednisolone."
     ),
-    regions        = "The Netherlands",
-    notes          = paste(
+    regions = "The Netherlands",
+    notes = paste(
       "Rich PK sampling: approximately 8 or more samples per dosing",
       "interval (transplant; mean 6.3, median 7 samples per patient) and",
       "12.6 mean samples per cancer patient (range 3 - 21).",

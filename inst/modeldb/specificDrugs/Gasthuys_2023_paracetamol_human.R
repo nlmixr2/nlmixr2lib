@@ -6,11 +6,11 @@ Gasthuys_2023_paracetamol_human <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Subject-level, time-fixed. Applied as a power function normalised to a 70 kg",
         "reference with exponents fixed at 0.75 for CL/F and 1 for Vd/F",
         "(Gasthuys 2023 Eq. 1 and Table 3, 'Covariate model' rows). Cohort median 81.5 kg,",
@@ -21,28 +21,28 @@ Gasthuys_2023_paracetamol_human <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2  = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
     n_observations = "360 plasma paracetamol concentrations from eight adults across three occasions (Gasthuys 2023 Results 2.1). Ten volunteers were enrolled and eight completed (Gasthuys 2023 Table 4 footnote). Concentrations below the 7.5 ng/mL limit of quantification (0.83% of human records) were excluded before fitting.",
-    age_range      = "21-48 years (median 25)",
-    age_median     = "25 years",
-    weight_range   = "60-104 kg",
-    weight_median  = "81.5 kg",
-    height_range   = "1.69-1.92 m (median 1.85)",
-    bmi_range      = "20.3-27.7 kg/m2 (median 23.8)",
+    age_range = "21-48 years (median 25)",
+    age_median = "25 years",
+    weight_range = "60-104 kg",
+    weight_median = "81.5 kg",
+    height_range = "1.69-1.92 m (median 1.85)",
+    bmi_range = "20.3-27.7 kg/m2 (median 23.8)",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = "healthy adult male volunteers",
-    dose_range     = "single oral 1000 mg paracetamol (42 mL of Panadol suspension at 24 mg/mL) per occasion",
-    regions        = "Greece (Red Cross Hospital of Athens; protocol Nr. 4145/14-02-18)",
-    notes          = paste(
+    disease_state = "healthy adult male volunteers",
+    dose_range = "single oral 1000 mg paracetamol (42 mL of Panadol suspension at 24 mg/mL) per occasion",
+    regions = "Greece (Red Cross Hospital of Athens; protocol Nr. 4145/14-02-18)",
+    notes = paste(
       "Single-dose, open-label, randomised, crossover, three-period comparative oral",
       "bioavailability study (Gasthuys 2023 Figure 6): fasted (84 mL water plus the",
       "paracetamol suspension given twice over 1 min); reference meal (990 kcal: 240 mL whole",

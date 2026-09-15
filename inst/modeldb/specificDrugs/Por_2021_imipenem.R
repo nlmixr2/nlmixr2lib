@@ -30,23 +30,23 @@ Por_2021_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 99.5 kg. The cohort is heavy, as burn cohorts often are",
         "-- mean 89.6 +/- 22.38 kg with CVVH and 105.06 +/- 28.66 kg",
         "without (Zhang 2025 Table 1) -- and 99.5 sits between the two arm",
@@ -57,14 +57,14 @@ Por_2021_imipenem <- function() {
         "exponents; this is what the review prints and is reproduced",
         "verbatim."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "UNIT CONVERSION. The source reference value is 2.7, which is",
         "serum albumin in g/dL -- the US convention, consistent with a US",
         "study, and the only reading on which 2.7 is a physiological",
@@ -84,18 +84,18 @@ Por_2021_imipenem <- function() {
         "the narrow albumin range actually observed; the review does not",
         "report that range. Recorded in the vignette Errata."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated by the Cockcroft-Gault equation.",
         "The review's abbreviation list glosses 'CLcrCG' with no",
         "normalisation mentioned, so raw mL/min is used here."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 145.83 mL/min -- markedly supranormal, consistent with",
         "the augmented renal clearance characteristic of the hyperdynamic",
         "circulatory state after major burns, which Zhang 2025's Discussion",
@@ -106,14 +106,14 @@ Por_2021_imipenem <- function() {
         "at all (Zhang 2025 Table 3). Stored under the canonical CRCL",
         "column per inst/references/covariate-columns.md."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous venovenous haemofiltration during imipenem therapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous venovenous haemofiltration during imipenem therapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = not receiving CVVH",
-      notes              = paste(
+      notes = paste(
         "Zhang 2025 Table 3 prints two entirely separate clearance",
         "equations for this study rather than a single equation with a",
         "CVVH coefficient:",
@@ -128,7 +128,7 @@ Por_2021_imipenem <- function() {
         "inst/references/covariate-columns.md, whose definition explicitly",
         "names 'continuous venovenous hemofiltration CVVH / CVVHF'."
       ),
-      source_name        = "CVVH"
+      source_name = "CVVH"
     )
   )
 
@@ -136,33 +136,48 @@ Por_2021_imipenem <- function() {
   # Table 3, 'Covariates screened' column). The review prints no
   # coefficient for any of them, so none can be reconstructed.
   covariatesDataExcluded <- list(
-    AGE          = list(description = "Age",                        units = "years",  type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 55 +/- 19.99 years with CVVH, 51.09 +/- 19.03 without (Table 1)."),
-    URINE_VOL_24H = list(description = "Urine output",              units = "mL/24h", type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3)."),
-    TBSA         = list(description = "Total burned body surface area", units = "%",  type = "continuous", notes = "Screened, not retained (Zhang 2025 Table 3), along with the separately-screened total second-degree and total third-degree burn surface areas. Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model() and no coefficient is reported.")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3). Cohort mean 55 +/- 19.99 years with CVVH, 51.09 +/- 19.03 without (Table 1)."
+    ),
+    URINE_VOL_24H = list(
+      description = "Urine output",
+      units = "mL/24h",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3)."
+    ),
+    TBSA = list(
+      description = "Total burned body surface area",
+      units = "%",
+      type = "continuous",
+      notes = "Screened, not retained (Zhang 2025 Table 3), along with the separately-screened total second-degree and total third-degree burn surface areas. Not a registered canonical in inst/references/covariate-columns.md; recorded here as documentation only, since it is never referenced in model() and no coefficient is reported."
+    )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 23L,
-    n_studies        = 1L,
-    age_mean         = "55 +/- 19.99 years with CVVH; 51.09 +/- 19.03 years without CVVH (mean +/- SD)",
-    weight_mean      = "89.6 +/- 22.38 kg with CVVH; 105.06 +/- 28.66 kg without CVVH (mean +/- SD)",
-    sex_female_pct   = 73.9,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 1L,
+    age_mean = "55 +/- 19.99 years with CVVH; 51.09 +/- 19.03 years without CVVH (mean +/- SD)",
+    weight_mean = "89.6 +/- 22.38 kg with CVVH; 105.06 +/- 28.66 kg without CVVH (mean +/- SD)",
+    sex_female_pct = 73.9,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Adult burn patients receiving imipenem-cilastatin, some on",
       "continuous venovenous haemofiltration. This is the only burn cohort",
       "among the 18 studies in the Zhang 2025 review, and the only one in",
       "which women are the majority (17 of 23)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "250 mg, 500 mg or 1000 mg imipenem intravenously every 6 h (Zhang",
       "2025 Supplementary Table S1). The infusion duration is not reported",
       "by the review."
     ),
-    regions          = "United States of America",
+    regions = "United States of America",
     n_concentrations = 81L,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 12); 23 patients, 81",
       "samples, sex split 6 male / 17 female. Blood was sampled at trough",
       "and 0.5-8 h after administration, and assayed by HPLC-UV (Zhang",

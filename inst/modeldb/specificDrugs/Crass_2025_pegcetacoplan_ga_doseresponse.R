@@ -34,76 +34,76 @@ Crass_2025_pegcetacoplan_ga_doseresponse <- function() {
   vignette <- "Crass_2025_pegcetacoplan_geographic_atrophy"
 
   units <- list(
-    time          = "day",
-    dosing        = "(none; the pegcetacoplan regimen enters as the REGI_QM / REGI_Q2M covariate pair, not as a dose record)",
+    time = "day",
+    dosing = "(none; the pegcetacoplan regimen enters as the REGI_QM / REGI_Q2M covariate pair, not as a dose record)",
     concentration = "(GA lesion area, mm^2; observations lesionStudy and lesionFellow)"
   )
 
   covariateData <- list(
     DIS_GA_UNILATERAL = list(
-      description        = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA. Time-fixed per subject. Prespecified structural covariate on both the study-eye initial lesion area and the study-eye time slope.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unilateral geographic atrophy at baseline (GA present in the study eye only); 0 = bilateral GA. Time-fixed per subject. Prespecified structural covariate on both the study-eye initial lesion area and the study-eye time slope.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (bilateral GA). 81% of the pooled population had bilateral disease at baseline (paper Table 1).",
-      notes              = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study. The covariate does not act on either fellow-eye parameter.",
-      source_name        = "UNILATGA"
+      notes = "Fellow-eye observations were excluded by the authors for patients with unilateral GA at baseline who converted to bilateral disease during the study. The covariate does not act on either fellow-eye parameter.",
+      source_name = "UNILATGA"
     ),
     DIS_GA_NONSUBFOVEAL = list(
-      description        = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the study-eye GA lesion does not involve the fovea (nonsubfoveal); 0 = subfoveal involvement. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subfoveal involvement). 63% of study eyes had subfoveal lesions at baseline (paper Table 1).",
-      notes              = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only.",
-      source_name        = "NOFOV"
+      notes = "Encoded in the source paper's direction (NOFOV = 1 for the nonsubfoveal group) so the published positive coefficient applies directly. Acts on the study-eye time slope only.",
+      source_name = "NOFOV"
     ),
     DIS_GA_UNIFOCAL = list(
-      description        = "1 = unifocal study-eye GA lesion; 0 = multifocal lesion. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = unifocal study-eye GA lesion; 0 = multifocal lesion. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (multifocal). 70% of study eyes were multifocal at baseline (paper Table 1).",
-      notes              = "Acts on the study-eye time slope only.",
-      source_name        = "UNIFOC"
+      notes = "Acts on the study-eye time slope only.",
+      source_name = "UNIFOC"
     ),
     DRUSEN_GT20 = list(
-      description        = "1 = more than 20 intermediate or large drusen groups (diameter >= 63 micrometres, AREDS simplified severity scale) in the study eye at baseline; 0 = 20 or fewer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = more than 20 intermediate or large drusen groups (diameter >= 63 micrometres, AREDS simplified severity scale) in the study eye at baseline; 0 = 20 or fewer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (20 or fewer intermediate or large drusen groups). 45% of study eyes had more than 20 at baseline (paper Table 1).",
-      notes              = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count. Acts on the study-eye time slope only.",
-      source_name        = "MOREDR"
+      notes = "The source paper supplies the already-dichotomised indicator rather than the raw drusen-group count. Acts on the study-eye time slope only.",
+      source_name = "MOREDR"
     ),
     REGI_QM = list(
-      description        = "1 = study eye assigned to intravitreal pegcetacoplan 15 mg once monthly; 0 = any other assignment (pegcetacoplan every other month, or sham). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = study eye assigned to intravitreal pegcetacoplan 15 mg once monthly; 0 = any other assignment (pegcetacoplan every other month, or sham). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on the monthly pegcetacoplan regimen). The model's reference state is REGI_QM = REGI_Q2M = 0, i.e. sham treatment. 505 of 1501 patients received pegcetacoplan monthly.",
-      notes              = "REGI_QM and REGI_Q2M are mutually exclusive: at most one may be 1 for a given subject, and both are 0 for sham-treated study eyes and for all fellow eyes. Set both to 0 to recover the untreated disease-progression trajectory.",
-      source_name        = "(per-arm treatment indicator; the source paper does not name the NONMEM column)"
+      notes = "REGI_QM and REGI_Q2M are mutually exclusive: at most one may be 1 for a given subject, and both are 0 for sham-treated study eyes and for all fellow eyes. Set both to 0 to recover the untreated disease-progression trajectory.",
+      source_name = "(per-arm treatment indicator; the source paper does not name the NONMEM column)"
     ),
     REGI_Q2M = list(
-      description        = "1 = study eye assigned to intravitreal pegcetacoplan 15 mg every other month (EOM); 0 = any other assignment (pegcetacoplan monthly, or sham). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = study eye assigned to intravitreal pegcetacoplan 15 mg every other month (EOM); 0 = any other assignment (pegcetacoplan monthly, or sham). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on the every-other-month pegcetacoplan regimen). 498 of 1501 patients received pegcetacoplan EOM.",
-      notes              = "Sibling of REGI_QM under the REGI_* regimen-indicator family. Mutually exclusive with REGI_QM; both 0 gives the sham reference.",
-      source_name        = "(per-arm treatment indicator; the source paper does not name the NONMEM column)"
+      notes = "Sibling of REGI_QM under the REGI_* regimen-indicator family. Mutually exclusive with REGI_QM; both 0 gives the sham reference.",
+      source_name = "(per-arm treatment indicator; the source paper does not name the NONMEM column)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1501L,
-    n_studies      = 3L,
-    age_range      = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
-    age_median     = "79 years",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 1501L,
+    n_studies = 3L,
+    age_range = "60-100 years (pooled); FILLY enrolled patients aged >= 50 years, OAKS and DERBY >= 60 years",
+    age_median = "79 years",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 62,
     race_ethnicity = c(White = 94, Black = 0.4, Asian = 0.5, Other = 0.2, Missing = 5),
-    disease_state  = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 45% with more than 20 intermediate or large drusen groups.",
-    dose_range     = "Intravitreal pegcetacoplan 15 mg (0.1 mL of 150 mg/mL) monthly (n = 505) or every other month (n = 498), or sham monthly / every other month (n = 498), for up to 24 months.",
-    regions        = "(not reported in Crass 2025)",
-    notes          = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses. The dose-response model was selected over an Emax alternative (Data S1 Table S3 run 3) because EC50 could not be precisely estimated (95% CI 0.000878 to 261000), and over a linear-in-concentration alternative (run 6, dOFV -68.9 vs -81.6 for the dose-response step function)."
+    disease_state = "Geographic atrophy secondary to age-related macular degeneration. Baseline total GA lesion area 2.5-17.5 mm^2 in the study eye with at least one lesion >= 1.25 mm^2 if multifocal; best-corrected visual acuity 24 ETDRS letters or better. 81% bilateral GA, 63% subfoveal, 70% multifocal, 45% with more than 20 intermediate or large drusen groups.",
+    dose_range = "Intravitreal pegcetacoplan 15 mg (0.1 mL of 150 mg/mL) monthly (n = 505) or every other month (n = 498), or sham monthly / every other month (n = 498), for up to 24 months.",
+    regions = "(not reported in Crass 2025)",
+    notes = "Pooled from the 12-month phase II FILLY trial (NCT02503332, n = 246) and the 24-month phase III OAKS (NCT03525613, n = 636) and DERBY (NCT03525600, n = 620) trials; paper Table 1 reports n = 1502 including one patient without quantifiable PK samples who was excluded from the PK/PD modelling analyses. The dose-response model was selected over an Emax alternative (Data S1 Table S3 run 3) because EC50 could not be precisely estimated (95% CI 0.000878 to 261000), and over a linear-in-concentration alternative (run 6, dOFV -68.9 vs -81.6 for the dose-response step function)."
   )
 
   ini({

@@ -23,7 +23,8 @@ Tamura_2023_remdesivir <- function() {
     "68 mL/min/1.73 m^2). Correlated between-subject variability was",
     "estimated on GS-441524 apparent clearance and apparent volume; residual",
     "error is proportional. The paper found no relationship between",
-    "GS-441524 exposure and either recovery rate or transaminase elevation.")
+    "GS-441524 exposure and either recovery rate or transaminase elevation."
+  )
   reference <- "Tamura R, Irie K, Nakagawa A, Muroi H, Eto M, Ikesue H, et al. Population pharmacokinetics and exposure-clinical outcome relationship of remdesivir major metabolite GS-441524 in patients with moderate and severe COVID-19. CPT Pharmacometrics Syst Pharmacol. 2023;12(4):513-521. doi:10.1002/psp4.12936"
   vignette <- "Tamura_2023_remdesivir"
 
@@ -44,113 +45,113 @@ Tamura_2023_remdesivir <- function() {
   # stream in the Supporting Information (COMP=(CENTRAL), COMP=(METCENTRAL);
   # S1 = VP, S2 = VM).
   compartmentData <- list(
-    central          = list(analyte = "remdesivir", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "remdesivir", units = "ug", specimen = "plasma", verified = TRUE),
     central_gs441524 = list(analyte = "GS-441524", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalised.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalised.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tamura 2023 Methods 'Patients' lists eGFR among the patient characteristics collected; the paper does not name the estimating equation, and the cohort is Japanese, so the Japanese Society of Nephrology eGFR equation is the likely but unstated source. Enters as a power effect on GS-441524 apparent clearance only, normalised to the study-population median of 68 mL/min/1.73 m^2, per the final-model equation printed in Results 'Covariate analysis': CLm/Fm (L/h) = 11.0 * (eGFR / 68)^0.745. In the source NONMEM control stream the column is named GFR and is time-fixed (one value per subject in the dataset sample). Observed range 33-113 mL/min/1.73 m^2 (Table 1), so the model is uninformed outside that interval; the paper's own Monte Carlo simulations exercise it only at 30, 68 and 113. Height and age also passed forward inclusion on CLm/Fm but were dropped in backward elimination.",
-      source_name        = "GFR"
+      notes = "Tamura 2023 Methods 'Patients' lists eGFR among the patient characteristics collected; the paper does not name the estimating equation, and the cohort is Japanese, so the Japanese Society of Nephrology eGFR equation is the likely but unstated source. Enters as a power effect on GS-441524 apparent clearance only, normalised to the study-population median of 68 mL/min/1.73 m^2, per the final-model equation printed in Results 'Covariate analysis': CLm/Fm (L/h) = 11.0 * (eGFR / 68)^0.745. In the source NONMEM control stream the column is named GFR and is time-fixed (one value per subject in the dataset sample). Observed range 33-113 mL/min/1.73 m^2 (Table 1), so the model is uninformed outside that interval; the paper's own Monte Carlo simulations exercise it only at 30, 68 and 113. Height and age also passed forward inclusion on CLm/Fm but were dropped in backward elimination.",
+      source_name = "GFR"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Tamura 2023 Methods 'Covariate analysis') but not retained in the final model; no point estimate is reported."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Tamura 2023 Methods 'Covariate analysis') but not retained in the final model; no point estimate is reported."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Passed forward inclusion (p < 0.05) on CLm/Fm but was removed in backward elimination (p < 0.01); no point estimate is reported (Tamura 2023 Results 'Covariate analysis')."
+      units = "years",
+      type = "continuous",
+      notes = "Passed forward inclusion (p < 0.05) on CLm/Fm but was removed in backward elimination (p < 0.01); no point estimate is reported (Tamura 2023 Results 'Covariate analysis')."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Reported as 'BH' in Results 'Covariate analysis'. Passed forward inclusion on CLm/Fm but was removed in backward elimination; no point estimate is reported."
+      units = "cm",
+      type = "continuous",
+      notes = "Reported as 'BH' in Results 'Covariate analysis'. Passed forward inclusion on CLm/Fm but was removed in backward elimination; no point estimate is reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened but not retained (Tamura 2023 Methods 'Covariate analysis')."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened but not retained (Tamura 2023 Methods 'Covariate analysis')."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 2.8 g/dL (range 1-4.2), Table 1."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 2.8 g/dL (range 1-4.2), Table 1."
     ),
     BILI = list(
       description = "Total serum bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 0.5 mg/dL (range 0.2-2.9), Table 1."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 0.5 mg/dL (range 0.2-2.9), Table 1."
     ),
     AST = list(
       description = "Serum aspartate aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 45 IU/L (range 14-276), Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 45 IU/L (range 14-276), Table 1."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 36 IU/L (range 9-130), Table 1."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 36 IU/L (range 9-130), Table 1."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained; renal function entered the final model through eGFR (CRCL) instead."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained; renal function entered the final model through eGFR (CRCL) instead."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained (Tamura 2023 Methods 'Covariate analysis')."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened but not retained (Tamura 2023 Methods 'Covariate analysis')."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 1.74 m^2 (range 1.36-2.03), Abstract and Results."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 1.74 m^2 (range 1.36-2.03), Abstract and Results."
     ),
     WHO_ORDINAL = list(
       description = "WHO clinical-status ordinal score (1-7)",
-      units       = "(ordinal)",
-      type        = "categorical",
-      notes       = "Screened as 'clinical status' but not retained. Cohort distribution: score 5 in 17 patients (43.6%), score 6 in 7 (17.9%), score 7 in 15 (38.5%), Table 1. Not a registered canonical covariate column; listed here as documentation of the covariate screen only."
+      units = "(ordinal)",
+      type = "categorical",
+      notes = "Screened as 'clinical status' but not retained. Cohort distribution: score 5 in 17 patients (43.6%), score 6 in 7 (17.9%), score 7 in 15 (38.5%), Table 1. Not a registered canonical covariate column; listed here as documentation of the covariate screen only."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
     n_observations = "102 serum samples across the two analytes in 39 patients (Abstract; Results 'Base model'). Only the GS-441524 concentrations entered the population PK fit -- every remdesivir sample drawn more than 5 h after the infusion was below the 10 ng/mL limit of quantification, so the remdesivir parameters were fixed rather than estimated (Methods 'Pharmacokinetic analysis').",
-    age_range      = "42-85 years",
-    age_median     = "70 years",
-    weight_range   = "41.8-84 kg",
-    weight_median  = "65.2 kg",
+    age_range = "42-85 years",
+    age_median = "70 years",
+    weight_range = "41.8-84 kg",
+    weight_median = "65.2 kg",
     sex_female_pct = 25.6,
     race_ethnicity = c(Japanese = 100),
-    disease_state  = "Moderate-to-severe COVID-19 confirmed by real-time PCR, all hospitalised and all requiring oxygen: WHO ordinal score 5 (requiring oxygen) in 17 patients (43.6%), score 6 (high-flow oxygen or non-invasive ventilation) in 7 (17.9%) and score 7 (invasive ventilation and/or ECMO) in 15 (38.5%). Recovery ratio at day 28 was 56.1% and mortality 7.7%.",
+    disease_state = "Moderate-to-severe COVID-19 confirmed by real-time PCR, all hospitalised and all requiring oxygen: WHO ordinal score 5 (requiring oxygen) in 17 patients (43.6%), score 6 (high-flow oxygen or non-invasive ventilation) in 7 (17.9%) and score 7 (invasive ventilation and/or ECMO) in 15 (38.5%). Recovery ratio at day 28 was 56.1% and mortality 7.7%.",
     renal_function = "Median eGFR 68 mL/min/1.73 m^2 (range 33-113): 4 patients (10%) at 30-44, 10 (25%) at 45-59, 19 (49%) at 60-89 and 6 (15%) at 90 or above (Table 1). No patient received renal replacement therapy in the analysed cohort.",
     hepatic_function = "Median AST 45 IU/L (range 14-276), ALT 36 IU/L (9-130), total bilirubin 0.5 mg/dL (0.2-2.9), albumin 2.8 g/dL (1-4.2) (Table 1).",
-    dose_range     = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily on days 2-5, each infused over 60 min. One patient discontinued on day 4.",
-    regions        = "Single centre, Kobe City Medical Center General Hospital, Kobe, Japan; 16 May 2020 to 31 March 2021.",
-    notes          = "Retrospective observational study using residual serum from routine arterial blood-gas testing, so sampling was opportunistic rather than protocol-scheduled. Concentrations were measured by LC-MS/MS over a 10-2000 ng/mL calibration range (LOQ 10 ng/mL). Baseline demographics are in Tamura 2023 Table 1. Estimation was FOCE-I in NONMEM 7.4.1 with ADVAN13; the final model was checked by a 1000-resample nonparametric bootstrap (99.2% success) and a 1000-replicate prediction-corrected VPC using PsN 4.9.0. Note that samples were ARTERIAL, which the authors flag as a possible cause of the positive bias in the remdesivir goodness-of-fit plot immediately after dosing (Discussion, limitations)."
+    dose_range = "Licensed regimen only: remdesivir 200 mg intravenously on day 1 followed by 100 mg once daily on days 2-5, each infused over 60 min. One patient discontinued on day 4.",
+    regions = "Single centre, Kobe City Medical Center General Hospital, Kobe, Japan; 16 May 2020 to 31 March 2021.",
+    notes = "Retrospective observational study using residual serum from routine arterial blood-gas testing, so sampling was opportunistic rather than protocol-scheduled. Concentrations were measured by LC-MS/MS over a 10-2000 ng/mL calibration range (LOQ 10 ng/mL). Baseline demographics are in Tamura 2023 Table 1. Estimation was FOCE-I in NONMEM 7.4.1 with ADVAN13; the final model was checked by a 1000-resample nonparametric bootstrap (99.2% success) and a 1000-replicate prediction-corrected VPC using PsN 4.9.0. Note that samples were ARTERIAL, which the authors flag as a possible cause of the positive bias in the remdesivir goodness-of-fit plot immediately after dosing (Discussion, limitations)."
   )
 
   ini({

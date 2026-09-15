@@ -1,53 +1,53 @@
 Shekar_2014_meropenem <- function() {
   description <- "Two-compartment IV population PK model for meropenem in critically ill adult patients on extracorporeal membrane oxygenation (ECMO) and historical critically ill control patients with sepsis, with a piecewise covariate on clearance that switches between a fixed RRT-cohort CL and a Cockcroft-Gault-CrCL-driven non-RRT CL (Shekar 2014)"
-  reference   <- "Shekar K, Fraser JF, Taccone FS, Welch S, Wallis SC, Mullany DV, Lipman J, Roberts JA; ASAP ECMO Study Investigators. The combined effects of extracorporeal membrane oxygenation and renal replacement therapy on meropenem pharmacokinetics: a matched cohort study. Crit Care. 2014;18(6):565. doi:10.1186/s13054-014-0565-2"
-  vignette    <- "Shekar_2014_meropenem"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Shekar K, Fraser JF, Taccone FS, Welch S, Wallis SC, Mullany DV, Lipman J, Roberts JA; ASAP ECMO Study Investigators. The combined effects of extracorporeal membrane oxygenation and renal replacement therapy on meropenem pharmacokinetics: a matched cohort study. Crit Care. 2014;18(6):565. doi:10.1186/s13054-014-0565-2"
+  vignette <- "Shekar_2014_meropenem"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CrCL. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin). Cockcroft-Gault CrCL is conventionally not defined for RRT-dependent subjects; Shekar 2014 reports CrCL only for non-RRT subjects (Table 1: 106 mL/min IQR 98-127 in controls, 108 mL/min IQR 65-183 in ECMO) and the model's CL formula switches off the CrCL-driven term when RRT_CRRT_STATUS = 1. Inside model() the column is converted from mL/min to L/h via the factor 60/1000 = 0.06 to match the L/h units of the structural CL parameter; the published clearance coefficient (CL_CRCL = 1.89) is then dimensionless.",
-      source_name        = "CrCL"
+      notes = "Source column CrCL. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre 2010 amikacin). Cockcroft-Gault CrCL is conventionally not defined for RRT-dependent subjects; Shekar 2014 reports CrCL only for non-RRT subjects (Table 1: 106 mL/min IQR 98-127 in controls, 108 mL/min IQR 65-183 in ECMO) and the model's CL formula switches off the CrCL-driven term when RRT_CRRT_STATUS = 1. Inside model() the column is converted from mL/min to L/h via the factor 60/1000 = 0.06 to match the L/h units of the structural CL parameter; the published clearance coefficient (CL_CRCL = 1.89) is then dimensionless.",
+      source_name = "CrCL"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Subject-level binary indicator for continuous or extended-session renal replacement therapy active during the PK sampling period",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject-level binary indicator for continuous or extended-session renal replacement therapy active during the PK sampling period",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from HEMODIALYSIS = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
-      source_name        = "RRT"
+      notes = "Source column RRT. 1 = subject was on continuous venovenous hemofiltration (CVVHF, control cohort) or extended daily diafiltration (EDD-f, ECMO cohort); 0 = no RRT. The Shekar 2014 cohort mixes CVVH and EDD-f and the published model treats them identically as a single binary covariate. Stored under the canonical RRT_CRRT_STATUS column per inst/references/covariate-columns.md (distinct from HEMODIAL = intermittent-hemodialysis-only and from HEMODIALYSIS = per-time-point session gate). 5/11 ECMO and 5/10 controls were on RRT. Treated as time-fixed at the subject level (all RRT patients were continuously / daily on RRT during sampling; the indicator does not resolve session timing).",
+      source_name = "RRT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    age_range      = "16-66 years (Table 1 IQRs)",
-    age_median     = "approx 47 years (medians 29-56 across the four subgroups)",
-    weight_range   = "60-100 kg (Table 1 IQRs)",
-    weight_median  = "70 kg",
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    age_range = "16-66 years (Table 1 IQRs)",
+    age_median = "approx 47 years (medians 29-56 across the four subgroups)",
+    weight_range = "60-100 kg (Table 1 IQRs)",
+    weight_median = "70 kg",
     sex_female_pct = 52,
     race_ethnicity = "Not reported (single-centre Australian university-affiliated tertiary referral ICU)",
-    disease_state  = "Critically ill adults requiring intravenous meropenem. ECMO arm (n = 11): venovenous (n = 6) or peripheral venoarterial (n = 5) ECMO for severe cardiorespiratory failure; indications included pneumonia / septic shock (n = 7), cardiogenic shock (n = 2), sickle-cell crisis (n = 1), and primary graft dysfunction post lung transplant (n = 1); 5 of 11 ECMO patients were also on EDD-f RRT. Control arm (n = 10): historical critically ill adults with sepsis (Roberts 2009 [reference 15] without renal dysfunction; Bilgrami 2010 [reference 14] on high-volume CVVHF); 5 of 10 controls were on CVVHF.",
-    dose_range     = "Meropenem IV bolus q8h. ECMO: 1 g q8h (n = 8, with 1 g loading), 1 g q8h (n = 2, with 1.5 g loading), 1 g q8h (n = 1, with 2 g loading). Controls without renal dysfunction (Roberts 2009): 1.5 g first dose then 1 g q8h. Controls on CVVHF (Bilgrami 2010): 1 g q8h. None of the RRT-dependent patients received post-RRT supplemental doses.",
-    regions        = "Australia (single-centre 650-bed university-affiliated tertiary referral hospital, 27-bed mixed ICU, predominantly cardiothoracic cohort; ethics approval HREC/11/QPCH/121 from Prince Charles Hospital, Brisbane QLD)",
-    sofa_score     = "Median Day 1 SOFA: 3 (3-4) controls no RRT; 15 (14-16) controls RRT; 9 (7-14) ECMO no RRT; 16 (13-17) ECMO RRT (Table 1)",
+    disease_state = "Critically ill adults requiring intravenous meropenem. ECMO arm (n = 11): venovenous (n = 6) or peripheral venoarterial (n = 5) ECMO for severe cardiorespiratory failure; indications included pneumonia / septic shock (n = 7), cardiogenic shock (n = 2), sickle-cell crisis (n = 1), and primary graft dysfunction post lung transplant (n = 1); 5 of 11 ECMO patients were also on EDD-f RRT. Control arm (n = 10): historical critically ill adults with sepsis (Roberts 2009 [reference 15] without renal dysfunction; Bilgrami 2010 [reference 14] on high-volume CVVHF); 5 of 10 controls were on CVVHF.",
+    dose_range = "Meropenem IV bolus q8h. ECMO: 1 g q8h (n = 8, with 1 g loading), 1 g q8h (n = 2, with 1.5 g loading), 1 g q8h (n = 1, with 2 g loading). Controls without renal dysfunction (Roberts 2009): 1.5 g first dose then 1 g q8h. Controls on CVVHF (Bilgrami 2010): 1 g q8h. None of the RRT-dependent patients received post-RRT supplemental doses.",
+    regions = "Australia (single-centre 650-bed university-affiliated tertiary referral hospital, 27-bed mixed ICU, predominantly cardiothoracic cohort; ethics approval HREC/11/QPCH/121 from Prince Charles Hospital, Brisbane QLD)",
+    sofa_score = "Median Day 1 SOFA: 3 (3-4) controls no RRT; 15 (14-16) controls RRT; 9 (7-14) ECMO no RRT; 16 (13-17) ECMO RRT (Table 1)",
     renal_function = "Cockcroft-Gault CrCL median 106 mL/min (98-127) in controls without RRT and 108 mL/min (65-183) in ECMO without RRT (Table 1). RRT-dependent subjects: CrCL not defined / not reported.",
     rrt_modalities = "Controls RRT: continuous venovenous hemofiltration (CVVHF) using Nephral ST500 AN69 hollow-fibre filters (surface area 2.15 m^2), ultrafiltrate rate 66-100 mL/min, target blood flow 250 mL/min, initiated at least 8 hours prior to sampling. ECMO RRT: extended daily diafiltration (EDD-f) using Fresenius 4008s ARrT plus haemodialysis with AV600S filters connected to the post-oxygenator site of the ECMO circuit, blood flow 200-300 mL/min, dialysate flow 200 mL/min, 6-8 hour sessions.",
-    notes          = "Baseline demographics per Shekar 2014 Table 1 (medians with IQR). Median time to PK sampling in ECMO patients was 2 days (range 1-7). The 10 historical controls are drawn from Roberts 2009 (n = 5 without renal dysfunction; J Antimicrob Chemother 64:142-150) and Bilgrami 2010 (n = 5 on high-volume CVVHF; Antimicrob Agents Chemother 54:2974-2978). Sample handling: HPLC with UV detection at 304 nm, ertapenem internal standard, LLOQ 1.0 mg/L."
+    notes = "Baseline demographics per Shekar 2014 Table 1 (medians with IQR). Median time to PK sampling in ECMO patients was 2 days (range 1-7). The 10 historical controls are drawn from Roberts 2009 (n = 5 without renal dysfunction; J Antimicrob Chemother 64:142-150) and Bilgrami 2010 (n = 5 on high-volume CVVHF; Antimicrob Agents Chemother 54:2974-2978). Sample handling: HPLC with UV detection at 304 nm, ertapenem internal standard, LLOQ 1.0 mg/L."
   )
 
   ini({

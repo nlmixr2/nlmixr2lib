@@ -18,55 +18,55 @@ Rose_2016_follitropin_delta <- function() {
     sep = " "
   )
   vignette <- "Rose_2016_follitropin_delta"
-  units    <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "follitropin delta", units = "ug", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "follitropin delta", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL/F (exponent 0.75) and V/F (exponent 1)",
         "with reference weight 65 kg (Rose 2016 Section 3, typical-value",
         "definition). Body-weight range in the trial was 51.6-90.0 kg",
         "(Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 27L,
-    n_studies      = 1L,
-    age_range      = "21-35 years (Table 1, range across all five dose groups)",
-    weight_range   = "51.6-90.0 kg (Table 1, range across all five dose groups)",
-    weight_median  = "65 kg (reference weight used by the paper for the typical-value parameters)",
+    species = "human",
+    n_subjects = 27L,
+    n_studies = 1L,
+    age_range = "21-35 years (Table 1, range across all five dose groups)",
+    weight_range = "51.6-90.0 kg (Table 1, range across all five dose groups)",
+    weight_median = "65 kg (reference weight used by the paper for the typical-value parameters)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy pituitary-suppressed female volunteers. All subjects switched",
       "to a single high-dose combined oral contraceptive (OGESTREL 0.5/50,",
       "ethinyl estradiol 50 ug + norgestrel 0.5 mg) 14 days prior to dosing",
       "to suppress endogenous FSH. BMI 18-29 kg/m^2; menstrual cycle",
       "24-35 days; no history of ovarian dysfunction."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single subcutaneous abdominal injection at 37.5, 75, 150, 225, or",
       "450 IU (converted to 2.2, 4.4, 8.8, 13.1, or 26.3 ug using the",
       "drug's specific activity; Section 2.2)."
     ),
-    regions        = "Caucasian study (Olsson et al. 2014 reference 8)",
-    notes          = paste(
+    regions = "Caucasian study (Olsson et al. 2014 reference 8)",
+    notes = paste(
       "First-in-human single ascending dose trial of FE 999049 (INN",
       "follitropin delta, commercial: Rekovelle). The analysis pooled the",
       "5 active dose groups; 27 of the original 40 enrolled subjects were",

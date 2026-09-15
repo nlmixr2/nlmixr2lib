@@ -25,7 +25,8 @@ Facius_2018_roflumilast <- function() {
     "in the paper's downstream PK/adverse-event and PK/time-to-event",
     "models, is a per-dosing-interval summary derived from the predicted",
     "average plasma concentrations and is not embedded in the ODE",
-    "system; see the vignette for the derivation.")
+    "system; see the vignette for the derivation."
+  )
   reference <- paste(
     "Facius A, Marostica E, Gardiner P, Watz H, Lahu G.",
     "Pharmacokinetic and Pharmacodynamic Modelling to Characterize the",
@@ -35,7 +36,8 @@ Facius_2018_roflumilast <- function() {
     "doi:10.1007/s40262-018-0671-4.",
     "Structural disposition parameters are fixed from Lahu 2010 (the",
     "Facius 2018 base model); see modellib('Lahu_2010_roflumilast') for an",
-    "independent extraction of the upstream paper.")
+    "independent extraction of the upstream paper."
+  )
   vignette <- "Facius_2018_roflumilast"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
@@ -44,83 +46,88 @@ Facius_2018_roflumilast <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "roflumilast", units = "ug", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
-    depot_noxide   = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "roflumilast", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    depot_noxide = list(
+      analyte = "roflumilast N-oxide",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central_noxide = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE)
+    peripheral2 = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline (constant within an individual in the source dataset).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline (constant within an individual in the source dataset).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling (WT/70)^1.22 on all volume terms (V2, V4, V3, V6) per Facius 2018 Online Resource Table S2 footnote e. Additional power scaling (WT/70)^0.273 on N-oxide CL. Reference weight is 70 kg (combined OPTIMIZE+REACT mean is 75.3 +/- 17.7 kg per Table 1).",
-      source_name        = "WT"
+      notes = "Allometric power scaling (WT/70)^1.22 on all volume terms (V2, V4, V3, V6) per Facius 2018 Online Resource Table S2 footnote e. Additional power scaling (WT/70)^0.273 on N-oxide CL. Reference weight is 70 kg (combined OPTIMIZE+REACT mean is 75.3 +/- 17.7 kg per Table 1).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline (constant within an individual in the source dataset).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline (constant within an individual in the source dataset).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (AGE/60)^-0.611 on parent CL and (AGE/60)^-0.531 on N-oxide CL per Facius 2018 Online Resource Table S2 footnote g. Reference age is 60 years (combined OPTIMIZE+REACT mean is 64.4 +/- 8.2 years per Table 1; note this differs from the 40-year reference used by Lahu 2010 on the broader phase I-III dataset).",
-      source_name        = "Age"
+      notes = "Power scaling (AGE/60)^-0.611 on parent CL and (AGE/60)^-0.531 on N-oxide CL per Facius 2018 Online Resource Table S2 footnote g. Reference age is 60 years (combined OPTIMIZE+REACT mean is 64.4 +/- 8.2 years per Table 1; note this differs from the 40-year reference used by Lahu 2010 on the broader phase I-III dataset).",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male).",
-      notes              = "Facius 2018 Online Resource Table S2 footnote h codes the source covariate as SEX = 1 for male and 0 for female, with effect on N-oxide CL = -0.112 (i.e., males have 11.2% lower N-oxide CL than females). The canonical SEXF column inverts this; the model() block applies the source coefficient via the male indicator (1 - SEXF). Sex was not retained on parent CL or on any volume term.",
-      source_name        = "Sex"
+      notes = "Facius 2018 Online Resource Table S2 footnote h codes the source covariate as SEX = 1 for male and 0 for female, with effect on N-oxide CL = -0.112 (i.e., males have 11.2% lower N-oxide CL than females). The canonical SEXF column inverts this; the model() block applies the source coefficient via the male indicator (1 - SEXF). Sex was not retained on parent CL or on any volume term.",
+      source_name = "Sex"
     ),
     SMOKE = list(
-      description        = "Current-smoker indicator, 1 = current smoker at baseline, 0 = former/never smoker.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker indicator, 1 = current smoker at baseline, 0 = former/never smoker.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-current-smoker).",
-      notes              = "Facius 2018 Online Resource Table S2 footnote f: SMK = 1 for current smokers and 0 for former/never smokers; linear additive effects +15.1% on parent CL and +15.1% on N-oxide CL. Mechanism is CYP1A2 induction in smokers (main text Discussion).",
-      source_name        = "Smoking"
+      notes = "Facius 2018 Online Resource Table S2 footnote f: SMK = 1 for current smokers and 0 for former/never smokers; linear additive effects +15.1% on parent CL and +15.1% on N-oxide CL. Mechanism is CYP1A2 induction in smokers (main text Discussion).",
+      source_name = "Smoking"
     ),
     DIS_COPD = list(
-      description        = "Chronic obstructive pulmonary disease patient indicator, 1 = phase II/III COPD patient, 0 = phase I healthy volunteer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic obstructive pulmonary disease patient indicator, 1 = phase II/III COPD patient, 0 = phase I healthy volunteer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer; the implicit reference category from the Lahu 2010 base-model fit on phase I data).",
-      notes              = "Dichotomous phase II-III patient effects re-estimated on the combined OPTIMIZE+REACT dataset (Facius 2018 Online Resource Table S2): -73.3% on KA (so KA in patients is 26.7% of the healthy-volunteer KA), -55.2% on parent CL, -24.4% on N-oxide CL, -20.7% on N-oxide V3. No phase II-III effect on parent volumes (V2, V4), N-oxide peripheral V6, parent or N-oxide Q, or on F5 / KAm-to-KAp ratio. The OPTIMIZE+REACT studies enrol only severe-COPD patients, so the model's most useful operating point is DIS_COPD = 1; DIS_COPD = 0 returns the phase I healthy-volunteer reference predictions.",
-      source_name        = "Phase"
+      notes = "Dichotomous phase II-III patient effects re-estimated on the combined OPTIMIZE+REACT dataset (Facius 2018 Online Resource Table S2): -73.3% on KA (so KA in patients is 26.7% of the healthy-volunteer KA), -55.2% on parent CL, -24.4% on N-oxide CL, -20.7% on N-oxide V3. No phase II-III effect on parent volumes (V2, V4), N-oxide peripheral V6, parent or N-oxide Q, or on F5 / KAm-to-KAp ratio. The OPTIMIZE+REACT studies enrol only severe-COPD patients, so the model's most useful operating point is DIS_COPD = 1; DIS_COPD = 0 returns the phase I healthy-volunteer reference predictions.",
+      source_name = "Phase"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_ASIAN = list(
-      description        = "Asian-vs-other race indicator, tested in the Facius 2018 formal covariate analysis but not retained.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian-vs-other race indicator, tested in the Facius 2018 formal covariate analysis but not retained.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian).",
-      notes              = "Facius 2018 Online Resource Methods Section 2 page 3: 'Due to the low number of patients in the race categories different from Asian and White, the covariate race was tested as a binary relation (i.e. RASIA = 1 if race = Asian, RASIA = 0 if race different from Asian).' The covariate was screened on parent and N-oxide clearance (the two parameters with retained BSV) under the standard forward-inclusion / backward-deletion procedure but was not retained in the final model and is not present in Online Resource Table S2. Documented here for provenance only; the model does not use this column.",
-      source_name        = "RASIA"
+      notes = "Facius 2018 Online Resource Methods Section 2 page 3: 'Due to the low number of patients in the race categories different from Asian and White, the covariate race was tested as a binary relation (i.e. RASIA = 1 if race = Asian, RASIA = 0 if race different from Asian).' The covariate was screened on parent and N-oxide clearance (the two parameters with retained BSV) under the standard forward-inclusion / backward-deletion procedure but was not retained in the final model and is not present in Online Resource Table S2. Documented here for provenance only; the model does not use this column.",
+      source_name = "RASIA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1699L,
-    n_studies      = 2L,
-    age_range      = "40-92 years",
-    age_median     = "64.0 years",
-    weight_range   = "33.5-160 kg",
-    weight_median  = "74.0 kg",
+    species = "human",
+    n_subjects = 1699L,
+    n_studies = 2L,
+    age_range = "40-92 years",
+    age_median = "64.0 years",
+    weight_range = "33.5-160 kg",
+    weight_median = "74.0 kg",
     sex_female_pct = 25.0,
     race_ethnicity = c(White = 92.9, Asian = 5.3, Black = 0.8, Other = 0.6, Hispanic = 0.4),
-    disease_state  = "severe-to-very-severe chronic obstructive pulmonary disease (COPD) with chronic productive cough, current or former smokers, post-bronchodilator FEV1 <= 50% of predicted, FEV1/FVC < 70%. OPTIMIZE patients (n = 1238) received background standard-of-care LABA/ICS +/- LAMA +/- theophylline; REACT patients (n = 461) received background ICS/LABA +/- LAMA.",
-    dose_range     = "Oral roflumilast 250 microgram (lower up-titration arm), 500 microgram every other day (alternate up-titration arm), or 500 microgram once daily (full-dose arm) for the initial 4-week up-titration phase in OPTIMIZE; 500 microgram once daily for 8 weeks of maintenance in OPTIMIZE and for 52 weeks in REACT. The OPTIMIZE down-titration sub-cohort received 250 microgram once daily after main-study discontinuation. The model file uses microgram (ug) as the dosing unit and ug/L as the concentration unit (numerically equivalent to ng/mL).",
-    regions        = "Multinational; OPTIMIZE (NCT02165826) and REACT (NCT01329029) phase III studies.",
+    disease_state = "severe-to-very-severe chronic obstructive pulmonary disease (COPD) with chronic productive cough, current or former smokers, post-bronchodilator FEV1 <= 50% of predicted, FEV1/FVC < 70%. OPTIMIZE patients (n = 1238) received background standard-of-care LABA/ICS +/- LAMA +/- theophylline; REACT patients (n = 461) received background ICS/LABA +/- LAMA.",
+    dose_range = "Oral roflumilast 250 microgram (lower up-titration arm), 500 microgram every other day (alternate up-titration arm), or 500 microgram once daily (full-dose arm) for the initial 4-week up-titration phase in OPTIMIZE; 500 microgram once daily for 8 weeks of maintenance in OPTIMIZE and for 52 weeks in REACT. The OPTIMIZE down-titration sub-cohort received 250 microgram once daily after main-study discontinuation. The model file uses microgram (ug) as the dosing unit and ug/L as the concentration unit (numerically equivalent to ng/mL).",
+    regions = "Multinational; OPTIMIZE (NCT02165826) and REACT (NCT01329029) phase III studies.",
     n_observations = "OPTIMIZE: 18,983 quantifiable plasma samples from 1238 patients (5878 from 250 ug OD up-titration arm, 5835 from 500 ug EOD up-titration arm, 5556 from 500 ug OD arm, 1714 from 250 ug OD open-label down-titration). REACT: 3176 quantifiable plasma samples from 461 patients in the roflumilast 500 ug OD arm. Combined dataset: roflumilast 11,005 samples (9416 OPTIMIZE + 1589 REACT) and roflumilast N-oxide 11,140 samples (9553 OPTIMIZE + 1587 REACT) per Facius 2018 Table 1. Concentrations were quantified by validated HPLC with tandem mass-spectrometric detection.",
-    notes          = "OPTIMIZE was a randomized, double-blind, three-arm, parallel-group phase III trial of three 4-week up-titration regimens (250 ug OD, 500 ug EOD, 500 ug OD) before escalation to 500 ug OD maintenance for 8 weeks. REACT was a randomized, double-blind phase III trial of roflumilast 500 ug OD vs placebo for 52 weeks. The integrated popPK model was built on the existing Lahu 2010 base model: structural disposition parameters (Tlag, KAp, CLp, V2, Qp, V4, CLm, V3, F5, KAm/KAp ratio, V6, Qm) were carried over unchanged via a Bayesian-feedback (MAXEVAL = 0) step, and only the phase II-III patient effects, BSV (with Box-Cox transformation on the parent and N-oxide clearance etas), residual error, and re-tested covariates (age, sex, weight, smoking, COPD status) were re-estimated on the combined OPTIMIZE+REACT dataset. The Box-Cox shape parameter (lambda = 0.704) is documented in the model file and discussed in the vignette Errata, but the model() block uses a plain log-normal eta to keep the file rxode2-compatible. Asian-vs-other race (RASIA) was tested in the formal covariate analysis but not retained; see covariatesDataExcluded."
+    notes = "OPTIMIZE was a randomized, double-blind, three-arm, parallel-group phase III trial of three 4-week up-titration regimens (250 ug OD, 500 ug EOD, 500 ug OD) before escalation to 500 ug OD maintenance for 8 weeks. REACT was a randomized, double-blind phase III trial of roflumilast 500 ug OD vs placebo for 52 weeks. The integrated popPK model was built on the existing Lahu 2010 base model: structural disposition parameters (Tlag, KAp, CLp, V2, Qp, V4, CLm, V3, F5, KAm/KAp ratio, V6, Qm) were carried over unchanged via a Bayesian-feedback (MAXEVAL = 0) step, and only the phase II-III patient effects, BSV (with Box-Cox transformation on the parent and N-oxide clearance etas), residual error, and re-tested covariates (age, sex, weight, smoking, COPD status) were re-estimated on the combined OPTIMIZE+REACT dataset. The Box-Cox shape parameter (lambda = 0.704) is documented in the model file and discussed in the vignette Errata, but the model() block uses a plain log-normal eta to keep the file rxode2-compatible. Asian-vs-other race (RASIA) was tested in the formal covariate analysis but not retained; see covariatesDataExcluded."
   )
 
   ini({

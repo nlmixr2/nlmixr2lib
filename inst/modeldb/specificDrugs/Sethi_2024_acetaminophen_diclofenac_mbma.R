@@ -12,42 +12,42 @@ Sethi_2024_acetaminophen_diclofenac_mbma <- function() {
   vignette <- "Sethi_2024_acetaminophen_diclofenac_mbma"
 
   units <- list(
-    time          = "hour (placeholder; the endpoint is cumulative opioid PCA consumption over each trial's primary observation window of roughly 6-72 h and the model itself is time-independent)",
-    dosing        = "mg (acetaminophen and diclofenac doses are NOT model inputs; both drug effects are dose-independent binary study-arm indicators. The fitted trials used acetaminophen 1000-2400 mg and diclofenac 75-100 mg. The model does not consume rxode2 dose events)",
+    time = "hour (placeholder; the endpoint is cumulative opioid PCA consumption over each trial's primary observation window of roughly 6-72 h and the model itself is time-independent)",
+    dosing = "mg (acetaminophen and diclofenac doses are NOT model inputs; both drug effects are dose-independent binary study-arm indicators. The fitted trials used acetaminophen 1000-2400 mg and diclofenac 75-100 mg. The model does not consume rxode2 dose events)",
     concentration = "mg/mg (arm-mean cumulative opioid PCA consumption in mg of morphine or oxycodone; the output Cc is NOT a drug concentration. The slash in the unit string satisfies checkModelConventions parsing)"
   )
 
   covariateData <- list(
     ACETAMINOPHEN = list(
-      description        = "Binary study-arm treatment indicator: 1 = the arm received systemic acetaminophen, 0 = it did not. A property of the trial arm in a model-based meta-analysis, not of an individual patient.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary study-arm treatment indicator: 1 = the arm received systemic acetaminophen, 0 = it did not. A property of the trial arm in a model-based meta-analysis, not of an individual patient.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (arm did not receive acetaminophen)",
-      notes              = "MBMA study-arm-level treatment indicator, a family-conforming member of the bare-INN MBMA arm-indicator family established by NAPROXEN (Boucher_2018_naproxen_mbma) and TRAMADOL / TAPENTADOL (Mercier_2014_tramadol_tapentadol_mbma). Enters the drug-effect term as e_acetaminophen_e0 * ACETAMINOPHEN. NOT dose-dependent: Sethi 2024 could not identify an acetaminophen dose-response from five trials, so arms at 1000, 1200, 1500, 2000 and 2400 mg all receive the identical effect. Note in particular that Beck 2000 contributed both a 1200 mg and a 2400 mg acetaminophen arm and the model predicts the same opioid PCA use for both. Set to 1 on the combination arms as well as the acetaminophen-monotherapy arms.",
-      source_name        = "ace (Sethi 2024 Table 1 Treatments column; e.ace in Table 3)"
+      notes = "MBMA study-arm-level treatment indicator, a family-conforming member of the bare-INN MBMA arm-indicator family established by NAPROXEN (Boucher_2018_naproxen_mbma) and TRAMADOL / TAPENTADOL (Mercier_2014_tramadol_tapentadol_mbma). Enters the drug-effect term as e_acetaminophen_e0 * ACETAMINOPHEN. NOT dose-dependent: Sethi 2024 could not identify an acetaminophen dose-response from five trials, so arms at 1000, 1200, 1500, 2000 and 2400 mg all receive the identical effect. Note in particular that Beck 2000 contributed both a 1200 mg and a 2400 mg acetaminophen arm and the model predicts the same opioid PCA use for both. Set to 1 on the combination arms as well as the acetaminophen-monotherapy arms.",
+      source_name = "ace (Sethi 2024 Table 1 Treatments column; e.ace in Table 3)"
     ),
     DICLOFENAC = list(
-      description        = "Binary study-arm treatment indicator: 1 = the arm received systemic diclofenac, 0 = it did not. A property of the trial arm in a model-based meta-analysis, not of an individual patient.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary study-arm treatment indicator: 1 = the arm received systemic diclofenac, 0 = it did not. A property of the trial arm in a model-based meta-analysis, not of an individual patient.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (arm did not receive diclofenac)",
-      notes              = "MBMA study-arm-level treatment indicator; sibling of ACETAMINOPHEN and a family-conforming member of the bare-INN MBMA arm-indicator family (NAPROXEN / TRAMADOL / TAPENTADOL). Enters the drug-effect term as e_diclofenac_e0 * DICLOFENAC. SYSTEMIC route only: every diclofenac arm in the five fitted trials used oral, rectal or intravenous diclofenac at 75-100 mg (Sethi 2024 Table 1 ROA column), and Supplementary Table S5 labels the rows 'Systemic diclofenac'. The paper's title refers to TOPICAL diclofenac because the Discussion extrapolates the systemic-diclofenac result to a topical osteoarthritis setting on mechanistic grounds; that extrapolation is not part of the fitted model. NOT dose-dependent (75 mg and 100 mg arms receive the identical effect). Set to 1 on the combination arms as well as the diclofenac-monotherapy arms.",
-      source_name        = "dic (Sethi 2024 Table 1 Treatments column; e.dic in Table 3)"
+      notes = "MBMA study-arm-level treatment indicator; sibling of ACETAMINOPHEN and a family-conforming member of the bare-INN MBMA arm-indicator family (NAPROXEN / TRAMADOL / TAPENTADOL). Enters the drug-effect term as e_diclofenac_e0 * DICLOFENAC. SYSTEMIC route only: every diclofenac arm in the five fitted trials used oral, rectal or intravenous diclofenac at 75-100 mg (Sethi 2024 Table 1 ROA column), and Supplementary Table S5 labels the rows 'Systemic diclofenac'. The paper's title refers to TOPICAL diclofenac because the Discussion extrapolates the systemic-diclofenac result to a topical osteoarthritis setting on mechanistic grounds; that extrapolation is not part of the fitted model. NOT dose-dependent (75 mg and 100 mg arms receive the identical effect). Set to 1 on the combination arms as well as the diclofenac-monotherapy arms.",
+      source_name = "dic (Sethi 2024 Table 1 Treatments column; e.dic in Table 3)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 353L,
-    n_studies      = 5L,
-    n_arms         = 16L,
-    age_range      = "adults; per-trial age distributions are not reported in the meta-analysis",
-    weight_range   = "not reported at arm level",
+    species = "human",
+    n_subjects = 353L,
+    n_studies = 5L,
+    n_arms = 16L,
+    age_range = "adults; per-trial age distributions are not reported in the meta-analysis",
+    weight_range = "not reported at arm level",
     race_ethnicity = "not reported",
-    disease_state  = "acute postoperative pain: elective gynecological surgery (Montgomery 1996, n = 59), hysterectomy (Beck 2000, n = 65), cesarean section (Siddik 2001, n = 80; Munishankar 2008, n = 78) and tonsillectomy (Hiller 2004, n = 71)",
-    dose_range     = "acetaminophen 1000-2400 mg and diclofenac 75-100 mg across the five included trials (Sethi 2024 Table 1). Doses are not model inputs -- see the ACETAMINOPHEN / DICLOFENAC covariate notes",
-    regions        = "not reported",
-    notes          = "Study-arm-level MBMA: each modeled data point is the mean cumulative opioid PCA consumption in one trial arm. The five included trials are the subset of Sethi 2024 Table 2 marked 'Included in the final analysis = Yes'; their sample sizes sum to exactly the 353 patients the Abstract reports. Two further PCA-reporting trials in Table 2 were excluded: Breivik 1999 (n = 72; only a limited percentage of subjects used PCA in each arm, and PCA was reported as a percentage rather than in mg) and Riad 2007 (n = 108; a pediatric population). The 16-arm count is derived by counting the Treatments column of Table 1 for the five included trials (Montgomery 3, Beck 3, Siddik 4, Hiller 3, Munishankar 3); the paper itself does not print an arm count. At least 80 percent of subjects were female -- four of the five trials (Montgomery, Beck, Siddik, Munishankar; 282 of 353 subjects) enrolled women only, and the sex distribution of the Hiller 2004 tonsillectomy cohort (n = 71 adults) is not reported. Opioid PCA was morphine in four trials and oxycodone in one (Hiller 2004) and is pooled in raw mg with no potency normalization. Only Siddik 2001 carried a placebo arm, so a single trial informs the whole placebo response; the paper flags this as a source of estimation bias in its Discussion. Type of surgical intervention was recognised as a driver of opioid PCA use (cesarean pain required a higher PCA dose than tonsillectomy) but could not be included as a covariate because too few trials were available. Residual variance was fixed to the observed per-arm precision sigma_ij^2 / N_ij rather than estimated -- see the addSd note in ini()."
+    disease_state = "acute postoperative pain: elective gynecological surgery (Montgomery 1996, n = 59), hysterectomy (Beck 2000, n = 65), cesarean section (Siddik 2001, n = 80; Munishankar 2008, n = 78) and tonsillectomy (Hiller 2004, n = 71)",
+    dose_range = "acetaminophen 1000-2400 mg and diclofenac 75-100 mg across the five included trials (Sethi 2024 Table 1). Doses are not model inputs -- see the ACETAMINOPHEN / DICLOFENAC covariate notes",
+    regions = "not reported",
+    notes = "Study-arm-level MBMA: each modeled data point is the mean cumulative opioid PCA consumption in one trial arm. The five included trials are the subset of Sethi 2024 Table 2 marked 'Included in the final analysis = Yes'; their sample sizes sum to exactly the 353 patients the Abstract reports. Two further PCA-reporting trials in Table 2 were excluded: Breivik 1999 (n = 72; only a limited percentage of subjects used PCA in each arm, and PCA was reported as a percentage rather than in mg) and Riad 2007 (n = 108; a pediatric population). The 16-arm count is derived by counting the Treatments column of Table 1 for the five included trials (Montgomery 3, Beck 3, Siddik 4, Hiller 3, Munishankar 3); the paper itself does not print an arm count. At least 80 percent of subjects were female -- four of the five trials (Montgomery, Beck, Siddik, Munishankar; 282 of 353 subjects) enrolled women only, and the sex distribution of the Hiller 2004 tonsillectomy cohort (n = 71 adults) is not reported. Opioid PCA was morphine in four trials and oxycodone in one (Hiller 2004) and is pooled in raw mg with no potency normalization. Only Siddik 2001 carried a placebo arm, so a single trial informs the whole placebo response; the paper flags this as a source of estimation bias in its Discussion. Type of surgical intervention was recognised as a driver of opioid PCA use (cesarean pain required a higher PCA dose than tonsillectomy) but could not be included as a covariate because too few trials were available. Residual variance was fixed to the observed per-arm precision sigma_ij^2 / N_ij rather than estimated -- see the addSd note in ini()."
   )
 
   ini({

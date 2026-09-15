@@ -8,35 +8,35 @@ Horita_2018_ethambutol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with non-canonical estimated exponents on each PK parameter: 0.382 on CL/F (RSE 24%), 0.474 on Q/F (RSE 44%), 0.228 on V1/F (RSE 84%), 0.858 on V2/F (RSE 60%). Reference weight is the cohort median 14.3 kg (Table 1); see the vignette Errata for the reference-weight derivation. The Horita 2018 EMB exponents differ markedly from the canonical 0.75 / 1.0 because the cohort exhibits notably low EMB exposure in younger children with otherwise stable CL/F across age bands (Methods 'EMB' / Discussion paragraph 5); the paper's note 'Fixed allometric scaling exponents of 0.382 for CL/F, 0.474 for Q/F, 0.228 for V1/F, and 0.858 for V2/F improved the goodness-of-fit plots and the distribution of PK parameters' refers to fixing the exponents during covariate model selection -- they are point estimates with reported RSEs.",
-      source_name        = "WT"
+      notes = "Allometric scaling with non-canonical estimated exponents on each PK parameter: 0.382 on CL/F (RSE 24%), 0.474 on Q/F (RSE 44%), 0.228 on V1/F (RSE 84%), 0.858 on V2/F (RSE 60%). Reference weight is the cohort median 14.3 kg (Table 1); see the vignette Errata for the reference-weight derivation. The Horita 2018 EMB exponents differ markedly from the canonical 0.75 / 1.0 because the cohort exhibits notably low EMB exposure in younger children with otherwise stable CL/F across age bands (Methods 'EMB' / Discussion paragraph 5); the paper's note 'Fixed allometric scaling exponents of 0.382 for CL/F, 0.474 for Q/F, 0.228 for V1/F, and 0.858 for V2/F improved the goodness-of-fit plots and the distribution of PK parameters' refers to fixing the exponents during covariate model selection -- they are point estimates with reported RSEs.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 113L,
-    n_studies      = 1L,
-    age_range      = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
-    age_median     = "5.00 years",
-    weight_range   = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
-    weight_median  = "14.3 kg",
+    species = "human",
+    n_subjects = 113L,
+    n_studies = 1L,
+    age_range = "3 months to 14 years (median 5.00 years, IQR 2.17 to 8.25)",
+    age_median = "5.00 years",
+    weight_range = "5-30 kg (median 14.3, IQR 9.70 to 20.1)",
+    weight_median = "14.3 kg",
     sex_female_pct = 44.2,
     hiv_positive_pct = 52.2,
-    disease_state  = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
-    dose_range     = "Ethambutol 15-25 mg/kg orally daily (median 16.8 mg/kg, IQR 15.0-20.3). Administered as part of standard four-drug anti-TB regimen during the initial 2-month intensive phase.",
-    regions        = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
-    notes          = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. EMB concentrations 0.0844-5.46 ug/mL by LC-MS/MS. Three children with only-BLQ values (malabsorption group) were excluded from model building; two of those were under 2 years old. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 4."
+    disease_state = "Ghanaian children with active tuberculosis (HIV-positive and HIV-negative). 21.2% under 2 years of age.",
+    dose_range = "Ethambutol 15-25 mg/kg orally daily (median 16.8 mg/kg, IQR 15.0-20.3). Administered as part of standard four-drug anti-TB regimen during the initial 2-month intensive phase.",
+    regions = "Ghana (Komfo Anokye Teaching Hospital, Kumasi).",
+    notes = "Patients enrolled October 2012-August 2015. PK sampling after at least 4 weeks of anti-TB treatment (steady state). Blood samples at 0, 1, 2, 4, 8 h postdose. EMB concentrations 0.0844-5.46 ug/mL by LC-MS/MS. Three children with only-BLQ values (malabsorption group) were excluded from model building; two of those were under 2 years old. ClinicalTrials.gov NCT01687504. Demographics from Horita 2018 Table 1; structural model and parameters from Table 4."
   )
 
   ini({

@@ -29,8 +29,8 @@ Ribba_2022_sld <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
+    time = "day",
+    dosing = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "mm (the observable `TS` is the RECIST 1.1 sum of the longest diameters of target lesions)"
   )
 
@@ -46,10 +46,10 @@ Ribba_2022_sld <- function() {
   covariateData <- list(
     TUM_SLD = list(
       description = "Observed baseline (cycle 1 day 1) sum of the longest diameters of target lesions per RECIST 1.1, used as the Stein baseline regressor SLD0.",
-      units       = "mm",
-      type        = "continuous",
+      units = "mm",
+      type = "continuous",
       source_name = "SLD0",
-      notes       = paste(
+      notes = paste(
         "Ribba 2022 Eq. 2 defines SLD0 as the baseline value of the sum of the longest diameters; the Supplementary Data states the baseline was used as a regressor and not estimated, following the same process as the ctDNA fit.",
         "Initialises both Stein sub-states, so TS(0) = TUM_SLD exactly.",
         "The source paper does not report the OAK baseline-SLD distribution; the validation vignette samples a log-normal cohort centred on a typical advanced-NSCLC value and states that assumption explicitly.",
@@ -65,9 +65,9 @@ Ribba_2022_sld <- function() {
   covariatesDataExcluded <- list(
     TRT = list(
       description = "Treatment arm of the OAK study (atezolizumab vs docetaxel).",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Supplementary Data: 'these results were obtained by analyzing simultaneously not only the patients treated with atezolizumab but also the patients treated with docetaxel (the other arm of the study). The arm was treated as a categorical covariate enabling the use of the individual parameters only for the atezolizumab arm.'",
         "No arm-effect coefficient on kge or kse is reported in the paper or the Appendix, so the covariate is documented but not implemented; the packaged parameters are the pooled-arm population values.",
         sep = " "
@@ -76,17 +76,17 @@ Ribba_2022_sld <- function() {
   )
 
   population <- list(
-    species         = "human (adults with advanced non-small cell lung cancer)",
-    n_subjects      = 1225L,
-    n_studies       = 1L,
-    age_range       = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
-    weight_range    = "not reported in this paper",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "not reported in this paper",
-    disease_state   = "previously treated locally advanced or metastatic NSCLC (OAK study)",
-    dose_range      = "atezolizumab 1200 mg IV every 3 weeks or docetaxel 75 mg/m2 IV every 3 weeks (OAK protocol doses; not model inputs)",
-    regions         = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
-    notes           = paste(
+    species = "human (adults with advanced non-small cell lung cancer)",
+    n_subjects = 1225L,
+    n_studies = 1L,
+    age_range = "not reported in this paper (see Rittmeyer 2017 for the OAK cohort demographics)",
+    weight_range = "not reported in this paper",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "not reported in this paper",
+    disease_state = "previously treated locally advanced or metastatic NSCLC (OAK study)",
+    dose_range = "atezolizumab 1200 mg IV every 3 weeks or docetaxel 75 mg/m2 IV every 3 weeks (OAK protocol doses; not model inputs)",
+    regions = "multiregional (OAK was conducted across 31 countries; per-region counts not reported in this paper)",
+    notes = paste(
       "The SLD fit pooled both OAK arms; Ribba 2022 Figure 1B reports 1,225 randomised participants with 613 in the atezolizumab arm. The exact number of participants contributing longitudinal SLD to this fit is not stated in the paper or the Appendix.",
       "Estimation was performed in Monolix 2021R1 (Lixoft) with a combined additive-plus-proportional residual-error model, which the authors report was the best residual-error model for SLD.",
       "The companion ctDNA fit on the same study is Ribba_2022_ctdna.R (n = 46) and the coupled fit is Ribba_2022_ctdna_sld_joint.R.",

@@ -12,47 +12,47 @@ Bijleveld_2016_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Bijleveld_2016_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (birth weight in the source cohort)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (birth weight in the source cohort)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median 3.4 kg (range 2.09-5.07) in the gentamicin cohort (Table 1).",
         "Allometric scaling uses a 70 kg adult reference: fixed exponent",
         "0.75 on CL and Q, fixed exponent 1 on Vc and Vp."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median 40 weeks (range 36-42) in the cohort (Table 1). Time-fixed",
         "per subject. Enters CL as a power function (GA/40)^e_ga_cl where",
         "40 weeks is the cohort median used as the reference."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. The source paper reports PNA in hours and defines",
         "Study Day 5 (SD5) as PNA > 96 h, the period after the 72 h",
         "controlled-hypothermia phase plus 8 h rewarming = > 96 h PNA",
@@ -62,28 +62,28 @@ Bijleveld_2016_gentamicin <- function() {
         "(PNA_hours > 96).  PNA itself is not a retained continuous",
         "covariate on CL; only the binary post-96 h step is."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Sex (female indicator)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in covariate analysis; not retained (no relationship with CL or V)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in covariate analysis; not retained (no relationship with CL or V)."
     ),
     BMTEMP = list(
       description = "Core body temperature",
-      units       = "degC",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL (paper Results 'Pharmacokinetic model building')."
+      units = "degC",
+      type = "continuous",
+      notes = "Screened; not retained on CL (paper Results 'Pharmacokinetic model building')."
     ),
     COOLING = list(
       description = "Cooling on/off indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a categorical covariate; not retained on CL. The",
         "model nonetheless captures the post-rewarming clearance change",
         "via the derived SD5 step (PNA > 96 h)."
@@ -91,51 +91,51 @@ Bijleveld_2016_gentamicin <- function() {
     ),
     INOTROPIC = list(
       description = "Inotropic co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained on CL."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained on CL."
     ),
     MOF = list(
       description = "Multi-organ failure indicator (renal or liver dysfunction per Shah et al.)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained on CL."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained on CL."
     ),
     SCR = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained on CL."
     ),
     UREA = list(
       description = "Serum urea",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not retained on CL."
     ),
     ASAT = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained on CL."
     ),
     ALAT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained on CL."
     ),
     URINE_OUT = list(
       description = "Daily urine output",
-      units       = "mL/day",
-      type        = "continuous",
-      notes       = "Screened; not retained on CL."
+      units = "mL/day",
+      type = "continuous",
+      notes = "Screened; not retained on CL."
     ),
     PMA = list(
       description = "Postmenstrual age (GA + PNA)",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and produced a larger OFV drop than PNA alone,",
         "but GA was preferred as the most influential variable (paper",
         "Results 'Pharmacokinetic model building'). PMA was therefore",
@@ -145,15 +145,15 @@ Bijleveld_2016_gentamicin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 1L,
     n_observations = 612L,
-    ga_range       = "36-42 weeks (median 40)",
-    pna_range      = "2.3-5.2 days at end of study (median 4.7)",
-    weight_range   = "2.09-5.07 kg birth weight (median 3.4)",
+    ga_range = "36-42 weeks (median 40)",
+    pna_range = "2.3-5.2 days at end of study (median 4.7)",
+    weight_range = "2.09-5.07 kg birth weight (median 3.4)",
     sex_female_pct = 41.3,
-    disease_state  = paste(
+    disease_state = paste(
       "Term newborns (GA > 37 weeks at birth, with three patients of",
       "GA 36 wk admitted under the protocol) meeting criteria for",
       "perinatal asphyxia and hypoxic-ischaemic encephalopathy,",
@@ -161,15 +161,15 @@ Bijleveld_2016_gentamicin <- function() {
       "temperature 33.5 degC) for 72 h beginning within 6 h of birth,",
       "followed by 8 h of rewarming to 36.5 degC and then normothermia."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Gentamicin 4 mg/kg once daily per the Dutch Paediatric Formulary,",
       "with TDM-driven dose adjustments. Cohort range 3.5-5.1 mg/kg per",
       "dose; intervals 24-48 h. 70% of patients received 4 mg/kg q24h,",
       "17% 4 mg/kg q36h, 6% 4 mg/kg q48h."
     ),
     co_medications = "Inotropic support in 63.8% of patients; analgesia and antiepileptics per ICU standard of care.",
-    regions        = "10 Dutch and 2 Belgian neonatal intensive care units (PharmaCool Study), November 2010 to October 2014.",
-    notes          = paste(
+    regions = "10 Dutch and 2 Belgian neonatal intensive care units (PharmaCool Study), November 2010 to October 2014.",
+    notes = paste(
       "Baseline demographics from Bijleveld 2016 Table 1. Final two-",
       "compartment model with allometric body-weight scaling (fixed",
       "exponents per West allometry), gestational age as a power",

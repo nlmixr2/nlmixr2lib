@@ -29,23 +29,23 @@ Park_2014_triflusal <- function() {
     "doi:10.1186/2050-6511-15-75."
   )
   vignette <- "Park_2014_triflusal"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "triflusal", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "triflusal", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "triflusal", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline. Reference 71.65 kg is the cohort median",
         "(Park 2014 Methods page 4 / Table 2 footnote -- 'subject whose",
         "weight = 71.65 kg'). Power exponent 0.845 on CL/F (Park 2014",
@@ -54,29 +54,29 @@ Park_2014_triflusal <- function() {
         "(weight/71.65)). Cohort weights ranged 53.3 - 89.7 kg with mean",
         "70.8 +/- 9.0 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = "21 - 28 years",
-    age_median     = "24.1 years (SD 1.7)",
-    weight_range   = "53.3 - 89.7 kg",
-    weight_median  = "70.8 kg (SD 9.0)",
-    height_range   = "167.1 - 184.2 cm (mean 176.1, SD 4.9)",
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = "21 - 28 years",
+    age_median = "24.1 years (SD 1.7)",
+    weight_range = "53.3 - 89.7 kg",
+    weight_median = "70.8 kg (SD 9.0)",
+    height_range = "167.1 - 184.2 cm (mean 176.1, SD 4.9)",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult male volunteers; subjects were within 20% of their",
       "ideal body weight (IBW = (height_cm - 100) * 0.9) and passed",
       "physical examination plus routine laboratory tests (blood",
       "hematology, biochemistry, prothrombin time, bleeding time,",
       "urinalysis)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral triflusal 900 mg loading dose on Day 1 followed by a 600",
       "mg/day maintenance dose (given as two 300 mg capsules once daily)",
       "from Day 2 to Day 9 inclusive (Park 2014 Methods: Study drugs and",
@@ -86,12 +86,12 @@ Park_2014_triflusal <- function() {
       "paper's reported accumulation factor 2.26 and Css,min 103.5",
       "ug/mL."
     ),
-    regions        = paste(
+    regions = paste(
       "South Korea -- Kyungpook National University Hospital Clinical",
       "Trial Center (KNUH CTC), Daegu."
     ),
     cris_registration = "KCT0001299 (Clinical Research Information Service, Korea)",
-    notes          = paste(
+    notes = paste(
       "38 volunteers enrolled August - September 2008; 34 completed and",
       "were included in the population PK/PD analysis (4 dropped out:",
       "severe dental pain, medication administration error, missing",

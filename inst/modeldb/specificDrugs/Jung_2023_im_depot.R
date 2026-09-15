@@ -28,22 +28,22 @@ Jung_2023_im_depot <- function() {
   dosing <- c("depot")
 
   compartmentData <- list(
-    depot       = list(analyte = "undisclosed", units = "ug", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "undisclosed", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "undisclosed", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "undisclosed", units = "ug", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "undisclosed", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "undisclosed", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "undisclosed", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    disease_state  = "not reported",
-    dose_range     = "Single intramuscular injection at four different dose amounts (amounts not reported)",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    disease_state = "not reported",
+    dose_range = "Single intramuscular injection at four different dose amounts (amounts not reported)",
     n_observations = 339,
-    notes          = paste(
+    notes = paste(
       "Jung 2023 Table 2 reports Model Case 3 as 20 subjects and 339 observations; Jung 2023",
       "Section 2.3 states the intramuscular injection was administered once, the model was",
       "fitted over 672 h, and four different drug amounts were dosed. The data are described",

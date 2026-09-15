@@ -32,65 +32,65 @@ Zhang_2013_lopinavir_ritonavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv       = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1_rtv    = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2_rtv    = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central_rtv     = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference 65 kg (Zhang 2013 Methods: 65 kg is the median body weight in the adult cohort). Exponents fixed at 0.75 for apparent CL and Q, 1 for apparent V and Vp.",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference 65 kg (Zhang 2013 Methods: 65 kg is the median body weight in the adult cohort). Exponents fixed at 0.75 for apparent CL and Q, 1 for apparent V and Vp.",
+      source_name = "WT"
     ),
     CHILD = list(
-      description        = "Pediatric vs adult indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric vs adult indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = "Zhang 2013 cohort: adults are 21 HIV-infected adults aged 26-58 years (median 36); children are 74 HIV-infected children aged 6 months to 4.5 years (median 21 months). The paper stratifies typical-value CL (lopinavir and ritonavir), ka (lopinavir), MTT (ritonavir), rifampicin effects on CL and F, and the linear ritonavir-dose effect on F by adult vs child without fitting an age-continuous maturation term (the Anderson-Holford maturation function was tested and not supported by the data).",
-      source_name        = "CHILD"
+      notes = "Zhang 2013 cohort: adults are 21 HIV-infected adults aged 26-58 years (median 36); children are 74 HIV-infected children aged 6 months to 4.5 years (median 21 months). The paper stratifies typical-value CL (lopinavir and ritonavir), ka (lopinavir), MTT (ritonavir), rifampicin effects on CL and F, and the linear ritonavir-dose effect on F by adult vs child without fitting an age-continuous maturation term (the Anderson-Holford maturation function was tested and not supported by the data).",
+      source_name = "CHILD"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin-based antitubercular treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin-based antitubercular treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin)",
-      notes              = "Zhang 2013 cohort received rifampicin 600 mg daily (adults) or 10 mg/kg daily (children) as part of standard first-line rifampicin-isoniazid-based antituberculosis therapy. Pharmacokinetic sampling occurred after at least 2 weeks of rifampicin co-administration, so the effect is at the chronic post-induction equilibrium. Encoded as a binary on/off flag because the source paper fits a single rifampicin-period multiplicative effect on CL and a paper-cell-specific bioavailability anchor; no time-decaying induction trajectory is modeled (Zhang 2013 Methods).",
-      source_name        = "RIF"
+      notes = "Zhang 2013 cohort received rifampicin 600 mg daily (adults) or 10 mg/kg daily (children) as part of standard first-line rifampicin-isoniazid-based antituberculosis therapy. Pharmacokinetic sampling occurred after at least 2 weeks of rifampicin co-administration, so the effect is at the chronic post-induction equilibrium. Encoded as a binary on/off flag because the source paper fits a single rifampicin-period multiplicative effect on CL and a paper-cell-specific bioavailability anchor; no time-decaying induction trajectory is modeled (Zhang 2013 Methods).",
+      source_name = "RIF"
     ),
     DOSE_RTV_MGKG = list(
-      description        = "Per-administration ritonavir dose per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-administration ritonavir dose per kg body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhang 2013 Methods (paper formula F = BIO * (1 + SLP * (DoseRTV - DoseRTV_STD))): the per-administration ritonavir dose in mg/kg is supplied as a covariate column on every record. The per-population reference dose DoseRTV_STD = 1.5 mg/kg (adult median ritonavir dose without rifampicin co-administration) for adults and 2.9 mg/kg (children's median ritonavir dose without rifampicin co-administration) for children. Cohort-observed values: 1.5 mg/kg (adult standard dose), 2.9 mg/kg (child standard dose), 14 mg/kg (super-boosted children), 6 mg/kg (doubled-dose children).",
-      source_name        = "DoseRTV"
+      notes = "Zhang 2013 Methods (paper formula F = BIO * (1 + SLP * (DoseRTV - DoseRTV_STD))): the per-administration ritonavir dose in mg/kg is supplied as a covariate column on every record. The per-population reference dose DoseRTV_STD = 1.5 mg/kg (adult median ritonavir dose without rifampicin co-administration) for adults and 2.9 mg/kg (children's median ritonavir dose without rifampicin co-administration) for children. Cohort-observed values: 1.5 mg/kg (adult standard dose), 2.9 mg/kg (child standard dose), 14 mg/kg (super-boosted children), 6 mg/kg (doubled-dose children).",
+      source_name = "DoseRTV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 95L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 95L,
+    n_studies = 3L,
     n_observations = 1226L,
-    age_range      = "6 months-4.5 years (children); 26-58 years (adults)",
-    age_median     = "21 months (children); 36 years (adults)",
-    weight_range   = "5.0-17.0 kg (children); 43.0-110.0 kg (adults)",
-    weight_median  = "10.2 kg (children); 64.5 kg (adults)",
+    age_range = "6 months-4.5 years (children); 26-58 years (adults)",
+    age_median = "21 months (children); 36 years (adults)",
+    weight_range = "5.0-17.0 kg (children); 43.0-110.0 kg (adults)",
+    weight_median = "10.2 kg (children); 64.5 kg (adults)",
     sex_female_pct = 60,
     race_ethnicity = "Predominantly South African (Western Cape paediatric and adult HIV cohorts); no further race / ethnicity stratification reported in Zhang 2013 Table 1.",
-    disease_state  = "HIV infection. 35 of 74 children additionally had active tuberculosis on rifampicin-based antitubercular treatment ('super-boosted' LPV/r with LPV:RTV 1:1 ratio in 15, doubled doses of LPV/r in 20). 21 adults were HIV-infected volunteers without tuberculosis, evaluated at four sequential treatment occasions across LPV/r 400/100 mg without rifampicin, 400/100 mg with rifampicin, 600/150 mg with rifampicin, and 800/200 mg with rifampicin.",
-    dose_range     = "Children: LPV/r oral solution 230/57.5 mg/m^2 12-hourly (standard), super-boosted (LPV:RTV 1:1) or doubled 12-hourly doses when on antituberculosis treatment. Median LPV dose 11.6 mg/kg (no TB) or up to ~24 mg/kg (TB doubled). Adults: LPV/r tablet 400/100, 600/150, or 800/200 mg 12-hourly.",
-    regions        = "South Africa (Western Cape; Cape Town adult cohort plus paediatric cohorts including Cape Town and Eastern Cape sites).",
-    notes          = paste(
+    disease_state = "HIV infection. 35 of 74 children additionally had active tuberculosis on rifampicin-based antitubercular treatment ('super-boosted' LPV/r with LPV:RTV 1:1 ratio in 15, doubled doses of LPV/r in 20). 21 adults were HIV-infected volunteers without tuberculosis, evaluated at four sequential treatment occasions across LPV/r 400/100 mg without rifampicin, 400/100 mg with rifampicin, 600/150 mg with rifampicin, and 800/200 mg with rifampicin.",
+    dose_range = "Children: LPV/r oral solution 230/57.5 mg/m^2 12-hourly (standard), super-boosted (LPV:RTV 1:1) or doubled 12-hourly doses when on antituberculosis treatment. Median LPV dose 11.6 mg/kg (no TB) or up to ~24 mg/kg (TB doubled). Adults: LPV/r tablet 400/100, 600/150, or 800/200 mg 12-hourly.",
+    regions = "South Africa (Western Cape; Cape Town adult cohort plus paediatric cohorts including Cape Town and Eastern Cape sites).",
+    notes = paste(
       "Integrated joint substrate-and-perpetrator popPK model:",
       "lopinavir is the primary substrate (1-cmt + first-order absorption);",
       "ritonavir is both the booster (sigmoidal Emax inhibition of lopinavir",

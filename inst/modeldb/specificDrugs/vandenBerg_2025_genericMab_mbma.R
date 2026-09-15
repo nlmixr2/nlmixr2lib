@@ -30,8 +30,8 @@ vandenBerg_2025_genericMab_mbma <- function() {
   vignette <- "vandenBerg_2025_genericMab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg (intravenous into central, or subcutaneous into depot; the paper's illustrative simulation used a single 100 mg dose by either route)",
+    time = "day",
+    dosing = "mg (intravenous into central, or subcutaneous into depot; the paper's illustrative simulation used a single 100 mg dose by either route)",
     concentration = "mg/L (equivalently ug/mL; central amount in mg divided by Vc in L, matching the NONMEM scaling S2 = VC in Supplementary Section M5)"
   )
 
@@ -47,9 +47,9 @@ vandenBerg_2025_genericMab_mbma <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight; the most frequently used size descriptor (on CL in 66.9% and on Vc in 71.2% of the 160 models)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Median (IQR) estimated allometric exponent 0.62 (0.52; 0.81) on CL and",
         "0.56 (0.47; 0.76) on Vc; median (IQR) reference weight 70 (69; 75) kg",
         "(van den Berg 2025 Results 'Covariate model' and Figure 4a).",
@@ -59,9 +59,9 @@ vandenBerg_2025_genericMab_mbma <- function() {
     ),
     ALBUMIN = list(
       description = "Serum albumin; negatively associated with CL in 41.9% of the 160 models",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Median (IQR) power coefficient on CL -0.90 (-1.1; -0.69) with a median (IQR)",
         "reference of 40 (39; 42.8) g/L (van den Berg 2025 Results 'Covariate model',",
         "Figure 4c). Screened and summarised but not included in the generic model."
@@ -70,10 +70,10 @@ vandenBerg_2025_genericMab_mbma <- function() {
     ),
     SEXF = list(
       description = "Sex; a significant covariate in 37.5% of the 160 models",
-      units       = NA_character_,
-      type        = "categorical",
+      units = NA_character_,
+      type = "categorical",
       reference_category = "female (SEXF = 1)",
-      notes       = paste(
+      notes = paste(
         "Median (IQR) CL increase in males vs females 19% (15%; 26%); the effect shrinks",
         "from 1.30 to 1.18 once a size descriptor is also in the model",
         "(van den Berg 2025 Figure 4b,e; conversion to a female reference in",
@@ -83,10 +83,10 @@ vandenBerg_2025_genericMab_mbma <- function() {
     ),
     ADA_POS = list(
       description = "Anti-drug antibody status; a significant covariate on CL in 26 of the 160 models (13 mAbs)",
-      units       = NA_character_,
-      type        = "categorical",
+      units = NA_character_,
+      type = "categorical",
       reference_category = "ADA-negative (ADA_POS = 0)",
-      notes       = paste(
+      notes = paste(
         "Median (IQR) multiplicative coefficient on CL for ADA-positive patients",
         "1.39 (1.19; 1.49), averaged per mAb (van den Berg 2025 Results 'Covariate model',",
         "Figure 4d). Not included in the generic model."
@@ -96,31 +96,31 @@ vandenBerg_2025_genericMab_mbma <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "genericMab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE),
+    depot = list(analyte = "genericMab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE),
     peripheral1 = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 143094L,
-    n_studies      = 160L,
-    n_models       = 160L,
-    n_mabs         = 69L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 143094L,
+    n_studies = 160L,
+    n_models = 160L,
+    n_mabs = 69L,
+    disease_state = paste(
       "Mixed. The pooled evidence base spans every indication in which a marketed canonical",
       "IgG mAb has had a population PK model published -- oncology, rheumatology,",
       "gastroenterology, dermatology, neurology, ophthalmology and infectious disease --",
       "plus healthy donors, who were included in 37 of the 160 models (26 of 69 mAbs).",
       "Paediatric-only models were excluded (van den Berg 2025 Figure 1a)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Not summarised across the source models. The paper's illustrative simulation used a",
       "single 100 mg intravenous or subcutaneous dose in 500 virtual individuals",
       "(van den Berg 2025 Methods 'Generic model simulation')."
     ),
-    regions        = "Global; the collected models were not stratified by region.",
-    design         = paste(
+    regions = "Global; the collected models were not stratified by region.",
+    design = paste(
       "Meta-analysis of published population PK model PARAMETER ESTIMATES, not of raw or",
       "digitised concentration data. IMGT/mAb-DB was queried for marketed canonical IgG mAbs",
       "and PubMed searched per mAb; 303 candidate models were reduced to 160 by excluding",

@@ -1,16 +1,16 @@
 Liu_2025_tranexamicAcid <- function() {
   description <- "Two-compartment population PK model for intravenous tranexamic acid (TXA) with first-order elimination, in Chinese adults undergoing cardiac surgery with cardiopulmonary bypass; allometric body weight on all four disposition parameters with exponents fixed at 0.75 (clearances) and 1 (volumes) (Liu 2025)."
-  reference   <- "Liu Y, Zhou C, Lv H, Tian L, Jiang J, Shi J. Population Pharmacokinetics of Tranexamic Acid in Chinese Population Undergoing Cardiac Surgery with Cardiopulmonary Bypass. Drug Des Devel Ther. 2025;19:4343-4353. doi:10.2147/DDDT.S493485"
-  vignette    <- "Liu_2025_tranexamicAcid"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Liu Y, Zhou C, Lv H, Tian L, Jiang J, Shi J. Population Pharmacokinetics of Tranexamic Acid in Chinese Population Undergoing Cardiac Surgery with Cardiopulmonary Bypass. Drug Des Devel Ther. 2025;19:4343-4353. doi:10.2147/DDDT.S493485"
+  vignette <- "Liu_2025_tranexamicAcid"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Actual body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The sole covariate retained in the final model. Enters as an allometric power term",
         "centred on 70 kg -- (WT/70)^0.75 on both clearances and (WT/70)^1 on both volumes",
         "(Liu 2025 Table 3, final row). The display equation typeset between the Methods",
@@ -24,7 +24,7 @@ Liu_2025_tranexamicAcid <- function() {
         "Time-fixed at the pre-operative value.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
@@ -41,9 +41,9 @@ Liu_2025_tranexamicAcid <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. The rejected 23rd stepwise model carried age on CL1 as",
         "CL1 = CL1_typical x (AGE/55)^0.75 (Liu 2025 Table 3, middle row). Cohort 51.4 +/- 11.3",
         "years (high-dose) and 59.3 +/- 9.9 years (low-dose); inclusion criteria required 18-70",
@@ -53,9 +53,9 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened but not retained. The rejected 23rd stepwise model carried sex on CL2 as a",
         "proportional effect CL2 = CL2_typical x (1 + 0.75 x Sex) (Liu 2025 Table 3, middle row);",
         "the paper does not state which sex the indicator codes as 1, which is a further reason",
@@ -66,9 +66,9 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     CPB_ON = list(
       description = "Cardiopulmonary bypass phase indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(binary)",
+      type = "categorical",
+      notes = paste(
         "Screened but not retained. Liu 2025 followed the method of Dowd et al in testing the",
         "state of CPB as a dichotomous covariate, and the Discussion reports that no significant",
         "effect of CPB on any PK parameter was detected -- consistent with Grassin-Delyle et al.",
@@ -80,9 +80,9 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     T_CPB = list(
       description = "Total cardiopulmonary bypass duration",
-      units       = "min",
-      type        = "continuous",
-      notes       = paste(
+      units = "min",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate but not retained (Liu 2025 Discussion). Cohort",
         "129.71 +/- 36.91 min (high-dose) and 116.44 +/- 50.80 min (low-dose); Table 2.",
         sep = " "
@@ -90,9 +90,9 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     BODYTEMP = list(
       description = "Minimum rectal temperature during cardiopulmonary bypass",
-      units       = "degC",
-      type        = "continuous",
-      notes       = paste(
+      units = "degC",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate but not retained (Liu 2025 Methods 'Covariate Models'",
         "and Discussion). This is the intra-operative nadir rectal temperature during the bypass",
         "run, not an admission body temperature; Liu 2025 does not tabulate its distribution.",
@@ -101,33 +101,33 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort 9.32 +/- 3.88 (high-dose) and 13.73 +/- 7.92 umol/L (low-dose); Liu 2025 Table 2."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort 9.32 +/- 3.88 (high-dose) and 13.73 +/- 7.92 umol/L (low-dose); Liu 2025 Table 2."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort 2.45 +/- 0.81 (high-dose) and 5.28 +/- 3.42 umol/L (low-dose); Liu 2025 Table 2."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort 2.45 +/- 0.81 (high-dose) and 5.28 +/- 3.42 umol/L (low-dose); Liu 2025 Table 2."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort 29.71 +/- 22.47 (high-dose) and 23.67 +/- 9.90 IU/L (low-dose); Liu 2025 Table 2."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort 29.71 +/- 22.47 (high-dose) and 23.67 +/- 9.90 IU/L (low-dose); Liu 2025 Table 2."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort 29.29 +/- 11.54 (high-dose) and 25.44 +/- 4.95 IU/L (low-dose); Liu 2025 Table 2."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort 29.29 +/- 11.54 (high-dose) and 25.44 +/- 4.95 IU/L (low-dose); Liu 2025 Table 2."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Cohort 78.15 +/- 13.89 (high-dose) and 91.53 +/- 30.01 umol/L",
         "(low-dose); Liu 2025 Table 2. Note that the sibling model Nakai_2025_tranexamicAcid.R,",
         "fitted to a Japanese cohort in the same clinical setting, DID retain renal function",
@@ -138,32 +138,32 @@ Liu_2025_tranexamicAcid <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort 5.55 +/- 2.05 (high-dose) and 5.82 +/- 1.50 mmol/L (low-dose); Liu 2025 Table 2."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort 5.55 +/- 2.05 (high-dose) and 5.82 +/- 1.50 mmol/L (low-dose); Liu 2025 Table 2."
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
     n_observations = 224L,
-    age_range      = "18-70 years by protocol; 51.4 +/- 11.3 years (high-dose) and 59.3 +/- 9.9 years (low-dose)",
-    weight_range   = "74.3 +/- 19.9 kg (high-dose) and 68.2 +/- 12.2 kg (low-dose)",
-    bmi_range      = "25.7 +/- 5.4 (high-dose) and 23.9 +/- 3.3 kg/m^2 (low-dose)",
+    age_range = "18-70 years by protocol; 51.4 +/- 11.3 years (high-dose) and 59.3 +/- 9.9 years (low-dose)",
+    weight_range = "74.3 +/- 19.9 kg (high-dose) and 68.2 +/- 12.2 kg (low-dose)",
+    bmi_range = "25.7 +/- 5.4 (high-dose) and 23.9 +/- 3.3 kg/m^2 (low-dose)",
     sex_female_pct = 31.3,
     race_ethnicity = "Chinese",
-    disease_state  = "Adults undergoing cardiac surgery with cardiopulmonary bypass; NYHA class I-III, no class IV. Hypertension in 7/16, diabetes 2/16, hyperlipidaemia 5/16 (Liu 2025 Table 1).",
+    disease_state = "Adults undergoing cardiac surgery with cardiopulmonary bypass; NYHA class I-III, no class IV. Hypertension in 7/16, diabetes 2/16, hyperlipidaemia 5/16 (Liu 2025 Table 1).",
     renal_function = "Serum creatinine 78.15 +/- 13.89 umol/L (high-dose) and 91.53 +/- 30.01 umol/L (low-dose); blood urea nitrogen 5.55 +/- 2.05 and 5.82 +/- 1.50 mmol/L. End-stage disease with expected survival under 3 months was an exclusion criterion; no dialysis patients are described.",
-    dose_range     = "Randomised to a high-dose arm (n = 7; 30 mg/kg loading dose infused over 20 min after induction of anaesthesia, 16 mg/kg/h maintenance infusion until the end of the operation, and a 2 mg/kg pump prime dose added to the CPB priming solution) or a low-dose arm (n = 9; 10 mg/kg loading, 2 mg/kg/h maintenance, 1 mg/kg pump prime).",
-    regions        = "Single centre, Fuwai Hospital, Chinese Academy of Medical Sciences, Beijing, China (Ethics No. 2022-1866)",
-    notes          = paste(
+    dose_range = "Randomised to a high-dose arm (n = 7; 30 mg/kg loading dose infused over 20 min after induction of anaesthesia, 16 mg/kg/h maintenance infusion until the end of the operation, and a 2 mg/kg pump prime dose added to the CPB priming solution) or a low-dose arm (n = 9; 10 mg/kg loading, 2 mg/kg/h maintenance, 1 mg/kg pump prime).",
+    regions = "Single centre, Fuwai Hospital, Chinese Academy of Medical Sciences, Beijing, China (Ethics No. 2022-1866)",
+    notes = paste(
       "Prospective randomised study, 16 participants, all with the full 14-timepoint sampling",
       "schedule and no observations below the 1 ug/mL lower limit of quantification and no",
       "missing values or outliers (Liu 2025 Results). Sampling: pre-dose; 10 min after the start",

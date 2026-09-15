@@ -59,39 +59,39 @@ Almond_2016_rifampicin_invivo <- function() {
   vignette <- "Almond_2016_cyp3a4_induction"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static concentration-response model driven by an external rifampicin concentration covariate)",
+    time = "h",
+    dosing = "(none; static concentration-response model driven by an external rifampicin concentration covariate)",
     concentration = "(the observation is dimensionless fold-induction of CYP3A4 over the uninduced baseline; the driving covariate CP_RIF_UM is the operational unbound rifampicin concentration at the site of interaction, in uM)"
   )
 
   covariateData <- list(
     CP_RIF_UM = list(
-      description        = "Operational unbound rifampicin concentration at the site of CYP3A4 interaction, supplied as a covariate. Reused canonical: the existing register entry describes an instantaneous rifampicin plasma concentration used as a perpetrator input, which is the same quantity and unit; here the value required is the UNBOUND concentration at the interaction site rather than total plasma.",
-      units              = "umol/L (uM)",
-      type               = "continuous",
+      description = "Operational unbound rifampicin concentration at the site of CYP3A4 interaction, supplied as a covariate. Reused canonical: the existing register entry describes an instantaneous rifampicin plasma concentration used as a perpetrator input, which is the same quantity and unit; here the value required is the UNBOUND concentration at the interaction site rather than total plasma.",
+      units = "umol/L (uM)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WHICH CONCENTRATION TO SUPPLY. Almond 2016 Eq. 3 drives hepatic induction with fu,B-IN * I_t,Liv / (Kp_IN / B:P_IN) -- the unbound liver concentration corrected for tissue partitioning and blood-to-plasma ratio -- while Eq. 4 drives intestinal induction with the enterocyte concentration I_t,Gut directly. Supplying a TOTAL plasma concentration instead would overstate the driving concentration by roughly 1 / fu; rifampicin fu = 0.15 and B:P = 0.9 (Supplemental Table 2).",
         "SCALE. The fitted IndC50 is 0.32 uM. The Discussion reports that changing rifampicin fugut from 0.19 to 1 raised the simulated unbound portal-vein concentrations, but that 'in both cases the free concentrations exceeded the IndC50 for rifampicin (0.32 uM) across most of the dosing interval; hence, little effect on predictions was observed'. At clinical 600 mg daily dosing the driving concentration therefore sits ABOVE the IndC50 for most of the interval, i.e. on the plateau of this curve.",
         "Rifampicin MW = 823 g/mol (Supplemental Table 2), so 1 uM = 0.823 mg/L = 823 ng/mL.",
         "Set to 0 outside the rifampicin dosing window, at which the model returns fold = 1 (no induction) by construction."
       ),
-      source_name        = "It (perpetrator concentration at time t in either the liver or the gut)"
+      source_name = "It (perpetrator concentration at time t in either the liver or the gut)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 357L,
-    n_studies        = 29L,
-    age_range        = "matched per simulated trial to the age range reported by each source clinical study",
-    weight_range     = "not reported (Simcyp virtual populations generate weight from the built-in demographic distributions)",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = "White. The clinical DDI literature search was restricted to studies in white subjects; one otherwise eligible midazolam study was excluded because only one-third of its mixed-ethnicity cohort was white and the data were not stratified.",
-    disease_state    = "healthy volunteers, except one simvastatin study in patients with cerebrotendinous xanthomatosis (Table 3)",
-    dose_range       = "Rifampicin 300 mg twice daily or 450-600 mg once daily for 4-28 days. Victim drugs: midazolam 0.05 mg/kg or 1-2 mg i.v. and 2-15 mg orally; alfentanil 0.015 mg/kg or 1 mg i.v. and 0.06 mg/kg or 4 mg orally; nifedipine 0.02 mg/kg i.v. and 20 mg orally; alprazolam 1 mg, simvastatin 40 mg, zolpidem 20 mg and triazolam 0.5 mg orally (Table 3).",
-    regions          = "not reported",
-    notes            = paste(
+    species = "human",
+    n_subjects = 357L,
+    n_studies = 29L,
+    age_range = "matched per simulated trial to the age range reported by each source clinical study",
+    weight_range = "not reported (Simcyp virtual populations generate weight from the built-in demographic distributions)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "White. The clinical DDI literature search was restricted to studies in white subjects; one otherwise eligible midazolam study was excluded because only one-third of its mixed-ethnicity cohort was white and the data were not stratified.",
+    disease_state = "healthy volunteers, except one simvastatin study in patients with cerebrotendinous xanthomatosis (Table 3)",
+    dose_range = "Rifampicin 300 mg twice daily or 450-600 mg once daily for 4-28 days. Victim drugs: midazolam 0.05 mg/kg or 1-2 mg i.v. and 2-15 mg orally; alfentanil 0.015 mg/kg or 1 mg i.v. and 0.06 mg/kg or 4 mg orally; nifedipine 0.02 mg/kg i.v. and 20 mg orally; alprazolam 1 mg, simvastatin 40 mg, zolpidem 20 mg and triazolam 0.5 mg orally (Table 3).",
+    regions = "not reported",
+    notes = paste(
       "DERIVATION OF THE REFERENCE VALUES. The in vivo concentration-induction response for rifampicin was derived from a study reporting the change in the metabolic ratio of 6-beta-hydroxycortisol to cortisol after multiple dosing of rifampicin 600 mg daily for 14 days, combined with separately published rifampicin concentration-time data (Materials and Methods, 'Derivation of Reference In Vivo Induction Parameters'). Because the endogenous cortisol metabolic ratio behaves like a ratio computed after intravenous administration, the paper notes it 'may not provide information on changes in gut metabolism' -- which is precisely the deficiency the refinement to Indmax 16 corrects.",
       "SELECTION OF THE REFINED VALUE. n_studies is the 29 rifampicin DDI studies of Table 3 (10 with the victim given intravenously, summing to 116 subjects, and 19 orally, summing to 241). n_subjects is the 357-subject sum of those reported study sizes and is an upper bound on distinct individuals: two rows report n = 52 for what appears to be the same large cohort contributing both an intravenous and an oral midazolam arm, so some subjects are counted twice. Each study was replicated as 10 virtual trials matched to the published age range, sex split, study size, dose, route, timing, frequency and duration for both perpetrator and victim (Materials and Methods, 'Design of Virtual Studies'). Model selection was by geometric mean fold error and by the proportion of predictions inside published acceptance limits (Table 5).",
       "PREDICTION ACCURACY OF THE SHIPPED MODEL C (Table 5, all victim drugs): GMFE 1.48 and 79.3 percent within acceptance limits, versus GMFE 2.12 and 48.3 percent for the base model A. The improvement is concentrated in the oral arm (GMFE 1.69 versus 2.81), because the base model's underprediction was an intestinal-induction deficiency; the intravenous arm was already accurate under model A (GMFE 1.24) and improves only slightly (1.15).",

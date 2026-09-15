@@ -26,14 +26,14 @@ Ikawa_2008_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk; the review does not describe the assayed matrix beyond
   # "blood samples" and HPLC-UV (Supplementary Table S1).
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -46,22 +46,22 @@ Ikawa_2008_imipenem <- function() {
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 10L,
-    n_studies        = 1L,
-    age_mean         = "43.7 +/- 14.9 years (mean +/- SD)",
-    weight_mean      = "56.7 +/- 10.5 kg (mean +/- SD)",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NULL,
-    disease_state    = "Adults with intraabdominal infections",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_mean = "43.7 +/- 14.9 years (mean +/- SD)",
+    weight_mean = "56.7 +/- 10.5 kg (mean +/- SD)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = NULL,
+    disease_state = "Adults with intraabdominal infections",
+    dose_range = paste(
       "500 mg imipenem as a single intravenous dose (Zhang 2025",
       "Supplementary Table S1). The infusion duration is not reported by",
       "the review."
     ),
-    regions          = "Japan",
+    regions = "Japan",
     n_concentrations = NA_integer_,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 1). Sample size (number",
       "of concentration records) and sex split are recorded as 'NR' in the",
       "review. Plasma samples were drawn at 0.5, 1, 2, 3, 4, 5 and 6 h after",

@@ -10,24 +10,24 @@ Cao_2013_visilizumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "visilizumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "visilizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "visilizumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "visilizumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "visilizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "visilizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "visilizumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Carpenter 2002 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Carpenter 2002 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Steroid-refractory acute graft-versus-host disease (visilizumab humanized non-FcR-binding anti-CD3 IgG2).",
-    dose_range     = "3 mg/m^2 IV (Cao 2013 Figure 5 visilizumab panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Carpenter PA et al. Blood 2002;99:2712-2719 (PMID 11929757). Doses are reported in mg/m^2 (BSA-normalized) in Cao 2013 Figure 5; this model treats dose in mg, so external scaling of mg/m^2 -> mg requires the subject body surface area."
+    disease_state = "Steroid-refractory acute graft-versus-host disease (visilizumab humanized non-FcR-binding anti-CD3 IgG2).",
+    dose_range = "3 mg/m^2 IV (Cao 2013 Figure 5 visilizumab panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Carpenter PA et al. Blood 2002;99:2712-2719 (PMID 11929757). Doses are reported in mg/m^2 (BSA-normalized) in Cao 2013 Figure 5; this model treats dose in mg, so external scaling of mg/m^2 -> mg requires the subject body surface area."
   )
 
   ini({

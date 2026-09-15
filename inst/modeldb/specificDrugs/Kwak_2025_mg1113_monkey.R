@@ -1,11 +1,11 @@
 Kwak_2025_mg1113_monkey <- function() {
   description <- "Preclinical (cynomolgus monkey). QSP (full TMDD). Refined two-target target-mediated drug disposition model for MG1113, a humanized anti-tissue-factor-pathway-inhibitor (anti-TFPI) IgG4 antibody, describing explicit bimolecular binding to BOTH soluble TFPI-alpha (sTFPI-alpha) and membrane-bound TFPI (mTFPI) in a two-compartment PK framework, with zero-order synthesis / first-order degradation turnover of each target, first-order elimination of each drug-target complex, and a single transit compartment for delayed subcutaneous absorption. Parameters fitted to monkey MG1113 and sTFPI-alpha plasma profiles by the Cluster Gauss-Newton Method (rank 1 accepted parameter set, Kwak 2025 Table 1)."
-  reference   <- "Kwak H, Jeong YS, Kim J, Lee M, Byoun S, Aoki Y, Chung SJ, Lee W. Refined target-mediated drug disposition modeling of the anti-tissue factor pathway inhibitor antibody MG1113 in cynomolgus monkeys and rabbits. Front Pharmacol. 2025;16:1745702. doi:10.3389/fphar.2025.1745702. PMCID PMC12819659. Model equations from the Supplementary Material section 4 (Supplementary Methods, Model equations); parameter values from Table 1 (rank 1 column). KD fixed from Kwak H et al. Res Pract Thromb Haemost. 2020;4(8):1301-1312 (doi:10.1002/rth2.12438). Monkey MG1113 and sTFPI-alpha data reanalysed from Kwak EY et al. J Thromb Haemost. 2021;19(6):1425-1435 (doi:10.1111/jth.15244)."
-  vignette    <- "Kwak_2025_mg1113"
+  reference <- "Kwak H, Jeong YS, Kim J, Lee M, Byoun S, Aoki Y, Chung SJ, Lee W. Refined target-mediated drug disposition modeling of the anti-tissue factor pathway inhibitor antibody MG1113 in cynomolgus monkeys and rabbits. Front Pharmacol. 2025;16:1745702. doi:10.3389/fphar.2025.1745702. PMCID PMC12819659. Model equations from the Supplementary Material section 4 (Supplementary Methods, Model equations); parameter values from Table 1 (rank 1 column). KD fixed from Kwak H et al. Res Pract Thromb Haemost. 2020;4(8):1301-1312 (doi:10.1002/rth2.12438). Monkey MG1113 and sTFPI-alpha data reanalysed from Kwak EY et al. J Thromb Haemost. 2021;19(6):1425-1435 (doi:10.1111/jth.15244)."
+  vignette <- "Kwak_2025_mg1113"
 
   paper_specific_compartments <- c("stfpi", "mtfpi", "astfpi", "amtfpi")
 
-  units       <- list(time = "day", dosing = "nmol", concentration = "nM")
+  units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. The four TFPI-species states are carried by the paper
@@ -14,30 +14,30 @@ Kwak_2025_mg1113_monkey <- function() {
   # Material section 4, which labels each of them "The concentration (nM) of
   # ... in the central compartment".
   compartmentData <- list(
-    depot       = list(analyte = "MG1113",                                units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "MG1113",                                units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "free MG1113",                           units = "nmol", specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "free MG1113",                           units = "nmol", specimen = "plasma",              verified = TRUE),
-    stfpi       = list(analyte = "free soluble TFPI-alpha",               units = "nM",   specimen = "plasma",              verified = TRUE),
-    mtfpi       = list(analyte = "free membrane-bound TFPI",              units = "nM",   specimen = "plasma",              verified = TRUE),
-    astfpi      = list(analyte = "MG1113 / soluble TFPI-alpha complex",   units = "nM",   specimen = "plasma",              verified = TRUE),
-    amtfpi      = list(analyte = "MG1113 / membrane-bound TFPI complex",  units = "nM",   specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "MG1113", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "MG1113", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "free MG1113", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "free MG1113", units = "nmol", specimen = "plasma", verified = TRUE),
+    stfpi = list(analyte = "free soluble TFPI-alpha", units = "nM", specimen = "plasma", verified = TRUE),
+    mtfpi = list(analyte = "free membrane-bound TFPI", units = "nM", specimen = "plasma", verified = TRUE),
+    astfpi = list(analyte = "MG1113 / soluble TFPI-alpha complex", units = "nM", specimen = "plasma", verified = TRUE),
+    amtfpi = list(analyte = "MG1113 / membrane-bound TFPI complex", units = "nM", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "cynomolgus monkey (Macaca fascicularis)",
-    n_subjects     = 18,
-    n_studies      = 1,
-    age_range      = NA,
-    weight_range   = "3.5 kg representative body weight; individual weights were not available (Kwak 2025 section 2.1, citing Zhao 2015)",
+    species = "cynomolgus monkey (Macaca fascicularis)",
+    n_subjects = 18,
+    n_studies = 1,
+    age_range = NA,
+    weight_range = "3.5 kg representative body weight; individual weights were not available (Kwak 2025 section 2.1, citing Zhao 2015)",
     sex_female_pct = NA,
     race_ethnicity = NA,
-    disease_state  = "Healthy cynomolgus monkeys (non-disease preclinical PK/PD study)",
-    dose_range     = "Single i.v. or s.c. MG1113 at 2.5, 5.0 or 10.0 mg/kg (17.2, 34.4 or 68.8 nmol/kg), i.e. 60.2, 120.4 or 240.8 nmol per 3.5 kg monkey; n = 1-3 per dose/route group",
-    regions        = NA,
-    notes          = paste0(
+    disease_state = "Healthy cynomolgus monkeys (non-disease preclinical PK/PD study)",
+    dose_range = "Single i.v. or s.c. MG1113 at 2.5, 5.0 or 10.0 mg/kg (17.2, 34.4 or 68.8 nmol/kg), i.e. 60.2, 120.4 or 240.8 nmol per 3.5 kg monkey; n = 1-3 per dose/route group",
+    regions = NA,
+    notes = paste0(
       "Typical-value mechanistic (QSP / full TMDD) simulator. The Cluster ",
       "Gauss-Newton Method (CGNM) was fitted to the MEAN observed profiles, so ",
       "the paper reports NO inter-individual variability and NO residual-error ",
@@ -50,8 +50,8 @@ Kwak_2025_mg1113_monkey <- function() {
       "detect the FREE forms, so the model outputs are free species. Data ",
       "reanalysed from Kwak EY 2021 (J Thromb Haemost 19:1425-1435)."
     ),
-    model_class    = "QSP / full TMDD (explicit bimolecular binding to two target pools, soluble and membrane-bound, with target turnover and complex internalisation)",
-    n_states       = 8
+    model_class = "QSP / full TMDD (explicit bimolecular binding to two target pools, soluble and membrane-bound, with target turnover and complex internalisation)",
+    n_states = 8
   )
 
   ini({

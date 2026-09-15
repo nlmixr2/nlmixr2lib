@@ -20,124 +20,142 @@ Koele_2025_btz043 <- function() {
 
   compartmentData <- list(
     depot1 = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     depot2 = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "BTZ-043", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "BTZ-043",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m1 = list(
-      analyte = "BTZ-043 metabolite M1", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "BTZ-043 metabolite M1",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_m2 = list(
-      analyte = "BTZ-043 metabolite M2", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "BTZ-043 metabolite M2",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_m2 = list(
-      analyte = "BTZ-043 metabolite M2", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "BTZ-043 metabolite M2",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, used for allometric scaling of every apparent clearance and volume around a 70 kg reference adult.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, used for allometric scaling of every apparent clearance and volume around a 70 kg reference adult.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Koele 2025 Methods 'PK model development': 'All volumes and clearances were normalized to 70 kg and allometrically scaled, using fixed exponents of 1 and 0.75, respectively.' The supplementary control stream implements this as AlloCL = (WT/70)**0.75 and AlloV = (WT/70)**1, applied to CL, QBTZ-043, CLM1, CLM2, QM2 (0.75) and to V, VpBTZ-043, VM1, VM2, VpM2 (1). Median weight in the combined Stage 1 + Stage 2 analysis population was 54 kg (range 42-81 kg; Koele 2025 Table 1), so 70 kg is well above the observed median and the reference value is a convention rather than a cohort centre.",
-      source_name        = "WT"
+      notes = "Koele 2025 Methods 'PK model development': 'All volumes and clearances were normalized to 70 kg and allometrically scaled, using fixed exponents of 1 and 0.75, respectively.' The supplementary control stream implements this as AlloCL = (WT/70)**0.75 and AlloV = (WT/70)**1, applied to CL, QBTZ-043, CLM1, CLM2, QM2 (0.75) and to V, VpBTZ-043, VM1, VM2, VpM2 (1). Median weight in the combined Stage 1 + Stage 2 analysis population was 54 kg (range 42-81 kg; Koele 2025 Table 1), so 70 kg is well above the observed median and the reference value is a convention rather than a cohort centre.",
+      source_name = "WT"
     ),
     FED = list(
-      description        = "1 = the dose was swallowed into a stomach that already contained food (a standard breakfast started about 30 min earlier, or a high-fat breakfast); 0 = the dose was taken before any food (fasted, or immediately prior to the start of a standard breakfast).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was swallowed into a stomach that already contained food (a standard breakfast started about 30 min earlier, or a high-fat breakfast); 0 = the dose was taken before any food (fasted, or immediately prior to the start of a standard breakfast).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (dose taken 30 min after the start of a standard breakfast) is the model reference for relative bioavailability; the parameters gated on FED = 0 quantify the deviation from it.",
-      notes              = "This is exactly the WITHFOOD variable of the supplementary control stream, IF(FOOD.EQ.3.OR.FOOD.EQ.1) WITHFOOD=1, where the control stream's FOOD codes are 0 = no food, 1 = high-fat food, 2 = standard food after dose (i.e. dose taken prior to the meal), 3 = standard food before dose (i.e. dose taken 30 min after the start of the meal). FED therefore separates 'food already present' (FOOD 1 and 3) from 'no food present at the moment of dosing' (FOOD 0 and 2). It gates three effects: the secondary lag-time absorption route exists only when FED = 1 (the parallel route was not identifiable without food); mean transit time is multiplied by e_fed_mtt = 0.360 when FED = 0; and the apparent M1 clearance and volume are divided by e_fed_fm_m1 = 1.39 when FED = 0. Per dose record, not per subject: Stage 1 participants dosed fasted on Days 1-12 (FED = 0) and after a high-fat breakfast on Day 14 (FED = 1).",
-      source_name        = "FOOD"
+      notes = "This is exactly the WITHFOOD variable of the supplementary control stream, IF(FOOD.EQ.3.OR.FOOD.EQ.1) WITHFOOD=1, where the control stream's FOOD codes are 0 = no food, 1 = high-fat food, 2 = standard food after dose (i.e. dose taken prior to the meal), 3 = standard food before dose (i.e. dose taken 30 min after the start of the meal). FED therefore separates 'food already present' (FOOD 1 and 3) from 'no food present at the moment of dosing' (FOOD 0 and 2). It gates three effects: the secondary lag-time absorption route exists only when FED = 1 (the parallel route was not identifiable without food); mean transit time is multiplied by e_fed_mtt = 0.360 when FED = 0; and the apparent M1 clearance and volume are divided by e_fed_fm_m1 = 1.39 when FED = 0. Per dose record, not per subject: Stage 1 participants dosed fasted on Days 1-12 (FED = 0) and after a high-fat breakfast on Day 14 (FED = 1).",
+      source_name = "FOOD"
     ),
     FED_HIGHFAT = list(
-      description        = "1 = the dose was taken with a high-fat breakfast; 0 = any other prandial state.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was taken with a high-fat breakfast; 0 = any other prandial state.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (standard breakfast started 30 min before the dose, dose taken prior to a standard breakfast, or fasted)",
-      notes              = "Control-stream FOOD = 1, gating IF(FOOD.EQ.1) F_highfat = THETA(9) = 1.41. Applies to the Stage 1 Day 14 occasion, on which participants received BTZ-043 with a high-fat breakfast after 12 days of fasted dosing (Koele 2025 Methods 'Clinical study'). Koele 2025 does not print the kcal / percent-fat composition of the high-fat breakfast. Mutually exclusive with the standard-breakfast arms; a FED_HIGHFAT = 1 record also carries FED = 1.",
-      source_name        = "FOOD"
+      notes = "Control-stream FOOD = 1, gating IF(FOOD.EQ.1) F_highfat = THETA(9) = 1.41. Applies to the Stage 1 Day 14 occasion, on which participants received BTZ-043 with a high-fat breakfast after 12 days of fasted dosing (Koele 2025 Methods 'Clinical study'). Koele 2025 does not print the kcal / percent-fat composition of the high-fat breakfast. Mutually exclusive with the standard-breakfast arms; a FED_HIGHFAT = 1 record also carries FED = 1.",
+      source_name = "FOOD"
     ),
     FASTED_STRICT = list(
-      description        = "1 = the dose was taken with no food administered on either side of it (the Stage 1 Days 1-12 fasted occasions); 0 = any less strict prandial state, i.e. the dose was taken immediately before a standard breakfast, or with food already present.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the dose was taken with no food administered on either side of it (the Stage 1 Days 1-12 fasted occasions); 0 = any less strict prandial state, i.e. the dose was taken immediately before a standard breakfast, or with food already present.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (relaxed fast or fed)",
-      notes              = "Control-stream FOOD = 0, gating IF(FOOD.EQ.0) F_nofood = THETA(10) = 0.458. The two protocols this indicator separates, verbatim from Koele 2025 Methods 'Clinical study': FASTED_STRICT = 1 is 'participants received BTZ-043 in a fasted state in Stage 1 from Day 1 to Day 12'; FASTED_STRICT = 0 with FED = 0 is the Stage 2 arm in which 'participants took BTZ-043 either prior to ... the start of intake of a standard breakfast', so food arrives shortly after the dose. Together with FED this spans the register's documented three-level prandial factor: strict fast (FASTED_STRICT = 1, FED = 0), relaxed fast (FASTED_STRICT = 0, FED = 0), fed (FASTED_STRICT = 0, FED = 1); FED_HIGHFAT then refines the fed level. Per dose record.",
-      source_name        = "FOOD"
+      notes = "Control-stream FOOD = 0, gating IF(FOOD.EQ.0) F_nofood = THETA(10) = 0.458. The two protocols this indicator separates, verbatim from Koele 2025 Methods 'Clinical study': FASTED_STRICT = 1 is 'participants received BTZ-043 in a fasted state in Stage 1 from Day 1 to Day 12'; FASTED_STRICT = 0 with FED = 0 is the Stage 2 arm in which 'participants took BTZ-043 either prior to ... the start of intake of a standard breakfast', so food arrives shortly after the dose. Together with FED this spans the register's documented three-level prandial factor: strict fast (FASTED_STRICT = 1, FED = 0), relaxed fast (FASTED_STRICT = 0, FED = 0), fed (FASTED_STRICT = 0, FED = 1); FED_HIGHFAT then refines the fed level. Per dose record.",
+      source_name = "FOOD"
     ),
     DOSE_HIGH = list(
-      description        = "1 = the administered daily BTZ-043 dose exceeded 1250 mg (the 1500 and 1750 mg Stage 1 cohorts); 0 = 1250 mg or below.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the administered daily BTZ-043 dose exceeded 1250 mg (the 1500 and 1750 mg Stage 1 cohorts); 0 = 1250 mg or below.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (daily dose of 1250 mg or less)",
-      notes              = "Threshold for this model: DOSE > 1250 mg, per the control stream IF(DOSE.GT.1250)FDose = THETA(8) = 0.710. Koele 2025 Results: 'An apparent plateau in bioavailability was observed for doses over 1250 mg daily. No further decrease in the bioavailability was detected between the 1500 and 1750 mg doses (dOFV = -3.3, df = 1)', attributed in the Discussion to possible saturable absorption. Only Stage 1 escalated above 1250 mg, and those cohorts were dosed fasted, but the control stream applies the effect unconditionally on dose, so the encoding here does the same. Per dose record.",
-      source_name        = "DOSE"
+      notes = "Threshold for this model: DOSE > 1250 mg, per the control stream IF(DOSE.GT.1250)FDose = THETA(8) = 0.710. Koele 2025 Results: 'An apparent plateau in bioavailability was observed for doses over 1250 mg daily. No further decrease in the bioavailability was detected between the 1500 and 1750 mg doses (dOFV = -3.3, df = 1)', attributed in the Discussion to possible saturable absorption. Only Stage 1 escalated above 1250 mg, and those cohorts were dosed fasted, but the control stream applies the effect unconditionally on dose, so the encoding here does the same. Per dose record.",
+      source_name = "DOSE"
     ),
     RACE_COLOURED = list(
-      description        = "1 = participant self-identified as Coloured (the paper's term is 'Cape-coloured', the South African population group common in the South-Western Cape); 0 = any other self-identified race.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = participant self-identified as Coloured (the paper's term is 'Cape-coloured', the South African population group common in the South-Western Cape); 0 = any other self-identified race.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Black or White in this cohort)",
-      notes              = "Control-stream RACE, documented in its own data dictionary as 'Race [1=Cape-colored, 0=other]', gating IF(RACE.EQ.1)CLeffRace = THETA(22) = 0.762. Koele 2025 Results: 'BTZ-043 clearance was estimated to be 24% (95% CI: 12%-35%) slower in Cape-coloured participants'; the Discussion offers a genetic polymorphism in a BTZ-043-metabolizing enzyme as a hypothesis and states the effect 'should be confirmed in a larger population'. Cohort composition (Koele 2025 Table 1, combined Stage 1 + 2): Black 44/68 (65%), Cape-coloured 23/68 (34%), White 1/68 (1%). Time-fixed per subject.",
-      source_name        = "RACE"
+      notes = "Control-stream RACE, documented in its own data dictionary as 'Race [1=Cape-colored, 0=other]', gating IF(RACE.EQ.1)CLeffRace = THETA(22) = 0.762. Koele 2025 Results: 'BTZ-043 clearance was estimated to be 24% (95% CI: 12%-35%) slower in Cape-coloured participants'; the Discussion offers a genetic polymorphism in a BTZ-043-metabolizing enzyme as a hypothesis and states the effect 'should be confirmed in a larger population'. Cohort composition (Koele 2025 Table 1, combined Stage 1 + 2): Black 44/68 (65%), Cape-coloured 23/68 (34%), White 1/68 (1%). Time-fixed per subject.",
+      source_name = "RACE"
     ),
     OCC = list(
-      description        = "Intensive-PK sampling-occasion index used for the between-occasion random effects on relative bioavailability, mean transit time and the absorption rate constant.",
-      units              = "(index)",
-      type               = "categorical",
+      description = "Intensive-PK sampling-occasion index used for the between-occasion random effects on relative bioavailability, mean transit time and the absorption rate constant.",
+      units = "(index)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Three occasions, matching the control stream's OCC1 / OCC2 / OCC3 multiplexers: OCC = 1 is Day 1, OCC = 2 is Day 12 of Stage 1, OCC = 3 is Day 14 (Koele 2025 Methods 'PK analysis': intensive sampling on Days 1, 12 and 14 for Stage 1 and on Days 1 and 14 for Stage 2). Koele 2025 Methods 'PK model development': 'Each PK sampling day was treated as a separate occasion to specify the inter-occasion variability (IOV).' For simulation, set OCC to the occasion index of the dosing interval being simulated; a single-occasion simulation may use OCC = 1 throughout.",
-      source_name        = "DAY"
+      notes = "Three occasions, matching the control stream's OCC1 / OCC2 / OCC3 multiplexers: OCC = 1 is Day 1, OCC = 2 is Day 12 of Stage 1, OCC = 3 is Day 14 (Koele 2025 Methods 'PK analysis': intensive sampling on Days 1, 12 and 14 for Stage 1 and on Days 1 and 14 for Stage 2). Koele 2025 Methods 'PK model development': 'Each PK sampling day was treated as a separate occasion to specify the inter-occasion variability (IOV).' For simulation, set OCC to the occasion index of the dosing interval being simulated; a single-occasion simulation may use OCC = 1 throughout.",
+      source_name = "DAY"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 68L,
-    n_studies      = 1L,
-    age_range      = "18-57 years",
-    age_median     = "27 years",
-    weight_range   = "42-81 kg",
-    weight_median  = "54 kg",
-    height_range   = "1.5-1.9 m",
-    height_median  = "1.7 m",
+    species = "human",
+    n_subjects = 68L,
+    n_studies = 1L,
+    age_range = "18-57 years",
+    age_median = "27 years",
+    weight_range = "42-81 kg",
+    weight_median = "54 kg",
+    height_range = "1.5-1.9 m",
+    height_median = "1.7 m",
     sex_female_pct = 16.2,
     race_ethnicity = c(
-      Black            = 64.7,
-      `Cape-coloured`  = 33.8,
-      White            = 1.5
+      Black = 64.7,
+      `Cape-coloured` = 33.8,
+      White = 1.5
     ),
-    hiv_status     = "HIV-1 negative, 68/68 (100%)",
-    disease_state  = "Adults aged 18-64 years with drug-susceptible pulmonary tuberculosis enrolled in the sequential Phase 1b/2a dose-escalation and dose-expansion trial NCT04044001 (Stage 1 Phase 1b dose escalation, Stage 2 Phase 2a randomized dose expansion).",
-    dose_range     = "Oral BTZ-043 250-1750 mg once daily for 14 days. Stage 1 escalated through 250, 500, 750, 1000, 1250, 1500 and 1750 mg with three participants per cohort and six in the highest; Stage 2 randomized 54 participants to 250, 500 or 1000 mg daily or to the Rifafour e-275 control regimen in a 3:3:3:2 ratio.",
+    hiv_status = "HIV-1 negative, 68/68 (100%)",
+    disease_state = "Adults aged 18-64 years with drug-susceptible pulmonary tuberculosis enrolled in the sequential Phase 1b/2a dose-escalation and dose-expansion trial NCT04044001 (Stage 1 Phase 1b dose escalation, Stage 2 Phase 2a randomized dose expansion).",
+    dose_range = "Oral BTZ-043 250-1750 mg once daily for 14 days. Stage 1 escalated through 250, 500, 750, 1000, 1250, 1500 and 1750 mg with three participants per cohort and six in the highest; Stage 2 randomized 54 participants to 250, 500 or 1000 mg daily or to the Rifafour e-275 control regimen in a 3:3:3:2 ratio.",
     prandial_state = "Stage 1: fasted on Days 1-12 and with a high-fat breakfast on Day 14. Stage 2: BTZ-043 taken either prior to, or 30 min after, the start of intake of a standard breakfast. Occasion counts in Koele 2025 Table 1: fasted 24, high-fat 19, standard together with dose 24, standard 30 min prior to dose 20.",
-    regions        = "South Africa (TASK, Cape Town; University of Cape Town Lung Institute)",
-    notes          = "Baseline demographics from Koele 2025 Table 1, 'Combined Stage 1 + 2' column. Twenty-four Stage 1 and 44 Stage 2 participants were analysed; one Stage 2 participant in the 500 mg group withdrew before any study procedure and contributed no data. The PK dataset held 1808 BTZ-043, 1808 M1 and 1793 M2 observations, of which 600 (33%), 159 (8.8%) and 146 (8.1%) respectively were below the 20 ng/mL limit of quantification. BLQ observations were EXCLUDED from the final analysis: models using the NONMEM M3 method were highly unstable and, when the final model was re-estimated with M3, it significantly underestimated the central tendency of the BTZ-043 and M2 elimination phases (Koele 2025 Results, 'PK model')."
+    regions = "South Africa (TASK, Cape Town; University of Cape Town Lung Institute)",
+    notes = "Baseline demographics from Koele 2025 Table 1, 'Combined Stage 1 + 2' column. Twenty-four Stage 1 and 44 Stage 2 participants were analysed; one Stage 2 participant in the 500 mg group withdrew before any study procedure and contributed no data. The PK dataset held 1808 BTZ-043, 1808 M1 and 1793 M2 observations, of which 600 (33%), 159 (8.8%) and 146 (8.1%) respectively were below the 20 ng/mL limit of quantification. BLQ observations were EXCLUDED from the final analysis: models using the NONMEM M3 method were highly unstable and, when the final model was re-estimated with M3, it significantly underestimated the central tendency of the BTZ-043 and M2 elimination phases (Koele 2025 Results, 'PK model')."
   )
 
   ini({

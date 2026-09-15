@@ -22,10 +22,15 @@ Baheti_2011_tenofovir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tenofovir disoproxil fumarate (TDF)", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "tenofovir disoproxil fumarate (TDF)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tenofovir diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(

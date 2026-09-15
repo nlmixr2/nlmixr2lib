@@ -19,11 +19,11 @@ Kir_2025_atenolol_rat_pbpk <- function() {
   vignette <- "Kir_2025_atenolol_metoprolol_malnutrition"
 
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ug/mL",
-    amount        = "ug",
-    weight        = "kg"
+    amount = "ug",
+    weight = "kg"
   )
 
   # Every volume, flow, amount and clearance in this model is normalised PER KG
@@ -32,11 +32,11 @@ Kir_2025_atenolol_rat_pbpk <- function() {
 
   covariateData <- list(
     MAL_NOURISH = list(
-      description        = "Malnutrition status at study entry",
-      units              = "unitless",
-      type               = "binary",
+      description = "Malnutrition status at study entry",
+      units = "unitless",
+      type = "binary",
       reference_category = "0 (control, non-malnourished)",
-      notes              = paste(
+      notes = paste(
         "1 = malnourished, produced experimentally by feeding a 5% protein isocaloric diet",
         "for 17-20 days; 0 = control, fed the 20% protein isocaloric diet (Methods 2.2.1).",
         "Malnutrition was confirmed biochemically in Table 1: body weight 216 g vs 300 g",
@@ -48,7 +48,7 @@ Kir_2025_atenolol_rat_pbpk <- function() {
         "It deliberately does NOT change any disposition parameter: fd1, Kp1 and CL were",
         "shared across groups in the published fit (Results 3.1)."
       ),
-      source_name        = "Group"
+      source_name = "Group"
     )
   )
 
@@ -60,15 +60,15 @@ Kir_2025_atenolol_rat_pbpk <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Table 1: 300 (SD 18.27) g control vs 216 (SD 14.99) g malnourished; screened, not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1: 300 (SD 18.27) g control vs 216 (SD 14.99) g malnourished; screened, not retained."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Table 1: 4.40 (SD 0.07) g/dL control vs 3.75 (SD 0.17) g/dL malnourished.",
         "Not retained as a covariate, but albumin IS used indirectly: the fraction unbound",
         "was rescaled from the control value by the albumin ratio (fu 0.970 -> 1.00),",
@@ -77,30 +77,30 @@ Kir_2025_atenolol_rat_pbpk <- function() {
     ),
     TCHOL = list(
       description = "Total cholesterol",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Table 1: 78.4 (SD 15.01) mg/dL control vs 50.3 (SD 8.34) mg/dL malnourished; screened, not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Table 1: 78.4 (SD 15.01) mg/dL control vs 50.3 (SD 8.34) mg/dL malnourished; screened, not retained."
     )
   )
 
   compartmentData <- list(
-    a_blood            = list(analyte = "atenolol", units = "ug", specimen = "whole blood", verified = TRUE),
+    a_blood = list(analyte = "atenolol", units = "ug", specimen = "whole blood", verified = TRUE),
     a_rapidly_perfused = list(analyte = "atenolol", units = "ug", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused  = list(analyte = "atenolol", units = "ug", specimen = "tissue", verified = TRUE),
-    a_kidney           = list(analyte = "atenolol", units = "ug", specimen = "tissue", verified = TRUE)
+    a_slowly_perfused = list(analyte = "atenolol", units = "ug", specimen = "tissue", verified = TRUE),
+    a_kidney = list(analyte = "atenolol", units = "ug", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 8L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = "216 (SD 14.99) g malnourished to 300 (SD 18.27) g control",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 8L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = "216 (SD 14.99) g malnourished to 300 (SD 18.27) g control",
     sex_female_pct = 0,
-    disease_state  = "Experimental protein-calorie malnutrition (5% protein isocaloric diet, 17-20 days) vs control (20% protein isocaloric diet)",
-    dose_range     = "250 mg/kg single oral dose (suspension, feeding tube); literature IV reference 1 mg/kg",
-    regions        = "Turkey (Kobay Experimental Animals Laboratory, Ankara)",
-    notes          = paste(
+    disease_state = "Experimental protein-calorie malnutrition (5% protein isocaloric diet, 17-20 days) vs control (20% protein isocaloric diet)",
+    dose_range = "250 mg/kg single oral dose (suspension, feeding tube); literature IV reference 1 mg/kg",
+    regions = "Turkey (Kobay Experimental Animals Laboratory, Ankara)",
+    notes = paste(
       "n = 4 control + 4 malnourished male Sprague-Dawley rats (Methods 2.2.1); the oral",
       "arms are the only rats actually dosed in this study. Blood was sampled from the tail",
       "vein at 0, 30, 60, 90, 120, 180, 240, 300, 360, 420, 450 and 480 min.",

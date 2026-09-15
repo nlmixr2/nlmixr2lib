@@ -27,8 +27,8 @@ Xie_2025_midazolam <- function() {
   )
   vignette <- "Xie_2025_midazolam"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -37,17 +37,17 @@ Xie_2025_midazolam <- function() {
   # (the published structural diagram) and the Blood Sampling section
   # (plasma, LC-MS/MS).
   compartmentData <- list(
-    central      = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = TRUE),
     central_1ohm = list(analyte = "1-hydroxymidazolam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AST = list(
-      description        = "Serum aspartate aminotransferase activity",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase activity",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline hepatic-injury marker. Enters midazolam clearance as a",
         "power term (AST / 37)^-0.397, normalised to the population median",
         "of 37 IU/L (Xie 2025 Table 1: AST median 37.0, range 10.0-362.0).",
@@ -62,14 +62,14 @@ Xie_2025_midazolam <- function() {
         "the paper as IU/L, used interchangeably with the register's",
         "canonical U/L."
       ),
-      source_name        = "AST"
+      source_name = "AST"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters 1-OH-MDZ apparent clearance as a power term (WT / 62)^1.58,",
         "normalised to the population median of 62 kg (Xie 2025 Table 1:",
         "weight median 62.0 kg, range 38.0-87.6). The exponent is estimated",
@@ -82,17 +82,17 @@ Xie_2025_midazolam <- function() {
         "either volume; the Discussion argues total body weight tracks the",
         "metabolic (UGT-mediated) capacity that clears 1-OH-MDZ."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     SNP_NR1I2_RS2461817_HOM = list(
-      description        = paste(
+      description = paste(
         "Binary indicator for the homozygous-variant genotype of the NR1I2",
         "(PXR) rs2461817 single-nucleotide polymorphism"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (wild-type homozygote or heterozygote)",
-      notes              = paste(
+      notes = paste(
         "Recessive-model encoding: 1 = homozygous mutant, 0 = the union of",
         "wild-type homozygotes and mutant heterozygotes. This pooling is the",
         "paper's own, stated verbatim in the Figure 6 caption: 'GENE = 1",
@@ -106,7 +106,7 @@ Xie_2025_midazolam <- function() {
         "falling from 22.6 to 13.4 L/h for homozygous mutants, and",
         "22.6 * (1 - 0.405) = 13.45 whereas 22.6 * exp(-0.405) = 15.07."
       ),
-      source_name        = "GENE (NR1I2 rs2461817)"
+      source_name = "GENE (NR1I2 rs2461817)"
     )
   )
 
@@ -115,77 +115,77 @@ Xie_2025_midazolam <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Methods 'Covariate Analysis'); not retained. Table 1 median 67 years (range 29-90)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Methods 'Covariate Analysis'); not retained. Table 1 median 67 years (range 29-90)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Table 1: 42 male (68.9%) / 19 female (31.1%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Table 1: 42 male (68.9%) / 19 female (31.1%)."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 16 (range 2-24). The Discussion explicitly notes 'we did not observe a significant correlation between MDZ CL and APACHE II scores', in contrast to Swart 2004 where APACHE II >= 26 increased Vd."
+      units = "points",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 16 (range 2-24). The Discussion explicitly notes 'we did not observe a significant correlation between MDZ CL and APACHE II scores', in contrast to Swart 2004 where APACHE II >= 26 increased Vd."
     ),
     ALB = list(
       description = "Serum albumin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 31.7 g/L (range 21.7-65.1). The Discussion notes most patients had albumin in the normal range, unlike Franken 2017 / Vree where hypoalbuminaemia drove clearance."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 31.7 g/L (range 21.7-65.1). The Discussion notes most patients had albumin in the normal range, unlike Franken 2017 / Vree where hypoalbuminaemia drove clearance."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase activity",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = "Screened; not retained (AST was retained instead). Table 1 median 22.0 IU/L (range 2.0-391.0)."
+      units = "IU/L",
+      type = "continuous",
+      notes = "Screened; not retained (AST was retained instead). Table 1 median 22.0 IU/L (range 2.0-391.0)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 15.4 umol/L (range 3.5-169.7)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 15.4 umol/L (range 3.5-169.7)."
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 82.14 mg/L (range 1.95-295.74)."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 82.14 mg/L (range 1.95-295.74)."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 70.77 mL/min (range 8.97-203.4)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 70.77 mL/min (range 8.97-203.4)."
     ),
     CONMED_PROPOFOL = list(
       description = "Concomitant propofol administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (usage rate > 10% per Methods 'Covariate Analysis'); not retained. Table 1: 22 patients (36.1%). The Discussion notes the absence of a propofol effect on midazolam Vd despite a mechanistic expectation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (usage rate > 10% per Methods 'Covariate Analysis'); not retained. Table 1: 22 patients (36.1%). The Discussion notes the absence of a propofol effect on midazolam Vd despite a mechanistic expectation."
     ),
     CONMED_METHYLPREDNISOLONE = list(
       description = "Concomitant methylprednisolone administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (usage rate > 10%); not retained. Table 1: 7 patients (11.5%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (usage rate > 10%); not retained. Table 1: 7 patients (11.5%)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 61L,
-    n_studies      = 1L,
-    age_range      = "29-90 years",
-    age_median     = "67 years",
-    weight_range   = "38.0-87.6 kg",
-    weight_median  = "62.0 kg",
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 1L,
+    age_range = "29-90 years",
+    age_median = "67 years",
+    weight_range = "38.0-87.6 kg",
+    weight_median = "62.0 kg",
     sex_female_pct = 31.1,
     race_ethnicity = "Chinese (single-centre cohort, Fuzhou, Fujian Province)",
-    disease_state  = paste(
+    disease_state = paste(
       "Mechanically ventilated adult ICU patients requiring at least 24 h of",
       "mechanical ventilation and receiving continuous intravenous midazolam",
       "for sedation. Mixed admission diagnoses, mostly postoperative patients",
@@ -195,15 +195,15 @@ Xie_2025_midazolam <- function() {
       "haemodynamic instability requiring frequent dose changes, and",
       "pregnancy / lactation / midazolam allergy."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Continuous intravenous infusion of midazolam 1 mg/mL (50 mg diluted to",
       "40 mL of 0.9% saline or 5% glucose), pumped at 2-4 mL/h at initiation",
       "and titrated to the target Richmond Agitation-Sedation Scale score.",
       "Observed initial infusion rates ranged 2-6 mg/h. Observation window",
       "0-24 h."
     ),
-    regions        = "China (Fujian Medical University Union Hospital, Fuzhou)",
-    notes          = paste(
+    regions = "China (Fujian Medical University Union Hospital, Fuzhou)",
+    notes = paste(
       "Prospective observational study, April 2020 - August 2022 (IRB",
       "2021YF003-01), reported per STROBE. 69 patients screened, 8 excluded",
       "(3 incomplete data, 5 not meeting inclusion criteria). 237 paired",

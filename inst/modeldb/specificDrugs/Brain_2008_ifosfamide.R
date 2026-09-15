@@ -17,19 +17,27 @@ Brain_2008_ifosfamide <- function() {
   vignette <- "Brain_2008_ifosfamide"
   paper_specific_compartments <- c("ohif", "decloro3", "decloro2", "bmg")
   paper_specific_etas <- c(
-    "etalfovv_ohif", "etalkm_ohif",
-    "etalfovv_decloro3", "etalfovv_decloro2",
-    "etalslope_bmg", "etalrbase_bmg",
-    "etalmtt_anc", "etalrbase_anc"
+    "etalfovv_ohif",
+    "etalkm_ohif",
+    "etalfovv_decloro3",
+    "etalfovv_decloro2",
+    "etalslope_bmg",
+    "etalrbase_bmg",
+    "etalmtt_anc",
+    "etalrbase_anc"
   )
   paper_specific_residual_sds <- c(
-    "expSd_ohif", "expSd_decloro3", "expSd_decloro2",
-    "propSd_bmg", "addSd_bmg",
-    "propSd_anc", "addSd_anc"
+    "expSd_ohif",
+    "expSd_decloro3",
+    "expSd_decloro2",
+    "propSd_bmg",
+    "addSd_bmg",
+    "propSd_anc",
+    "addSd_anc"
   )
   units <- list(
-    time          = "h",
-    dosing        = "umol",
+    time = "h",
+    dosing = "umol",
     concentration = "umol/L for Cc (ifosfamide), Cohif, Cdecloro3, Cdecloro2 (metabolites); mg/L for BMG; cells/mm^3 for ANC"
   )
 
@@ -42,32 +50,37 @@ Brain_2008_ifosfamide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    enzyme     = list(analyte = "autoinduction enzyme pool", units = "umol", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
-    ohif       = list(analyte = "4-hydroxy-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
-    decloro3   = list(analyte = "3-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
-    decloro2   = list(analyte = "2-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
-    bmg        = list(analyte = "urinary beta-2-microglobulin", units = "umol", specimen = "urine", verified = FALSE),
+    enzyme = list(
+      analyte = "autoinduction enzyme pool",
+      units = "umol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    ohif = list(analyte = "4-hydroxy-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    decloro3 = list(analyte = "3-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    decloro2 = list(analyte = "2-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    bmg = list(analyte = "urinary beta-2-microglobulin", units = "umol", specimen = "urine", verified = FALSE),
     precursor1 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "not applicable", units = "umol", specimen = "whole blood", verified = FALSE)
+    circ = list(analyte = "not applicable", units = "umol", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "35-68 years",
-    height_range   = "1.39-1.89 m",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "35-68 years",
+    height_range = "1.39-1.89 m",
     sex_female_pct = 50.0,
-    disease_state  = "Adults with advanced solid tumours receiving single-agent ifosfamide",
-    dose_range     = "Ifosfamide 3 g/m^2 per day for 3 days (total 9 g/m^2 per cycle) administered as either three successive 3 h daily IV infusions or a single 72 h continuous IV infusion; total per-cycle dose 12.6-16.8 g. Each subject received both schedules in an n = 1 randomised crossover separated by 3 weeks.",
-    regions        = "France (single centre, Rene Huguenin Cancer Centre, Saint-Cloud)",
-    notes          = paste(
+    disease_state = "Adults with advanced solid tumours receiving single-agent ifosfamide",
+    dose_range = "Ifosfamide 3 g/m^2 per day for 3 days (total 9 g/m^2 per cycle) administered as either three successive 3 h daily IV infusions or a single 72 h continuous IV infusion; total per-cycle dose 12.6-16.8 g. Each subject received both schedules in an n = 1 randomised crossover separated by 3 weeks.",
+    regions = "France (single centre, Rene Huguenin Cancer Centre, Saint-Cloud)",
+    notes = paste(
       "Original enrollment was 17 patients (9 male, 8 female); 12 had two",
       "complete pharmacokinetic evaluations. One patient receiving",
       "carbamazepine co-administration (eight-fold increase of CLINIT, OFV drop",

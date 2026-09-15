@@ -33,85 +33,85 @@ Yin_2024_soticlestat <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Soticlestat dose level for the current regimen",
-      units              = "mg",
-      type               = "continuous",
+      description = "Soticlestat dose level for the current regimen",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Empirical dose-nonlinearity covariate entering as (DOSE/300)^exponent on ka, Q, Vp",
         "and relative bioavailability. All four exponents were FIXED during estimation",
         "(Table 1a 'Dose effect, exponent' rows are flagged 'Fixed'; NONMEM $THETA 13-16 carry",
         "FIX). Reference 300 mg. Studied dose range 15-1350 mg (Table S1)."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on relative bioavailability, reference 65.9 kg, and on baseline 24HC,",
         "reference 55.25 kg. The authors estimated the weight effect on Frel rather than",
         "fixing an allometric exponent on CL/V (paper section 'PopPK model')."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on ka, reference 23.6 kg/m^2, applied ONLY to participants aged",
         "<= 18 years (NONMEM 'IF( AGE.LE.18 )'). For older participants the factor is 1."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two distinct roles. (1) Gate for the BMI-on-ka effect, which applies only when",
         "AGE <= 18 y. (2) Hockey-stick power effect on baseline 24HC applied only when",
         "AGE < 17.5 y (the breakpoint itself was estimated); above the breakpoint the",
         "factor is 1."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalized renal function)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalized renal function)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on peripheral volume, reference 162.4 mL/min/1.73 m^2.",
         "The source reports eGFR; the estimating equation is not stated in the paper.",
         "Cohort mean (SD) 166 (54.1) mL/min/1.73 m^2 in the popPK analysis set (Table S2)."
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     ),
     AAG = list(
-      description        = "Baseline alpha-1-acid glycoprotein concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline alpha-1-acid glycoprotein concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reported in mg/dL by the source, NOT in the register's default g/L; the reference",
         "value is 20 mg/dL (= 0.2 g/L). Power effect on relative bioavailability and on",
         "baseline 24HC. Missing values were imputed at the observed median of 20 mg/dL,",
         "flagged by AAG_MISSING."
       ),
-      source_name        = "A1AGLP"
+      source_name = "A1AGLP"
     ),
     AAG_MISSING = list(
-      description        = "Indicator that baseline alpha-1-acid glycoprotein was not measured and was imputed",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that baseline alpha-1-acid glycoprotein was not measured and was imputed",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AAG measured)",
-      notes              = paste(
+      notes = paste(
         "1 = AAG was not collected in the participant's trial and was imputed at the median",
         "of 20 mg/dL; 0 = AAG measured. Does not shift the typical value: it inflates the",
         "between-subject SD of relative bioavailability by the factor",
@@ -119,14 +119,14 @@ Yin_2024_soticlestat <- function() {
         "variability. Studies TAK-935-1003, TAK-935-2001, TAK-935-2002 and TAK-935-18-002",
         "have AAG imputed for all participants (Table S2 footnote a)."
       ),
-      source_name        = "A1AGLP_MISS"
+      source_name = "A1AGLP_MISS"
     ),
     FORM_TABLET = list(
-      description        = "Tablet (vs oral solution) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tablet (vs oral solution) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral solution, the typical-value reference)",
-      notes              = paste(
+      notes = paste(
         "1 = any non-oral-solution formulation (tablet, including tablets administered via",
         "G-tube / PEG tube); 0 = oral solution. NONMEM encodes this as FORM != 1, with",
         "FORM = 1 the oral solution. Percent effects on both the absorption lag time",
@@ -134,18 +134,18 @@ Yin_2024_soticlestat <- function() {
         "separate delay compartment; the present model replaced it with the",
         "formulation-on-lag-time covariate."
       ),
-      source_name        = "FORM"
+      source_name = "FORM"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant (vs DEE patient) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant (vs DEE patient) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "1 (healthy volunteer) is the TYPICAL-VALUE reference in this paper, which is the",
         "complement of the register default; the -22.8% CL effect is carried by patients",
         "(DIS_HEALTHY = 0)"
       ),
-      notes              = paste(
+      notes = paste(
         "The source column is PATIENT (1 = patient with a DEE, 0 = healthy volunteer), so",
         "DIS_HEALTHY = 1 - PATIENT. The published typical CL of 4.2 L/h is the",
         "HEALTHY-VOLUNTEER value; the model applies the patient effect on (1 - DIS_HEALTHY)",
@@ -153,52 +153,52 @@ Yin_2024_soticlestat <- function() {
         "syndrome, Lennox-Gastaut syndrome, 15q duplication syndrome and CDKL5 deficiency",
         "disorder (Table S2)."
       ),
-      source_name        = "PATIENT"
+      source_name = "PATIENT"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese ethnic-background indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese ethnic-background indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = paste(
+      notes = paste(
         "Percent effect on inter-compartmental clearance. NONMEM encodes this as",
         "COUNTRY == 2 within the Asian subpopulation. 24/218 (11%) of the popPK analysis",
         "set (Table S2)."
       ),
-      source_name        = "COUNTRY (= 2)"
+      source_name = "COUNTRY (= 2)"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese ethnic-background indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese ethnic-background indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese)",
-      notes              = paste(
+      notes = paste(
         "Percent effects on ka and on inter-compartmental clearance. NONMEM encodes this as",
         "COUNTRY == 4 within the Asian subpopulation. 20/218 (9%) of the popPK analysis set",
         "(Table S2)."
       ),
-      source_name        = "COUNTRY (= 4)"
+      source_name = "COUNTRY (= 4)"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant enzyme-inducing antiseizure medication indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant enzyme-inducing antiseizure medication indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no strong CYP3A-inducing antiseizure comedication)",
-      notes              = paste(
+      notes = paste(
         "1 = concomitant treatment with an antiseizure medication grouped by the authors as",
         "a strong CYP3A enzyme inducer (carbamazepine, phenobarbital or phenytoin);",
         "0 otherwise. Percent effect on ka."
       ),
-      source_name        = "AED_STR_IND"
+      source_name = "AED_STR_IND"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_ASIAN = list(
       description = "Asian ethnic-background indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Present in the final NONMEM control stream as a covariate on peripheral volume",
         "(V3~ASIAN), but its coefficient is '0 FIX', making the term an exact no-op; the",
         "row does not appear in Table 1a. The retained ethnic-background effects are the",
@@ -208,9 +208,9 @@ Yin_2024_soticlestat <- function() {
     ),
     FORM_CRUSHED_TABLET = list(
       description = "Crushed-tablet administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Carried in the NONMEM $INPUT and $TABLE records (CRUSHED) but never referenced in",
         "$PK or $ERROR of either final model, and not reported in Table 1. Screened but not",
         "retained."
@@ -218,67 +218,67 @@ Yin_2024_soticlestat <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as an individual characteristic in the covariate analysis; not retained in either final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as an individual characteristic in the covariate analysis; not retained in either final model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a protein-binding factor; not retained in either final model."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a protein-binding factor; not retained in either final model."
     ),
     BILI = list(
       description = "Total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened as a liver-function factor (popPK model only); not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened as a liver-function factor (popPK model only); not retained."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     effect = list(
-      analyte  = "soticlestat",
-      units    = "ng/mL",
+      analyte = "soticlestat",
+      units = "ng/mL",
       specimen = "not applicable",
       verified = TRUE
     ),
     hc24 = list(
-      analyte  = "24S-hydroxycholesterol",
-      units    = "ng/mL",
+      analyte = "24S-hydroxycholesterol",
+      units = "ng/mL",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 306,
-    n_studies      = 8,
-    age_range      = "paediatric through adult; mean (SD) 24.1 (14.5) years in the popPK set and 21.8 (14.6) years in the PK/EO/PD set",
-    weight_range   = "mean (SD) 56.6 (24.4) kg in the popPK set and 52.3 (24.6) kg in the PK/EO/PD set",
+    species = "human",
+    n_subjects = 306,
+    n_studies = 8,
+    age_range = "paediatric through adult; mean (SD) 24.1 (14.5) years in the popPK set and 21.8 (14.6) years in the PK/EO/PD set",
+    weight_range = "mean (SD) 56.6 (24.4) kg in the popPK set and 52.3 (24.6) kg in the PK/EO/PD set",
     race_ethnicity = c(White = 67, Black = 11, `Asian (Japan)` = 11, `Asian (China)` = 9, Other = 2),
-    disease_state  = "healthy volunteers and patients with developmental and epileptic encephalopathies (DEE, Dravet syndrome, Lennox-Gastaut syndrome, 15q duplication syndrome, CDKL5 deficiency disorder)",
-    dose_range     = "15-1350 mg oral soticlestat, single dose or 100-300 mg b.i.d.",
-    notes          = paste(
+    disease_state = "healthy volunteers and patients with developmental and epileptic encephalopathies (DEE, Dravet syndrome, Lennox-Gastaut syndrome, 15q duplication syndrome, CDKL5 deficiency disorder)",
+    dose_range = "15-1350 mg oral soticlestat, single dose or 100-300 mg b.i.d.",
+    notes = paste(
       "Two overlapping analysis sets from eight phase I/II trials (Table S1, Table S2).",
       "The population PK model used 218 individuals (110 healthy, 108 patients),",
       "3288 soticlestat concentrations and 8732 dosing events. The PK/EO/PD model used",

@@ -8,58 +8,58 @@ Fasanmade_2009_infliximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Vc; normalized as WT/77 per Fasanmade 2009 (reference: 77 kg).",
-      source_name        = "WT"
+      notes = "Power effect on Vc; normalized as WT/77 per Fasanmade 2009 (reference: 77 kg).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/4.1 per Fasanmade 2009 (reference: 4.1 g/dL). Canonical input is SI g/L per the 2026-06-19 register standardization audit; converted inline in model() to g/dL via alb_gdL <- ALB * 0.1 so the Table 3 reference 4.1 g/dL stays load-bearing.",
-      source_name        = "ALB"
+      notes = "Power effect on CL; normalized as ALB/4.1 per Fasanmade 2009 (reference: 4.1 g/dL). Canonical input is SI g/L per the 2026-06-19 register standardization audit; converted inline in model() to g/dL via alb_gdL <- ALB * 0.1 so the Table 3 reference 4.1 g/dL stays load-bearing.",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (antibodies to infliximab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (antibodies to infliximab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Time-invariant in the source analysis: a subject is coded 1 if antibodies were detected at any visit through week 42/54, otherwise 0. Source paper uses the column label 'ATI' (antibodies to infliximab); renamed to the canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ATI"
+      notes = "Time-invariant in the source analysis: a subject is coded 1 if antibodies were detected at any visit through week 42/54, otherwise 0. Source paper uses the column label 'ATI' (antibodies to infliximab); renamed to the canonical ADA_POS per covariate-columns.md.",
+      source_name = "ATI"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source paper uses 'SEX' with 1 = female / 0 = male, matching the canonical SEXF encoding; column renamed to SEXF per covariate-columns.md.",
-      source_name        = "SEX"
+      notes = "Source paper uses 'SEX' with 1 = female / 0 = male, matching the canonical SEXF encoding; column renamed to SEXF per covariate-columns.md.",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    n_subjects     = 482L,
-    n_studies      = 2L,
-    age_range      = "18-75 years (adults)",
-    age_median     = "41 years",
-    weight_range   = "36-159 kg",
-    weight_median  = "77 kg",
+    n_subjects = 482L,
+    n_studies = 2L,
+    age_range = "18-75 years (adults)",
+    age_median = "41 years",
+    weight_range = "36-159 kg",
+    weight_median = "77 kg",
     sex_female_pct = 39.2,
     race_ethnicity = "Predominantly White; smaller proportions of Black, Asian, and Other. Race was not retained as a covariate in the final model.",
-    disease_state  = "Moderate-to-severe ulcerative colitis (pooled from the ACT 1 and ACT 2 phase III trials).",
-    dose_range     = "5 mg/kg and 10 mg/kg IV infusion over 2 hours at weeks 0, 2, 6, then every 8 weeks through week 46.",
-    regions        = "Multi-regional (North America, Europe, and others).",
-    notes          = "Immunogenicity incidence (ATI-positive at any time through week 42/54) was ~6.8% across pooled ACT 1/ACT 2 subjects. Concomitant immunomodulators (azathioprine, 6-mercaptopurine) did not have a statistically significant effect on infliximab CL in the final model. Reference covariate values: WT = 77 kg, ALB = 4.1 g/dL, male, ADA-negative."
+    disease_state = "Moderate-to-severe ulcerative colitis (pooled from the ACT 1 and ACT 2 phase III trials).",
+    dose_range = "5 mg/kg and 10 mg/kg IV infusion over 2 hours at weeks 0, 2, 6, then every 8 weeks through week 46.",
+    regions = "Multi-regional (North America, Europe, and others).",
+    notes = "Immunogenicity incidence (ATI-positive at any time through week 42/54) was ~6.8% across pooled ACT 1/ACT 2 subjects. Concomitant immunomodulators (azathioprine, 6-mercaptopurine) did not have a statistically significant effect on infliximab CL in the final model. Reference covariate values: WT = 77 kg, ALB = 4.1 g/dL, male, ADA-negative."
   )
 
   ini({

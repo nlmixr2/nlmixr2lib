@@ -22,19 +22,19 @@ Perlstein_2026_olanzapine_lai <- function() {
   dosing <- c("depot", "depot2")
 
   compartmentData <- list(
-    depot       = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL/F and V/F with EXPONENTS ESTIMATED by the paper",
         "(Table 1: CL_P = 0.31, RSE 86.8%; V_P = 0.364, RSE 110.7%), not fixed at the",
         "standard 0.75 / 1. The Methods text on p. 6 describes a candidate model with the",
@@ -45,14 +45,14 @@ Perlstein_2026_olanzapine_lai <- function() {
         "standard 70 kg is used; the cohort mean weight was 85.8 kg (Results, Data).",
         "Baseline value, not time-varying."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_TV44749_MG = list(
-      description        = "Administered TV-44749 subcutaneous injection dose, as olanzapine milligrams",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered TV-44749 subcutaneous injection dose, as olanzapine milligrams",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate carrying the milligram dose of the TV-44749 injection.",
         "Enters as a linear additive effect on the SECOND-process Weibull release TIME:",
         "TD1 = TD1_0 + TD1_1 * DOSE (Perlstein 2026 Table 1 footnote: 'TD_0 and TD1_0, the",
@@ -65,62 +65,62 @@ Perlstein_2026_olanzapine_lai <- function() {
         "(patients). Must be supplied on every record, dose and observation alike, because it",
         "is read inside model()."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise forward/backward covariate search (Methods, Covariate Analysis) but NOT retained in the final model; no coefficient is reported."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise forward/backward covariate search (Methods, Covariate Analysis) but NOT retained in the final model; no coefficient is reported."
     ),
     BMI = list(
       description = "Body mass index at baseline",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a covariate because it is well characterised for olanzapine in the oral prescribing information (Discussion), but NOT retained in the final model; no coefficient is reported."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a covariate because it is well characterised for olanzapine in the oral prescribing information (Discussion), but NOT retained in the final model; no coefficient is reported."
     ),
     HT = list(
       description = "Height at baseline",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported. Cohort was 73% male (Results, Data)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported. Cohort was 73% male (Results, Data)."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator (1 = yes, 0 = no)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported. Cohort was 79% Black or African American (Results, Data)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate search but NOT retained in the final model; no coefficient is reported. Cohort was 79% Black or African American (Results, Data)."
     ),
     SMOKER = list(
       description = "Current smoker indicator (1 = smoker, 0 = non-smoker)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a covariate because smoking induces CYP1A2-mediated olanzapine clearance and is discussed in the oral prescribing information (Discussion), but NOT retained in the final TV-44749 model; no coefficient is reported. Cohort was 69% smokers (Results, Data)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a covariate because smoking induces CYP1A2-mediated olanzapine clearance and is discussed in the oral prescribing information (Discussion), but NOT retained in the final TV-44749 model; no coefficient is reported. Cohort was 69% smokers (Results, Data)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 89,
-    n_studies      = 1,
-    age_range      = "18-60 years (healthy participants) and 18-65 years (patients); cohort mean 45.6 years (SD 10.3)",
-    weight_mean    = "85.8 kg (SD 15.7)",
-    bmi_mean       = "28.3 kg/m^2 (SD 4.7)",
+    species = "human",
+    n_subjects = 89,
+    n_studies = 1,
+    age_range = "18-60 years (healthy participants) and 18-65 years (patients); cohort mean 45.6 years (SD 10.3)",
+    weight_mean = "85.8 kg (SD 15.7)",
+    bmi_mean = "28.3 kg/m^2 (SD 4.7)",
     sex_female_pct = 27,
     race_ethnicity = c(Black = 79, White = 29),
-    disease_state  = "Healthy participants, and adults with a DSM-5-confirmed diagnosis of schizophrenia or schizoaffective disorder on a clinically stable oral olanzapine regimen (no dose change in the preceding 4 weeks, no other concurrent antipsychotic).",
-    dose_range     = "Single subcutaneous TV-44749 injections of 70 or 105 mg (healthy, subtherapeutic) or 318, 425 or 531 mg (patients); three consecutive once-monthly injections of 283 or 566 mg (patients, multiple-dose cohort).",
-    regions        = "United States",
-    notes          = paste(
+    disease_state = "Healthy participants, and adults with a DSM-5-confirmed diagnosis of schizophrenia or schizoaffective disorder on a clinically stable oral olanzapine regimen (no dose change in the preceding 4 weeks, no other concurrent antipsychotic).",
+    dose_range = "Single subcutaneous TV-44749 injections of 70 or 105 mg (healthy, subtherapeutic) or 318, 425 or 531 mg (patients); three consecutive once-monthly injections of 283 or 566 mg (patients, multiple-dose cohort).",
+    regions = "United States",
+    notes = paste(
       "Phase 1 study TV-44749-SAD-10154, open-label, single- and multiple-dose.",
       "3530 olanzapine plasma PK samples from 89 TV-44749 recipients entered the TV-44749",
       "model; one further participant was excluded after taking an oral olanzapine dose",

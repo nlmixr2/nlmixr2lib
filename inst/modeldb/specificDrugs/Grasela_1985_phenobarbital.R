@@ -9,7 +9,7 @@ Grasela_1985_phenobarbital <- function() {
     sep = " "
   )
   vignette <- "Grasela_1985_phenobarbital"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -20,46 +20,46 @@ Grasela_1985_phenobarbital <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (not allometric) per-kg scaling of CL and V:",
         "CL = 0.0047 L/h/kg * WT and V = 0.96 L/kg * WT.",
         "The abstract reports per-kg typical values, so the implied",
         "weight exponent is 1 (not 0.75); do not retrofit allometric",
         "scaling unless re-fitting on the original data."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ASPHYXIA = list(
-      description        = "Perinatal asphyxia indicator (1 = 5-minute Apgar score < 5; 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Perinatal asphyxia indicator (1 = 5-minute Apgar score < 5; 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (5-minute Apgar score >= 5)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Linear-deviation effect on V:",
         "V = V_typical * (1 + 0.13 * ASPHYXIA), i.e., +13% V when the",
         "5-minute Apgar score is < 5. The abstract reports no detected",
         "effect of ASPHYXIA on CL."
       ),
-      source_name        = "ASPHYXIA"
+      source_name = "ASPHYXIA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59,
-    n_studies      = 1,
-    age_range      = "Preterm neonates; gestational age 24-42 weeks (mean 31 weeks). Postnatal age range not reported in the abstract.",
-    weight_range   = "Birth weight 0.600-3.620 kg (mean 1.520 kg). Time-varying current weight range not reported in the abstract.",
+    species = "human",
+    n_subjects = 59,
+    n_studies = 1,
+    age_range = "Preterm neonates; gestational age 24-42 weeks (mean 31 weeks). Postnatal age range not reported in the abstract.",
+    weight_range = "Birth weight 0.600-3.620 kg (mean 1.520 kg). Time-varying current weight range not reported in the abstract.",
     sex_female_pct = "Not reported in the abstract.",
     race_ethnicity = "Not reported in the abstract.",
-    disease_state  = "Preterm neonates receiving phenobarbital in routine clinical care (typical indication: prevention or treatment of neonatal seizures). The original study was conducted in a single neonatal intensive care unit and analysed retrospectively.",
-    dose_range     = "Not reported in the abstract. Real-world neonatal phenobarbital regimens are typically a 15-20 mg/kg IV loading dose followed by 3-5 mg/kg/day maintenance.",
-    regions        = "United States (Grasela TH Jr & Donn SM, University of Michigan Medical Center).",
-    notes          = paste(
+    disease_state = "Preterm neonates receiving phenobarbital in routine clinical care (typical indication: prevention or treatment of neonatal seizures). The original study was conducted in a single neonatal intensive care unit and analysed retrospectively.",
+    dose_range = "Not reported in the abstract. Real-world neonatal phenobarbital regimens are typically a 15-20 mg/kg IV loading dose followed by 3-5 mg/kg/day maintenance.",
+    regions = "United States (Grasela TH Jr & Donn SM, University of Michigan Medical Center).",
+    notes = paste(
       "Population description is reconstructed from the Grasela & Donn 1985",
       "abstract (PMID:4075936). The full publication was not consulted",
       "(abstract-only source confirmed by the operator at extraction time);",

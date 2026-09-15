@@ -11,37 +11,47 @@ MocWilleford_2024_rlyb212 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "RLYB212", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "RLYB212, free receptor, drug-receptor complex", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "RLYB212", units = "mg", specimen = "plasma", verified = FALSE),
-    target            = list(analyte = "HPA-1a-positive platelets", units = "mg", specimen = "blood cell", verified = FALSE),
-    target_peripheral = list(analyte = "HPA-1a-positive platelets", units = "mg", specimen = "plasma", verified = FALSE),
-    complex           = list(analyte = "drug-receptor complex", units = "mg", specimen = "blood cell", verified = FALSE)
+    depot = list(analyte = "RLYB212", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(
+      analyte = "RLYB212, free receptor, drug-receptor complex",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    peripheral1 = list(analyte = "RLYB212", units = "mg", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "HPA-1a-positive platelets", units = "mg", specimen = "blood cell", verified = FALSE),
+    target_peripheral = list(
+      analyte = "HPA-1a-positive platelets",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    complex = list(analyte = "drug-receptor complex", units = "mg", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Simple allometric scaling on all drug clearances (CL, Q, QP) with exponent 0.75 and on all volumes (Vc, Vp, Vp_target) with exponent 1, referenced to a 70 kg healthy adult. Applied uniformly in Moc Willeford 2024 Methods (simulation-side scaling equation): (BW_pw/BW_hv)^exp. Time-varying via gestational-age-based scaling in the simulation vignette; the model file itself carries WT as a static per-subject continuous covariate.",
-      source_name        = "WT"
+      notes = "Simple allometric scaling on all drug clearances (CL, Q, QP) with exponent 0.75 and on all volumes (Vc, Vp, Vp_target) with exponent 1, referenced to a 70 kg healthy adult. Applied uniformly in Moc Willeford 2024 Methods (simulation-side scaling equation): (BW_pw/BW_hv)^exp. Time-varying via gestational-age-based scaling in the simulation vignette; the model file itself carries WT as a static per-subject continuous covariate.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_pk_subjects  = 21L,
-    n_pd_subjects  = 11L,
-    n_studies      = 2L,
-    study_names    = c("IPA2001 (Cohorts 1 and 2)", "IPA2003"),
+    species = "human",
+    n_subjects = 21L,
+    n_pk_subjects = 21L,
+    n_pd_subjects = 11L,
+    n_studies = 2L,
+    study_names = c("IPA2001 (Cohorts 1 and 2)", "IPA2003"),
     sex_female_pct = 0,
-    sex_note       = "Both IPA2001 and IPA2003 phase 1 study populations were male HPA-1b/b healthy volunteers (Moc Willeford 2024 Table S1).",
-    disease_state  = "Healthy adult HPA-1b/b (HPA-1a-negative) volunteers.",
-    dose_range     = "IPA2001 Cohort 1: 0.21 mg SC single dose. IPA2001 Cohort 2: 0.29 mg SC on Day 1, then 0.1 mg SC every 2 weeks x 10 weeks. IPA2003: 0.09 mg or 0.29 mg SC single dose on Day 1; on Day 8 an IV transfusion of 10 x 10^9 HPA-1a-positive platelets was given.",
-    notes          = "The final PK analysis dataset included 295 measurable observations from 21 subjects across IPA2001 and IPA2003. The final PD analysis dataset included 117 measurable HPA-1a-positive platelet observations from 11 subjects in IPA2003 (Moc Willeford 2024 Tables S3-S4). The model uses molar transformations of both drug and platelet-derived signal: RLYB212 concentrations in the paper are reported in ng/mL; HPA-1a-positive platelet counts are converted to molar receptor equivalents assuming 40,000 HPA-1a receptors per transfused heterozygous HPA-1a/b platelet."
+    sex_note = "Both IPA2001 and IPA2003 phase 1 study populations were male HPA-1b/b healthy volunteers (Moc Willeford 2024 Table S1).",
+    disease_state = "Healthy adult HPA-1b/b (HPA-1a-negative) volunteers.",
+    dose_range = "IPA2001 Cohort 1: 0.21 mg SC single dose. IPA2001 Cohort 2: 0.29 mg SC on Day 1, then 0.1 mg SC every 2 weeks x 10 weeks. IPA2003: 0.09 mg or 0.29 mg SC single dose on Day 1; on Day 8 an IV transfusion of 10 x 10^9 HPA-1a-positive platelets was given.",
+    notes = "The final PK analysis dataset included 295 measurable observations from 21 subjects across IPA2001 and IPA2003. The final PD analysis dataset included 117 measurable HPA-1a-positive platelet observations from 11 subjects in IPA2003 (Moc Willeford 2024 Tables S3-S4). The model uses molar transformations of both drug and platelet-derived signal: RLYB212 concentrations in the paper are reported in ng/mL; HPA-1a-positive platelet counts are converted to molar receptor equivalents assuming 40,000 HPA-1a receptors per transfused heterozygous HPA-1a/b platelet."
   )
 
   ini({

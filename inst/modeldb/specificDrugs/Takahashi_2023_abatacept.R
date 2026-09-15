@@ -8,50 +8,50 @@ Takahashi_2023_abatacept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg (Takahashi 2023 Supplemental Table 4: CL70kg, Vc70kg, Vp70kg, Q70kg are typical values for a 70 kg subject). Power scaling on CL (estimated exponent 0.65), Vc (0.70), Vp (1.02), and Q (0.63) per Supplemental Table 4 footnote equations.",
-      source_name        = "WT"
+      notes = "Reference 70 kg (Takahashi 2023 Supplemental Table 4: CL70kg, Vc70kg, Vp70kg, Q70kg are typical values for a 70 kg subject). Power scaling on CL (estimated exponent 0.65), Vc (0.70), Vp (1.02), and Q (0.63) per Supplemental Table 4 footnote equations.",
+      source_name = "WT"
     ),
     STUDY_ABA2_HLA78 = list(
-      description        = "ABA2 trial HLA 7/8 (one-allele-mismatched donor) hematopoietic-cell-transplant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABA2 trial HLA 7/8 (one-allele-mismatched donor) hematopoietic-cell-transplant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is in the RA/JIA pooled reference cohort or in the ABA2 HLA 8/8 cohort; the latter is captured separately by STUDY_ABA2_HLA88)",
-      notes              = "Takahashi 2023 Supplemental Table 4: multiplicative Ratio = 0.70 on CL (95% CI 0.65 - 0.77) and 0.99 on Vc (95% CI 0.91 - 1.08) vs the RA/JIA reference (Ratio 1 fixed). RA/JIA reference is reproduced by STUDY_ABA2_HLA78 = STUDY_ABA2_HLA88 = 0.",
-      source_name        = "Cohort (subset == 'ABA2 7/8')"
+      notes = "Takahashi 2023 Supplemental Table 4: multiplicative Ratio = 0.70 on CL (95% CI 0.65 - 0.77) and 0.99 on Vc (95% CI 0.91 - 1.08) vs the RA/JIA reference (Ratio 1 fixed). RA/JIA reference is reproduced by STUDY_ABA2_HLA78 = STUDY_ABA2_HLA88 = 0.",
+      source_name = "Cohort (subset == 'ABA2 7/8')"
     ),
     STUDY_ABA2_HLA88 = list(
-      description        = "ABA2 trial HLA 8/8 (allele-matched donor) hematopoietic-cell-transplant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABA2 trial HLA 8/8 (allele-matched donor) hematopoietic-cell-transplant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is in the RA/JIA pooled reference cohort or in the ABA2 HLA 7/8 cohort; the latter is captured separately by STUDY_ABA2_HLA78)",
-      notes              = "Takahashi 2023 Supplemental Table 4: multiplicative Ratio = 0.91 on CL (95% CI 0.86 - 0.97) and 1.32 on Vc (95% CI 1.23 - 1.42) vs the RA/JIA reference (Ratio 1 fixed). RA/JIA reference is reproduced by STUDY_ABA2_HLA78 = STUDY_ABA2_HLA88 = 0.",
-      source_name        = "Cohort (subset == 'ABA2 8/8')"
+      notes = "Takahashi 2023 Supplemental Table 4: multiplicative Ratio = 0.91 on CL (95% CI 0.86 - 0.97) and 1.32 on Vc (95% CI 1.23 - 1.42) vs the RA/JIA reference (Ratio 1 fixed). RA/JIA reference is reproduced by STUDY_ABA2_HLA78 = STUDY_ABA2_HLA88 = 0.",
+      source_name = "Cohort (subset == 'ABA2 8/8')"
     )
   )
 
   population <- list(
-    n_subjects        = 685L,
-    n_observations    = 4872L,
-    n_studies         = 8L,
-    age_range         = "6 - 84 years (median 45)",
-    weight_range      = "14.4 - 186.8 kg (median 67.9)",
-    sex_female_pct    = 67,
-    race_ethnicity    = c(White = 85),
-    disease_state     = "Pooled adult rheumatoid arthritis and pediatric polyarticular juvenile idiopathic arthritis (n = 570 across studies IM103002, IM101100, IM101101, IM101102, IM101029, IM101031, IM101033) plus adult and pediatric (>= 6 years) hematopoietic-cell-transplant recipients in the ABA2 trial (IM101311 / NCT01743131): HLA 7/8 cohort n = 42, HLA 8/8 cohort n = 73.",
-    dose_range        = "IV abatacept 0.5 - 10 mg/kg infusions over 0.5 - 1 h across the seven RA/JIA studies (multiple regimens per study; weight-tier dosing approximating 10 mg/kg with 500 / 750 / 1000 mg vial-rounding for adult Q4W maintenance). ABA2 trial: weight-tiered IV abatacept 10 mg/kg (maximum 1000 mg) over 1 h on days -1, +5, +14, and +28 relative to graft.",
-    regions           = "Multi-regional pooled analysis (RA/JIA studies global; ABA2 multi-center US/Canada).",
+    n_subjects = 685L,
+    n_observations = 4872L,
+    n_studies = 8L,
+    age_range = "6 - 84 years (median 45)",
+    weight_range = "14.4 - 186.8 kg (median 67.9)",
+    sex_female_pct = 67,
+    race_ethnicity = c(White = 85),
+    disease_state = "Pooled adult rheumatoid arthritis and pediatric polyarticular juvenile idiopathic arthritis (n = 570 across studies IM103002, IM101100, IM101101, IM101102, IM101029, IM101031, IM101033) plus adult and pediatric (>= 6 years) hematopoietic-cell-transplant recipients in the ABA2 trial (IM101311 / NCT01743131): HLA 7/8 cohort n = 42, HLA 8/8 cohort n = 73.",
+    dose_range = "IV abatacept 0.5 - 10 mg/kg infusions over 0.5 - 1 h across the seven RA/JIA studies (multiple regimens per study; weight-tier dosing approximating 10 mg/kg with 500 / 750 / 1000 mg vial-rounding for adult Q4W maintenance). ABA2 trial: weight-tiered IV abatacept 10 mg/kg (maximum 1000 mg) over 1 h on days -1, +5, +14, and +28 relative to graft.",
+    regions = "Multi-regional pooled analysis (RA/JIA studies global; ABA2 multi-center US/Canada).",
     reference_subject = "70 kg subject in the RA/JIA reference cohort (STUDY_ABA2_HLA78 = STUDY_ABA2_HLA88 = 0). Takahashi 2023 Supplemental Table 4 footnote: CL70kg / Vc70kg / Vp70kg / Q70kg are 'for a 70 kg subject with RA' (RA/JIA cohort serves as the reference category).",
-    notes             = "Pooled population PK analysis of 4872 abatacept serum concentrations from 685 patients across 8 studies (Takahashi 2023 Supplemental Tables 1 and 2). 4.9% of measurements (237 / 4872) were below the assay's accuracy/precision thresholds and retained at the reported value (Byon 2008 approach). Estimation by FOCE-I in NONMEM 7.5; parameter uncertainty quantified by sampling-importance-resampling. Forward p < 0.01, backward p < 0.001 stepwise covariate modeling identified weight (estimated exponents) and a three-level cohort categorical (RA/JIA, ABA2 7/8, ABA2 8/8) as the retained PK covariates after dropping clinically-not-meaningful sex, eGFR, and albumin effects (Supplemental Table 3 'Final' row)."
+    notes = "Pooled population PK analysis of 4872 abatacept serum concentrations from 685 patients across 8 studies (Takahashi 2023 Supplemental Tables 1 and 2). 4.9% of measurements (237 / 4872) were below the assay's accuracy/precision thresholds and retained at the reported value (Byon 2008 approach). Estimation by FOCE-I in NONMEM 7.5; parameter uncertainty quantified by sampling-importance-resampling. Forward p < 0.01, backward p < 0.001 stepwise covariate modeling identified weight (estimated exponents) and a three-level cohort categorical (RA/JIA, ABA2 7/8, ABA2 8/8) as the retained PK covariates after dropping clinically-not-meaningful sex, eGFR, and albumin effects (Supplemental Table 3 'Final' row)."
   )
 
   ini({

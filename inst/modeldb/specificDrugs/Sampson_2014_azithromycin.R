@@ -13,30 +13,30 @@ Sampson_2014_azithromycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
-    pbmc        = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
-    pmn         = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    depot = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    pbmc = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    pmn = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
     peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
-    age_range      = "21-63 years",
-    age_median     = "48.5 years",
-    weight_range   = ">=50 kg (inclusion criterion)",
-    bmi_range      = "21.4-28.2 kg/m^2",
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
+    age_range = "21-63 years",
+    age_median = "48.5 years",
+    weight_range = ">=50 kg (inclusion criterion)",
+    bmi_range = "21.4-28.2 kg/m^2",
     sex_female_pct = 40,
     race_ethnicity = c(Caucasian = 80),
-    disease_state  = "Healthy adults",
-    dose_range     = "250 mg (n=10) or 1,000 mg (n=10) oral single dose",
-    regions        = "United Kingdom (Cambridge, single site)",
-    trial_id       = "NCT01416350",
-    notes          = "Single-dose study; 269 blood, 227 PBMC, and 239 PMN observations collected predose and at 1, 2, 3, 4, 6, 9, 12, 16, 24, 48, 96, 144, 240, 336, and 504 h postdose (PBMC/PMN measured at all timepoints except 3 h and 240 h). Baseline demographics from Results section paragraph 1; sampling schedule from Methods (Study design). No covariates were retained in the final model."
+    disease_state = "Healthy adults",
+    dose_range = "250 mg (n=10) or 1,000 mg (n=10) oral single dose",
+    regions = "United Kingdom (Cambridge, single site)",
+    trial_id = "NCT01416350",
+    notes = "Single-dose study; 269 blood, 227 PBMC, and 239 PMN observations collected predose and at 1, 2, 3, 4, 6, 9, 12, 16, 24, 48, 96, 144, 240, 336, and 504 h postdose (PBMC/PMN measured at all timepoints except 3 h and 240 h). Baseline demographics from Results section paragraph 1; sampling schedule from Methods (Study design). No covariates were retained in the final model."
   )
 
   ini({

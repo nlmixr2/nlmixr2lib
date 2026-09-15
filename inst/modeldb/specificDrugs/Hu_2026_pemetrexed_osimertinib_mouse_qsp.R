@@ -44,36 +44,61 @@ Hu_2026_pemetrexed_osimertinib_mouse_qsp <- function() {
   # tumour chain of Hu 2026 supplementary Equations S1-S4, carried solely so
   # that real-time TGI% (Equation S6) is available as a model output.
   paper_specific_compartments <- c(
-    "enzyme_folate", "folate", "egfr_signal", "total_death",
-    "cycling_cells_unperturbed", "damaged_cells1_unperturbed",
-    "damaged_cells2_unperturbed", "damaged_cells3_unperturbed"
+    "enzyme_folate",
+    "folate",
+    "egfr_signal",
+    "total_death",
+    "cycling_cells_unperturbed",
+    "damaged_cells1_unperturbed",
+    "damaged_cells2_unperturbed",
+    "damaged_cells3_unperturbed"
   )
 
   units <- list(
-    time          = "day",
-    dosing        = "mg/kg (pemetrexed into depot; osimertinib into depot_osimertinib)",
+    time = "day",
+    dosing = "mg/kg (pemetrexed into depot; osimertinib into depot_osimertinib)",
     concentration = "mg/L (pemetrexed, Cc); ug/L (osimertinib, Cc_osimertinib); the tumour output tumor_vol is a volume in mm3"
   )
 
   compartmentData <- list(
-    depot                      = list(analyte = "pemetrexed",  units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central                    = list(analyte = "pemetrexed",  units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    peripheral1                = list(analyte = "pemetrexed",  units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    depot_osimertinib          = list(analyte = "osimertinib", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central_osimertinib        = list(analyte = "osimertinib", units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    peripheral1_osimertinib    = list(analyte = "osimertinib", units = "mg/kg", specimen = "plasma",              verified = TRUE),
-    enzyme_folate              = list(analyte = "folate-metabolizing enzymes", units = "unitless (fraction of untreated baseline)", specimen = "tumor", verified = TRUE),
-    folate                     = list(analyte = "folate",      units = "unitless (fraction of untreated baseline)", specimen = "tumor", verified = TRUE),
-    egfr_signal                = list(analyte = "EGFR",        units = "unitless (fraction of untreated baseline)", specimen = "tumor", verified = TRUE),
-    cycling_cells              = list(analyte = "cells",       units = "mm3",   specimen = "tumor",                verified = TRUE),
-    damaged_cells1             = list(analyte = "cells",       units = "mm3",   specimen = "tumor",                verified = TRUE),
-    damaged_cells2             = list(analyte = "cells",       units = "mm3",   specimen = "tumor",                verified = TRUE),
-    damaged_cells3             = list(analyte = "cells",       units = "mm3",   specimen = "tumor",                verified = TRUE),
-    total_death                = list(analyte = "cells",       units = "mm3",   specimen = "not applicable",       verified = TRUE),
-    cycling_cells_unperturbed  = list(analyte = "cells",       units = "mm3",   specimen = "not applicable",       verified = TRUE),
-    damaged_cells1_unperturbed = list(analyte = "cells",       units = "mm3",   specimen = "not applicable",       verified = TRUE),
-    damaged_cells2_unperturbed = list(analyte = "cells",       units = "mm3",   specimen = "not applicable",       verified = TRUE),
-    damaged_cells3_unperturbed = list(analyte = "cells",       units = "mm3",   specimen = "not applicable",       verified = TRUE)
+    depot = list(analyte = "pemetrexed", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "pemetrexed", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "pemetrexed", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    depot_osimertinib = list(
+      analyte = "osimertinib",
+      units = "mg/kg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_osimertinib = list(analyte = "osimertinib", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1_osimertinib = list(analyte = "osimertinib", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    enzyme_folate = list(
+      analyte = "folate-metabolizing enzymes",
+      units = "unitless (fraction of untreated baseline)",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    folate = list(
+      analyte = "folate",
+      units = "unitless (fraction of untreated baseline)",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    egfr_signal = list(
+      analyte = "EGFR",
+      units = "unitless (fraction of untreated baseline)",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    cycling_cells = list(analyte = "cells", units = "mm3", specimen = "tumor", verified = TRUE),
+    damaged_cells1 = list(analyte = "cells", units = "mm3", specimen = "tumor", verified = TRUE),
+    damaged_cells2 = list(analyte = "cells", units = "mm3", specimen = "tumor", verified = TRUE),
+    damaged_cells3 = list(analyte = "cells", units = "mm3", specimen = "tumor", verified = TRUE),
+    total_death = list(analyte = "cells", units = "mm3", specimen = "not applicable", verified = TRUE),
+    cycling_cells_unperturbed = list(analyte = "cells", units = "mm3", specimen = "not applicable", verified = TRUE),
+    damaged_cells1_unperturbed = list(analyte = "cells", units = "mm3", specimen = "not applicable", verified = TRUE),
+    damaged_cells2_unperturbed = list(analyte = "cells", units = "mm3", specimen = "not applicable", verified = TRUE),
+    damaged_cells3_unperturbed = list(analyte = "cells", units = "mm3", specimen = "not applicable", verified = TRUE)
   )
 
   # Hu 2026 builds one model with one parameter set that reproduces every
@@ -85,17 +110,17 @@ Hu_2026_pemetrexed_osimertinib_mouse_qsp <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (female BALB/c nude with subcutaneous HCC827 EGFR-mutant NSCLC xenograft); PK parameters from PC9-bearing male/female BALB/c nude mice",
-    n_subjects     = 25L,
-    n_studies      = 1L,
-    age_range      = "7 weeks at inoculation",
-    weight_range   = "approximately 20 g",
+    species = "mouse (female BALB/c nude with subcutaneous HCC827 EGFR-mutant NSCLC xenograft); PK parameters from PC9-bearing male/female BALB/c nude mice",
+    n_subjects = 25L,
+    n_studies = 1L,
+    age_range = "7 weeks at inoculation",
+    weight_range = "approximately 20 g",
     sex_female_pct = 100,
     race_ethnicity = NA,
-    disease_state  = "subcutaneous HCC827 human EGFR-exon-19-deletion NSCLC xenograft (1e7 cells in 50% high-concentration Matrigel, right flank); randomised at a tumour volume of approximately 200 mm3",
-    dose_range     = "pemetrexed 35 mg/kg intraperitoneally three times daily 4 h apart (105 mg/kg/day) on days 0-1 of each 7-day cycle; osimertinib 1 mg/kg orally once daily on days 0-2 (concurrent) or days 2-4 (48 h sequential) of each cycle; three cycles",
-    regions        = "preclinical (China Pharmaceutical University, Nanjing, China; animal ethics approval YSL-202504062)",
-    notes          = "Five arms of n = 5 (control, PEM, OSI, PEM + OSI, PEM -> OSI); tumour volume V = (pi/6) * a * b^2 measured by caliper every 3 days to day 18 (Hu 2026 Figure 6B, replotted from the authors' earlier report doi:10.1016/j.canlet.2024.217124). The PK sub-models were fitted separately in WinNonlin to pooled mean plasma profiles from PC9-bearing BALB/c nude mice dosed pemetrexed 100 mg/kg i.p. and osimertinib 5 mg/kg p.o. (Hu 2026 Figures 5D and S4A,B). Between-subject variability is the 30% CV log-normal spread applied to every PD and tumour-growth parameter in the Monte Carlo analysis of Hu 2026 Supplementary Method S1.7."
+    disease_state = "subcutaneous HCC827 human EGFR-exon-19-deletion NSCLC xenograft (1e7 cells in 50% high-concentration Matrigel, right flank); randomised at a tumour volume of approximately 200 mm3",
+    dose_range = "pemetrexed 35 mg/kg intraperitoneally three times daily 4 h apart (105 mg/kg/day) on days 0-1 of each 7-day cycle; osimertinib 1 mg/kg orally once daily on days 0-2 (concurrent) or days 2-4 (48 h sequential) of each cycle; three cycles",
+    regions = "preclinical (China Pharmaceutical University, Nanjing, China; animal ethics approval YSL-202504062)",
+    notes = "Five arms of n = 5 (control, PEM, OSI, PEM + OSI, PEM -> OSI); tumour volume V = (pi/6) * a * b^2 measured by caliper every 3 days to day 18 (Hu 2026 Figure 6B, replotted from the authors' earlier report doi:10.1016/j.canlet.2024.217124). The PK sub-models were fitted separately in WinNonlin to pooled mean plasma profiles from PC9-bearing BALB/c nude mice dosed pemetrexed 100 mg/kg i.p. and osimertinib 5 mg/kg p.o. (Hu 2026 Figures 5D and S4A,B). Between-subject variability is the 30% CV log-normal spread applied to every PD and tumour-growth parameter in the Monte Carlo analysis of Hu 2026 Supplementary Method S1.7."
   )
 
   ini({

@@ -17,48 +17,53 @@ vanRongen_2016_acetaminophen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "acetaminophen", units = "umol", specimen = "plasma", verified = FALSE),
-    transit1_gluc    = list(analyte = "glucuronide", units = "umol", specimen = "administration site", verified = FALSE),
-    central_gluc     = list(analyte = "glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
-    central_sulf     = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "acetaminophen", units = "umol", specimen = "plasma", verified = FALSE),
+    transit1_gluc = list(analyte = "glucuronide", units = "umol", specimen = "administration site", verified = FALSE),
+    central_gluc = list(analyte = "glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    central_sulf = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1_sulf = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
-    transit1_cysmer  = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "administration site", verified = FALSE),
-    central_cysmer   = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "plasma", verified = FALSE)
+    transit1_cysmer = list(
+      analyte = "cysteine + mercapturate",
+      units = "umol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central_cysmer = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling on glucuronide volume of distribution with reference TBW = 130.9 kg (pooled population median). Time-fixed at baseline. Source column 'TBW' renamed to canonical 'WT' on input.",
-      source_name        = "TBW"
+      notes = "Power-law scaling on glucuronide volume of distribution with reference TBW = 130.9 kg (pooled population median). Time-fixed at baseline. Source column 'TBW' renamed to canonical 'WT' on input.",
+      source_name = "TBW"
     ),
     LBM = list(
-      description        = "Lean body mass at baseline (Janmahasatian et al. 2005 formula).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass at baseline (Janmahasatian et al. 2005 formula).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-law scaling with reference LBW = 65.2 kg (pooled population median) on parent V, the three formation clearances (CL_gluc, CL_sulph, CL_CYP2E1), the CYP2E1 transit rate constant, and the glucuronide elimination CL. Source column 'LBW' renamed to canonical 'LBM' on input (same biological quantity, no value transformation).",
-      source_name        = "LBW"
+      notes = "Power-law scaling with reference LBW = 65.2 kg (pooled population median) on parent V, the three formation clearances (CL_gluc, CL_sulph, CL_CYP2E1), the CYP2E1 transit rate constant, and the glucuronide elimination CL. Source column 'LBW' renamed to canonical 'LBM' on input (same biological quantity, no value transformation).",
+      source_name = "LBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 28L,
-    n_studies      = 1L,
-    age_range      = "18-58 years",
-    age_median     = "41 years (pooled)",
-    weight_range   = "53.4-193.1 kg (TBW); 36.0-96.2 kg (LBW)",
-    weight_median  = "130.9 kg TBW / 65.2 kg LBW (pooled medians)",
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "18-58 years",
+    age_median = "41 years (pooled)",
+    weight_range = "53.4-193.1 kg (TBW); 36.0-96.2 kg (LBW)",
+    weight_median = "130.9 kg TBW / 65.2 kg LBW (pooled medians)",
     sex_female_pct = 67.9,
     race_ethnicity = NA_character_,
-    disease_state  = "20 morbidly obese patients (BMI 40-55.2 kg/m^2) undergoing bariatric surgery + 8 non-obese patients undergoing other elective surgery; all received a single 2 g intravenous acetaminophen study dose followed by standard postoperative pain protocol (1 g intravenous acetaminophen every 6 h up to 24 h).",
-    dose_range     = "Single 2 g (~13231 umol) intravenous acetaminophen infusion over 15 minutes. Optional follow-on standard-of-care dosing 1 g every 6 h up to 24 h; data after the 2 g infusion period inform the IIV but not the structural model.",
-    regions        = "Netherlands (St Antonius Hospital, Nieuwegein)",
-    notes          = "Demographics from Table 1 of van Rongen 2016. Pooled medians of LBW (65.2 kg) and TBW (130.9 kg) are the references used in the power-law covariate equations of the final model (Equations on page 839 and Table 2)."
+    disease_state = "20 morbidly obese patients (BMI 40-55.2 kg/m^2) undergoing bariatric surgery + 8 non-obese patients undergoing other elective surgery; all received a single 2 g intravenous acetaminophen study dose followed by standard postoperative pain protocol (1 g intravenous acetaminophen every 6 h up to 24 h).",
+    dose_range = "Single 2 g (~13231 umol) intravenous acetaminophen infusion over 15 minutes. Optional follow-on standard-of-care dosing 1 g every 6 h up to 24 h; data after the 2 g infusion period inform the IIV but not the structural model.",
+    regions = "Netherlands (St Antonius Hospital, Nieuwegein)",
+    notes = "Demographics from Table 1 of van Rongen 2016. Pooled medians of LBW (65.2 kg) and TBW (130.9 kg) are the references used in the power-law covariate equations of the final model (Equations on page 839 and Table 2)."
   )
 
   ini({

@@ -51,11 +51,11 @@ Sun_2026_tilmicosin_pkpd_plasma <- function() {
 
   covariateData <- list(
     AUCMIC_TILM = list(
-      description        = "Tilmicosin PK/PD index: plasma area under the concentration-time curve over a 24 h dosing interval divided by the MIC of the challenge isolate (AUC0-24/MIC)",
-      units              = "h",
-      type               = "continuous",
+      description = "Tilmicosin PK/PD index: plasma area under the concentration-time curve over a 24 h dosing interval divided by the MIC of the challenge isolate (AUC0-24/MIC)",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Sun 2026 eq 8 defines the sigmoid Imax driver C as the AUC0-24/MIC ratio, and Table 3 ",
         "reports the model's outputs (IC50 and the bacteriostatic / bactericidal / eradication ",
         "thresholds) in those same ratio units (h). Supporting Information Table S10 tabulates the ",
@@ -71,16 +71,16 @@ Sun_2026_tilmicosin_pkpd_plasma <- function() {
         "term vanishes and the predicted 24 h change reduces to E0. See the vignette Assumptions ",
         "and deviations section."
       ),
-      source_name        = "AUC/MIC (h) -- Sun 2026 eq 8 driver C; Table 3 rows 'AUC24/MIC for bacteriostatic effect', '... bactericidal effect', '... eradication effect'; Supporting Information Table S10 column 'Plasma / AUC/MIC (h)'"
+      source_name = "AUC/MIC (h) -- Sun 2026 eq 8 driver C; Table 3 rows 'AUC24/MIC for bacteriostatic effect', '... bactericidal effect', '... eradication effect'; Supporting Information Table S10 column 'Plasma / AUC/MIC (h)'"
     )
   )
 
   population <- list(
-    species             = "in vitro (hollow-fiber infection model simulating swine plasma exposure)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Pasteurella multocida isolate ZJWZ-A, isolated in Wuhan, Hubei Province, China in 2023 and deposited in the National Reference Laboratory for Veterinary Drug Residues at Huazhong Agricultural University; tilmicosin MIC 8 ug/mL by CLSI broth microdilution over a 0.25-64 ug/mL series",
-    system              = paste0(
+    species = "in vitro (hollow-fiber infection model simulating swine plasma exposure)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Pasteurella multocida isolate ZJWZ-A, isolated in Wuhan, Hubei Province, China in 2023 and deposited in the National Reference Laboratory for Veterinary Drug Residues at Huazhong Agricultural University; tilmicosin MIC 8 ug/mL by CLSI broth microdilution over a 0.25-64 ug/mL series",
+    system = paste0(
       "Hollow-fiber infection model (Cartridge C2011, FiberCell Systems Inc., Frederick, MD) with ",
       "a central chamber, dilution chamber and elimination chamber, each driven by its own ",
       "peristaltic pump; pump settings were derived from the Cmax, Tmax and t1/2 predicted by the ",
@@ -91,10 +91,10 @@ Sun_2026_tilmicosin_pkpd_plasma <- function() {
       "37 C with 5% CO2. Bacterial counts were taken over 72 h; PK samples were drawn at 0, 0.25, ",
       "0.5, 0.75, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48 and 72 h"
     ),
-    disease_state       = "in vitro infection model",
-    dose_range          = "simulated oral swine regimens of 20, 40, 50 and 60 mg/kg, giving plasma administration concentrations of 372, 743 and 928 ug/mL respectively for the first three (Supporting Information Table S5)",
-    regions             = "China (Huazhong Agricultural University, Wuhan)",
-    notes               = paste0(
+    disease_state = "in vitro infection model",
+    dose_range = "simulated oral swine regimens of 20, 40, 50 and 60 mg/kg, giving plasma administration concentrations of 372, 743 and 928 ug/mL respectively for the first three (Supporting Information Table S5)",
+    regions = "China (Huazhong Agricultural University, Wuhan)",
+    notes = paste0(
       "Sun 2026 fitted the sigmoid Imax model separately to the plasma and pulmonary interstitial ",
       "fluid arms of the same HFIM experiment, so the two fits are packaged as ",
       "Sun_2026_tilmicosin_pkpd_plasma and Sun_2026_tilmicosin_pkpd_pif, sharing the vignette ",

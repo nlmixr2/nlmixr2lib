@@ -16,10 +16,10 @@ Gebhard_2023_mercaptopurine_anc <- function() {
   )
   vignette <- "Gebhard_2023_leukemia_maintenance_therapy"
   units <- list(
-    time          = "day",
-    dosing        = "umol/m^2",
+    time = "day",
+    dosing = "umol/m^2",
     concentration = "umol/L",
-    anc           = "G/L"
+    anc = "G/L"
   )
   # Unit note. Gebhard 2023 states that the E-TGN OBSERVATIONS were converted to
   # umol/L (assuming a hemoglobin molecular weight of 64458 g/mol and 330 g Hb/L
@@ -40,40 +40,50 @@ Gebhard_2023_mercaptopurine_anc <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "6-mercaptopurine (6MP)", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "6-mercaptopurine (6MP)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    rbc_tgn    = list(analyte = "6-thioguanine nucleotides (E-TGN)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    depot = list(
+      analyte = "6-mercaptopurine (6MP)",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "6-mercaptopurine (6MP)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    rbc_tgn = list(
+      analyte = "6-thioguanine nucleotides (E-TGN)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
     precursor1 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE)
+    circ = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     BL_TGN_RBC = list(
-      description        = "Baseline (first observed) erythrocyte 6-thioguanine-nucleotide concentration, used as the initial condition of the rbc_tgn compartment.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline (first observed) erythrocyte 6-thioguanine-nucleotide concentration, used as the initial condition of the rbc_tgn compartment.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Gebhard 2023 Supplementary Information section I: X_E^6MP(0) = INITGN. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.83 umol/L, range 0-7.6 umol/L (Table 1). Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods). Note the model's mid-therapy Friberg initialisation uses the ESTIMATED inieff parameter rather than an observed baseline ANC, so no baseline-neutrophil covariate is required.",
-      source_name        = "INITGN"
+      notes = "Gebhard 2023 Supplementary Information section I: X_E^6MP(0) = INITGN. Every patient's record begins after weeks of maintenance therapy, 28 days after the last high-dose intravenous MTX course, so the red-cell pool has already accumulated and cannot be initialised at zero. Cohort median 0.83 umol/L, range 0-7.6 umol/L (Table 1). Originally measured in nmol/mmol hemoglobin and converted to umol/L assuming Hb MW 64458 g/mol and 330 g Hb/L erythrocytes (Gebhard 2023 Methods). Note the model's mid-therapy Friberg initialisation uses the ESTIMATED inieff parameter rather than an observed baseline ANC, so no baseline-neutrophil covariate is required.",
+      source_name = "INITGN"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 452L,
-    n_studies      = 1L,
-    age_range      = "2.4-16.9 years (median 5.9)",
-    weight_range   = "10.3-105.5 kg (median 21.5)",
-    height_range   = "81.5-180.0 cm (median 114.0)",
-    disease_state  = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
-    dose_range     = "6-Mercaptopurine 5.4-175.0 mg/m^2 daily by mouth (median 57.1 mg/m^2); the concurrent methotrexate dose was 1.3-45.0 mg/m^2 weekly (median 15.0 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L; the model's own ANC target range is 0.5-2.0 G/L, following Jost et al.",
-    regions        = "Nordic countries (NOPHO ALL-92)",
-    observations   = "9808 ANC observations and 4624 E-TGN observations across 452 patients; the data set also holds 4192 E-MTX observations, fitted by the decoupled MTX arm (Table 1).",
-    baseline_anc   = "Cohort median ANC 1.6 G/L, range 0-22.5 G/L (Table 1). The model's estimated drug-free baseline is base = 2.17 G/L (Table 5).",
-    notes          = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded and the record starts mid-therapy. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with IMP followed by SAEM for this full PKPD model. Population-prediction ANC errors for this model (Table 4): median RMSE 1.12 G/L, mean RMSE 1.27 G/L, median MAE 0.90 G/L -- roughly half those of the PKPD_Jost reference model (median RMSE 2.12 G/L)."
+    species = "human",
+    n_subjects = 452L,
+    n_studies = 1L,
+    age_range = "2.4-16.9 years (median 5.9)",
+    weight_range = "10.3-105.5 kg (median 21.5)",
+    height_range = "81.5-180.0 cm (median 114.0)",
+    disease_state = "Precursor-B-cell acute lymphoblastic leukemia in children, during oral maintenance therapy with 6-mercaptopurine plus low-dose oral methotrexate. Treated on the NOPHO ALL-92 protocol (Nordic Society for Paediatric Haematology and Oncology); Copenhagen ethics approval V.200.2080/91.",
+    dose_range = "6-Mercaptopurine 5.4-175.0 mg/m^2 daily by mouth (median 57.1 mg/m^2); the concurrent methotrexate dose was 1.3-45.0 mg/m^2 weekly (median 15.0 mg/m^2). Doses were titrated to a target white-blood-cell count of 1.5-3.5 G/L; the model's own ANC target range is 0.5-2.0 G/L, following Jost et al.",
+    regions = "Nordic countries (NOPHO ALL-92)",
+    observations = "9808 ANC observations and 4624 E-TGN observations across 452 patients; the data set also holds 4192 E-MTX observations, fitted by the decoupled MTX arm (Table 1).",
+    baseline_anc = "Cohort median ANC 1.6 G/L, range 0-22.5 G/L (Table 1). The model's estimated drug-free baseline is base = 2.17 G/L (Table 5).",
+    notes = "Each patient's record begins with the first paired E-TGN / E-MTX measurement taken 28 days after the last high-dose intravenous methotrexate course, so the high-dose-MTX period is excluded and the record starts mid-therapy. Patients were dropped when parameter estimation would have been impossible: fewer than two E-TGN or E-MTX observations, no 6MP or MTX dose, or no height, weight or ANC observation. Estimation used NONMEM 7.5 with IMP followed by SAEM for this full PKPD model. Population-prediction ANC errors for this model (Table 4): median RMSE 1.12 G/L, mean RMSE 1.27 G/L, median MAE 0.90 G/L -- roughly half those of the PKPD_Jost reference model (median RMSE 2.12 G/L)."
   )
 
   ini({

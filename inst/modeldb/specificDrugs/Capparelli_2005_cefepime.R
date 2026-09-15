@@ -13,46 +13,46 @@ Capparelli_2005_cefepime <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-kg parameterization in Capparelli 2005 Methods: 'parameters were scaled by subject weight before evaluation of other potential covariates'. CL and Vc are computed per kg in ini() and multiplied by WT in model().",
-      source_name        = "WT"
+      notes = "Per-kg parameterization in Capparelli 2005 Methods: 'parameters were scaled by subject weight before evaluation of other potential covariates'. CL and Vc are computed per kg in ini() and multiplied by WT in model().",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the renal arm of CL via cl_renal = exp(lcl_renal)/CREAT (mL/min/kg). Capparelli 2005 Table 1 cohort range 0.3-1.5 mg/dL, mean 0.8. Source column name 'SCr' (enzymatic at San Diego, modified Jaffe at Houston; both bilirubin-corrected).",
-      source_name        = "SCr"
+      notes = "Drives the renal arm of CL via cl_renal = exp(lcl_renal)/CREAT (mL/min/kg). Capparelli 2005 Table 1 cohort range 0.3-1.5 mg/dL, mean 0.8. Source column name 'SCr' (enzymatic at San Diego, modified Jaffe at Houston; both bilirubin-corrected).",
+      source_name = "SCr"
     ),
     PAGE = list(
-      description        = "Postmenstrual (postconceptional) age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual (postconceptional) age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Capparelli 2005 defines postconceptional age (PCA) as GA at birth (weeks) + postnatal age (weeks); this matches the modern postmenstrual age (PMA) definition. Canonical PAGE is in months; the PCA < 30 weeks threshold from Table 3 maps to PAGE < 30/4.345 months ~= 6.904 months. The covariate enters model() as the derived binary indicator pca30 = (PAGE < 30/4.345).",
-      source_name        = "PCA"
+      notes = "Capparelli 2005 defines postconceptional age (PCA) as GA at birth (weeks) + postnatal age (weeks); this matches the modern postmenstrual age (PMA) definition. Canonical PAGE is in months; the PCA < 30 weeks threshold from Table 3 maps to PAGE < 30/4.345 months ~= 6.904 months. The covariate enters model() as the derived binary indicator pca30 = (PAGE < 30/4.345).",
+      source_name = "PCA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 2L,
-    age_range      = "postnatal 1-62 days",
-    age_median     = "postnatal age 14.5 days (mean +/- SD 14.7 +/- 14.5)",
-    weight_range   = "0.58-4.70 kg",
-    weight_median  = "1.91 kg (mean +/- SD)",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 2L,
+    age_range = "postnatal 1-62 days",
+    age_median = "postnatal age 14.5 days (mean +/- SD 14.7 +/- 14.5)",
+    weight_range = "0.58-4.70 kg",
+    weight_median = "1.91 kg (mean +/- SD)",
     sex_female_pct = 48,
     race_ethnicity = "Not reported in source paper",
-    disease_state  = "Premature and term neonates in NICUs (suspected or documented infection; some subjects also studied with a single study dose)",
-    dose_range     = "50 mg/kg IV (30-min infusion); subset received steady-state Q12H dosing",
-    regions        = "United States (San Diego, CA and Houston, TX)",
-    notes          = "Capparelli 2005 Table 1 and Table 2. Gestational age at birth 30.5 +/- 5.3 weeks (range 22.1-42.3); 42 preterm (<36 weeks) plus 12 term; serum creatinine 0.8 +/- 0.3 mg/dL (range 0.3-1.5). 55 enrolled, 54 used in the final fit (one outlier with massive transmural fluid loss excluded). 35 of 54 from San Diego, 19 from Houston.",
-    ga_range       = "22.1-42.3 weeks at birth"
+    disease_state = "Premature and term neonates in NICUs (suspected or documented infection; some subjects also studied with a single study dose)",
+    dose_range = "50 mg/kg IV (30-min infusion); subset received steady-state Q12H dosing",
+    regions = "United States (San Diego, CA and Houston, TX)",
+    notes = "Capparelli 2005 Table 1 and Table 2. Gestational age at birth 30.5 +/- 5.3 weeks (range 22.1-42.3); 42 preterm (<36 weeks) plus 12 term; serum creatinine 0.8 +/- 0.3 mg/dL (range 0.3-1.5). 55 enrolled, 54 used in the final fit (one outlier with massive transmural fluid loss excluded). 35 of 54 from San Diego, 19 from Houston.",
+    ga_range = "22.1-42.3 weeks at birth"
   )
 
   ini({

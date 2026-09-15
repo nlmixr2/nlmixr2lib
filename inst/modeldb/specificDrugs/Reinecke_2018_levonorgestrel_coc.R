@@ -34,31 +34,51 @@ Reinecke_2018_levonorgestrel_coc <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel and ethinylestradiol)",
+    time = "h",
+    dosing = "mg (levonorgestrel and ethinylestradiol)",
     concentration = "ng/L (total and unbound LNG, and ethinylestradiol, in serum); SHBG in nmol/L"
   )
 
   compartmentData <- list(
-    depot                       = list(analyte = "levonorgestrel",   units = "mg",     specimen = "administration site", verified = TRUE),
-    central                     = list(analyte = "levonorgestrel",   units = "mg",     specimen = "serum",               verified = TRUE),
-    peripheral1                 = list(analyte = "levonorgestrel",   units = "mg",     specimen = "serum",               verified = TRUE),
-    effect                      = list(analyte = "levonorgestrel",   units = "nmol/L", specimen = "not applicable",      verified = TRUE),
-    shbg                        = list(analyte = "SHBG",             units = "nmol/L", specimen = "serum",               verified = TRUE),
-    depot_ethinylestradiol      = list(analyte = "ethinylestradiol", units = "mg",     specimen = "administration site", verified = TRUE),
-    central_ethinylestradiol    = list(analyte = "ethinylestradiol", units = "mg",     specimen = "serum",               verified = TRUE),
-    peripheral1_ethinylestradiol = list(analyte = "ethinylestradiol", units = "mg",    specimen = "serum",               verified = TRUE),
-    peripheral2_ethinylestradiol = list(analyte = "ethinylestradiol", units = "mg",    specimen = "serum",               verified = TRUE),
-    effect_ethinylestradiol     = list(analyte = "ethinylestradiol", units = "nmol/L", specimen = "not applicable",      verified = TRUE)
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    effect = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
+    shbg = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE),
+    depot_ethinylestradiol = list(
+      analyte = "ethinylestradiol",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_ethinylestradiol = list(analyte = "ethinylestradiol", units = "mg", specimen = "serum", verified = TRUE),
+    peripheral1_ethinylestradiol = list(
+      analyte = "ethinylestradiol",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    peripheral2_ethinylestradiol = list(
+      analyte = "ethinylestradiol",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    effect_ethinylestradiol = list(
+      analyte = "ethinylestradiol",
+      units = "nmol/L",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Power-function covariate on the absolute bioavailability of levonorgestrel from the combined oral contraceptive; bioavailability decreases with increasing body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Power-function covariate on the absolute bioavailability of levonorgestrel from the combined oral contraceptive; bioavailability decreases with increasing body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, centred on 64 kg, the median of the COC study",
         "population (Table 1, study 94011). The reference weight is pinned",
         "by Table S2 itself: F_COC = 0.751 at median[WGHT] = 64 kg and the",
@@ -67,25 +87,25 @@ Reinecke_2018_levonorgestrel_coc <- function() {
         "0.751 * (WT/64)^-1.64. No body-weight effect on clearance or on the",
         "SHBG baseline was carried into the COC model."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 2L,
-    studies        = c(
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 2L,
+    studies = c(
       "Phase 1 study 94011 (combined oral contraceptive Miranova, 100 ug LNG + 20 ug ethinylestradiol once daily, dense LNG and SHBG profiles over 3 treatment cycles, 18 women)",
       "Phase 1 study 92085 (single-dose intravenous 90 ug LNG; included in every model-development step so that absolute bioavailability is estimable)"
     ),
-    age_range      = "20-34 years (median 30 years)",
-    weight_range   = "51-83 kg (median 64 kg)",
+    age_range = "20-34 years (median 30 years)",
+    weight_range = "51-83 kg (median 64 kg)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women",
-    dose_range     = "100 ug levonorgestrel plus 20 ug ethinylestradiol orally once daily in a 28-day cycle (21 days on, 7 days off)",
-    co_medication  = "Ethinylestradiol, co-formulated in the same tablet, is modelled explicitly",
-    notes          = paste(
+    disease_state = "Healthy premenopausal women",
+    dose_range = "100 ug levonorgestrel plus 20 ug ethinylestradiol orally once daily in a 28-day cycle (21 days on, 7 days off)",
+    co_medication = "Ethinylestradiol, co-formulated in the same tablet, is modelled explicitly",
+    notes = paste(
       "Demographics from Table 1. Contributing observations: 1166 LNG and",
       "486 SHBG concentrations from study 94011 plus 286 LNG concentrations",
       "from the intravenous study. Ethinylestradiol concentrations were not",

@@ -38,8 +38,8 @@ Bauer_2023_vonicogAlfa <- function() {
   paper_specific_compartments <- c("fviii")
 
   units <- list(
-    time          = "h",
-    dosing        = "IU (VWF:RCo activity)",
+    time = "h",
+    dosing = "IU (VWF:RCo activity)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )
 
@@ -48,18 +48,23 @@ Bauer_2023_vonicogAlfa <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vonicog alfa", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vonicog alfa", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vonicog alfa", units = NA_character_, specimen = "plasma", verified = FALSE),
-    fviii       = list(analyte = "endogenous factor VIII activity (FVIII:C)", units = NA_character_, specimen = "plasma", verified = FALSE)
+    fviii = list(
+      analyte = "endogenous factor VIII activity (FVIII:C)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight. Allometric structural covariate on all four",
         "disposition parameters with fixed exponents and a 75 kg reference:",
         "CL and Q scale as (WT/75)^0.75, Vc and Vp as (WT/75)^1",
@@ -71,14 +76,14 @@ Bauer_2023_vonicogAlfa <- function() {
         "in the VWF:RCo PK analysis population was 74 (43.8-145) kg",
         "(Bauer 2023 Table 2)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     HCT = list(
-      description        = "Hematocrit -- packed red blood cell volume fraction.",
-      units              = "% (volume fraction x 100)",
-      type               = "continuous",
+      description = "Hematocrit -- packed red blood cell volume fraction.",
+      units = "% (volume fraction x 100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline hematocrit. Two effects, both power functions. (1) On the",
         "central volume of distribution, (HCT/40)^-0.334: a higher red-cell",
         "volume fraction leaves a smaller plasma volume, and VWF:RCo activity",
@@ -95,7 +100,7 @@ Bauer_2023_vonicogAlfa <- function() {
         "VWF:RCo PK analysis population was 0.417 (0.310-0.480) L/L, i.e.",
         "41.7 (31.0-48.0) % (Bauer 2023 Table 2)."
       ),
-      source_name        = "Hematocrit"
+      source_name = "Hematocrit"
     )
   )
 
@@ -105,9 +110,9 @@ Bauer_2023_vonicogAlfa <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL, Vc, Vp and on FVIII0, IC50 (Supplementary Table 1);",
         "not retained. Median (range) 35 (18-70) years in the VWF:RCo PK",
         "population and 36 (18-70) years in the FVIII PK/PD population",
@@ -116,9 +121,9 @@ Bauer_2023_vonicogAlfa <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL, Vc, Vp and on FVIII0, IC50 (Supplementary Table 1);",
         "not retained. 33/79 (42 %) female in the VWF:RCo PK population and",
         "21/41 (51 %) female in the FVIII PK/PD population (Table 2)."
@@ -126,27 +131,27 @@ Bauer_2023_vonicogAlfa <- function() {
     ),
     RACE_WHITE = list(
       description = "White race indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was screened on CL only (Supplementary Table 1) and not",
         "retained. 73/79 (92 %) White in the VWF:RCo PK population (Table 2)."
       )
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was screened on CL only (Supplementary Table 1) and not",
         "retained. 6/79 (8 %) Asian in the VWF:RCo PK population (Table 2)."
       )
     ),
     BLOOD_GROUP_O = list(
       description = "ABO blood group O indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL, Vc, Vp and on FVIII0, IC50 (Supplementary Table 1);",
         "not retained. Blood-group composition of the analysis population is",
         "not reported in Bauer 2023."
@@ -155,31 +160,31 @@ Bauer_2023_vonicogAlfa <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 79L,
-    n_studies      = 4L,
-    age_range      = "18-70 years",
-    age_median     = "35 years",
-    weight_range   = "43.8-145 kg",
-    weight_median  = "74 kg",
+    species = "human",
+    n_subjects = 79L,
+    n_studies = 4L,
+    age_range = "18-70 years",
+    age_median = "35 years",
+    weight_range = "43.8-145 kg",
+    weight_median = "74 kg",
     sex_female_pct = 42,
     race_ethnicity = c(White = 92, Asian = 8),
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with severe von Willebrand disease (type 1 n=5, type 2 n=7,",
       "type 3 n=57) or severe hemophilia A with FVIII activity < 1 % (n=10).",
       "The hemophilia A cohort was retained in the VWF:RCo PK model because,",
       "once individual endogenous VWF:RCo levels were accounted for, no PK",
       "differences between VWD types and hemophilia A remained."
     ),
-    dose_range     = "2-80 IU/kg VWF:RCo intravenously (rVWF, vonicog alfa)",
-    regions        = "North America, Europe, Australia, Japan, India, Taiwan, Turkey",
+    dose_range = "2-80 IU/kg VWF:RCo intravenously (rVWF, vonicog alfa)",
+    regions = "North America, Europe, Australia, Japan, India, Taiwan, Turkey",
     n_observations = 1664L,
     n_observations_pd = 686L,
-    biomarkers     = c(
+    biomarkers = c(
       "VWF:RCo -- von Willebrand factor:ristocetin cofactor activity (IU/dL)",
       "FVIII:C -- factor VIII activity by one-stage clotting assay (IU/dL)"
     ),
-    notes          = paste(
+    notes = paste(
       "VWF:RCo PK model: 1664 samples from 79 patients pooled across",
       "NCT00816660 (phase 1, dose escalation, 29 patients / 479 samples),",
       "NCT01410227 (phase 3 on-demand, 31 / 694), NCT02283268 (phase 3",

@@ -21,48 +21,48 @@ Barnett_2018_coproporphyrin_I <- function() {
   # NOT been checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "coproporphyrin I", units = NA_character_, specimen = "plasma", verified = FALSE),
-    urine   = list(analyte = "coproporphyrin I", units = NA_character_, specimen = "urine", verified = FALSE)
+    urine = list(analyte = "coproporphyrin I", units = NA_character_, specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Time-varying within subject; constant within an occasion. CPI plasma + urine samples were collected on all three occasions in the source clinical study (Lai et al. 2016 n=12 healthy-male SLCO1B1-wildtype cohort that supplied the Barnett 2018 fit). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV etas on log-ksyn and log-CLb,CPI; Barnett 2018 Table 1 reports a single shared IOV variance per parameter across occasions, mirroring the Wilkins_2008_rifampicin OMEGA BLOCK(1) SAME idiom.",
-      source_name        = "OCC"
+      notes = "Time-varying within subject; constant within an occasion. CPI plasma + urine samples were collected on all three occasions in the source clinical study (Lai et al. 2016 n=12 healthy-male SLCO1B1-wildtype cohort that supplied the Barnett 2018 fit). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV etas on log-ksyn and log-CLb,CPI; Barnett 2018 Table 1 reports a single shared IOV variance per parameter across occasions, mirroring the Wilkins_2008_rifampicin OMEGA BLOCK(1) SAME idiom.",
+      source_name = "OCC"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant single-dose rifampicin co-administration indicator (1 = within a 600 mg rifampicin co-administration period in the Barnett 2018 study design; 0 = baseline or pre-RIF period).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant single-dose rifampicin co-administration indicator (1 = within a 600 mg rifampicin co-administration period in the Barnett 2018 study design; 0 = baseline or pre-RIF period).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin co-administration; baseline phase)",
-      notes              = "Time-varying within subject. Used here as the binary period-level covariate that captures Barnett 2018 Table 1's paper-reported reduction of Vcpi from 6.59 L (baseline) to 3.4 L (RIF phase). Distinct semantics from the multi-day CYP3A4-induction use of CONMED_RIF in Svensson_2014_bedaquiline (where the indicator switches on at day 3 of daily dosing): here rifampicin acts acutely as a competitive OATP1B inhibitor (single 600 mg oral dose), so CONMED_RIF = 1 from the time of the rifampicin dose through the end of the RIF-phase plasma / urine sampling window of that occasion, with no induction lag.",
-      source_name        = "CONMED_RIF"
+      notes = "Time-varying within subject. Used here as the binary period-level covariate that captures Barnett 2018 Table 1's paper-reported reduction of Vcpi from 6.59 L (baseline) to 3.4 L (RIF phase). Distinct semantics from the multi-day CYP3A4-induction use of CONMED_RIF in Svensson_2014_bedaquiline (where the indicator switches on at day 3 of daily dosing): here rifampicin acts acutely as a competitive OATP1B inhibitor (single 600 mg oral dose), so CONMED_RIF = 1 from the time of the rifampicin dose through the end of the RIF-phase plasma / urine sampling window of that occasion, with no induction lag.",
+      source_name = "CONMED_RIF"
     ),
     CP_RIF_UM = list(
-      description        = "Instantaneous rifampicin plasma concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of biliary CPI clearance (Barnett 2018 Eq. 4).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Instantaneous rifampicin plasma concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of biliary CPI clearance (Barnett 2018 Eq. 4).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the rifampicin co-administration window so the OATP1B inhibition term in the d/dt(Ccpi) equation collapses to the baseline form (Eq. 3). The PK trajectory of rifampicin is parameterised in modellib('Barnett_2018_rifampicin'); users typically simulate the rifampicin model first and then feed its central-compartment concentration (after MW conversion to umol/L; rifampicin MW 822.94 g/mol) as the CP_RIF_UM column on the CPI event table. Reference peak: a single 600 mg oral rifampicin dose in the Barnett 2018 cohort produces a typical Cmax of ~29 umol/L after MTT-delayed absorption (computed from the modellib('Barnett_2018_rifampicin') typical-value parameters; see the validation vignette for the worked simulation).",
-      source_name        = "CRIF"
+      notes = "Time-varying. Set to 0 outside the rifampicin co-administration window so the OATP1B inhibition term in the d/dt(Ccpi) equation collapses to the baseline form (Eq. 3). The PK trajectory of rifampicin is parameterised in modellib('Barnett_2018_rifampicin'); users typically simulate the rifampicin model first and then feed its central-compartment concentration (after MW conversion to umol/L; rifampicin MW 822.94 g/mol) as the CP_RIF_UM column on the CPI event table. Reference peak: a single 600 mg oral rifampicin dose in the Barnett 2018 cohort produces a typical Cmax of ~29 umol/L after MTT-delayed absorption (computed from the modellib('Barnett_2018_rifampicin') typical-value parameters; see the validation vignette for the worked simulation).",
+      source_name = "CRIF"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 12L,
-    n_studies        = 1L,
-    n_observations   = 522L,
-    age_range        = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
-    weight_range     = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
-    sex_female_pct   = 0,
-    disease_state    = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study; CPI was monitored as a candidate endogenous biomarker of OATP1B-mediated DDIs.",
-    dose_range       = "Endogenous biomarker (no exogenous dose); rifampicin was co-administered as a 600 mg oral dose on OCC1 and OCC3 to perturb the CPI biliary clearance via OATP1B inhibition.",
-    regions          = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
-    notes            = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 420 CPI plasma samples (OCC1 = 144, OCC2 = 144, OCC3 = 132) plus 102 CPI urine samples (pretreatment = 34, posttreatment = 68) were fit simultaneously in NONMEM using FOCE. Identifiability analysis was performed in DAISY (Bellu 2007); the structural CPI model was shown to be globally identifiable given the available plasma + urine data."
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    n_observations = 522L,
+    age_range = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
+    weight_range = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
+    sex_female_pct = 0,
+    disease_state = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study; CPI was monitored as a candidate endogenous biomarker of OATP1B-mediated DDIs.",
+    dose_range = "Endogenous biomarker (no exogenous dose); rifampicin was co-administered as a 600 mg oral dose on OCC1 and OCC3 to perturb the CPI biliary clearance via OATP1B inhibition.",
+    regions = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
+    notes = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 420 CPI plasma samples (OCC1 = 144, OCC2 = 144, OCC3 = 132) plus 102 CPI urine samples (pretreatment = 34, posttreatment = 68) were fit simultaneously in NONMEM using FOCE. Identifiability analysis was performed in DAISY (Bellu 2007); the structural CPI model was shown to be globally identifiable given the available plasma + urine data."
   )
 
   ini({

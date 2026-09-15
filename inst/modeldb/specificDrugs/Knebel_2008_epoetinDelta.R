@@ -10,8 +10,8 @@ Knebel_2008_epoetinDelta <- function() {
   )
   vignette <- "Knebel_2008_epoetinDelta"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "mIU/mL"
   )
 
@@ -21,77 +21,77 @@ Knebel_2008_epoetinDelta <- function() {
   # the same activity unit. With doses in IU and volumes in L the state/volume
   # ratio is IU/L, which equals mIU/mL numerically.
   compartmentData <- list(
-    depot   = list(analyte = "epoetin delta", units = "IU", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "epoetin delta", units = "IU", specimen = "serum",               verified = TRUE)
+    depot = list(analyte = "epoetin delta", units = "IU", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "epoetin delta", units = "IU", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Knebel 2008 Table II: median 34.5 kg, mean 35.6 kg, range 11.3-83 kg. Enters CL and Vc as the allometric power model of equation (3), TVP = theta * (WT/WTref)^theta_allo, with the exponents held at the physiologic values 0.75 (clearance) and 1 (volume). The Results section states the weight normalization for the full covariate model was WTref = 35 kg; the base model used a 70 kg reference (Table III footnote a), so base-model and final-model typical values are not directly comparable. Weight was chosen over BMI and BSA because the three body-size metrics correlated at r >= 0.71.",
-      source_name        = "WT"
+      notes = "Knebel 2008 Table II: median 34.5 kg, mean 35.6 kg, range 11.3-83 kg. Enters CL and Vc as the allometric power model of equation (3), TVP = theta * (WT/WTref)^theta_allo, with the exponents held at the physiologic values 0.75 (clearance) and 1 (volume). The Results section states the weight normalization for the full covariate model was WTref = 35 kg; the base model used a 70 kg reference (Table III footnote a), so base-model and final-model typical values are not directly comparable. Weight was chosen over BMI and BSA because the three body-size metrics correlated at r >= 0.71.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Knebel 2008 Table II: median 13 years, mean 11.8 years, range 1-17 years. Results: 'Age was included as a power function, normalized by the reference age of 10 years for all patients older than 10 years of age.' The effect is therefore a hinge - the (AGE/10)^theta term applies only above 10 years and equals 1 at or below it, which is why the abstract's reference individual is a '35-kg male <= 10 years'. Implemented as max(AGE, 10)/10. Acts on both CL (exponent 0.999) and Vc (exponent 2.89).",
-      source_name        = "AGE"
+      notes = "Knebel 2008 Table II: median 13 years, mean 11.8 years, range 1-17 years. Results: 'Age was included as a power function, normalized by the reference age of 10 years for all patients older than 10 years of age.' The effect is therefore a hinge - the (AGE/10)^theta term applies only above 10 years and equals 1 at or below it, which is why the abstract's reference individual is a '35-kg male <= 10 years'. Implemented as max(AGE, 10)/10. Acts on both CL (exponent 0.999) and Vc (exponent 2.89).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Knebel 2008 Table II: 38 of 60 subjects (63%) were male, so 22 (37%) were female. Results: 'sex entered the model as a power function, with a separate dichotomous (0,1) covariate serving as an on-off switch', i.e. the Table III rows *theta9^SEX[female] and *theta10^SEX[female]. Male is the reference (the abstract's reference individual is male). The paper's source column labels the female level; no value transformation is needed.",
-      source_name        = "SEX"
+      notes = "Knebel 2008 Table II: 38 of 60 subjects (63%) were male, so 22 (37%) were female. Results: 'sex entered the model as a power function, with a separate dichotomous (0,1) covariate serving as an on-off switch', i.e. the Table III rows *theta9^SEX[female] and *theta10^SEX[female]. Male is the reference (the abstract's reference individual is male). The paper's source column labels the female level; no value transformation is needed.",
+      source_name = "SEX"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis modality indicator (1 = hemodialysis, 0 = predialysis or peritoneal dialysis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis modality indicator (1 = hemodialysis, 0 = predialysis or peritoneal dialysis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (predialysis; see notes)",
-      notes              = "Knebel 2008 Table II: 28 of 60 subjects (47%) were on hemodialysis, 15 (25%) on peritoneal dialysis, 17 (28%) predialysis. Results: 'dialysis type was entered multiplicatively, with the predialysis type as a reference and a switch to determine what dialysis type effect was being estimated', i.e. the Table III row *theta11^DIT1[hemodialysis]. Paired with PERIT_DIAL as the two switches of a three-level covariate: predialysis subjects carry RRT_HEMODIAL_STATUS = 0 and PERIT_DIAL = 0, so the reference category here is predialysis rather than the 'not on hemodialysis' pooling implied by the bare canonical definition. Acts on Vc only; a dialysis-type effect on CL was not retained.",
-      source_name        = "DIT1"
+      notes = "Knebel 2008 Table II: 28 of 60 subjects (47%) were on hemodialysis, 15 (25%) on peritoneal dialysis, 17 (28%) predialysis. Results: 'dialysis type was entered multiplicatively, with the predialysis type as a reference and a switch to determine what dialysis type effect was being estimated', i.e. the Table III row *theta11^DIT1[hemodialysis]. Paired with PERIT_DIAL as the two switches of a three-level covariate: predialysis subjects carry RRT_HEMODIAL_STATUS = 0 and PERIT_DIAL = 0, so the reference category here is predialysis rather than the 'not on hemodialysis' pooling implied by the bare canonical definition. Acts on Vc only; a dialysis-type effect on CL was not retained.",
+      source_name = "DIT1"
     ),
     PERIT_DIAL = list(
-      description        = "Peritoneal-dialysis modality indicator (1 = peritoneal dialysis, 0 = predialysis or hemodialysis)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Peritoneal-dialysis modality indicator (1 = peritoneal dialysis, 0 = predialysis or hemodialysis)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (predialysis; see notes)",
-      notes              = "Knebel 2008 Table II: 15 of 60 subjects (25%) were on peritoneal dialysis. Table III row *theta12^DIT2[peritoneal dialysis]. The second of the two dialysis-modality switches described in Results; see the RRT_HEMODIAL_STATUS notes for the three-level encoding. Unlike Takama 2007 - which took hemodialysis as the reference and reports PERIT_DIAL relative to it - Knebel 2008 takes predialysis as the reference, so both indicators are 0 for the predialysis stratum and the two effects are read relative to predialysis, not relative to each other. Acts on Vc only.",
-      source_name        = "DIT2"
+      notes = "Knebel 2008 Table II: 15 of 60 subjects (25%) were on peritoneal dialysis. Table III row *theta12^DIT2[peritoneal dialysis]. The second of the two dialysis-modality switches described in Results; see the RRT_HEMODIAL_STATUS notes for the three-level encoding. Unlike Takama 2007 - which took hemodialysis as the reference and reports PERIT_DIAL relative to it - Knebel 2008 takes predialysis as the reference, so both indicators are 0 for the predialysis stratum and the two effects are read relative to predialysis, not relative to each other. Acts on Vc only.",
+      source_name = "DIT2"
     ),
     FORM_EPO_ALFA = list(
-      description        = "Epoetin alfa product indicator (1 = epoetin alfa, CHO-cell-derived; 0 = epoetin delta, human-cell-line-derived)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Epoetin alfa product indicator (1 = epoetin alfa, CHO-cell-derived; 0 = epoetin delta, human-cell-line-derived)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (epoetin delta)",
-      notes              = "Knebel 2008 Table I: 47 of 60 subjects received epoetin delta and 13 received epoetin alfa; patients were randomized approximately 3:1. Results: 'The base model was then modified to allow Ka and F1 to differ between epoetin delta and epoetin alfa SC administration', i.e. the Table III rows *theta6^TRT[epoetin alfa] on Ka and *theta7^TRT[epoetin alfa] on F1. Subject-level and time-fixed (each subject received one product for the whole 24-week study). Both products are recombinant human erythropoietin and are quantified by the same ELISA, so the covariate distinguishes the drug product rather than the analyte. The two effects are estimated only from the subcutaneous arms; the single intravenous epoetin alfa subject contributes no absorption information, and neither term reaches the central compartment for an intravenous dose.",
-      source_name        = "TRT"
+      notes = "Knebel 2008 Table I: 47 of 60 subjects received epoetin delta and 13 received epoetin alfa; patients were randomized approximately 3:1. Results: 'The base model was then modified to allow Ka and F1 to differ between epoetin delta and epoetin alfa SC administration', i.e. the Table III rows *theta6^TRT[epoetin alfa] on Ka and *theta7^TRT[epoetin alfa] on F1. Subject-level and time-fixed (each subject received one product for the whole 24-week study). Both products are recombinant human erythropoietin and are quantified by the same ELISA, so the covariate distinguishes the drug product rather than the analyte. The two effects are estimated only from the subcutaneous arms; the single intravenous epoetin alfa subject contributes no absorption information, and neither term reaches the central compartment for an intravenous dose.",
+      source_name = "TRT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 60L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 1L,
     n_concentrations = 261L,
-    age_range        = "1-17 years",
-    age_median       = "13 years",
-    weight_range     = "11.3-83 kg",
-    weight_median    = "34.5 kg",
-    sex_female_pct   = 37,
-    race_ethnicity   = c(White = 90, `African American` = 3, Multiracial = 7),
-    disease_state    = "Pediatric chronic kidney disease with associated anemia. Knebel 2008 Table II: 28 subjects (47%) on hemodialysis, 15 (25%) on peritoneal dialysis, 17 (28%) predialysis. Primary diagnoses leading to CKD included glomerulonephritis (9, 15%), secondary glomerulonephritis/vasculitis (1, 2%), and interstitial nephritis/pyelonephritis (4, 7%). All patients were on a stable erythropoiesis-stimulating agent before entry with hemoglobin 10-13 g/dL, which is why a subject-specific baseline erythropoietin concentration was not estimable.",
-    dose_range       = "Epoetin delta: 26-191 IU/kg subcutaneous (37 subjects), 54-769 IU/kg intravenous (10 subjects). Epoetin alfa: 24-190 IU/kg subcutaneous (12 subjects), 36-88 IU/kg intravenous (1 subject). Administered once weekly, twice weekly, or three times weekly for 24 weeks, titrated to keep hemoglobin in the 10-13 g/dL target range (Knebel 2008 Table I and Study Design).",
-    regions          = "United States and Argentina (per the ethics-committee appendix of Knebel 2008)",
-    body_size        = "Knebel 2008 Table II also reports body mass index (median 17.2, mean 18.1, range 12.3-28.6 kg/m^2) and body surface area (median 1.17, mean 1.15, range 0.506-1.95 m^2). Neither was retained; weight was chosen as the single body-size metric because weight, BSA, BMI, and age were correlated at r >= 0.71 except BSA-BMI (r = 0.59) and age-BMI (r = 0.33).",
-    notes            = "Phase III, open-label, randomized, stratified, multicenter 24-week study of epoetin delta (Dynepo). Sparse sampling: most patients gave one PK sample per scheduled visit (week 2 predose, week 4 at 2-4 h, week 8 at 12-24 h, week 12 at 20-36 h, week 20 at 48 h postdose), averaging 4 samples per patient, with most samples within 50 h of a dose. Serum erythropoietin was measured by a validated ELISA linear over 2.50-250 mEU/mL with an LLQ of 2.50 mEU/mL. Fit in NONMEM VI level 1.1 with FOCE-INT. Race was recorded but no formal comparisons across racial categories were made because of the small African American and multiracial strata, so race is not a covariate in the model."
+    age_range = "1-17 years",
+    age_median = "13 years",
+    weight_range = "11.3-83 kg",
+    weight_median = "34.5 kg",
+    sex_female_pct = 37,
+    race_ethnicity = c(White = 90, `African American` = 3, Multiracial = 7),
+    disease_state = "Pediatric chronic kidney disease with associated anemia. Knebel 2008 Table II: 28 subjects (47%) on hemodialysis, 15 (25%) on peritoneal dialysis, 17 (28%) predialysis. Primary diagnoses leading to CKD included glomerulonephritis (9, 15%), secondary glomerulonephritis/vasculitis (1, 2%), and interstitial nephritis/pyelonephritis (4, 7%). All patients were on a stable erythropoiesis-stimulating agent before entry with hemoglobin 10-13 g/dL, which is why a subject-specific baseline erythropoietin concentration was not estimable.",
+    dose_range = "Epoetin delta: 26-191 IU/kg subcutaneous (37 subjects), 54-769 IU/kg intravenous (10 subjects). Epoetin alfa: 24-190 IU/kg subcutaneous (12 subjects), 36-88 IU/kg intravenous (1 subject). Administered once weekly, twice weekly, or three times weekly for 24 weeks, titrated to keep hemoglobin in the 10-13 g/dL target range (Knebel 2008 Table I and Study Design).",
+    regions = "United States and Argentina (per the ethics-committee appendix of Knebel 2008)",
+    body_size = "Knebel 2008 Table II also reports body mass index (median 17.2, mean 18.1, range 12.3-28.6 kg/m^2) and body surface area (median 1.17, mean 1.15, range 0.506-1.95 m^2). Neither was retained; weight was chosen as the single body-size metric because weight, BSA, BMI, and age were correlated at r >= 0.71 except BSA-BMI (r = 0.59) and age-BMI (r = 0.33).",
+    notes = "Phase III, open-label, randomized, stratified, multicenter 24-week study of epoetin delta (Dynepo). Sparse sampling: most patients gave one PK sample per scheduled visit (week 2 predose, week 4 at 2-4 h, week 8 at 12-24 h, week 12 at 20-36 h, week 20 at 48 h postdose), averaging 4 samples per patient, with most samples within 50 h of a dose. Serum erythropoietin was measured by a validated ELISA linear over 2.50-250 mEU/mL with an LLQ of 2.50 mEU/mL. Fit in NONMEM VI level 1.1 with FOCE-INT. Race was recorded but no formal comparisons across racial categories were made because of the small African American and multiracial strata, so race is not a covariate in the model."
   )
 
   ini({

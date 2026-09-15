@@ -19,11 +19,11 @@ Henthorn_2024_tetrahydrocannabinol <- function() {
 
   covariateData <- list(
     CANNABIS_DAILY = list(
-      description        = "Habitual cannabis use pattern: 1 = daily user, 0 = occasional user",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Habitual cannabis use pattern: 1 = daily user, 0 = occasional user",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (occasional user)",
-      notes              = paste(
+      notes = paste(
         "Henthorn 2024 Methods (Participants): occasional use is 'an average of at",
         "least 2 days per month and no more than 3 days per week in the 90 days",
         "before enrollment' with typical use of flower products; daily use is daily",
@@ -36,7 +36,7 @@ Henthorn_2024_tetrahydrocannabinol <- function() {
         "not enter any disposition parameter.",
         sep = " "
       ),
-      source_name        = "Covariate (daily user)"
+      source_name = "Covariate (daily user)"
     )
   )
 
@@ -51,72 +51,72 @@ Henthorn_2024_tetrahydrocannabinol <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate via the power form of Henthorn 2024 equation (2); dOFV < 3.84, not retained."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate via the power form of Henthorn 2024 equation (2); dOFV < 3.84, not retained."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate via the power form of Henthorn 2024 equation (2); dOFV < 3.84, not retained. Henthorn 2024 names 'body weight' in the Results sentence and 'body mass index' in the Methods list of continuous demographic covariates; BMI is the variable actually tabulated (Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a continuous covariate via the power form of Henthorn 2024 equation (2); dOFV < 3.84, not retained. Henthorn 2024 names 'body weight' in the Results sentence and 'body mass index' in the Methods list of continuous demographic covariates; BMI is the variable actually tabulated (Table 1)."
     ),
     SEXF = list(
       description = "Sex, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical covariate via the exponential form of Henthorn 2024 equation (3); dOFV < 3.84, not retained. Cohort is 65.5% female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate via the exponential form of Henthorn 2024 equation (3); dOFV < 3.84, not retained. Cohort is 65.5% female (Table 1)."
     ),
     DOSE_THC_MG = list(
       description = "Weighed cannabis inhalation dose: product labeled THC concentration times the pre- to post-inhalation product weight difference",
-      units       = "mg",
-      type        = "continuous",
-      notes       = "Screened via Henthorn 2024 equation (4), a power form normalised to the nominal 15 mg dose: theta_TV * (THCwt / 15 mg)^theta_cov. Not significant in the forward step and not retained. Figure 4 shows the weighed dose is a very poor predictor of the model-estimated inhaled dose."
+      units = "mg",
+      type = "continuous",
+      notes = "Screened via Henthorn 2024 equation (4), a power form normalised to the nominal 15 mg dose: theta_TV * (THCwt / 15 mg)^theta_cov. Not significant in the forward step and not retained. Figure 4 shows the weighed dose is a very poor predictor of the model-estimated inhaled dose."
     ),
     FORM_THC_CONCENTRATE = list(
       description = "Cannabis product form / inhalation device consumed on the study day: 1 = concentrate (vape pen, dab), 0 = flower (smoked)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Henthorn 2024 Results: 'Further delineation of usage pattern to include daily concentrate and daily flower use was significant at a lower level and did not further decrease the -2*Loglikelihood, so it was not included in the final model'; the inhalation device likewise showed no significant reduction. The retained CANNABIS_DAILY covariate is explicitly defined without regard to product form."
+      units = "(binary)",
+      type = "binary",
+      notes = "Henthorn 2024 Results: 'Further delineation of usage pattern to include daily concentrate and daily flower use was significant at a lower level and did not further decrease the -2*Loglikelihood, so it was not included in the final model'; the inhalation device likewise showed no significant reduction. The retained CANNABIS_DAILY covariate is explicitly defined without regard to product form."
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "delta-9-tetrahydrocannabinol",
-      units    = "mg",
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "delta-9-tetrahydrocannabinol",
-      units    = "mg",
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
       specimen = "tissue",
       verified = TRUE
     ),
     peripheral2 = list(
-      analyte  = "delta-9-tetrahydrocannabinol",
-      units    = "mg",
+      analyte = "delta-9-tetrahydrocannabinol",
+      units = "mg",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 29,
+    n_studies = 1,
     n_observations = 203,
-    age_range      = "21-55 years (enrolled); 21-53 years observed",
-    age_mean       = "32.8 years (SD 7.6)",
-    bmi_mean       = "26.9 kg/m^2 (SD 6.2)",
+    age_range = "21-55 years (enrolled); 21-53 years observed",
+    age_mean = "32.8 years (SD 7.6)",
+    bmi_mean = "26.9 kg/m^2 (SD 6.2)",
     sex_female_pct = 65.5,
     race_ethnicity = c(White = 86.2, `Black/African American` = 10.3, `Other/no response` = 3.4),
-    ethnicity      = c(`Hispanic/Latino` = 17.2, `Non-Hispanic/Latino` = 75.9, `Declined to respond` = 6.9),
-    disease_state  = "healthy adult cannabis users; three recruitment groups: occasional flower (n = 9), daily flower (n = 10), daily concentrate (n = 10)",
-    dose_range     = "ad libitum inhalation over a 15-minute session of participant-supplied Colorado commercial-market product; total THC 15-30% w/w for flower and 60-90% w/w for concentrate; mean weighed THC dose 53.0 mg (SD 58.5), mean model-estimated inhaled THC 11.1 mg (SD 11.1)",
-    regions        = "United States (Colorado)",
-    notes          = paste(
+    ethnicity = c(`Hispanic/Latino` = 17.2, `Non-Hispanic/Latino` = 75.9, `Declined to respond` = 6.9),
+    disease_state = "healthy adult cannabis users; three recruitment groups: occasional flower (n = 9), daily flower (n = 10), daily concentrate (n = 10)",
+    dose_range = "ad libitum inhalation over a 15-minute session of participant-supplied Colorado commercial-market product; total THC 15-30% w/w for flower and 60-90% w/w for concentrate; mean weighed THC dose 53.0 mg (SD 58.5), mean model-estimated inhaled THC 11.1 mg (SD 11.1)",
+    regions = "United States (Colorado)",
+    notes = paste(
       "Henthorn 2024 Table 1 (demographics and cannabis use history) and Table 2",
       "(observed consumption). 30 adults completed the study; one occasional user",
       "with no detectable blood THC at any draw was dropped, leaving 29.",

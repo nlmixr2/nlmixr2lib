@@ -8,60 +8,60 @@ Zhang_2021_dupilumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Ke, V2 (central volume), and Vmax. Reference 78 kg, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945).",
-      source_name        = "WT"
+      notes = "Power effect on Ke, V2 (central volume), and Vmax. Reference 78 kg, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin (baseline)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (baseline)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on V2. Reference 44 g/L, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945).",
-      source_name        = "ALB"
+      notes = "Power effect on V2. Reference 44 g/L, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945).",
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Creatinine clearance normalized to body surface area (Cockcroft-Gault, BSA-normalized as 1.73 * CrCl / BSA)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Creatinine clearance normalized to body surface area (Cockcroft-Gault, BSA-normalized as 1.73 * CrCl / BSA)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Ke. Reference 111 mL/min/1.73 m^2, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945). Source column is CLCRN per Zhang 2021 Methods.",
-      source_name        = "CLCRN"
+      notes = "Power effect on Ke. Reference 111 mL/min/1.73 m^2, the median of the final asthma popPK dataset (Zhang 2021 Results, p. 945). Source column is CLCRN per Zhang 2021 Methods.",
+      source_name = "CLCRN"
     ),
     ADA_POS = list(
-      description        = "Stationary anti-drug antibody (ADA) positivity indicator (positive at any time on study)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Stationary anti-drug antibody (ADA) positivity indicator (positive at any time on study)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative; typical patient)",
-      notes              = "Time-fixed per subject: 1 = positive at any time during the study, 0 = always negative. Multiplicative effect on Ke as Ke * (1 + 0.191 * ADA_POS). Per Zhang 2021 Results, the typical patient is ADA-negative; ADA-positive subjects make up 14.5% of the asthma development population (Table 2).",
-      source_name        = "ADA"
+      notes = "Time-fixed per subject: 1 = positive at any time during the study, 0 = always negative. Multiplicative effect on Ke as Ke * (1 + 0.191 * ADA_POS). Per Zhang 2021 Results, the typical patient is ADA-negative; ADA-positive subjects make up 14.5% of the asthma development population (Table 2).",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    n_subjects     = 2114L,
+    n_subjects = 2114L,
     n_observations = 14584L,
-    n_studies      = 9L,
-    age_range      = "12-83 years",
-    age_median     = "48 years (asthma development cohort, N = 2114; healthy median 32, asthma median 49)",
-    weight_range   = "32-186 kg (asthma); 52-95 kg (healthy)",
-    weight_median  = "78 kg (final dataset median; healthy 77.3, asthma 80.0)",
+    n_studies = 9L,
+    age_range = "12-83 years",
+    age_median = "48 years (asthma development cohort, N = 2114; healthy median 32, asthma median 49)",
+    weight_range = "32-186 kg (asthma); 52-95 kg (healthy)",
+    weight_median = "78 kg (final dataset median; healthy 77.3, asthma 80.0)",
     sex_female_pct = 59.6,
     race_ethnicity = "Race was a tested covariate; detailed race breakdown not reported in the main text Table 2.",
-    disease_state  = "Pooled cohort of 202 healthy adults and 1912 patients with moderate-to-severe asthma (1844 adults + 68 adolescents aged 12 to <18 years).",
-    dose_range     = "1-12 mg/kg IV and 75-600 mg SC single dose (Phase I); 200-300 mg SC q2w or q4w with 400-600 mg SC loading dose (Phase II/III maintenance).",
-    regions        = "Multi-regional Phase I-III programme; 9 pooled studies (NCT01015027, NCT01484600, NCT01537653, NCT01537640, PKM14161, PKM14271, NCT01312961, NCT01854047, NCT02414854).",
-    notes          = "Baseline demographics from Zhang 2021 Table 2 (final dataset N = 2114 with 14,584 dupilumab concentrations). Adolescents (12 to <18 years) N = 68 (3.2%). ADA-positive 14.5% of asthma cohort. Albumin median 44 g/L, CrCl-normalized median 111 mL/min/1.73 m^2. Eosinophil, FeNO, FEV1 percent-of-predicted-normal were tested but had no significant effect on dupilumab PK. The independent evaluation cohort (NCT02528214, N = 103, severe OCS-dependent asthma) was used for external validation only and is not included in n_subjects."
+    disease_state = "Pooled cohort of 202 healthy adults and 1912 patients with moderate-to-severe asthma (1844 adults + 68 adolescents aged 12 to <18 years).",
+    dose_range = "1-12 mg/kg IV and 75-600 mg SC single dose (Phase I); 200-300 mg SC q2w or q4w with 400-600 mg SC loading dose (Phase II/III maintenance).",
+    regions = "Multi-regional Phase I-III programme; 9 pooled studies (NCT01015027, NCT01484600, NCT01537653, NCT01537640, PKM14161, PKM14271, NCT01312961, NCT01854047, NCT02414854).",
+    notes = "Baseline demographics from Zhang 2021 Table 2 (final dataset N = 2114 with 14,584 dupilumab concentrations). Adolescents (12 to <18 years) N = 68 (3.2%). ADA-positive 14.5% of asthma cohort. Albumin median 44 g/L, CrCl-normalized median 111 mL/min/1.73 m^2. Eosinophil, FeNO, FEV1 percent-of-predicted-normal were tested but had no significant effect on dupilumab PK. The independent evaluation cohort (NCT02528214, N = 103, severe OCS-dependent asthma) was used for external validation only and is not included in n_subjects."
   )
 
   ini({

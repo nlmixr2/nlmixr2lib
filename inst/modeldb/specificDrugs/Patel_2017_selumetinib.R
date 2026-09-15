@@ -14,64 +14,68 @@ Patel_2017_selumetinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "selumetinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ndmsel     = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "selumetinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ndmsel = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_ndmsel = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area (Gehan and George formula)",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area (Gehan and George formula)",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Power effects on selumetinib CL/F (exponent +0.923; positive correlation per text), Vc/F (exponent +1.24; positive correlation), and on fraction metabolized Fm (paper text 'negative correlation', encoded as (BSA/BSA_ref)^(-0.908) so the magnitude theta20 = +0.908 from Table 2 maps to the documented negative-correlation direction). BSA was computed via the Gehan and George formula per Patel 2017 Methods. Reference value 1.66 m^2 is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (1.76, 1.97, 1.45); the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
-      source_name        = "BSA"
+      notes = "Time-fixed at baseline. Power effects on selumetinib CL/F (exponent +0.923; positive correlation per text), Vc/F (exponent +1.24; positive correlation), and on fraction metabolized Fm (paper text 'negative correlation', encoded as (BSA/BSA_ref)^(-0.908) so the magnitude theta20 = +0.908 from Table 2 maps to the documented negative-correlation direction). BSA was computed via the Gehan and George formula per Patel 2017 Methods. Reference value 1.66 m^2 is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (1.76, 1.97, 1.45); the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
+      source_name = "BSA"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Power effect on selumetinib Vc/F (exponent +0.327; positive correlation per text). Reference value 53 years is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (60, 60, 13) with adults dominating the cohort; the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Power effect on selumetinib Vc/F (exponent +0.327; positive correlation per text). Reference value 53 years is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (60, 60, 13) with adults dominating the cohort; the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
+      source_name = "AGE"
     ),
     ALT = list(
-      description        = "Serum alanine aminotransferase activity (baseline)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alanine aminotransferase activity (baseline)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Power effect on selumetinib CL/F (paper text 'negative correlation' for ALT, encoded as (ALT/ALT_ref)^(-0.187) so the magnitude theta14 = +0.187 from Table 2 maps to the documented negative-correlation direction). Reference value 20 U/L is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (17.5, 22, 22); the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
-      source_name        = "ALT"
+      notes = "Time-fixed at baseline. Power effect on selumetinib CL/F (paper text 'negative correlation' for ALT, encoded as (ALT/ALT_ref)^(-0.187) so the magnitude theta14 = +0.187 from Table 2 maps to the documented negative-correlation direction). Reference value 20 U/L is the approximate pooled-cohort median across Studies 16+20+29 (n=105) derived from study-level medians in Table 1 (17.5, 22, 22); the paper does not state the exact normalization constant used in NONMEM (see vignette Assumptions).",
+      source_name = "ALT"
     ),
     FED = list(
-      description        = "Fed-state-at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state-at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted at dosing; bioavailability fixed at 1)",
-      notes              = "Per-dose-record indicator. Additive effects on selumetinib absorption parameters under fed (high-fat-meal) condition: D1 increased by +4.09 h (theta9), ALAG1 increased by +0.348 h (theta10), and bioavailability decreased by an additive -0.117 (theta8) so F_fed = 1 - 0.117 = 0.883 (consistent with the paper's Figure 4 sensitivity analysis showing ~11% AUC0-Inf reduction under high-fat meal). Pediatric patients (Study 29) were modeled as fasted regardless of reported food intake per Patel 2017 Results because the reported pediatric food information was inadequate for modeling.",
-      source_name        = "FED"
+      notes = "Per-dose-record indicator. Additive effects on selumetinib absorption parameters under fed (high-fat-meal) condition: D1 increased by +4.09 h (theta9), ALAG1 increased by +0.348 h (theta10), and bioavailability decreased by an additive -0.117 (theta8) so F_fed = 1 - 0.117 = 0.883 (consistent with the paper's Figure 4 sensitivity analysis showing ~11% AUC0-Inf reduction under high-fat meal). Pediatric patients (Study 29) were modeled as fasted regardless of reported food intake per Patel 2017 Results because the reported pediatric food information was inadequate for modeling.",
+      source_name = "FED"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 105L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 105L,
+    n_studies = 3L,
     n_observations = 2418L,
-    age_range      = "5.6-79 years",
-    age_median     = "approximately 53 years (pooled across studies; adult-dominated)",
-    weight_range   = "14-119 kg",
+    age_range = "5.6-79 years",
+    age_median = "approximately 53 years (pooled across studies; adult-dominated)",
+    weight_range = "14-119 kg",
     sex_female_pct = 46.0,
     race_ethnicity = "Caucasian 92%, non-Caucasian 5%, missing 3% (Patel 2017 Table 1, n=105 model-development cohort)",
-    disease_state  = "Pooled adults with advanced solid tumors (Study 16: non-small-cell lung cancer, n=42; Study 20: advanced solid malignancies, n=30) and children with recurrent or refractory low-grade glioma (Study 29, n=33). External validation in 44 additional pediatric LGG patients (Study 29B, NCT01089101).",
-    dose_range     = "Adult: 75 mg b.i.d. oral selumetinib hydrogen-sulfate capsule (Study 16) or 75 mg single dose (Study 20); Pediatric: 25, 33, or 43 mg/m^2 b.i.d. (Study 29). External validation 25 mg/m^2 b.i.d. (Study 29B).",
-    regions        = "Multinational (predominantly North America).",
-    studies        = c("Study 16 (NSCLC adults)", "Study 20 (advanced solid malignancy adults)", "Study 29 (recurrent LGG children, Pediatric Brain Tumor Consortium)"),
-    bsa_range_m2   = "0.64-2.46",
-    notes          = "All patients received selumetinib as oral hydrogen-sulfate (Hyd-sulfate) capsule formulation. Per-study demographics are summarized in Patel 2017 Table 1. The pooled-cohort median values quoted in covariateData notes (BSA 1.66 m^2, age 53 years, ALT 20 U/L) are approximations from the study-level medians in Table 1; the paper does not state the exact NONMEM-internal normalization constants. The metabolite-to-parent AUC ratio on molar basis was approximately 0.15 in the upstream Banerji 2010 first-in-human study and Fm decreased by ~25% at steady state vs single dose in the present analysis. Inter-occasion variability (IOV) was estimated for D1, ALAG1, CL, V2, and Fm (Patel 2017 Table 2) but is not implemented in this model file because the simulation library encodes typical-value and IIV variability only; IOV is documented in vignette Assumptions and deviations."
+    disease_state = "Pooled adults with advanced solid tumors (Study 16: non-small-cell lung cancer, n=42; Study 20: advanced solid malignancies, n=30) and children with recurrent or refractory low-grade glioma (Study 29, n=33). External validation in 44 additional pediatric LGG patients (Study 29B, NCT01089101).",
+    dose_range = "Adult: 75 mg b.i.d. oral selumetinib hydrogen-sulfate capsule (Study 16) or 75 mg single dose (Study 20); Pediatric: 25, 33, or 43 mg/m^2 b.i.d. (Study 29). External validation 25 mg/m^2 b.i.d. (Study 29B).",
+    regions = "Multinational (predominantly North America).",
+    studies = c(
+      "Study 16 (NSCLC adults)",
+      "Study 20 (advanced solid malignancy adults)",
+      "Study 29 (recurrent LGG children, Pediatric Brain Tumor Consortium)"
+    ),
+    bsa_range_m2 = "0.64-2.46",
+    notes = "All patients received selumetinib as oral hydrogen-sulfate (Hyd-sulfate) capsule formulation. Per-study demographics are summarized in Patel 2017 Table 1. The pooled-cohort median values quoted in covariateData notes (BSA 1.66 m^2, age 53 years, ALT 20 U/L) are approximations from the study-level medians in Table 1; the paper does not state the exact NONMEM-internal normalization constants. The metabolite-to-parent AUC ratio on molar basis was approximately 0.15 in the upstream Banerji 2010 first-in-human study and Fm decreased by ~25% at steady state vs single dose in the present analysis. Inter-occasion variability (IOV) was estimated for D1, ALAG1, CL, V2, and Fm (Patel 2017 Table 2) but is not implemented in this model file because the simulation library encodes typical-value and IIV variability only; IOV is documented in vignette Assumptions and deviations."
   )
 
   ini({

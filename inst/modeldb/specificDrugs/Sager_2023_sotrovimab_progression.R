@@ -48,11 +48,11 @@ Sager_2023_sotrovimab_progression <- function() {
 
   covariateData <- list(
     CONC_SOTRO_168H = list(
-      description        = "Individual serum sotrovimab concentration 168 h (7 days) after a single intravenous or intramuscular dose.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual serum sotrovimab concentration 168 h (7 days) after a single intravenous or intramuscular dose.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "NOT an observation. Sager 2023 (Methods, 'ER modeling') generated ",
         "it by integrating each patient's predicted concentration-time ",
         "profile from the final population PK model using that patient's ",
@@ -68,14 +68,14 @@ Sager_2023_sotrovimab_progression <- function() {
         "S10 and reproduced in the vignette: roughly 60 ug/mL after 500 mg ",
         "i.v., 21 ug/mL after 500 mg i.m. and 11 ug/mL after 250 mg i.m."
       ),
-      source_name        = "CP168"
+      source_name = "CP168"
     ),
     NRISK_GT1 = list(
-      description        = "Indicator that the patient has more than one protocol-defined risk factor for progression of COVID-19; 1 = more than one, 0 = one or fewer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the patient has more than one protocol-defined risk factor for progression of COVID-19; 1 = more than one, 0 = one or fewer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (one or fewer risk factors; 630 of 902 patients, 69.8%)",
-      notes              = paste0(
+      notes = paste0(
         "The source column is RISKCATN (MODEL CODE S2 $INPUT, listed ",
         "under ';--catcovs-'), the dichotomised form of the risk-condition ",
         "count RFNUMCND. Sager 2023 Table S8 gives the split as 630 ",
@@ -96,7 +96,7 @@ Sager_2023_sotrovimab_progression <- function() {
         "which sits on the wrong side of the base model. The vignette ",
         "reproduces this arithmetic as an assertion."
       ),
-      source_name        = "RISKCATN"
+      source_name = "RISKCATN"
     )
   )
 
@@ -107,54 +107,54 @@ Sager_2023_sotrovimab_progression <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate on the progression probability (source column AGE) and not retained. Median 50.0 years, range 15-92 (Sager 2023 Table S8). Age is already embedded in the retained NRISK_GT1 count, which is inclusive of age.",
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a continuous covariate on the progression probability (source column AGE) and not retained. Median 50.0 years, range 15-92 (Sager 2023 Table S8). Age is already embedded in the retained NRISK_GT1 count, which is inclusive of age.",
       source_name = "AGE"
     ),
     BMI = list(
       description = "Body mass index at baseline.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate on the progression probability (source column BMIBL) and not retained. Median 31.0 kg/m^2, range 18-63 (Sager 2023 Table S8). Like age, BMI is already embedded in the retained NRISK_GT1 count. BMI IS retained in the companion population PK model, where it acts on the intramuscular absorption rate.",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a continuous covariate on the progression probability (source column BMIBL) and not retained. Median 31.0 kg/m^2, range 18-63 (Sager 2023 Table S8). Like age, BMI is already embedded in the retained NRISK_GT1 count. BMI IS retained in the companion population PK model, where it acts on the intramuscular absorption rate.",
       source_name = "BMIBL"
     ),
     SEXF = list(
       description = "Sex indicator; 1 = female, 0 = male.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a categorical covariate on the progression probability (source column SEXF) and not retained. The COMET-TAIL exposure-response population was 409 of 902 male (45.3%; Sager 2023 Table S8). Sex IS retained in the companion population PK model, on both intramuscular bioavailability and the absorption rate.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a categorical covariate on the progression probability (source column SEXF) and not retained. The COMET-TAIL exposure-response population was 409 of 902 male (45.3%; Sager 2023 Table S8). Sex IS retained in the companion population PK model, on both intramuscular bioavailability and the absorption rate.",
       source_name = "SEXF"
     ),
     SARS_VLOAD = list(
       description = "Baseline SARS-CoV-2 viral load.",
-      units       = "log10 copies/mL",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate on the progression probability (source column VLCOVBL) and not retained. Median 6.09 log10 copies/mL, range 3.2-10.2 (Sager 2023 Table S8). Also screened, and likewise not retained, in the companion population PK model.",
+      units = "log10 copies/mL",
+      type = "continuous",
+      notes = "Screened as a continuous covariate on the progression probability (source column VLCOVBL) and not retained. Median 6.09 log10 copies/mL, range 3.2-10.2 (Sager 2023 Table S8). Also screened, and likewise not retained, in the companion population PK model.",
       source_name = "VLCOVBL"
     ),
     T_SYMPTOM_ONSET = list(
       description = "Duration of COVID-19 symptoms before dosing, i.e. time since symptom onset.",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened as a continuous covariate on the progression probability (source column SYMDUR) and not retained. Median 4.0 days, range 0-7 (Sager 2023 Table S8). The paper also screened, and likewise did not retain, the categorical form of the same quantity (source column SYMDCTN; <=3 days 49.0%, 4-5 days 38.1%, >5 days 12.9%).",
+      units = "days",
+      type = "continuous",
+      notes = "Screened as a continuous covariate on the progression probability (source column SYMDUR) and not retained. Median 4.0 days, range 0-7 (Sager 2023 Table S8). The paper also screened, and likewise did not retain, the categorical form of the same quantity (source column SYMDCTN; <=3 days 49.0%, 4-5 days 38.1%, >5 days 12.9%).",
       source_name = "SYMDUR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 902L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 902L,
+    n_studies = 1L,
     n_observations = "one record per patient: 2706 source observations from 902 patients, reduced from 2877 records on 959 patients by removing those outside the intent-to-treat population and those lacking PK data (Sager 2023 Results, 'ER modeling', and Table S7)",
-    age_median     = "50.0 years (range 15-92)",
-    bmi_median     = "31.0 kg/m^2 (range 18-63)",
+    age_median = "50.0 years (range 15-92)",
+    bmi_median = "31.0 kg/m^2 (range 18-63)",
     sex_female_pct = 54.7,
-    disease_state  = "non-hospitalized mild-to-moderate COVID-19 at high risk of progression to hospitalization or death; 69.8% had one or fewer protocol-defined risk factors and 30.2% more than one",
-    dose_range     = "single dose: 500 mg intravenous (n = 367), 500 mg intramuscular (n = 361) or 250 mg intramuscular (n = 174). COMET-TAIL had no placebo arm.",
-    regions        = "COMET-TAIL was multinational but 85% of participants were recruited in Florida, USA",
-    endpoint       = "Progression of COVID-19 through day 29: hospitalization for more than 24 h for acute management of illness due to any cause, or death. Observed rates by arm (Sager 2023 Table 2): 7 of 174 (4.0%) at 250 mg i.m., 8 of 361 (2.2%) at 500 mg i.m., 5 of 367 (1.4%) at 500 mg i.v., 20 of 902 (2.2%) overall.",
-    notes          = paste0(
+    disease_state = "non-hospitalized mild-to-moderate COVID-19 at high risk of progression to hospitalization or death; 69.8% had one or fewer protocol-defined risk factors and 30.2% more than one",
+    dose_range = "single dose: 500 mg intravenous (n = 367), 500 mg intramuscular (n = 361) or 250 mg intramuscular (n = 174). COMET-TAIL had no placebo arm.",
+    regions = "COMET-TAIL was multinational but 85% of participants were recruited in Florida, USA",
+    endpoint = "Progression of COVID-19 through day 29: hospitalization for more than 24 h for acute management of illness due to any cause, or death. Observed rates by arm (Sager 2023 Table 2): 7 of 174 (4.0%) at 250 mg i.m., 8 of 361 (2.2%) at 500 mg i.m., 5 of 367 (1.4%) at 500 mg i.v., 20 of 902 (2.2%) overall.",
+    notes = paste0(
       "COMET-TAIL enrolled from June to September 2021, when the delta ",
       "(B.1.617.2) variant predominated; it was the variant detected in ",
       "88.2% of the 764 participants with sequencing data. Median time ",

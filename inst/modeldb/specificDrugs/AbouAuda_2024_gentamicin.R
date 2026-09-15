@@ -16,20 +16,20 @@ AbouAuda_2024_gentamicin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Abou-Auda 2024 Table 1: mean (SD) 22.1 (17.1) kg over all 115 patients; 22.23 (20.3) kg in the ALL group and 22.02 (12.2) kg in the non-ALL group (p = 0.949). Reference weight 20 kg is the normalizing constant printed in both final-model equations in the Results (`(weight/20)`). Note that the cohort mean of 22.1 kg is NOT the reference: the mean is strongly right-skewed (SD 17.1 kg over ages 1-14 years) and the paper chose a round 20 kg. Weight was significant on both CL and Vd in the univariate screen (Table 2, CL R^2 = 0.38) and was retained on both parameters in the final model.",
-      source_name        = "weight"
+      notes = "Abou-Auda 2024 Table 1: mean (SD) 22.1 (17.1) kg over all 115 patients; 22.23 (20.3) kg in the ALL group and 22.02 (12.2) kg in the non-ALL group (p = 0.949). Reference weight 20 kg is the normalizing constant printed in both final-model equations in the Results (`(weight/20)`). Note that the cohort mean of 22.1 kg is NOT the reference: the mean is strongly right-skewed (SD 17.1 kg over ages 1-14 years) and the paper chose a round 20 kg. Weight was significant on both CL and Vd in the univariate screen (Table 2, CL R^2 = 0.38) and was retained on both parameters in the final model.",
+      source_name = "weight"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated with the modified Schwartz equation (Schwartz 2009)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the modified Schwartz equation (Schwartz 2009)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Abou-Auda 2024 Methods (Data collection) and Table 1 footnote: 'Creatinine clearance (Clcr) was calculated using the modified Schwartz formula (Schwartz et al., 2009).' Reference value 120 mL/min is the normalizing constant printed in the final-model clearance equation in the Results (`(CLcr/120)`); it is not tabulated anywhere and is not equal to any reported cohort summary. UNITS CAVEAT: Table 1 heads the column 'Cl_cr (ml/min)', but the modified/bedside Schwartz 2009 equation returns a BSA-normalized value in mL/min/1.73 m^2. This extraction records the paper's own printed unit (mL/min) because that is what the source states, but a user supplying real data should be aware that the values the model was fitted to are almost certainly BSA-normalized Schwartz estimates; supplying a raw (un-normalized) creatinine clearance would silently rescale the renal term. See the vignette Assumptions and deviations section. Cohort values (Table 1): 149 (56.5) over all patients, 153.73 (62.8) in ALL, 164.88 (43.5) in non-ALL (p = 0.006) -- note that the printed all-patient mean of 149 lies BELOW both subgroup means, which is arithmetically impossible; the n-weighted mean of the two subgroups is 158.8 mL/min. This affects only the descriptive population metadata, not the model, whose reference value is the independently printed 120 mL/min. CLcr was significant on CL in the univariate screen (Table 2, R^2 = 0.35) and was one of the two covariates retained in the forward multiple regression (Table 2, combined R^2 = 0.69). It was NOT significant on Vd.",
-      source_name        = "CLcr"
+      notes = "Abou-Auda 2024 Methods (Data collection) and Table 1 footnote: 'Creatinine clearance (Clcr) was calculated using the modified Schwartz formula (Schwartz et al., 2009).' Reference value 120 mL/min is the normalizing constant printed in the final-model clearance equation in the Results (`(CLcr/120)`); it is not tabulated anywhere and is not equal to any reported cohort summary. UNITS CAVEAT: Table 1 heads the column 'Cl_cr (ml/min)', but the modified/bedside Schwartz 2009 equation returns a BSA-normalized value in mL/min/1.73 m^2. This extraction records the paper's own printed unit (mL/min) because that is what the source states, but a user supplying real data should be aware that the values the model was fitted to are almost certainly BSA-normalized Schwartz estimates; supplying a raw (un-normalized) creatinine clearance would silently rescale the renal term. See the vignette Assumptions and deviations section. Cohort values (Table 1): 149 (56.5) over all patients, 153.73 (62.8) in ALL, 164.88 (43.5) in non-ALL (p = 0.006) -- note that the printed all-patient mean of 149 lies BELOW both subgroup means, which is arithmetically impossible; the n-weighted mean of the two subgroups is 158.8 mL/min. This affects only the descriptive population metadata, not the model, whose reference value is the independently printed 120 mL/min. CLcr was significant on CL in the univariate screen (Table 2, R^2 = 0.35) and was one of the two covariates retained in the forward multiple regression (Table 2, combined R^2 = 0.69). It was NOT significant on Vd.",
+      source_name = "CLcr"
     )
   )
 
@@ -40,69 +40,69 @@ AbouAuda_2024_gentamicin <- function() {
   # in model(). Only weight (on CL and Vd) and CLcr (on CL) survived.
   covariatesDataExcluded <- list(
     DIS_ALL = list(
-      description        = "Acute lymphoblastic leukemia disease-state indicator (1 = ALL, 0 = non-ALL)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Acute lymphoblastic leukemia disease-state indicator (1 = ALL, 0 = non-ALL)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-ALL; the complement group here is the paper's non-oncology pediatric comparison cohort)",
-      notes              = "THE PAPER'S PRIMARY RESEARCH QUESTION, and a deliberate negative result. ALL status ('oncology status') was significant on CL in the univariate screen (Table 2, p < 0.05) but had by far the weakest explanatory power of the four univariate covariates (R^2 = 0.07 versus 0.46 for age, 0.38 for weight, 0.35 for CLcr) and did NOT survive the forward multiple linear regression, in which only weight and CLcr remained (Table 2). Results: 'The average Cl in ALL vs. non-ALL patients was 1.9 vs. 2.2 L/hour (p value > 0.05)' and 'The average Vd in ALL vs. non-ALL patients was 6.3 vs. 6.4 L (p value > 0.05)'. The authors conclude that dosing requirements are the same in both groups, which CONTRADICTS the earlier Llanos-Paez 2020 pediatric finding of a 15% lower central Vd and 32% lower CL in oncology patients (see the shipped LlanosPaez_2020_gentamicin.R for that model). n = 63 ALL (54.8%) versus 52 non-ALL (45.2%).",
-      source_name        = "diagnosis / ALL status / oncology status"
+      notes = "THE PAPER'S PRIMARY RESEARCH QUESTION, and a deliberate negative result. ALL status ('oncology status') was significant on CL in the univariate screen (Table 2, p < 0.05) but had by far the weakest explanatory power of the four univariate covariates (R^2 = 0.07 versus 0.46 for age, 0.38 for weight, 0.35 for CLcr) and did NOT survive the forward multiple linear regression, in which only weight and CLcr remained (Table 2). Results: 'The average Cl in ALL vs. non-ALL patients was 1.9 vs. 2.2 L/hour (p value > 0.05)' and 'The average Vd in ALL vs. non-ALL patients was 6.3 vs. 6.4 L (p value > 0.05)'. The authors conclude that dosing requirements are the same in both groups, which CONTRADICTS the earlier Llanos-Paez 2020 pediatric finding of a 15% lower central Vd and 32% lower CL in oncology patients (see the shipped LlanosPaez_2020_gentamicin.R for that model). n = 63 ALL (54.8%) versus 52 non-ALL (45.2%).",
+      source_name = "diagnosis / ALL status / oncology status"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL and Vd (Methods, PK analysis). Age had the HIGHEST univariate R^2 of any covariate on CL (Table 2, R^2 = 0.46, p < 0.05) but was not retained in the forward multiple regression, which kept weight and CLcr; age is strongly collinear with body weight across a 1-14 year cohort. Table 1: mean (SD) 6.1 (4.2) years overall; 5.36 (4.48) in ALL and 6.88 (3.8) in non-ALL (p = 0.055).",
-      source_name        = "age"
+      notes = "Screened on CL and Vd (Methods, PK analysis). Age had the HIGHEST univariate R^2 of any covariate on CL (Table 2, R^2 = 0.46, p < 0.05) but was not retained in the forward multiple regression, which kept weight and CLcr; age is strongly collinear with body weight across a 1-14 year cohort. Table 1: mean (SD) 6.1 (4.2) years overall; 5.36 (4.48) in ALL and 6.88 (3.8) in non-ALL (p = 0.055).",
+      source_name = "age"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Screened (Methods, PK analysis, listed as 'sex'); not retained. Table 1 reports males: 63 (54.8%) overall, 34 (53.9%) in ALL, 29 (55.7%) in non-ALL, so the cohort is 45.2% female. The source reports male counts; canonical SEXF is the complement (SEXF = 1 - SEXM).",
-      source_name        = "sex"
+      notes = "Screened (Methods, PK analysis, listed as 'sex'); not retained. Table 1 reports males: 63 (54.8%) overall, 34 (53.9%) in ALL, 29 (55.7%) in non-ALL, so the cohort is 45.2% female. The source reports male counts; canonical SEXF is the complement (SEXF = 1 - SEXM).",
+      source_name = "sex"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL and Vd (Methods, PK analysis and Data collection); not retained. No height summary statistic is reported in Table 1, although height is an input to both the Schwartz CLcr estimate and the BSA calculation that ARE tabulated.",
-      source_name        = "height"
+      notes = "Screened on CL and Vd (Methods, PK analysis and Data collection); not retained. No height summary statistic is reported in Table 1, although height is an input to both the Schwartz CLcr estimate and the BSA calculation that ARE tabulated.",
+      source_name = "height"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL and Vd (Methods, PK analysis and Data collection); not retained. No albumin summary statistic is reported in Table 1 and no unit is stated, so the canonical SI unit is recorded here without a source-confirmed value.",
-      source_name        = "serum albumin"
+      notes = "Screened on CL and Vd (Methods, PK analysis and Data collection); not retained. No albumin summary statistic is reported in Table 1 and no unit is stated, so the canonical SI unit is recorded here without a source-confirmed value.",
+      source_name = "serum albumin"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on CL and Vd (Methods, PK analysis); not retained as a standalone covariate, being an input to the Schwartz CLcr estimate that WAS retained. Table 1: mean (SD) 38.8 (12.9) umol/L overall; 41.85 (15.6) in ALL and 35.13 (7.58) in non-ALL (p = 0.005), i.e. significantly higher serum creatinine in the ALL group, which the authors attribute to chemotherapy-associated renal compromise.",
-      source_name        = "Scr"
+      notes = "Screened on CL and Vd (Methods, PK analysis); not retained as a standalone covariate, being an input to the Schwartz CLcr estimate that WAS retained. Table 1: mean (SD) 38.8 (12.9) umol/L overall; 41.85 (15.6) in ALL and 35.13 (7.58) in non-ALL (p = 0.005), i.e. significantly higher serum creatinine in the ALL group, which the authors attribute to chemotherapy-associated renal compromise.",
+      source_name = "Scr"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 115L,
-    n_studies       = 1L,
-    n_sites         = 1L,
-    age_range       = "1 to 14 years (inclusion criterion); Table 1 mean (SD) 6.1 (4.2) years. Age strata: toddlers 18 (15.7%), children 88 (76.5%), adolescents 9 (7.8%).",
-    weight_range    = "Full range not reported; Table 1 mean (SD) 22.1 (17.1) kg. BMI 16.9 (5.9); body surface area 0.8 (0.4) m^2; ideal body weight 25.5 (13.8) kg.",
-    sex_female_pct  = 45.2,
-    race_ethnicity  = "Not reported. Single-center Saudi Arabian cohort.",
-    disease_state   = "Pediatric inpatients receiving intravenous gentamicin for more than 72 h, split into 63 (54.8%) with acute lymphoblastic leukemia and 52 (45.2%) without. Gentamicin was given as empirical therapy under a febrile-neutropenia protocol or for any suspected gram-negative bacterial infection. Excluded: critically ill children with renal failure, liver dysfunction, or burns, and samples drawn at inappropriate (early or late) peak/trough times.",
-    dose_range      = "2.5 mg/kg per dose as a 30-minute intravenous infusion every 8 h for more than 72 h. Table 1 actual dose: 54.3 (44.2) mg/dose, i.e. 2.5 (0.64) mg/kg. All patients were dosed every 8 h.",
-    regions         = "Saudi Arabia (King Abdullah Specialist Children's Hospital, Ministry of National Guard, Riyadh)",
-    renal_function  = "Schwartz-estimated creatinine clearance 149 (56.5) mL/min overall, skewing supranormal; 153.73 (62.8) in ALL versus 164.88 (43.5) in non-ALL (p = 0.006). Serum creatinine 38.8 (12.9) umol/L overall; blood urea nitrogen 2.8 (1.9) mmol/L overall, 3.18 (1.9) in ALL versus 2.38 (1.7) in non-ALL (p = 0.026). Patients with renal failure were excluded by design, so the model carries no information about renal impairment. NOTE: the printed all-patient CLcr mean of 149 lies below BOTH subgroup means (153.73 and 164.88), which is arithmetically impossible; the n-weighted mean of the subgroups is 158.8 mL/min. Recorded as printed; see the vignette Assumptions and deviations section.",
-    notes           = "Retrospective single-center cross-sectional study (IRB approval NRC21R/127/04, informed consent waived) using routine therapeutic-drug-monitoring data. Serum samples were drawn 30 minutes before the next dose (trough) and 1 h after the end of an infusion (peak), around the third dose to ensure steady state, and assayed by latex inhibition immunoassay (TDX, Abbott Laboratories). Sampling is therefore SPARSE (nominally two concentrations per subject) and the total number of concentration records is not reported. The paper states that the sparse data made models with more than one compartment infeasible, and that the one-compartment structure follows the authors' prior publication (Alsultan 2019). Fitted in Monolix 2023R1 with log-normally distributed PK parameters; constant, proportional, and combined residual-error models were tested. Covariate effects were assessed by linear regression on the empirical Bayes estimates with forward selection at alpha = 0.05, rather than within the population model itself. Model evaluation was by goodness-of-fit plots (Figs. 1 and 2) and a visual predictive check (Fig. 3); no numeric NCA or predictive-check summary is tabulated."
+    species = "human",
+    n_subjects = 115L,
+    n_studies = 1L,
+    n_sites = 1L,
+    age_range = "1 to 14 years (inclusion criterion); Table 1 mean (SD) 6.1 (4.2) years. Age strata: toddlers 18 (15.7%), children 88 (76.5%), adolescents 9 (7.8%).",
+    weight_range = "Full range not reported; Table 1 mean (SD) 22.1 (17.1) kg. BMI 16.9 (5.9); body surface area 0.8 (0.4) m^2; ideal body weight 25.5 (13.8) kg.",
+    sex_female_pct = 45.2,
+    race_ethnicity = "Not reported. Single-center Saudi Arabian cohort.",
+    disease_state = "Pediatric inpatients receiving intravenous gentamicin for more than 72 h, split into 63 (54.8%) with acute lymphoblastic leukemia and 52 (45.2%) without. Gentamicin was given as empirical therapy under a febrile-neutropenia protocol or for any suspected gram-negative bacterial infection. Excluded: critically ill children with renal failure, liver dysfunction, or burns, and samples drawn at inappropriate (early or late) peak/trough times.",
+    dose_range = "2.5 mg/kg per dose as a 30-minute intravenous infusion every 8 h for more than 72 h. Table 1 actual dose: 54.3 (44.2) mg/dose, i.e. 2.5 (0.64) mg/kg. All patients were dosed every 8 h.",
+    regions = "Saudi Arabia (King Abdullah Specialist Children's Hospital, Ministry of National Guard, Riyadh)",
+    renal_function = "Schwartz-estimated creatinine clearance 149 (56.5) mL/min overall, skewing supranormal; 153.73 (62.8) in ALL versus 164.88 (43.5) in non-ALL (p = 0.006). Serum creatinine 38.8 (12.9) umol/L overall; blood urea nitrogen 2.8 (1.9) mmol/L overall, 3.18 (1.9) in ALL versus 2.38 (1.7) in non-ALL (p = 0.026). Patients with renal failure were excluded by design, so the model carries no information about renal impairment. NOTE: the printed all-patient CLcr mean of 149 lies below BOTH subgroup means (153.73 and 164.88), which is arithmetically impossible; the n-weighted mean of the subgroups is 158.8 mL/min. Recorded as printed; see the vignette Assumptions and deviations section.",
+    notes = "Retrospective single-center cross-sectional study (IRB approval NRC21R/127/04, informed consent waived) using routine therapeutic-drug-monitoring data. Serum samples were drawn 30 minutes before the next dose (trough) and 1 h after the end of an infusion (peak), around the third dose to ensure steady state, and assayed by latex inhibition immunoassay (TDX, Abbott Laboratories). Sampling is therefore SPARSE (nominally two concentrations per subject) and the total number of concentration records is not reported. The paper states that the sparse data made models with more than one compartment infeasible, and that the one-compartment structure follows the authors' prior publication (Alsultan 2019). Fitted in Monolix 2023R1 with log-normally distributed PK parameters; constant, proportional, and combined residual-error models were tested. Covariate effects were assessed by linear regression on the empirical Bayes estimates with forward selection at alpha = 0.05, rather than within the population model itself. Model evaluation was by goodness-of-fit plots (Figs. 1 and 2) and a visual predictive check (Fig. 3); no numeric NCA or predictive-check summary is tabulated."
   )
 
   ini({

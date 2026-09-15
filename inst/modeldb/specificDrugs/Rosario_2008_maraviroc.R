@@ -14,37 +14,39 @@ Rosario_2008_maraviroc <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "maraviroc", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "maraviroc", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject assigned maraviroc dose level (mg) carried as a continuous covariate column. Each subject was randomised to a single dose-cohort across the 12-day (healthy volunteers) or 10-day (HIV patients) treatment period.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-subject assigned maraviroc dose level (mg) carried as a continuous covariate column. Each subject was randomised to a single dose-cohort across the 12-day (healthy volunteers) or 10-day (HIV patients) treatment period.",
+      units = "mg",
+      type = "continuous",
       reference_category = "100 (b.i.d.) -- the reference dose group anchored at F1 = 1.0 and kel = 0.288 1/h",
-      notes              = "Used as a multiplicative-indicator covariate on the depot-compartment bioavailability F and on the central-compartment elimination rate constant kel. Six dose levels exist in the source design (3, 10, 25, 100, 300 mg b.i.d. and 600 mg q.d.); the model() block expresses F and kel as (DOSE == d) sums of the five non-reference fixed-effect ratios, so for any other DOSE value both sums collapse to zero, implying an inactive dose and producing a zero plasma concentration. Set DOSE to one of {3, 10, 25, 100, 300, 600} per subject for valid simulation; downstream users wanting to extrapolate to off-grid dose levels need to add an interpolation rule in their own driver code. Subject-level (time-fixed) within the source study.",
-      source_name        = "Dose (Table 2 dose-group label; the underlying NONMEM dataset column name is not reported by the paper)"
+      notes = "Used as a multiplicative-indicator covariate on the depot-compartment bioavailability F and on the central-compartment elimination rate constant kel. Six dose levels exist in the source design (3, 10, 25, 100, 300 mg b.i.d. and 600 mg q.d.); the model() block expresses F and kel as (DOSE == d) sums of the five non-reference fixed-effect ratios, so for any other DOSE value both sums collapse to zero, implying an inactive dose and producing a zero plasma concentration. Set DOSE to one of {3, 10, 25, 100, 300, 600} per subject for valid simulation; downstream users wanting to extrapolate to off-grid dose levels need to add an interpolation rule in their own driver code. Subject-level (time-fixed) within the source study.",
+      source_name = "Dose (Table 2 dose-group label; the underlying NONMEM dataset column name is not reported by the paper)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 88L,
-    n_studies      = 2L,
-    study_names    = c("A4001002 (healthy volunteers, n = 65 enrolled; n = 55 with PK and n = 36 with receptor-occupancy data)",
-                       "A4001007 (asymptomatic HIV-1-positive patients, n = 25 enrolled; n = 17 with PK and n = 24 with receptor-occupancy data; n = 23 with viral-load data)"),
+    species = "human",
+    n_subjects = 88L,
+    n_studies = 2L,
+    study_names = c(
+      "A4001002 (healthy volunteers, n = 65 enrolled; n = 55 with PK and n = 36 with receptor-occupancy data)",
+      "A4001007 (asymptomatic HIV-1-positive patients, n = 25 enrolled; n = 17 with PK and n = 24 with receptor-occupancy data; n = 23 with viral-load data)"
+    ),
     n_observations = 3621L,
     n_pk_observations = 2770L,
     n_pd_observations = 851L,
-    age_range      = "Not reported in the paper; healthy volunteers and asymptomatic HIV-1-positive adult patients (study A4001007 inclusion required asymptomatic HIV-1 infection with CD4 > 250 cells/mm^3, viral load >= 5000 copies/mL, and CCR5-tropic-only virus)",
+    age_range = "Not reported in the paper; healthy volunteers and asymptomatic HIV-1-positive adult patients (study A4001007 inclusion required asymptomatic HIV-1 infection with CD4 > 250 cells/mm^3, viral load >= 5000 copies/mL, and CCR5-tropic-only virus)",
     sex_female_pct = NA_real_,
-    disease_state  = "Mixed: healthy adult volunteers (study A4001002) and asymptomatic HIV-1-positive adults (study A4001007). HIV patients were antiretroviral-drug-naive or off antiretroviral therapy for >= 8 weeks prior to enrolment and had CCR5-tropic-only virus.",
-    dose_range     = "Multiple-dose oral maraviroc 3, 10, 25, 100, or 300 mg b.i.d. or 600 mg q.d. for 12 days (study A4001002) or 25 mg q.d. or 100 mg b.i.d. for 10 days (study A4001007). Healthy volunteer 300 mg b.i.d. and 600 mg q.d. cohorts contributed PK only (no receptor-occupancy sampling).",
-    regions        = "Pfizer Research Clinic (Hospital Erasme, Brussels, Belgium) for the healthy volunteer study; multicentre design for the HIV patient study (sites not enumerated by the paper).",
-    notes          = "Subject distribution (Table 1): 8 placebo + 5 (3 mg) + 5 (10 mg) + 9 (25 mg) + 9 (100 mg) + 9 (300 mg) + 18 (600 mg) healthy volunteers; 8 placebo + 9 (25 mg q.d.) + 8 (100 mg b.i.d.) HIV patients. The 25 mg q.d. patient cohort had one subject who withdrew on day 1 with PK only (no receptor-occupancy or viral-load data). The 100 mg b.i.d. patient cohort had one viral-load exclusion (subject with dual/mixed-tropic virus). Maraviroc plasma LLOQ was 0.5 ng/mL except in the 3 mg and 10 mg b.i.d. cohorts where LLOQ was 0.1 ng/mL (centralised LC-MS/MS, Maxxam Analytics). Receptor occupancy was measured by an ex-vivo MIP-1-beta internalization assay using a fluorescently labelled anti-CCR5 2D7 monoclonal antibody (Esoterix Inc., centralised flow cytometry). The PK model is acknowledged by the authors as exploratory (Discussion: 'The development of a definitive population PK model for maraviroc was not the aim of this analysis'); a comprehensive popPK from Phase 1/2a is described in their reference [9] (Abel et al., Br J Clin Pharmacol 2008 Suppl 1)."
+    disease_state = "Mixed: healthy adult volunteers (study A4001002) and asymptomatic HIV-1-positive adults (study A4001007). HIV patients were antiretroviral-drug-naive or off antiretroviral therapy for >= 8 weeks prior to enrolment and had CCR5-tropic-only virus.",
+    dose_range = "Multiple-dose oral maraviroc 3, 10, 25, 100, or 300 mg b.i.d. or 600 mg q.d. for 12 days (study A4001002) or 25 mg q.d. or 100 mg b.i.d. for 10 days (study A4001007). Healthy volunteer 300 mg b.i.d. and 600 mg q.d. cohorts contributed PK only (no receptor-occupancy sampling).",
+    regions = "Pfizer Research Clinic (Hospital Erasme, Brussels, Belgium) for the healthy volunteer study; multicentre design for the HIV patient study (sites not enumerated by the paper).",
+    notes = "Subject distribution (Table 1): 8 placebo + 5 (3 mg) + 5 (10 mg) + 9 (25 mg) + 9 (100 mg) + 9 (300 mg) + 18 (600 mg) healthy volunteers; 8 placebo + 9 (25 mg q.d.) + 8 (100 mg b.i.d.) HIV patients. The 25 mg q.d. patient cohort had one subject who withdrew on day 1 with PK only (no receptor-occupancy or viral-load data). The 100 mg b.i.d. patient cohort had one viral-load exclusion (subject with dual/mixed-tropic virus). Maraviroc plasma LLOQ was 0.5 ng/mL except in the 3 mg and 10 mg b.i.d. cohorts where LLOQ was 0.1 ng/mL (centralised LC-MS/MS, Maxxam Analytics). Receptor occupancy was measured by an ex-vivo MIP-1-beta internalization assay using a fluorescently labelled anti-CCR5 2D7 monoclonal antibody (Esoterix Inc., centralised flow cytometry). The PK model is acknowledged by the authors as exploratory (Discussion: 'The development of a definitive population PK model for maraviroc was not the aim of this analysis'); a comprehensive popPK from Phase 1/2a is described in their reference [9] (Abel et al., Br J Clin Pharmacol 2008 Suppl 1)."
   )
 
   ini({

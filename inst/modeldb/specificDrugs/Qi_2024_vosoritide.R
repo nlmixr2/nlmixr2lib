@@ -13,115 +13,140 @@ Qi_2024_vosoritide <- function() {
     "on CL/F and V/F reproduce the paper's secondary study identity number",
     "(SIDN) hierarchy, and separate log-scale residual errors are carried for",
     "the ELISA and the electrochemiluminescence assays. The model was used to",
-    "derive the eight-band weight-band dosing regimen of Qi 2024 Table 6.")
-  reference   <- "Qi Y, Chan ML, Mould DR, Larimore K, Fisheleva E, Cherukuri A, Day J, Savarirayan R, Irving M, Bacino CA, Hoover-Fong J, Ozono K, Mohnike K, Wilcox WR, Bober MB, Henshaw J. Development of a weight-band dosing approach for vosoritide in children with achondroplasia using a population pharmacokinetic model. Clin Pharmacokinet. 2024;63(5):707-719. doi:10.1007/s40262-024-01371-6"
-  vignette    <- "Qi_2024_vosoritide"
-  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+    "derive the eight-band weight-band dosing regimen of Qi 2024 Table 6."
+  )
+  reference <- "Qi Y, Chan ML, Mould DR, Larimore K, Fisheleva E, Cherukuri A, Day J, Savarirayan R, Irving M, Bacino CA, Hoover-Fong J, Ozono K, Mohnike K, Wilcox WR, Bober MB, Henshaw J. Development of a weight-band dosing approach for vosoritide in children with achondroplasia using a population pharmacokinetic model. Clin Pharmacokinet. 2024;63(5):707-719. doi:10.1007/s40262-024-01371-6"
+  vignette <- "Qi_2024_vosoritide"
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "vosoritide", units = "ug", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "vosoritide", units = "ug", specimen = "administration site", verified = TRUE),
     central = list(analyte = "vosoritide", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on both CL/F and V/F with reference weight 20 kg (Qi 2024 Sect. 2.4, 'The reference body weight was established as 20 kg'). Applied as (WT/20)^0.356 on CL/F and (WT/20)^1.09 on V/F, reproducing Qi 2024 Table 2 exactly at 9, 20, 40, 60 and 74.5 kg. Qi 2024 Discussion reports that time-varying weight was tested alongside baseline weight and alternative size metrics (LBW, FFM, BMI, BSA); the published final model carries body weight, and the paper does not state whether the retained column is baseline or time-varying, so either may be supplied.",
-      source_name        = "WT"
+      notes = "Power covariate on both CL/F and V/F with reference weight 20 kg (Qi 2024 Sect. 2.4, 'The reference body weight was established as 20 kg'). Applied as (WT/20)^0.356 on CL/F and (WT/20)^1.09 on V/F, reproducing Qi 2024 Table 2 exactly at 9, 20, 40, 60 and 74.5 kg. Qi 2024 Discussion reports that time-varying weight was tested alongside baseline weight and alternative size metrics (LBW, FFM, BMI, BSA); the published final model carries body weight, and the paper does not state whether the retained column is baseline or time-varying, so either may be supplied.",
+      source_name = "WT"
     ),
     FORM_VOSO_SOLN02 = list(
-      description        = "Indicator that the dose was prepared from the 0.2 mg/mL vosoritide dosing solution, 1 = 0.2 mg/mL, 0 = 0.8 or 2 mg/mL.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the dose was prepared from the 0.2 mg/mL vosoritide dosing solution, 1 = 0.2 mg/mL, 0 = 0.8 or 2 mg/mL.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the 0.8 mg/mL and 2 mg/mL dosing solutions, which Qi 2024 Discussion states 'did not have any effect on F'; these are the phase III and commercial strengths).",
-      notes              = "Per-dose-record indicator. The 0.2 mg/mL solution was used only in study 111-202 (Qi 2024 Sect. 2.3). Multiplies relative bioavailability by 1.56 (Qi 2024 Table 5 'Effect of SOLNC (0.2 mg/mL)' = 1.56; Table 3 shows the resulting relative bioavailability at 1.56 at time 0 and a constant 56% increase over the reference at every time point). Encoded on the log scale as e_form_voso_soln02_fdepot = log(1.56).",
-      source_name        = "SOLNC"
+      notes = "Per-dose-record indicator. The 0.2 mg/mL solution was used only in study 111-202 (Qi 2024 Sect. 2.3). Multiplies relative bioavailability by 1.56 (Qi 2024 Table 5 'Effect of SOLNC (0.2 mg/mL)' = 1.56; Table 3 shows the resulting relative bioavailability at 1.56 at time 0 and a constant 56% increase over the reference at every time point). Encoded on the log scale as e_form_voso_soln02_fdepot = log(1.56).",
+      source_name = "SOLNC"
     ),
     ELISA = list(
-      description        = "Bioanalytical assay indicator, 1 = plasma vosoritide measured by the validated enzyme-linked immunosorbent assay (ELISA), 0 = measured by the optimized electrochemiluminescence (ECL) assay.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Bioanalytical assay indicator, 1 = plasma vosoritide measured by the validated enzyme-linked immunosorbent assay (ELISA), 0 = measured by the optimized electrochemiluminescence (ECL) assay.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECL assay; studies 111-206, 111-301 and 111-302, LLOQ 0.137 ug/L).",
-      notes              = "Per-observation indicator. ELISA = 1 for studies 111-202 and 111-205 (LLOQ 0.391 ug/L); ELISA = 0 for studies 111-206, 111-301 and 111-302 (Qi 2024 Sect. 2.3). Selects the log-scale residual SD: 0.665 for ELISA (Qi 2024 Table 5 'Residual error 1') and 0.610 for ECL ('Residual error 2'). Assay choice is study-fixed, but the indicator is carried per observation so pooled datasets apply the correct residual to each row.",
-      source_name        = "assay type (Qi 2024 Sect. 2.3 / Table 5 footnotes a and b)"
+      notes = "Per-observation indicator. ELISA = 1 for studies 111-202 and 111-205 (LLOQ 0.391 ug/L); ELISA = 0 for studies 111-206, 111-301 and 111-302 (Qi 2024 Sect. 2.3). Selects the log-scale residual SD: 0.665 for ELISA (Qi 2024 Table 5 'Residual error 1') and 0.610 for ECL ('Residual error 2'). Assay choice is study-fixed, but the indicator is carried per observation so pooled datasets apply the correct residual to each row.",
+      source_name = "assay type (Qi 2024 Sect. 2.3 / Table 5 footnotes a and b)"
     ),
     SIDN = list(
-      description        = "Secondary study identity number: an integer grouping column identifying the clinical trial a subject's records belong to, used as the nesting level for the study-level random effects on CL/F and V/F.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Secondary study identity number: an integer grouping column identifying the clinical trial a subject's records belong to, used as the nesting level for the study-level random effects on CL/F and V/F.",
+      units = "(count)",
+      type = "categorical",
       reference_category = "n/a -- SIDN is a nesting level, not a covariate with a reference category. It indexes the second level of random effects (eta6 on CL/F, eta7 on V/F) rather than entering any typical-value equation.",
-      notes              = "Qi 2024 Sect. 3.2: 'An additional secondary study identity number (SIDN) was used to represent the clinical trial in which each patient was enrolled, but allowed for the fact that patients may have been enrolled in > 1 study. The effects of SIDN on the IIV of CL/F and V/F were modeled by an additional hierarchical level of effect (StudyCL and StudyV).' The paper states there were only three SIDN values in the analysis database but does not enumerate which trials map to which value, so the column is deliberately opaque: supply 1, 2 or 3. Implemented with rxode2/nlmixr2 native nested random effects (`etalcl_study ~ ... | SIDN`), which places a separate draw per SIDN level on top of the per-subject etas.",
-      source_name        = "SIDN"
+      notes = "Qi 2024 Sect. 3.2: 'An additional secondary study identity number (SIDN) was used to represent the clinical trial in which each patient was enrolled, but allowed for the fact that patients may have been enrolled in > 1 study. The effects of SIDN on the IIV of CL/F and V/F were modeled by an additional hierarchical level of effect (StudyCL and StudyV).' The paper states there were only three SIDN values in the analysis database but does not enumerate which trials map to which value, so the column is deliberately opaque: supply 1, 2 or 3. Implemented with rxode2/nlmixr2 native nested random effects (`etalcl_study ~ ... | SIDN`), which places a separate draw per SIDN level on top of the per-subject etas.",
+      source_name = "SIDN"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age at baseline.", units = "years", type = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       notes = "Screened graphically and in single-covariate models (Qi 2024 Sect. 2.4, Table S3) but not retained in the final model; Qi 2024 Key Points state 'no other covariates were identified as being predictive'. Baseline range 0.95-15 years, mean 8.43 (Table 1)."
     ),
     SEXF = list(
-      description = "Biological sex indicator, 1 = female, 0 = male.", units = "(binary)", type = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened but not retained (Qi 2024 Key Points). Table 1: 84 male, 74 female."
     ),
     BMI = list(
-      description = "Body mass index.", units = "kg/m^2", type = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Screened as an alternative body-size metric (Qi 2024 Discussion) but not retained; body weight was the retained size descriptor."
     ),
     BSA = list(
-      description = "Body surface area (Mosteller).", units = "m^2", type = "continuous",
+      description = "Body surface area (Mosteller).",
+      units = "m^2",
+      type = "continuous",
       notes = "Screened as an alternative body-size metric, including a paediatric BSA variant computed from lean body weight (Qi 2024 Discussion, Table 1 'BSA2'); not retained."
     ),
     FFM = list(
-      description = "Fat-free mass.", units = "kg", type = "continuous",
+      description = "Fat-free mass.",
+      units = "kg",
+      type = "continuous",
       notes = "Screened as an alternative body-size metric (Qi 2024 Discussion); not retained."
     ),
     LBW = list(
-      description = "Lean body weight.", units = "kg", type = "continuous",
+      description = "Lean body weight.",
+      units = "kg",
+      type = "continuous",
       notes = "Screened as an alternative body-size metric, both directly and as the input to BMI and BSA variants (Qi 2024 Discussion); not retained."
     ),
     ALB = list(
-      description = "Serum albumin.", units = "g/dL (values in Qi 2024 Table 1 are tabulated in g/L)", type = "continuous",
+      description = "Serum albumin.",
+      units = "g/dL (values in Qi 2024 Table 1 are tabulated in g/L)",
+      type = "continuous",
       notes = "Screened in the covariate evaluation (Qi 2024 Table 1 baseline summary, Table S3) but not retained."
     ),
     ALT = list(
-      description = "Alanine aminotransferase.", units = "IU/L", type = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened (Qi 2024 Table 1) but not retained."
     ),
     AST = list(
-      description = "Aspartate aminotransferase.", units = "IU/L", type = "continuous",
+      description = "Aspartate aminotransferase.",
+      units = "IU/L",
+      type = "continuous",
       notes = "Screened (Qi 2024 Table 1) but not retained."
     ),
     BILI = list(
-      description = "Total bilirubin.", units = "umol/L", type = "continuous",
+      description = "Total bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened (Qi 2024 Table 1) but not retained."
     ),
     CRCL = list(
-      description = "Creatinine clearance.", units = "mL/min", type = "continuous",
+      description = "Creatinine clearance.",
+      units = "mL/min",
+      type = "continuous",
       notes = "Screened (Qi 2024 Table 1) but not retained."
     ),
     EGFR = list(
-      description = "Estimated glomerular filtration rate.", units = "mL/min/1.73m^2", type = "continuous",
+      description = "Estimated glomerular filtration rate.",
+      units = "mL/min/1.73m^2",
+      type = "continuous",
       notes = "Screened (Qi 2024 Table 1) but not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 158L,
-    n_studies      = 5L,
-    age_range      = "0.95-15 years (mean 8.43, median 8; Qi 2024 Table 1)",
-    weight_range   = "9-74.5 kg (mean 23.8, median 22.2; Qi 2024 Table 1)",
+    species = "human",
+    n_subjects = 158L,
+    n_studies = 5L,
+    age_range = "0.95-15 years (mean 8.43, median 8; Qi 2024 Table 1)",
+    weight_range = "9-74.5 kg (mean 23.8, median 22.2; Qi 2024 Table 1)",
     sex_female_pct = 46.8,
     race_ethnicity = c(White = 72.2, Black = 3.8, Asian = 17.7, Other = 6.3),
-    disease_state  = "Children with achondroplasia (autosomal dominant FGFR3 gain-of-function skeletal dysplasia) with open epiphyses.",
-    dose_range     = "2.5 ug/kg/day (6 patients), 7.5 ug/kg/day (12 patients), 15 ug/kg/day (151 patients) and 30 ug/kg/day (11 patients) subcutaneous, once daily (Qi 2024 Sect. 3.1).",
-    regions        = "Multi-national BioMarin development program: NCT02055157 (111-202), NCT02724228 (111-205), NCT03197766 (111-301), NCT03424018 (111-302), NCT03583697 (111-206).",
+    disease_state = "Children with achondroplasia (autosomal dominant FGFR3 gain-of-function skeletal dysplasia) with open epiphyses.",
+    dose_range = "2.5 ug/kg/day (6 patients), 7.5 ug/kg/day (12 patients), 15 ug/kg/day (151 patients) and 30 ug/kg/day (11 patients) subcutaneous, once daily (Qi 2024 Sect. 3.1).",
+    regions = "Multi-national BioMarin development program: NCT02055157 (111-202), NCT02724228 (111-205), NCT03197766 (111-301), NCT03424018 (111-302), NCT03583697 (111-206).",
     n_observations = "4741 concentrations retained from an initial 6181 (23.3% excluded, mostly pre-dose samples expected to be non-measurable given vosoritide's short half-life; Qi 2024 Sect. 3.1, Table S4).",
-    notes          = "One patient was excluded for a substantial number of oscillations in weight over time. Study 111-206 (children <= 5 years) contributed interim data from sentinel patients only (8 subjects in Table 1), so the low-body-weight end of the covariate range is sparsely informed; Qi 2024 flags this as a study limitation and plans a model update. Table 1 lists 29 / 8 / 60 / 61 subjects for studies 111-202 (with its 111-205 extension) / 111-206 / 111-301 / 111-302."
+    notes = "One patient was excluded for a substantial number of oscillations in weight over time. Study 111-206 (children <= 5 years) contributed interim data from sentinel patients only (8 subjects in Table 1), so the low-body-weight end of the covariate range is sparsely informed; Qi 2024 flags this as a study limitation and plans a model update. Table 1 lists 29 / 8 / 60 / 61 subjects for studies 111-202 (with its 111-205 extension) / 111-206 / 111-301 / 111-302."
   )
 
   ini({

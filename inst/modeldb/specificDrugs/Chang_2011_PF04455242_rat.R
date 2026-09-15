@@ -18,39 +18,44 @@ Chang_2011_PF04455242_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "PF-04455242", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "PF-04455242", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot_spiradoline   = list(analyte = "spiradoline", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "PF-04455242", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF-04455242", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_spiradoline = list(
+      analyte = "spiradoline",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central_spiradoline = list(analyte = "spiradoline", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject assigned PF-04455242 SC dose level (mg/kg). Used as a threshold-based switch for the dose-dependent PF-04455242 absorption rate constant: DOSE > 5 mg/kg selects the high-dose Ka (0.385 /h), DOSE <= 5 selects the low-dose Ka (1.64 /h). Spiradoline dose level does NOT enter this switch (spiradoline has its own depot/central compartments and a single dose-independent Ka).",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Per-subject assigned PF-04455242 SC dose level (mg/kg). Used as a threshold-based switch for the dose-dependent PF-04455242 absorption rate constant: DOSE > 5 mg/kg selects the high-dose Ka (0.385 /h), DOSE <= 5 selects the low-dose Ka (1.64 /h). Spiradoline dose level does NOT enter this switch (spiradoline has its own depot/central compartments and a single dose-independent Ka).",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Set to the rat's PF-04455242 dose level (0.32, 3.2, or 10 mg/kg SC in Chang 2011 study 3). For simulations of the PD study, the typical levels are 3.2 mg/kg (low) and 10 mg/kg (high) per Fig. 4b. The eta on Ka was reported only at 3.2 mg/kg (NE at 10 mg/kg per Table I footnote b) and is applied uniformly here.",
-      source_name        = "DOSE"
+      notes = "Time-fixed per subject. Set to the rat's PF-04455242 dose level (0.32, 3.2, or 10 mg/kg SC in Chang 2011 study 3). For simulations of the PD study, the typical levels are 3.2 mg/kg (low) and 10 mg/kg (high) per Fig. 4b. The eta on Ka was reported only at 3.2 mg/kg (NE at 10 mg/kg per Table I footnote b) and is applied uniformly here.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 9L,
-    n_studies      = 3L,
-    age_range      = "adult",
-    weight_range   = "300-400 g",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 9L,
+    n_studies = 3L,
+    age_range = "adult",
+    weight_range = "300-400 g",
     sex_female_pct = 0,
-    disease_state  = "healthy male rats",
-    dose_range     = paste(
+    disease_state = "healthy male rats",
+    dose_range = paste(
       "Study 1 (spiradoline dose-response for prolactin): spiradoline 0, 0.1, 0.32, or 1.0 mg/kg SC (n=6-9 per group).",
       "Study 2 (spiradoline PK satellite): spiradoline 0.1, 0.32, or 1.0 mg/kg SC, single timepoint at 30 min (n=5).",
       "Study 3 (PF-04455242 + spiradoline challenge): PF-04455242 0 (vehicle), 3.2, or 10 mg/kg SC at t=-30 min followed by spiradoline 0.32 mg/kg SC at t=0 (n=6-9 per group). Samples at -30, 10, 20, 30, 45, 60, 90, 120 min post-spiradoline.",
       sep = " "
     ),
-    regions        = "Pfizer Inc., USA (Institutional Animal Care and Use Committee protocols)",
-    notes          = "Three independent rat studies pooled for the sequential PK-PD fit: spiradoline PK estimated from study 2, PF-04455242 PK estimated from study 3 PK samples, then PD parameters estimated from studies 1 and 3 prolactin observations with the PK parameters fixed at their Stage 1/2 estimates (Methods 'Preclinical PK-PD Modeling')."
+    regions = "Pfizer Inc., USA (Institutional Animal Care and Use Committee protocols)",
+    notes = "Three independent rat studies pooled for the sequential PK-PD fit: spiradoline PK estimated from study 2, PF-04455242 PK estimated from study 3 PK samples, then PD parameters estimated from studies 1 and 3 prolactin observations with the PK parameters fixed at their Stage 1/2 estimates (Methods 'Preclinical PK-PD Modeling')."
   )
 
   ini({

@@ -36,34 +36,38 @@ Xie_2025_aztreonam_avibactam <- function() {
     sep = " "
   )
   vignette <- "Xie_2025_aztreonam_avibactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Aztreonam residual variability is stratified by study phase, so the
   # canonical propSd / addSd consumed by the error model are derived inside
   # model() from four phase-specific ini() magnitudes. Same construction as
   # Cammarata_2024_sulbactam_durlobactam and Valenzuela_2025_nipocalimab.
   paper_specific_residual_sds <- c(
-    "propSdPhase1", "propSdPhase2", "propSdPhase3", "propSdPhase23",
-    "addSdPhase1", "addSdPhase1_avi"
+    "propSdPhase1",
+    "propSdPhase2",
+    "propSdPhase3",
+    "propSdPhase23",
+    "addSdPhase1",
+    "addSdPhase1_avi"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Xie 2025 (doses in mg; plasma
   # concentrations reported in mg/L).
   compartmentData <- list(
-    central         = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
-    central_avi     = list(analyte = "avibactam", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "aztreonam", units = "mg", specimen = "plasma", verified = TRUE),
+    central_avi = list(analyte = "avibactam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1_avi = list(analyte = "avibactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Results, 'Final population PK model': 'Body weight",
         "(normalized to 70 kg) was a structural covariate on both aztreonam",
         "and avibactam CL, Vc, Vp, and Q using allometric scaling with fixed",
@@ -75,17 +79,17 @@ Xie_2025_aztreonam_avibactam <- function() {
         "33-130; Table S1) and 70 kg (avibactam data set, range 28-190;",
         "Table S2). Baseline (time-fixed) per subject."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance normalized to body surface area (nCrCL);",
         "time-varying"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Results: 'Time-varying nCrCL effects on aztreonam and",
         "avibactam CL were described by both linear (nCrCL >= 80",
         "mL/min/1.73 m^2) and power (nCrCL <80 mL/min/1.73 m^2)",
@@ -110,14 +114,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "bypass this covariate on avibactam CL entirely (see those entries);",
         "aztreonam CL always uses it."
       ),
-      source_name        = "nCrCL"
+      source_name = "nCrCL"
     ),
     DIS_CIAI = list(
-      description        = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated intra-abdominal infection cohort indicator (1 = cIAI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Phase 1 subject; all infection-type indicators 0)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 rows 'cIAI on CL_AVI' (theta27 = 0.115), 'cIAI on",
         "CL_ATM' (theta31 = 0.279) and the shared 'cIAI/NP on Vc'",
         "(theta25 = 0.931). cIAI raises the clearance of BOTH drugs, which is",
@@ -129,14 +133,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "226 of 431 subjects in the aztreonam data set and 1,012 of 2,635 in",
         "the avibactam data set had cIAI (Tables S1 and S2)."
       ),
-      source_name        = "cIAI"
+      source_name = "cIAI"
     ),
     DIS_HABP = list(
-      description        = "Hospital-acquired bacterial pneumonia cohort indicator (1 = HAP)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hospital-acquired bacterial pneumonia cohort indicator (1 = HAP)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Phase 1 subject; all infection-type indicators 0)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Results: 'same cIAI and NP (HAP/VAP) effect on aztreonam",
         "and avibactam Vc', i.e. the single Table S3 coefficient",
         "'cIAI/NP on Vc' (theta25 = 0.931) is shared by cIAI, HAP and VAP and",
@@ -147,14 +151,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "set and 482 in the avibactam data set had HAP or VAP (Tables S1",
         "and S2, which pool the two as 'HAP/VAP')."
       ),
-      source_name        = "NP (HAP/VAP)"
+      source_name = "NP (HAP/VAP)"
     ),
     DIS_VABP = list(
-      description        = "Ventilator-associated bacterial pneumonia cohort indicator (1 = VAP)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ventilator-associated bacterial pneumonia cohort indicator (1 = VAP)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Phase 1 subject; all infection-type indicators 0)",
-      notes              = paste(
+      notes = paste(
         "Shares the 'cIAI/NP on Vc' coefficient (theta25 = 0.931) with",
         "DIS_CIAI and DIS_HABP on the central volume of both drugs; see the",
         "DIS_HABP notes. Xie 2025 reports that steady-state exposures were",
@@ -162,14 +166,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "highest exposures, but the final model carries no VAP-specific",
         "coefficient distinct from HAP."
       ),
-      source_name        = "NP (HAP/VAP)"
+      source_name = "NP (HAP/VAP)"
     ),
     DIS_CUTI = list(
-      description        = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated urinary tract infection cohort indicator (1 = cUTI)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Phase 1 subject; all infection-type indicators 0)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 rows 'cUTI on Vc_AVI' (theta24 = 1.5) and",
         "'cUTI on CL_AVI' (theta26 = 0.222). Both terms are AVIBACTAM-only:",
         "aztreonam carries no cUTI coefficient, because only 3 of the 431",
@@ -177,17 +181,17 @@ Xie_2025_aztreonam_avibactam <- function() {
         "the avibactam data set (Tables S1 and S2). Do not borrow the",
         "avibactam coefficients for aztreonam."
       ),
-      source_name        = "cUTI"
+      source_name = "cUTI"
     ),
     RENALIMP_ESRD = list(
-      description        = paste(
+      description = paste(
         "End-stage renal disease indicator, not receiving hemodialysis",
         "(1 = ESRD)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any renal function above ESRD)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 row 'ESRD on CL_AVI' (theta11 = -0.923), applied",
         "as a proportional shift so ESRD subjects retain 1 - 0.923 = 7.7% of",
         "the reference avibactam clearance. AVIBACTAM ONLY - aztreonam",
@@ -207,17 +211,17 @@ Xie_2025_aztreonam_avibactam <- function() {
         "Mutually exclusive with RRT_HEMODIAL_STATUS: a subject on",
         "hemodialysis takes the separate dialysis clearance instead."
       ),
-      source_name        = "ESRD"
+      source_name = "ESRD"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = paste(
+      description = paste(
         "Intermittent-hemodialysis treatment-status indicator",
         "(1 = subject is a dialysis patient)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not receiving hemodialysis)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 row 'CL_AVI_DIAL' (theta12 = 17.9 L/h) and",
         "Results: 'a separate avibactam CL for dialysis patients'. This is an",
         "ABSOLUTE clearance that REPLACES the whole reference-plus-nCrCL",
@@ -236,14 +240,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "trials, which 'did not enroll patients with end-stage renal disease",
         "(ESRD) requiring dialysis'."
       ),
-      source_name        = "DIAL"
+      source_name = "DIAL"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese-heritage race indicator (1 = Chinese)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese-heritage race indicator (1 = Chinese)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 row 'China on Vc_AVI' (theta29 = -0.145), a 14.5%",
         "reduction in avibactam central volume. AVIBACTAM ONLY; aztreonam",
         "Vc carries no race term. Introduced by the addition of the Phase 1",
@@ -256,17 +260,17 @@ Xie_2025_aztreonam_avibactam <- function() {
         "- that statement is about total exposure (AUC, driven by CL) and is",
         "not in conflict with a volume-only covariate."
       ),
-      source_name        = "China"
+      source_name = "China"
     ),
     APACHE_II_SEV = list(
-      description        = paste(
+      description = paste(
         "Elevated-APACHE-II severity stratum indicator",
         "(1 = subject falls in the elevated-severity stratum)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not in the elevated-APACHE-II severity stratum)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 row 'APACHE II score on CL_AVI CL'",
         "(theta30 = -0.118): an 11.8% reduction in avibactam clearance.",
         "AVIBACTAM ONLY.",
@@ -289,17 +293,17 @@ Xie_2025_aztreonam_avibactam <- function() {
         "Distinct from the continuous canonical APACHE_II (score in points):",
         "this column is the derived severity stratum, not the score."
       ),
-      source_name        = "APACHE II score"
+      source_name = "APACHE II score"
     ),
     STUDY_CIAI_PH2 = list(
-      description        = paste(
+      description = paste(
         "Phase 2 cIAI study cohort indicator from the ceftazidime-avibactam",
         "program (1 = Study 2002)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other study)",
-      notes              = paste(
+      notes = paste(
         "Xie 2025 Table S3 rows 'Study2002 on CL_AVI' (theta13 = 0.89) and",
         "'Study2002 on Vc_AVI' (theta14 = 1.64), retained from prior",
         "modelling: Xie 2025 Results lists 'a separate avibactam CL and Vc",
@@ -315,14 +319,14 @@ Xie_2025_aztreonam_avibactam <- function() {
         "for the whole simulated population of this paper, which is why it",
         "does not enter the vignette's reproductions."
       ),
-      source_name        = "Study2002"
+      source_name = "Study2002"
     ),
     STUDY_AZTAVI_PHASE2 = list(
-      description        = "Phase 2 study-stratum indicator for the aztreonam residual-error model",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2 study-stratum indicator for the aztreonam residual-error model",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with the other two phase indicators also 0 (Phase 1 stratum)",
-      notes              = paste(
+      notes = paste(
         "Selects the aztreonam Phase 2 proportional residual magnitude,",
         "Xie 2025 Table S3 'Prop RSV_ATM phase 2' (theta21 = 22.4%).",
         "Xie 2025 Results lists 'separate residual error models for aztreonam",
@@ -339,26 +343,26 @@ Xie_2025_aztreonam_avibactam <- function() {
         "Residual error does not affect typical-value or individual-prediction",
         "simulation, only the simulated observation."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     ),
     STUDY_AZTAVI_PHASE3 = list(
-      description        = "Phase 3 study-stratum indicator for the aztreonam residual-error model",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 study-stratum indicator for the aztreonam residual-error model",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with the other two phase indicators also 0 (Phase 1 stratum)",
-      notes              = paste(
+      notes = paste(
         "Selects the aztreonam Phase 3 proportional residual magnitude,",
         "Xie 2025 Table S3 'Prop RSV_ATM phase 3' (theta22 = 40.3%). See the",
         "STUDY_AZTAVI_PHASE2 notes for the full residual-error rationale."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     ),
     STUDY_AZTAVI_PHASE23 = list(
-      description        = "Pooled phase-2/3 study-stratum indicator for the aztreonam residual-error model",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pooled phase-2/3 study-stratum indicator for the aztreonam residual-error model",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with the other two phase indicators also 0 (Phase 1 stratum)",
-      notes              = paste(
+      notes = paste(
         "Selects the aztreonam pooled phase-2/3 proportional residual",
         "magnitude, Xie 2025 Table S3 'Prop RSV_ATM phase 2/3'",
         "(theta23 = 53.3%). Xie 2025 does not define which records make up",
@@ -369,25 +373,30 @@ Xie_2025_aztreonam_avibactam <- function() {
         "membership left to the user. See the vignette Errata. See the",
         "STUDY_AZTAVI_PHASE2 notes for the full residual-error rationale."
       ),
-      source_name        = "study phase"
+      source_name = "study phase"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 2635L,
-    n_studies        = 5L,
+    species = "human",
+    n_subjects = 2635L,
+    n_studies = 5L,
     n_concentrations = 23136L,
-    age_range        = "18-89 years",
-    age_median       = "50 years (aztreonam data set); 52 years (avibactam data set)",
-    weight_range     = "28-190 kg",
-    weight_median    = "74 kg (aztreonam data set); 70 kg (avibactam data set)",
-    sex_female_pct   = 38.6,
-    race_ethnicity   = c(
-      White = 55.5, Chinese = 19.5, Asian = 8.4, Black = 3.0,
-      `Native American` = 1.9, Other = 1.4, Missing = 10.4
+    age_range = "18-89 years",
+    age_median = "50 years (aztreonam data set); 52 years (avibactam data set)",
+    weight_range = "28-190 kg",
+    weight_median = "74 kg (aztreonam data set); 70 kg (avibactam data set)",
+    sex_female_pct = 38.6,
+    race_ethnicity = c(
+      White = 55.5,
+      Chinese = 19.5,
+      Asian = 8.4,
+      Black = 3.0,
+      `Native American` = 1.9,
+      Other = 1.4,
+      Missing = 10.4
     ),
-    disease_state    = paste(
+    disease_state = paste(
       "Pooled healthy adults and hospitalized adults with complicated",
       "intra-abdominal infection, nosocomial pneumonia (hospital-acquired or",
       "ventilator-associated), complicated urinary tract infection, or",
@@ -396,7 +405,7 @@ Xie_2025_aztreonam_avibactam <- function() {
       "avibactam data set (Table S2): healthy 430, cIAI 1,012, HAP/VAP 482,",
       "cUTI 707, BSI 4."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "All doses given as intravenous infusions of the fixed 3:1",
       "aztreonam:avibactam combination. Phase 3 regimen: 500/167 mg loading",
       "dose over 30 min immediately followed by a 1,500/500 mg extended",
@@ -408,8 +417,8 @@ Xie_2025_aztreonam_avibactam <- function() {
       "impairment; 1,350/450 mg then 675/225 mg q8h for severe impairment;",
       "1,000/334 mg then 675/225 mg q12h for ESRD."
     ),
-    regions          = "Multinational; includes a dedicated Phase 1 study in healthy Chinese subjects (C3601007) and Chinese sites within the Phase 3 program",
-    renal_function   = paste(
+    regions = "Multinational; includes a dedicated Phase 1 study in healthy Chinese subjects (C3601007) and Chinese sites within the Phase 3 program",
+    renal_function = paste(
       "Spans augmented renal clearance to end-stage renal disease. Baseline",
       "CrCL group counts in the aztreonam data set (Table S1): ARC (>150",
       "mL/min) 46, normal (>80 to <=150) 244, mild (>50 to <=80) 74,",
@@ -420,7 +429,7 @@ Xie_2025_aztreonam_avibactam <- function() {
       "from the ceftazidime-avibactam program and a dedicated Phase 1",
       "severe-renal-impairment study (C3601006, NCT04486625)."
     ),
-    bmi_range        = "10.4-62.5 kg/m^2 (medians 25.1 aztreonam / 24.7 avibactam data set)",
+    bmi_range = "10.4-62.5 kg/m^2 (medians 25.1 aztreonam / 24.7 avibactam data set)",
     unbound_fraction = paste(
       "Xie 2025 Methods: total plasma concentrations were converted to free",
       "concentrations for the PK/PD target calculations 'using unbound",
@@ -429,13 +438,13 @@ Xie_2025_aztreonam_avibactam <- function() {
       "fitted parameters, so they are not carried in ini(); the validation",
       "vignette applies them."
     ),
-    pkpd_target      = paste(
+    pkpd_target = paste(
       "Joint target, both achieved simultaneously: free aztreonam above an",
       "aztreonam-avibactam MIC of 8 mg/L for 60% of the dosing interval",
       "(60% fT>MIC) and free avibactam above a threshold concentration of",
       "2.5 mg/L for 50% of the dosing interval (50% fT>CT)."
     ),
-    notes            = paste(
+    notes = paste(
       "n_subjects and n_concentrations are the union across analytes: the",
       "simultaneous fit used 4,914 aztreonam concentrations from 431",
       "subjects and 18,222 avibactam concentrations from 2,635 subjects, and",

@@ -29,7 +29,7 @@ Gao_2021_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Verified against Gao 2021 Results ("the current study based on
   # 311 pediatric patients enabled to fit the MTX concentration-time data by
@@ -38,18 +38,18 @@ Gao_2021_methotrexate <- function() {
   # methotrexate concentration in both Gao 2021 and Wang 2023 is reported in
   # umol/L (Wang's therapeutic targets are quoted as 65 / 33 / 16 umol/L).
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Weight. Allometric power terms on ALL six disposition",
         "parameters, normalised to a 19 kg typical child. Gao 2021 Table 2",
         "footnote: 'The parameters in Table 2 are given for a \"typical\" child",
@@ -60,14 +60,14 @@ Gao_2021_methotrexate <- function() {
         "ini() accordingly. The 19 kg reference is the cohort median (Wang",
         "2023 Table 1 records median 19.0 kg, range 4.5-113.0 for this study)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column Scr, in SI units (umol/L), centred at 26 umol/L. Enters",
         "CL as a LINEAR (not power) term. Gao 2021 Abstract: 'The serum",
         "creatinine significantly affected the MTX clearance, with a 0.97%",
@@ -87,16 +87,16 @@ Gao_2021_methotrexate <- function() {
         "simulations must keep CREAT below ~129 umol/L. See the vignette",
         "Errata."
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested and not retained. Gao 2021 Results: 'Inclusion of age-related",
         "maturation effect on CL did not show a significant improvement in",
         "model fit further.' Wang 2023 Table 1 records median 5.0 years",
@@ -105,9 +105,9 @@ Gao_2021_methotrexate <- function() {
     ),
     TBILI = list(
       description = "Total serum bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Significant but deliberately dropped. Gao 2021 Results: 'Adding TBIL",
         "on clearance (delta OFV = -30.975) ... improved model fit",
         "significantly, with slope estimates of -0.0044 ... However, these two",
@@ -117,9 +117,9 @@ Gao_2021_methotrexate <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Significant but deliberately dropped alongside TBIL. Gao 2021",
         "Results: 'albumin in the central volume of distribution",
         "(delta OFV = -36.722) using linear function improved model fit",
@@ -129,9 +129,9 @@ Gao_2021_methotrexate <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested and not retained. Gao 2021 Results: 'Other covariates (e.g.,",
         "sex, AST, and ALT) did not significantly affect MTX PK properties.'",
         "Wang 2023 Table 1 records 197 male / 114 female for this cohort."
@@ -139,21 +139,21 @@ Gao_2021_methotrexate <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested and not retained (same Gao 2021 Results sentence as SEXF)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested and not retained (same Gao 2021 Results sentence as SEXF)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Tested and not retained (same Gao 2021 Results sentence as SEXF)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Tested and not retained (same Gao 2021 Results sentence as SEXF)."
     ),
     CONMED_OMEPRAZOLE = list(
       description = "Concomitant omeprazole indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Statistically significant but not retained. Gao 2021 Results: 'Their",
         "inclusion on clearance improved model fit significantly",
         "(delta OFV = -64.331 and -42.874, respectively); however, the",
@@ -163,32 +163,32 @@ Gao_2021_methotrexate <- function() {
     ),
     CONMED_NSAID = list(
       description = "Concomitant non-steroidal anti-inflammatory drug indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Significant but not retained, alongside omeprazole (same Gao 2021 Results sentence)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Significant but not retained, alongside omeprazole (same Gao 2021 Results sentence)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 311L,
-    n_studies      = 1L,
-    age_range      = "0.75 to 15.2 years",
-    age_median     = "5.0 years",
-    weight_range   = "4.5 to 113.0 kg",
-    weight_median  = "19.0 kg",
-    height_range   = "67 to 175 cm (median 112)",
+    species = "human",
+    n_subjects = 311L,
+    n_studies = 1L,
+    age_range = "0.75 to 15.2 years",
+    age_median = "5.0 years",
+    weight_range = "4.5 to 113.0 kg",
+    weight_median = "19.0 kg",
+    height_range = "67 to 175 cm (median 112)",
     sex_female_pct = 100 * 114 / 311,
-    disease_state  = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate consolidation.",
+    disease_state = "Childhood acute lymphoblastic leukaemia (ALL) receiving high-dose methotrexate consolidation.",
     renal_function = paste(
       "Serum creatinine median 0.3 mg/dL (range 0.1-1.5), i.e. about",
       "26 umol/L (range 8.8-132.6). Note the model's linear SCr term on",
       "clearance goes negative above 129 umol/L, inside this range."
     ),
     hepatic_function = "ALT median 16.0 U/L (range 2.0-390.0); AST median 26.0 U/L (range 8.0-135.0).",
-    dose_range     = "1 to 5 g/m^2 intravenous high-dose methotrexate.",
-    regions        = "China (Children's Hospital of Fudan University, Shanghai).",
-    notes          = paste(
+    dose_range = "1 to 5 g/m^2 intravenous high-dose methotrexate.",
+    regions = "China (Children's Hospital of Fudan University, Shanghai).",
+    notes = paste(
       "Demographics from Wang 2023 Table 1 (the external-evaluation paper that",
       "tabulates all six evaluated cohorts side by side); model structure and",
       "parameter values from the Gao 2021 primary, Table 2 and Results.",

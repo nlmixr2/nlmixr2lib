@@ -25,18 +25,18 @@ Song_2013_hydrochlorothiazide <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "hydrochlorothiazide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "hydrochlorothiazide", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "hydrochlorothiazide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "hydrochlorothiazide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "hydrochlorothiazide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated by the Cockcroft-Gault method.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance calculated by the Cockcroft-Gault method.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT BSA-normalized (Song 2013, sentence following",
         "Equation 10). Time-fixed per subject. Enters apparent clearance in power form (CRCL / 117.5)^0.499.",
         "The centering value 117.5 mL/min is printed in Equation 10 and is the median of the hydrochlorothiazide",
@@ -44,28 +44,28 @@ Song_2013_hydrochlorothiazide <- function() {
         "120 mL/min. Note the centering value differs from the 111 mL/min used in the olmesartan model because",
         "the two drugs were fitted on different (overlapping) study sets."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     AGE = list(
-      description        = "Subject age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters apparent clearance in power form (AGE / 49.5)^-0.214 (Song 2013",
         "Equation 10). The centering value 49.5 years is printed in the equation; the N-weighted MEAN age of the",
         "hydrochlorothiazide PK dataset computed from Supplemental Table S1 is 49.3 years. Song 2013 states this",
         "age effect is retained 'independently of any relationships between gender and age with renal function',",
         "i.e. it is not a proxy for the creatinine-clearance term that appears in the same equation."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters apparent clearance EXPONENTIALLY as exp(-0.219 * SEXF), i.e. female",
         "subjects have 20% lower hydrochlorothiazide CL/F than males of the same age and renal function.",
         "The exponential form is taken from the printed Equation 10 ('20.3 x e^(-0.219 x Female)'), which is the",
@@ -76,14 +76,14 @@ Song_2013_hydrochlorothiazide <- function() {
         "'CLSEX' in Supplemental Table S5; both carry the canonical SEXF orientation (1 = female), so no value",
         "transformation is required."
       ),
-      source_name        = "Female"
+      source_name = "Female"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters both apparent volumes in power form, (WT / 90.7)^1.92 on Vc/F and",
         "(WT / 90.7)^0.846 on Vp/F (Song 2013 Supplemental Table S5 rows 'Vc,WTKG' and 'Vp,WTKG', with the",
         "median-normalized power form specified by main-text Equation 6). The exponent 1.92 on the central volume",
@@ -94,25 +94,25 @@ Song_2013_hydrochlorothiazide <- function() {
         "large, the profile shape is more sensitive to this proxy than in the sibling models -- but CL/F, and",
         "hence the AUCss driving the exposure-response models, is untouched by it."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1278L,
-    n_studies      = 10L,
-    age_range      = "phase I mean 29.9 years; CS8635-A-U301 phase III mean 55.8 (SD 10) years",
-    weight_range   = "phase I mean 76.6 kg; CS8635-A-U301 phase III mean 95.5 (SD 22) kg",
+    species = "human",
+    n_subjects = 1278L,
+    n_studies = 10L,
+    age_range = "phase I mean 29.9 years; CS8635-A-U301 phase III mean 55.8 (SD 10) years",
+    weight_range = "phase I mean 76.6 kg; CS8635-A-U301 phase III mean 95.5 (SD 22) kg",
     sex_female_pct = 40.3,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers (phase I clinical pharmacology studies) plus adults with hypertension",
       "(phase III sparse-sampling subset of CS8635-A-U301 (TRINITY))"
     ),
-    dose_range     = "hydrochlorothiazide 12.5-25 mg once daily",
-    regions        = "United States and Europe",
-    notes          = paste(
+    dose_range = "hydrochlorothiazide 12.5-25 mg once daily",
+    regions = "United States and Europe",
+    notes = paste(
       "The hydrochlorothiazide population PK dataset differs from its olmesartan and amlodipine siblings: it is",
       "the union of the three CS-866 hydrochlorothiazide phase I studies (CS866-126 n = 30, CS866-127 n = 18,",
       "CS866-134 n = 29), the six CS-8635 phase I studies (n = 245), and the CS8635-A-U301 phase III PK subset",

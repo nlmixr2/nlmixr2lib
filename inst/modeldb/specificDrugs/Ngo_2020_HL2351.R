@@ -12,26 +12,26 @@ Ngo_2020_HL2351 <- function() {
   # subcutaneous injection region; the specimen vocabulary has no finer term
   # for the absorption/lymphatic space.
   compartmentData <- list(
-    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
-    abs_site    = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    abs_site = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 40,
-    n_studies      = 1,
-    study_id       = "NCT02175056 (Phase I single-ascending-dose, Seoul National University Hospital)",
-    age_range      = "20-45 years",
-    weight_range   = "not reported",
+    n_subjects = 40,
+    n_studies = 1,
+    study_id = "NCT02175056 (Phase I single-ascending-dose, Seoul National University Hospital)",
+    age_range = "20-45 years",
+    weight_range = "not reported",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult Korean men",
-    dose_range     = "Single SC dose: HL2351 1, 2, 4, 8, or 12 mg/kg (n = 8 per dose group)",
-    regions        = "Republic of Korea",
-    notes          = "Phase I single-ascending-dose first-in-human study NCT02175056 (Ngo 2020 Methods, Materials and PK data collection). The full study had six cohorts (HL2351 1, 2, 4, 8, 12 mg/kg and anakinra 100 mg, n = 8 each); the HL2351 model in this file is fit to the five HL2351 cohorts only (n = 40). Anakinra parameters (Ngo 2020 Table S2 in the supplement) are not implemented here. PK observations were collected to 672 hours postdose for HL2351 (Ngo 2020 Methods)."
+    disease_state = "Healthy adult Korean men",
+    dose_range = "Single SC dose: HL2351 1, 2, 4, 8, or 12 mg/kg (n = 8 per dose group)",
+    regions = "Republic of Korea",
+    notes = "Phase I single-ascending-dose first-in-human study NCT02175056 (Ngo 2020 Methods, Materials and PK data collection). The full study had six cohorts (HL2351 1, 2, 4, 8, 12 mg/kg and anakinra 100 mg, n = 8 each); the HL2351 model in this file is fit to the five HL2351 cohorts only (n = 40). Anakinra parameters (Ngo 2020 Table S2 in the supplement) are not implemented here. PK observations were collected to 672 hours postdose for HL2351 (Ngo 2020 Methods)."
   )
 
   ini({

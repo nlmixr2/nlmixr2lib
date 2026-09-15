@@ -12,9 +12,9 @@ Kumta_2025_piperacillin <- function() {
   # biological matrix. Verified against Kumta 2025 Figure 1 (schematic of the
   # final piperacillin PK model) and the Table 3 parameter definitions.
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
-    csf         = list(analyte = "piperacillin", units = "mg", specimen = "CSF",    verified = TRUE)
+    csf = list(analyte = "piperacillin", units = "mg", specimen = "CSF", verified = TRUE)
   )
 
   # Kumta 2025 Results, "Pharmacokinetic model": "No covariates improved model
@@ -26,80 +26,80 @@ Kumta_2025_piperacillin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by stepwise forward inclusion / backward elimination (Methods, 'Population pharmacokinetic model development') and not retained. Cohort median 59 years, range 42-75 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by stepwise forward inclusion / backward elimination (Methods, 'Population pharmacokinetic model development') and not retained. Cohort median 59 years, range 42-75 (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened and not retained. 5 of 8 patients (62.5%) were female (Table 1)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened and not retained. 5 of 8 patients (62.5%) were female (Table 1)."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained; the final model carries no allometric term. Cohort median 70 kg, range 47-110 (Table 1); the Discussion quotes a mean of 71.5 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained; the final model carries no allometric term. Cohort median 70 kg, range 47-110 (Table 1); the Discussion quotes a mean of 71.5 kg."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained. Recorded prospectively (Methods, 'Patient population') but no summary value is tabulated."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained. Recorded prospectively (Methods, 'Patient population') but no summary value is tabulated."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained. Recorded prospectively but no summary value is tabulated."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened and not retained. Recorded prospectively but no summary value is tabulated."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation score at ICU admission",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened and not retained. Table 1 reports a median of 18 (range 12-27) under the label 'APACHE scores'; the paper does not state the APACHE version, and the score is mapped here to the APACHE_II canonical because that is the version in routine adult ICU use and the observed range is consistent with it. Because the covariate is documentation-only, the mapping carries no modelling consequence."
+      units = "points",
+      type = "continuous",
+      notes = "Screened and not retained. Table 1 reports a median of 18 (range 12-27) under the label 'APACHE scores'; the paper does not state the APACHE version, and the score is mapped here to the APACHE_II canonical because that is the version in routine adult ICU use and the observed range is consistent with it. Because the covariate is documentation-only, the mapping carries no modelling consequence."
     ),
     SOFA = list(
       description = "Sequential Organ Failure Assessment score",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort median 7.5, range 2-12 (Table 1). No SOFA canonical exists in inst/references/covariate-columns.md; because this entry is documentation-only and the column is never referenced in model(), no register entry was created."
+      units = "points",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort median 7.5, range 2-12 (Table 1). No SOFA canonical exists in inst/references/covariate-columns.md; because this entry is documentation-only and the column is never referenced in model(), no register entry was created."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. Cohort median 25.5 g/L, range 22-32 (Table 1) -- uniformly hypoalbuminaemic, as is typical of critical illness."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened and not retained. Cohort median 25.5 g/L, range 22-32 (Table 1) -- uniformly hypoalbuminaemic, as is typical of critical illness."
     ),
     CRCL = list(
       description = "Creatinine clearance, Cockcroft-Gault on total body weight, BSA-normalized",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained -- the headline negative result of the paper. Methods: 'creatinine clearance (calculated using the Cockcroft-Gault equation using total body weight and expressed in mL/min/1.73 m^2)'. Cohort median 84, range 52-163 (Table 1 / Table 2); one patient (12.5%) met the augmented-renal-clearance threshold of 130. Discussion: 'clearance of piperacillin or tazobactam was not influenced by creatinine clearance or any other covariates'. The cohort excluded renal replacement therapy and plasma creatinine above 200 umol/L, so the model carries no information about renal impairment."
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Screened and not retained -- the headline negative result of the paper. Methods: 'creatinine clearance (calculated using the Cockcroft-Gault equation using total body weight and expressed in mL/min/1.73 m^2)'. Cohort median 84, range 52-163 (Table 1 / Table 2); one patient (12.5%) met the augmented-renal-clearance threshold of 130. Discussion: 'clearance of piperacillin or tazobactam was not influenced by creatinine clearance or any other covariates'. The cohort excluded renal replacement therapy and plasma creatinine above 200 umol/L, so the model carries no information about renal impairment."
     ),
     ALT = list(
       description = "Serum alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened and not retained. No summary value is tabulated; the cohort excluded pre-existing hepatic dysfunction defined as gamma-glutamyl transferase above 200 IU/L."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened and not retained. No summary value is tabulated; the cohort excluded pre-existing hepatic dysfunction defined as gamma-glutamyl transferase above 200 IU/L."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
-    n_studies      = 1L,
-    age_range      = "42-75 years",
-    age_median     = "59 years",
-    weight_range   = "47-110 kg",
-    weight_median  = "70 kg",
+    species = "human",
+    n_subjects = 8L,
+    n_studies = 1L,
+    age_range = "42-75 years",
+    age_median = "59 years",
+    weight_range = "47-110 kg",
+    weight_median = "70 kg",
     sex_female_pct = 62.5,
-    disease_state  = "Critically ill neurosurgical ICU adults with an external ventricular drain in situ and either a ventriculostomy-associated infection (n = 1, 12.5%) or an extracranial infection (pneumonia, n = 7, 87.5%)",
+    disease_state = "Critically ill neurosurgical ICU adults with an external ventricular drain in situ and either a ventriculostomy-associated infection (n = 1, 12.5%) or an extracranial infection (pneumonia, n = 7, 87.5%)",
     renal_function = "Creatinine clearance median 84 mL/min/1.73 m^2 (range 52-163); 1 patient (12.5%) with augmented renal clearance (>= 130 mL/min/1.73 m^2). Renal replacement therapy and plasma creatinine > 200 umol/L were exclusion criteria.",
-    dose_range     = "Piperacillin-tazobactam 4.5 g every 6 h by intermittent intravenous infusion (7 of 8 patients; 4 g piperacillin + 0.5 g tazobactam per dose); one patient received a continuous infusion totalling 13.1 g over the sampling period",
-    regions        = "Two university-associated tertiary ICUs: Royal Brisbane and Women's Hospital (Australia) and the Chinese University of Hong Kong (Hong Kong, China)",
-    notes          = "45 plasma and 30 CSF samples from 8 patients (Results, 'Study population'). Plasma sampled 0.5, 1, 1.5, 2, 4 and 6 h and CSF 0.5, 2, 4 and 6 h after the start of infusion for intermittent-bolus patients; the single continuous-infusion patient was sampled 17-26 h after commencement. Total (not unbound) piperacillin was assayed by UHPLC-MS/MS with a lower limit of quantification of 0.5 mg/L. Estimation used SAEM in Monolix 2023R1; accuracy was assessed by a 1,000-run bootstrap (Rsmlx 2023.1.1). Other baseline characteristics (Table 1): albumin median 25.5 g/L (22-32), CSF protein median 0.73 g/L (0.19-1.8), CSF protein:serum albumin median 0.016 (0.006-0.056), CSF volume drained from the EVD median 37.5 mL (0-67), SOFA median 7.5 (2-12), APACHE median 18 (12-27)."
+    dose_range = "Piperacillin-tazobactam 4.5 g every 6 h by intermittent intravenous infusion (7 of 8 patients; 4 g piperacillin + 0.5 g tazobactam per dose); one patient received a continuous infusion totalling 13.1 g over the sampling period",
+    regions = "Two university-associated tertiary ICUs: Royal Brisbane and Women's Hospital (Australia) and the Chinese University of Hong Kong (Hong Kong, China)",
+    notes = "45 plasma and 30 CSF samples from 8 patients (Results, 'Study population'). Plasma sampled 0.5, 1, 1.5, 2, 4 and 6 h and CSF 0.5, 2, 4 and 6 h after the start of infusion for intermittent-bolus patients; the single continuous-infusion patient was sampled 17-26 h after commencement. Total (not unbound) piperacillin was assayed by UHPLC-MS/MS with a lower limit of quantification of 0.5 mg/L. Estimation used SAEM in Monolix 2023R1; accuracy was assessed by a 1,000-run bootstrap (Rsmlx 2023.1.1). Other baseline characteristics (Table 1): albumin median 25.5 g/L (22-32), CSF protein median 0.73 g/L (0.19-1.8), CSF protein:serum albumin median 0.016 (0.006-0.056), CSF volume drained from the EVD median 37.5 mL (0-67), SOFA median 7.5 (2-12), APACHE median 18 (12-27)."
   )
 
   ini({

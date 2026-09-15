@@ -14,17 +14,17 @@ Zhu_2024_pyrotinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "pyrotinib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "pyrotinib", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "pyrotinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     TPRO = list(
-      description        = "Serum total protein (albumin plus globulins)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum total protein (albumin plus globulins)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Zhu 2024 Table 5:",
         "TP on CL/F survived backward elimination at p < 0.001; height on CL/F and",
         "on V/F did not). Cohort median 67.2 g/L, range 49.0-80.7 g/L (Table 3).",
@@ -34,7 +34,7 @@ Zhu_2024_pyrotinib <- function() {
         "Baseline value used throughout (Zhu 2024 collected baseline laboratory",
         "measurements from medical records; no time-varying TP was modelled)."
       ),
-      source_name        = "TP"
+      source_name = "TP"
     )
   )
 
@@ -47,11 +47,15 @@ Zhu_2024_pyrotinib <- function() {
   # vignette narrative instead of being given invented names here.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened; not retained. Median 53 years (range 34-68), Table 3."
     ),
     HT = list(
-      description = "Height", units = "cm", type = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       notes = paste(
         "Entered the model during forward inclusion on both V/F and CL/F",
         "(Table 5, steps 2 and 3) but was dropped at backward elimination",
@@ -59,64 +63,80 @@ Zhu_2024_pyrotinib <- function() {
       )
     ),
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       notes = "Screened; not retained. Median 61.5 kg (range 52.5-86), Table 3."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Correlated with WT; WT was carried forward instead (Section 4.3.2)."
     ),
     SOD = list(
-      description = "Serum sodium", units = "mmol/L", type = "continuous",
+      description = "Serum sodium",
+      units = "mmol/L",
+      type = "continuous",
       notes = "Screened; not retained. Median 138.6 mmol/L (range 123.2-145.2)."
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       notes = paste(
         "Screened; not retained. Median 41.4 g/L. A component of TPRO,",
         "which is the covariate the final model retained."
       )
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Correlated with ALT (R > 0.7); neither retained (Section 4.3.2)."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Correlated with AST (R > 0.7); neither retained (Section 4.3.2)."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = paste(
         "Carried forward as the representative bilirubin measure (DBIL and IBIL",
         "were correlated with it) but not retained in the final model."
       )
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened; not retained. Median 60.5 umol/L (range 30.8-419.0)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 50,
+    n_studies = 1,
     n_observations = 158,
-    age_range      = "34-68 years",
-    age_median     = "53 years",
-    weight_range   = "52.5-86 kg",
-    weight_median  = "61.5 kg",
-    height_range   = "150-166 cm",
-    height_median  = "158 cm",
+    age_range = "34-68 years",
+    age_median = "53 years",
+    weight_range = "52.5-86 kg",
+    weight_median = "61.5 kg",
+    height_range = "150-166 cm",
+    height_median = "158 cm",
     sex_female_pct = "not reported (HER2-positive breast cancer cohort)",
     race_ethnicity = "not reported (single-centre Chinese cohort)",
-    disease_state  = "HER2-positive advanced or metastatic breast cancer",
-    dose_range     = "240, 320 or 400 mg pyrotinib maleate tablets orally once daily, taken 30 min after a meal",
-    regions        = "China (single centre: The Fourth Hospital of Hebei Medical University, Shijiazhuang)",
-    total_protein_range  = "49.0-80.7 g/L",
+    disease_state = "HER2-positive advanced or metastatic breast cancer",
+    dose_range = "240, 320 or 400 mg pyrotinib maleate tablets orally once daily, taken 30 min after a meal",
+    regions = "China (single centre: The Fourth Hospital of Hebei Medical University, Shijiazhuang)",
+    total_protein_range = "49.0-80.7 g/L",
     total_protein_median = "67.2 g/L",
-    notes          = paste(
+    notes = paste(
       "Real-world therapeutic-drug-monitoring cohort recruited November 2020 to",
       "November 2023; opportunistic (sparse) blood sampling. Doses were dynamic:",
       "some patients had dose reductions for intolerable adverse reactions, so the",

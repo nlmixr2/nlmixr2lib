@@ -11,8 +11,8 @@ Xie_2000_m3g_rat <- function() {
   )
   vignette <- "Xie_2000_m3g_rat"
   units <- list(
-    time          = "min",
-    dosing        = "umol",
+    time = "min",
+    dosing = "umol",
     concentration = "umol/L (= uM; reported as unbound M3G in arterial plasma and brain ECF)"
   )
 
@@ -21,34 +21,44 @@ Xie_2000_m3g_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central    = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "plasma", verified = FALSE),
-    brain_csf  = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "tissue", verified = FALSE),
-    brain_deep = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "tissue", verified = FALSE)
+    central = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "plasma", verified = FALSE),
+    brain_csf = list(
+      analyte = "morphine-3-glucuronide (unbound)",
+      units = "umol",
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    brain_deep = list(
+      analyte = "morphine-3-glucuronide (unbound)",
+      units = "umol",
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CONMED_PROBENECID = list(
-      description        = "Indicator for probenecid co-administration: 1 during the day-2 probenecid co-infusion in the probenecid-arm rats, 0 otherwise (control arm both days, plus day 1 of the probenecid arm before the loading dose).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for probenecid co-administration: 1 during the day-2 probenecid co-infusion in the probenecid-arm rats, 0 otherwise (control arm both days, plus day 1 of the probenecid arm before the loading dose).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no probenecid co-administration)",
-      notes              = "Xie 2000 dose / regimen: 70 umol/kg intravenous probenecid loading dose followed by a 70 umol/kg/h constant infusion (flow rate 1.3 mL/kg/h of a 5% sodium bicarbonate / saline vehicle), continued for the full ~8 h experimental window starting at the blank-period start on day 2. The canonical column is treated as time-varying per subject: 0 before the loading dose, 1 from the loading dose onward through the end of the post-infusion sampling period. The day-2 control arm and day 1 of both arms run with CONMED_PROBENECID = 0; the 5% bicarbonate vehicle alone had no detectable effect on M3G PK or BBB transport (paper Discussion, p1786).",
-      source_name        = "(derived from study-day + treatment-arm indicators in the original NONMEM dataset; the paper itself reports parameter estimates separately for the 'without probenecid' pool (control arm both days plus probenecid arm day 1) and the 'with probenecid' arm (probenecid arm day 2), as in paper Table 3)"
+      notes = "Xie 2000 dose / regimen: 70 umol/kg intravenous probenecid loading dose followed by a 70 umol/kg/h constant infusion (flow rate 1.3 mL/kg/h of a 5% sodium bicarbonate / saline vehicle), continued for the full ~8 h experimental window starting at the blank-period start on day 2. The canonical column is treated as time-varying per subject: 0 before the loading dose, 1 from the loading dose onward through the end of the post-infusion sampling period. The day-2 control arm and day 1 of both arms run with CONMED_PROBENECID = 0; the 5% bicarbonate vehicle alone had no detectable effect on M3G PK or BBB transport (paper Discussion, p1786).",
+      source_name = "(derived from study-day + treatment-arm indicators in the original NONMEM dataset; the paper itself reports parameter estimates separately for the 'without probenecid' pool (control arm both days plus probenecid arm day 1) and the 'with probenecid' arm (probenecid arm day 2), as in paper Table 3)"
     )
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley, Charles River Sweden)",
-    n_subjects     = 14L,
-    n_studies      = 1L,
-    age_range      = "not reported (animals housed for at least 1 week pre-experiment after arrival)",
-    weight_range   = "280-320 g body weight at experiment start",
+    species = "rat (male Sprague-Dawley, Charles River Sweden)",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "not reported (animals housed for at least 1 week pre-experiment after arrival)",
+    weight_range = "280-320 g body weight at experiment start",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = "healthy rats prepared with chronic left-femoral-artery / -vein cannulae for blood sampling and IV M3G / probenecid dosing, a right-jugular-vein CMA/20 microdialysis probe for blood, and an indwelling CMA/12 striatal microdialysis probe for brain ECF sampling; animals were allowed 24 h post-surgery recovery before the first experimental day",
-    dose_range     = "exponential intravenous infusion of M3G over 4 h targeting a steady-state plasma concentration of 65 uM (= 30 ug/mL) using the Stanpump CCI system with rat M3G PK parameters from Ekblom et al. 1993; for the probenecid arm on day 2 additionally 70 umol/kg IV probenecid loading dose plus 70 umol/kg/h constant infusion in 5% sodium-bicarbonate / saline vehicle (flow rate 1.3 mL/kg/h, total ~8 h infusion duration)",
-    regions        = "preclinical (in-vivo rat); Uppsala University, Sweden",
-    notes          = "Two experimental groups of n = 7 rats each: a control group receiving the 4 h M3G infusion on both days, and a probenecid group receiving the same M3G regimen on both days plus a continuous probenecid infusion on day 2 only. The two daily 4 h M3G infusions per rat allow each animal to serve as its own within-subject control for the probenecid effect (paper Tables 1 - 3). Brain tissue was harvested at the end of day 2 in n = 4 animals per group for total-brain assays. The BBB transport parameters (Model B in Xie 2000) are reported per gram of brain tissue; brain volumes are in uL/g-brain and brain clearances in uL/min/g-brain (paper Table 3, p1788), so the rat-brain compartments below carry per-g-brain semantics while the central plasma compartment uses whole-rat semantics. Brain accounted for about 0.02% of total body amount of M3G at steady state, so plasma kinetics are essentially independent of brain redistribution (paper Discussion p1789)."
+    disease_state = "healthy rats prepared with chronic left-femoral-artery / -vein cannulae for blood sampling and IV M3G / probenecid dosing, a right-jugular-vein CMA/20 microdialysis probe for blood, and an indwelling CMA/12 striatal microdialysis probe for brain ECF sampling; animals were allowed 24 h post-surgery recovery before the first experimental day",
+    dose_range = "exponential intravenous infusion of M3G over 4 h targeting a steady-state plasma concentration of 65 uM (= 30 ug/mL) using the Stanpump CCI system with rat M3G PK parameters from Ekblom et al. 1993; for the probenecid arm on day 2 additionally 70 umol/kg IV probenecid loading dose plus 70 umol/kg/h constant infusion in 5% sodium-bicarbonate / saline vehicle (flow rate 1.3 mL/kg/h, total ~8 h infusion duration)",
+    regions = "preclinical (in-vivo rat); Uppsala University, Sweden",
+    notes = "Two experimental groups of n = 7 rats each: a control group receiving the 4 h M3G infusion on both days, and a probenecid group receiving the same M3G regimen on both days plus a continuous probenecid infusion on day 2 only. The two daily 4 h M3G infusions per rat allow each animal to serve as its own within-subject control for the probenecid effect (paper Tables 1 - 3). Brain tissue was harvested at the end of day 2 in n = 4 animals per group for total-brain assays. The BBB transport parameters (Model B in Xie 2000) are reported per gram of brain tissue; brain volumes are in uL/g-brain and brain clearances in uL/min/g-brain (paper Table 3, p1788), so the rat-brain compartments below carry per-g-brain semantics while the central plasma compartment uses whole-rat semantics. Brain accounted for about 0.02% of total body amount of M3G at steady state, so plasma kinetics are essentially independent of brain redistribution (paper Discussion p1789)."
   )
 
   ini({

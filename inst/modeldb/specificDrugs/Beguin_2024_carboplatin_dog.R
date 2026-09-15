@@ -39,30 +39,29 @@ Beguin_2024_carboplatin_dog <- function() {
   # Assmus_2025_benznidazole_qpcr.R; not a biological compartment.
   paper_specific_compartments <- c("auc_central")
 
-
   # Concentrations are ug/L and amounts are ug per kg of body weight. The
   # paper never states the modelling units directly and its printed
   # "AUC0-inf (mg.h/L)" label is wrong by a factor of 1000; see the
   # vignette Errata for the two independent numerical anchors (the
   # additive residual constant and Dose/CL) that pin the ug/L scale.
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ug/L"
   )
 
   compartmentData <- list(
-    central     = list(analyte = "carboplatin", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "carboplatin", units = "ug", specimen = "plasma", verified = TRUE),
     auc_central = list(analyte = "carboplatin", units = "ug*h/L", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     CREAT = list(
-      description        = "Plasma creatinine concentration on the day of carboplatin administration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Plasma creatinine concentration on the day of carboplatin administration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters UNCENTRED. Beguin 2024 Eq. (3) adds beta * ln(CREAT)",
         "on the log-parameter scale, which is identical to the power",
         "form CREAT^-0.25 used in model(). There is no reference",
@@ -74,14 +73,14 @@ Beguin_2024_carboplatin_dog <- function() {
         "mg/dL or umol/L more common in human papers - divide by 10",
         "to obtain mg/dL."
       ),
-      source_name        = "plasma creatinine concentration"
+      source_name = "plasma creatinine concentration"
     ),
     NEUTERED = list(
-      description        = "Neutering status (1 = surgically neutered, i.e. spayed female or castrated male; 0 = sexually intact)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Neutering status (1 = surgically neutered, i.e. spayed female or castrated male; 0 = sexually intact)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sexually intact)",
-      notes              = paste(
+      notes = paste(
         "Beguin 2024 calls this 'sterilization status' and codes it",
         "0/1 per Eq. (3). Orthogonal to SEXF: the cohort held intact",
         "and neutered animals of both sexes (4 neutered females and 5",
@@ -90,14 +89,14 @@ Beguin_2024_carboplatin_dog <- function() {
         "effect is probably confounded with age and creatinine rather",
         "than causal, since neutering is not expected to alter GFR."
       ),
-      source_name        = "neutered status"
+      source_name = "neutered status"
     ),
     OCC = list(
-      description        = "Occasion index; one occasion per carboplatin administration in the same dog",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index; one occasion per carboplatin administration in the same dog",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Beguin 2024 analysed repeat administrations in the same dog",
         "as separate occasions: 4 dogs received 5 administrations, 2",
         "received 3, 3 received 2 and 7 received 1, giving 39",
@@ -107,7 +106,7 @@ Beguin_2024_carboplatin_dog <- function() {
         "below reproduce that by fixing occasions 2-5 to the occasion",
         "1 value."
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
@@ -118,9 +117,9 @@ Beguin_2024_carboplatin_dog <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and NOT retained",
         "(p = 0.32 for V, p = 0.86 for Cl). Notable because the dose",
         "was prescribed on body surface area, BSA(m2) = 0.1 *",
@@ -131,15 +130,15 @@ Beguin_2024_carboplatin_dog <- function() {
     ),
     AGE = list(
       description = "Age at inclusion",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened and NOT retained. Cohort mean 11.1 +/- 1.72 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened and NOT retained. Cohort mean 11.1 +/- 1.72 years."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a categorical covariate and NOT retained; the",
         "separate NEUTERED indicator was retained instead. Cohort as",
         "printed: 14 females and 12 males, which sums to 26 rather",
@@ -150,11 +149,11 @@ Beguin_2024_carboplatin_dog <- function() {
   )
 
   population <- list(
-    species      = "dog (client-owned, mixed breeds)",
-    n_subjects   = 16L,
-    n_studies    = 1L,
-    n_occasions  = 39L,
-    age_range    = "mean 11.1 +/- 1.72 years",
+    species = "dog (client-owned, mixed breeds)",
+    n_subjects = 16L,
+    n_studies = 1L,
+    n_occasions = 39L,
+    age_range = "mean 11.1 +/- 1.72 years",
     weight_range = "mean 21.5 +/- 7.8 kg",
     disease_state = paste(
       "Solid tumours treated with adjuvant carboplatin after surgical",
@@ -162,10 +161,10 @@ Beguin_2024_carboplatin_dog <- function() {
       "mammary adenocarcinoma (2), ovarian dysgerminoma (2),",
       "chondrosarcoma (1), fibrosarcoma (1)."
     ),
-    dose_range   = "300 mg/m2 (mean 300.4 +/- 7.6 mg/m2, equal to 10.7 +/- 1.0 mg/kg) as an approximately 20 min IV infusion",
-    regions      = "France (National Veterinary School of Alfort and Oniris VetAgroBio)",
+    dose_range = "300 mg/m2 (mean 300.4 +/- 7.6 mg/m2, equal to 10.7 +/- 1.0 mg/kg) as an approximately 20 min IV infusion",
+    regions = "France (National Veterinary School of Alfort and Oniris VetAgroBio)",
     renal_function = "Mean plasma creatinine 7.32 +/- 1.86 mg/L; dogs above 14 mg/L at admission were excluded",
-    notes        = paste(
+    notes = paste(
       "Prospective two-centre clinical trial, June 2019 to January",
       "2021. 27 dogs enrolled, 11 excluded for protocol deviations,",
       "16 analysed contributing 39 administrations. Exclusions also",

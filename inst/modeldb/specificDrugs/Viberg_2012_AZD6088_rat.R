@@ -31,8 +31,8 @@ Viberg_2012_AZD6088_rat <- function() {
   )
   vignette <- "Viberg_2012_AZD6088_rat"
   units <- list(
-    time          = "h",
-    dosing        = "umol/kg",
+    time = "h",
+    dosing = "umol/kg",
     concentration = "umol/L"
   )
 
@@ -40,13 +40,13 @@ Viberg_2012_AZD6088_rat <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "AZD6088", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "AZD6088", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "AZD6088", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE_HIGH = list(
-      description        = paste(
+      description = paste(
         "Binary indicator flagging membership in the study's",
         "highest-dose cohort (40 umol/kg oral, ~16.26 mg/kg at MW",
         "406.57). 1 = subject received 40 umol/kg AZD6088 orally,",
@@ -56,10 +56,10 @@ Viberg_2012_AZD6088_rat <- function() {
         "each received a per-cohort fixed dose below the 40",
         "umol/kg threshold)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per rat (each animal received exactly one dose",
         "level for the full study). Gates the categorical apparent",
         "oral clearance split in model(): DOSE_HIGH = 1 selects",
@@ -75,19 +75,19 @@ Viberg_2012_AZD6088_rat <- function() {
         "does not name a NONMEM column for this indicator (the",
         "supplement / control stream is not on disk)."
       ),
-      source_name        = "DOSE_HIGH"
+      source_name = "DOSE_HIGH"
     )
   )
 
   population <- list(
-    species         = "rat (Sprague-Dawley, male)",
-    n_subjects      = 42L,
-    n_studies       = 1L,
-    age_range       = "Adult (age not reported; body weight 125-200 g at receipt)",
-    weight_range    = "125-200 g at receipt (Charles River St. Constant, Canada; Harlan Inc., Indianapolis, USA)",
-    sex_female_pct  = 0,
-    race_ethnicity  = NA,
-    disease_state   = paste(
+    species = "rat (Sprague-Dawley, male)",
+    n_subjects = 42L,
+    n_studies = 1L,
+    age_range = "Adult (age not reported; body weight 125-200 g at receipt)",
+    weight_range = "125-200 g at receipt (Charles River St. Constant, Canada; Harlan Inc., Indianapolis, USA)",
+    sex_female_pct = 0,
+    race_ethnicity = NA,
+    disease_state = paste(
       "Male Sprague-Dawley rats subjected to left L5 + L6 spinal-nerve",
       "ligation (SNL) under isoflurane anaesthesia (Kim and Chung",
       "method) to induce heat hyperalgesia; testing performed on",
@@ -98,7 +98,7 @@ Viberg_2012_AZD6088_rat <- function() {
       "a treatment group; behavioral experimenters were blinded to",
       "the drug treatment."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "AZD6088 (MW 406.57 g/mol) administered orally as vehicle or at",
       "1, 2.5, 5, 10, 20, or 40 umol/kg (0.407-16.26 mg/kg). Initial",
       "efficacy study: n = 7-12/group at 1, 2.5, 5, 10, 20, 40",
@@ -110,8 +110,8 @@ Viberg_2012_AZD6088_rat <- function() {
       "(PD-and-PK-in-one-animal design); 3 satellite rats/group",
       "sampled at 1, 2, 4, 6, 7, 24 h on day 1 only."
     ),
-    regions         = "Canada (AstraZeneca R&D Montreal; single laboratory).",
-    notes           = paste(
+    regions = "Canada (AstraZeneca R&D Montreal; single laboratory).",
+    notes = paste(
       "PK samples below the LC-MS/MS LLOQ of 0.0005 umol/L were",
       "excluded from the analysis (five PK samples in the main study,",
       "per Results). Total sample size across studies inferred from",

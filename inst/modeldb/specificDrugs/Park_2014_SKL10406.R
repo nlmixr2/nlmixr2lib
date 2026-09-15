@@ -9,29 +9,29 @@ Park_2014_SKL10406 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SKL10406", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SKL10406", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SKL10406", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SKL10406", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SKL10406", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "SERT occupancy", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "SERT occupancy", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11L,
-    n_studies      = 1L,
-    age_range      = "18-50 years (inclusion criterion); 42.5 +/- 4.51 in 50 mg bid cohorts, 44.8 +/- 11.82 in 75 mg bid cohorts",
-    age_median     = "43.5 years (pooled mean across 11 completers)",
-    weight_range   = "Body weight < 125.0 kg (inclusion criterion); BMI 19.0-30.0 kg/m^2 (inclusion), observed BMI 25.7 +/- 2.90 kg/m^2",
-    weight_median  = NULL,
+    species = "human",
+    n_subjects = 11L,
+    n_studies = 1L,
+    age_range = "18-50 years (inclusion criterion); 42.5 +/- 4.51 in 50 mg bid cohorts, 44.8 +/- 11.82 in 75 mg bid cohorts",
+    age_median = "43.5 years (pooled mean across 11 completers)",
+    weight_range = "Body weight < 125.0 kg (inclusion criterion); BMI 19.0-30.0 kg/m^2 (inclusion), observed BMI 25.7 +/- 2.90 kg/m^2",
+    weight_median = NULL,
     sex_female_pct = 9.1,
     race_ethnicity = c(White = 90.9, Black_or_African_American = 9.1),
-    disease_state  = "Healthy adult volunteers; key exclusions included use of medications affecting SERT or DAT binding within 1 week prior to first dosing, and history of serious medical or psychiatric illness.",
-    dose_range     = "100 mg/day SKL10406 (50 mg PO every 12 h) for 6 days in Cohorts 1 and 2; 100 mg/day for 4 days followed by 150 mg/day (75 mg PO every 12 h) for 6 days in Cohorts 3 and 4. PD model was fit to the SERT cohorts only (Cohorts 1 and 3; n = 6 subjects).",
-    regions        = "Canada (single-centre PET study at the Centre for Addiction and Mental Health, Toronto; PK / PD sampling at Kendle Early Stage, Toronto).",
+    disease_state = "Healthy adult volunteers; key exclusions included use of medications affecting SERT or DAT binding within 1 week prior to first dosing, and history of serious medical or psychiatric illness.",
+    dose_range = "100 mg/day SKL10406 (50 mg PO every 12 h) for 6 days in Cohorts 1 and 2; 100 mg/day for 4 days followed by 150 mg/day (75 mg PO every 12 h) for 6 days in Cohorts 3 and 4. PD model was fit to the SERT cohorts only (Cohorts 1 and 3; n = 6 subjects).",
+    regions = "Canada (single-centre PET study at the Centre for Addiction and Mental Health, Toronto; PK / PD sampling at Kendle Early Stage, Toronto).",
     n_observations = "Full PK sampling for all 11 completers at 0, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 12, and 16 h post-dose on the steady-state dosing day. Two post-dose SERT-occupancy PET scans per subject (approximately 4 h and 16 h post-dose) in Cohorts 1 and 3 only.",
-    notes          = "Fifteen subjects enrolled; 11 completed both PK and PD assessments (six SERT cohorts 1 and 3, five DAT cohorts 2 and 4). One subject in the SERT analysis refused the 16 h Day 11 PET scan. One subject was suspected to be a poor metabolizer based on elevated plasma SKL10406 levels and was retained in the analysis. Baseline demographics per Park 2014 Table 1."
+    notes = "Fifteen subjects enrolled; 11 completed both PK and PD assessments (six SERT cohorts 1 and 3, five DAT cohorts 2 and 4). One subject in the SERT analysis refused the 16 h Day 11 PET scan. One subject was suspected to be a poor metabolizer based on elevated plasma SKL10406 levels and was retained in the analysis. Baseline demographics per Park 2014 Table 1."
   )
 
   ini({

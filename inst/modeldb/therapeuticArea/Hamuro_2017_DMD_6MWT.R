@@ -22,37 +22,37 @@ Hamuro_2017_DMD_6MWT <- function() {
   )
   vignette <- "Hamuro_2017_DMD_6MWT"
   units <- list(
-    time          = "year",
-    dosing        = "n/a (disease-progression model with no drug dosing)",
+    time = "year",
+    dosing = "n/a (disease-progression model with no drug dosing)",
     concentration = "m (six-minute walk test distance, observation walk_dist)"
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age in years at the time of the 6MWT measurement (time-varying, updated at each visit).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years at the time of the 6MWT measurement (time-varying, updated at each visit).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Model 4 fits 6MWT directly against the subject's age at the time of each measurement, not against time-since-baseline. For simulation, supply AGE on each observation row; the model uses it without further transformation. Hamuro 2017 Table 1 reports a mean baseline age of about 8-10 years across the contributing studies; the model was developed against a baseline-age range of approximately 4-17 years (Hamuro 2017 Table 1) and the age range covered by observations extends a year or two beyond the baseline.",
-      source_name        = "Age"
+      notes = "Model 4 fits 6MWT directly against the subject's age at the time of each measurement, not against time-since-baseline. For simulation, supply AGE on each observation row; the model uses it without further transformation. Hamuro 2017 Table 1 reports a mean baseline age of about 8-10 years across the contributing studies; the model was developed against a baseline-age range of approximately 4-17 years (Hamuro 2017 Table 1) and the age range covered by observations extends a year or two beyond the baseline.",
+      source_name = "Age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 88L,
-    n_studies      = 2L,
-    age_range      = "approximately 4-17 years (combined cohort, observations); baseline-age range 5-15.3 years",
-    age_median     = "mean baseline 8.3 years (McDonald 2013) and 9.5 years (Goemans 2013)",
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 88L,
+    n_studies = 2L,
+    age_range = "approximately 4-17 years (combined cohort, observations); baseline-age range 5-15.3 years",
+    age_median = "mean baseline 8.3 years (McDonald 2013) and 9.5 years (Goemans 2013)",
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 0,
     race_ethnicity = NA_character_,
-    disease_state  = "Ambulatory boys with Duchenne muscular dystrophy (DMD) on stable corticosteroids. 100% of subjects from Goemans 2013 (90% deflazacort, 10% prednisone/prednisolone) and 70% of subjects from McDonald 2013 (steroid type and regimen not reported).",
-    dose_range     = "Not applicable -- disease-progression model with no drug dosing. Steroid use is implicit in the population.",
-    regions        = "International (McDonald 2013 multi-site randomised controlled trial placebo arm) and Belgium (Goemans 2013 Leuven Neuromuscular Reference Center natural-history study)",
+    disease_state = "Ambulatory boys with Duchenne muscular dystrophy (DMD) on stable corticosteroids. 100% of subjects from Goemans 2013 (90% deflazacort, 10% prednisone/prednisolone) and 70% of subjects from McDonald 2013 (steroid type and regimen not reported).",
+    dose_range = "Not applicable -- disease-progression model with no drug dosing. Steroid use is implicit in the population.",
+    regions = "International (McDonald 2013 multi-site randomised controlled trial placebo arm) and Belgium (Goemans 2013 Leuven Neuromuscular Reference Center natural-history study)",
     n_observations = "228 6MWT records across 88 subjects (Goemans 2013: 122 records / 35 subjects, 2-6 per subject; McDonald 2013: 106 records / 53 subjects, 2 per subject at baseline and 48 weeks). 13 of 228 records (6%) were below the 50 m quantification limit and handled via M3 in the original fit; the packaged model does not include the M3 censoring component.",
-    notes          = "All data were digitised from published figures (plot digitizer) rather than obtained as individual subject records. Hamuro 2017 Methods (Data sources) and Table 1 describe the contributing studies (McDonald 2013 Figure 4, Goemans 2013 Figure 1)."
+    notes = "All data were digitised from published figures (plot digitizer) rather than obtained as individual subject records. Hamuro 2017 Methods (Data sources) and Table 1 describe the contributing studies (McDonald 2013 Figure 4, Goemans 2013 Figure 1)."
   )
 
   ini({

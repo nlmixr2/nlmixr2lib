@@ -30,22 +30,22 @@ Liu_2025_avatrombopag <- function() {
   )
   vignette <- "Liu_2025_avatrombopag"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     FED_HIGHFAT = list(
-      description        = paste(
+      description = paste(
         "1 = the 20 mg avatrombopag dose was taken about 30 min after a",
         "high-fat, high-calorie meal; 0 = the dose was taken after an",
         "overnight fast."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (overnight fast)",
-      notes              = paste(
+      notes = paste(
         "Liu 2025 Methods 'Study Design and Pharmacokinetic Assessments':",
         "the fed condition is the FDA-standard high-fat, high-calorie",
         "breakfast providing 800-1000 kcal total (about 150 kcal protein,",
@@ -58,21 +58,21 @@ Liu_2025_avatrombopag <- function() {
         "(Table 3 footnote, COV1 and COV3); the paper found no food effect",
         "on CL/F or Vd/F typical values."
       ),
-      source_name        = "FOOD"
+      source_name = "FOOD"
     ),
     ABCB1_C1236T_HET = list(
-      description        = paste(
+      description = paste(
         "1 = subject is an ABCB1 (C1236T, rs1128503) TC heterozygote;",
         "0 = subject is homozygous at that locus (CC wild-type or TT",
         "variant, pooled)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "The Liu 2025 Fa reference group is ABCB1_C1236T_HET = 1 (TC",
         "heterozygote) combined with FED_HIGHFAT = 0, for which Fa = 1."
       ),
-      notes              = paste(
+      notes = paste(
         "Liu 2025 Table 3 footnote defines its model covariate as",
         "'ABCB1 = 0 if the genotype is heterozygote, 1 if homozygote',",
         "i.e. the exact complement of the canonical heterozygote",
@@ -86,18 +86,18 @@ Liu_2025_avatrombopag <- function() {
         "(Discussion paragraph 4). Time-fixed per subject (germline",
         "genotype)."
       ),
-      source_name        = "ABCB1"
+      source_name = "ABCB1"
     ),
     OCC = list(
-      description        = paste(
+      description = paste(
         "Integer study period (1-4) of the two-sequence, four-period",
         "replicate bioequivalence design; indexes the inter-occasion",
         "variability on ka."
       ),
-      units              = "(integer)",
-      type               = "categorical",
+      units = "(integer)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Liu 2025 Methods: 'This open-label, crossover study consisted of",
         "four periods with two sequences, separated by a 14-day washout.'",
         "Each subject therefore contributes four single-dose occasions.",
@@ -107,7 +107,7 @@ Liu_2025_avatrombopag <- function() {
         "fixed to the shared value for occasions 2-4. For single-occasion",
         "simulations pass OCC = 1 so the first IOV eta applies."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -121,9 +121,9 @@ Liu_2025_avatrombopag <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Liu 2025 Limitations explicitly",
         "attributes this to the homogeneous bioequivalence-study",
         "population: 'the analysis population was derived from a",
@@ -136,15 +136,15 @@ Liu_2025_avatrombopag <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained; median 28 years, range 18-45 (Results 2.1, Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained; median 28 years, range 18-45 (Results 2.1, Table 1)."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained. Liu 2025 Results 2.2.1 and Table S2:",
         "'no statistically significant variation in AVA exposure was",
         "observed between males and females'. The cohort was 83 male /",
@@ -153,21 +153,21 @@ Liu_2025_avatrombopag <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods 4.4); Table 1 means 23.04 +/- 12.35 (fasting) and 19.46 +/- 12.31 U/L (fed)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods 4.4); Table 1 means 23.04 +/- 12.35 (fasting) and 19.46 +/- 12.31 U/L (fed)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods 4.4); Table 1 means 21.2 +/- 4.71 (fasting) and 18.97 +/- 4.5 U/L (fed)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened but not retained (Methods 4.4); Table 1 means 21.2 +/- 4.71 (fasting) and 18.97 +/- 4.5 U/L (fed)."
     ),
     CYP2C9_PM_IM = list(
       description = "Pooled CYP2C9 poor-or-intermediate-metabolizer phenotype indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped (*1/*3 = intermediate metabolizer, n = 6; no *3/*3",
         "poor metabolizers) and shown by NCA to raise fed-state exposure",
         "1.70-fold (Abstract; Results 2.2.2), but NOT retained as a",
@@ -179,9 +179,9 @@ Liu_2025_avatrombopag <- function() {
     ),
     ABCB1_C3435T_HET = list(
       description = "ABCB1 C3435T (rs1045642) heterozygote indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Genotyped (40% CC / 47% TC / 13% TT) and screened; Results 2.2.2",
         "reports 'no significant differences were observed in Cmax and AUC",
         "values across the ABCB1 (C3435T) genotypes' and it was not",
@@ -190,9 +190,9 @@ Liu_2025_avatrombopag <- function() {
     ),
     ABCB1_G2677TA = list(
       description = "ABCB1 G2677T/A (rs2032582) genotype",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Genotyped (GA/GG/TA/TG/TT strata, Table 1) and screened;",
         "Results 2.2.2 reports 'no significant associations were found",
         "between the ABCB1 (G2677T/A) polymorphism and Cmax or AUC",
@@ -204,7 +204,7 @@ Liu_2025_avatrombopag <- function() {
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
     transit3 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
@@ -214,35 +214,35 @@ Liu_2025_avatrombopag <- function() {
     transit7 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
     transit8 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
     transit9 = list(analyte = "avatrombopag", units = "mg", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "avatrombopag", units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "avatrombopag", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 92L,
-    n_studies         = 1L,
+    species = "human",
+    n_subjects = 92L,
+    n_studies = 1L,
     n_pk_observations = 5923L,
-    age_range         = "18-45 years",
-    age_median        = "28 years",
-    weight_range      = "mean 63.22 +/- 7.88 kg (fasting arm) and 60.95 +/- 6.32 kg (fed arm)",
-    sex_female_pct    = 9.8,
-    race_ethnicity    = "Chinese (single-centre Chinese cohort; no further ethnic breakdown reported)",
-    disease_state     = "healthy volunteers",
-    dose_range        = paste(
+    age_range = "18-45 years",
+    age_median = "28 years",
+    weight_range = "mean 63.22 +/- 7.88 kg (fasting arm) and 60.95 +/- 6.32 kg (fed arm)",
+    sex_female_pct = 9.8,
+    race_ethnicity = "Chinese (single-centre Chinese cohort; no further ethnic breakdown reported)",
+    disease_state = "healthy volunteers",
+    dose_range = paste(
       "single 20 mg oral avatrombopag tablet with 200 mL water, repeated",
       "over four periods separated by a 14-day washout; 47 subjects dosed",
       "under an overnight fast and 45 dosed about 30 min after a high-fat,",
       "high-calorie meal"
     ),
-    regions           = "China (Clinical Trials Unit of Hunan Province People's Hospital, Changsha, Hunan)",
-    genotypes         = paste(
+    regions = "China (Clinical Trials Unit of Hunan Province People's Hospital, Changsha, Hunan)",
+    genotypes = paste(
       "CYP2C9: 90% *1/*1 normal metabolizer, 10% *1/*3 intermediate",
       "metabolizer, no *3/*3. ABCB1 (C1236T): 14% CC, 51% TC, 35% TT.",
       "ABCB1 (C3435T): 40% CC, 47% TC, 13% TT. ABCB1 (G2677T/A): 20%",
       "GG, 67% heterozygous, 13% homozygous variant. All variants were in",
       "Hardy-Weinberg equilibrium (Results 2.1, 2.2.2 and Table 1)."
     ),
-    notes             = paste(
+    notes = paste(
       "Open-label, single-centre, two-sequence, four-period replicate",
       "bioequivalence trial (IRB approval [2023]-32.1, Hunan Province",
       "People's Hospital). Sampling at predose and 1, 2, 3, 4, 5, 6, 7,",

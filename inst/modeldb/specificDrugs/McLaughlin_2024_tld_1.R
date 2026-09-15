@@ -44,19 +44,19 @@ McLaughlin_2024_tld_1 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    entrapped     = list(analyte = "TLD-1", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    entrapped = list(analyte = "TLD-1", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
     central_doxol = list(analyte = "doxorubicinol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline. Enters as a power covariate on the free-doxorubicin central (V2) and peripheral (V3) volumes only; the paper screened BSA on V1 (entrapped) but the effect was not retained (Mc Laughlin 2024 Results / Covariate model paragraph).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline. Enters as a power covariate on the free-doxorubicin central (V2) and peripheral (V3) volumes only; the paper screened BSA on V1 (entrapped) but the effect was not retained (Mc Laughlin 2024 Results / Covariate model paragraph).",
+      units = "m^2",
+      type = "continuous",
       reference_category = "n/a -- used with power scaling (BSA / 1.75)^exponent. Reference BSA is the cohort median 1.75 m^2 (Mc Laughlin 2024 Results / Clinical data paragraph).",
-      notes              = paste(
+      notes = paste(
         "Cohort median BSA 1.75 m^2 (range 1.44-2.44 m^2); 30 adults with",
         "advanced solid tumours, 80% female. The power exponents on V2",
         "(4.47) and V3 (11.5) are unusually large -- the paper notes the",
@@ -65,116 +65,116 @@ McLaughlin_2024_tld_1 <- function() {
         "significantly improved model fit (Mc Laughlin 2024 Results /",
         "Covariate model paragraph)."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at baseline (screened in stepwise selection but not retained).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Covariate submodel: 'Potential patient characteristics to be implemented as covariates in the model were pre-selected based on plausibility, previous reports, and availability in the dataset.' Results: 'No other covariates were identified' (only BSA retained).",
+      units = "years",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Covariate submodel: 'Potential patient characteristics to be implemented as covariates in the model were pre-selected based on plausibility, previous reports, and availability in the dataset.' Results: 'No other covariates were identified' (only BSA retained).",
       source_name = "AGE"
     ),
     WT = list(
       description = "Body weight at baseline (screened, not retained; replacing BSA with WT did not improve fit).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Results / Covariate model: 'Replacing BSA with other body size descriptors, including body weight or lean body weight, did not improve model fit.'",
+      units = "kg",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Results / Covariate model: 'Replacing BSA with other body size descriptors, including body weight or lean body weight, did not improve model fit.'",
       source_name = "WT"
     ),
     HT = list(
       description = "Body height at baseline (screened, not retained).",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation: 'Patient characteristics age, body weight, body height, and BSA ... were included in the dataset and available for testing.'",
+      units = "cm",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Analysis dataset generation: 'Patient characteristics age, body weight, body height, and BSA ... were included in the dataset and available for testing.'",
       source_name = "HT"
     ),
     BMI = list(
       description = "Body mass index calculated from WT and HT (screened, not retained).",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods: 'additional body size descriptors lean body weight and body mass index (BMI) were calculated and available for testing as potential covariates.'",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods: 'additional body size descriptors lean body weight and body mass index (BMI) were calculated and available for testing as potential covariates.'",
       source_name = "BMI"
     ),
     LBW = list(
       description = "Lean body weight by Janmahasatian formula (screened, not retained).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods: lean body weight calculated per Janmahasatian 2005 (reference 24); 'No other covariates were identified.'",
+      units = "kg",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods: lean body weight calculated per Janmahasatian 2005 (reference 24); 'No other covariates were identified.'",
       source_name = "LBW"
     ),
     SCR = list(
       description = "Serum creatinine (screened, not retained).",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods: serum creatinine and CKD-EPI eGFR were available for covariate testing; not retained.",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods: serum creatinine and CKD-EPI eGFR were available for covariate testing; not retained.",
       source_name = "SCR"
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate by CKD-EPI (screened, not retained).",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods reference 23 (Levey 2009 CKD-EPI).",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods reference 23 (Levey 2009 CKD-EPI).",
       source_name = "EGFR"
     ),
     ALT = list(
       description = "Alanine aminotransferase (screened, not retained).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
+      units = "U/L",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
       source_name = "ALT"
     ),
     AST = list(
       description = "Aspartate aminotransferase (screened, not retained).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
+      units = "U/L",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
       source_name = "AST"
     ),
     ALP = list(
       description = "Alkaline phosphatase (screened, not retained).",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
+      units = "U/L",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Analysis dataset generation.",
       source_name = "ALP"
     ),
     TBILI = list(
       description = "Total bilirubin (screened, not retained).",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Mc Laughlin 2024 Methods / Analysis dataset generation. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; units already SI umol/L (unchanged).",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Mc Laughlin 2024 Methods / Analysis dataset generation. Renamed from source key BILI to the canonical TBILI per the 2026-06-19 SI register; units already SI umol/L (unchanged).",
       source_alias = "BILI",
       source_name = "BILI"
     ),
     SEXF = list(
       description = "Female sex indicator (cohort 80% female; sex not retained as a covariate).",
-      units       = "binary",
-      type        = "binary",
-      notes       = "Mc Laughlin 2024 Methods / Covariate submodel describes 'Categorical covariates (e.g., sex) were implemented using fractional change models'; Results: 'No other covariates were identified.'",
+      units = "binary",
+      type = "binary",
+      notes = "Mc Laughlin 2024 Methods / Covariate submodel describes 'Categorical covariates (e.g., sex) were implemented using fractional change models'; Results: 'No other covariates were identified.'",
       source_name = "SEXF"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    age_range       = "38-83 years",
-    age_median      = "67.5 years",
-    bsa_range       = "1.44-2.44 m^2",
-    bsa_median      = "1.75 m^2",
-    bmi_range       = "16.5-42.2 kg/m^2",
-    bmi_median      = "24.7 kg/m^2",
-    lbw_range       = "38.7-77.6 kg",
-    lbw_median      = "48.5 kg",
-    sex_female_pct  = 80,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "38-83 years",
+    age_median = "67.5 years",
+    bsa_range = "1.44-2.44 m^2",
+    bsa_median = "1.75 m^2",
+    bmi_range = "16.5-42.2 kg/m^2",
+    bmi_median = "24.7 kg/m^2",
+    lbw_range = "38.7-77.6 kg",
+    lbw_median = "48.5 kg",
+    sex_female_pct = 80,
+    disease_state = paste(
       "Advanced solid tumours; breast cancer 43.3%, ovarian 20.0%,",
       "gastrointestinal 3.3%, other 33.3% of the cohort."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "TLD-1 IV infusion every 21 days, dose levels 1-7 = 10, 16, 23,",
       "30, 35, 40, 45 mg/m^2 of body surface area. Dose levels 1-6",
       "infused over 60 min; dose level 7 over 90 min. Up to 6 cycles",
@@ -184,8 +184,8 @@ McLaughlin_2024_tld_1 <- function() {
       "average liposome diameter ~36 nm (Caelyx ~70 nm); 99% of",
       "doxorubicin entrapped at time of infusion per the manufacturer."
     ),
-    regions         = "Switzerland (4 phase I centres, Swiss Group for Clinical Cancer Research SAKK 65/16)",
-    clinical_trial  = "NCT03387917",
+    regions = "Switzerland (4 phase I centres, Swiss Group for Clinical Cancer Research SAKK 65/16)",
+    clinical_trial = "NCT03387917",
     n_concentrations = "1870 (n = 624 total doxorubicin, n = 623 free doxorubicin, n = 623 doxorubicinol)",
     sampling_window = paste(
       "Cycles 1 and 2; pre-dose, mid-infusion (0.5 h DL 1-6 / 0.75 h",
@@ -193,7 +193,7 @@ McLaughlin_2024_tld_1 <- function() {
       "7 h after end of infusion, 24, 48 (cycle 1 only), 168 (day 8),",
       "336 (day 15) h after infusion."
     ),
-    assay           = paste(
+    assay = paste(
       "LC-MS/MS by Swiss BioQuant AG, Reinach. Total doxorubicin",
       "(doxorubicin_entrapped + doxorubicin_free) calibration 20.0-20000",
       "ng/mL (inter-batch precision 3.2-6.3%, accuracy 100.0-104.3%);",
@@ -204,7 +204,7 @@ McLaughlin_2024_tld_1 <- function() {
       "infusion fixed at 100% based on in-house manufacturer data showing",
       ">99% entrapment."
     ),
-    notes           = paste(
+    notes = paste(
       "Baseline demographics from Mc Laughlin 2024 Results /",
       "Clinical data paragraph and Table 2 footnote b (reference BSA",
       "1.75 m^2). NONMEM 7.4 with FOCE+I; SIR for parameter precision.",

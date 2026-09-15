@@ -35,18 +35,18 @@ Kloprogge_2014_quinine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "quinine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "quinine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Kloprogge 2014 enrolled 22",
         "pregnant Ugandan women with median (range) body weight 56.5",
         "(44.0-71.0) kg (Table 1). Body weight is applied as an",
@@ -63,14 +63,14 @@ Kloprogge_2014_quinine <- function() {
         "Vp/F = 54.3 L) reproduce at the typical patient.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BODYTEMP = list(
-      description        = "Body temperature at admission",
-      units              = "degC",
-      type               = "continuous",
+      description = "Body temperature at admission",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission body temperature, time-fixed per subject. Kloprogge",
         "2014 cohort median 37.2 degC (Table 1, range 36.0-38.9 degC).",
         "Applied as an exponential effect on elimination clearance:",
@@ -85,14 +85,14 @@ Kloprogge_2014_quinine <- function() {
         "outside the observed 36.0-38.9 degC range.",
         sep = " "
       ),
-      source_name        = "TEMP"
+      source_name = "TEMP"
     ),
     PARA = list(
-      description        = "Plasmodium falciparum parasitaemia (asexual parasites/uL)",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Plasmodium falciparum parasitaemia (asexual parasites/uL)",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying covariate, propagated by last-observation",
         "-carried-forward (Methods, Discussion). Parasite slides were",
         "taken once daily during the 7-day treatment course; the most",
@@ -113,27 +113,27 @@ Kloprogge_2014_quinine <- function() {
         "2019); PARA is the raw count and is time-varying here.",
         sep = " "
       ),
-      source_name        = "PARA"
+      source_name = "PARA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 22L,
-    n_studies       = 1L,
-    age_range       = "18.0-37.0 years (Table 1)",
-    age_median      = "21.0 years (Table 1)",
-    weight_range    = "44.0-71.0 kg (Table 1)",
-    weight_median   = "56.5 kg (Table 1)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "18.0-37.0 years (Table 1)",
+    age_median = "21.0 years (Table 1)",
+    weight_range = "44.0-71.0 kg (Table 1)",
+    weight_median = "56.5 kg (Table 1)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; second or third",
       "trimester of pregnancy (estimated gestational age 13.0-37.0",
       "weeks, median 26.0; trimester split 12/22 second, 10/22 third).",
       "All patients were enrolled at the Mbarara National Referral",
       "Hospital antenatal clinic in Uganda."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral quinine sulphate (Remedica, Limassol, Cyprus): 300 mg",
       "salt/tablet; 10 mg salt/kg per dose, three times daily at 0, 8,",
       "and 16 h for 7 days. Salt-to-base conversion: quinine sulphate",
@@ -143,9 +143,9 @@ Kloprogge_2014_quinine <- function() {
       "half replacement dose given if vomiting occurred within 30 min /",
       "30-60 min of intake."
     ),
-    regions         = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
+    regions = "Uganda (Mbarara National Referral Hospital antenatal clinic)",
     trial_registration = "ClinicalTrials.gov NCT00495508",
-    notes           = paste(
+    notes = paste(
       "Demographics from Kloprogge 2014 Table 1. Twenty-three women were",
       "enrolled in the pharmacokinetic study; one was excluded from the",
       "population analysis due to an unexplainable mismatch between",

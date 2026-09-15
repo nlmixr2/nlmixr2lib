@@ -28,7 +28,7 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     sep = " "
   )
   vignette <- "VarelaGonzalezAller_2025_fludarabine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Dose amounts are F-ara-A equivalents in mg. Fludarabine is administered as
   # the monophosphate prodrug (F-ara-AMP) but the assay measures the
@@ -40,18 +40,18 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
   # therefore belongs in the event table, NOT in model(); passing an
   # unconverted F-ara-AMP amount would overstate exposure by 1/0.78 = 1.28x.
   compartmentData <- list(
-    central     = list(analyte = "F-ara-A", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "F-ara-A", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "F-ara-A", units = "mg", specimen = "serum", verified = TRUE),
     peripheral2 = list(analyte = "F-ara-A", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column WGT. Drives allometric scaling of all three clearance",
         "arms (exponent 3/4) and all three volumes (exponent 1) on a 70 kg",
         "reference, per the Table 2 footnote printed immediately above the",
@@ -69,14 +69,14 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
         "below). Cohort weight 79.6 +/- 12.9 kg, median 82.5, range 52-101",
         "(Table 1)."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance, Cockcroft-Gault (Spanish Society of Nephrology calculator)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance, Cockcroft-Gault (Spanish Society of Nephrology calculator)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CRCL. Methods 2.1.2: 'Creatinine clearance (CrCl) was",
         "estimated using the Cockcroft-Gault formula of the Spanish Society",
         "of Nephrology [19] at two time points (pre-lymphodepletion and prior",
@@ -97,18 +97,18 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
         "the internal protocol in Methods 2.1.1) -- those are dose changes in",
         "the event table, not covariate effects."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     CONMED_TISACEL = list(
-      description        = "Scheduled CAR T-cell product (1 = tisagenlecleucel, 0 = axicabtagene ciloleucel)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Scheduled CAR T-cell product (1 = tisagenlecleucel, 0 = axicabtagene ciloleucel)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (axicabtagene ciloleucel; the structural reference for the Table 2",
         "typical non-renal clearance of 4.4 L/h, corresponding to the paper's",
         "CART = 1 level)"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The paper codes this as CAR_T with two",
         "levels (Table 2 footnote: 'CART = 1, Axi-cel CAR-T construct;",
         "CART = 2, Tisa-cel CAR-T construct') and selects the non-renal",
@@ -134,21 +134,21 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
         "event table, not by this covariate. Cohort 38 axi-cel (68%) / 18",
         "tisa-cel (32%) (Table 1)."
       ),
-      source_name        = "CAR_T"
+      source_name = "CAR_T"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 56L,
-    n_studies      = 1L,
-    age_range      = "23 to 82 years",
-    age_median     = "59 years",
-    weight_range   = "52 to 101 kg",
-    weight_median  = "82.5 kg (mean 79.6 +/- 12.9)",
+    species = "human",
+    n_subjects = 56L,
+    n_studies = 1L,
+    age_range = "23 to 82 years",
+    age_median = "59 years",
+    weight_range = "52 to 101 kg",
+    weight_median = "82.5 kg (mean 79.6 +/- 12.9)",
     sex_female_pct = 100 * 23 / 56,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Relapsed/refractory large B-cell lymphoma (LBCL) after two or more",
       "lines of systemic therapy: diffuse large B-cell lymphoma 30 (54%),",
       "transformed from indolent lymphoma 20 (36%), high-grade B-cell",
@@ -170,7 +170,7 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
       "30-45 mL/min per the hospital's internal protocol); six patients",
       "required a reduction (two axi-cel, four tisa-cel)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Fludarabine phosphate as a 30-minute intravenous infusion on days -5,",
       "-4 and -3 before CAR T-cell infusion, combined with cyclophosphamide:",
       "30 mg/m^2 fludarabine + 500 mg/m^2 cyclophosphamide for axi-cel",
@@ -180,8 +180,8 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
       "administered F-ara-AMP dose multiplied by 0.78 (molecular-weight",
       "ratio, Methods 2.1.1)."
     ),
-    regions        = "Spain (single centre: Hospital Universitari Vall d'Hebron, Barcelona).",
-    notes          = paste(
+    regions = "Spain (single centre: Hospital Universitari Vall d'Hebron, Barcelona).",
+    notes = paste(
       "Prospective, observational, single-centre study conducted January 2021",
       "to July 2022. Sixty patients enrolled, 56 analysed (four excluded for",
       "not completing the fludarabine regimen per protocol). 38 (68%)",
@@ -212,9 +212,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested but not retained. Discussion: 'Subsequent inclusion of eGFR",
         "in the model eliminated any residual body size-independent effects",
         "of age.' Cohort median 59 years, range 23-82 (Table 1)."
@@ -222,9 +222,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected (Methods 2.1.2) and available to the stepwise covariate",
         "search but not retained in the final model. 33 male (59%) / 23",
         "female (Table 1). The paper reports no covariate-screening table, so",
@@ -233,9 +233,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Collected as an alternative body-size descriptor (Methods 2.1.2) and",
         "relevant because dosing is per m^2, but body size entered the final",
         "model through allometric weight scaling instead: Discussion 'In our",
@@ -245,9 +245,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Collected (Methods 2.1.2) and reported in Table 1 (25.2 +/- 3.5,",
         "median 25.3, range 18.0-36.2) but not retained; body size entered",
         "via allometric weight scaling."
@@ -255,9 +255,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Collected on days 1 and 3 of lymphodepletion and before CAR T-cell",
         "infusion (Methods 2.1.2) and reported in Table 1 (median 4, range",
         "2.7-4.8) but not retained in the final model."
@@ -265,9 +265,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Collected on days 1 and 3 of lymphodepletion and before CAR T-cell",
         "infusion (Methods 2.1.2). Enters the final model only indirectly, as",
         "the Cockcroft-Gault input to the retained CRCL covariate; it was not",
@@ -276,9 +276,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     LDH = list(
       description = "Serum lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Collected on days 1 and 3 of lymphodepletion and before CAR T-cell",
         "infusion (Methods 2.1.2) but not retained. Not reported numerically",
         "in Table 1."
@@ -286,9 +286,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Collected on days 1 and 3 of lymphodepletion and before CAR T-cell",
         "infusion (Methods 2.1.2) but not retained. Not reported numerically",
         "in Table 1."
@@ -296,9 +296,9 @@ VarelaGonzalezAller_2025_fludarabine <- function() {
     ),
     TX_HSCT = list(
       description = "Prior haematopoietic stem-cell transplantation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected with its date (Methods 2.1.2) and reported in Table 1 (21",
         "patients, 37%) but not retained in the final model."
       )

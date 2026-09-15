@@ -32,11 +32,11 @@ Klein_2026_alprazolam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales the central and peripheral volumes through a single freely estimated exponent",
         "(e_wt_vc_vp = 0.470; Table S3 'Allometric scaling Vc and Vp'). Weight was tested on CL",
         "and Q and NO relationship could be detected, so CL and Q are NOT weight-scaled (Methods",
@@ -45,14 +45,14 @@ Klein_2026_alprazolam <- function() {
         "section, where the assumption is corroborated against the observed adolescent terminal",
         "half-lives in Table 1."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CONMED_EIAED = list(
-      description        = "Concomitant strong hepatic enzyme-inducing antiseizure medication",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant strong hepatic enzyme-inducing antiseizure medication",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no inducer antiseizure medication)",
-      notes              = paste(
+      notes = paste(
         "Klein 2026 counts carbamazepine, phenobarbital, phenytoin and primidone as strong",
         "hepatic enzyme-inducing antiseizure medications (Methods section 2.2 and Introduction).",
         "15/99 subjects (15.2%) were on one at baseline, all in the adult ENGAGE-E-001 trial;",
@@ -61,7 +61,7 @@ Klein_2026_alprazolam <- function() {
         "clearance. Patients on strong CYP3A4 inducers were excluded from the adolescent trial",
         "UP0100 by protocol (Methods section 2.1.2)."
       ),
-      source_name        = "Inducer ASMs"
+      source_name = "Inducer ASMs"
     )
   )
 
@@ -75,21 +75,21 @@ Klein_2026_alprazolam <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis; not retained. Overall mean 1.66 m (SD 0.103), Table S1."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the covariate analysis; not retained. Overall mean 1.66 m (SD 0.103), Table S1."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the covariate analysis; not retained. 70/99 (70.7%) female, Table S1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the covariate analysis; not retained. 70/99 (70.7%) female, Table S1."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the covariate analysis; not retained. The Results report the fold change in",
         "alprazolam clearance across 95% of the observed age range as 1.40 (95% CI 0.944-2.09),",
         "i.e. not significantly different from 1. Overall mean age 32.2 years (SD 13.5), Table S1."
@@ -97,9 +97,9 @@ Klein_2026_alprazolam <- function() {
     ),
     CONMED_AED = list(
       description = "Concomitant antiseizure medication (any, other than the strong inducers)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the covariate analysis; not retained. Only the strong enzyme-inducing subset",
         "(CONMED_EIAED) survived. Chronic benzodiazepine use was screened as a separate covariate",
         "and likewise not retained (27/99, 27.3%, Table S1); it has no canonical covariate column",
@@ -108,39 +108,39 @@ Klein_2026_alprazolam <- function() {
     ),
     CRCL = list(
       description = "Body-surface-area-normalized creatinine clearance",
-      units       = "mL/min/1.73m2",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis; not retained. Overall mean 117 (SD 21.8), Table S1."
+      units = "mL/min/1.73m2",
+      type = "continuous",
+      notes = "Screened in the covariate analysis; not retained. Overall mean 117 (SD 21.8), Table S1."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the covariate analysis; not retained. Overall mean 17.8 IU/L (SD 11.9), Table S1."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the covariate analysis; not retained. Overall mean 17.8 IU/L (SD 11.9), Table S1."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "alprazolam", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "alprazolam", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "alprazolam", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "alprazolam", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "alprazolam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99,
-    n_studies      = 3,
-    age_range      = "12-17 years (adolescents, UP0100); adults in AMDC-002-202 and ENGAGE-E-001",
-    age_median     = "32.2 years (mean, SD 13.5) overall; 15.1 years (mean, SD 1.90) in the adolescent trial",
-    weight_range   = "33.5-81.2 kg in the adolescent trial UP0100; overall mean 75.5 kg (SD 22.5)",
-    weight_median  = "75.5 kg (mean) overall; 54.4 kg (mean) in the adolescent trial",
+    species = "human",
+    n_subjects = 99,
+    n_studies = 3,
+    age_range = "12-17 years (adolescents, UP0100); adults in AMDC-002-202 and ENGAGE-E-001",
+    age_median = "32.2 years (mean, SD 13.5) overall; 15.1 years (mean, SD 1.90) in the adolescent trial",
+    weight_range = "33.5-81.2 kg in the adolescent trial UP0100; overall mean 75.5 kg (SD 22.5)",
+    weight_median = "75.5 kg (mean) overall; 54.4 kg (mean) in the adolescent trial",
     sex_female_pct = 70.7,
     race_ethnicity = c(White = 78.6, `Pacific Islander` = 7.1, `Other/mixed` = 14.3),
-    disease_state  = "focal, generalized, or focal and generalized epilepsy; photosensitive epilepsy in AMDC-002-202",
-    dose_range     = "single inhaled dose of Staccato alprazolam 0.5, 1 or 2 mg",
-    regions        = "United States (UP0100); regions not reported for AMDC-002-202 or ENGAGE-E-001",
-    co_medication  = "15/99 (15.2%) on a strong enzyme-inducing antiseizure medication; 27/99 (27.3%) chronic benzodiazepine users",
-    notes          = paste(
+    disease_state = "focal, generalized, or focal and generalized epilepsy; photosensitive epilepsy in AMDC-002-202",
+    dose_range = "single inhaled dose of Staccato alprazolam 0.5, 1 or 2 mg",
+    regions = "United States (UP0100); regions not reported for AMDC-002-202 or ENGAGE-E-001",
+    co_medication = "15/99 (15.2%) on a strong enzyme-inducing antiseizure medication; 27/99 (27.3%) chronic benzodiazepine users",
+    notes = paste(
       "Pooled analysis dataset of three trials (Table S1): UP0100 (Phase 1, adolescents,",
       "N = 14, NCT04857307), AMDC-002-202 (Phase 2a, adults with photosensitive epilepsy,",
       "N = 5, NCT02351115) and ENGAGE-E-001 (Phase 2b, adults with epilepsy, N = 80,",

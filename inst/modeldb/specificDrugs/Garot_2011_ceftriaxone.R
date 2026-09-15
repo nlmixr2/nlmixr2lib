@@ -8,38 +8,38 @@ Garot_2011_ceftriaxone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Measured creatinine clearance (24-hour urine collection, raw mL/min; NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Measured creatinine clearance (24-hour urine collection, raw mL/min; NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLcr. Measured by 24-hour urine collection (not BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre_2010_amikacin.R). The paper's Table 3 final-model equation centres the covariate on the population median CLcr expressed in L/h: CL = theta1 + theta2 * (CLcr / 4.26), with CLcr in L/h. 4.26 L/h is equivalent to 71 mL/min (4.26 * 1000 / 60). The model below carries CRCL in mL/min and divides by 71 mL/min to match the paper's normalization. The text reports a population median CLcr of 68.5 mL/min (range 5.5-214 mL/min), slightly different from the 71 mL/min normalization constant; the discrepancy is preserved as published rather than re-centred. Haemofiltration (n=12) was tested and had no effect on PK parameters, so HF status is not carried as a covariate.",
-      source_name        = "CLcr"
+      notes = "Source column CLcr. Measured by 24-hour urine collection (not BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent: Delattre_2010_amikacin.R). The paper's Table 3 final-model equation centres the covariate on the population median CLcr expressed in L/h: CL = theta1 + theta2 * (CLcr / 4.26), with CLcr in L/h. 4.26 L/h is equivalent to 71 mL/min (4.26 * 1000 / 60). The model below carries CRCL in mL/min and divides by 71 mL/min to match the paper's normalization. The text reports a population median CLcr of 68.5 mL/min (range 5.5-214 mL/min), slightly different from the 71 mL/min normalization constant; the discrepancy is preserved as published rather than re-centred. Haemofiltration (n=12) was tested and had no effect on PK parameters, so HF status is not carried as a covariate.",
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 1L,
-    age_range      = "35-86 years",
-    age_median     = "68 years (mean)",
-    weight_range   = "Not reported in the paper",
-    weight_median  = "Not reported in the paper",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 1L,
+    age_range = "35-86 years",
+    age_median = "68 years (mean)",
+    weight_range = "Not reported in the paper",
+    weight_median = "Not reported in the paper",
     sex_female_pct = 28,
     race_ethnicity = "Not reported (single French university-hospital ICU population)",
-    disease_state  = "Sepsis (n=19), severe sepsis (n=9), or septic shock (n=26); 40 mechanically ventilated; 12 on haemofiltration",
-    dose_range     = "1 g or 2 g ceftriaxone IV infusion over 20 minutes, typically once daily (median daily dose 2 g)",
-    regions        = "France (single-centre: CHRU de Tours)",
-    saps_ii        = "mean 50 (range 9-87)",
+    disease_state = "Sepsis (n=19), severe sepsis (n=9), or septic shock (n=26); 40 mechanically ventilated; 12 on haemofiltration",
+    dose_range = "1 g or 2 g ceftriaxone IV infusion over 20 minutes, typically once daily (median daily dose 2 g)",
+    regions = "France (single-centre: CHRU de Tours)",
+    saps_ii = "mean 50 (range 9-87)",
     renal_function = "Measured creatinine clearance (24-h urine collection) median 68.5 mL/min (range 5.5-214); 12 patients on haemofiltration",
-    sepsis_origin  = "Lung 33, urinary 10, intra-abdominal 6, skin/soft-tissue 2, CNS 1, ENT 1, undetermined 1",
-    notes          = "Baseline demographics per Garot 2011 Table 1. Single-centre prospective study (July 2006 - March 2008) at CHRU Tours, France (NCT00449800). PK sampling on two occasions (PK1 day 2; PK2 day 5 or 48 h after catecholamine withdrawal for septic shock). 20 patients had full sampling (10 samples per occasion); 34 patients had sparse sampling (6 samples per occasion). 709 total ceftriaxone concentrations contributed to model building. The model did not support interoccasion variability."
+    sepsis_origin = "Lung 33, urinary 10, intra-abdominal 6, skin/soft-tissue 2, CNS 1, ENT 1, undetermined 1",
+    notes = "Baseline demographics per Garot 2011 Table 1. Single-centre prospective study (July 2006 - March 2008) at CHRU Tours, France (NCT00449800). PK sampling on two occasions (PK1 day 2; PK2 day 5 or 48 h after catecholamine withdrawal for septic shock). 20 patients had full sampling (10 samples per occasion); 34 patients had sparse sampling (6 samples per occasion). 709 total ceftriaxone concentrations contributed to model building. The model did not support interoccasion variability."
   )
 
   ini({

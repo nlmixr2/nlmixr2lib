@@ -36,8 +36,8 @@ vanErp_2010_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cyp3a4  = list(analyte = "CYP3A4 activity", units = "mg", specimen = "administration site", verified = FALSE),
-    depot   = list(analyte = "Sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    cyp3a4 = list(analyte = "CYP3A4 activity", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "Sunitinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -46,14 +46,14 @@ vanErp_2010_sunitinib <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8L,
+    species = "human",
+    n_subjects = 8L,
     n_observations = 268L,
-    n_studies      = 1L,
-    age_range      = "41-78 years (median 54)",
+    n_studies = 1L,
+    age_range = "41-78 years (median 54)",
     sex_female_pct = 12.5,
     race_ethnicity = NULL,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Adult patients with advanced solid tumours for which sunitinib is ",
       "registered first-line (metastatic renal cell carcinoma) or second-",
       "line (gastrointestinal stromal tumour), or who had exhausted other ",
@@ -61,15 +61,15 @@ vanErp_2010_sunitinib <- function() {
       "marrow, renal and hepatic function (creatinine clearance >= 60 ",
       "mL/min, bilirubin <= 1.75x ULN)."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Oral sunitinib 25, 37.5 or 50 mg once daily in a 4-weeks-on / ",
       "2-weeks-off cycle. PK sampling occurred at steady state (day 14-20 ",
       "without GJ; day 28 with GJ). On days 25-27, patients took 200 mL ",
       "grapefruit juice three times a day; sunitinib was co-administered ",
       "with the morning GJ on day 28."
     ),
-    regions        = "Netherlands (Leiden University Medical Center).",
-    notes          = paste0(
+    regions = "Netherlands (Leiden University Medical Center).",
+    notes = paste0(
       "Cohort and dosing details from van Erp 2011 Table 1 and Methods. ",
       "Baseline serum creatinine median 77 uM (range 56-122); total ",
       "bilirubin median 9 uM (range 6-15); ALT median 39 U/L (range ",

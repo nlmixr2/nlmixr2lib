@@ -10,23 +10,23 @@ Cao_2013_mab8C2 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "8C2", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "8C2", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "8C2", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "Mouse (Mus musculus); preclinical PK study (Cao 2013 mPBPK fit; underlying data Abuqayyas 2012).",
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    weight_range   = "20 g body weight (Cao 2013 Table 1 footnote 'Assumed 20 g body weight')",
-    disease_state  = "Healthy mice (wild-type and FcgammaR knock-out cohorts in source data); preclinical PK characterisation of 8C2, a murine IgG1 anti-topotecan mAb used as a non-binding carrier antibody.",
-    dose_range     = "0.04, 0.1, 0.4, 8 mg/kg single IV (Cao 2013 Figure 3)",
-    regions        = "Preclinical (academic study, University at Buffalo)",
-    scope_note     = "Preclinical-only mPBPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
-    notes          = "Cao 2013 Table 1, Model A. Parameters fit by Cao et al. to plasma concentration profiles from Abuqayyas L & Balthasar JP. Int J Pharm 2012;439:8-16 (PMID 23018115). The function name is mab8C2 because R identifiers cannot start with a digit; the antibody is referred to as 8C2 in the source publications. The 8C2 plasma data in Cao 2013 Figure 3 are reported in nM (molar units) rather than mg/L; this model returns Cc in mg/L (dose in mg, volume in L). Conversion: nM = (mg/L) / MW(mAb) * 1e6 with MW(mAb) ~ 1.5e5 g/mol."
+    species = "Mouse (Mus musculus); preclinical PK study (Cao 2013 mPBPK fit; underlying data Abuqayyas 2012).",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    weight_range = "20 g body weight (Cao 2013 Table 1 footnote 'Assumed 20 g body weight')",
+    disease_state = "Healthy mice (wild-type and FcgammaR knock-out cohorts in source data); preclinical PK characterisation of 8C2, a murine IgG1 anti-topotecan mAb used as a non-binding carrier antibody.",
+    dose_range = "0.04, 0.1, 0.4, 8 mg/kg single IV (Cao 2013 Figure 3)",
+    regions = "Preclinical (academic study, University at Buffalo)",
+    scope_note = "Preclinical-only mPBPK fit. Filed under inst/modeldb/pharmacokinetics/ rather than specificDrugs/ because nlmixr2lib's specificDrugs tier is reserved for human drugs.",
+    notes = "Cao 2013 Table 1, Model A. Parameters fit by Cao et al. to plasma concentration profiles from Abuqayyas L & Balthasar JP. Int J Pharm 2012;439:8-16 (PMID 23018115). The function name is mab8C2 because R identifiers cannot start with a digit; the antibody is referred to as 8C2 in the source publications. The 8C2 plasma data in Cao 2013 Figure 3 are reported in nM (molar units) rather than mg/L; this model returns Cc in mg/L (dose in mg, volume in L). Conversion: nM = (mg/L) / MW(mAb) * 1e6 with MW(mAb) ~ 1.5e5 g/mol."
   )
 
   ini({

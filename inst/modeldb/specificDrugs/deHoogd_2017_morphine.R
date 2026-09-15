@@ -37,27 +37,27 @@ deHoogd_2017_morphine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2  = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
     transit1_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
     transit2_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
     transit3_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
     transit4_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
     transit5_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
-    central_m3g  = list(analyte = "M3G", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m3g = list(analyte = "M3G", units = "mg", specimen = "plasma", verified = FALSE),
     transit1_m6g = list(analyte = "M6G", units = "mg", specimen = "administration site", verified = FALSE),
     transit2_m6g = list(analyte = "M6G", units = "mg", specimen = "administration site", verified = FALSE),
-    central_m6g  = list(analyte = "M6G", units = "mg", specimen = "plasma", verified = FALSE)
+    central_m6g = list(analyte = "M6G", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed total body weight (TBW). Power-form covariate on M6G",
         "formation clearance (CLF M6G, exponent -0.329), morphine peripheral",
         "volume V5M (exponent 0.483), M3G transit rate Ktr (exponent -0.701),",
@@ -66,14 +66,14 @@ deHoogd_2017_morphine <- function() {
         "TBW of 98.5 kg (population median across pooled cohort). The paper",
         "reports no significant TBW effect on morphine clearance itself."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     DIS_OBESE_MORBID = list(
-      description        = "Morbidly obese cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Morbidly obese cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = paste(
+      notes = paste(
         "1 = morbidly obese surgical patient (post gastric bypass / banding /",
         "sleeve; BMI > 40 kg/m^2), 0 = non-obese healthy volunteer. Selects",
         "the cohort-specific proportional residual error for each of the",
@@ -81,35 +81,35 @@ deHoogd_2017_morphine <- function() {
         "separate residual variabilities for the healthy-volunteer and",
         "morbidly obese cohorts (Table 2, residual variability rows)."
       ),
-      source_name        = "morbid obesity indicator (paper Table 2 cohort split)"
+      source_name = "morbid obesity indicator (paper Table 2 cohort split)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40,
-    n_studies      = 3,
-    age_range      = "20-59 years",
-    age_median     = "morbidly obese 44.1 +/- 10.6 years; healthy volunteers 25.5 +/- 4.1 years",
-    weight_range   = "56-251.9 kg",
-    weight_median  = "98.5 kg (population median across pooled cohort)",
+    species = "human",
+    n_subjects = 40,
+    n_studies = 3,
+    age_range = "20-59 years",
+    age_median = "morbidly obese 44.1 +/- 10.6 years; healthy volunteers 25.5 +/- 4.1 years",
+    weight_range = "56-251.9 kg",
+    weight_median = "98.5 kg (population median across pooled cohort)",
     sex_female_pct = 52.5,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort of 20 morbidly obese adults (BMI 37.9-78.6 kg/m^2,",
       "weight 112-251.9 kg) undergoing laparoscopic gastric bypass / banding /",
       "sleeve surgery, plus 20 historical-control healthy adult volunteers",
       "(weight 56-85 kg) from two prior morphine PK studies. All subjects",
       "had normal renal and liver function. ASA II/III."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Morbidly obese: 10 mg IV bolus of morphine HCl at end of surgery",
       "(additional postoperative boluses as needed; mean total 15.7 mg).",
       "Healthy volunteers: 0.10 mg/kg IV bolus followed by 0.030 mg/kg/h",
       "infusion for 1 h (mean total 9.2 mg)."
     ),
-    regions        = "The Netherlands (St Antonius Hospital + Leiden University Medical Center)",
-    notes          = paste(
+    regions = "The Netherlands (St Antonius Hospital + Leiden University Medical Center)",
+    notes = paste(
       "Demographics from de Hoogd 2017 Table 1. NONMEM 7.2 with FOCE-INTER;",
       "modeled concentrations expressed in nmol/L using morphine MW 285.33",
       "g/mol and M3G/M6G MW 461.46 g/mol; administered dose corrected from",

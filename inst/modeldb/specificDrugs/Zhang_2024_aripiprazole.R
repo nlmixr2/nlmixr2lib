@@ -18,11 +18,11 @@ Zhang_2024_aripiprazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only continuous covariate retained in the final model, and it enters both CL/F",
         "and V/F. Zhang 2024 Methods 2.2 Eq. (3) applies allometric scaling",
         "W_i = W_std * (X_i / X_std)^R with X_std = 70 kg and R = 0.75 for CL/F and 1 for V/F,",
@@ -34,14 +34,14 @@ Zhang_2024_aripiprazole <- function() {
         "simulations of Figures 4 and 5 span 40-120 kg, slightly beyond the observed range.",
         sep = " "
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     CONMED_FLUOXETINE = list(
-      description        = "Concomitant fluoxetine, 1 = receiving fluoxetine",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant fluoxetine, 1 = receiving fluoxetine",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant fluoxetine)",
-      notes              = paste(
+      notes = paste(
         "The only concomitant medication retained in the final model. Zhang 2024 Results 3.2:",
         "of the 33 concomitant drugs screened in Table 2, only fluoxetine changed the objective",
         "function value enough to survive forward inclusion (OFV drop > 6.63) and backward",
@@ -61,28 +61,28 @@ Zhang_2024_aripiprazole <- function() {
         "roughly 550 ng/mL with, p < 0.01).",
         sep = " "
       ),
-      source_name        = "FLU"
+      source_name = "FLU"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 119L,
-    n_studies      = 1L,
-    age_range      = "19.00-69.38 years",
-    age_median     = "46.84 years",
-    weight_range   = "41.00-115.00 kg",
-    weight_median  = "67.00 kg",
+    species = "human",
+    n_subjects = 119L,
+    n_studies = 1L,
+    age_range = "19.00-69.38 years",
+    age_median = "46.84 years",
+    weight_range = "41.00-115.00 kg",
+    weight_median = "67.00 kg",
     sex_female_pct = 52.1,
-    disease_state  = "schizophrenia",
-    dose_range     = "not reported; routine clinical aripiprazole dosing, oral tablet (95 patients), orally disintegrating tablet (35) or oral solution (1), 12 patients used two dosage forms",
-    regions        = "China (Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
-    notes          = paste(
+    disease_state = "schizophrenia",
+    dose_range = "not reported; routine clinical aripiprazole dosing, oral tablet (95 patients), orally disintegrating tablet (35) or oral solution (1), 12 patients used two dosage forms",
+    regions = "China (Xuzhou Oriental Hospital Affiliated to Xuzhou Medical University, Jiangsu)",
+    notes = paste(
       "Retrospective analysis of the hospital therapeutic-drug-monitoring database, July 2020",
       "to June 2022 (Methods 2.1). 57 men and 62 women. Demographic and laboratory data are",
       "Table 1 and the 33 screened concomitant medications are Table 2. Samples were sparse",
@@ -98,11 +98,11 @@ Zhang_2024_aripiprazole <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Sex, 1 = female",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Collected (Methods 2.1, Table 1: 57 men / 62 women) and screened, but not retained:",
         "Results 3.2 states that apart from weight and fluoxetine, 'the aripiprazole dosage",
         "form, or the physiological and biochemical indices, or other concomitant medications",
@@ -111,66 +111,66 @@ Zhang_2024_aripiprazole <- function() {
       )
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort age 44.29 +/- 13.03 years,",
         "median 46.84, range 19.00-69.38 years (Table 1). No point estimate is reported.",
         sep = " "
       )
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort albumin 41.96 +/- 2.83 g/L,",
         "median 41.75, range 33.70-50.40 g/L (Table 1). No point estimate is reported.",
         sep = " "
       )
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort creatinine 64.41 +/- 14.15 umol/L,",
         "median 62.00, range 4.03-112.00 umol/L (Table 1). No point estimate is reported.",
         sep = " "
       )
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort ALT 26.16 +/- 19.36 IU/L,",
         "median 19.00, range 7.00-141.00 IU/L (Table 1). No point estimate is reported.",
         sep = " "
       )
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort AST 22.71 +/- 10.79 IU/L,",
         "median 20.00, range 10.00-96.00 IU/L (Table 1). No point estimate is reported.",
         sep = " "
       )
     ),
     TBIL = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort total bilirubin 10.58 +/- 4.89",
         "umol/L, median 9.50, range 3.50-34.10 umol/L; direct bilirubin was screened",
         "alongside it (3.79 +/- 1.79 umol/L, Table 1). No point estimate is reported.",
@@ -178,11 +178,11 @@ Zhang_2024_aripiprazole <- function() {
       )
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and not retained (Results 3.2). Cohort hematocrit 39.50 +/- 4.83%,",
         "median 39.05, range 29.90-53.10% (Table 1). Hemoglobin, mean corpuscular",
         "hemoglobin and mean corpuscular hemoglobin concentration were screened alongside",
@@ -191,11 +191,11 @@ Zhang_2024_aripiprazole <- function() {
       )
     ),
     CONMED_CLOZAPINE = list(
-      description        = "Concomitant clozapine, 1 = receiving clozapine",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clozapine, 1 = receiving clozapine",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clozapine)",
-      notes              = paste(
+      notes = paste(
         "The most frequent concomitant antipsychotic in the cohort (Table 2: 42/119 on",
         "clozapine tablets plus 9/119 on clozapine dispersible tablets) and the largest",
         "exposed subgroup of any screened comedication, yet it did not survive the stepwise",

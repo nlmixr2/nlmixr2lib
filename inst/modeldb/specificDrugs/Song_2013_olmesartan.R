@@ -26,18 +26,18 @@ Song_2013_olmesartan <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "olmesartan", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "olmesartan", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "olmesartan", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "olmesartan", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "olmesartan", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated by the Cockcroft-Gault method.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance calculated by the Cockcroft-Gault method.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT BSA-normalized. Song 2013 states the method",
         "explicitly in the sentence following Equation 10 ('CLCR represent ... creatinine clearance calculated by",
         "Cockroft and Gault method'). Time-fixed per subject. Enters apparent clearance in power form",
@@ -46,14 +46,14 @@ Song_2013_olmesartan <- function() {
         "N-weighted MEAN CLCR of that dataset computed from Supplemental Table S1 is 115 mL/min, so 111 is",
         "consistent with a median of a right-skewed distribution."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters both apparent volumes in power form, (WT / 91.5)^0.681 on Vc/F and",
         "(WT / 91.5)^0.405 on Vp/F (Song 2013 Supplemental Table S3 rows 'Vc,WTKG' and 'Vp,WTKG', with the",
         "median-normalized power form specified by main-text Equation 6). IMPORTANT: unlike the creatinine-",
@@ -66,25 +66,25 @@ Song_2013_olmesartan <- function() {
         "profile only -- it does not touch CL/F and therefore does not touch the AUCss that drives the companion",
         "exposure-response models."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1927L,
-    n_studies      = 12L,
-    age_range      = "phase I mean 30.9 (SD 7.9) years; phase III mean 55.4 (SD 11) years",
-    weight_range   = "phase I mean 77 (SD 13) kg; phase III mean 95.2 (SD 22) kg",
+    species = "human",
+    n_subjects = 1927L,
+    n_studies = 12L,
+    age_range = "phase I mean 30.9 (SD 7.9) years; phase III mean 55.4 (SD 11) years",
+    weight_range = "phase I mean 77 (SD 13) kg; phase III mean 95.2 (SD 22) kg",
     sex_female_pct = 37.0,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers (phase I clinical pharmacology studies) plus adults with hypertension",
       "(phase III sparse-sampling subsets of CS8663-A-U301 (COACH) and CS8635-A-U301 (TRINITY))"
     ),
-    dose_range     = "olmesartan medoxomil 20-40 mg once daily",
-    regions        = "United States and Europe",
-    notes          = paste(
+    dose_range = "olmesartan medoxomil 20-40 mg once daily",
+    regions = "United States and Europe",
+    notes = paste(
       "The olmesartan population PK dataset is the union of the CS-8663 and CS-8635 program studies listed in",
       "Song 2013 Supplemental Table S1 (phase I: CS8663-A-U101/U110/U111/U112 and CS8635-A-U101/U102/U103/U104/",
       "A-E105/U106, n = 415; phase III PK subsets: CS8663-A-U301 n = 556 and CS8635-A-U301 n = 956), giving",

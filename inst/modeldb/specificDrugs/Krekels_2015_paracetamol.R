@@ -46,21 +46,21 @@ Krekels_2015_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
     central_gluc = list(analyte = "paracetamol glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
     central_sulf = list(analyte = "paracetamol sulphate", units = "mg", specimen = "plasma", verified = FALSE),
-    urine        = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
-    urine_gluc   = list(analyte = "paracetamol glucuronide", units = "mg", specimen = "urine", verified = FALSE),
-    urine_sulf   = list(analyte = "paracetamol sulphate", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
+    urine_gluc = list(analyte = "paracetamol glucuronide", units = "mg", specimen = "urine", verified = FALSE),
+    urine_sulf = list(analyte = "paracetamol sulphate", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at start of study",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at start of study",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at study start in Krekels 2015 (median bodyweight",
         "2.5 kg, range 0.5-6.3 kg). The per-kg parameterization in Table 1",
         "implies a reference weight of 1 kg, with linear scaling Vc_i =",
@@ -71,21 +71,21 @@ Krekels_2015_paracetamol <- function() {
         "original NONMEM dataset; same orientation, no value",
         "transformation."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 54L,
-    n_studies      = 2L,
-    age_range      = "PNA 1-140 days; PMA 27-60 weeks",
-    age_median     = "PNA 1 day; PMA 36 weeks",
-    weight_range   = "0.5-6.3 kg",
-    weight_median  = "2.5 kg",
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 2L,
+    age_range = "PNA 1-140 days; PMA 27-60 weeks",
+    age_median = "PNA 1 day; PMA 36 weeks",
+    weight_range = "0.5-6.3 kg",
+    weight_median = "2.5 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Preterm and term neonates and young infants admitted to the",
       "neonatal intensive care unit (NICU). Paracetamol was administered",
       "as the water-soluble prodrug propacetamol for minor painful",
@@ -93,7 +93,7 @@ Krekels_2015_paracetamol <- function() {
       "treatment. Urine collections were available for 22 of the 54",
       "subjects."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single-dose study: 20 or 40 mg/kg propacetamol (paracetamol",
       "equivalent 10 or 20 mg/kg) on the first day of postnatal life,",
       "as a 15-minute IV infusion. Repeated-dose study: 30 mg/kg",
@@ -102,8 +102,8 @@ Krekels_2015_paracetamol <- function() {
       "(paracetamol equivalent 10 mg/kg) at PMA-dependent intervals of",
       "q6h to q12h."
     ),
-    regions        = "Belgium (Leuven), Netherlands (Rotterdam)",
-    notes          = paste(
+    regions = "Belgium (Leuven), Netherlands (Rotterdam)",
+    notes = paste(
       "Two studies pooled: a single-dose study (plasma sampling up to",
       "10 h post-dose) and a repeated-dose study with urine collection.",
       "353 paracetamol plasma concentrations and 435 urine observations",

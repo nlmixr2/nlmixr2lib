@@ -46,7 +46,7 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
     sep = " "
   )
   vignette <- "Vollmer_2023_cefepime_enmetazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Inter-individual variability is stratified by infection status, so the
   # canonical etalcl / etalvc slots consumed by the individual-parameter
@@ -57,29 +57,34 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
   # no healthy-stratum eta (FDA Table 101 prints "-" for both the estimate
   # and its RSE), so only three of the four multiplexed slots have two arms.
   paper_specific_etas <- c(
-    "etalcl_inf", "etalcl_hlth", "etalvc_inf",
-    "etalcl_enm_inf", "etalcl_enm_hlth", "etalvc_enm_inf", "etalvc_enm_hlth"
+    "etalcl_inf",
+    "etalcl_hlth",
+    "etalvc_inf",
+    "etalcl_enm_inf",
+    "etalcl_enm_hlth",
+    "etalvc_enm_inf",
+    "etalvc_enm_hlth"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Doses are in mg and volumes in L, so concentrations
   # are mg/L (= ug/mL, the unit the FDA label reports).
   compartmentData <- list(
-    central         = list(analyte = "cefepime",        units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1     = list(analyte = "cefepime",        units = "mg", specimen = "plasma", verified = TRUE),
-    central_enm     = list(analyte = "enmetazobactam",  units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_enm = list(analyte = "enmetazobactam",  units = "mg", specimen = "plasma", verified = TRUE)
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
+    central_enm = list(analyte = "enmetazobactam", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_enm = list(analyte = "enmetazobactam", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   dosing <- c("central", "central_enm")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on the CENTRAL volume of distribution of both",
         "drugs, normalised to the 70 kg reference individual named in EMA",
         "EPAR EMA/63929/2024 page 46. Exponents 0.802 (cefepime) and 0.618",
@@ -97,14 +102,14 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
         "subject; analysis-set mean 76.52 kg, range 45-135 kg (FDA Table",
         "100)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate on the CENTRAL volume of distribution of both",
         "drugs, normalised to the 50-year reference individual (EMA EPAR",
         "EMA/63929/2024 page 46: 'an age of 50 years'). Exponents 0.176",
@@ -115,18 +120,18 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
         "requires no dose adjustment (FDA Table 98). Time-fixed per subject;",
         "analysis-set mean 51.62 years, range 17-94 years (FDA Table 100)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "DE-INDEXED (absolute) estimated glomerular filtration rate in",
         "mL/min - i.e. the MDRD eGFR multiplied back up by BSA/1.73, NOT the",
         "BSA-normalised mL/min/1.73 m^2 form"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW, NON-BSA-NORMALISED renal function, in mL/min. This is the",
         "un-normalised member of the CRCL family (same normalisation as",
         "Delattre_2010_amikacin and Chen_2023_nemonoxacin); supplying a",
@@ -149,14 +154,14 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
         "subject in the source analysis; analysis-set mean 87.98 mL/min,",
         "range 5.21-195.84 mL/min (FDA Table 100)."
       ),
-      source_name        = "de-indexed eGFR"
+      source_name = "de-indexed eGFR"
     ),
     SEXF = list(
-      description        = "Sex, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) - the published reference individual is FEMALE, so the enmetazobactam V2 estimate of 5.28 L is the female value and males carry the multiplicative shift",
-      notes              = paste(
+      notes = paste(
         "Enmetazobactam PERIPHERAL volume only, as exp(0.198) = 1.219 in",
         "males (FDA Table 101 row 'Gender on ENM V2', parameter",
         "beta_ENM,V2_GENDER_Male = 0.198). Because the coefficient is",
@@ -170,14 +175,14 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
         "PK and thus, was not used in defining a reference individual').",
         "Analysis set 310 female (47%) / 353 male (53%) (FDA Table 100)."
       ),
-      source_name        = "GENDER"
+      source_name = "GENDER"
     ),
     DIS_CUTI = list(
-      description        = "Infected patient indicator, 1 = complicated urinary tract infection or acute pyelonephritis, 0 = healthy volunteer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Infected patient indicator, 1 = complicated urinary tract infection or acute pyelonephritis, 0 = healthy volunteer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy Phase 1 volunteer)",
-      notes              = paste(
+      notes = paste(
         "SINGLE POOLED infection indicator: the source analysis carries one",
         "coefficient for the whole infected cohort rather than separate cUTI",
         "and acute-pyelonephritis levels, so per the DIS_CUTI register entry",
@@ -203,7 +208,7 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
         "in cUTI patients although differences in mean ENM or FEP exposures",
         "between healthy subjects and cUTI patients were negligible'."
       ),
-      source_name        = "INFECTION_cUTI"
+      source_name = "INFECTION_cUTI"
     )
   )
 
@@ -216,33 +221,33 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Formally evaluated, not retained. Analysis-set mean 1.89 m^2, range 1.37-2.63 (FDA Table 100)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Formally evaluated, not retained. Analysis-set mean 1.89 m^2, range 1.37-2.63 (FDA Table 100)."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Formally evaluated, not retained. Analysis-set mean 26.54 kg/m^2, range 16.9-45.9 (FDA Table 100)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Formally evaluated, not retained. Analysis-set mean 26.54 kg/m^2, range 16.9-45.9 (FDA Table 100)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Formally evaluated, not retained. EMA Table 5 explicitly prints '-' for 'Albumin level on V2' of cefepime. Analysis-set mean 40.38 g/L, range 21-51 (FDA Table 100)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Formally evaluated, not retained. EMA Table 5 explicitly prints '-' for 'Albumin level on V2' of cefepime. Analysis-set mean 40.38 g/L, range 21-51 (FDA Table 100)."
     ),
     BILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Formally evaluated, not retained. Analysis-set mean 11.03 umol/L, range 3-51.5 (FDA Table 100)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Formally evaluated, not retained. Analysis-set mean 11.03 umol/L, range 3-51.5 (FDA Table 100)."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race COULD NOT BE TESTED rather than merely being rejected: FDA",
         "Table 98 records that 'Race could not be tested as a predictor of",
         "IIV in the population PK analyses because 97% of the population was",
@@ -253,19 +258,19 @@ Vollmer_2023_cefepime_enmetazobactam <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = "663 in the analysis set; 588 contributed 5,070 cefepime plasma observations and 649 contributed 6,342 enmetazobactam plasma observations",
-    n_studies      = 5,
-    studies        = "AT-101, AT-102 and AT-103 (Phase 1, n = 83 / 30 / 19), AT-201 (Phase 2, n = 43) and AT-301 / ALLIUM (Phase 3, n = 488)",
-    age_range      = "17-94 years (mean 51.62)",
-    weight_range   = "45-135 kg (mean 76.52)",
+    species = "human",
+    n_subjects = "663 in the analysis set; 588 contributed 5,070 cefepime plasma observations and 649 contributed 6,342 enmetazobactam plasma observations",
+    n_studies = 5,
+    studies = "AT-101, AT-102 and AT-103 (Phase 1, n = 83 / 30 / 19), AT-201 (Phase 2, n = 43) and AT-301 / ALLIUM (Phase 3, n = 488)",
+    age_range = "17-94 years (mean 51.62)",
+    weight_range = "45-135 kg (mean 76.52)",
     sex_female_pct = 47,
     race_ethnicity = "97% White (641/663); 4 Asian, 3 American Indian or Alaska Native, 1 Black or African American, 14 other",
-    disease_state  = "complicated urinary tract infection or acute pyelonephritis (531/663, 80%) and healthy volunteers (132/663, 20%)",
+    disease_state = "complicated urinary tract infection or acute pyelonephritis (531/663, 80%) and healthy volunteers (132/663, 20%)",
     renal_function = "de-indexed eGFR mean 87.98 mL/min, range 5.21-195.84 mL/min; BSA-indexed eGFR mean 81.03 mL/min/1.73 m^2, range 4.4-166",
-    dose_range     = "cefepime 1-2 g with enmetazobactam 0.25-1 g as 2-hour or 4-hour intravenous infusions, q8h to q24h depending on renal function; the approved adult regimen is 2 g cefepime / 0.5 g enmetazobactam q8h over 2 hours",
-    route          = "intravenous infusion",
-    notes          = paste(
+    dose_range = "cefepime 1-2 g with enmetazobactam 0.25-1 g as 2-hour or 4-hour intravenous infusions, q8h to q24h depending on renal function; the approved adult regimen is 2 g cefepime / 0.5 g enmetazobactam q8h over 2 hours",
+    route = "intravenous infusion",
+    notes = paste(
       "Cefepime and enmetazobactam are co-formulated in a fixed 4:1 mass",
       "ratio and were fitted SIMULTANEOUSLY, which is what makes the",
       "cross-drug random-effect correlations estimable; the abstract",

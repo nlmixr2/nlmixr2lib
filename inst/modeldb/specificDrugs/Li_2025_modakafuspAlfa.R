@@ -18,45 +18,55 @@ Li_2025_modakafuspAlfa <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, time-varying. Enters the typical value of the central volume as a power function centred on 80.8 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-varying. Enters the typical value of the central volume as a power function centred on 80.8 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Li 2025 Methods used the CURRENT body weight at the start of each treatment cycle rather than the baseline weight, because weight-based doses were re-calculated each cycle; over the study individual weight changed by -14.1 kg (-14.3%) to +16.0 kg (+21.7%). The reference weight of 80.8 kg comes from a prior interim analysis, not from the final analysis population (whose mean weight was 79.9 kg). Body weight was tested on CL, Vc, Q, Vp and Vmax with both estimated and theoretically fixed exponents (0.75 for clearances, 1 for volumes) and was statistically significant only on Vc.",
-      source_name        = "WTKG"
+      notes = "Li 2025 Methods used the CURRENT body weight at the start of each treatment cycle rather than the baseline weight, because weight-based doses were re-calculated each cycle; over the study individual weight changed by -14.1 kg (-14.3%) to +16.0 kg (+21.7%). The reference weight of 80.8 kg comes from a prior interim analysis, not from the final analysis population (whose mean weight was 79.9 kg). Body weight was tested on CL, Vc, Q, Vp and Vmax with both estimated and theoretically fixed exponents (0.75 for clearances, 1 for volumes) and was statistically significant only on Vc.",
+      source_name = "WTKG"
     ),
     ADA_TITER = list(
-      description        = "Anti-drug-antibody titer carried on the log3 scale and rounded to the nearest integer, time-varying. Drives both the total ADA target pool and the drug-ADA dissociation rate constant.",
-      units              = "log3(reciprocal dilution), rounded to the nearest integer (a value of 4 is a reciprocal titer of 81)",
-      type               = "continuous",
+      description = "Anti-drug-antibody titer carried on the log3 scale and rounded to the nearest integer, time-varying. Drives both the total ADA target pool and the drug-ADA dissociation rate constant.",
+      units = "log3(reciprocal dilution), rounded to the nearest integer (a value of 4 is a reciprocal titer of 81)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "ZERO-ENCODING: ADA-negative is encoded as 0 on this log3 scale, and the model gates every ADA term on ADA_TITER > 3 (the NONMEM stream's L3OFFTITER = 3.0), so the ADA pool is exactly zero for ADA-negative records and for reciprocal titers at or below 27. Li 2025 Methods: 'ADA titer values were transformed to log 3 scale and rounded to the nearest integer for use as a time-varying covariate.' Observed positive values ran from 4 to 13 (Figure S5); the maximum-titer quartiles of ADA-positive patients were 75 to 675, 675 to 54700, 54700 to 164000 and above 164000 on the reciprocal scale (Figure S4 legend). Titers were measured pre-dose within each cycle and carried forward between measurements. In the PK-evaluable population 12.5% were ADA-positive at baseline and 52.1% became ADA-positive on treatment.",
-      source_name        = "L3TITER"
+      notes = "ZERO-ENCODING: ADA-negative is encoded as 0 on this log3 scale, and the model gates every ADA term on ADA_TITER > 3 (the NONMEM stream's L3OFFTITER = 3.0), so the ADA pool is exactly zero for ADA-negative records and for reciprocal titers at or below 27. Li 2025 Methods: 'ADA titer values were transformed to log 3 scale and rounded to the nearest integer for use as a time-varying covariate.' Observed positive values ran from 4 to 13 (Figure S5); the maximum-titer quartiles of ADA-positive patients were 75 to 675, 675 to 54700, 54700 to 164000 and above 164000 on the reciprocal scale (Figure S4 legend). Titers were measured pre-dose within each cycle and carried forward between measurements. In the PK-evaluable population 12.5% were ADA-positive at baseline and 52.1% became ADA-positive on treatment.",
+      source_name = "L3TITER"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "modakafusp alfa (unbound; the species measured by the ELISA)", units = "nmol", specimen = "serum", verified = TRUE),
+    central = list(
+      analyte = "modakafusp alfa (unbound; the species measured by the ELISA)",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     peripheral1 = list(analyte = "modakafusp alfa (unbound)", units = "nmol", specimen = "serum", verified = TRUE),
-    complex     = list(analyte = "modakafusp alfa bound to anti-drug antibody", units = "nM", specimen = "serum", verified = TRUE)
+    complex = list(
+      analyte = "modakafusp alfa bound to anti-drug antibody",
+      units = "nM",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
-    n_studies      = 1L,
-    age_range      = "34-84 years",
-    age_mean       = "63.1 years (SD 10.5)",
-    weight_range   = "60-169 kg",
-    weight_mean    = "79.9 kg (SD 23.0)",
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 1L,
+    age_range = "34-84 years",
+    age_mean = "63.1 years (SD 10.5)",
+    weight_range = "60-169 kg",
+    weight_mean = "79.9 kg (SD 23.0)",
     sex_female_pct = 42.7,
     race_ethnicity = c(Caucasian = 78.1, Black = 14.6, Asian = 4.2, Other_or_missing = 3.1),
-    disease_state  = "Relapsed or refractory multiple myeloma with disease progression after at least three prior lines of therapy; ECOG performance status 0 (14.6%), 1 (82.3%) or 2 (3.1%).",
-    dose_range     = "0.001 to 6.0 mg/kg intravenously, initially over a 4-h ramped infusion and after a protocol amendment over 1 h (or more than 2 h at the highest dose level), on weekly, every-2-week, every-3-week and every-4-week schedules.",
-    regions        = "Multicenter; Phase 1/2 iinnovate-1 trial (NCT03215030), Parts 1 (dose escalation) and 2 (dose expansion), data cutoff 30 May 2022.",
+    disease_state = "Relapsed or refractory multiple myeloma with disease progression after at least three prior lines of therapy; ECOG performance status 0 (14.6%), 1 (82.3%) or 2 (3.1%).",
+    dose_range = "0.001 to 6.0 mg/kg intravenously, initially over a 4-h ramped infusion and after a protocol amendment over 1 h (or more than 2 h at the highest dose level), on weekly, every-2-week, every-3-week and every-4-week schedules.",
+    regions = "Multicenter; Phase 1/2 iinnovate-1 trial (NCT03215030), Parts 1 (dose escalation) and 2 (dose expansion), data cutoff 30 May 2022.",
     renal_function = "Creatinine clearance mean 59.8 mL/min/1.73 m^2 (SD 19.4), range 24.1-101.",
     n_observations = "2297 quantifiable serum modakafusp alfa concentrations plus 806 records below the 6.25 ng/mL LLOQ, which were handled as censored data by the Beal M3 likelihood method.",
-    notes          = "Demographics from Li 2025 Table 1, PK analysis population column. 100 patients were enrolled (56 in Part 1, 44 in Part 2); the 96 with at least one quantifiable concentration form the PK analysis population. Estimation used NONMEM 7.4.4 with Monte Carlo importance sampling and Laplacian conditional estimation with eta-epsilon interaction."
+    notes = "Demographics from Li 2025 Table 1, PK analysis population column. 100 patients were enrolled (56 in Part 1, 44 in Part 2); the 96 with at least one quantifiable concentration form the PK analysis population. Estimation used NONMEM 7.4.4 with Monte Carlo importance sampling and Laplacian conditional estimation with eta-epsilon interaction."
   )
 
   ini({

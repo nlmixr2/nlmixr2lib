@@ -1,41 +1,41 @@
 Solana_2014_omeprazole <- function() {
   description <- "Two-compartment intravenous-infusion population PK model for omeprazole in 40 critically ill children (Solana 2014), with fixed Anderson-Holford allometric body-weight scaling on all four disposition parameters (exponents 0.75 on CL and Q, 1.00 on Vc and Vp; reference 70 kg). Between-patient variability was retained on CL only; residual error is proportional."
-  reference   <- "Solana MJ, Colom H, Lopez-Herce J, Urbano J, Gonzalez R, Lopez J, Manzanares C, Carrillo A. Population pharmacokinetics of omeprazole in critically ill pediatric patients. Ther Drug Monit. 2014;36(4):519-527. doi:10.1097/FTD.0000000000000033"
-  vignette    <- "Solana_2014_omeprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Solana MJ, Colom H, Lopez-Herce J, Urbano J, Gonzalez R, Lopez J, Manzanares C, Carrillo A. Population pharmacokinetics of omeprazole in critically ill pediatric patients. Ther Drug Monit. 2014;36(4):519-527. doi:10.1097/FTD.0000000000000033"
+  vignette <- "Solana_2014_omeprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Fixed Anderson-Holford allometric scaling on all four disposition parameters with reference 70 kg: exponent 0.75 on CL and Q, 1.00 on Vc and Vp (Solana 2014 abstract Results paragraph: 'Allometric size models seemed to predict changes adequately in all the pharmacokinetic parameters'; the source abstract reports the typical values per 70 kg and does not estimate the allometric exponents, so the exponents are taken as the theoretical Anderson-Holford values held fixed).",
-      source_name        = "WT"
+      notes = "Fixed Anderson-Holford allometric scaling on all four disposition parameters with reference 70 kg: exponent 0.75 on CL and Q, 1.00 on Vc and Vp (Solana 2014 abstract Results paragraph: 'Allometric size models seemed to predict changes adequately in all the pharmacokinetic parameters'; the source abstract reports the typical values per 70 kg and does not estimate the allometric exponents, so the exponents are taken as the theoretical Anderson-Holford values held fixed).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 40L,
-    n_studies       = 1L,
-    n_observations  = 186L,
-    age_range       = "Critically ill paediatric patients (full numeric age / weight ranges not reported in the abstract).",
-    weight_range    = "Critically ill paediatric patients (per-patient weight range not reported in the abstract; allometric scaling implies the cohort spans the typical paediatric ICU body-weight range relative to the 70 kg adult reference).",
-    sex_female_pct  = NA_real_,
-    disease_state   = "Critically ill children (paediatric intensive care).",
-    dose_range      = "Intravenous omeprazole 0.5 or 1 mg/kg twice daily, randomized between the two dose levels.",
-    sampling        = "Plasma samples drawn at 0.5, 2, 6, 12, 24, and 48 hours after the first infusion.",
-    regions         = "Spain (Hospital General Universitario Gregorio Maranon, Madrid).",
-    notes           = "ABSTRACT-ONLY EXTRACTION: the full-text Therapeutic Drug Monitoring article (DOI 10.1097/FTD.0000000000000033) was not available on disk for this extraction; all structural and parameter information was taken from the PubMed abstract (PMID 24365987). The numeric covariate ranges (per-patient age, weight, sex distribution) are not enumerated in the abstract and are recorded here as NA / narrative; they are not load-bearing for simulation because the only covariate used by the model is body weight via allometric scaling. The infusion duration is not stated in the abstract and is assumed to be a short IV bolus-like infusion in the vignette simulation; users with the full text can adjust the infusion rate accordingly."
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    n_observations = 186L,
+    age_range = "Critically ill paediatric patients (full numeric age / weight ranges not reported in the abstract).",
+    weight_range = "Critically ill paediatric patients (per-patient weight range not reported in the abstract; allometric scaling implies the cohort spans the typical paediatric ICU body-weight range relative to the 70 kg adult reference).",
+    sex_female_pct = NA_real_,
+    disease_state = "Critically ill children (paediatric intensive care).",
+    dose_range = "Intravenous omeprazole 0.5 or 1 mg/kg twice daily, randomized between the two dose levels.",
+    sampling = "Plasma samples drawn at 0.5, 2, 6, 12, 24, and 48 hours after the first infusion.",
+    regions = "Spain (Hospital General Universitario Gregorio Maranon, Madrid).",
+    notes = "ABSTRACT-ONLY EXTRACTION: the full-text Therapeutic Drug Monitoring article (DOI 10.1097/FTD.0000000000000033) was not available on disk for this extraction; all structural and parameter information was taken from the PubMed abstract (PMID 24365987). The numeric covariate ranges (per-patient age, weight, sex distribution) are not enumerated in the abstract and are recorded here as NA / narrative; they are not load-bearing for simulation because the only covariate used by the model is body weight via allometric scaling. The infusion duration is not stated in the abstract and is assumed to be a short IV bolus-like infusion in the vignette simulation; users with the full text can adjust the infusion rate accordingly."
   )
 
   ini({

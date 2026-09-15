@@ -3,10 +3,10 @@ Ruhs_2012_methotrexate <- function() {
   reference <- "Ruhs H, Becker A, Drescher A, Panetta JC, Pui CH, Relling MV, Jaehde U. Population PK/PD Model of Homocysteine Concentrations after High-Dose Methotrexate Treatment in Patients with Acute Lymphoblastic Leukemia. PLoS ONE. 2012;7(9):e46015. doi:10.1371/journal.pone.0046015"
   vignette <- "Ruhs_2012_methotrexate"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "umol/L",
-    notes         = "Dose entered as MTX amount in mg into the central compartment. The observation Cc is reported in umol/L (uM) via the conversion (central/vc) * 1000 / MW_MTX (MW_MTX = 454.44 g/mol) so that EC50 and HCY remain in their published uM units."
+    notes = "Dose entered as MTX amount in mg into the central compartment. The observation Cc is reported in umol/L (uM) via the conversion (central/vc) * 1000 / MW_MTX (MW_MTX = 454.44 g/mol) so that EC50 and HCY remain in their published uM units."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -14,67 +14,67 @@ Ruhs_2012_methotrexate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "homocysteine", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "homocysteine", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear multiplicative scaling on CL, V1, Q, V2 (theta values in Table 2 are reported per m^2 BSA; the implicit BSA exponent is 1). Index dataset median 0.83 m^2 (range 0.40-2.97) per Ruhs 2012 Table 1. The paper does not state which BSA formula was used (DuBois, Mosteller, Haycock); record as unspecified.",
-      source_name        = "BSA"
+      notes = "Linear multiplicative scaling on CL, V1, Q, V2 (theta values in Table 2 are reported per m^2 BSA; the implicit BSA exponent is 1). Index dataset median 0.83 m^2 (range 0.40-2.97) per Ruhs 2012 Table 1. The paper does not state which BSA formula was used (DuBois, Mosteller, Haycock); record as unspecified.",
+      source_name = "BSA"
     ),
     CREAT = list(
-      description        = "Measured serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Measured serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patient's measured serum creatinine (Ruhs 2012 Table 1: median 0.4 mg/dL, range 0.1-1.2). Enters the model only via the ratio (CREAT_REF / CREAT)^theta_CR on CL (Eq. 1).",
-      source_name        = "CCR"
+      notes = "Patient's measured serum creatinine (Ruhs 2012 Table 1: median 0.4 mg/dL, range 0.1-1.2). Enters the model only via the ratio (CREAT_REF / CREAT)^theta_CR on CL (Eq. 1).",
+      source_name = "CCR"
     ),
     CREAT_REF = list(
-      description        = "Age- and gender-adjusted reference serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Age- and gender-adjusted reference serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Externally-computed expected normal SCR for the individual (denoted CCR,adj in Ruhs 2012). The paper cites its reference [23] for the maturation-dependent adjustment to account for age and gender but does not give the explicit formula in the main text. Users must compute CREAT_REF from age and sex before passing to the model. When no covariate value can be derived, set CREAT_REF = CREAT so the renal-function factor evaluates to 1 (no adjustment).",
-      source_name        = "CCR,adj"
+      notes = "Externally-computed expected normal SCR for the individual (denoted CCR,adj in Ruhs 2012). The paper cites its reference [23] for the maturation-dependent adjustment to account for age and gender but does not give the explicit formula in the main text. Users must compute CREAT_REF from age and sex before passing to the model. When no covariate value can be derived, set CREAT_REF = CREAT so the renal-function factor evaluates to 1 (no adjustment).",
+      source_name = "CCR,adj"
     ),
     AGE = list(
-      description        = "Age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry. Enters the model only as a linear additive effect on the typical HCY baseline: HCYBL_tv = theta_BL + theta_BL,AGE * AGE, with theta_BL,AGE = 0.116 uM/year (Ruhs 2012 Table 2). Index dataset median 5.42 years (range 1.03-18.85).",
-      source_name        = "AGE"
+      notes = "Time-fixed at study entry. Enters the model only as a linear additive effect on the typical HCY baseline: HCYBL_tv = theta_BL + theta_BL,AGE * AGE, with theta_BL,AGE = 0.116 uM/year (Ruhs 2012 Table 2). Index dataset median 5.42 years (range 1.03-18.85).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 494L,
-    n_index         = 331L,
-    n_evaluation    = 163L,
-    n_centres       = 2L,
-    n_mtx_obs       = 6722L,
-    n_hcy_obs       = 2567L,
-    age_range       = "1.03-18.85 years",
-    age_median      = "5.42 years (index dataset)",
-    weight_range    = "7.8-160.1 kg",
-    weight_median   = "22.0 kg (index dataset)",
-    bsa_range       = "0.40-2.97 m^2",
-    bsa_median      = "0.83 m^2",
-    creat_range     = "0.1-1.2 mg/dL",
-    sex_female_pct  = 42.9,
-    race_ethnicity  = NA,
-    disease_state   = "Newly diagnosed acute lymphoblastic leukemia (ALL); low-risk (LR) and standard/high-risk (SHR) subgroups stratified by leukocyte count, DNA index, ETV6-RUNX1 / BCR-ABL1 status and minimal residual disease",
-    dose_range      = "Window therapy: 1000 mg/m^2 over 4 h (1 g/m^2) or over 24 h (200 mg/m^2 IV bolus followed by 800 mg/m^2 over 24 h). Consolidation HDMTX every other week for 4 doses, individualized to target MTX Cpss = 33 uM (LR; median 2653 mg/m^2) or 65 uM (SHR; median 4654 mg/m^2); 10% of the individualized dose given over 1 h as loading and the remaining 90% over 23 h. Folinate rescue starting 42 h after start of infusion.",
-    regions         = "USA (St. Jude Children's Research Hospital, Memphis TN; Cook Children's Medical Center, Fort Worth TX)",
-    notes           = "Demographics from Ruhs 2012 Table 1. The PK model was developed on the index dataset (331 patients) and externally evaluated on a separate evaluation dataset (163 patients). The paper estimated interoccasion variability (IOV) of 17.15% CV on CL and 23.83% CV on HCYBL across the window and four consolidation HDMTX administrations; that IOV is not encoded in this model file (only between-subject IIV is carried)."
+    species = "human",
+    n_subjects = 494L,
+    n_index = 331L,
+    n_evaluation = 163L,
+    n_centres = 2L,
+    n_mtx_obs = 6722L,
+    n_hcy_obs = 2567L,
+    age_range = "1.03-18.85 years",
+    age_median = "5.42 years (index dataset)",
+    weight_range = "7.8-160.1 kg",
+    weight_median = "22.0 kg (index dataset)",
+    bsa_range = "0.40-2.97 m^2",
+    bsa_median = "0.83 m^2",
+    creat_range = "0.1-1.2 mg/dL",
+    sex_female_pct = 42.9,
+    race_ethnicity = NA,
+    disease_state = "Newly diagnosed acute lymphoblastic leukemia (ALL); low-risk (LR) and standard/high-risk (SHR) subgroups stratified by leukocyte count, DNA index, ETV6-RUNX1 / BCR-ABL1 status and minimal residual disease",
+    dose_range = "Window therapy: 1000 mg/m^2 over 4 h (1 g/m^2) or over 24 h (200 mg/m^2 IV bolus followed by 800 mg/m^2 over 24 h). Consolidation HDMTX every other week for 4 doses, individualized to target MTX Cpss = 33 uM (LR; median 2653 mg/m^2) or 65 uM (SHR; median 4654 mg/m^2); 10% of the individualized dose given over 1 h as loading and the remaining 90% over 23 h. Folinate rescue starting 42 h after start of infusion.",
+    regions = "USA (St. Jude Children's Research Hospital, Memphis TN; Cook Children's Medical Center, Fort Worth TX)",
+    notes = "Demographics from Ruhs 2012 Table 1. The PK model was developed on the index dataset (331 patients) and externally evaluated on a separate evaluation dataset (163 patients). The paper estimated interoccasion variability (IOV) of 17.15% CV on CL and 23.83% CV on HCYBL across the window and four consolidation HDMTX administrations; that IOV is not encoded in this model file (only between-subject IIV is carried)."
   )
 
   ini({

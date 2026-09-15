@@ -49,15 +49,24 @@ Bosch_2024_cotadutide_qsp <- function() {
   vignette <- "Bosch_2024_cotadutide_qsp"
 
   paper_specific_compartments <- c(
-    "glucose", "glucose_per", "glucose_gut", "glucose_buffer",
-    "glucose_tr1", "glucose_tr2", "glucose_tr3",
-    "insulin", "insulin_eff",
-    "glp1", "glucagon", "gip", "gip_per"
+    "glucose",
+    "glucose_per",
+    "glucose_gut",
+    "glucose_buffer",
+    "glucose_tr1",
+    "glucose_tr2",
+    "glucose_tr3",
+    "insulin",
+    "insulin_eff",
+    "glp1",
+    "glucagon",
+    "gip",
+    "gip_per"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "cotadutide dose into the depot compartment must be in pmol",
       "(convert from ug via amt_pmol = amt_ug * 1e6 / MW_cotadutide_g_per_mol;",
       "cotadutide MW is approximately 4549 g/mol so 100 ug ~= 22000 pmol).",
@@ -80,43 +89,43 @@ Bosch_2024_cotadutide_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "cotadutide", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "cotadutide", units = NA_character_, specimen = "plasma", verified = FALSE),
-    glucose_gut    = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "cotadutide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cotadutide", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose_gut = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
     glucose_buffer = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glucose_tr1    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glucose_tr2    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glucose_tr3    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glucose        = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    glucose_per    = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
-    insulin        = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    insulin_eff    = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    glp1           = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
-    glucagon       = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
-    gip            = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
-    gip_per        = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE)
+    glucose_tr1 = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr2 = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr3 = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose_per = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin_eff = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glp1 = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucagon = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_per = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FPG = list(
-      description        = "Individual fasting plasma glucose at study baseline (BSLglc in the paper notation). Used as the per-subject initial condition for the central glucose state and as the reference value for the power-function feedback of glucose on glucagon production. Time-fixed per subject.",
-      units              = "mmol/L (paper reports baseline glucose in mmol/L for the cotadutide MAD/Ph2a cohort; multiply mg/dL by 0.0555 to convert)",
-      type               = "continuous",
+      description = "Individual fasting plasma glucose at study baseline (BSLglc in the paper notation). Used as the per-subject initial condition for the central glucose state and as the reference value for the power-function feedback of glucose on glucagon production. Time-fixed per subject.",
+      units = "mmol/L (paper reports baseline glucose in mmol/L for the cotadutide MAD/Ph2a cohort; multiply mg/dL by 0.0555 to convert)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required per-subject covariate. Set to the observed individual baseline value; for typical-subject simulations use the cohort median (approximately 7.67 mmol/L per supplement THETA(64) median MAD/Ph2a baseline). Bosch 2024 Methods Section 2.5: 'Individual glucose baseline values were used as input'. The paper estimates baseline insulin / GLP-1 / glucagon / GIP as typical values (Table 3) so only the glucose baseline needs a per-subject covariate.",
-      source_name        = "BSLglc (IBGLC in the supplement mrgSolve code)"
+      notes = "Required per-subject covariate. Set to the observed individual baseline value; for typical-subject simulations use the cohort median (approximately 7.67 mmol/L per supplement THETA(64) median MAD/Ph2a baseline). Bosch 2024 Methods Section 2.5: 'Individual glucose baseline values were used as input'. The paper estimates baseline insulin / GLP-1 / glucagon / GIP as typical values (Table 3) so only the glucose baseline needs a per-subject covariate.",
+      source_name = "BSLglc (IBGLC in the supplement mrgSolve code)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Overweight or obese adults with type 2 diabetes mellitus",
       "(NCT02548585; the MAD/Ph2a cotadutide study reported in Ambery",
       "et al. 2018). N = 51 randomised (25 cotadutide, 26 placebo);",
@@ -130,15 +139,15 @@ Bosch_2024_cotadutide_qsp <- function() {
       "placebo. Detailed cohort table is Bosch 2024 Table 1.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Cotadutide 100-300 ug subcutaneous once daily before",
       "breakfast, with up-titration over 7-41 days depending on",
       "cohort (Bosch 2024 Table 1). MMTT (mixed meal tolerance test):",
       "standardised Ensure Plus(R) breakfast on selected study days.",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Cohort sizes from Bosch 2024 Table 1; the paper does not",
       "tabulate detailed demographics (age / weight / sex / race",
       "distribution) for the Bosch 2024 analysis cohort and refers",

@@ -31,17 +31,17 @@ He_2023_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HGB = list(
-      description        = "Hemoglobin concentration",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Hemoglobin concentration",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the power function (HGB/13)^0.671 (Yang 2025 Table ",
         "1). Yang 2025 Table 1 abbreviation list gives the unit ",
         "explicitly: 'HG hemoglobin (g/dL)'. The reference 13 g/dL is the ",
@@ -57,14 +57,14 @@ He_2023_imatinib <- function() {
         "relationship given that imatinib partitions extensively into ",
         "erythrocytes."
       ),
-      source_name        = "HG"
+      source_name = "HG"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (CKD-EPI equation)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (CKD-EPI equation)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as a ONE-SIDED (hinged) power term. Yang 2025 Table 1 ",
         "footnote h gives it as 'When eGFR < 85 the theta_eGFR = ",
         "(eGFR/85)^0.25'. The footnote is truncated in the published ",
@@ -89,21 +89,21 @@ He_2023_imatinib <- function() {
         "of general physiological reserve rather than a renal-elimination ",
         "pathway."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 230L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 230L,
+    n_studies = 1L,
     n_observations = "424 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "14-87 years",
-    disease_state  = "Chinese adults with chronic myeloid leukemia (CML) in a real-world setting",
-    dose_range     = "Oral imatinib 200, 300 or 400 mg total daily dose",
-    regions        = "China",
-    bioanalytical  = "UPLC-MS, limit of quantification 5 ng/mL (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "14-87 years",
+    disease_state = "Chinese adults with chronic myeloid leukemia (CML) in a real-world setting",
+    dose_range = "Oral imatinib 200, 300 or 400 mg total daily dose",
+    regions = "China",
+    bioanalytical = "UPLC-MS, limit of quantification 5 ng/mL (Yang 2025 Table 1)",
+    notes = paste0(
       "The second-largest cohort among the 15 models evaluated by Yang ",
       "2025 after Gotta 2014. Its original (unscaled) form was one of only ",
       "four meeting Yang 2025's bias criterion of a median prediction ",

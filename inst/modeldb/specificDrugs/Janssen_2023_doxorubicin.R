@@ -20,7 +20,7 @@ Janssen_2023_doxorubicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 

@@ -1,78 +1,78 @@
 Zhao_2018_omeprazole <- function() {
   description <- "Population PK-pharmacogenetic model for oral omeprazole and its two metabolites 5-hydroxy-omeprazole and omeprazole sulfone in Caucasian neonates and young infants (Zhao 2018). One-compartment parent disposition with first-order absorption (Ka modulated by ABCB1 C3435T genotype) is followed by parallel formation into two one-compartment metabolites with apparent volume V_M/F fixed to 1 L; the omeprazole-to-5-hydroxy-omeprazole formation clearance (CLOMZ-M1) is modulated by CYP2C19 metabolizer phenotype (poor / intermediate / extensive-or-ultrarapid) and a postnatal-age power function, while the omeprazole-to-omeprazole-sulfone formation clearance (CLOMZ-M2) and the metabolite apparent eliminations carry no covariates. Linear omeprazole elimination was estimated as negligible (< 0.0001 L/h) and is therefore not included in the final structural model."
-  reference   <- "Zhao W, Leroux S, Biran V, Jacqz-Aigrain E. Developmental pharmacogenetics of CYP2C19 in neonates and young infants: omeprazole as a probe drug. Br J Clin Pharmacol. 2018;84(5):997-1005. doi:10.1111/bcp.13526"
-  vignette    <- "Zhao_2018_omeprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Zhao W, Leroux S, Biran V, Jacqz-Aigrain E. Developmental pharmacogenetics of CYP2C19 in neonates and young infants: omeprazole as a probe drug. Br J Clin Pharmacol. 2018;84(5):997-1005. doi:10.1111/bcp.13526"
+  vignette <- "Zhao_2018_omeprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "omeprazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "omeprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_5oh = list(analyte = "5-hydroxy-omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_sfn = list(analyte = "omeprazole sulfone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     PNA = list(
-      description        = "Postnatal age (chronological since birth).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological since birth).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Zhao 2018 reports postnatal age in DAYS (cohort median 38 days, range 7-87 days). The canonical PNA column is in MONTHS, so the model `model()` block converts to months internally via PNA / 30.4375 only at the reference-ratio step: the paper's `F_PNA = (PNA_days / 38)^0.472` is reparameterised as `F_PNA = (PNA_months / 1.249)^0.472` because both numerator and denominator carry the same units factor and cancel. Users should supply PNA in months in the dataset.",
-      source_name        = "PNA"
+      notes = "Zhao 2018 reports postnatal age in DAYS (cohort median 38 days, range 7-87 days). The canonical PNA column is in MONTHS, so the model `model()` block converts to months internally via PNA / 30.4375 only at the reference-ratio step: the paper's `F_PNA = (PNA_days / 38)^0.472` is reparameterised as `F_PNA = (PNA_months / 1.249)^0.472` because both numerator and denominator carry the same units factor and cancel. Users should supply PNA in months in the dataset.",
+      source_name = "PNA"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive or ultrarapid metabolizer; *1/*1, *1/*17, *17/*17 -- both CYP2C19_IM = 0 and CYP2C19_PM = 0)",
-      notes              = "1 = subject has CYP2C19 IM phenotype (*1/*2 or *2/*17 in Zhao 2018; one functional and one loss-of-function allele); 0 = otherwise. Cohort distribution: IM 21.6% (11/51), PM 3.9% (2/51), EM/UM reference 74.5% (38/51). Source paper pooled EM and UM into a single reference because typical-value CLOMZ-M1 was indistinguishable between the two strata.",
-      source_name        = "CYP2C19_IM"
+      notes = "1 = subject has CYP2C19 IM phenotype (*1/*2 or *2/*17 in Zhao 2018; one functional and one loss-of-function allele); 0 = otherwise. Cohort distribution: IM 21.6% (11/51), PM 3.9% (2/51), EM/UM reference 74.5% (38/51). Source paper pooled EM and UM into a single reference because typical-value CLOMZ-M1 was indistinguishable between the two strata.",
+      source_name = "CYP2C19_IM"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (extensive, ultrarapid, or intermediate metabolizer)",
-      notes              = "1 = subject has CYP2C19 PM phenotype (*2/*2 in Zhao 2018; two loss-of-function alleles); 0 = otherwise. Paired with `CYP2C19_IM` to encode the three-level EM/UM (reference) / IM / PM phenotype with two binary indicators.",
-      source_name        = "CYP2C19_PM"
+      notes = "1 = subject has CYP2C19 PM phenotype (*2/*2 in Zhao 2018; two loss-of-function alleles); 0 = otherwise. Paired with `CYP2C19_IM` to encode the three-level EM/UM (reference) / IM / PM phenotype with two binary indicators.",
+      source_name = "CYP2C19_PM"
     ),
     ABCB1_C3435T_HET = list(
-      description        = "ABCB1 (rs1045642) C3435T heterozygote indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 (rs1045642) C3435T heterozygote indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_MUT = 0`)",
-      notes              = "1 = subject has ABCB1 C/T genotype at rs1045642; 0 = otherwise (C/C wild-type or T/T homozygous variant). Cohort distribution: C/C 49.0% (25/51), C/T 43.1% (22/51), T/T 7.8% (4/51).",
-      source_name        = "ABCB1_C3435T_HET"
+      notes = "1 = subject has ABCB1 C/T genotype at rs1045642; 0 = otherwise (C/C wild-type or T/T homozygous variant). Cohort distribution: C/C 49.0% (25/51), C/T 43.1% (22/51), T/T 7.8% (4/51).",
+      source_name = "ABCB1_C3435T_HET"
     ),
     ABCB1_C3435T_MUT = list(
-      description        = "ABCB1 (rs1045642) C3435T homozygous-variant indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 (rs1045642) C3435T homozygous-variant indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C homozygous wild-type, when paired with `ABCB1_C3435T_HET = 0`)",
-      notes              = "1 = subject has ABCB1 T/T genotype at rs1045642; 0 = otherwise. Paired with `ABCB1_C3435T_HET` to encode the three-level C/C (reference) / C/T / T/T genotype with two binary indicators.",
-      source_name        = "ABCB1_C3435T_MUT"
+      notes = "1 = subject has ABCB1 T/T genotype at rs1045642; 0 = otherwise. Paired with `ABCB1_C3435T_HET` to encode the three-level C/C (reference) / C/T / T/T genotype with two binary indicators.",
+      source_name = "ABCB1_C3435T_MUT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
     n_observations = "73 omeprazole + paired 5-hydroxy-omeprazole and omeprazole-sulfone plasma concentrations (Zhao 2018 Results paragraph 2). LLOQ 10 ng/mL omeprazole, 25 ng/mL each metabolite; sub-LLOQ values imputed as LLOQ/2 in the source modelling.",
-    age_range      = "Neonates and young infants, PNA 7-87 days (gestational age at birth 24-41 weeks; postmenstrual age covers preterm-newborn through young-infant range)",
-    age_median     = "PNA median 38 days (Table 1)",
-    weight_range   = "0.78-3.80 kg (current weight; birth gestational age range 24-41 weeks)",
-    weight_median  = "2.13 kg (Table 1)",
+    age_range = "Neonates and young infants, PNA 7-87 days (gestational age at birth 24-41 weeks; postmenstrual age covers preterm-newborn through young-infant range)",
+    age_median = "PNA median 38 days (Table 1)",
+    weight_range = "0.78-3.80 kg (current weight; birth gestational age range 24-41 weeks)",
+    weight_median = "2.13 kg (Table 1)",
     sex_female_pct = 52.9,
     race_ethnicity = c(White = 100),
-    disease_state  = "Caucasian neonates and young infants with gastroesophageal reflux enrolled in an omeprazole dose-finding study (ClinicalTrials.gov NCT01657578).",
-    dose_range     = "Oral omeprazole 1-3 mg/kg/day once daily in the morning (cohort median 3.6 mg/day, range 0.8-7.3 mg/day; per-kg median 2.0 mg/kg/day, range 1.0-2.5 mg/kg/day).",
-    regions        = "France (Robert Debre University Hospital, Paris; Comite de Protection des Personnes Saint Louis ethics committee).",
-    notes          = "Demographics from Zhao 2018 Table 1. Pharmacokinetic samples obtained 0.5-4 h and 4-12 h after the first dose. Genotyping by TaqMan allelic discrimination for CYP2C19*2 (rs4244285), CYP2C19*17 (rs12248560), and ABCB1 rs1045642 / rs2032582 / rs1128503; the final model uses only the rs1045642 C3435T SNP on Ka (the other ABCB1 SNPs were tested but not retained). The model is fit to a single-dose pharmacokinetic dataset; multiple-dose extrapolation should consider that ABCB1 ontogeny and CYP2C19 ontogeny were observed to evolve over the first months of life so steady-state predictions outside the studied PNA range carry extrapolation risk."
+    disease_state = "Caucasian neonates and young infants with gastroesophageal reflux enrolled in an omeprazole dose-finding study (ClinicalTrials.gov NCT01657578).",
+    dose_range = "Oral omeprazole 1-3 mg/kg/day once daily in the morning (cohort median 3.6 mg/day, range 0.8-7.3 mg/day; per-kg median 2.0 mg/kg/day, range 1.0-2.5 mg/kg/day).",
+    regions = "France (Robert Debre University Hospital, Paris; Comite de Protection des Personnes Saint Louis ethics committee).",
+    notes = "Demographics from Zhao 2018 Table 1. Pharmacokinetic samples obtained 0.5-4 h and 4-12 h after the first dose. Genotyping by TaqMan allelic discrimination for CYP2C19*2 (rs4244285), CYP2C19*17 (rs12248560), and ABCB1 rs1045642 / rs2032582 / rs1128503; the final model uses only the rs1045642 C3435T SNP on Ka (the other ABCB1 SNPs were tested but not retained). The model is fit to a single-dose pharmacokinetic dataset; multiple-dose extrapolation should consider that ABCB1 ontogeny and CYP2C19 ontogeny were observed to evolve over the first months of life so steady-state predictions outside the studied PNA range carry extrapolation risk."
   )
 
   ini({

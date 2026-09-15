@@ -1,6 +1,6 @@
 Pettersen_2009_pantoprazole <- function() {
   description <- "Two-compartment population PK model for intravenous pantoprazole in 20 paediatric intensive-care patients aged 10 days to 16.4 years (Pettersen 2009). Pantoprazole is given as a zero-order infusion (15-30 min) into the central compartment with first-order elimination. Body-weight allometric scaling is fixed (0.75 on CL/Q, 1 on Vc/V2, reference 20 kg). Clearance is further modified by age (power on AGE/5 years), and three binary clinical covariates retained at the forward-selection / backward-elimination step: systemic inflammatory response syndrome (DIS_SIRS), concomitant CYP2C19-inhibitor coadministration (CONMED_CYP2C19_INH, pooling fluconazole, voriconazole, and isoniazid), and clinically defined hepatic dysfunction (HEPIMP, paediatric criterion TBILI >= 4 mg/dL OR ALT > 2x ULN for age). Each of the three indicators reduces pantoprazole CL by 62.3%, 65.8%, and 50.5% respectively when present alone. The reference subject is a 20 kg / 5-year-old paediatric ICU patient without SIRS, hepatic dysfunction, or CYP2C19 inhibitor coadministration."
-  reference   <- paste(
+  reference <- paste(
     "Pettersen G, Mouksassi M-S, Theoret Y, Labbe L, Faure C,",
     "Nguyen B, Litalien C.",
     "Population pharmacokinetics of intravenous pantoprazole in paediatric",
@@ -9,37 +9,37 @@ Pettersen_2009_pantoprazole <- function() {
     "doi:10.1111/j.1365-2125.2008.03328.x.",
     sep = " "
   )
-  vignette    <- "Pettersen_2009_pantoprazole"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  vignette <- "Pettersen_2009_pantoprazole"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling fixed a priori at 0.75 on clearances (CL, Q)",
         "and 1 on volumes (Vc, V2), standardised to a body weight of 20 kg",
         "(Pettersen 2009 Methods, citing common paediatric practice).",
         "Cohort range 2.7-84.5 kg, median 12.7 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Pettersen 2009 final-model CL equation includes a power effect of",
         "(AGE / 5 years) with exponent 0.316; the AGE / 5 ratio is",
         "dimensionless and unaffected by the units of AGE provided AGE and",
@@ -48,14 +48,14 @@ Pettersen_2009_pantoprazole <- function() {
         "complementary to the body-weight allometric term and captures the",
         "paediatric CYP2C19 ontogeny that is not fully explained by size."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     DIS_SIRS = list(
-      description        = "Systemic inflammatory response syndrome (SIRS) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic inflammatory response syndrome (SIRS) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no SIRS)",
-      notes              = paste(
+      notes = paste(
         "Pettersen 2009 follows the consensus paediatric SIRS criteria of",
         "the ACCP / SCCM (Bone 1992; reference 39 in the paper): >= 2 of",
         "(1) temperature > 38 C or < 36 C, (2) heart rate above the",
@@ -66,14 +66,14 @@ Pettersen_2009_pantoprazole <- function() {
         "future use of this covariate over a time-varying ICU course should",
         "set DIS_SIRS on each day SIRS criteria are met."
       ),
-      source_name        = "SIRS"
+      source_name = "SIRS"
     ),
     CONMED_CYP2C19_INH = list(
-      description        = "Concomitant CYP2C19-inhibitor coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP2C19-inhibitor coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP2C19 inhibitor)",
-      notes              = paste(
+      notes = paste(
         "Pettersen 2009 pools fluconazole, voriconazole, and isoniazid into",
         "the inhibitor-positive group. 4 of 20 patients positive (all from",
         "cohort I); patient #4 received both fluconazole and the inducer",
@@ -83,14 +83,14 @@ Pettersen_2009_pantoprazole <- function() {
         "may treat it as time-varying when concomitant medication start /",
         "stop dates are resolved at the per-observation level."
       ),
-      source_name        = "INH"
+      source_name = "INH"
     ),
     HEPIMP = list(
-      description        = "Clinical hepatic-dysfunction indicator (paediatric criterion)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Clinical hepatic-dysfunction indicator (paediatric criterion)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hepatic dysfunction)",
-      notes              = paste(
+      notes = paste(
         "Pettersen 2009 defines hepatic dysfunction as total bilirubin",
         ">= 4 mg/dL OR ALT > 2x upper limit of normal for age (Methods,",
         "citing reference 39). This is the paediatric-clinical cut-point",
@@ -99,22 +99,22 @@ Pettersen_2009_pantoprazole <- function() {
         "is required and recorded here. 5 of 20 patients positive (4 from",
         "cohort I, 1 from cohort II)."
       ),
-      source_name        = "HEP"
+      source_name = "HEP"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 20L,
-    n_studies        = 1L,
-    n_observations   = 156L,
-    age_range        = "10 days to 16.4 years",
-    age_median       = "2.1 years (cohort I 9.4, cohort II 0.7)",
-    weight_range     = "2.7-84.5 kg",
-    weight_median    = "12.7 kg (cohort I 30.6, cohort II 6.8)",
-    sex_female_pct   = 35,
-    race_ethnicity   = "Not reported (single-centre Montreal ICU)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    n_observations = 156L,
+    age_range = "10 days to 16.4 years",
+    age_median = "2.1 years (cohort I 9.4, cohort II 0.7)",
+    weight_range = "2.7-84.5 kg",
+    weight_median = "12.7 kg (cohort I 30.6, cohort II 6.8)",
+    sex_female_pct = 35,
+    race_ethnicity = "Not reported (single-centre Montreal ICU)",
+    disease_state = paste(
       "Paediatric intensive-care patients at risk for or with upper",
       "gastrointestinal bleeding. Cohort I (n = 8): retrospective",
       "convenience sample of patients prescribed intravenous pantoprazole",
@@ -129,16 +129,16 @@ Pettersen_2009_pantoprazole <- function() {
       "concomitant CYP2C19 inhibitor in 4 / 20 (all cohort I); concomitant",
       "CYP2C19 inducer in 1 / 20 (not retained in the final model)."
     ),
-    dose_range       = "19.9-140.6 mg/1.73 m^2/day intravenously over 15-30 min, once daily (one patient twice daily). Initial regimen 20 mg/1.73 m^2/day in neonates and 40 mg/1.73 m^2/day above 1 month.",
-    regions          = "Canada (Centre Hospitalier Universitaire Sainte-Justine, Montreal)",
-    nonmem_method    = "NONMEM VI (Level 1.2), FOCE-I",
-    sampling_schema  = paste(
+    dose_range = "19.9-140.6 mg/1.73 m^2/day intravenously over 15-30 min, once daily (one patient twice daily). Initial regimen 20 mg/1.73 m^2/day in neonates and 40 mg/1.73 m^2/day above 1 month.",
+    regions = "Canada (Centre Hospitalier Universitaire Sainte-Justine, Montreal)",
+    nonmem_method = "NONMEM VI (Level 1.2), FOCE-I",
+    sampling_schema = paste(
       "Cohort I: predose then 0, 0.25, 0.75, 1, 2, 4, 6, 12 h after the end",
       "of pantoprazole infusion. Cohort II: predose then 0, 0.25, 0.5, 1,",
       "2, 4, 8, 12, 24 h after the end of infusion. Plasma assay HPLC-UV at",
       "290 nm; LLOQ 0.1 mg/L, ULOQ 25 mg/L, within- and between-run CV < 10%."
     ),
-    notes            = paste(
+    notes = paste(
       "Demographics from Pettersen 2009 Table 1. Underlying conditions",
       "summarised: cohort I (n = 8) included 4 hepatic disease /",
       "transplantation, 2 haematological disorders, 1 respiratory failure,",

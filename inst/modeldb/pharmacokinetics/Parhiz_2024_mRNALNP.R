@@ -13,46 +13,46 @@ Parhiz_2024_mRNALNP <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood        = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "whole blood", verified = FALSE),
-    bldeg        = list(analyte = "LNP", units = "ug", specimen = "administration site", verified = FALSE),
-    vp_lung      = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
-    vp_heart     = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
-    vp_kidney    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
-    vp_spleen    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
-    vp_portal    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "lymph", verified = FALSE),
+    blood = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "whole blood", verified = FALSE),
+    bldeg = list(analyte = "LNP", units = "ug", specimen = "administration site", verified = FALSE),
+    vp_lung = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_heart = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_kidney = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_spleen = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_portal = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "lymph", verified = FALSE),
     vp_remainder = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "lymph", verified = FALSE),
-    vp_liver     = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
-    int_lung     = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
-    mrna_lung    = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
-    luc_lung     = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
-    int_heart    = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
-    mrna_heart   = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
-    luc_heart    = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
-    int_kidney   = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
-    mrna_kidney  = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
-    luc_kidney   = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
-    int_spleen   = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
-    mrna_spleen  = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
-    luc_spleen   = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
-    int_liver    = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
-    mrna_liver   = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
-    luc_liver    = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE)
+    vp_liver = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    int_lung = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_lung = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_lung = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_heart = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_heart = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_heart = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_kidney = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_kidney = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_kidney = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_spleen = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_spleen = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_spleen = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_liver = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_liver = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_liver = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (C57BL/6, male, 6-8 weeks old, ~25 g body weight)",
-    n_subjects     = 3,
-    n_studies      = 1,
-    age_range      = "6-8 weeks",
-    weight_range   = "~25 g (reference body weight for BioDMET physiology)",
+    species = "mouse (C57BL/6, male, 6-8 weeks old, ~25 g body weight)",
+    n_subjects = 3,
+    n_studies = 1,
+    age_range = "6-8 weeks",
+    weight_range = "~25 g (reference body weight for BioDMET physiology)",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult mice (no induced pathology).",
-    dose_range     = "8 ug mRNA IV (retro-orbital) single dose; 100 uL bolus per mouse.",
-    regions        = "Single-center preclinical (University of Pennsylvania).",
-    notes          = "Sample size is n = 3 mice per time point destructively sampled across blood, lung, heart, kidney, spleen, and liver. Physiological parameters (tissue volumes, blood flows) come from the BioDMET database and are fixed; only the 12 LNP / luciferase parameters listed in ini() were estimated.",
-    scope_note     = "Mechanistic platform model: no IIV, no residual error - intended for typical-value simulation. See vignette for blood-PK and tissue-biodistribution replication checks against paper Figure 2 (bare LNP, homogenate assay)."
+    disease_state = "Healthy adult mice (no induced pathology).",
+    dose_range = "8 ug mRNA IV (retro-orbital) single dose; 100 uL bolus per mouse.",
+    regions = "Single-center preclinical (University of Pennsylvania).",
+    notes = "Sample size is n = 3 mice per time point destructively sampled across blood, lung, heart, kidney, spleen, and liver. Physiological parameters (tissue volumes, blood flows) come from the BioDMET database and are fixed; only the 12 LNP / luciferase parameters listed in ini() were estimated.",
+    scope_note = "Mechanistic platform model: no IIV, no residual error - intended for typical-value simulation. See vignette for blood-PK and tissue-biodistribution replication checks against paper Figure 2 (bare LNP, homogenate assay)."
   )
 
   ini({

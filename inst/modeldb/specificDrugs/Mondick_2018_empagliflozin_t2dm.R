@@ -29,53 +29,53 @@ Mondick_2018_empagliflozin_t2dm <- function() {
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled against a reference of 25 kg/m^2 on CL/F, Vc/F, Q/F and",
         "Vp/F. The PK layer, including this covariate, is the type 1 diabetes",
         "PK model of Mondick 2018 Supplementary Table 1; the cohort statistic",
         "quoted there (mean 25.6 kg/m^2) is the T1DM cohort's, not the T2DM",
         "cohort's."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "BSA-normalized estimated glomerular filtration rate (eGFR). The",
         "estimating equation is not named in Mondick 2018."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mechanistic driver rather than a covariate on a PK parameter: the",
         "model de-normalizes it with the individual BSA and multiplies it by",
         "the plasma-minus-reabsorbed glucose concentration difference to give",
         "the urinary glucose excretion rate. Mondick 2018 does not report the",
         "T2DM cohort's eGFR distribution."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used solely to convert the BSA-normalized CRCL back to an absolute",
         "filtration rate, as CRCL * BSA / 1.73."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     GLU = list(
-      description        = "Plasma glucose concentration, time-varying regressor",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma glucose concentration, time-varying regressor",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exogenous driving regressor, linearly interpolated between observed",
         "time points via linear(GLU). Converted internally from mmol/L to the",
         "paper's mg/dL (factor 18.016). For its type 1 vs type 2 comparison",
@@ -83,49 +83,49 @@ Mondick_2018_empagliflozin_t2dm <- function() {
         "observed in the T1DM study, so that the comparison could not be driven",
         "by differences in glucose sampling."
       ),
-      source_name        = "PG"
+      source_name = "PG"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled against the T2DM model's 58-year reference patient on",
         "both Gmax and Imax (Mondick 2018 Supplementary Table 2 footnote:",
         "'Reference age was 42 years for T1DM model and 58 years for T2DM",
         "model'). Note the reference differs from the T1DM sibling model."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "categorical",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "categorical",
       reference_category = "0 = male (the T2DM reference patient is a 58-year-old male)",
-      notes              = paste(
+      notes = paste(
         "Enters as a multiplicative factor raised to the SEXF indicator on both",
         "Gmax and Imax (Mondick 2018 Supplementary Table 2, T2DM column)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
-    glu_urine   = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE)
+    glu_urine = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 4,
-    age_median     = "reference patient 58 years",
-    disease_state  = "type 2 diabetes mellitus",
-    dose_range     = "empagliflozin 1 mg to 100 mg",
-    notes          = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 4,
+    age_median = "reference patient 58 years",
+    disease_state = "type 2 diabetes mellitus",
+    dose_range = "empagliflozin 1 mg to 100 mg",
+    notes = paste(
       "The PD parameter set was estimated in Mondick 2016 (Diabetes Obes Metab",
       "18:241-248) from 4 phase 1 and phase 2 empagliflozin trials spanning",
       "1-100 mg, with 1 further study used for model evaluation. Mondick 2018",

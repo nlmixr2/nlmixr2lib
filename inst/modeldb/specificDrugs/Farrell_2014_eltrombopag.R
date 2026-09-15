@@ -9,65 +9,65 @@ Farrell_2014_eltrombopag <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "eltrombopag", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "eltrombopag", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "eltrombopag", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "eltrombopag", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "eltrombopag", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "platelets", units = "mg", specimen = "whole blood", verified = FALSE)
+    precursor1 = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "platelet precursor", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "platelets", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative fractional change on CL/F: females have 38% lower apparent clearance than males (Farrell 2014 Table 3: 'CL/F ~ Females' multiplier 0.622, 95% CI 0.495-0.749). The discussion attributes the female effect to lower CYP1A2 and UGT activity (Farrell 2014 Discussion paragraph 5).",
-      source_name        = "Sex (Female)"
+      notes = "Multiplicative fractional change on CL/F: females have 38% lower apparent clearance than males (Farrell 2014 Table 3: 'CL/F ~ Females' multiplier 0.622, 95% CI 0.495-0.749). The discussion attributes the female effect to lower CYP1A2 and UGT activity (Farrell 2014 Discussion paragraph 5).",
+      source_name = "Sex (Female)"
     ),
     HEPIMP_CP_SCORE = list(
-      description        = "Child-Pugh composite score for chronic liver disease severity (integer)",
-      units              = "(integer score, 5-15 for CLD; 0 by convention for healthy)",
-      type               = "count",
+      description = "Child-Pugh composite score for chronic liver disease severity (integer)",
+      units = "(integer score, 5-15 for CLD; 0 by convention for healthy)",
+      type = "count",
       reference_category = "0 (healthy; no CLD)",
-      notes              = "Child-Pugh integer score (Class A = 5-6, Class B = 7-9, Class C = 10-15). Healthy subjects without CLD are assigned HEPIMP_CP_SCORE = 0 so the model gates the CP effect off (no CL/F reduction). Linear-in-score effect on CL/F for CLD patients: factor = e_cp_cl * (1 + e_cp_slope * (HEPIMP_CP_SCORE - 5)) = 0.536 * (1 - 0.113 * (CP - 5)) (Farrell 2014 Table 3 footnote and rows 'CL/F ~ CP Score 5' and 'CL/F ~ CP Score > 5'). CP Class A patients (score 5-6) have 46-59% lower CL/F than the healthy reference; Class B patients (score 7-9) have 59-71% lower CL/F (Farrell 2014 Results, paragraph after Table 3).",
-      source_name        = "Child-Pugh score"
+      notes = "Child-Pugh integer score (Class A = 5-6, Class B = 7-9, Class C = 10-15). Healthy subjects without CLD are assigned HEPIMP_CP_SCORE = 0 so the model gates the CP effect off (no CL/F reduction). Linear-in-score effect on CL/F for CLD patients: factor = e_cp_cl * (1 + e_cp_slope * (HEPIMP_CP_SCORE - 5)) = 0.536 * (1 - 0.113 * (CP - 5)) (Farrell 2014 Table 3 footnote and rows 'CL/F ~ CP Score 5' and 'CL/F ~ CP Score > 5'). CP Class A patients (score 5-6) have 46-59% lower CL/F than the healthy reference; Class B patients (score 7-9) have 59-71% lower CL/F (Farrell 2014 Results, paragraph after Table 3).",
+      source_name = "Child-Pugh score"
     ),
     RACE_ASIAN_NORTHEAST = list(
-      description        = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-North East Asian: White, Black, South/Central Asian, Other)",
-      notes              = "Carries TWO multiplicative fractional-change effects in this model: (1) CL/F: East Asians have 52% lower apparent clearance than non-East-Asians (Farrell 2014 Table 3: 'CL/F ~ East Asians' multiplier 0.476, 95% CI 0.395-0.557). (2) SLOP: in CLD patients, East Asians have 34% lower linear-slope drug-induced platelet-production effect (Farrell 2014 Table 6: 'SLOP ~ East Asians' multiplier 0.660, 95% CI 0.529-0.791). In the source data set the East Asian subgroup is exclusively Japanese (Study 2, n=38) plus n=7 East Asian patients from Study 3.",
-      source_name        = "East Asian",
-      source_alias       = "RACE_NEAS (working column name before the 2026-06-19 canonical-register standardization; renamed to RACE_ASIAN_NORTHEAST)"
+      notes = "Carries TWO multiplicative fractional-change effects in this model: (1) CL/F: East Asians have 52% lower apparent clearance than non-East-Asians (Farrell 2014 Table 3: 'CL/F ~ East Asians' multiplier 0.476, 95% CI 0.395-0.557). (2) SLOP: in CLD patients, East Asians have 34% lower linear-slope drug-induced platelet-production effect (Farrell 2014 Table 6: 'SLOP ~ East Asians' multiplier 0.660, 95% CI 0.529-0.791). In the source data set the East Asian subgroup is exclusively Japanese (Study 2, n=38) plus n=7 East Asian patients from Study 3.",
+      source_name = "East Asian",
+      source_alias = "RACE_NEAS (working column name before the 2026-06-19 canonical-register standardization; renamed to RACE_ASIAN_NORTHEAST)"
     ),
     RACE_ASIAN_SOUTHCENTRAL = list(
-      description        = "South / Central Asian race indicator (Indian, Pakistani, Bangladeshi, Sri Lankan, Nepali, or Central Asian heritage)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "South / Central Asian race indicator (Indian, Pakistani, Bangladeshi, Sri Lankan, Nepali, or Central Asian heritage)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-South/Central Asian: White, Black, East Asian, Other)",
-      notes              = "Multiplicative fractional change on Vc/F: South/Central Asian CLD patients have an apparent central volume of distribution approximately 3-fold higher than all other races (Farrell 2014 Table 3: 'Vc/F ~ South/Central Asians' multiplier 2.98, 95% CI 2.21-3.75). Farrell 2014 Discussion attributes this to lower median serum albumin (29 vs 35 umol/L in non-S/C-Asian CLD patients) and to a higher proportion of serial-sampling subjects in the South/Central Asian subgroup of Study 3. In the source data set, 21 of the 41 PK-substudy patients in Study 3 (51%) were South/Central Asian.",
-      source_name        = "South/Central Asian"
+      notes = "Multiplicative fractional change on Vc/F: South/Central Asian CLD patients have an apparent central volume of distribution approximately 3-fold higher than all other races (Farrell 2014 Table 3: 'Vc/F ~ South/Central Asians' multiplier 2.98, 95% CI 2.21-3.75). Farrell 2014 Discussion attributes this to lower median serum albumin (29 vs 35 umol/L in non-S/C-Asian CLD patients) and to a higher proportion of serial-sampling subjects in the South/Central Asian subgroup of Study 3. In the source data set, 21 of the 41 PK-substudy patients in Study 3 (51%) were South/Central Asian.",
+      source_name = "South/Central Asian"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 107L,
-    n_subjects_cld  = 79L,
-    n_studies       = 3L,
-    age_range       = "19-81 years (median 50)",
-    weight_range    = "40.6-102 kg (median 67.9)",
-    sex_female_pct  = 27.0,
-    race_ethnicity  = c(White = 35, BlackAfricanAmerican = 2, EastAsian = 42, SouthCentralAsian = 20, Other = 2),
-    disease_state   = "Pooled: 28 healthy adult male volunteers (Study 1, single dose) and 79 thrombocytopenic adult male and female patients with chronic liver disease (Studies 2 and 3, repeat once-daily dosing). CLD patients had baseline platelet counts < 50 Gi/L (median 41); Child-Pugh classification A in 37 patients, B in 40, C in 2.",
-    dose_range      = "Study 1 healthy volunteers: single oral 30, 50, or 75 mg. Study 2 Japanese CLD: 12.5, 25, or 37.5 mg PO QD x 14 d. Study 3 CLD: 75 mg PO QD x 14 d.",
-    regions         = "Multinational; the East Asian (Japanese) CLD cohort is Study 2; Study 3 included a South/Central Asian CLD subgroup (51% of the PK substudy).",
-    samples         = "786 plasma eltrombopag concentrations across the 107 subjects; 451 platelet count observations across the 79 CLD patients.",
-    notes           = "PD parameters are calibrated to the CLD platelet response: the typical KIN (0.211 Gi/L/h) is much lower than the value previously reported for healthy and ITP populations (1.43); the typical baseline circulating platelet count is 41 Gi/L (Farrell 2014 Table 2 CLD median). For typical-value simulations of healthy subjects use the PK layer only (HEPIMP_CP_SCORE = 0, baseline platelet population not modelled here). Baseline demographics from Farrell 2014 Tables 1 and 2."
+    species = "human",
+    n_subjects = 107L,
+    n_subjects_cld = 79L,
+    n_studies = 3L,
+    age_range = "19-81 years (median 50)",
+    weight_range = "40.6-102 kg (median 67.9)",
+    sex_female_pct = 27.0,
+    race_ethnicity = c(White = 35, BlackAfricanAmerican = 2, EastAsian = 42, SouthCentralAsian = 20, Other = 2),
+    disease_state = "Pooled: 28 healthy adult male volunteers (Study 1, single dose) and 79 thrombocytopenic adult male and female patients with chronic liver disease (Studies 2 and 3, repeat once-daily dosing). CLD patients had baseline platelet counts < 50 Gi/L (median 41); Child-Pugh classification A in 37 patients, B in 40, C in 2.",
+    dose_range = "Study 1 healthy volunteers: single oral 30, 50, or 75 mg. Study 2 Japanese CLD: 12.5, 25, or 37.5 mg PO QD x 14 d. Study 3 CLD: 75 mg PO QD x 14 d.",
+    regions = "Multinational; the East Asian (Japanese) CLD cohort is Study 2; Study 3 included a South/Central Asian CLD subgroup (51% of the PK substudy).",
+    samples = "786 plasma eltrombopag concentrations across the 107 subjects; 451 platelet count observations across the 79 CLD patients.",
+    notes = "PD parameters are calibrated to the CLD platelet response: the typical KIN (0.211 Gi/L/h) is much lower than the value previously reported for healthy and ITP populations (1.43); the typical baseline circulating platelet count is 41 Gi/L (Farrell 2014 Table 2 CLD median). For typical-value simulations of healthy subjects use the PK layer only (HEPIMP_CP_SCORE = 0, baseline platelet population not modelled here). Baseline demographics from Farrell 2014 Tables 1 and 2."
   )
 
   ini({

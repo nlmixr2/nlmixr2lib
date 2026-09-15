@@ -21,8 +21,8 @@ Polito_2016_fludrocortisone <- function() {
   )
   vignette <- "Polito_2016_fludrocortisone"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ug/L"
   )
 
@@ -30,17 +30,17 @@ Polito_2016_fludrocortisone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "fludrocortisone", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "fludrocortisone", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "fludrocortisone", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SAPS_II = list(
-      description        = "New Simplified Acute Physiology Score II at ICU admission",
-      units              = "points",
-      type               = "continuous",
+      description = "New Simplified Acute Physiology Score II at ICU admission",
+      units = "points",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (computed during the first 24 hours of ",
         "ICU admission per Le Gall, Lemeshow & Saulnier 1993). Power ",
         "effect on CL/F and Tlag: theta_i = theta_pop * exp(eta_i) * ",
@@ -52,22 +52,22 @@ Polito_2016_fludrocortisone <- function() {
         "oral clearance. RSE 39 % on the Tlag exponent and 35 % on the ",
         "CL/F exponent."
       ),
-      source_name        = "SAPSII"
+      source_name = "SAPSII"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 14L,
-    n_enrolled      = 21L,
-    n_studies       = 1L,
-    age_range       = "Adults (detectable subset: median 65 years, IQR 57-75)",
-    age_median      = "65 years (detectable subset)",
-    weight_range    = "Detectable subset: median 71 kg, IQR 60-84",
-    weight_median   = "71 kg (detectable subset)",
-    sex_female_pct  = 43,
-    saps_ii_median  = 53,
-    disease_state   = paste0(
+    species = "human",
+    n_subjects = 14L,
+    n_enrolled = 21L,
+    n_studies = 1L,
+    age_range = "Adults (detectable subset: median 65 years, IQR 57-75)",
+    age_median = "65 years (detectable subset)",
+    weight_range = "Detectable subset: median 71 kg, IQR 60-84",
+    weight_median = "71 kg (detectable subset)",
+    sex_female_pct = 43,
+    saps_ii_median = 53,
+    disease_state = paste0(
       "Adults with septic shock (clinically or microbiologically ",
       "documented source of infection; at least two signs of tissue ",
       "hypoperfusion / organ dysfunction such as urinary output ",
@@ -77,20 +77,20 @@ Polito_2016_fludrocortisone <- function() {
       "endocrine disorders or any condition / treatment that may affect ",
       "cortisol synthesis or metabolism were excluded."
     ),
-    dose_range      = paste0(
+    dose_range = paste0(
       "Single 50 ug oral dose of fludrocortisone acetate administered ",
       "via naso-gastric tube within the first 3 hours of septic shock ",
       "onset and prior to any other corticotherapy (Methods 'Patients ",
       "and settings')."
     ),
-    regions         = "France (single-centre, Raymond Poincare Hospital, Garches).",
+    regions = "France (single-centre, Raymond Poincare Hospital, Garches).",
     sampling_design = paste0(
       "Arterial blood sampled pre-dose and every 30 min for 6 h, then ",
       "hourly to 18 h. Plasma fludrocortisone quantified by LC-MS/MS ",
       "(Oasis-HLB solid-phase extraction); LLOQ 0.10 ug/L. BLQ ",
       "observations handled in the likelihood (censored-data SAEM)."
     ),
-    notes           = paste0(
+    notes = paste0(
       "Ancillary study to the CRISTAL trial (NCT00318942) at Raymond ",
       "Poincare Hospital (Garches, France), recruiting December 2010 to ",
       "May 2012. Of 21 enrolled patients, 7 (33 %) had undetectable ",
@@ -112,9 +112,9 @@ Polito_2016_fludrocortisone <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Adult age (years)",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste0(
+      units = "years",
+      type = "continuous",
+      notes = paste0(
         "Screened in the covariate analysis but not retained in the ",
         "Polito 2016 final model (Methods 'Population pharmacokinetic ",
         "analysis'; Results 'Population pharmacokinetic analysis')."
@@ -122,50 +122,50 @@ Polito_2016_fludrocortisone <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened as 'gender' in the covariate analysis but not retained."
       )
     ),
     WT = list(
       description = "Total body weight (kg)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Screened as 'total body weight' in the covariate analysis but ",
         "not retained."
       )
     ),
     PROTEIN = list(
       description = "Serum total protein (g/L)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     ALBUMIN = list(
       description = "Serum albumin (g/L)",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     CREATININE = list(
       description = "Serum creatinine (umol/L)",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     DIURESIS = list(
       description = "24-hour urine output (mL/24 h)",
-      units       = "mL/24h",
-      type        = "continuous",
-      notes       = "Screened but not retained."
+      units = "mL/24h",
+      type = "continuous",
+      notes = "Screened but not retained."
     ),
     PPI = list(
       description = "Proton pump inhibitor co-medication indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened but not retained as a fitted covariate in the final ",
         "model. Discussion suggests PPI co-medication may reduce ",
         "fludrocortisone absorption (9/14 in the detectable group vs ",

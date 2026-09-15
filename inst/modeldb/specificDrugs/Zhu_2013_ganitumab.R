@@ -9,17 +9,17 @@ Zhu_2013_ganitumab <- function() {
   # anti-idiotypic antibody sandwich immunoassay (Zhu 2013 Methods,
   # "Bioanalytical Assays"), not in plasma.
   compartmentData <- list(
-    central     = list(analyte = "ganitumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "ganitumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "ganitumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     TUMTP_PANC = list(
-      description        = "Pancreatic cancer type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pancreatic cancer type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (other advanced solid cancers)",
-      notes              = paste(
+      notes = paste(
         "The single most significant covariate in the analysis (dMOF = -55.971, P < .001),",
         "entered on BOTH CL and Vc before any other covariate was formally tested",
         "(Zhu 2013 Results, 'Base PK Model Generation'). Zhu 2013 Table 1 reports the two",
@@ -32,14 +32,14 @@ Zhu_2013_ganitumab <- function() {
         "covariatesDataExcluded$CONMED_GEMCITABINE.",
         "Cohort split: 37 of 99 (37.4%) pancreatic, 62 of 99 (62.6%) non-pancreatic."
       ),
-      source_name        = "cancer type (pancreatic vs non-pancreatic)"
+      source_name = "cancer type (pancreatic vs non-pancreatic)"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL (exponent 0.984) and on Vc (exponent 0.559); Zhu 2013 Table 1.",
         "Reference 74.7 kg. Zhu 2013 equation (3) defines the reference as 'the median of the",
         "covariate among patients' but never tabulates the cohort medians, and the parenthetical",
@@ -54,14 +54,14 @@ Zhu_2013_ganitumab <- function() {
         "reproduces all four published values exactly; 70 kg reproduces none of them",
         "(it predicts 1.24 / 2.06 / 0.73 / 1.21). See the vignette Errata."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL only (exponent -0.859); Zhu 2013 Table 1, whose footnote gives",
         "the unit as g/L, so no g/dL conversion is applied. Reference 40 g/L is ASSUMED -- Zhu 2013",
         "defines the reference as the cohort median (equation 3) but never reports the median or",
@@ -71,14 +71,14 @@ Zhu_2013_ganitumab <- function() {
         "effect: a user working with their own cohort should re-centre on their own median.",
         "See the vignette Errata."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL only (exponent -0.394); Zhu 2013 Table 1, whose footnote gives",
         "the unit as mg/dL. Reference 1 mg/dL is ASSUMED on the same basis as ALB above -- the",
         "cohort median creatinine is not reported anywhere in Zhu 2013 or its supplement.",
@@ -88,7 +88,7 @@ Zhu_2013_ganitumab <- function() {
         "derived from WT and CR was deliberately excluded from the covariate screen as collinear",
         "(Zhu 2013 Methods). See the vignette Errata."
       ),
-      source_name        = "CR"
+      source_name = "CR"
     )
   )
 
@@ -132,11 +132,11 @@ Zhu_2013_ganitumab <- function() {
   #     STUDY_<id> contrast to record.
   covariatesDataExcluded <- list(
     CONMED_GEMCITABINE = list(
-      description        = "Concomitant gemcitabine coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant gemcitabine coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ganitumab without gemcitabine)",
-      notes              = paste(
+      notes = paste(
         "Screened on CL and on Vc and NOT retained -- a headline negative finding of Zhu 2013.",
         "Tested alone, gemcitabine coadministration was significant (dMOF = -34.848, P < .001),",
         "but it was confounded with pancreatic cancer type, which was the stronger effect",
@@ -148,56 +148,80 @@ Zhu_2013_ganitumab <- function() {
         "46 of 99 patients (46.5%) received concomitant gemcitabine.",
         "No point estimate is published, so no coefficient can be encoded."
       ),
-      source_name        = "gemcitabine coadministration"
+      source_name = "gemcitabine coadministration"
     ),
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing. No point estimate published."
     ),
     SEXF = list(
-      description = "Sex", units = "(binary)", type = "binary",
+      description = "Sex",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
       notes = "Reached stage 2 (formal stepwise testing) on BOTH CL and Vc and was eliminated from each. No point estimate published."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing. Body weight, which did advance and was retained, is the correlated size measure. No point estimate published."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing. Unlike AST, ALT and ALP, bilirubin did not survive stage 1. No point estimate published."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Reached stage 2 (formal stepwise testing) on CL and was eliminated. No point estimate published."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Reached stage 2 (formal stepwise testing) on CL and was eliminated. No point estimate published."
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "U/L", type = "continuous",
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       notes = "Reached stage 2 (formal stepwise testing) on BOTH CL and Vc -- the only laboratory covariate tested on Vc -- and was eliminated from each. No point estimate published."
     ),
     LDH = list(
-      description = "Lactate dehydrogenase", units = "U/L", type = "continuous",
+      description = "Lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       notes = "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing. No point estimate published."
     ),
     BUN = list(
-      description = "Blood urea nitrogen", units = "mmol/L", type = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       notes = "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing. Note that serum creatinine, the other nitrogenous renal marker screened, WAS retained. No point estimate published."
     ),
     NEUT = list(
-      description = "Absolute neutrophil count", units = "10^9/L", type = "continuous",
+      description = "Absolute neutrophil count",
+      units = "10^9/L",
+      type = "continuous",
       notes = "Reached stage 2 (formal stepwise testing) on CL and was eliminated. No point estimate published."
     ),
     ECOG_GE1 = list(
-      description = "ECOG performance status at or above 1", units = "(binary)", type = "binary",
+      description = "ECOG performance status at or above 1",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG 0)",
       notes = "Zhu 2013 screened ECOG performance status as a three-level categorical (0, 1, 2); it reached stage 2 (formal stepwise testing) on CL and was eliminated. The binary at-or-above-1 encoding here is the register's canonical form; the paper published no point estimate for any level."
     ),
     CRCL = list(
-      description = "MDRD-estimated glomerular filtration rate", units = "mL/min/1.73 m^2", type = "continuous",
+      description = "MDRD-estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       notes = paste(
         "Reached stage 2 (formal stepwise testing) on CL and was eliminated. Zhu 2013 Methods",
         "computed it with the MDRD formula, which the CRCL register entry admits as a source alias.",
@@ -210,7 +234,9 @@ Zhu_2013_ganitumab <- function() {
       )
     ),
     FPG = list(
-      description = "Fasting blood glucose", units = "mmol/L", type = "continuous",
+      description = "Fasting blood glucose",
+      units = "mmol/L",
+      type = "continuous",
       notes = paste(
         "Stage 1 only: screened graphically against CL, did not advance to formal stepwise testing.",
         "Glucose is mechanistically interesting for an IGF1R antagonist (IGF1R blockade causes",
@@ -222,13 +248,13 @@ Zhu_2013_ganitumab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 3L,
     n_observations = 1227L,
-    disease_state  = "Adults with metastatic pancreatic cancer or other advanced solid cancers. 37 of 99 (37.4%) had pancreatic cancer and 62 of 99 (62.6%) had non-pancreatic advanced solid tumours; 46 of 99 (46.5%) received concomitant gemcitabine.",
-    dose_range     = "Ganitumab 1-20 mg/kg intravenously once every 2 weeks (Q2W) in all studies (Zhu 2013 Supplemental Table 1 footnote a).",
-    notes          = paste(
+    disease_state = "Adults with metastatic pancreatic cancer or other advanced solid cancers. 37 of 99 (37.4%) had pancreatic cancer and 62 of 99 (62.6%) had non-pancreatic advanced solid tumours; 46 of 99 (46.5%) received concomitant gemcitabine.",
+    dose_range = "Ganitumab 1-20 mg/kg intravenously once every 2 weeks (Q2W) in all studies (Zhu 2013 Supplemental Table 1 footnote a).",
+    notes = paste(
       "Model-building dataset pooled Studies 1-3: Study 1 (NCT00630552, n = 35, 12 mg/kg,",
       "metastatic pancreatic cancer, ganitumab + gemcitabine), Study 2 (NCT00562380, n = 53,",
       "1/3/10/12/20 mg/kg, advanced solid tumours, ganitumab alone) and Study 3 (NCT00974896,",

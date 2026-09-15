@@ -33,7 +33,7 @@ Ebihara_2025_tebipenem <- function() {
     sep = " "
   )
   vignette <- "Ebihara_2025_tebipenem"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE: Ebihara 2025 Methods 4.1 states a
@@ -42,22 +42,22 @@ Ebihara_2025_tebipenem <- function() {
   # Vd/F, so the central state is plasma tebipenem and the depot is the
   # absorption site.
   compartmentData <- list(
-    depot   = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tebipenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance, reported by the source as raw (NOT",
         "BSA-normalized) mL/min. Ebihara 2025 abbreviates it CCR and uses it",
         "only to allocate a subject to one of four renal-function strata; no",
         "continuous within-stratum relationship is estimated."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Stratum boundaries are the Ebihara 2025 Table 3 column headers and",
         "Methods 4.1: 'Renal function was evaluated in the following four",
         "groups: CCR >= 80 mL/min, 50 <= CCR < 80 mL/min, 30 <= CCR < 50",
@@ -75,19 +75,19 @@ Ebihara_2025_tebipenem <- function() {
         "Binary stratification of CRCL at a threshold has precedent in",
         "NA_NA_lidocaine.R; this model generalises it to four bands."
       ),
-      source_name        = "CCR"
+      source_name = "CCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17,
-    n_studies      = 1,
-    weight_median  = "61.9 kg (cohort mean)",
-    height_median  = "164.3 cm (cohort mean)",
-    bsa_median     = "1.67 m^2 (cohort mean)",
-    regions        = "Japan",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 17,
+    n_studies = 1,
+    weight_median = "61.9 kg (cohort mean)",
+    height_median = "164.3 cm (cohort mean)",
+    bsa_median = "1.67 m^2 (cohort mean)",
+    regions = "Japan",
+    disease_state = paste(
       "Underlying PK cohort: healthy Japanese volunteers plus subjects with",
       "reduced renal function (Nakashima 2009 phase 1). Simulation target",
       "population: Japanese adults with urinary tract infection caused by",
@@ -100,13 +100,13 @@ Ebihara_2025_tebipenem <- function() {
       "(65.8 mL/min, n = 6); 30 <= CCR < 50 mL/min (40.2 mL/min, n = 2);",
       "CCR < 30 mL/min (9.1 mL/min, n = 3)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Simulated oral regimens: 150 mg q12h, 250 mg q12h, 300 mg q8h and",
       "600 mg q8h. Tebipenem pivoxil is approved in Japan for pediatric use",
       "only (4 mg/kg twice daily, up to 6 mg/kg); no adult indication is",
       "established, which is what this analysis was designed to support."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Ebihara 2025 Methods 4.1 ('The Japanese study",
       "population (n = 17) had the following demographic characteristics:",
       "mean height, 164.3 cm; mean body weight, 61.9 kg; and mean BSA, 1.67",

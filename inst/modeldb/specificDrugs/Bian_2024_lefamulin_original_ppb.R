@@ -37,7 +37,7 @@ Bian_2024_lefamulin_original_ppb <- function() {
     sep = " "
   )
   vignette <- "Bian_2024_lefamulin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Oral doses target depot (immediate) and depot2 (delayed); intravenous
   # doses target central. Declared explicitly because buildModelDb()'s
@@ -48,29 +48,29 @@ Bian_2024_lefamulin_original_ppb <- function() {
   # biological matrix. verified = TRUE: analyte and specimen checked against
   # Bian 2024 Figure 2 (model diagram) and the Methods text.
   compartmentData <- list(
-    depot       = list(analyte = "lefamulin", units = "mg",   specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "lefamulin", units = "mg",   specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "lefamulin", units = "mg",   specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "lefamulin", units = "mg",   specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "lefamulin", units = "mg",   specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "lefamulin", units = "mg",   specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "lefamulin", units = "mg",   specimen = "plasma", verified = TRUE),
-    peripheral2 = list(analyte = "lefamulin", units = "mg",   specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "lefamulin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "lefamulin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "lefamulin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "lefamulin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "lefamulin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "lefamulin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "lefamulin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "lefamulin", units = "mg", specimen = "plasma", verified = TRUE),
     # The ELF state is a Sheiner-style effect compartment and therefore holds a
     # CONCENTRATION (mg/L), not an amount: Bian 2024 Methods, "ELF, as an
     # effect compartment, was linked to the central compartment of the PopPK
     # model", with no ELF volume reported anywhere in the paper, Zhang 2019, or
     # the FDA review.
-    elf         = list(analyte = "lefamulin", units = "mg/L", specimen = "epithelial lining fluid", verified = TRUE)
+    elf = list(analyte = "lefamulin", units = "mg/L", specimen = "epithelial lining fluid", verified = TRUE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (non-power) proportional shift on CL:",
         "CL = [1 + e_alb_cl * (ALB_gdL - 4.1)] * clphase * theta1 (Bian 2024",
         "Equation 1). The structural coefficient was calibrated in g/dL, so",
@@ -83,14 +83,14 @@ Bian_2024_lefamulin_original_ppb <- function() {
         "rather than theta20 itself; see the ini() source-trace comment for the",
         "three independent confirmations. Baseline (time-fixed) per subject."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear proportional shift on the first peripheral volume:",
         "Vp1 = theta4 * vp1phase * (1 + e_wt_vp * (WT - 78)) (Bian 2024",
         "Equation 4). Reference 78 kg is the pooled model-building cohort",
@@ -99,14 +99,14 @@ Bian_2024_lefamulin_original_ppb <- function() {
         "WTKG on Vp1' as 1.0129, i.e. (1 + theta27) with theta27 = 0.0129 per",
         "kg. Baseline (time-fixed) per subject."
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     FED = list(
-      description        = "Fed state at the time of the oral dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of the oral dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = fasted (the FAST = 1 stratum of Bian 2024 Equations 7-9)",
-      notes              = paste(
+      notes = paste(
         "1 = dose administered fed, 0 = fasted. Bian 2024 Equations 7-9 write",
         "each affected parameter as theta * FAST + theta * theta_fed * FEDD",
         "with FAST = 1 - FED and FEDD = FED, i.e. the tabulated fed values are",
@@ -116,14 +116,14 @@ Bian_2024_lefamulin_original_ppb <- function() {
         "and total oral bioavailability by 0.763. Applies to oral doses only;",
         "intravenous doses bypass both depots."
       ),
-      source_name        = "FEDD"
+      source_name = "FEDD"
     ),
     STUDY_LEFAMULIN_PHASE1 = list(
-      description        = "Phase 1 study cohort indicator in the pooled lefamulin popPK analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 1 study cohort indicator in the pooled lefamulin popPK analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with STUDY_LEFAMULIN_PHASE2 also 0 (Phase 3 studies; the reference stratum)",
-      notes              = paste(
+      notes = paste(
         "1 = subject enrolled in one of the Phase 1 studies (n = 98) of the",
         "pooled model-building dataset, 0 = otherwise. Paired with",
         "STUDY_LEFAMULIN_PHASE2; both 0 selects Phase 3 (n = 622), the",
@@ -131,53 +131,57 @@ Bian_2024_lefamulin_original_ppb <- function() {
         "2024 Equations 1, 3, 4: 'When PHASE = 3, CLPHASE = 1'). Shifts CL,",
         "CLd1 and Vp1. Subject-level (time-fixed)."
       ),
-      source_name        = "PHASE"
+      source_name = "PHASE"
     ),
     STUDY_LEFAMULIN_PHASE2 = list(
-      description        = "Phase 2 study cohort indicator in the pooled lefamulin popPK analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2 study cohort indicator in the pooled lefamulin popPK analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with STUDY_LEFAMULIN_PHASE1 also 0 (Phase 3 studies; the reference stratum)",
-      notes              = paste(
+      notes = paste(
         "1 = subject enrolled in the Phase 2 study (n = 129) of the pooled",
         "model-building dataset, 0 = otherwise. Paired with",
         "STUDY_LEFAMULIN_PHASE1. Shifts CL, CLd1 and Vp1.",
         "Subject-level (time-fixed)."
       ),
-      source_name        = "PHASE"
+      source_name = "PHASE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 849L,
-    n_studies      = 3L,
-    age_range      = "18-97 years",
-    age_median     = "57 years",
-    weight_range   = "31-174.6 kg",
-    weight_median  = "78 kg",
-    height_range   = "133-200 cm",
-    height_median  = "170 cm",
+    species = "human",
+    n_subjects = 849L,
+    n_studies = 3L,
+    age_range = "18-97 years",
+    age_median = "57 years",
+    weight_range = "31-174.6 kg",
+    weight_median = "78 kg",
+    height_range = "133-200 cm",
+    height_median = "170 cm",
     sex_female_pct = 38.8,
-    race_ethnicity = c(White = 78.2, Black = 8.13, Asian = 8.48,
-                       `American Indian/Alaskan Native` = 3.65,
-                       `Native Hawaiian/Other Pacific Islander` = 0.471,
-                       Other = 1.06),
-    disease_state  = paste(
+    race_ethnicity = c(
+      White = 78.2,
+      Black = 8.13,
+      Asian = 8.48,
+      `American Indian/Alaskan Native` = 3.65,
+      `Native Hawaiian/Other Pacific Islander` = 0.471,
+      Other = 1.06
+    ),
+    disease_state = paste(
       "Pooled Phase 1 healthy adults (n = 98), Phase 2 acute bacterial skin",
       "and skin structure infection patients (n = 129), and Phase 3",
       "community-acquired bacterial pneumonia (CABP) patients (n = 622)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "150 mg q12h intravenous infusion over 1, 1.5 or 2 h, and 600 mg q12h",
       "oral under fasted or fed conditions (the regimens simulated in",
       "Supplementary Table S6)."
     ),
-    regions        = "Foreign (predominantly North American and European) model-building studies; externally validated in China.",
-    albumin_range  = "2-5.6 g/dL",
+    regions = "Foreign (predominantly North American and European) model-building studies; externally validated in China.",
+    albumin_range = "2-5.6 g/dL",
     albumin_median = "4.1 g/dL",
     renal_function = "Creatinine clearance 6.2-192.4 mL/min (median 80.2 mL/min); CLcr was not retained as a covariate.",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Bian 2024 Supplementary Table S5. The final",
       "model was taken from the previously published foreign analysis (Zhang",
       "2019; FDA XENLETA review) and externally validated against 33 Chinese",

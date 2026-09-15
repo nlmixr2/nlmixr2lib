@@ -32,11 +32,11 @@ Huang_2025_colistinSulfate <- function() {
     sep = " "
   )
   vignette <- "Huang_2025_colistinSulfate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CYSC = list(
-      description        = paste(
+      description = paste(
         "Serum cystatin C. Retained as the sole renal-function covariate on",
         "clearance. Cockcroft-Gault creatinine clearance (CrCL), serum",
         "creatinine, blood urea nitrogen and uric acid were all screened and",
@@ -50,10 +50,10 @@ Huang_2025_colistinSulfate <- function() {
         "rate) and so remains a usable marker of residual renal function",
         "during CRRT."
       ),
-      units              = "mg/L",
-      type               = "continuous",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL centred on 2.31 mg/L, the cohort MEDIAN, stated",
         "in the Results text immediately below the final-model equation",
         "('The values 2.31 and 65 were the medians for CYSC and WT'). This",
@@ -66,14 +66,14 @@ Huang_2025_colistinSulfate <- function() {
         "is the renal covariate in a continuous-renal-replacement-therapy",
         "population."
       ),
-      source_name        = "CysC"
+      source_name = "CysC"
     ),
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on CL centred on 65 kg, the cohort MEDIAN (Results",
         "text below the final-model equation), NOT the Table 1 cohort mean",
         "of 68.6 +/- 14.1 kg and NOT the conventional 70 kg. The Methods",
@@ -86,7 +86,7 @@ Huang_2025_colistinSulfate <- function() {
         "textbook fixed 0.75 on 70 kg. Simulation range 50-80 kg (Figure 5",
         "note). Weight does not enter V1, V2 or Q in the final model."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -99,28 +99,32 @@ Huang_2025_colistinSulfate <- function() {
     # concentration of colistin was derived by summing the concentrations of
     # colistin A and B". The assayed analyte is therefore active colistin
     # itself, not a colistimethate-derived metabolite.
-    central     = list(
-      analyte  = "colistin sulfate (sum of colistin A and colistin B)",
-      units    = "mg", specimen = "plasma", verified = TRUE
+    central = list(
+      analyte = "colistin sulfate (sum of colistin A and colistin B)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "colistin sulfate (sum of colistin A and colistin B)",
-      units    = "mg", specimen = "plasma", verified = TRUE
+      analyte = "colistin sulfate (sum of colistin A and colistin B)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 20,
+    n_studies = 1,
     n_observations = 86,
-    age_mean       = "50.5 +/- 14.1 years",
-    weight_mean    = "68.6 +/- 14.1 kg",
-    weight_median  = "65 kg",
-    weight_range   = "50-80 kg (simulation range, Figure 5 note)",
+    age_mean = "50.5 +/- 14.1 years",
+    weight_mean = "68.6 +/- 14.1 kg",
+    weight_median = "65 kg",
+    weight_range = "50-80 kg (simulation range, Figure 5 note)",
     sex_female_pct = 25,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults with confirmed or suspected carbapenem-resistant",
       "organism (CRO) infection, all receiving CVVHDF for acute kidney injury",
       "for at least 48 h. Severe illness: SOFA 9.27 +/- 4.08, APACHE II",
@@ -141,15 +145,15 @@ Huang_2025_colistinSulfate <- function() {
       "UFR) reached significance on any PK parameter; the authors attribute",
       "this to a plateau effect at the high flow rates used."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1.0-2.0 MU daily intravenously (1 MU = 44 mg, i.e. 44-88 mg/day),",
       "divided q8h (85%) or q12h (15%); 1.5 MU daily in 85% of subjects.",
       "Infusion duration 0.5 h (90%) or 2 h (10%). A loading dose (twice the",
       "maintenance dose) was given to 50%. Three subjects with lung infection",
       "additionally received nebulized colistin sulfate."
     ),
-    regions        = "China (single centre, Nanning, Guangxi)",
-    notes          = paste(
+    regions = "China (single centre, Nanning, Guangxi)",
+    notes = paste(
       "Prospective single-centre observational study, May 2023 - January 2024",
       "(ChiCTR2300072191). Baseline demographics in Table 1. Sampling was",
       "rich within a maintenance-phase dosing interval: a pre-dose trough",

@@ -26,48 +26,48 @@ vandenBerg_2025_genericMab_allometricClVc_mbma <- function() {
   vignette <- "vandenBerg_2025_genericMab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg (intravenous into central; the paper's simulation used a single or three-weekly 100 mg dose)",
+    time = "day",
+    dosing = "mg (intravenous into central; the paper's simulation used a single or three-weekly 100 mg dose)",
     concentration = "mg/L (equivalently ug/mL; central amount in mg divided by Vc in L)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power scaling of CL and Vc, normalised to a 70 kg reference:",
         "P_WT = P_ref * (WT / 70)^exponent (van den Berg 2025 Supplementary Figure S7 caption,",
         "which gives the worked example CL_40kg = 0.22 * (40/70)^0.75 for the sibling",
         "configuration). Vp and Q are deliberately NOT weight-scaled in this configuration.",
         "The simulated weight range was 40-100 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE),
+    central = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE),
     peripheral1 = list(analyte = "genericMab", units = "mg", specimen = "serum", verified = FALSE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 143094L,
-    n_studies      = 160L,
-    n_models       = 160L,
-    n_mabs         = 69L,
-    weight_range   = "40-100 kg simulated (van den Berg 2025 Figure 4h and Figure S7B-E)",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 143094L,
+    n_studies = 160L,
+    n_models = 160L,
+    n_mabs = 69L,
+    weight_range = "40-100 kg simulated (van den Berg 2025 Figure 4h and Figure S7B-E)",
+    disease_state = paste(
       "Mixed; the pooled evidence base spans every indication in which a marketed canonical IgG",
       "mAb has had a population PK model published, plus healthy donors. Paediatric-only models",
       "were excluded (van den Berg 2025 Figure 1a)."
     ),
-    dose_range     = "100 mg intravenous, single dose or every 3 weeks (van den Berg 2025 Figure S7C-E)",
-    regions        = "Global; the collected models were not stratified by region.",
-    design         = paste(
+    dose_range = "100 mg intravenous, single dose or every 3 weeks (van den Berg 2025 Figure S7C-E)",
+    regions = "Global; the collected models were not stratified by region.",
+    design = paste(
       "Meta-analysis of published population PK model PARAMETER ESTIMATES. The weight exponents",
       "here are the medians of the 20 collected models whose only covariate was body weight, on",
       "CL and Vc; the disposition parameters are the medians over all 160 models",

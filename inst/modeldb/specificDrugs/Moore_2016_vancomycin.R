@@ -8,45 +8,45 @@ Moore_2016_vancomycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Moore 2016 Table 1: mean 95 kg, SD 27 (n = 14 adult ECMO patients). Centering value 95 kg confirmed in Figure 4 caption (dose simulation 'for the patient of median weight (95 kg) and creatinine clearance (84 ml/min)'). Used with an additive linear effect on the typical values of Vc and Vp: Vc_typ = 24.2 + 0.00638 * (WT - 95); Vp_typ = 32.3 + 0.0169 * (WT - 95) (Moore 2016 Table 2 V1WT and V2WT rows).",
-      source_name        = "WT"
+      notes = "Moore 2016 Table 1: mean 95 kg, SD 27 (n = 14 adult ECMO patients). Centering value 95 kg confirmed in Figure 4 caption (dose simulation 'for the patient of median weight (95 kg) and creatinine clearance (84 ml/min)'). Used with an additive linear effect on the typical values of Vc and Vp: Vc_typ = 24.2 + 0.00638 * (WT - 95); Vp_typ = 32.3 + 0.0169 * (WT - 95) (Moore 2016 Table 2 V1WT and V2WT rows).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Moore 2016 Table 1: mean 84 mL/min, SD 37 (n = 14). Centering value 84 mL/min confirmed in Figure 4 caption. Cockcroft-Gault method per Moore 2016 Table 1 footnote ('Renal impairment definition based on creatinine clearance calculated using the Cockcroft-Gault equation'). Stored under the canonical CRCL column with units mL/min (raw Cockcroft-Gault, not BSA-normalized), matching the existing Delattre_2010_amikacin.R and Goti_2018_vancomycin.R precedents in inst/references/covariate-columns.md. Used with an additive linear effect on the typical value of CL: CL_typ = 2.83 + 0.0154 * (CRCL - 84) (Moore 2016 Table 2 CLCRCL row).",
-      source_name        = "CRCL"
+      notes = "Moore 2016 Table 1: mean 84 mL/min, SD 37 (n = 14). Centering value 84 mL/min confirmed in Figure 4 caption. Cockcroft-Gault method per Moore 2016 Table 1 footnote ('Renal impairment definition based on creatinine clearance calculated using the Cockcroft-Gault equation'). Stored under the canonical CRCL column with units mL/min (raw Cockcroft-Gault, not BSA-normalized), matching the existing Delattre_2010_amikacin.R and Goti_2018_vancomycin.R precedents in inst/references/covariate-columns.md. Used with an additive linear effect on the typical value of CL: CL_typ = 2.83 + 0.0154 * (CRCL - 84) (Moore 2016 Table 2 CLCRCL row).",
+      source_name = "CRCL"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 14L,
-    n_studies        = 1L,
-    age_range        = "19-72 years",
-    age_mean         = "47 years (SD 16)",
-    weight_mean      = "95 kg (SD 27)",
-    sex_female_pct   = 21,
-    race_ethnicity   = "Not reported",
-    disease_state    = "Critically ill adults (>= 18 years) receiving extracorporeal membrane oxygenation (ECMO) therapy at Thomas Jefferson University Hospital. 86% venoarterial (VA) ECMO; 14% venovenous (VV) ECMO. Renal impairment by Cockcroft-Gault: 50% any (28.6% mild [60-89], 14.3% moderate [30-59], 7.15% severe [15-29]); 0% on renal replacement therapy.",
-    dose_range       = "Intravenous vancomycin per standard-of-care dosing; concentration sampling at 30, 60, 120, 240, and 360 minutes after the first infusion plus routine trough monitoring.",
-    regions          = "United States (single-center, Thomas Jefferson University Hospital, Philadelphia, PA)",
-    renal_function   = "Cockcroft-Gault CRCL mean 84 mL/min (SD 37); 50% had some renal impairment; no patient on renal replacement therapy at enrollment",
-    ecmo_type        = "86% venoarterial (VA), 14% venovenous (VV)",
+    species = "human",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "19-72 years",
+    age_mean = "47 years (SD 16)",
+    weight_mean = "95 kg (SD 27)",
+    sex_female_pct = 21,
+    race_ethnicity = "Not reported",
+    disease_state = "Critically ill adults (>= 18 years) receiving extracorporeal membrane oxygenation (ECMO) therapy at Thomas Jefferson University Hospital. 86% venoarterial (VA) ECMO; 14% venovenous (VV) ECMO. Renal impairment by Cockcroft-Gault: 50% any (28.6% mild [60-89], 14.3% moderate [30-59], 7.15% severe [15-29]); 0% on renal replacement therapy.",
+    dose_range = "Intravenous vancomycin per standard-of-care dosing; concentration sampling at 30, 60, 120, 240, and 360 minutes after the first infusion plus routine trough monitoring.",
+    regions = "United States (single-center, Thomas Jefferson University Hospital, Philadelphia, PA)",
+    renal_function = "Cockcroft-Gault CRCL mean 84 mL/min (SD 37); 50% had some renal impairment; no patient on renal replacement therapy at enrollment",
+    ecmo_type = "86% venoarterial (VA), 14% venovenous (VV)",
     n_concentrations = 65L,
-    notes            = "Demographics from Moore 2016 Table 1. ECMO circuit: ROTAFLOW centrifugal pump + CARDIOHELP system (Maquet) with poly-methyl-pentene QUADROX-D oxygenator; circuit primed with ~600 mL normal saline; cannulas Fem-Flex II (arterial) or Femtrak (venous). Assay: Roche Cobas C501 enzyme immunoassay, LLOQ 1.7 ug/mL. Modeling in NONMEM 7.3 with full-covariate-model approach (no stepwise selection). Final OFV minimization successful with condition number 345; ETA shrinkage 6.9% (V1) and 9.6% (CL); epsilon shrinkage 18%. Nonparametric bootstrap (n = 1000) used for 95% CIs."
+    notes = "Demographics from Moore 2016 Table 1. ECMO circuit: ROTAFLOW centrifugal pump + CARDIOHELP system (Maquet) with poly-methyl-pentene QUADROX-D oxygenator; circuit primed with ~600 mL normal saline; cannulas Fem-Flex II (arterial) or Femtrak (venous). Assay: Roche Cobas C501 enzyme immunoassay, LLOQ 1.7 ug/mL. Modeling in NONMEM 7.3 with full-covariate-model approach (no stepwise selection). Final OFV minimization successful with condition number 345; ETA shrinkage 6.9% (V1) and 9.6% (CL); epsilon shrinkage 18%. Nonparametric bootstrap (n = 1000) used for 95% CIs."
   )
 
   ini({

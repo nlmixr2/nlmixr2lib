@@ -1,54 +1,54 @@
 Kim_2017_fimasartan <- function() {
   description <- "Population PK-PD model for fimasartan (an angiotensin II receptor blocker) in healthy adult Korean men and men with mild or moderate hepatic impairment (Kim 2017). Plasma fimasartan is described by a 2-compartment model with parallel mixed-input absorption: a first-order arm with rate Ka and absorption lag time LAG (fraction F1 = (1 - alpha) * F of the dose) running in parallel with a zero-order arm of virtual duration D2 (fraction F2 = alpha * F of the dose), where the total relative bioavailability F is fixed at 0.18 in healthy subjects (Kim 2008) and incremented to 0.18 + IL1 in mild and 0.18 + IL2 in moderate hepatic impairment to capture the markedly higher Cmax observed in cirrhotic patients via reduced first-pass extraction and intrahepatic shunting. The PD model describes systolic and diastolic blood pressures as indirect-response (turnover) compartments with zero-order synthesis Kin inhibited by fimasartan via a sigmoid-Imax function E(C) = 1 - Emax * Cc / (EC50 + Cc) and first-order loss Kout = Kin / Base; the steady-state baseline rides a fixed cosinor circadian rhythm Bsl(t) = MESOR * (1 + Amp1% * cos(2*pi*(t - AC1)/24) + Amp2% * cos(2*pi*(t - AC2)/12)) with amplitudes and phases inherited from Park 2014 (healthy Korean reference). EC50 is stratified by hepatic-impairment severity: for SBP, healthy versus any-impairment pooled (mild + moderate); for DBP, healthy + mild versus moderate alone, reflecting the contrasting impact of hepatic dysfunction on the two pressure outputs."
-  reference   <- "Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon Y-R, Yim D-S. Decreased potency of fimasartan in liver cirrhosis was quantified using mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-49. doi:10.12793/tcp.2017.25.1.43. Bioavailability in healthy subjects (F = 0.18) inherited from Kim TH et al. (Eur J Drug Metab Pharmacokinet 2010). Circadian-rhythm amplitudes and phase shifts (Table 3) inherited from the Park 2014 cosinor model of blood-pressure rhythm in healthy Koreans."
-  vignette    <- "Kim_2017_fimasartan"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon Y-R, Yim D-S. Decreased potency of fimasartan in liver cirrhosis was quantified using mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-49. doi:10.12793/tcp.2017.25.1.43. Bioavailability in healthy subjects (F = 0.18) inherited from Kim TH et al. (Eur J Drug Metab Pharmacokinet 2010). Circadian-rhythm amplitudes and phase shifts (Table 3) inherited from the Park 2014 cosinor model of blood-pressure rhythm in healthy Koreans."
+  vignette <- "Kim_2017_fimasartan"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "fimasartan", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fimasartan", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fimasartan", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fimasartan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fimasartan", units = "mg", specimen = "plasma", verified = FALSE),
-    effect1     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect2     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect1 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2 = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (Child-Pugh Class A, score 5-6)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (Child-Pugh Class A, score 5-6)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; mutually exclusive with HEPIMP_MODSEV)",
-      notes              = "Time-fixed. Mild = Child-Pugh score 5-6 per Kim 2017 Methods 'Study subjects'. Used in both the PK model (additive increment IL1 on relative bioavailability F: F_mild = 0.18 + IL1) and in the SBP PD model (combined with HEPIMP_MODSEV as the any-impairment indicator for the EC50_AB switch; mild and moderate impairment share a common EC50_AB on SBP). Not used directly in the DBP PD model -- the DBP EC50 switch pools healthy + mild against moderate alone, so HEPIMP_MILD contributes only via the absence of HEPIMP_MODSEV.",
-      source_name        = "Mild hepatic impairment"
+      notes = "Time-fixed. Mild = Child-Pugh score 5-6 per Kim 2017 Methods 'Study subjects'. Used in both the PK model (additive increment IL1 on relative bioavailability F: F_mild = 0.18 + IL1) and in the SBP PD model (combined with HEPIMP_MODSEV as the any-impairment indicator for the EC50_AB switch; mild and moderate impairment share a common EC50_AB on SBP). Not used directly in the DBP PD model -- the DBP EC50 switch pools healthy + mild against moderate alone, so HEPIMP_MILD contributes only via the absence of HEPIMP_MODSEV.",
+      source_name = "Mild hepatic impairment"
     ),
     HEPIMP_MODSEV = list(
-      description        = "Moderate-or-severe hepatic impairment indicator (Child-Pugh Class B or C). In Kim 2017 the moderate cohort had Child-Pugh score 7-9 (Class B); no severe (Class C) subjects enrolled.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate-or-severe hepatic impairment indicator (Child-Pugh Class B or C). In Kim 2017 the moderate cohort had Child-Pugh score 7-9 (Class B); no severe (Class C) subjects enrolled.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal or mild hepatic function; mutually exclusive with HEPIMP_MILD)",
-      notes              = "Time-fixed. Moderate = Child-Pugh score 7-9 per Kim 2017 Methods 'Study subjects'; the column carries the canonical HEPIMP_MODSEV semantics so a downstream user enrolling a severe (Child-Pugh C) cohort would set this to 1 as well -- Kim 2017's reported coefficients IL2 (PK), EC50_AB minus EC50_H (SBP), and EC50_B minus EC50_HA (DBP) are calibrated to the moderate cohort only and should be treated as moderate-specific by users simulating severe disease. Used in the PK model (additive increment IL2 on F: F_moderate = 0.18 + IL2), in the SBP PD model (combined with HEPIMP_MILD as the any-impairment switch for EC50_AB), and in the DBP PD model (alone as the switch for EC50_B versus EC50_HA).",
-      source_name        = "Moderate hepatic impairment"
+      notes = "Time-fixed. Moderate = Child-Pugh score 7-9 per Kim 2017 Methods 'Study subjects'; the column carries the canonical HEPIMP_MODSEV semantics so a downstream user enrolling a severe (Child-Pugh C) cohort would set this to 1 as well -- Kim 2017's reported coefficients IL2 (PK), EC50_AB minus EC50_H (SBP), and EC50_B minus EC50_HA (DBP) are calibrated to the moderate cohort only and should be treated as moderate-specific by users simulating severe disease. Used in the PK model (additive increment IL2 on F: F_moderate = 0.18 + IL2), in the SBP PD model (combined with HEPIMP_MILD as the any-impairment switch for EC50_AB), and in the DBP PD model (alone as the switch for EC50_B versus EC50_HA).",
+      source_name = "Moderate hepatic impairment"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 18L,
-    n_studies        = 1L,
-    n_observations   = "288 plasma fimasartan concentrations and 180 paired blood-pressure observations (Kim 2017 Results 'Study subjects').",
-    age_range        = "26-56 years (means 48.8, 43.2, 48.2 in healthy / mild / moderate cohorts; Kim 2017 Table 1)",
-    weight_range     = "57.0-85.0 kg (means 71.8, 70.3, 65.6 in healthy / mild / moderate cohorts; Kim 2017 Table 1)",
-    sex_female_pct   = 0,
-    race_ethnicity   = c(Korean = 100),
-    disease_state    = "Adult Korean men in three balanced groups of six: healthy controls, mild hepatic impairment (Child-Pugh score 5-6), and moderate hepatic impairment (Child-Pugh score 7-9). All moderate-impairment subjects had chronic liver cirrhosis; two of six mild-impairment subjects had cirrhosis (Kim 2017 Discussion).",
-    dose_range       = "Single oral 120 mg fimasartan",
-    regions          = "Republic of Korea (Yonsei University College of Medicine, Severance Hospital; Catholic University of Korea, Seoul St. Mary's Hospital; Kyungpook National University Hospital, Daegu).",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    n_observations = "288 plasma fimasartan concentrations and 180 paired blood-pressure observations (Kim 2017 Results 'Study subjects').",
+    age_range = "26-56 years (means 48.8, 43.2, 48.2 in healthy / mild / moderate cohorts; Kim 2017 Table 1)",
+    weight_range = "57.0-85.0 kg (means 71.8, 70.3, 65.6 in healthy / mild / moderate cohorts; Kim 2017 Table 1)",
+    sex_female_pct = 0,
+    race_ethnicity = c(Korean = 100),
+    disease_state = "Adult Korean men in three balanced groups of six: healthy controls, mild hepatic impairment (Child-Pugh score 5-6), and moderate hepatic impairment (Child-Pugh score 7-9). All moderate-impairment subjects had chronic liver cirrhosis; two of six mild-impairment subjects had cirrhosis (Kim 2017 Discussion).",
+    dose_range = "Single oral 120 mg fimasartan",
+    regions = "Republic of Korea (Yonsei University College of Medicine, Severance Hospital; Catholic University of Korea, Seoul St. Mary's Hospital; Kyungpook National University Hospital, Daegu).",
     hepatic_function = "Six normal, six Child-Pugh Class A (mild), six Child-Pugh Class B (moderate). No Child-Pugh Class C (severe) subjects.",
-    notes            = "Open-label, single-dose, parallel-group study. Plasma fimasartan sampled at 0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 24, 32, 48 h post-dose. SBP and DBP sampled at 0, 1, 2, 3, 4, 8, 12, 24, 32, 48 h post-dose, each measurement preceded by a >= 5-minute seated rest. Covariates of age, weight, albumin, bilirubin, AST, ALT, gamma-GT, creatinine, and prothrombin time (INR) were screened but not retained in the final structural PK model (Kim 2017 Discussion); the only covariate effect retained is the hepatic-impairment indicator on relative bioavailability."
+    notes = "Open-label, single-dose, parallel-group study. Plasma fimasartan sampled at 0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 24, 32, 48 h post-dose. SBP and DBP sampled at 0, 1, 2, 3, 4, 8, 12, 24, 32, 48 h post-dose, each measurement preceded by a >= 5-minute seated rest. Covariates of age, weight, albumin, bilirubin, AST, ALT, gamma-GT, creatinine, and prothrombin time (INR) were screened but not retained in the final structural PK model (Kim 2017 Discussion); the only covariate effect retained is the hepatic-impairment indicator on relative bioavailability."
   )
 
   ini({

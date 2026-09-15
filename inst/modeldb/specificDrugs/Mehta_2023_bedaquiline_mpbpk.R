@@ -34,26 +34,26 @@ Mehta_2023_bedaquiline_mpbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1         = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2         = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    liver          = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
-    blood          = list(analyte = "bedaquiline", units = "mg", specimen = "blood cell", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    blood_m2       = list(analyte = "M2", units = "mg", specimen = "blood cell", verified = FALSE),
+    depot1 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    liver = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    blood = list(analyte = "bedaquiline", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    blood_m2 = list(analyte = "M2", units = "mg", specimen = "blood cell", verified = FALSE),
     peripheral1_m2 = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
-    lesion         = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
-    lung           = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
-    lesion_m2      = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE),
-    lung_m2        = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE)
+    lesion = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    lesion_m2 = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE),
+    lung_m2 = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives every physiological quantity in model(): cardiac output Qc = 312 * (WT/70)^0.75",
         "L/h, hepatic blood flow Qh = 0.227 * Qc, liver volume 0.0257 * WT L, lung volume",
         "0.0076 * WT L, blood-reservoir volume 0.0771 * WT L (0.0514 venous + 0.0257 arterial),",
@@ -63,26 +63,26 @@ Mehta_2023_bedaquiline_mpbpk <- function() {
         "(Methods 2.2, ESM S1); the distribution itself is not tabulated in the paper.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 500L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 500L,
+    disease_state = paste(
       "Pulmonary (drug-susceptible and multidrug-resistant) tuberculosis with cavitary disease.",
       "Virtual population; cavity presence/absence and cavity size were sampled from the observed",
       "TB-PACTS distributions (Methods 2.2).",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Standard bedaquiline 400 mg once daily for 14 days followed by 200 mg three times weekly;",
       "alternative 200 mg once daily for 8 weeks followed by 100 mg once daily (Methods 2.5).",
       "Clinical validation data spanned 100-700 mg (ESM S1).",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "The structural model and every drug-specific parameter were estimated on mouse data",
       "(plasma, liver, lesion and uninvolved lung after a single oral 25 mg/kg dose; ESM S1),",
       "then translated to humans by swapping in human physiology and allometrically scaling",

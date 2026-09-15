@@ -8,91 +8,91 @@ Darwish_2025a_trofinetide <- function() {
   # biological matrix. Trofinetide concentrations were quantified in
   # lithium-heparinized WHOLE BLOOD (Methods, "Analysis Dataset"), not plasma.
   compartmentData <- list(
-    depot       = list(analyte = "trofinetide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "trofinetide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance; reference 58 kg, the median body weight of the analysis population (Darwish 2025 Table 2 footnote, 'WTKG/58'). Analysis-population range 13-140 kg.",
-      source_name        = "WTKG"
+      notes = "Power effect on clearance; reference 58 kg, the median body weight of the analysis population (Darwish 2025 Table 2 footnote, 'WTKG/58'). Analysis-population range 13-140 kg.",
+      source_name = "WTKG"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume; reference 22.4 years, the median age of the analysis population (Darwish 2025 Table 2 footnote, 'AGE/22.4'). Analysis-population range 5-64 years.",
-      source_name        = "AGE"
+      notes = "Power effect on central volume; reference 22.4 years, the median age of the analysis population (Darwish 2025 Table 2 footnote, 'AGE/22.4'). Analysis-population range 5-64 years.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Glomerular filtration rate, BSA-normalized (creatinine-based estimate)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Glomerular filtration rate, BSA-normalized (creatinine-based estimate)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance; reference 124 mL/min/1.73 m^2, the median GFR of the analysis population (Darwish 2025 Table 2 footnote, 'GFR/124'). The source column is named GFR and maps to the canonical general-scope CRCL covariate, which covers BSA-normalized renal function from either a creatinine-based estimate or a tracer-measured GFR. Darwish 2025 does not state the estimating equation used.",
-      source_name        = "GFR"
+      notes = "Power effect on clearance; reference 124 mL/min/1.73 m^2, the median GFR of the analysis population (Darwish 2025 Table 2 footnote, 'GFR/124'). The source column is named GFR and maps to the canonical general-scope CRCL covariate, which covers BSA-normalized renal function from either a creatinine-based estimate or a tracer-measured GFR. Darwish 2025 does not state the estimating equation used.",
+      source_name = "GFR"
     ),
     DIS_RETT = list(
-      description        = "Rett syndrome disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rett syndrome disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-Rett cohort)",
-      notes              = "1 = patient with Rett syndrome, 0 = all other subjects (Darwish 2025 Results, definition of Rett_I). Decreases CL by 16.9% and increases Vp by 61.6%. Also selects the disease-cohort residual-error magnitude, which Darwish 2025 pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury. All Rett syndrome participants were female.",
-      source_name        = "Rett"
+      notes = "1 = patient with Rett syndrome, 0 = all other subjects (Darwish 2025 Results, definition of Rett_I). Decreases CL by 16.9% and increases Vp by 61.6%. Also selects the disease-cohort residual-error magnitude, which Darwish 2025 pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury. All Rett syndrome participants were female.",
+      source_name = "Rett"
     ),
     DIS_TBI = list(
-      description        = "Traumatic brain injury disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Traumatic brain injury disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-TBI cohort)",
-      notes              = "1 = patient with traumatic brain injury, 0 = all other subjects (Darwish 2025 Results, definition of TBI_I). Increases CL by 23.5% and decreases Vp by 75.2%. Also selects the disease-cohort residual-error magnitude. NOTE: distinct from the register's DIS_BURN_RECENT canonical, whose documented source alias 'TBI' denotes recent burn injury rather than traumatic brain injury.",
-      source_name        = "TBI"
+      notes = "1 = patient with traumatic brain injury, 0 = all other subjects (Darwish 2025 Results, definition of TBI_I). Increases CL by 23.5% and decreases Vp by 75.2%. Also selects the disease-cohort residual-error magnitude. NOTE: distinct from the register's DIS_BURN_RECENT canonical, whose documented source alias 'TBI' denotes recent burn injury rather than traumatic brain injury.",
+      source_name = "TBI"
     ),
     DIS_FXS = list(
-      description        = "Fragile X syndrome disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fragile X syndrome disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-FXS cohort)",
-      notes              = "1 = patient with fragile X syndrome, 0 = all other subjects (Darwish 2025 Results, definition of FXS_I). Increases Vc by 115%. Also selects the disease-cohort residual-error magnitude. All fragile X syndrome participants were male.",
-      source_name        = "FXS"
+      notes = "1 = patient with fragile X syndrome, 0 = all other subjects (Darwish 2025 Results, definition of FXS_I). Increases Vc by 115%. Also selects the disease-cohort residual-error magnitude. All fragile X syndrome participants were male.",
+      source_name = "FXS"
     ),
     FED = list(
-      description        = "Fed-vs-fasted state at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted state at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "1 = dose administered in the fed state, 0 = fasted (Darwish 2025 Results, definition of Fed_I). Decreases ka by 9.49% and F1 by 13.3%. Estimated from the dedicated phase 1 food-effect study ACP-2566-006; Darwish 2025 does not state the meal composition, so the general FED canonical applies rather than FED_HIGHFAT.",
-      source_name        = "FED"
+      notes = "1 = dose administered in the fed state, 0 = fasted (Darwish 2025 Results, definition of Fed_I). Decreases ka by 9.49% and F1 by 13.3%. Estimated from the dedicated phase 1 food-effect study ACP-2566-006; Darwish 2025 does not state the meal composition, so the general FED canonical applies rather than FED_HIGHFAT.",
+      source_name = "FED"
     ),
     DOSE_18G = list(
-      description        = "18 g trofinetide dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "18 g trofinetide dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any dose level other than 18 g, including the 6-12 g therapeutic weight-banded doses)",
-      notes              = "1 = subject received the 18 g supratherapeutic dose, 0 = all other subjects (Darwish 2025 Results, definition of DoseGrp1_I). Decreases F1 by 13.2%. Arises from the thorough-QTc study ACP-2566-008, which included supratherapeutic 18 g and 24 g doses; the effect captures the less-than-proportional rise in exposure above the therapeutic range. Mutually exclusive with DOSE_24G.",
-      source_name        = "DoseGrp1"
+      notes = "1 = subject received the 18 g supratherapeutic dose, 0 = all other subjects (Darwish 2025 Results, definition of DoseGrp1_I). Decreases F1 by 13.2%. Arises from the thorough-QTc study ACP-2566-008, which included supratherapeutic 18 g and 24 g doses; the effect captures the less-than-proportional rise in exposure above the therapeutic range. Mutually exclusive with DOSE_24G.",
+      source_name = "DoseGrp1"
     ),
     DOSE_24G = list(
-      description        = "24 g trofinetide dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "24 g trofinetide dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any dose level other than 24 g, including the 6-12 g therapeutic weight-banded doses)",
-      notes              = "1 = subject received the 24 g supratherapeutic dose, 0 = all other subjects (Darwish 2025 Results, definition of DoseGrp2_I). Decreases F1 by 28.4%. Arises from the thorough-QTc study ACP-2566-008. Mutually exclusive with DOSE_18G.",
-      source_name        = "DoseGrp2"
+      notes = "1 = subject received the 24 g supratherapeutic dose, 0 = all other subjects (Darwish 2025 Results, definition of DoseGrp2_I). Decreases F1 by 28.4%. Arises from the thorough-QTc study ACP-2566-008. Mutually exclusive with DOSE_18G.",
+      source_name = "DoseGrp2"
     ),
     AE_DIARRHEA = list(
-      description        = "Concurrent treatment-emergent diarrhea indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent treatment-emergent diarrhea indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diarrhea at the time of the dose record)",
-      notes              = "1 = subject experiencing diarrhea, 0 = otherwise. Darwish 2025 Results explicitly describes Diar_I as a TIME-VARYING indicator, so the value is carried per dose record rather than per subject. Decreases F1 by 14.8%. Diarrhea is the most common trofinetide adverse event; 52.4% of the Rett syndrome participants in the analysis dataset experienced it at some point during the studies.",
-      source_name        = "Diar"
+      notes = "1 = subject experiencing diarrhea, 0 = otherwise. Darwish 2025 Results explicitly describes Diar_I as a TIME-VARYING indicator, so the value is carried per dose record rather than per subject. Decreases F1 by 14.8%. Diarrhea is the most common trofinetide adverse event; 52.4% of the Rett syndrome participants in the analysis dataset experienced it at some point during the studies.",
+      source_name = "Diar"
     )
   )
 
@@ -103,48 +103,48 @@ Darwish_2025a_trofinetide <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the composite 'sex/disease state' covariate (six categories: male and female healthy volunteers, RTT [female only], FXS [male only], male TBI, female TBI). Backward elimination removed every female-healthy-subject shift -- from Vp, then Vc, then CL (Darwish 2025 Table 1, eliminations 3, 4, and 7) -- so sex itself is not in the final model. The retained members of that composite are the disease-state indicators DIS_RETT, DIS_TBI, and DIS_FXS."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the composite 'sex/disease state' covariate (six categories: male and female healthy volunteers, RTT [female only], FXS [male only], male TBI, female TBI). Backward elimination removed every female-healthy-subject shift -- from Vp, then Vc, then CL (Darwish 2025 Table 1, eliminations 3, 4, and 7) -- so sex itself is not in the final model. The retained members of that composite are the disease-state indicators DIS_RETT, DIS_TBI, and DIS_FXS."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Listed among the covariates of interest (Darwish 2025 Methods) but not retained; body weight was the size descriptor carried into the final model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Listed among the covariates of interest (Darwish 2025 Methods) but not retained; body weight was the size descriptor carried into the final model."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model. Darwish 2025 does not report the units in which it was screened."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025 Methods) but not retained in the final model. Darwish 2025 does not report the units in which it was screened."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 442,
+    species = "human",
+    n_subjects = 442,
     n_observations = 5595,
-    n_studies      = 13,
-    age_range      = "5-64 years (median 21)",
-    weight_range   = "13-140 kg (median 62.2)",
-    gfr_reference  = "124 mL/min/1.73 m^2 (analysis-population median)",
-    disease_state  = "Pooled analysis of 156 healthy adult volunteers, 185 patients with Rett syndrome (female only), 44 patients with fragile X syndrome (male only), and 57 patients with traumatic brain injury.",
-    dose_range     = "Oral, gastric-tube, and intravenous (bolus and infusion) trofinetide; oral doses spanned the 6-12 g therapeutic weight-banded range plus supratherapeutic 18 g and 24 g dose levels.",
-    regions        = "Not reported",
-    notes          = "Darwish 2025 Results, 'Population Pharmacokinetic Model'. Pooled across eight phase 1 studies (five in healthy volunteers), four phase 2 studies (Rett syndrome, fragile X syndrome, traumatic brain injury), and the phase 3 LAVENDER study in girls and women aged 5-20 years with Rett syndrome. Assay: LC-MS/MS in lithium-heparinized whole blood, LLOQ 0.10 ug/mL. The target steady-state exposure range used to confirm the weight-banded regimen was AUC0-12 800-1200 ug*h/mL."
+    n_studies = 13,
+    age_range = "5-64 years (median 21)",
+    weight_range = "13-140 kg (median 62.2)",
+    gfr_reference = "124 mL/min/1.73 m^2 (analysis-population median)",
+    disease_state = "Pooled analysis of 156 healthy adult volunteers, 185 patients with Rett syndrome (female only), 44 patients with fragile X syndrome (male only), and 57 patients with traumatic brain injury.",
+    dose_range = "Oral, gastric-tube, and intravenous (bolus and infusion) trofinetide; oral doses spanned the 6-12 g therapeutic weight-banded range plus supratherapeutic 18 g and 24 g dose levels.",
+    regions = "Not reported",
+    notes = "Darwish 2025 Results, 'Population Pharmacokinetic Model'. Pooled across eight phase 1 studies (five in healthy volunteers), four phase 2 studies (Rett syndrome, fragile X syndrome, traumatic brain injury), and the phase 3 LAVENDER study in girls and women aged 5-20 years with Rett syndrome. Assay: LC-MS/MS in lithium-heparinized whole blood, LLOQ 0.10 ug/mL. The target steady-state exposure range used to confirm the weight-banded regimen was AUC0-12 800-1200 ug*h/mL."
   )
 
   ini({

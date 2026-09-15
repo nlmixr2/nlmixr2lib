@@ -53,8 +53,10 @@ Rietveld_2025_docetaxel <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_compartments <- c(
-    "entrapped", "peripheral_entrapped",
-    "tumor_entrapped", "tumor_released"
+    "entrapped",
+    "peripheral_entrapped",
+    "tumor_entrapped",
+    "tumor_released"
   )
 
   paper_specific_etas <- c("etalk_release_1")
@@ -64,27 +66,27 @@ Rietveld_2025_docetaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    entrapped            = list(analyte = "DTX", units = "mg", specimen = "administration site", verified = FALSE),
+    entrapped = list(analyte = "DTX", units = "mg", specimen = "administration site", verified = FALSE),
     peripheral_entrapped = list(analyte = "DTX", units = "mg", specimen = "administration site", verified = FALSE),
-    central              = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1          = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2          = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
-    tumor_entrapped      = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE),
-    tumor_released       = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE)
+    central = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "DTX", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor_entrapped = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_released = list(analyte = "DTX", units = "mg", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 52L,
-    n_studies       = 3L,
-    n_observations  = 1811L,
-    n_cycles        = "72 cycles CPC634 + 24 cycles conventional DTX + 15 cycles 89Zr-CPC634",
-    age_range       = NA_character_,
-    weight_range    = NA_character_,
-    sex_female_pct  = NA_real_,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 52L,
+    n_studies = 3L,
+    n_observations = 1811L,
+    n_cycles = "72 cycles CPC634 + 24 cycles conventional DTX + 15 cycles 89Zr-CPC634",
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Adults with advanced solid tumours pooled across three phase I /",
       "phase II / imaging trials of CPC634 (core-crosslinked polymeric",
       "micelle entrapping docetaxel via a pH-responsive sulfone-ester",
@@ -96,15 +98,15 @@ Rietveld_2025_docetaxel <- function() {
       "from CRITAX (n = 24 patients, two biopsies each at 24, 48, 72,",
       "96, 168, or 336 h after dose)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "CPC634 15-100 mg/m^2 IV infusion (NAPOLY); 75 mg/m^2 CPC634 and",
       "75 mg/m^2 conventional DTX cross-over (CRITAX); 0.1-2 mg",
       "89Zr-CPC634 diagnostic dose followed two weeks later by 60 mg/m^2",
       "CPC634 + 89Zr-CPC634 on-treatment (PICCOLO). All routes IV",
       "infusion."
     ),
-    regions         = "Netherlands (Erasmus MC, Amsterdam UMC VUmc).",
-    notes           = paste(
+    regions = "Netherlands (Erasmus MC, Amsterdam UMC VUmc).",
+    notes = paste(
       "Baseline demographics (age, weight, BSA, sex) are not tabulated",
       "in the source paper or supplement; the authors note in the",
       "Discussion that an exhaustive covariate screen (dose, body",

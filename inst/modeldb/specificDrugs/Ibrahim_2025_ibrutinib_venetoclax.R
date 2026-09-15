@@ -31,43 +31,72 @@ Ibrahim_2025_ibrutinib_venetoclax <- function() {
   )
   vignette <- "Ibrahim_2025_ibrutinib"
   paper_specific_compartments <- c(
-    "pbtk", "cll_subpop1", "cll_subpop2", "cll_subpop3", "cll_bld"
+    "pbtk",
+    "cll_subpop1",
+    "cll_subpop2",
+    "cll_subpop3",
+    "cll_bld"
   )
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib and venetoclax exposure enter as the time-varying covariates AUC_IBRU and CONC_VEN_MGL)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib and venetoclax exposure enter as the time-varying covariates AUC_IBRU and CONC_VEN_MGL)",
     concentration = "leukocyte and lymphocyte counts in 10^9 cells/L; SPD in cm^2; spleen volume in cc; MRD in percent (no output is a drug concentration)"
   )
 
   compartmentData <- list(
-    pbtk        = list(analyte = "phosphorylated Bruton tyrosine kinase (pBtk)", units = "relative quantity (1 = 100% of baseline)", specimen = "not applicable", verified = TRUE),
-    cll_subpop1 = list(analyte = "CLL cells, stroma-attached proliferating colony 1 (fast detachment)", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_subpop2 = list(analyte = "CLL cells, stroma-attached proliferating colony 2 (slow detachment)", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_subpop3 = list(analyte = "CLL cells, released lymphoid-tissue pool exiting to blood", units = "10^9 cells", specimen = "lymph", verified = TRUE),
-    cll_bld     = list(analyte = "CLL cells, resting peripheral-blood pool", units = "10^9 cells", specimen = "blood cell", verified = TRUE)
+    pbtk = list(
+      analyte = "phosphorylated Bruton tyrosine kinase (pBtk)",
+      units = "relative quantity (1 = 100% of baseline)",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    cll_subpop1 = list(
+      analyte = "CLL cells, stroma-attached proliferating colony 1 (fast detachment)",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_subpop2 = list(
+      analyte = "CLL cells, stroma-attached proliferating colony 2 (slow detachment)",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_subpop3 = list(
+      analyte = "CLL cells, released lymphoid-tissue pool exiting to blood",
+      units = "10^9 cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    cll_bld = list(
+      analyte = "CLL cells, resting peripheral-blood pool",
+      units = "10^9 cells",
+      specimen = "blood cell",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying; identical to the column used by modellib('Ibrahim_2025_ibrutinib_cll'). Tracks the patient's",
         "current daily ibrutinib dose level (420, 280 or 140 mg/day across the de-escalation schedules simulated by",
         "the paper) and drops to 0 during interruptions. Ibrahim 2025 computed it from the two-compartment ibrutinib",
         "population PK model of Marostica et al. (Cancer Chemother Pharmacol. 2015;75(1):111-121), which is NOT part",
         "of nlmixr2lib. Enters the pBtk production-inhibition Imax function as AUC_IBRU / (28.4 + AUC_IBRU)."
       ),
-      source_name        = "auc"
+      source_name = "auc"
     ),
     CONC_VEN_MGL = list(
-      description        = "Venetoclax plasma concentration.",
-      units              = "ug/mL (equivalently mg/L)",
-      type               = "continuous",
+      description = "Venetoclax plasma concentration.",
+      units = "ug/mL (equivalently mg/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Venetoclax has no PK compartment in this model: exactly as ibrutinib enters through AUC_IBRU,",
         "venetoclax enters only through this concentration column. Ibrahim 2025 generated venetoclax",
         "concentration-time profiles with the two-compartment population PK model of Jones et al.",
@@ -79,33 +108,33 @@ Ibrahim_2025_ibrutinib_venetoclax <- function() {
         "200 mg/day to a maintenance dose of 400 mg/day (Methods 2.4).",
         "The two EC50 values are on this scale (0.04 ug/mL in blood, 2.24 ug/mL in tissue; Table S2)."
       ),
-      source_name        = "Ct,venetoclax"
+      source_name = "Ct,venetoclax"
     ),
     LINE_1L = list(
-      description        = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-line-therapy indicator: 1 = treatment-naive (TN) at baseline, 0 = relapsed/refractory (R/R).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (relapsed/refractory)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; identical to the column used by modellib('Ibrahim_2025_ibrutinib_cll'), where the",
         "six places it acts on are documented in full. In this combination model it additionally scales every",
         "venetoclax effect indirectly, because all four venetoclax terms are expressed as multiples of the",
         "peripheral-blood CLL death rate kd,bld, which is itself 43% lower in R/R patients (Table 1).",
         "POLARITY WARNING: the source column `arm` is the INVERSE of this canonical; convert with LINE_1L = 1 - arm."
       ),
-      source_name        = "arm"
+      source_name = "arm"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246L,
-    n_studies      = 2L,
-    age_range      = "mean 70 (SD 8.9) years",
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (reduced to 280 and 140 mg/day in the de-escalation schedules); venetoclax ramped 20 -> 50 -> 100 -> 200 -> 400 mg/day weekly, started after ibrutinib cycle 2 or 3",
-    regions        = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
-    notes          = paste(
+    species = "human",
+    n_subjects = 246L,
+    n_studies = 2L,
+    age_range = "mean 70 (SD 8.9) years",
+    disease_state = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (reduced to 280 and 140 mg/day in the de-escalation schedules); venetoclax ramped 20 -> 50 -> 100 -> 200 -> 400 mg/day weekly, started after ibrutinib cycle 2 or 3",
+    regions = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
+    notes = paste(
       "The ibrutinib layer was estimated on the pooled n = 246 PCYC-1102 + PCYC-1115 population (Table S1). The",
       "venetoclax layer was NOT estimated on that population: its EC50 values are literature values from",
       "Gopalakrishnan 2021 and its Emax values were fine-tuned against digitized venetoclax-monotherapy data from the",

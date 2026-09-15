@@ -35,19 +35,19 @@ Press_2010_ciclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline or time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline or time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling: CL = exp(lcl) * (WT / 76)^0.75 and",
         "Vc = exp(lvc) * (WT / 76)^1, with median body weight 76 kg as the",
         "reference and theory-based exponents 0.75 (clearance) and 1.0",
@@ -59,19 +59,19 @@ Press_2010_ciclosporin <- function() {
         "this covariate model; rxode2 simulations supplied at any time",
         "should populate this column at every observation row."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PRED_DOSE = list(
-      description        = paste(
+      description = paste(
         "Concomitant oral prednisolone daily dose (mg/day). Used as a",
         "threshold-form covariate at >= 20 mg/day (binary high-dose",
         "indicator) on the absorption rate constant ka and on oral",
         "bioavailability F."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Press 2010 Methods 'Covariate analysis' tested the daily",
         "prednisolone dose against the base model with body weight already",
         "incorporated. Final-model effects (Table 4 / Results 'CsA",
@@ -85,40 +85,40 @@ Press_2010_ciclosporin <- function() {
         "dose stratum therefore corresponds to the earliest weeks post-",
         "transplant."
       ),
-      source_name        = "Prednisolone daily dose"
+      source_name = "Prednisolone daily dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "18 - 70 years",
-    age_median     = "43.8 +/- 14.5 years (once-daily arm, n = 17); 48.9 +/- 10.5 years (twice-daily arm, n = 16)",
-    weight_range   = "49 - 140 kg",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "18 - 70 years",
+    age_median = "43.8 +/- 14.5 years (once-daily arm, n = 17); 48.9 +/- 10.5 years (twice-daily arm, n = 16)",
+    weight_range = "49 - 140 kg",
+    weight_median = "76 kg",
     sex_female_pct = 21.2,
     race_ethnicity = c(Caucasian = 78.8, Other = 21.2),
-    disease_state  = paste(
+    disease_state = paste(
       "De novo adult kidney transplant recipients followed for 1 year",
       "after transplantation. First-graft recipients only, from deceased",
       "or living (non-HLA-identical) donors."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Ciclosporin A (Neoral) oral 8 mg/kg/day, randomized to once-daily",
       "or twice-daily regimens. Dose adjusted by therapeutic drug",
       "monitoring against AUC0-24h targets of 10,800 ug*h/L (once daily)",
       "or AUC0-12h target 5,400 ug*h/L (twice daily) in the first 6",
       "weeks, then 6,500 ug*h/L or 3,250 ug*h/L respectively thereafter."
     ),
-    regions        = "The Netherlands (Leiden University Medical Center)",
-    co_medication  = paste(
+    regions = "The Netherlands (Leiden University Medical Center)",
+    co_medication = paste(
       "Quadruple immunosuppression: basiliximab induction (day 0 + 4),",
       "fixed-dose mycophenolate mofetil (1,000 mg twice daily), tapering",
       "prednisolone (50 mg twice daily on day 0, tapered to 10 mg once",
       "daily by day 22), and ciclosporin A."
     ),
-    notes          = paste(
+    notes = paste(
       "Rich PK sampling: dense sampling (t = 0, 1, 2, 3, 4, 6, 24 h) on",
       "weeks 2, 6, 12, 26, 52 plus limited TDM sampling (t = 0, 2, 3 h) on",
       "weeks 4, 8, 10, 17, 21, 39. Most patients (22 of 33) provided data",

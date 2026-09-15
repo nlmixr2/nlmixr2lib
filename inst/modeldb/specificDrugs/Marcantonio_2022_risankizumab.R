@@ -19,8 +19,8 @@ Marcantonio_2022_risankizumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Risankizumab dose amount into depot (SC) in nmol; MW = 145610 Da so 150 mg = 1030 nmol.",
+    time = "day",
+    dosing = "Risankizumab dose amount into depot (SC) in nmol; MW = 145610 Da so 150 mg = 1030 nmol.",
     concentration = "Free risankizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
@@ -33,23 +33,28 @@ Marcantonio_2022_risankizumab <- function() {
     Ab_00 = list(analyte = "free risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_0L = list(analyte = "bound risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     Ab_L0 = list(analyte = "risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_LL = list(analyte = "dimerized risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1    = list(analyte = "p19 subunit of IL-23", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1    = list(analyte = "risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    L1R1  = list(analyte = "risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1    = list(analyte = "IL-23", units = NA_character_, specimen = "plasma", verified = FALSE)
+    Ab_LL = list(
+      analyte = "dimerized risankizumab-p19 complex",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    L1 = list(analyte = "p19 subunit of IL-23", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1 = list(analyte = "risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1 = list(analyte = "risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1 = list(analyte = "IL-23", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with moderate-to-severe plaque psoriasis.",
-    dose_range     = "150 mg SC at weeks 0 and 4, then every 12 weeks (Skyrizi USPI; Ph3 dose per Gordon 2018). Paper Table 5 reports both a Q4W and Q12W ID90 prediction.",
-    regions        = NA_character_,
-    notes          = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with moderate-to-severe plaque psoriasis.",
+    dose_range = "150 mg SC at weeks 0 and 4, then every 12 weeks (Skyrizi USPI; Ph3 dose per Gordon 2018). Paper Table 5 reports both a Q4W and Q12W ID90 prediction.",
+    regions = NA_character_,
+    notes = "See sibling Marcantonio 2022 anti-ligand models for shared methodology."
   )
 
   ini({

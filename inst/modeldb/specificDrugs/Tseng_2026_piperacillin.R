@@ -21,14 +21,14 @@ Tseng_2026_piperacillin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Estimated glomerular filtration rate from the 2021 CKD-EPI",
         "creatinine-cystatin C equation"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "BSA-NORMALIZED eGFR in mL/min/1.73 m^2 from the 2021 CKD-EPI combined",
         "creatinine-cystatin C equation (Methods, Population PK Modeling,",
         "references 17-19). Enters the Table 2 formula as the power ratio",
@@ -54,16 +54,16 @@ Tseng_2026_piperacillin <- function() {
         "about unstable renal function or dialysis. The paper's own dosing",
         "simulations exercised the range 20-130 mL/min/1.73 m^2."
       ),
-      source_name        = "eGFRCre-Cys"
+      source_name = "eGFRCre-Cys"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened and NOT retained -- the headline negative finding of the",
         "paper. Body weight was tested both as a free covariate and as",
         "allometric scaling with exponents FIXED at 0.75 on CL and 1.0 on Vd,",
@@ -79,9 +79,9 @@ Tseng_2026_piperacillin <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained (Methods, Population PK Modeling). BMI is",
         "also the cohort's inclusion criterion (<= 18.5 kg/m^2), so its range",
         "is restricted by design; 6 of 29 participants (20.7%) had BMI <= 15",
@@ -90,9 +90,9 @@ Tseng_2026_piperacillin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = paste(
+      units = "year",
+      type = "continuous",
+      notes = paste(
         "Screened and not retained (Methods, Population PK Modeling). Cohort",
         "median (IQR) 64 (14) years; 14 of 29 (48.3%) were older than 65",
         "(Table 1). No coefficient is reported anywhere in the paper."
@@ -100,9 +100,9 @@ Tseng_2026_piperacillin <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and not retained (Methods, Population PK Modeling). Table 1",
         "reports 15 of 29 male (51.72%), i.e. 14 female (48.28%). No",
         "coefficient is reported anywhere in the paper."
@@ -112,24 +112,24 @@ Tseng_2026_piperacillin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte  = "piperacillin",
-      units    = "mg",
+      analyte = "piperacillin",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 29,
+    n_studies = 1,
     n_observations = 55,
     age_median_iqr = "64 (14) years",
     height_median_iqr = "160 (17) cm",
     weight_median_iqr = "42 (9.2) kg",
-    bmi_criterion  = "BMI <= 18.5 kg/m^2 by inclusion criterion; 6/29 (20.7%) had BMI <= 15",
+    bmi_criterion = "BMI <= 18.5 kg/m^2 by inclusion criterion; 6/29 (20.7%) had BMI <= 15",
     sex_female_pct = 48.28,
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults with low body weight receiving",
       "piperacillin-tazobactam; 21 of 29 (72.4%) were admitted to intensive",
       "care. Median (IQR) Charlson Comorbidity Index 5 (4). Patients who",
@@ -145,7 +145,7 @@ Tseng_2026_piperacillin <- function() {
       "augmented, which is the point of the paper: creatinine-based equations",
       "overestimate it when muscle mass is low."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Observed data came from routine therapeutic drug monitoring under the",
       "institutional standard of piperacillin-tazobactam 4500 mg every 6 hours",
       "as a 1-hour infusion for patients with CLcr >= 40 mL/min, with",
@@ -154,8 +154,8 @@ Tseng_2026_piperacillin <- function() {
       "applied to simulated regimens of 2250, 3375 and 4500 mg every 6, 8 or 12",
       "hours given as 1-hour or 4-hour infusions."
     ),
-    regions        = "Taiwan (single center: National Taiwan University Hospital, Taipei)",
-    notes          = paste(
+    regions = "Taiwan (single center: National Taiwan University Hospital, Taipei)",
+    notes = paste(
       "Prospective observational therapeutic-drug-monitoring study conducted",
       "January 2020 - December 2022; IRB 201907124RINC. Adults aged 20 years or",
       "older with BMI <= 18.5 kg/m^2. Baseline demographics per Table 1",

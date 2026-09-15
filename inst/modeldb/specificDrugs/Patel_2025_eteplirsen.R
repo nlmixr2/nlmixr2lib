@@ -5,35 +5,35 @@ Patel_2025_eteplirsen <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "eteplirsen", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "eteplirsen", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "eteplirsen", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "eteplirsen", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Table 1 (All studies): median 27.1 kg, range 6.80-68.9. The reference weight of 37 kg is NOT the cohort median; Results section 3.4 states 'A body weight of 37 kg was selected as a reference male DMD patient (> 4 years of age) with an eGFR of 145 mL/min/1.73 m^2 to normalize the younger pediatric population (<= 4 years old) to an older reference population where the majority of PK data were collected from.' Enters all six disposition parameters as (WT/37)^k with k fixed at 0.75 for CL, Q2 and Q3 and at 1 for V1, V2 and V3 (Results section 3.3: 'The body weight effects on volume and clearance parameters using fixed allometric exponents of 0.75 for clearance parameters and 1 for volume parameters described data well'; Eq. 1-6).",
-      source_name        = "WT"
+      notes = "Patel 2025 Table 1 (All studies): median 27.1 kg, range 6.80-68.9. The reference weight of 37 kg is NOT the cohort median; Results section 3.4 states 'A body weight of 37 kg was selected as a reference male DMD patient (> 4 years of age) with an eGFR of 145 mL/min/1.73 m^2 to normalize the younger pediatric population (<= 4 years old) to an older reference population where the majority of PK data were collected from.' Enters all six disposition parameters as (WT/37)^k with k fixed at 0.75 for CL, Q2 and Q3 and at 1 for V1, V2 and V3 (Results section 3.3: 'The body weight effects on volume and clearance parameters using fixed allometric exponents of 0.75 for clearance parameters and 1 for volume parameters described data well'; Eq. 1-6).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Table 1 (All studies): median 8.37 years, range 0.55-16.4. Used ONLY as the 4-year cutoff selecting between the two typical clearances, exactly as written in Eq. 1: 'ifelse(Age_i > 4 yrs, theta1, theta2)'. It does not enter as a continuous term: Results section 3.4 states that because body weight and age were correlated (r = 0.781, Figure S1), 'inclusion of a continuous covariate effect of age in addition to body weight resulted in poor characterization of covariate effects', and that a <= 3 vs > 3 year cutoff was rejected for having too few subjects (about 5.7% of the population) while the <= 4 vs > 4 year cutoff 'described the data well and was selected in the final model'.",
-      source_name        = "Age"
+      notes = "Patel 2025 Table 1 (All studies): median 8.37 years, range 0.55-16.4. Used ONLY as the 4-year cutoff selecting between the two typical clearances, exactly as written in Eq. 1: 'ifelse(Age_i > 4 yrs, theta1, theta2)'. It does not enter as a continuous term: Results section 3.4 states that because body weight and age were correlated (r = 0.781, Figure S1), 'inclusion of a continuous covariate effect of age in addition to body weight resulted in poor characterization of covariate effects', and that a <= 3 vs > 3 year cutoff was rejected for having too few subjects (about 5.7% of the population) while the <= 4 vs > 4 year cutoff 'described the data well and was selected in the final model'.",
+      source_name = "Age"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from serum cystatin C by the CKD-EPI equation (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from serum cystatin C by the CKD-EPI equation (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3: 'Because creatinine is a byproduct of the muscle breakdown occurring in patients with DMD, creatinine clearance was not an appropriate marker of renal function for this analysis. Instead, continuous serum cystatin C was used to estimate the eGFR using the CKD-EPI equation.' Table 1 (All studies): median 145 mL/min/1.73 m^2, range 85.5-180. The reference value 145 in Eq. 1 is that cohort median. eGFR was not measured in Study 4658-28 and was imputed there using the median eGFR observed in patients of the same age (Methods section 2.3). Enters CL as (CRCL/145)^1.60. Stored under canonical CRCL, which admits BSA-normalized eGFR variants; the estimating equation is documented here per the register's per-model requirement. Note this is the cystatin-C-based CKD-EPI variant, not the creatinine-based one, and it is deliberately supranormal for the DMD population (no subject had eGFR below 85.5 mL/min/1.73 m^2).",
-      source_name        = "eGFR"
+      notes = "Patel 2025 Methods section 2.3: 'Because creatinine is a byproduct of the muscle breakdown occurring in patients with DMD, creatinine clearance was not an appropriate marker of renal function for this analysis. Instead, continuous serum cystatin C was used to estimate the eGFR using the CKD-EPI equation.' Table 1 (All studies): median 145 mL/min/1.73 m^2, range 85.5-180. The reference value 145 in Eq. 1 is that cohort median. eGFR was not measured in Study 4658-28 and was imputed there using the median eGFR observed in patients of the same age (Methods section 2.3). Enters CL as (CRCL/145)^1.60. Stored under canonical CRCL, which admits BSA-normalized eGFR variants; the estimating equation is documented here per the register's per-model requirement. Note this is the cystatin-C-based CKD-EPI variant, not the creatinine-based one, and it is deliberately supranormal for the DMD population (no subject had eGFR below 85.5 mL/min/1.73 m^2).",
+      source_name = "eGFR"
     )
   )
 
@@ -46,86 +46,86 @@ Patel_2025_eteplirsen <- function() {
   # the vignette instead.
   covariatesDataExcluded <- list(
     LBM = list(
-      description        = "Lean body mass. Screened as an alternative body-size descriptor and rejected.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass. Screened as an alternative body-size descriptor and rejected.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 lists lean body mass among the body-size covariates evaluated. Results section 3.3: 'Alternative models to characterize body size effect on the model parameters resulted in non-identifiability, unreasonable estimates in some of the parameters, higher objective function values, higher model condition number, increased residual error, and/or poor model diagnostics.' Total body weight was retained instead. No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 lists lean body mass among the body-size covariates evaluated. Results section 3.3: 'Alternative models to characterize body size effect on the model parameters resulted in non-identifiability, unreasonable estimates in some of the parameters, higher objective function values, higher model condition number, increased residual error, and/or poor model diagnostics.' Total body weight was retained instead. No point estimate published."
     ),
     BMI = list(
-      description        = "Body mass index. Screened as an alternative body-size descriptor and rejected.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index. Screened as an alternative body-size descriptor and rejected.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 and Results section 3.3, same rejection rationale as LBM. No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 and Results section 3.3, same rejection rationale as LBM. No point estimate published."
     ),
     BSA = list(
-      description        = "Body surface area. Screened as an alternative body-size descriptor and rejected.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area. Screened as an alternative body-size descriptor and rejected.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 and Results section 3.3, same rejection rationale as LBM. Discussion notes a further reason it is hard to separate: 'eGFR is normalized to body surface area, and given that body weight was included in the CL analysis using allometry, it is possible that eGFR does not have a significant effect considering the co-linearity between body surface area and body weight.' No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 and Results section 3.3, same rejection rationale as LBM. Discussion notes a further reason it is hard to separate: 'eGFR is normalized to body surface area, and given that body weight was included in the CL analysis using allometry, it is possible that eGFR does not have a significant effect considering the co-linearity between body surface area and body weight.' No point estimate published."
     ),
     CYSC = list(
-      description        = "Serum cystatin C. Measured, but entered the model only through the derived CKD-EPI eGFR rather than as a covariate in its own right.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Serum cystatin C. Measured, but entered the model only through the derived CKD-EPI eGFR rather than as a covariate in its own right.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 lists 'renal biomarkers if available (e.g., cystatin C or kidney injury molecule 1)' among the screened covariates. The final model uses the CKD-EPI eGFR derived from cystatin C (stored as CRCL), not the raw concentration. No point estimate published for a direct CYSC effect."
+      notes = "Patel 2025 Methods section 2.3 lists 'renal biomarkers if available (e.g., cystatin C or kidney injury molecule 1)' among the screened covariates. The final model uses the CKD-EPI eGFR derived from cystatin C (stored as CRCL), not the raw concentration. No point estimate published for a direct CYSC effect."
     ),
     ALB = list(
-      description        = "Serum albumin. Screened as a liver-function covariate and rejected.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin. Screened as a liver-function covariate and rejected.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 lists albumin among the liver-function covariates evaluated. Results section 3.4: 'No specific trends observed in the plots of interindividual random effect versus demographic, body size, and laboratory parameter were observed in the final model, which suggested that no additional covariate effects remained to account for in the model (Figures S2 and S3).' No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 lists albumin among the liver-function covariates evaluated. Results section 3.4: 'No specific trends observed in the plots of interindividual random effect versus demographic, body size, and laboratory parameter were observed in the final model, which suggested that no additional covariate effects remained to account for in the model (Figures S2 and S3).' No point estimate published."
     ),
     ALT = list(
-      description        = "Alanine aminotransferase. Screened as a liver-function covariate and rejected.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase. Screened as a liver-function covariate and rejected.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3; rejected per Results section 3.4 (Figures S2 and S3). Note that in DMD, ALT and AST are largely of skeletal-muscle rather than hepatic origin. No point estimate published."
+      notes = "Patel 2025 Methods section 2.3; rejected per Results section 3.4 (Figures S2 and S3). Note that in DMD, ALT and AST are largely of skeletal-muscle rather than hepatic origin. No point estimate published."
     ),
     AST = list(
-      description        = "Aspartate aminotransferase. Screened as a liver-function covariate and rejected.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase. Screened as a liver-function covariate and rejected.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3; rejected per Results section 3.4 (Figures S2 and S3). As with ALT, elevated values in DMD reflect muscle breakdown. No point estimate published."
+      notes = "Patel 2025 Methods section 2.3; rejected per Results section 3.4 (Figures S2 and S3). As with ALT, elevated values in DMD reflect muscle breakdown. No point estimate published."
     ),
     TBILI = list(
-      description        = "Total bilirubin. Screened as a liver-function covariate and rejected.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin. Screened as a liver-function covariate and rejected.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Patel 2025 Methods section 2.3 lists bilirubin among the liver-function covariates evaluated; rejected per Results section 3.4 (Figures S2 and S3). The paper does not state whether total or direct bilirubin was used, nor the reporting units. No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 lists bilirubin among the liver-function covariates evaluated; rejected per Results section 3.4 (Figures S2 and S3). The paper does not state whether total or direct bilirubin was used, nor the reporting units. No point estimate published."
     ),
     CONMED_STEROID = list(
-      description        = "Concomitant corticosteroid use. Screened as a concomitant-medication covariate and rejected.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant corticosteroid use. Screened as a concomitant-medication covariate and rejected.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant corticosteroid)",
-      notes              = "Patel 2025 Methods section 2.3 screened 'concomitant medications (steroid strength, single or multiple steroids)'. Corticosteroids are standard of care in DMD, so the untreated group is small. Rejected per Results section 3.4 (Figure S3, categorical-covariate eta plots). No point estimate published."
+      notes = "Patel 2025 Methods section 2.3 screened 'concomitant medications (steroid strength, single or multiple steroids)'. Corticosteroids are standard of care in DMD, so the untreated group is small. Rejected per Results section 3.4 (Figure S3, categorical-covariate eta plots). No point estimate published."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 157,
-    n_studies      = 6,
+    species = "human",
+    n_subjects = 157,
+    n_studies = 6,
     n_observations = 3258,
-    age_range      = "0.55-16.4 years (6 months to 16.4 years)",
-    age_median     = "8.37 years",
-    weight_range   = "6.80-68.9 kg",
-    weight_median  = "27.1 kg",
+    age_range = "0.55-16.4 years (6 months to 16.4 years)",
+    age_median = "8.37 years",
+    weight_range = "6.80-68.9 kg",
+    weight_median = "27.1 kg",
     sex_female_pct = 0,
     race_ethnicity = c(White = 84, Black = 2, Asian = 6, `Pacific Islander` = 1, Other = 3, Missing = 4),
-    disease_state  = "Duchenne muscular dystrophy with a confirmed mutation amenable to exon 51 skipping",
+    disease_state = "Duchenne muscular dystrophy with a confirmed mutation amenable to exon 51 skipping",
     renal_function = "eGFR (cystatin-C CKD-EPI) median 145 mL/min/1.73 m^2, range 85.5-180; no subject below 85.5, so the model is not informed about renal impairment",
-    dose_range     = "0.5-50 mg/kg weekly as an approximately 1-h IV infusion; 30 mg/kg/week is the approved regimen",
-    regions        = "Not reported by region; the six studies are NCT03218995 (4658-102), NCT01396239 (4658-201), NCT01540409 (4658-202), NCT02420379 (4658-203), NCT00844597 (4658-28) and NCT02255552 (4658-301)",
-    notes          = "Patel 2025 Table 1 (study design, N, age, weight and eGFR by study) and Table S1 (ethnicity, race and exon-deletion mutations by study). All patients are male because DMD is X-linked recessive. 37 samples (1.1%) below the limit of quantification were excluded. Ethnicity: 8% Hispanic or Latino, 87% not Hispanic or Latino, 5% unknown."
+    dose_range = "0.5-50 mg/kg weekly as an approximately 1-h IV infusion; 30 mg/kg/week is the approved regimen",
+    regions = "Not reported by region; the six studies are NCT03218995 (4658-102), NCT01396239 (4658-201), NCT01540409 (4658-202), NCT02420379 (4658-203), NCT00844597 (4658-28) and NCT02255552 (4658-301)",
+    notes = "Patel 2025 Table 1 (study design, N, age, weight and eGFR by study) and Table S1 (ethnicity, race and exon-deletion mutations by study). All patients are male because DMD is X-linked recessive. 37 samples (1.1%) below the limit of quantification were excluded. Ethnicity: 8% Hispanic or Latino, 87% not Hispanic or Latino, 5% unknown."
   )
 
   ini({

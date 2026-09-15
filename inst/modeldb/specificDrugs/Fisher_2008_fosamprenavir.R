@@ -8,104 +8,104 @@ Fisher_2008_fosamprenavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "fosamprenavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fosamprenavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fosamprenavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fosamprenavir", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fosamprenavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject. Allometric power scaling with reference 70 kg and fixed theory-based exponents 0.75 on CL/F and Q, 1.0 on V2/F and V3 (Fisher 2008 Methods, 'Model and Modeling Assumptions'). Cohort baseline mean 34.96 kg, median 32.9 kg, range 5.9-102.8 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Time-varying within subject. Allometric power scaling with reference 70 kg and fixed theory-based exponents 0.75 on CL/F and Q, 1.0 on V2/F and V3 (Fisher 2008 Methods, 'Model and Modeling Assumptions'). Cohort baseline mean 34.96 kg, median 32.9 kg, range 5.9-102.8 kg (Table 1).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Postnatal age",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject (baseline age 0.72-18 years in the source cohort; Table 1). Drives a piecewise age-maturation factor on CL/F that is linearly decreasing in AGE for AGE <= 2*AG50 (AG50 = 2.05 years) and is identically 1 for AGE > 2*AG50. The reference covariate-effect category is AGE > ~4 years (where the age factor = 1).",
-      source_name        = "AGE"
+      notes = "Time-varying within subject (baseline age 0.72-18 years in the source cohort; Table 1). Drives a piecewise age-maturation factor on CL/F that is linearly decreasing in AGE for AGE <= 2*AG50 (AG50 = 2.05 years) and is identically 1 for AGE > 2*AG50. The reference covariate-effect category is AGE > ~4 years (where the age factor = 1).",
+      source_name = "AGE"
     ),
     AAG = list(
-      description        = "Serum alpha-1-acid glycoprotein (orosomucoid) concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1-acid glycoprotein (orosomucoid) concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (median value per patient over occasions was used in Table 1's summary). Cohort baseline mean 0.87 g/L, median 0.80 g/L, range 0.41-2.69 g/L (Table 1). Enters CL/F and V2/F via two independent power-law forms centred at the cohort median 0.77 g/L (Figure 3 caption: 'AAG = 0.77 g/L (population median)'): (AAG/0.77)^(-0.626) on CL/F and (AAG/0.77)^(-0.369) on V2/F (Table 3 AAG_CL and AAG_V2).",
-      source_name        = "AAG"
+      notes = "Time-varying (median value per patient over occasions was used in Table 1's summary). Cohort baseline mean 0.87 g/L, median 0.80 g/L, range 0.41-2.69 g/L (Table 1). Enters CL/F and V2/F via two independent power-law forms centred at the cohort median 0.77 g/L (Figure 3 caption: 'AAG = 0.77 g/L (population median)'): (AAG/0.77)^(-0.626) on CL/F and (AAG/0.77)^(-0.369) on V2/F (Table 3 AAG_CL and AAG_V2).",
+      source_name = "AAG"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male (Fisher 2008 Table 3 reference category)",
-      notes              = "Time-fixed per subject. Fisher 2008 Table 2 encodes SEX as 0 = males / 1 = females, which matches the canonical SEXF orientation (1 = female). Female patients have ~15% lower CL/F than males at the same WT, AAG, race, age, and RTV status (Table 3 theta_12 = 0.846).",
-      source_name        = "SEX"
+      notes = "Time-fixed per subject. Fisher 2008 Table 2 encodes SEX as 0 = males / 1 = females, which matches the canonical SEXF orientation (1 = female). Female patients have ~15% lower CL/F than males at the same WT, AAG, race, age, and RTV status (Table 3 theta_12 = 0.846).",
+      source_name = "SEX"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = non-Black (White, Asian, Hispanic, American Indian, or Other in this cohort; reference category is White)",
-      notes              = "Time-fixed per subject. Fisher 2008 Table 2 encodes race as a 6-level categorical: 1 = White (57.7%), 2 = Black (27%), 3 = Asian (1.5%), 4 = Hispanic (5.1%), 5 = American Indian (5.8%), 6 = Other (2.9%). The model collapses the 6 levels into 3 effective categories: White (reference), Black (RACE_BLACK = 1), and 'non-Black ethnic origin' (RACE_NONBLACK_NONWHITE = 1). RACE_BLACK on CL/F: Table 3 theta_13 = 0.940 (6% lower than White reference).",
-      source_name        = "RACE (level 2)"
+      notes = "Time-fixed per subject. Fisher 2008 Table 2 encodes race as a 6-level categorical: 1 = White (57.7%), 2 = Black (27%), 3 = Asian (1.5%), 4 = Hispanic (5.1%), 5 = American Indian (5.8%), 6 = Other (2.9%). The model collapses the 6 levels into 3 effective categories: White (reference), Black (RACE_BLACK = 1), and 'non-Black ethnic origin' (RACE_NONBLACK_NONWHITE = 1). RACE_BLACK on CL/F: Table 3 theta_13 = 0.940 (6% lower than White reference).",
+      source_name = "RACE (level 2)"
     ),
     RACE_NONBLACK_NONWHITE = list(
-      description        = "Non-Black, non-White composite race indicator (Asian + Hispanic + American Indian + Other in the source cohort)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-Black, non-White composite race indicator (Asian + Hispanic + American Indian + Other in the source cohort)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White or Black (the larger-N pooled reference in the source paper)",
-      notes              = "Time-fixed per subject. Fisher 2008 'non-Black ethnic origin' composite of Race = 3 (Asian), 4 (Hispanic), 5 (American Indian), and 6 (Other) collapsed into a single indicator vs the White reference. Patients in this composite have ~6% higher CL/F than the White reference (Table 3 theta_14 = 1.06). Mutually exclusive with RACE_BLACK (a subject cannot be both Black and non-Black-non-White).",
-      source_name        = "RACE (levels 3, 4, 5, 6)"
+      notes = "Time-fixed per subject. Fisher 2008 'non-Black ethnic origin' composite of Race = 3 (Asian), 4 (Hispanic), 5 (American Indian), and 6 (Other) collapsed into a single indicator vs the White reference. Patients in this composite have ~6% higher CL/F than the White reference (Table 3 theta_14 = 1.06). Mutually exclusive with RACE_BLACK (a subject cannot be both Black and non-Black-non-White).",
+      source_name = "RACE (levels 3, 4, 5, 6)"
     ),
     CONMED_RTV = list(
-      description        = "Concomitant low-dose ritonavir (RTV) co-administration indicator (CYP3A4 boost)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant low-dose ritonavir (RTV) co-administration indicator (CYP3A4 boost)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no concomitant ritonavir (unboosted FPV)",
-      notes              = "Time-varying per dosing record. Fisher 2008 encodes RTV as 0 = administered without ritonavir (n=18 patients, 13.1%) / 1 = administered with ritonavir (n=119, 86.9%; Table 2). The source poster's Methods explicitly state 'Maximal inhibition of FPV CL/F was assumed at the RTV doses included in the model' (RTV mg ranged 0-200 in the dataset; Table 1), so the model treats RTV as a binary switch rather than a dose-response. Reduces typical CL/F from 84.4 L/h (without RTV) to 34.1 L/h (with RTV), a 60% reduction (Table 3 theta_1 / theta_6).",
-      source_name        = "RTV"
+      notes = "Time-varying per dosing record. Fisher 2008 encodes RTV as 0 = administered without ritonavir (n=18 patients, 13.1%) / 1 = administered with ritonavir (n=119, 86.9%; Table 2). The source poster's Methods explicitly state 'Maximal inhibition of FPV CL/F was assumed at the RTV doses included in the model' (RTV mg ranged 0-200 in the dataset; Table 1), so the model treats RTV as a binary switch rather than a dose-response. Reduces typical CL/F from 84.4 L/h (without RTV) to 34.1 L/h (with RTV), a 60% reduction (Table 3 theta_1 / theta_6).",
+      source_name = "RTV"
     ),
     FORM_TABLET = list(
-      description        = "Tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = suspension formulation (the typical-value bioavailability reference when combined with FED = 1)",
-      notes              = "Time-varying per dosing record. Fisher 2008 encodes formulation as 1 = suspension (n=89 records, 65%) / 2 = tablets (n=48 records, 35%) in Table 2; this is recoded to FORM_TABLET = 1 if tablet, 0 if suspension. Tablet formulation has F_tab = 1.09 relative to the fed-suspension reference (Table 3 theta_7).",
-      source_name        = "Formulation (level 2)"
+      notes = "Time-varying per dosing record. Fisher 2008 encodes formulation as 1 = suspension (n=89 records, 65%) / 2 = tablets (n=48 records, 35%) in Table 2; this is recoded to FORM_TABLET = 1 if tablet, 0 if suspension. Tablet formulation has F_tab = 1.09 relative to the fed-suspension reference (Table 3 theta_7).",
+      source_name = "Formulation (level 2)"
     ),
     FED = list(
-      description        = "Fed-state indicator at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state indicator at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Time-varying per dosing record. Fisher 2008 encodes 'Food Intake' as -1 = Missing (43 records, 31.4%) / 0 = Administered without food (20 records, 14.6%) / 1 = Administered with food (74 records, 54%) in Table 2. This is recoded to FED = 1 if administered with food, 0 if fasted; the missing food category is treated as the fed reference (FED = 1) in this model file (downstream users with a different imputation should set FED accordingly). The food effect only applies to suspension administration: F_food,sus = 0.87 (Table 3 theta_8) is the relative bioavailability of the fasted suspension vs the fed suspension; tablet bioavailability F_tab does NOT additionally depend on food in the source paper's structural form.",
-      source_name        = "Food Intake"
+      notes = "Time-varying per dosing record. Fisher 2008 encodes 'Food Intake' as -1 = Missing (43 records, 31.4%) / 0 = Administered without food (20 records, 14.6%) / 1 = Administered with food (74 records, 54%) in Table 2. This is recoded to FED = 1 if administered with food, 0 if fasted; the missing food category is treated as the fed reference (FED = 1) in this model file (downstream users with a different imputation should set FED accordingly). The food effect only applies to suspension administration: F_food,sus = 0.87 (Table 3 theta_8) is the relative bioavailability of the fasted suspension vs the fed suspension; tablet bioavailability F_tab does NOT additionally depend on food in the source paper's structural form.",
+      source_name = "Food Intake"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 137L,
-    n_studies        = 3L,
-    n_observations   = 1322L,
-    age_range        = "0.72-18 years (baseline; eligibility 4 weeks to 18 years)",
-    age_median       = "10 years",
-    weight_range     = "5.9-102.8 kg (baseline)",
-    weight_median    = "32.9 kg",
-    sex_female_pct   = 54.7,
-    race_ethnicity   = c(White = 57.7, Black = 27.0, Asian = 1.5, Hispanic = 5.1, AmericanIndian = 5.8, Other = 2.9),
-    disease_state    = "HIV-1-infected pediatric patients, protease-inhibitor (PI) naive or PI-experienced, on antiretroviral therapy that included fosamprenavir (FPV) +/- ritonavir (RTV) booster. 119 of 137 patients (86.9%) received FPV with RTV; 18 (13.1%, all aged 2-6 years) received FPV alone.",
-    dose_range       = "Oral FPV (suspension or tablet) at per-kilogram doses based on age group: FPV/RTV BID 18-36 mg/kg (max 700 mg), FPV/RTV QD 36-72 mg/kg (max 1400 mg), or FPV BID 17-38 mg/kg (max 1400 mg). RTV dose (when given) 0-200 mg (cohort mean 109.5 mg, median 100 mg; Table 1).",
-    regions          = "Multinational: Argentina, Belgium, Canada, Italy, Mexico, Netherlands, Portugal, Romania, Russia, Spain, USA (per Acknowledgments).",
+    species = "human",
+    n_subjects = 137L,
+    n_studies = 3L,
+    n_observations = 1322L,
+    age_range = "0.72-18 years (baseline; eligibility 4 weeks to 18 years)",
+    age_median = "10 years",
+    weight_range = "5.9-102.8 kg (baseline)",
+    weight_median = "32.9 kg",
+    sex_female_pct = 54.7,
+    race_ethnicity = c(White = 57.7, Black = 27.0, Asian = 1.5, Hispanic = 5.1, AmericanIndian = 5.8, Other = 2.9),
+    disease_state = "HIV-1-infected pediatric patients, protease-inhibitor (PI) naive or PI-experienced, on antiretroviral therapy that included fosamprenavir (FPV) +/- ritonavir (RTV) booster. 119 of 137 patients (86.9%) received FPV with RTV; 18 (13.1%, all aged 2-6 years) received FPV alone.",
+    dose_range = "Oral FPV (suspension or tablet) at per-kilogram doses based on age group: FPV/RTV BID 18-36 mg/kg (max 700 mg), FPV/RTV QD 36-72 mg/kg (max 1400 mg), or FPV BID 17-38 mg/kg (max 1400 mg). RTV dose (when given) 0-200 mg (cohort mean 109.5 mg, median 100 mg; Table 1).",
+    regions = "Multinational: Argentina, Belgium, Canada, Italy, Mexico, Netherlands, Portugal, Romania, Russia, Spain, USA (per Acknowledgments).",
     aag_distribution = "Baseline AAG mean 0.87 g/L, median 0.80 g/L, range 0.41-2.69 g/L (Table 1); reference (cohort median used in the model centring) 0.77 g/L (Figure 3 caption).",
-    iov_structure    = "Inter-occasion variability on CL/F was identified at omega^2 = 0.114 (~34% CV) in the final model (Table 3 theta_9). This model file does NOT encode IOV structurally -- the source poster does not define an operational occasion column for downstream simulation use, and the nlmixr2lib convention (Brooks 2021 / Andrews 2017 precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations. Downstream users who want to simulate IOV can add an OCC indicator and a per-occasion eta in rxode2.",
-    studies          = "APV20002 (Phase II, 4 weeks to <2 years, FPV +/- RTV, n=9 patients, 6.6%); APV20003 (Phase II, 2-18 years, FPV/RTV QD or BID, n=59 patients, 43.1%); APV29005 (Phase II, FPV/RTV BID 2-18 years and FPV BID 2-<6 years PI-naive, n=69 patients, 50.4%). Each study contributed one extensive PK sampling day after at least 10 days of multiple-dose therapy plus up to 9 trough samples spanning up to 18 months.",
-    notes            = "Pooled analysis from three multinational pediatric studies sponsored by GlaxoSmithKline. Fosamprenavir (FPV) is a prodrug of amprenavir (APV); APV is the measured species (plasma assay, units ug/mL). APV is ~90% protein-bound, primarily to alpha-1-acid glycoprotein (AAG). APV is metabolized primarily by CYP3A4. RTV is a potent CYP3A4 inhibitor and is co-administered at low 'booster' doses to increase APV exposure. The poster was used to support FDA approval of pediatric FPV dosing recommendations for children 2-18 years (FPV) and 6-18 years (FPV/RTV)."
+    iov_structure = "Inter-occasion variability on CL/F was identified at omega^2 = 0.114 (~34% CV) in the final model (Table 3 theta_9). This model file does NOT encode IOV structurally -- the source poster does not define an operational occasion column for downstream simulation use, and the nlmixr2lib convention (Brooks 2021 / Andrews 2017 precedent) is to omit IOV when no occasion mapping is defined; see vignette Assumptions and deviations. Downstream users who want to simulate IOV can add an OCC indicator and a per-occasion eta in rxode2.",
+    studies = "APV20002 (Phase II, 4 weeks to <2 years, FPV +/- RTV, n=9 patients, 6.6%); APV20003 (Phase II, 2-18 years, FPV/RTV QD or BID, n=59 patients, 43.1%); APV29005 (Phase II, FPV/RTV BID 2-18 years and FPV BID 2-<6 years PI-naive, n=69 patients, 50.4%). Each study contributed one extensive PK sampling day after at least 10 days of multiple-dose therapy plus up to 9 trough samples spanning up to 18 months.",
+    notes = "Pooled analysis from three multinational pediatric studies sponsored by GlaxoSmithKline. Fosamprenavir (FPV) is a prodrug of amprenavir (APV); APV is the measured species (plasma assay, units ug/mL). APV is ~90% protein-bound, primarily to alpha-1-acid glycoprotein (AAG). APV is metabolized primarily by CYP3A4. RTV is a potent CYP3A4 inhibitor and is co-administered at low 'booster' doses to increase APV exposure. The poster was used to support FDA approval of pediatric FPV dosing recommendations for children 2-18 years (FPV) and 6-18 years (FPV/RTV)."
   )
 
   ini({

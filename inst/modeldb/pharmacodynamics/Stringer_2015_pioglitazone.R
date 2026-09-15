@@ -25,8 +25,8 @@ Stringer_2015_pioglitazone <- function() {
   )
   vignette <- "Stringer_2015_pioglitazone"
   units <- list(
-    time          = "day",
-    dosing        = "none (drug effect is time-driven within treatment cohort; no PK data collected)",
+    time = "day",
+    dosing = "none (drug effect is time-driven within treatment cohort; no PK data collected)",
     concentration = "FPG in mg/dL; HbA1c in % (NGSP)"
   )
   paper_specific_compartments <- c("fpg", "hba1c")
@@ -36,17 +36,17 @@ Stringer_2015_pioglitazone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fpg   = list(analyte = "Fasting Plasma Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fpg = list(analyte = "Fasting Plasma Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
     hba1c = list(analyte = "Glycosylated Hemoglobin", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex (female indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (female indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female)",
-      notes              = paste(
+      notes = paste(
         "Additive fractional multiplier on baseline FPG only.",
         "Male subjects (SEXF = 0) have baseline FPG that is",
         "(1 + sex_effect_fpg) times the female-typical value; the paper",
@@ -55,14 +55,14 @@ Stringer_2015_pioglitazone <- function() {
         "analysis'). No effect on baseline HbA1c, KoutG, KoutH, Emax,",
         "or the disease-progression rates."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     TRT = list(
-      description        = "Treatment-cohort indicator (0 = control non-TZD, 1 = pioglitazone with or without other non-TZD oral glucose-lowering drugs)",
-      units              = "(categorical / integer-coded)",
-      type               = "categorical",
+      description = "Treatment-cohort indicator (0 = control non-TZD, 1 = pioglitazone with or without other non-TZD oral glucose-lowering drugs)",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       reference_category = "0 (control non-TZD)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; carries the randomized-treatment",
         "assignment. Selects the drug-effect parameters of the",
         "time-driven Emax model (Stringer 2015 Eq. 5,",
@@ -72,29 +72,29 @@ Stringer_2015_pioglitazone <- function() {
         "group has Emax = 8.4% and ET50 = 49.2 days. The Emax IIV",
         "(omega^2 = 0.75) is shared between the two cohorts."
       ),
-      source_name        = "TRT"
+      source_name = "TRT"
     )
   )
 
   population <- list(
-    species                 = "human",
-    n_subjects              = 587L,
-    n_pio                   = 293L,
-    n_control               = 294L,
-    n_studies               = 1L,
-    study_design            = "Multicenter, prospective, randomized, open-label, blinded-end-point study in Japanese T2DM patients (2.5-4 year treatment; median 3.14 years, maximum 3.9 years).",
-    age_range               = "35.0-74.0 years (median 58.0; pooled cohorts)",
-    weight_range            = "44.0-116.0 kg (median 68-69 kg)",
-    bmi_range               = "18.5-42.6 kg/m^2 (median 26.2-26.5 kg/m^2)",
-    sex_female_pct          = 37.8,
-    disease_state           = "Type 2 diabetes mellitus (T2DM) with baseline HbA1c > 6.9% (NGSP); on non-TZD oral glucose-lowering background therapy; treatment adjusted to achieve HbA1c < 6.9% (NGSP)",
-    baseline_fpg_median     = "153-157 mg/dL (pio: 153.0 [77.0-304.0]; control: 157.0 [81.0-371.0])",
-    baseline_hba1c_median   = "7.6-7.9 % NGSP (pio: 7.9 [6.9-11.4]; control: 7.6 [6.9-11.8])",
-    duration_of_diabetes    = "< 5 years in ~28%, > 5 years in ~72%",
-    co_medication           = "Sulfonylureas (73.0-81.6%), alpha-glucosidase inhibitors (35.8-55.8%), biguanides (42.6-67.7%), rapid-acting insulin secretagogues (6.5-12.9%). No other TZD.",
-    regions                 = "Japan",
-    n_dropped_before_2p5yr  = 90L,
-    notes                   = "Baseline demographics from Stringer 2015 Table 1. No PK data collected. The primary safety / tolerability results of the parent cardiovascular-outcome study are reported in the companion publications (Stringer 2015 refs 21, 22)."
+    species = "human",
+    n_subjects = 587L,
+    n_pio = 293L,
+    n_control = 294L,
+    n_studies = 1L,
+    study_design = "Multicenter, prospective, randomized, open-label, blinded-end-point study in Japanese T2DM patients (2.5-4 year treatment; median 3.14 years, maximum 3.9 years).",
+    age_range = "35.0-74.0 years (median 58.0; pooled cohorts)",
+    weight_range = "44.0-116.0 kg (median 68-69 kg)",
+    bmi_range = "18.5-42.6 kg/m^2 (median 26.2-26.5 kg/m^2)",
+    sex_female_pct = 37.8,
+    disease_state = "Type 2 diabetes mellitus (T2DM) with baseline HbA1c > 6.9% (NGSP); on non-TZD oral glucose-lowering background therapy; treatment adjusted to achieve HbA1c < 6.9% (NGSP)",
+    baseline_fpg_median = "153-157 mg/dL (pio: 153.0 [77.0-304.0]; control: 157.0 [81.0-371.0])",
+    baseline_hba1c_median = "7.6-7.9 % NGSP (pio: 7.9 [6.9-11.4]; control: 7.6 [6.9-11.8])",
+    duration_of_diabetes = "< 5 years in ~28%, > 5 years in ~72%",
+    co_medication = "Sulfonylureas (73.0-81.6%), alpha-glucosidase inhibitors (35.8-55.8%), biguanides (42.6-67.7%), rapid-acting insulin secretagogues (6.5-12.9%). No other TZD.",
+    regions = "Japan",
+    n_dropped_before_2p5yr = 90L,
+    notes = "Baseline demographics from Stringer 2015 Table 1. No PK data collected. The primary safety / tolerability results of the parent cardiovascular-outcome study are reported in the companion publications (Stringer 2015 refs 21, 22)."
   )
 
   ini({

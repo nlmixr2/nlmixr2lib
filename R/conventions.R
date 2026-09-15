@@ -16,8 +16,19 @@
 #' @noRd
 .nlmixr2libConventionsStatic <- list(
   pkParams = c(
-    "lka", "lcl", "lvc", "lvp", "lvp2", "lq", "lq2", "lfdepot",
-    "lvmax", "lcl_ss", "lcl_time", "lcl_renal", "lcl_nonren",
+    "lka",
+    "lcl",
+    "lvc",
+    "lvp",
+    "lvp2",
+    "lq",
+    "lq2",
+    "lfdepot",
+    "lvmax",
+    "lcl_ss",
+    "lcl_time",
+    "lcl_renal",
+    "lcl_nonren",
     # K-PD / single-rate-constant elimination (primary `ini()` form
     # used when no explicit `vc` is estimated). Canonical lkel adopted
     # 2026-05-28 per the naming audit (replaces `lke`).
@@ -34,7 +45,10 @@
     # Marier_2002_tobramycin_rat_conventional (intratracheal tobramycin
     # in rats; central state carries amount in ug because the lung-
     # tissue assay output is an amount, not a concentration).
-    "lk12", "lk21", "lk13", "lk31",
+    "lk12",
+    "lk21",
+    "lk13",
+    "lk31",
     # Canonical lag-time name. Replaces the legacy `lalag`, `llag`,
     # `ltz` forms per the 2026-05-28 naming audit.
     "ltlag",
@@ -44,16 +58,38 @@
     # a separate compartment connected to plasma central via two
     # asymmetric clearances driven by unbound drug. Used in Campagne
     # 2019 cyclophosphamide mouse CNS penetration popPK.
-    "lclin", "lclef"
+    "lclin",
+    "lclef"
   ),
   pkBareParams = c(
-    "ka", "cl", "vc", "vp", "vp2", "q", "q2", "kel",
-    "k12", "k21", "k13", "k31", "fdepot",
-    "vmax", "cl_ss", "cl_time", "cl_renal", "cl_nonren"
+    "ka",
+    "cl",
+    "vc",
+    "vp",
+    "vp2",
+    "q",
+    "q2",
+    "kel",
+    "k12",
+    "k21",
+    "k13",
+    "k31",
+    "fdepot",
+    "vmax",
+    "cl_ss",
+    "cl_time",
+    "cl_renal",
+    "cl_nonren"
   ),
   compartments = c(
-    "depot", "central", "peripheral1", "peripheral2", "effect",
-    "target", "complex", "total_target",
+    "depot",
+    "central",
+    "peripheral1",
+    "peripheral2",
+    "effect",
+    "target",
+    "complex",
+    "total_target",
     # Semi-physiological liver compartment used by paper-specific
     # extraction-ratio first-pass models (Xie_2019_agomelatine).
     "liver",
@@ -72,13 +108,18 @@
     # compartments used by mechanistic mAb / target-mediated disposition
     # models with multiple body-fluid distribution volumes
     # (Perez-Ruixo_2025_posdinemab).
-    "csf", "isf",
+    "csf",
+    "isf",
     # Anatomic brain-region compartments used by mAb brain-distribution
     # PK models (Grimm_2023_trontinemab, Grimm_2023_gantenerumab). Each
     # state holds the extracellular drug concentration in the named
     # region; total brain concentration including residual plasma is
     # derived as `Cbrain_<region>` in model().
-    "cerebellum", "hippocampus", "striatum", "cortex", "choroid_plexus",
+    "cerebellum",
+    "hippocampus",
+    "striatum",
+    "cortex",
+    "choroid_plexus",
     # Gallbladder / biliary recirculation compartment used by
     # enterohepatic-circulation (EHC) popPK models (Ide_2009_pravastatin
     # and similar). Drug accumulates from the central compartment via
@@ -101,7 +142,8 @@
     # glucose elimination and itself first-order eliminated). Each
     # state holds a concentration (mmol/L) rather than an amount,
     # mirroring the source paper's mass-balance parameterisation.
-    "glucose", "lactate",
+    "glucose",
+    "lactate",
     # Plasma non-esterified fatty acids (NEFA / free fatty acids) used
     # by lipid-turnover PD models with feedback control (Ahlstrom 2010:
     # NiAc inhibits hydrolysis of TG to NEFA; NEFA formation is also
@@ -116,7 +158,10 @@
     # (mg); `xanthine_urine` and `urate_urine` hold cumulative urinary
     # excretion amounts (mg) integrated from CLX / CLUA renal-clearance
     # outflows for direct comparison with 24-h urinary collection data.
-    "xanthine", "urate", "xanthine_urine", "urate_urine",
+    "xanthine",
+    "urate",
+    "xanthine_urine",
+    "urate_urine",
     # Kinetic-pharmacodynamic (K-PD) body amount compartment used when
     # the source paper drives a PD response from a dose-to-effect K-PD
     # construct rather than from measured plasma concentrations. Drug
@@ -287,14 +332,32 @@
   # pkBareParams and clComponents to preserve covariate-effect
   # disambiguation.
   registeredMetabolites = c(
-    "mmae", "dxd", "sn38", "dm4", "medm4", "mcmmaf",
-    "complex", "ige", "il1b", "tab", "nab",
-    "dar0", "dar1", "dar2", "dar3", "dar4", "dar5", "dar6", "dar7", "dar8",
+    "mmae",
+    "dxd",
+    "sn38",
+    "dm4",
+    "medm4",
+    "mcmmaf",
+    "complex",
+    "ige",
+    "il1b",
+    "tab",
+    "nab",
+    "dar0",
+    "dar1",
+    "dar2",
+    "dar3",
+    "dar4",
+    "dar5",
+    "dar6",
+    "dar7",
+    "dar8",
     # Small-molecule metabolites of agomelatine (Xie 2019): 3-hydroxy
     # and 7-desmethyl. Suffixes start with a digit; this is fine
     # because the convention check matches on `endsWith(name, "_<metab>")`
     # rather than treating the metabolite name itself as an R identifier.
-    "3oh", "7dm",
+    "3oh",
+    "7dm",
     # N-desmethyl-bedaquiline metabolite (M2) of bedaquiline
     # (Svensson 2016 DDMODEL00000219).
     "m2",
@@ -312,7 +375,9 @@
     # (LID -> 2,6-XYL minor pathway). Each metabolite is a separate
     # central compartment with its own apparent volume in the source's
     # ADVAN5 parent + 3-metabolite structure.
-    "megx", "gx", "xyl",
+    "megx",
+    "gx",
+    "xyl",
     # 4-Guanidinobenzoic acid, the terminal inactive metabolite of camostat
     # mesylate, formed from the active metabolite GBPA (FOY-251) by
     # arylesterase -- Kim 2023 doi:10.3390/pharmaceutics15092357. Camostat
@@ -323,15 +388,18 @@
     "gba",
     # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
     # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
-    "m3g", "m6g",
+    "m3g",
+    "m6g",
     # Phase-II conjugates: glucuronide (gluc) and sulphate (sulf).
     # Used for paracetamol-glucuronide / paracetamol-sulphate plasma
     # metabolite compartments in Allegaert 2015 (DDMODEL00000267).
-    "gluc", "sulf",
+    "gluc",
+    "sulf",
     # Paracetamol (APAP) phase-II conjugate metabolites -- APAP-glucuronide
     # ("apapg") and APAP-sulphate ("apaps") used in the Cook 2016 newborn
     # model (DDMODEL00000271).
-    "apapg", "apaps",
+    "apapg",
+    "apaps",
     # Colistin, the active polymyxin generated in vivo by hydrolysis of
     # the prodrug colistimethate sodium (CMS). Used as a metabolite
     # suffix in parent-prodrug CMS / metabolite-active-drug colistin
@@ -383,7 +451,9 @@
     # has its own central compartment with apparent volume fixed to
     # 1 L (only output rate constants K23, K34, K40 are identifiable
     # in the source NONMEM ADVAN6 fit).
-    "dfcr", "dfur", "5fu",
+    "dfcr",
+    "dfur",
+    "5fu",
     # AS(N-1)3' truncated antisense strand of GalNAc-conjugated
     # siRNAs (givosiran and other galnac-siRNA conjugates), formed
     # by removal of the 3'-terminal nucleotide from the antisense
@@ -431,7 +501,8 @@
     # doi:10.1111/bcp.13311). Treated as "non-parent analyte" suffixes
     # under the same registry as metabolites; neither enantiomer is the
     # parent.
-    "r", "s",
+    "r",
+    "s",
     # Roflumilast N-oxide, the active metabolite of roflumilast that
     # contributes about 90% of total PDE4 inhibitory activity (tPDE4i).
     # Used as a metabolite suffix in parent-plus-metabolite popPK models
@@ -572,14 +643,27 @@
   # `hemoadsorption` was added. Take the UNION of every component and
   # every comment block; never take one side wholesale.
   clComponents = c(
-    "ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt",
-    "tsnet", "ccpd", "capd", "hemoadsorption"
+    "ss",
+    "time",
+    "renal",
+    "nonren",
+    "hemodialysis",
+    "dialysis",
+    "crrt",
+    "tsnet",
+    "ccpd",
+    "capd",
+    "hemoadsorption"
   ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
-    "prop.err", "add.err", "propErr", "addErr",
-    "err.prop", "err.add"
+    "prop.err",
+    "add.err",
+    "propErr",
+    "addErr",
+    "err.prop",
+    "err.add"
   ),
   deprecatedIivPrefixes = c("iiv_", "IIV_", "bsv_", "BSV_"),
   # Bare volume names that should be replaced with vc / vp / vp2.
@@ -601,8 +685,11 @@
   # `.conventionErrorsStopIfAny`) rather than merely printing a count.
   renamedParameters = c(
     # #474 allometric exponents -> e_wt_<param>
-    allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",
-    allovc = "e_wt_vc", allovp = "e_wt_vp",
+    allo_cl = "e_wt_cl",
+    allo_q = "e_wt_q",
+    allo_vc = "e_wt_vc",
+    allovc = "e_wt_vc",
+    allovp = "e_wt_vp",
     # `allo_v` survived the #474 sweep because it is spelled with a bare `v`
     # rather than `vc` / `vp`. Retired 2026-09-09. The replacement depends on
     # what the exponent actually drives: `e_<cov>_vc` for a single volume,
@@ -612,16 +699,24 @@
     # ratio to an already-canonical exponent is not this parameter at all and
     # takes `allom_v`.
     allo_v = "e_wt_vc / e_wt_vc_vp (or e_ffm_/e_lbm_ per the driving covariate); a derived multiplier is allom_v",
-    dCLdWT = "e_wt_cl", dVdWT = "e_wt_vc",
+    dCLdWT = "e_wt_cl",
+    dVdWT = "e_wt_vc",
     # #475 logit-scale fractions: F vs absorption-pathway split
     logitf1 = "logitfdepot (bioavailability) or logitffo/logitfburst (pathway split)",
     logitfr = "logitffo (first-order arm) or logitfburst (burst/rapid-release)",
     logitf1st = "logitffo",
     # #476 CLL disambiguation
-    lcll = "lcl_ligand", cllira = "cl_lira", lcllira_ref = "lcl_lira_ref",
+    lcll = "lcl_ligand",
+    cllira = "cl_lira",
+    lcllira_ref = "lcl_lira_ref",
     # #477 TMDD case / separator normalisation
-    lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
-    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2",
+    lKss = "lkss",
+    lkD = "lkd",
+    lBmax = "lbmax",
+    Km = "km",
+    kd_LR = "kd_lr",
+    kd_T1 = "kd_t1",
+    kd_T2 = "kd_t2",
     # Same case-normalisation class, found while auditing the extraction
     # skill's own docs against this map: 89 models used `vmax`, one used
     # `Vmax`, and the skill taught the capitalised spelling.
@@ -641,9 +736,24 @@
   #     states). A database scan found these in 642 of the 1403 models with
   #     ODEs, so the category carries real weight.
   specimenVocabulary = c(
-    "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
-    "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
-    "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    "plasma",
+    "serum",
+    "whole blood",
+    "blood cell",
+    "CSF",
+    "brain ISF",
+    "vitreous",
+    "aqueous humour",
+    "retina",
+    "tissue",
+    "tumor",
+    "lymph",
+    "endosome",
+    "urine",
+    "bile",
+    "faeces",
+    "saliva",
+    "milk",
     # Spent dialysate / effluent collected from a dialysis circuit. Companion
     # to the `dialysate` compartment canonical ratified in sidecar
     # `oare_PMC4386947` request-001 / response-001 question q1: a dialysate
@@ -652,9 +762,12 @@
     # carboxylate in plasma, dialysate and urine, each with its own validated
     # LOQ and its own residual-error term).
     "dialysate",
-    "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "synovial fluid",
+    "epithelial lining fluid",
+    "bronchoalveolar lavage",
     "dialysate",
-    "administration site", "not applicable"
+    "administration site",
+    "not applicable"
   ),
 
   # Fields every compartmentData entry must carry. `analyte` and `units`
@@ -673,22 +786,37 @@
   # "hr" in 28, plus ~12 notations for second-order association rates.
   canonicalTimeUnit = "h",
   timeUnitSpellings = c(
-    hour = "h", hours = "h", hr = "h", hrs = "h",
-    minute = "min", minutes = "min", mins = "min",
-    days = "day", weeks = "week", months = "month", years = "year",
-    second = "s", seconds = "s", sec = "s", secs = "s"
+    hour = "h",
+    hours = "h",
+    hr = "h",
+    hrs = "h",
+    minute = "min",
+    minutes = "min",
+    mins = "min",
+    days = "day",
+    weeks = "week",
+    months = "month",
+    years = "year",
+    second = "s",
+    seconds = "s",
+    sec = "s",
+    secs = "s"
   ),
   doseUnitSpellings = c(
-    microgram = "ug", micrograms = "ug", mcg = "ug",
-    milligram = "mg", milligrams = "mg",
-    nanogram = "ng", nanograms = "ng",
-    gram = "g", grams = "g"
+    microgram = "ug",
+    micrograms = "ug",
+    mcg = "ug",
+    milligram = "mg",
+    milligrams = "mg",
+    nanogram = "ng",
+    nanograms = "ng",
+    gram = "g",
+    grams = "g"
   ),
 
   # Generic structural models (PK_1cmt, PK_2cmt, ...) are dimensionless by
   # design and declare placeholders. These are correct, not unnormalised.
-  placeholderUnits = c("time_unit", "dose_unit", "conc_unit", "amount_unit",
-                       "vol_unit", "half_life", "none"),
+  placeholderUnits = c("time_unit", "dose_unit", "conc_unit", "amount_unit", "vol_unit", "half_life", "none"),
 
   # Second-order association rate constants. The library wrote these as
   # 1/(nM*h), 1/nM/hour, nM^-1 h^-1, (pmol/L)^-1 h^-1, 1/(nM h) ... all the
@@ -735,11 +863,15 @@
 .covariateRegisterCache <- new.env(parent = emptyenv())
 
 .covariateColumnsPath <- function() {
-  p <- system.file("references", "covariate-columns.md",
-                   package = "nlmixr2lib")
-  if (nzchar(p)) return(p)
-  stop("Could not locate inst/references/covariate-columns.md in the ",
-       "nlmixr2lib package. Check the installation.", call. = FALSE)
+  p <- system.file("references", "covariate-columns.md", package = "nlmixr2lib")
+  if (nzchar(p)) {
+    return(p)
+  }
+  stop(
+    "Could not locate inst/references/covariate-columns.md in the ",
+    "nlmixr2lib package. Check the installation.",
+    call. = FALSE
+  )
 }
 
 #' Parse the canonical covariate register from covariate-columns.md.
@@ -781,7 +913,9 @@
   state <- "idle"
 
   flush <- function() {
-    if (is.null(current)) return(invisible())
+    if (is.null(current)) {
+      return(invisible())
+    }
     for (nm in current$names) {
       acc$entries[[nm]] <- list(
         units = current$units %||% "",
@@ -823,12 +957,13 @@
       heading <- sub("\\s*\\(\\*\\*.*\\*\\*\\)\\s*$", "", heading)
       nms <- trimws(strsplit(heading, ",")[[1]])
       nms <- nms[grepl(identRegex, nms)]
-      current <- list(names = nms, aliases = character(),
-                      example_models = character())
+      current <- list(names = nms, aliases = character(), example_models = character())
       state <- "header"
       next
     }
-    if (is.null(current)) next
+    if (is.null(current)) {
+      next
+    }
 
     m <- regmatches(line, regexec("^- \\*\\*Units:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
@@ -860,7 +995,9 @@
       state <- "aliases"
       after <- sub("^- \\*\\*Source aliases:\\*\\*\\s*", "", line)
       # "none", "none known", "none;"-style declarations have no aliases.
-      if (grepl("^none\\b", after, ignore.case = TRUE)) next
+      if (grepl("^none\\b", after, ignore.case = TRUE)) {
+        next
+      }
       # Capture inline aliases up to the first em-dash prose separator.
       after <- strsplit(after, "\\s+\u2014\\s+", perl = TRUE)[[1]][1]
       inline <- regmatches(after, gregexpr("`([^`]+)`", after))[[1]]
@@ -875,8 +1012,7 @@
     if (grepl("^- \\*\\*Example models:\\*\\*", line)) {
       state <- "example_models"
       after <- sub("^- \\*\\*Example models:\\*\\*\\s*", "", line)
-      current$example_models <- c(current$example_models,
-                                  extractBacktickedModels(after))
+      current$example_models <- c(current$example_models, extractBacktickedModels(after))
       next
     }
 
@@ -897,8 +1033,7 @@
     if (state == "example_models") {
       # Continuation bullet lines in a multi-line Example-models list.
       if (grepl("^\\s+-\\s", line)) {
-        current$example_models <- c(current$example_models,
-                                    extractBacktickedModels(line))
+        current$example_models <- c(current$example_models, extractBacktickedModels(line))
         next
       }
       if (grepl("^- \\*\\*", line)) {
@@ -920,19 +1055,27 @@
 }
 
 .parameterNamesPath <- function() {
-  p <- system.file("references", "parameter-names.md",
-                   package = "nlmixr2lib")
-  if (nzchar(p)) return(p)
-  stop("Could not locate inst/references/parameter-names.md in the ",
-       "nlmixr2lib package. Check the installation.", call. = FALSE)
+  p <- system.file("references", "parameter-names.md", package = "nlmixr2lib")
+  if (nzchar(p)) {
+    return(p)
+  }
+  stop(
+    "Could not locate inst/references/parameter-names.md in the ",
+    "nlmixr2lib package. Check the installation.",
+    call. = FALSE
+  )
 }
 
 .compartmentNamesPath <- function() {
-  p <- system.file("references", "compartment-names.md",
-                   package = "nlmixr2lib")
-  if (nzchar(p)) return(p)
-  stop("Could not locate inst/references/compartment-names.md in the ",
-       "nlmixr2lib package. Check the installation.", call. = FALSE)
+  p <- system.file("references", "compartment-names.md", package = "nlmixr2lib")
+  if (nzchar(p)) {
+    return(p)
+  }
+  stop(
+    "Could not locate inst/references/compartment-names.md in the ",
+    "nlmixr2lib package. Check the installation.",
+    call. = FALSE
+  )
 }
 
 #' Parse a canonical-name markdown register from inst/references/.
@@ -974,8 +1117,12 @@
   }
 
   flush <- function() {
-    if (is.null(current)) return(invisible())
-    if (is.null(current$type) || !nzchar(current$type)) return(invisible())
+    if (is.null(current)) {
+      return(invisible())
+    }
+    if (is.null(current$type) || !nzchar(current$type)) {
+      return(invisible())
+    }
     for (nm in current$names) {
       acc$entries[[length(acc$entries) + 1]] <- list(
         name = nm,
@@ -1000,12 +1147,13 @@
       heading <- sub("\\s*\\(\\*\\*.*\\*\\*\\)\\s*$", "", heading)
       nms <- trimws(strsplit(heading, ",")[[1]])
       nms <- nms[grepl(identRegex, nms)]
-      current <- list(names = nms, aliases = character(),
-                      example_models = character())
+      current <- list(names = nms, aliases = character(), example_models = character())
       state <- "header"
       next
     }
-    if (is.null(current)) next
+    if (is.null(current)) {
+      next
+    }
 
     m <- regmatches(line, regexec("^- \\*\\*Type:\\*\\*\\s*(.*)$", line))[[1]]
     if (length(m) == 2) {
@@ -1018,7 +1166,9 @@
     if (grepl("^- \\*\\*Source aliases:\\*\\*", line)) {
       state <- "aliases"
       after <- sub("^- \\*\\*Source aliases:\\*\\*\\s*", "", line)
-      if (grepl("^none\\b", after, ignore.case = TRUE)) next
+      if (grepl("^none\\b", after, ignore.case = TRUE)) {
+        next
+      }
       after <- strsplit(after, "\\s+\u2014\\s+", perl = TRUE)[[1]][1]
       inline <- regmatches(after, gregexpr("`([^`]+)`", after))[[1]]
       for (tok in inline) {
@@ -1032,8 +1182,7 @@
     if (grepl("^- \\*\\*Example models:\\*\\*", line)) {
       state <- "example_models"
       after <- sub("^- \\*\\*Example models:\\*\\*\\s*", "", line)
-      current$example_models <- c(current$example_models,
-                                  extractBacktickedModels(after))
+      current$example_models <- c(current$example_models, extractBacktickedModels(after))
       next
     }
 
@@ -1053,8 +1202,7 @@
 
     if (state == "example_models") {
       if (grepl("^\\s+-\\s", line)) {
-        current$example_models <- c(current$example_models,
-                                    extractBacktickedModels(line))
+        current$example_models <- c(current$example_models, extractBacktickedModels(line))
         next
       }
       if (grepl("^- \\*\\*", line)) {
@@ -1119,7 +1267,9 @@
 # Return TRUE when `name` is a canonical log-transformed PK parameter or
 # a metabolite-suffixed PK parameter (`l<base>_<metab>`).
 .isPkParam <- function(name, conv) {
-  if (name %in% conv$pkParams) return(TRUE)
+  if (name %in% conv$pkParams) {
+    return(TRUE)
+  }
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
@@ -1133,7 +1283,9 @@
 # Return TRUE when `name` is a canonical bare PK parameter or a
 # metabolite-suffixed bare PK parameter (`<base>_<metab>`).
 .isPkBareParam <- function(name, conv) {
-  if (name %in% conv$pkBareParams) return(TRUE)
+  if (name %in% conv$pkBareParams) {
+    return(TRUE)
+  }
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
@@ -1155,29 +1307,57 @@
 #   - method-of-lines diffusion slabs via conv$slabCompartmentRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
-  if (name %in% conv$compartments) return(TRUE)
-  if (grepl(conv$compartmentRegex, name)) return(TRUE)
-  if (grepl(conv$darCompartmentRegex, name)) return(TRUE)
-  if (grepl(conv$targetLocationRegex, name)) return(TRUE)
-  if (!is.null(conv$pbpkSubCompartmentRegex) &&
-      grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
-  if (!is.null(conv$bacterialSubpopRegex) &&
-      grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
-  if (!is.null(conv$rbcCompartmentRegex) &&
-      grepl(conv$rbcCompartmentRegex, name)) return(TRUE)
-  if (!is.null(conv$slabCompartmentRegex) &&
-      grepl(conv$slabCompartmentRegex, name)) return(TRUE)
+  if (name %in% conv$compartments) {
+    return(TRUE)
+  }
+  if (grepl(conv$compartmentRegex, name)) {
+    return(TRUE)
+  }
+  if (grepl(conv$darCompartmentRegex, name)) {
+    return(TRUE)
+  }
+  if (grepl(conv$targetLocationRegex, name)) {
+    return(TRUE)
+  }
+  if (
+    !is.null(conv$pbpkSubCompartmentRegex) &&
+      grepl(conv$pbpkSubCompartmentRegex, name)
+  ) {
+    return(TRUE)
+  }
+  if (
+    !is.null(conv$bacterialSubpopRegex) &&
+      grepl(conv$bacterialSubpopRegex, name)
+  ) {
+    return(TRUE)
+  }
+  if (
+    !is.null(conv$rbcCompartmentRegex) &&
+      grepl(conv$rbcCompartmentRegex, name)
+  ) {
+    return(TRUE)
+  }
+  if (
+    !is.null(conv$slabCompartmentRegex) &&
+      grepl(conv$slabCompartmentRegex, name)
+  ) {
+    return(TRUE)
+  }
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
       base <- substr(name, 1, nchar(name) - nchar(suf))
-      if (base %in% conv$compartments) return(TRUE)
+      if (base %in% conv$compartments) {
+        return(TRUE)
+      }
       # Compositions of a numbered-chain prefix with a metabolite
       # suffix are canonical: e.g., `transit1_m3g`, `precursor2_dxd`,
       # `lat1_complex`. Used by formation-delay transit chains feeding
       # a metabolite central compartment (deHoogd 2017 morphine model:
       # transit1_m3g..transit5_m3g and transit1_m6g..transit2_m6g).
-      if (grepl(conv$compartmentRegex, base)) return(TRUE)
+      if (grepl(conv$compartmentRegex, base)) {
+        return(TRUE)
+      }
       # Recursive: strip one metabolite suffix and re-check whether
       # the base matches another canonical pattern (compartment list,
       # chain regex, DAR regex, target-location regex, PBPK sub-
@@ -1196,7 +1376,9 @@
 # Observation-variable validator only -- see conv$probOutputRegex for why
 # this family is intentionally not accepted as a compartment name.
 .matchesProbOutput <- function(name, conv) {
-  if (is.null(conv$probOutputRegex)) return(FALSE)
+  if (is.null(conv$probOutputRegex)) {
+    return(FALSE)
+  }
   grepl(conv$probOutputRegex, name)
 }
 
@@ -1233,16 +1415,28 @@
 #   "unknown"    - has a third-token suffix that doesn't match any
 #                  registered category
 .classifyCovEffect <- function(name, conv) {
-  if (!startsWith(name, "e_")) return(NA_character_)
-  if (!grepl(conv$covEffectPattern, name)) return(NA_character_)
-  if (.endsWithMetabolite(name, conv)) return("metabolite")
-  if (.endsWithClComponent(name, conv)) return("component")
-  if (.endsWithBarePkParam(name, conv)) return("shared")
+  if (!startsWith(name, "e_")) {
+    return(NA_character_)
+  }
+  if (!grepl(conv$covEffectPattern, name)) {
+    return(NA_character_)
+  }
+  if (.endsWithMetabolite(name, conv)) {
+    return("metabolite")
+  }
+  if (.endsWithClComponent(name, conv)) {
+    return("component")
+  }
+  if (.endsWithBarePkParam(name, conv)) {
+    return("shared")
+  }
   # Strip the leading `e_` and check whether the rest is a single
   # `<cov>_<param>` pair (no third-token suffix). If yes, two_token;
   # otherwise the name has an unrecognized trailing suffix.
   rest <- substr(name, 3, nchar(name))
   parts <- strsplit(rest, "_", fixed = TRUE)[[1]]
-  if (length(parts) == 2) return("two_token")
+  if (length(parts) == 2) {
+    return("two_token")
+  }
   "unknown"
 }

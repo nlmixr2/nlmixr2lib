@@ -12,12 +12,12 @@ NA_NA_tte_loglogistic <- function() {
   )
   vignette <- "NA_NA_tte_loglogistic"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; no covariates in this final model)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; no covariates in this final model)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
   )
 
-  ddmore_id    <- "DDMODEL00000243"
+  ddmore_id <- "DDMODEL00000243"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -25,22 +25,27 @@ NA_NA_tte_loglogistic <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz = list(analyte = "Competing Event 2 cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Competing Event 2 cumulative hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 200L,
-    n_studies      = 1L,
-    age_range      = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
-    weight_range   = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
+    n_subjects = 200L,
+    n_studies = 1L,
+    age_range = "24-84 years (mean 58.7) in the BAST PTTE 2017 simulated cohort",
+    weight_range = "not reported (the BAST PTTE 2017 simulated cohort does not include body weight)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
-    dose_range     = "Not applicable (no drug administration is modelled).",
-    regions        = "Not applicable (simulated data).",
-    notes          = "200 simulated patients; 142 (71%) had Competing Event 2. Competing Event 2 is right-censored only (CENSORING = 1; exact event times are observed). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_gompertz_ev2.R, and NA_NA_tte_lognormal.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution discussion Section  2.4.1 / Figure 2-4 (selected log-normal in text); covariate-test result Table 2-5 (no covariate retained); final-fit executable Executable_runCOMPEV2_005.mod (log-logistic) and listing Output_simulated_runCOMPEV2_005.res."
+    disease_state = "Hypothetical / unspecified clinical population (the BAST PTTE 2017 guiding document is a methodological teaching example with simulated event data; no real drug, indication, or patient cohort).",
+    dose_range = "Not applicable (no drug administration is modelled).",
+    regions = "Not applicable (simulated data).",
+    notes = "200 simulated patients; 142 (71%) had Competing Event 2. Competing Event 2 is right-censored only (CENSORING = 1; exact event times are observed). For the other three events in the same bundle see NA_NA_tte_gompertz.R, NA_NA_tte_gompertz_ev2.R, and NA_NA_tte_lognormal.R. Source: BAST Inc Limited, 'BAST approach to parametric time-to-event (PTTE) modelling', 12 July 2017 (BAST_PTTE_modelling.pdf); base-distribution discussion Section  2.4.1 / Figure 2-4 (selected log-normal in text); covariate-test result Table 2-5 (no covariate retained); final-fit executable Executable_runCOMPEV2_005.mod (log-logistic) and listing Output_simulated_runCOMPEV2_005.res."
   )
 
   ini({

@@ -22,7 +22,8 @@ Kamal_2013_oseltamivir <- function() {
     "and Vp/F with Vcm/F). Residual error is proportional only for",
     "oseltamivir (40.5% CV reduced CCV model) and combined additive",
     "plus proportional for OC (14.0% CV proportional + 17.9 ng/mL",
-    "additive SD).")
+    "additive SD)."
+  )
   reference <- "Kamal MA, Van Wart SA, Rayner CR, Subramoney V, Reynolds DK, Bulik CC, Smith PF, Bhavnani SM, Ambrose PG, Forrest A. Population pharmacokinetics of oseltamivir: pediatrics through geriatrics. Antimicrob Agents Chemother. 2013;57(8):3470-3477. doi:10.1128/AAC.02438-12"
   vignette <- "Kamal_2013_oseltamivir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -32,61 +33,61 @@ Kamal_2013_oseltamivir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
     central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on OP CLp/F (exponent 0.838), OC CLm/F (exponent 0.560), and OC Vcm/F (exponent 0.830), all centered at the 70 kg adult reference per Kamal 2013 Methods page 3471 ('Covariate evaluation'). The 70 kg reference was chosen by the authors for convenient comparison to a typical adult rather than the cohort median; cohort median was 64.5 kg and range 8-115 kg (Kamal 2013 Results page 3471). Weight is also discussed under the allometric approach in Kamal 2013 Discussion page 3473 with the estimated exponents close to but distinct from the canonical 0.75 / 1 allometric values, which the authors note as a feature of their empirical (data-driven) covariate search rather than a fixed-exponent approach.",
-      source_name        = "WT"
+      notes = "Power scaling on OP CLp/F (exponent 0.838), OC CLm/F (exponent 0.560), and OC Vcm/F (exponent 0.830), all centered at the 70 kg adult reference per Kamal 2013 Methods page 3471 ('Covariate evaluation'). The 70 kg reference was chosen by the authors for convenient comparison to a typical adult rather than the cohort median; cohort median was 64.5 kg and range 8-115 kg (Kamal 2013 Results page 3471). Weight is also discussed under the allometric approach in Kamal 2013 Discussion page 3473 with the estimated exponents close to but distinct from the canonical 0.75 / 1 allometric values, which the authors note as a feature of their empirical (data-driven) covariate search rather than a fixed-exponent approach.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (baseline).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (baseline).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear (additive) effect on OC Vcm/F: Vcm/F = 238*(WT/70)^0.830 - 2.25*(AGE - 21). The age effect is subtracted after the WT power term, NOT multiplied as a percentage (Kamal 2013 Table 2 final-estimate row 'Vc m /F (liters) = 238(WT/70) 0.830 - 2.25(age - 21)'). The 21-year reference is the cohort median age; the cohort age range was 1 to 78 years (Kamal 2013 Results page 3471). The age slope was a relatively minor covariate (18-unit MVOF decrease) and was the smallest of the four retained covariate effects (Kamal 2013 Results page 3473). Outside the fitted age x weight range the additive form can yield negative Vcm/F; users simulating very low-weight elderly subjects should sanity-check the typical-value prediction.",
-      source_name        = "AGE"
+      notes = "Linear (additive) effect on OC Vcm/F: Vcm/F = 238*(WT/70)^0.830 - 2.25*(AGE - 21). The age effect is subtracted after the WT power term, NOT multiplied as a percentage (Kamal 2013 Table 2 final-estimate row 'Vc m /F (liters) = 238(WT/70) 0.830 - 2.25(age - 21)'). The 21-year reference is the cohort median age; the cohort age range was 1 to 78 years (Kamal 2013 Results page 3471). The age slope was a relatively minor covariate (18-unit MVOF decrease) and was the smallest of the four retained covariate effects (Kamal 2013 Results page 3473). Outside the fitted age x weight range the additive form can yield negative Vcm/F; users simulating very low-weight elderly subjects should sanity-check the typical-value prediction.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Body-surface-area-normalized creatinine clearance.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Body-surface-area-normalized creatinine clearance.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on OC CLm/F (exponent 0.487) centered at the 95 mL/min/1.73 m^2 cohort median per Kamal 2013 Methods page 3471 and Table 2 final-estimate row 'CL m /F (liters/h) = 20.7(WT/70) 0.560 (CL CR /95) 0.487'. In adults >=18 years the source paper computed CrCl via Cockcroft-Gault using ideal body weight when actual weight exceeded IBW, normalized to a BSA of 1.73 m^2; SCr was capped at a lower bound of 0.7 mg/dL. In pediatric subjects 1-17 years the revised Schwartz equation was used (CRCL = 0.413*HTCM/SCr) with SCr capped at a lower bound of 0.2 mg/dL. Both forms yield mL/min/1.73 m^2 in this column. Note: the source column name CLCR is the same canonical concept as Delattre 2010 amikacin's raw-mL/min CLCR alias, but Kamal 2013 normalizes to BSA -- hence mapped to canonical CRCL (BSA-normalized) per inst/references/covariate-columns.md rather than the raw CLCR alias.",
-      source_name        = "CLCR"
+      notes = "Power scaling on OC CLm/F (exponent 0.487) centered at the 95 mL/min/1.73 m^2 cohort median per Kamal 2013 Methods page 3471 and Table 2 final-estimate row 'CL m /F (liters/h) = 20.7(WT/70) 0.560 (CL CR /95) 0.487'. In adults >=18 years the source paper computed CrCl via Cockcroft-Gault using ideal body weight when actual weight exceeded IBW, normalized to a BSA of 1.73 m^2; SCr was capped at a lower bound of 0.7 mg/dL. In pediatric subjects 1-17 years the revised Schwartz equation was used (CRCL = 0.413*HTCM/SCr) with SCr capped at a lower bound of 0.2 mg/dL. Both forms yield mL/min/1.73 m^2 in this column. Note: the source column name CLCR is the same canonical concept as Delattre 2010 amikacin's raw-mL/min CLCR alias, but Kamal 2013 normalizes to BSA -- hence mapped to canonical CRCL (BSA-normalized) per inst/references/covariate-columns.md rather than the raw CLCR alias.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 390L,
-    n_studies      = 13L,
-    age_range      = "1-78 years",
-    age_median     = "21 years",
-    weight_range   = "8-115 kg",
-    weight_median  = "64.5 kg",
+    species = "human",
+    n_subjects = 390L,
+    n_studies = 13L,
+    age_range = "1-78 years",
+    age_median = "21 years",
+    weight_range = "8-115 kg",
+    weight_median = "64.5 kg",
     sex_female_pct = 38.2,
     race_ethnicity = "Not reported in the model parameter table; race was screened as a covariate but not retained in the final model.",
-    disease_state  = "Pooled cohort of healthy and naturally / experimentally influenza-infected subjects (no PK difference between infected and non-infected was detected); also includes adults with mild / moderate / severe renal impairment (CRCL down to ~14 mL/min/1.73 m^2; only 1 subject had severe impairment, CRCL <30).",
-    dose_range     = "Oral oseltamivir 20-1,000 mg as single dose or repeated-dose; standard influenza treatment regimen 75 mg twice daily (q12h) for 5 days; pediatric weight-based dosing 2 mg/kg BID for ages 1-12 yr and weight-band fixed doses (30 mg for 1-2 yr, 45 mg for 3-5 yr).",
-    regions        = "Not specified in the source paper.",
-    crcl_range     = "13.9-178 mL/min/1.73 m^2, median 95.1",
+    disease_state = "Pooled cohort of healthy and naturally / experimentally influenza-infected subjects (no PK difference between infected and non-infected was detected); also includes adults with mild / moderate / severe renal impairment (CRCL down to ~14 mL/min/1.73 m^2; only 1 subject had severe impairment, CRCL <30).",
+    dose_range = "Oral oseltamivir 20-1,000 mg as single dose or repeated-dose; standard influenza treatment regimen 75 mg twice daily (q12h) for 5 days; pediatric weight-based dosing 2 mg/kg BID for ages 1-12 yr and weight-band fixed doses (30 mg for 1-2 yr, 45 mg for 3-5 yr).",
+    regions = "Not specified in the source paper.",
+    crcl_range = "13.9-178 mL/min/1.73 m^2, median 95.1",
     crcl_categories = c(
-      "normal (>=80)"         = 297L,
-      "mild (50-80)"          = 73L,
-      "moderate (30-49)"      = 19L,
-      "severe (<30)"          = 1L
+      "normal (>=80)" = 297L,
+      "mild (50-80)" = 73L,
+      "moderate (30-49)" = 19L,
+      "severe (<30)" = 1L
     ),
     n_observations = "3,881 oseltamivir concentrations + 4,402 OC concentrations; 10 of 13 studies used intensive sampling (>=5 samples/subject), 3 studies used sparse sampling (2-3 samples/subject).",
-    notes          = "Cohort statistics from Kamal 2013 Results page 3471 (241 male / 149 female = 38.2% female). 13 studies tabulated in Kamal 2013 Table 1: WP15517, WP15525, PV15616, NP15717, WV15670, WV15671, WV15730, WP15647, WP15648, WV15758, NP15826, JV16284, PP16351. NONMEM 7 level 1.2 (ADVAN13) with FOCE-with-interaction estimation was used (Kamal 2013 Methods 'Structural model development', page 3471). Excluded from the source dataset: drug-drug interaction studies, end-stage renal disease patients on intermittent hemodialysis, and neonates / infants <1 year (a later cohort not yet available at the time of the original analysis). LLOQ values were 1 ng/mL (OP) and 8.8 ng/mL (OC); only 3 OP records below LLOQ were excluded, so no Beal M3 likelihood-based handling was needed."
+    notes = "Cohort statistics from Kamal 2013 Results page 3471 (241 male / 149 female = 38.2% female). 13 studies tabulated in Kamal 2013 Table 1: WP15517, WP15525, PV15616, NP15717, WV15670, WV15671, WV15730, WP15647, WP15648, WV15758, NP15826, JV16284, PP16351. NONMEM 7 level 1.2 (ADVAN13) with FOCE-with-interaction estimation was used (Kamal 2013 Methods 'Structural model development', page 3471). Excluded from the source dataset: drug-drug interaction studies, end-stage renal disease patients on intermittent hemodialysis, and neonates / infants <1 year (a later cohort not yet available at the time of the original analysis). LLOQ values were 1 ng/mL (OP) and 8.8 ng/mL (OC); only 3 OP records below LLOQ were excluded, so no Beal M3 likelihood-based handling was needed."
   )
 
   ini({

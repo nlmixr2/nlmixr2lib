@@ -38,25 +38,30 @@ Ramharter_2019_mefloquine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_r         = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
-    central_r       = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1_r   = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
-    depot_s         = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
-    central_s       = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1_s   = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
-    central_cmq     = list(analyte = "carboxymefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot_r = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_r = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_r = list(analyte = "(+)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot_s = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_s = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_s = list(analyte = "(-)-mefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_cmq = list(analyte = "carboxymefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1_cmq = list(analyte = "carboxymefloquine", units = "nmol", specimen = "plasma", verified = FALSE),
-    precursor1      = list(analyte = "enzymatic-RNA precursor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
-    precursor2      = list(analyte = "enzyme-pool", units = "nmol", specimen = "not applicable", verified = FALSE)
+    precursor1 = list(
+      analyte = "enzymatic-RNA precursor pool",
+      units = "nmol",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor2 = list(analyte = "enzyme-pool", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives allometric scaling of the central volume of distribution of",
         "BOTH parent enantiomers via a shared estimated exponent",
         "WTexponent = 1.33 centred on the cohort median 55 kg (Ramharter",
@@ -66,18 +71,18 @@ Ramharter_2019_mefloquine <- function() {
         "incorporating gestational weight change did not improve fit (paper",
         "Results 'Mefloquine PK model')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     REGIMEN_SPLIT = list(
-      description        = paste(
+      description = paste(
         "Binary indicator for the split-dose mefloquine IPTp regimen:",
         "1 = 7.5 mg/kg on two consecutive days (split-dose group);",
         "0 = 15 mg/kg on a single day (single-dose group)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (single-dose 15 mg/kg on day 1)",
-      notes              = paste(
+      notes = paste(
         "Acts multiplicatively on the relative oral bioavailability of",
         "both parent enantiomer depots (paper Table 2: SPLIT = 1.05; 90% CI",
         "1.01-1.16). Encoded in the model as a +5% bioavailability",
@@ -87,19 +92,19 @@ Ramharter_2019_mefloquine <- function() {
         "and concludes the magnitude 'may have only limited clinical",
         "significance' (Discussion paragraph 3). Time-fixed per subject."
       ),
-      source_name        = "SPLIT"
+      source_name = "SPLIT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 263L,
-    n_studies      = 1L,
-    age_range      = "14-44 years (mean 24.0, SD 6.75, median 22.0)",
-    weight_range   = "39.3-108 kg (mean 58.3, SD 10.8, median 55.9)",
+    species = "human",
+    n_subjects = 263L,
+    n_studies = 1L,
+    age_range = "14-44 years (mean 24.0, SD 6.75, median 22.0)",
+    weight_range = "39.3-108 kg (mean 58.3, SD 10.8, median 55.9)",
     sex_female_pct = 100,
     race_ethnicity = "Sub-Saharan African (Gabonese; race / ethnicity composition not separately tabulated in source)",
-    disease_state  = paste(
+    disease_state = paste(
       "Asymptomatic, presumed-aparasitaemic pregnant women in malaria-endemic",
       "settings, attending the antenatal clinic for the first time between",
       "13 and 28 weeks of gestation (mean gestational age 17.8 weeks, SD 5.85,",
@@ -107,7 +112,7 @@ Ramharter_2019_mefloquine <- function() {
       "exclusion criterion). Body mass index mean 23.2 kg/m^2 (SD 3.91, range",
       "15.6-41.7). Haemoglobin mean 10.2 g/dL (SD 1.38, range 5.7-14.7)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Mefloquine racemate 15 mg/kg total administered orally, split into one",
       "of two regimens per the MIPPAD trial design: single-dose (15 mg/kg on",
       "day 1; REGIMEN_SPLIT = 0) or split-dose (7.5 mg/kg on day 1 and 7.5",
@@ -120,8 +125,8 @@ Ramharter_2019_mefloquine <- function() {
       "racemate molar dose in nmol -- see vignette for the mg -> nmol",
       "conversion at the parent free-base molecular weight 378.31 g/mol."
     ),
-    regions        = "Gabon (Lambarene and Fougamou study centres, MIPPAD trial NCT0081121)",
-    notes          = paste(
+    regions = "Gabon (Lambarene and Fougamou study centres, MIPPAD trial NCT0081121)",
+    notes = paste(
       "Demographics from Ramharter 2019 Table 1 (n = 263; the abstract's n =",
       "264 is a typographical inconsistency in the source -- Table 1, Results",
       "paragraph 1, and the supplemental material all give n = 263, with the",

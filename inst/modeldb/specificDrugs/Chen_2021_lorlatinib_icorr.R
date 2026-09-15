@@ -37,18 +37,18 @@ Chen_2021_lorlatinib_icorr <- function() {
   )
   vignette <- "Chen_2021_lorlatinib_exposure_response"
   units <- list(
-    time          = "n/a (static landmark exposure-efficacy regression; no time dimension and no treatment-duration covariate)",
-    dosing        = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
+    time = "n/a (static landmark exposure-efficacy regression; no time dimension and no treatment-duration covariate)",
+    dosing = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
     concentration = "prob_icorr (probability of intracranial objective response, 0-1; also logit_icorr)"
   )
 
   covariateData <- list(
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase (BAP).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase (BAP).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chen 2021 Table 4 writes the unit as IU/L; U/L and IU/L are used",
         "interchangeably for this assay and the canonical spelling is U/L.",
         "Enters on the NATURAL LOG scale and is NOT normalised to any",
@@ -67,14 +67,14 @@ Chen_2021_lorlatinib_icorr <- function() {
         "negative coefficient is read by Chen 2021 as reflecting greater",
         "underlying disease burden rather than a pharmacological effect."
       ),
-      source_name        = "BAP (baseline alkaline phosphatase)"
+      source_name = "BAP (baseline alkaline phosphatase)"
     ),
     AMYL = list(
-      description        = "Baseline serum amylase (BAMY).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum amylase (BAMY).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chen 2021 Table 4 writes the unit as IU/L; U/L and IU/L are used",
         "interchangeably for this assay and the canonical spelling is U/L.",
         "Enters LINEARLY and untransformed, in contrast to the",
@@ -88,16 +88,16 @@ Chen_2021_lorlatinib_icorr <- function() {
         "interpretation for it and the effect is small (a full",
         "interquartile shift moves the logit by well under one unit)."
       ),
-      source_name        = "BAMY (baseline amylase)"
+      source_name = "BAMY (baseline amylase)"
     )
   )
 
   covariatesDataExcluded <- list(
     CTROUGH = list(
       description = "Individual lorlatinib trough plasma concentration over cycle 1 (Ctrough,P1).",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ng/mL",
+      type = "continuous",
+      notes = paste(
         "The best-fitting lorlatinib exposure metric for this endpoint in",
         "the univariate forward screen -- Chen 2021 Results states 'the",
         "best lorlatinib exposure predictor to be evaluated in the final",
@@ -117,9 +117,9 @@ Chen_2021_lorlatinib_icorr <- function() {
     ),
     TCHOL = list(
       description = "Baseline total serum cholesterol.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Chen 2021 Table S4) but not",
         "retained for this endpoint. Efficacy-IC-ORR analysis set median",
         "201.00 mg/dL, range 88.00-321.00, no missing values",
@@ -128,18 +128,18 @@ Chen_2021_lorlatinib_icorr <- function() {
     ),
     WT = list(
       description = "Baseline body weight.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Efficacy-IC-ORR analysis set median",
         "64.25 kg, range 31.80-124.70 (Chen 2021 Table 1)."
       )
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator; 1 = Asian, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained. Efficacy-IC-ORR analysis set Asian",
         "40/132 (30%), White 72 (55%), Other 4 (3%), Black 0 (0%),",
         "Missing 16 (12%) (Chen 2021 Table 1)."
@@ -148,21 +148,21 @@ Chen_2021_lorlatinib_icorr <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 132L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 132L,
+    n_studies = 1L,
     n_observations = "132 binary intracranial-response records (one per patient; landmark analysis, no repeated measures)",
-    age_range      = "median 51.00 years, range 29.00-77.00 (Chen 2021 Table 1, Efficacy-IC-ORR population)",
-    weight_range   = "median 64.25 kg, range 31.80-124.70 (Chen 2021 Table 1, Efficacy-IC-ORR population)",
+    age_range = "median 51.00 years, range 29.00-77.00 (Chen 2021 Table 1, Efficacy-IC-ORR population)",
+    weight_range = "median 64.25 kg, range 31.80-124.70 (Chen 2021 Table 1, Efficacy-IC-ORR population)",
     sex_female_pct = 60.0,
     race_ethnicity = c(White = 55.0, Asian = 30.0, Other = 3.0, Black = 0.0, Missing = 12.0),
-    disease_state  = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer with BASELINE CNS METASTASIS per independent central review; 97% had received at least one prior ALK inhibitor, 89% prior crizotinib, 64% prior chemotherapy and 58% prior CNS radiotherapy; ECOG performance status 0 (46%), 1 (50%), 2 (4%)",
-    dose_range     = "lorlatinib 100 mg orally once daily (phase II expansion cohorts 2-5, the labelled dose)",
-    regions        = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
+    disease_state = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer with BASELINE CNS METASTASIS per independent central review; 97% had received at least one prior ALK inhibitor, 89% prior crizotinib, 64% prior chemotherapy and 58% prior CNS radiotherapy; ECOG performance status 0 (46%), 1 (50%), 2 (4%)",
+    dose_range = "lorlatinib 100 mg orally once daily (phase II expansion cohorts 2-5, the labelled dose)",
+    regions = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
     baseline_alkaline_phosphatase = "median 100.50 U/L, range 13.00-1,552.00, mean 142.66 (SD 153.63) (Chen 2021 Table 2, Efficacy-IC-ORR population)",
-    baseline_amylase              = "median 62.00 U/L, range 13.00-218.00, mean 70.32 (SD 35.86), 4 missing (Chen 2021 Table 2, Efficacy-IC-ORR population)",
+    baseline_amylase = "median 62.00 U/L, range 13.00-218.00, mean 70.32 (SD 35.86), 4 missing (Chen 2021 Table 2, Efficacy-IC-ORR population)",
     baseline_intracranial_tumor_size = "median 31.95 mm, range 5.50-129.00, mean 40.52 (SD 27.06), 52 missing (Chen 2021 Table 2)",
-    notes          = paste0(
+    notes = paste0(
       "This is the ONLY efficacy endpoint from Chen 2021 that can be ",
       "packaged. The paper also analysed systemic objective response ",
       "rate (ORR) in the wider 197-patient ALK-inhibitor-pretreated ",

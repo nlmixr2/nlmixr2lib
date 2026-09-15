@@ -40,8 +40,7 @@
 #'   addDepot(depot = "depot2", ka = "ka2") |>
 #'   addBioavailability(depot, depot2, scale = "logit")
 #'
-addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
-                       cmt) {
+addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"), cmt) {
   .ui <- rxode2::assertRxUi(ui)
   .cmt <- as.character(substitute(cmt))
   cmt <- try(force(cmt), silent = TRUE)
@@ -63,15 +62,9 @@ addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
       rm("description", envir = .ui$meta)
     }
     if (prop == "ini") {
-      rxode2::model(.ui) <- c(.tmp$pre,
-        .tmp$w,
-        str2lang(paste0(.cmt, "(0) <- ", .var)),
-        .tmp$post)
+      rxode2::model(.ui) <- c(.tmp$pre, .tmp$w, str2lang(paste0(.cmt, "(0) <- ", .var)), .tmp$post)
     } else {
-      rxode2::model(.ui) <- c(.tmp$pre,
-        .tmp$w,
-        str2lang(paste0(prop, "(", .cmt, ") <- ", .var)),
-        .tmp$post)
+      rxode2::model(.ui) <- c(.tmp$pre, .tmp$w, str2lang(paste0(prop, "(", .cmt, ") <- ", .var)), .tmp$post)
     }
     .ui
   } else {
@@ -90,8 +83,7 @@ addCmtProp <- function(ui, prop = c("f", "lag", "dur", "rate", "ini"),
 #' @param f initial bioavailability fraction, in (0,1), for the logit
 #'   form, or NULL to leave the initial estimate unset
 #' @export
-addBioavailability <- function(ui, cmt, scale = c("log", "logit"),
-                               cmt2 = NULL, f = 0.8) {
+addBioavailability <- function(ui, cmt, scale = c("log", "logit"), cmt2 = NULL, f = 0.8) {
   scale <- match.arg(scale)
   # resolve both compartment arguments in this frame: the inner
   # function receives them as the symbols cmt/cmt2, so forwarding
@@ -117,7 +109,8 @@ addBioavailability <- function(ui, cmt, scale = c("log", "logit"),
     return(addBioavailabilityLogit(ui, cmt, cmt2, f))
   }
   if (!is.null(cmt2)) {
-    stop("a dose split (cmt2) needs scale = \"logit\": on the log scale f is ",
+    stop(
+      "a dose split (cmt2) needs scale = \"logit\": on the log scale f is ",
       "unbounded above, so the complement 1 - f given to cmt2 is not ",
       "confined to (0, 1) and can go negative",
       call. = FALSE
@@ -173,8 +166,10 @@ addBioavailabilityLog <- function(ui, cmt, f = 0.8) {
   }
   .w <- which(.cp$Compartment %in% cmt & .cp$Property == "f")
   if (length(.w) > 0) {
-    stop("bioavailability already present for compartment '",
-      paste(unique(.cp$Compartment[.w]), collapse = "', '"), "'",
+    stop(
+      "bioavailability already present for compartment '",
+      paste(unique(.cp$Compartment[.w]), collapse = "', '"),
+      "'",
       call. = FALSE
     )
   }
@@ -220,9 +215,7 @@ addBioavailabilityLog <- function(ui, cmt, f = 0.8) {
 addBioavailabilityLogit <- function(ui, cmt, cmt2 = NULL, f = 0.8) {
   # the logit is undefined at the 0/1 boundaries, so only the open
   # interval is accepted (assertNumeric's bounds are inclusive)
-  checkmate::assertNumeric(f,
-    len = 1L, any.missing = FALSE, null.ok = TRUE
-  )
+  checkmate::assertNumeric(f, len = 1L, any.missing = FALSE, null.ok = TRUE)
   if (!is.null(f) && (f <= 0 || f >= 1)) {
     stop("f must be in (0, 1)", call. = FALSE)
   }

@@ -24,89 +24,94 @@ Snelder_2013_cardiovascular_rat <- function() {
   paper_specific_compartments <- c("co", "tpr")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    dosing_notes  = "This model has NO dosing compartment and no internal PK. Snelder 2013 derived every plasma-concentration-time profile from separate literature PK models (Table 3: Lin 1988 enalapril, Ikegaki 2001 fasudil, Stopher 1988 amlodipine, Hamilton 1985 prazosin, van Steeg 2010 propranolol, Asdaq & Inamdar 2009 hydrochlorothiazide) and published no PK parameter values for any of them. Drug exposure therefore enters only through the six time-varying CP_<drug>_NGML covariate columns, in ng/mL to match the IC50 units of Snelder 2013 Table 6. The `dosing` entry is nominal and exists only to satisfy the metadata schema; supply concentrations, not doses. The doses actually administered in the two source studies are recorded in population$dose_range."
+    dosing_notes = "This model has NO dosing compartment and no internal PK. Snelder 2013 derived every plasma-concentration-time profile from separate literature PK models (Table 3: Lin 1988 enalapril, Ikegaki 2001 fasudil, Stopher 1988 amlodipine, Hamilton 1985 prazosin, van Steeg 2010 propranolol, Asdaq & Inamdar 2009 hydrochlorothiazide) and published no PK parameter values for any of them. Drug exposure therefore enters only through the six time-varying CP_<drug>_NGML covariate columns, in ng/mL to match the IC50 units of Snelder 2013 Table 6. The `dosing` entry is nominal and exists only to satisfy the metadata schema; supply concentrations, not doses. The doses actually administered in the two source studies are recorded in population$dose_range."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Both states are hemodynamic quantities rather than
   # drug amounts in a specimen, so specimen is "not applicable".
   compartmentData <- list(
-    co  = list(analyte = "cardiac output (CO)",              units = "mL/min",           specimen = "not applicable", verified = TRUE),
-    tpr = list(analyte = "total peripheral resistance (TPR)", units = "mmHg/(mL/min)",   specimen = "not applicable", verified = TRUE)
+    co = list(analyte = "cardiac output (CO)", units = "mL/min", specimen = "not applicable", verified = TRUE),
+    tpr = list(
+      analyte = "total peripheral resistance (TPR)",
+      units = "mmHg/(mL/min)",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     CP_ENALAPRIL_NGML = list(
-      description        = "Instantaneous enalapril plasma concentration driving the Emax inhibition of TPR production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous enalapril plasma concentration driving the Emax inhibition of TPR production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the enalapril exposure window (and for every rat not receiving enalapril). Snelder 2013 Table 3 obtained the enalapril profile from a two-compartment model with Michaelis-Menten elimination refitted in NONMEM to data read off Lin et al. 1988 (Sprague-Dawley rats); no PK parameter values are published in Snelder 2013, so this column must be supplied externally. Study 1 dosed 30 mg/kg p.o. once daily for 6 days. Scale reference: the fitted IC50 is 2410 ng/mL (Table 6).",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the enalapril exposure window (and for every rat not receiving enalapril). Snelder 2013 Table 3 obtained the enalapril profile from a two-compartment model with Michaelis-Menten elimination refitted in NONMEM to data read off Lin et al. 1988 (Sprague-Dawley rats); no PK parameter values are published in Snelder 2013, so this column must be supplied externally. Study 1 dosed 30 mg/kg p.o. once daily for 6 days. Scale reference: the fitted IC50 is 2410 ng/mL (Table 6).",
+      source_name = "C (plasma concentration, Equation 6)"
     ),
     CP_FASUDIL_NGML = list(
-      description        = "Instantaneous fasudil plasma concentration driving the Emax inhibition of TPR production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous fasudil plasma concentration driving the Emax inhibition of TPR production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the fasudil exposure window. Snelder 2013 Table 3 used a one-compartment model whose Ka and lag time were back-derived in Berkeley Madonna from the half-life, AUC and Cmax reported by Ikegaki et al. 2001 (Wistar-Kyoto rats); no PK parameter values are published in Snelder 2013. Study 1 dosed 30 mg/kg p.o. once daily for 6 days. Scale reference: the fitted IC50 is 321 ng/mL (Table 6).",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the fasudil exposure window. Snelder 2013 Table 3 used a one-compartment model whose Ka and lag time were back-derived in Berkeley Madonna from the half-life, AUC and Cmax reported by Ikegaki et al. 2001 (Wistar-Kyoto rats); no PK parameter values are published in Snelder 2013. Study 1 dosed 30 mg/kg p.o. once daily for 6 days. Scale reference: the fitted IC50 is 321 ng/mL (Table 6).",
+      source_name = "C (plasma concentration, Equation 6)"
     ),
     CP_AMLODIPINE_NGML = list(
-      description        = "Instantaneous amlodipine plasma concentration driving the Emax inhibition of TPR production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous amlodipine plasma concentration driving the Emax inhibition of TPR production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the amlodipine exposure window. Snelder 2013 Table 3 used a one-compartment model whose Ka was back-derived in Berkeley Madonna from the half-life, Vd, F and Tmax reported by Stopher et al. 1988 (Sprague-Dawley rats); no PK parameter values are published in Snelder 2013. Study 1 dosed 10 mg/kg p.o. once daily for 6 days; Study 2 dosed 0.3, 1, 3 and 10 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 185 ng/mL (Table 6). Amlodipine is the one compound whose omission changes a system parameter (FB1 moves from 0.00379 to 0.00454 1/mmHg; Snelder 2013 Figure 5).",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the amlodipine exposure window. Snelder 2013 Table 3 used a one-compartment model whose Ka was back-derived in Berkeley Madonna from the half-life, Vd, F and Tmax reported by Stopher et al. 1988 (Sprague-Dawley rats); no PK parameter values are published in Snelder 2013. Study 1 dosed 10 mg/kg p.o. once daily for 6 days; Study 2 dosed 0.3, 1, 3 and 10 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 185 ng/mL (Table 6). Amlodipine is the one compound whose omission changes a system parameter (FB1 moves from 0.00379 to 0.00454 1/mmHg; Snelder 2013 Figure 5).",
+      source_name = "C (plasma concentration, Equation 6)"
     ),
     CP_PRAZOSIN_NGML = list(
-      description        = "Instantaneous prazosin plasma concentration driving the Emax inhibition of TPR production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous prazosin plasma concentration driving the Emax inhibition of TPR production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the prazosin exposure window. Snelder 2013 Table 3 used a one-compartment model whose CL and Vd were allometrically scaled to the rat from the New Zealand white rabbit model of Hamilton et al. 1985, with Ka estimated simultaneously with the PD; no PK parameter values are published in Snelder 2013. Study 2 dosed 0.04, 0.2, 1 and 5 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 0.133 ng/mL, the single imprecise drug parameter in the paper (CV 110%, 95% CI -0.15 to 0.4 ng/mL; Table 6).",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the prazosin exposure window. Snelder 2013 Table 3 used a one-compartment model whose CL and Vd were allometrically scaled to the rat from the New Zealand white rabbit model of Hamilton et al. 1985, with Ka estimated simultaneously with the PD; no PK parameter values are published in Snelder 2013. Study 2 dosed 0.04, 0.2, 1 and 5 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 0.133 ng/mL, the single imprecise drug parameter in the paper (CV 110%, 95% CI -0.15 to 0.4 ng/mL; Table 6).",
+      source_name = "C (plasma concentration, Equation 6)"
     ),
     CP_PROPRANOLOL_NGML = list(
-      description        = "Instantaneous propranolol plasma concentration driving the Emax inhibition of CO production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous propranolol plasma concentration driving the Emax inhibition of CO production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the propranolol exposure window. Snelder 2013 Table 3 used the three-compartment model of van Steeg et al. 2010 (Wistar-Kyoto rats) with absorption described as an infusion of fixed 24 h duration and Ka estimated; no PK parameter values are published in Snelder 2013. Study 1 supplied propranolol continuously at 1 mg/mL in drinking water, hence the 24 h infusion representation. Scale reference: the fitted IC50 is 9.82 ng/mL (Table 6). Propranolol is one of only two compounds acting primarily on CO.",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the propranolol exposure window. Snelder 2013 Table 3 used the three-compartment model of van Steeg et al. 2010 (Wistar-Kyoto rats) with absorption described as an infusion of fixed 24 h duration and Ka estimated; no PK parameter values are published in Snelder 2013. Study 1 supplied propranolol continuously at 1 mg/mL in drinking water, hence the 24 h infusion representation. Scale reference: the fitted IC50 is 9.82 ng/mL (Table 6). Propranolol is one of only two compounds acting primarily on CO.",
+      source_name = "C (plasma concentration, Equation 6)"
     ),
     CP_HCTZ_NGML = list(
-      description        = "Instantaneous hydrochlorothiazide (HCTZ) plasma concentration driving the Emax inhibition of CO production.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous hydrochlorothiazide (HCTZ) plasma concentration driving the Emax inhibition of CO production.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the hydrochlorothiazide exposure window. Snelder 2013 Table 3 used a one-compartment model taking Ke, Ka and Vd from Asdaq & Inamdar 2009 (Wistar-Kyoto rats) with F back-calculated from the reported AUC; no PK parameter values are published in Snelder 2013. Study 2 dosed 0.1, 0.3, 1 and 3 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 12300 ng/mL (Table 6). Snelder 2013 notes that the 1 mg/kg HCTZ response was under-predicted, which they attribute to the Emax = 1 constraint rather than to the system model.",
-      source_name        = "C (plasma concentration, Equation 6)"
+      notes = "Time-varying. Set to 0 outside the hydrochlorothiazide exposure window. Snelder 2013 Table 3 used a one-compartment model taking Ke, Ka and Vd from Asdaq & Inamdar 2009 (Wistar-Kyoto rats) with F back-calculated from the reported AUC; no PK parameter values are published in Snelder 2013. Study 2 dosed 0.1, 0.3, 1 and 3 mg/kg p.o. on separate days. Scale reference: the fitted IC50 is 12300 ng/mL (Table 6). Snelder 2013 notes that the 1 mg/kg HCTZ response was under-predicted, which they attribute to the Emax = 1 constraint rather than to the system model.",
+      source_name = "C (plasma concentration, Equation 6)"
     )
   )
 
   population <- list(
-    species        = "rat (male spontaneously hypertensive rat, SHR; Taconic Farms)",
-    n_subjects     = 12L,
-    n_studies      = 2L,
-    study_names    = c(
+    species = "rat (male spontaneously hypertensive rat, SHR; Taconic Farms)",
+    n_subjects = 12L,
+    n_studies = 2L,
+    study_names = c(
       "Study 1 (multiple-dose telemetry; MAP only; enalapril, fasudil, amlodipine or propranolol once daily for 6 days, n = 5 SHR per drug drawn from 10 animals)",
       "Study 2 (single ascending doses on separate days; MAP and CO, with TPR derived; amlodipine, prazosin or hydrochlorothiazide, n = 2 SHR)"
     ),
-    age_range      = "21-45 weeks at time of study.",
-    weight_range   = "269 to 490 g.",
+    age_range = "21-45 weeks at time of study.",
+    weight_range = "269 to 490 g.",
     sex_female_pct = 0,
-    sex_notes      = "All animals were male (Methods, 'Animals').",
-    disease_state  = "Spontaneous (genetic) hypertension; the SHR strain is hypertensive at baseline (BSL_MAP = 147 mmHg) with no induced disease model. Snelder 2013 states explicitly (Discussion) that the identified system-parameter set is specific to the SHR strain and that applications using these values are limited to that strain.",
-    dose_range     = "Study 1: enalapril 30 mg/kg p.o. QD x 6, fasudil 30 mg/kg p.o. QD x 6, amlodipine 10 mg/kg p.o. QD x 6, propranolol 1 mg/mL in drinking water. Study 2: amlodipine 0.3, 1, 3, 10 mg/kg p.o.; prazosin 0.04, 0.2, 1, 5 mg/kg p.o.; hydrochlorothiazide 0.1, 0.3, 1, 3 mg/kg p.o., one dose per day on separate days after a vehicle day.",
-    regions        = "Preclinical; Novartis Institutes for BioMedical Research, East Hanover, NJ, USA (in-life) with modelling at Leiden Academic Centre for Drug Research / LAP&P Consultants BV, The Netherlands.",
+    sex_notes = "All animals were male (Methods, 'Animals').",
+    disease_state = "Spontaneous (genetic) hypertension; the SHR strain is hypertensive at baseline (BSL_MAP = 147 mmHg) with no induced disease model. Snelder 2013 states explicitly (Discussion) that the identified system-parameter set is specific to the SHR strain and that applications using these values are limited to that strain.",
+    dose_range = "Study 1: enalapril 30 mg/kg p.o. QD x 6, fasudil 30 mg/kg p.o. QD x 6, amlodipine 10 mg/kg p.o. QD x 6, propranolol 1 mg/mL in drinking water. Study 2: amlodipine 0.3, 1, 3, 10 mg/kg p.o.; prazosin 0.04, 0.2, 1, 5 mg/kg p.o.; hydrochlorothiazide 0.1, 0.3, 1, 3 mg/kg p.o., one dose per day on separate days after a vehicle day.",
+    regions = "Preclinical; Novartis Institutes for BioMedical Research, East Hanover, NJ, USA (in-life) with modelling at Leiden Academic Centre for Drug Research / LAP&P Consultants BV, The Netherlands.",
     instrumentation = "Study 1: femoral-artery catheter / radiotransmitter (DSI PA-C40), BP recorded 15 s every 10 min. Study 2: ascending-aortic transit-time flow probe (Transonic 2.5PS or 3PS) plus femoral catheter / radiotransmitter; MAP, heart rate, stroke volume, CO and TPR derived for all beats and averaged over consecutive 2 min intervals. Study 2 animals were reused for up to 6 months with washout between experiments.",
-    n_ode_states   = 2L,
-    notes          = "The total number of animals was 12 (10 in Study 1, 2 in Study 2); the per-drug n = 5 of Table 2 therefore reflects reuse of the Study 1 animals across compounds. TPR was never measured directly: in the experiments it was derived from measured MAP and CO, and in the modelling BSL_MAP and BSL_TPR were the estimated parameters with BSL_CO derived from them 'for reasons of model stability' (Data analysis). CO was measured only in Study 2, and among the two CO-acting compounds only hydrochlorothiazide had CO measured -- which is why kout_TPR and FB2 remain strongly correlated (-0.984) in the final fit."
+    n_ode_states = 2L,
+    notes = "The total number of animals was 12 (10 in Study 1, 2 in Study 2); the per-drug n = 5 of Table 2 therefore reflects reuse of the Study 1 animals across compounds. TPR was never measured directly: in the experiments it was derived from measured MAP and CO, and in the modelling BSL_MAP and BSL_TPR were the estimated parameters with BSL_CO derived from them 'for reasons of model stability' (Data analysis). CO was measured only in Study 2, and among the two CO-acting compounds only hydrochlorothiazide had CO measured -- which is why kout_TPR and FB2 remain strongly correlated (-0.984) in the final fit."
   )
 
   ini({

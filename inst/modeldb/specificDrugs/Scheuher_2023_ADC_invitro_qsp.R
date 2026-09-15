@@ -1,27 +1,37 @@
 Scheuher_2023_ADC_invitro_qsp <- function() {
   description <- "QSP. In vitro cellular ADC processing model for HER2-targeting antibody-drug conjugates (T-DM1 default; T-DXd variant supported via parameter overrides). 13 ODE states describing extracellular ADC / Ab / free payload, cell-surface HER2 with reversible ADC and antibody binding, endosomal HER2 species, endosomal / cytosolic payload, and cytosolic intracellular target (tubulin for DM1, TOPO-1 for DXd). Amounts in nmol per paper Modeling Convention; concentrations are amount/volume. Parameter set defaults to SK-BR-3 cell line with T-DM1 (Erickson 2012 in vitro incubation)."
-  reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. In vitro cellular model = Tables S1a, S2a, S3a-b."
-  vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
+  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. In vitro cellular model = Tables S1a, S2a, S3a-b."
+  vignette <- "Scheuher_2023_ADC_platform_qsp"
+  units <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    adc_ext       = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
-    ab_ext        = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
-    pl_ext        = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
-    her2          = list(analyte = "HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    her2_adc      = list(analyte = "ADC-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    her2_ab       = list(analyte = "Ab-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    her2_endo     = list(analyte = "endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    her2_adc_endo = list(analyte = "ADC-endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    her2_ab_endo  = list(analyte = "Ab-endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
-    pl_endo       = list(analyte = "payload", units = "nmol", specimen = "endosome", verified = FALSE),
-    pl_cyto       = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
-    t_cyto        = list(analyte = "target", units = "nmol", specimen = "plasma", verified = FALSE),
-    tpl_cyto      = list(analyte = "payload-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
+    adc_ext = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_ext = list(analyte = "Ab", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_ext = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    her2 = list(analyte = "HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_adc = list(analyte = "ADC-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_ab = list(analyte = "Ab-HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_endo = list(analyte = "endosomal HER2", units = "nmol", specimen = "administration site", verified = FALSE),
+    her2_adc_endo = list(
+      analyte = "ADC-endosomal HER2",
+      units = "nmol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    her2_ab_endo = list(
+      analyte = "Ab-endosomal HER2",
+      units = "nmol",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    pl_endo = list(analyte = "payload", units = "nmol", specimen = "endosome", verified = FALSE),
+    pl_cyto = list(analyte = "payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    t_cyto = list(analyte = "target", units = "nmol", specimen = "plasma", verified = FALSE),
+    tpl_cyto = list(analyte = "payload-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -29,13 +39,13 @@ Scheuher_2023_ADC_invitro_qsp <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "in vitro (SK-BR-3 cell line; BT-474 and MCF-7-neo/HER2 alternates supported)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = "HER2-expressing breast cancer cell lines under 2-hour ice incubation with radiolabelled T-DM1, washed, then measured for intracellular and extracellular DM1 catabolites over ~144 hours",
-    dose_range     = "T-DM1 spike at experimental start (SK-BR-3 default from Erickson 2012 Figure 3); no repeated dosing",
-    regions        = "Preclinical in vitro (Erickson et al. 2012)",
-    notes          = "Cell-line-specific alternatives: V_cell = 3.82e-12 L (SK-BR-3, default), 3.96e-12 L (BT-474), 3.65e-12 L (MCF-7-neo/HER2); RPC_HER2 = 1.12e6 (SK-BR-3), 4.7e5 (BT-474), 1.3e6 (MCF-7-neo/HER2). Payload identity: DM1 (default; T_per_cell=65 nM tubulin, K_D_PL=930 nM). T-DXd alternative: k_in_PL=0.0128 /s, k_out_PL=0.00898 /s, T_per_cell=297 nM TOPO-1, K_D_PL=307 nM, DAR=8, kdec (mouse-level)=1.7e-7 /s. See vignette Errata for full parameter substitutions."
+    species = "in vitro (SK-BR-3 cell line; BT-474 and MCF-7-neo/HER2 alternates supported)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = "HER2-expressing breast cancer cell lines under 2-hour ice incubation with radiolabelled T-DM1, washed, then measured for intracellular and extracellular DM1 catabolites over ~144 hours",
+    dose_range = "T-DM1 spike at experimental start (SK-BR-3 default from Erickson 2012 Figure 3); no repeated dosing",
+    regions = "Preclinical in vitro (Erickson et al. 2012)",
+    notes = "Cell-line-specific alternatives: V_cell = 3.82e-12 L (SK-BR-3, default), 3.96e-12 L (BT-474), 3.65e-12 L (MCF-7-neo/HER2); RPC_HER2 = 1.12e6 (SK-BR-3), 4.7e5 (BT-474), 1.3e6 (MCF-7-neo/HER2). Payload identity: DM1 (default; T_per_cell=65 nM tubulin, K_D_PL=930 nM). T-DXd alternative: k_in_PL=0.0128 /s, k_out_PL=0.00898 /s, T_per_cell=297 nM TOPO-1, K_D_PL=307 nM, DAR=8, kdec (mouse-level)=1.7e-7 /s. See vignette Errata for full parameter substitutions."
   )
 
   ini({

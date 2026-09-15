@@ -51,36 +51,44 @@ Kengo_2025_atazanavir_a5231 <- function() {
         1:11,
         function(i) {
           list(
-            analyte = "atazanavir", units = "mg",
-            specimen = "administration site", verified = TRUE
+            analyte = "atazanavir",
+            units = "mg",
+            specimen = "administration site",
+            verified = TRUE
           )
         }
       ),
       paste0("transit", 1:11)
     ),
     list(
-    depot = list(
-      analyte = "atazanavir", units = "mg",
-      specimen = "administration site", verified = TRUE
-    ),
-    central = list(
-      analyte = "atazanavir", units = "mg",
-      specimen = "plasma", verified = TRUE
-    ),
-    peripheral1 = list(
-      analyte = "atazanavir", units = "mg",
-      specimen = "plasma", verified = TRUE
-    )
+      depot = list(
+        analyte = "atazanavir",
+        units = "mg",
+        specimen = "administration site",
+        verified = TRUE
+      ),
+      central = list(
+        analyte = "atazanavir",
+        units = "mg",
+        specimen = "plasma",
+        verified = TRUE
+      ),
+      peripheral1 = list(
+        analyte = "atazanavir",
+        units = "mg",
+        specimen = "plasma",
+        verified = TRUE
+      )
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, computed from sex, total body weight, and height by the Janmahasatian (2005) formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor for clearance and inter-compartmental",
         "clearance (exponent 0.75) and for both volumes (exponent 1). All the",
         "disposition parameters of this fit are fixed to their DERIVE values,",
@@ -98,14 +106,14 @@ Kengo_2025_atazanavir_a5231 <- function() {
         "FFM = 42.92 * HT^2 * WT / (30.93 * HT^2 + WT) for males, with HT in",
         "m and WT in kg."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     CONMED_RTV = list(
-      description        = "Concomitant ritonavir boosting indicator (1 = atazanavir given as ritonavir-boosted ATV/r, 0 = unboosted atazanavir)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant ritonavir boosting indicator (1 = atazanavir given as ritonavir-boosted ATV/r, 0 = unboosted atazanavir)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (ritonavir-boosted; the DERIVE reference arm from which the fixed clearance is carried)",
-      notes              = paste(
+      notes = paste(
         "Every A5231 participant received UNBOOSTED atazanavir, so this",
         "covariate is 0 throughout the population the model was fitted to.",
         "It is carried explicitly rather than folded into the typical value",
@@ -122,14 +130,14 @@ Kengo_2025_atazanavir_a5231 <- function() {
         "rifampicin, which is why it is a ritonavir-absence term and not a",
         "rifampicin term."
       ),
-      source_name        = "RTV"
+      source_name = "RTV"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin co-administration indicator (1 = on rifampicin, 0 = atazanavir alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin co-administration indicator (1 = on rifampicin, 0 = atazanavir alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin; A5231 period 1, atazanavir 300 mg twice daily alone)",
-      notes              = paste(
+      notes = paste(
         "Chronic-induction semantics: A5231 dosed atazanavir 300 mg twice",
         "daily alone for 8 days (period 1), then added rifampicin 600 mg once",
         "daily for 11 days (period 2, atazanavir 300 mg twice daily) and 8",
@@ -144,14 +152,14 @@ Kengo_2025_atazanavir_a5231 <- function() {
         "atazanavir dose (300 versus 400 mg twice daily), which the event",
         "table carries as the dose amount rather than as a covariate."
       ),
-      source_name        = "RIF"
+      source_name = "RIF"
     ),
     OCC = list(
-      description        = "Integer dosing-occasion index used for the between-occasion random effects",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer dosing-occasion index used for the between-occasion random effects",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Six occasions. Kengo 2025 Methods 2.3 defines an occasion as a",
         "single administered dose, and A5231 sampled at the end of each of",
         "three treatment periods, giving two dosing occasions per PK visit --",
@@ -166,14 +174,14 @@ Kengo_2025_atazanavir_a5231 <- function() {
         "simulation, set OCC to the occasion index of each dosing interval; a",
         "single-occasion simulation may use OCC = 1 throughout."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     SELFADMIN = list(
-      description        = "Self-administered (not directly observed) dosing-occasion indicator (1 = dose taken unobserved, 0 = directly observed dose)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-administered (not directly observed) dosing-occasion indicator (1 = dose taken unobserved, 0 = directly observed dose)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (directly observed dose)",
-      notes              = paste(
+      notes = paste(
         "Per-dosing-occasion and time-varying. Carries the source model's",
         "multiplier on the between-occasion etas of ka, mean transit time and",
         "bioavailability for doses that were not directly observed. Kengo 2025",
@@ -185,35 +193,35 @@ Kengo_2025_atazanavir_a5231 <- function() {
         "the covariate register's founding example. Set SELFADMIN = 0 to",
         "simulate a fully supervised regimen."
       ),
-      source_name        = "OBS"
+      source_name = "OBS"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "23-48 years (median 30)",
-    age_median     = "30 years",
-    weight_range   = "55-110 kg (median 75)",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "23-48 years (median 30)",
+    age_median = "30 years",
+    weight_range = "55-110 kg (median 75)",
+    weight_median = "75 kg",
     sex_female_pct = 38,
     race_ethnicity = "1 of 13 (8%) Black; the remaining participants' race is not broken out in Kengo 2025 Table S2",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers without HIV (Kengo 2025 Table S2 records",
       "'Participants living with HIV: None'). This is the external validation",
       "cohort of the paper, contrasted against the 26 Ugandan adults living",
       "with HIV of the DERIVE trial who supplied the companion",
       "ritonavir-boosted models."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Atazanavir 300 mg twice daily for 8 days (period 1); atazanavir 300 mg",
       "twice daily with rifampicin 600 mg once daily for 11 days (period 2);",
       "atazanavir 400 mg twice daily with rifampicin 600 mg once daily for 8",
       "days (period 3). No ritonavir was given in any period."
     ),
-    regions        = "United States",
-    notes          = paste(
+    regions = "United States",
+    notes = paste(
       "ACTG A5231. 355 atazanavir plasma concentrations. Sampling at the end",
       "of each period, 15 min predose and at 1, 2, 3, 4, 5, 6, 8, 10, 12 and",
       "24 h postdose. Plasma samples were analysed at the University of",

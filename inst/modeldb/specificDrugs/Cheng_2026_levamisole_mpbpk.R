@@ -41,19 +41,19 @@ Cheng_2026_levamisole_mpbpk <- function() {
   # 2026 explicitly could not apply a tissue-lumping assignment for levamisole
   # (Discussion, Distribution kinetics: no tissue-specific fd or Kp data exist).
   compartmentData <- list(
-    depot       = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levamisole", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levamisole", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "levamisole", units = "mg", specimen = "tissue", verified = TRUE),
     peripheral2 = list(analyte = "levamisole", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the whole physiology of the model. Cardiac output Qco = 14.1*WT^0.75 L/h",
         "(Eq. 8, Brown 1997; reproduced per species in Supplemental Table S1C). Blood volume",
         "Vb = fvb*WT with a species-specific fraction fvb from Supplemental Table S1A. Assuming",
@@ -65,14 +65,14 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "dog 20.7, sheep 26, pig 39.2 and human 70 kg.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     SPECIES_DUCK = list(
-      description        = "Duck species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Duck species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = duck, 0 = another species in the model. Selects the duck clearance of Table 1",
         "(joint mPBPK column) and the duck blood-volume fraction of 86.3 mL/kg reported",
         "directly in Supplemental Table S1A. Ducks take the shared Kp of 1.41, not a",
@@ -80,14 +80,14 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "all of them 0 selects the human parameter set.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_RABBIT = list(
-      description        = "Rabbit species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rabbit species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = rabbit, 0 = another species in the model. Selects the rabbit clearance of",
         "Table 1 (joint mPBPK column) and the rabbit blood-volume fraction, which is derived",
         "as the 152.7 mL reported in Supplemental Table S1A divided by the paper's 3 kg rabbit",
@@ -95,14 +95,14 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "rabbit strain. Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_CHICKEN = list(
-      description        = "Chicken species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chicken species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = chicken, 0 = another species in the model. Selects the chicken clearance of",
         "Table 1 (joint mPBPK column), the chicken blood-volume fraction of 10 percent of body",
         "weight from Supplemental Table S1A, AND the chicken-specific tissue-to-plasma",
@@ -112,28 +112,28 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_GOAT = list(
-      description        = "Goat species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Goat species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = goat, 0 = another species in the model. Selects the goat clearance of Table 1",
         "(joint mPBPK column) and the goat blood-volume fraction of 70 mL/kg from Supplemental",
         "Table S1A. Goats take the shared Kp of 1.41. Mutually exclusive with the other",
         "SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_DOG = list(
-      description        = "Dog species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dog species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = dog, 0 = another species in the model. Selects the dog clearance of Table 1",
         "(joint mPBPK column) and the dog blood-volume fraction of 84 mL/kg from Supplemental",
         "Table S1A. Dogs take the shared Kp of 1.41. The dog intravenous profile declines",
@@ -142,28 +142,28 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_SHEEP = list(
-      description        = "Sheep species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sheep species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = sheep, 0 = another species in the model. Selects the sheep clearance of Table 1",
         "(joint mPBPK column) and the sheep blood-volume fraction of 59 mL/kg from Supplemental",
         "Table S1A. Sheep take the shared Kp of 1.41. Mutually exclusive with the other",
         "SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_PIG = list(
-      description        = "Pig species indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pig species indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = pig, 0 = another species in the model. Selects the pig clearance of Table 1",
         "(joint mPBPK column), the pig blood-volume fraction of 60 mL/kg from Supplemental",
         "Table S1A, AND the pig-specific tissue-to-plasma partition coefficient Kp,pig = 5.62",
@@ -172,26 +172,26 @@ Cheng_2026_levamisole_mpbpk <- function() {
         "Mutually exclusive with the other SPECIES_* indicators.",
         sep = " "
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     )
   )
 
   population <- list(
-    species        = paste(
+    species = paste(
       "duck + rabbit + chicken + goat + dog + sheep + pig + human",
       "(joint interspecies fit; human is the model's reference species)",
       sep = " "
     ),
-    n_subjects     = NA_integer_,
-    n_studies      = 8L,
-    weight_range   = "2.5-70 kg (one typical body weight per species; Table 1)",
-    disease_state  = "Healthy / experimentally infected animals and healthy human volunteers",
-    dose_range     = paste(
+    n_subjects = NA_integer_,
+    n_studies = 8L,
+    weight_range = "2.5-70 kg (one typical body weight per species; Table 1)",
+    disease_state = "Healthy / experimentally infected animals and healthy human volunteers",
+    dose_range = paste(
       "Intravenous single doses of 5-40 mg/kg in the animal species and single oral doses of",
       "50-150 mg in humans (Supplemental Tables S2, S3 and S4).",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Meta-analysis of published levamisole PK. Concentration-time profiles were digitized",
       "from over 40 publications covering 18 species with WebPlotDigitizer; 8 species met the",
       "inclusion criteria for joint modelling (availability of intravenous data except for",

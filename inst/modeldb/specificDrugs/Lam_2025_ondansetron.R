@@ -1,16 +1,16 @@
 Lam_2025_ondansetron <- function() {
   description <- "Two-compartment population PK model with first-order oral absorption for ondansetron in neonates with neonatal opioid withdrawal syndrome (NOWS). Bayesian (Metropolis-Hastings MCMC, NONMEM METHOD=BAYES) update of an intravenous infant reference model: informative normal priors on log CL, V, V2, Q were computed from the reference model at the cohort median birth weight (3.19 kg) and postmenstrual age (39 1/7 weeks) using allometric scaling plus a clearance-maturation function, and a weakly informative prior was used for the previously uncharacterised oral absorption rate constant KA. The selected final model applies NO individual-level covariate effects; the allometric and maturation terms enter only through the priors. Oral bioavailability is fixed at 0.62. Transplacental maternal transfer is carried by initialising the neonatal central compartment at t = 0 to the mother's observed plasma concentration at delivery (covariate CP0_MAT_NGML). Inter-individual variability is estimated on CL only, and residual error is additive."
-  reference   <- "Lam K, Mondick JT, Peltz G, Wu M, Kraft WK. Bayesian Population Pharmacokinetic Modeling of Ondansetron for Neonatal Opioid Withdrawal Syndrome. Clin Transl Sci. 2025;18(2):e70147. doi:10.1111/cts.70147"
-  vignette    <- "Lam_2025_ondansetron"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Lam K, Mondick JT, Peltz G, Wu M, Kraft WK. Bayesian Population Pharmacokinetic Modeling of Ondansetron for Neonatal Opioid Withdrawal Syndrome. Clin Transl Sci. 2025;18(2):e70147. doi:10.1111/cts.70147"
+  vignette <- "Lam_2025_ondansetron"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the Appendix S1 NONMEM control
   # stream ($MODEL COMP=(DEPOT) / COMP=(BABYVC) / COMP=(PERI)) and the
   # Methods (oral ondansetron 0.07 mg/kg; plasma ondansetron assay).
   compartmentData <- list(
-    depot       = list(analyte = "ondansetron", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ondansetron", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -26,16 +26,16 @@ Lam_2025_ondansetron <- function() {
   # dataset), so it is encoded in model() and declared here.
   covariateData <- list(
     CP0_MAT_NGML = list(
-      description        = paste(
+      description = paste(
         "Observed maternal plasma ondansetron concentration at delivery, used to",
         "initialise the neonate's central compartment at t = 0 (transplacental",
         "transfer).",
         sep = " "
       ),
-      units              = "ng/mL",
-      type               = "continuous",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Maternal blood was drawn within 30 min of delivery (Methods 2.1);",
         "mothers received ondansetron 8 mg i.v. within 4 h of delivery. Cohort",
         "mean (SD) 28.2 (23.5) ng/mL over 29 maternal plasma samples (Table 1).",
@@ -46,7 +46,7 @@ Lam_2025_ondansetron <- function() {
         "exposure. Set it to 0 for a neonate with no maternal transfer.",
         sep = " "
       ),
-      source_name        = "C0 (Appendix S1 $INPUT), ng/mL"
+      source_name = "C0 (Appendix S1 $INPUT), ng/mL"
     )
   )
 
@@ -58,11 +58,11 @@ Lam_2025_ondansetron <- function() {
   # only -- none of these names is referenced in model().
   covariatesDataExcluded <- list(
     WT_BIRTH = list(
-      description        = "Birth weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened, not retained at the individual level. Birth weight enters the",
         "ANALYSIS only through the informative priors: the infant reference model",
         "normalised all parameters to 10.4 kg with fixed allometric exponents",
@@ -74,14 +74,14 @@ Lam_2025_ondansetron <- function() {
         "Cohort mean (SD) birth weight 3.1 (0.4) kg (Table 1).",
         sep = " "
       ),
-      source_name        = "WT (Appendix S1 $INPUT)"
+      source_name = "WT (Appendix S1 $INPUT)"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened, not retained at the individual level. Postmenstrual age enters",
         "the ANALYSIS only through the CL prior, via the infant reference model's",
         "maturation function 1 - beta_CL * exp(-(AGE - 1) * ln(2) / T_CL) with",
@@ -94,14 +94,14 @@ Lam_2025_ondansetron <- function() {
         "Source column is in weeks; the canonical PAGE unit is months.",
         sep = " "
       ),
-      source_name        = "PMA (Appendix S1 $INPUT), weeks"
+      source_name = "PMA (Appendix S1 $INPUT), weeks"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened and rejected. CL priors computed with PNA (cohort median 2 days)",
         "gave higher ELPD than their PMA counterparts (Table 2, 'No covariate",
         "structures with PNA on CL prior' ELPD 676.9 and 'Full covariate structures",
@@ -110,14 +110,14 @@ Lam_2025_ondansetron <- function() {
         "(Results 3.1). Source column is in days; the canonical PNA unit is months.",
         sep = " "
       ),
-      source_name        = "CA (Appendix S1 $INPUT), days"
+      source_name = "CA (Appendix S1 $INPUT), days"
     ),
     GA = list(
-      description        = "Gestational age at birth",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried in the analysis dataset ($INPUT GA) and used to stratify the",
         "exploratory exposure-response figures into early term (37 0/7-38 6/7",
         "weeks), term (39 0/7-40 6/7 weeks), late term (41 0/7-41 6/7 weeks) and",
@@ -126,14 +126,14 @@ Lam_2025_ondansetron <- function() {
         "parameter. Cohort mean (SD) 38.6 (1.1) weeks (Table 1).",
         sep = " "
       ),
-      source_name        = "GA (Appendix S1 $INPUT)"
+      source_name = "GA (Appendix S1 $INPUT)"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Carried in the analysis dataset ($INPUT SEX) and used only to stratify",
         "the exploratory exposure-response figures (Methods 2.3; Figures S18-S19).",
         "It is not a covariate on any PK parameter. Cohort is 18 male / 18 female",
@@ -142,25 +142,25 @@ Lam_2025_ondansetron <- function() {
         "users and no value transformation is applied by this model.",
         sep = " "
       ),
-      source_name        = "SEX (Appendix S1 $INPUT)"
+      source_name = "SEX (Appendix S1 $INPUT)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "neonates; first blood sample generally within the first 12 h of life, subsequent samples approximately every 24 h. Median postnatal age 2 days",
-    age_median     = "postmenstrual age 39 1/7 weeks (median); gestational age at birth 38.6 (1.1) weeks (mean (SD))",
-    weight_range   = "birth weight 3.1 (0.4) kg (mean (SD)); cohort median birth weight 3.19 kg",
-    weight_median  = "3.19 kg (birth weight)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "neonates; first blood sample generally within the first 12 h of life, subsequent samples approximately every 24 h. Median postnatal age 2 days",
+    age_median = "postmenstrual age 39 1/7 weeks (median); gestational age at birth 38.6 (1.1) weeks (mean (SD))",
+    weight_range = "birth weight 3.1 (0.4) kg (mean (SD)); cohort median birth weight 3.19 kg",
+    weight_median = "3.19 kg (birth weight)",
     sex_female_pct = 50,
-    disease_state  = "Neonates with in-utero opioid exposure at risk of neonatal opioid withdrawal syndrome (NOWS), born to mothers with opioid use disorder and at least 3 weeks of daily opioid exposure before delivery. Substudy of the double-blind, placebo-controlled, multicenter trial NCT01965704 (98 mother/neonate dyads randomised 1:1).",
-    dose_range     = "Neonates: ondansetron 0.07 mg/kg orally once every 24 h starting the day of birth, up to five doses (median 2, range 1-5; mean (SD) dose 0.21 (0.03) mg), first dose within 4-8 h of delivery. Mothers: ondansetron 8 mg intravenously within 4 h of delivery, repeated once if delivery had not occurred within 4 h (median 1, range 1-2 maternal doses).",
-    regions        = "United States (multicenter)",
-    bioanalysis    = "Plasma ondansetron quantified by an assay adapted from a similar study and described in the primary trial report; lower limit of quantification 1.0 ng/mL. Observations below the limit of quantification were excluded from the analysis (Methods 2.2).",
+    disease_state = "Neonates with in-utero opioid exposure at risk of neonatal opioid withdrawal syndrome (NOWS), born to mothers with opioid use disorder and at least 3 weeks of daily opioid exposure before delivery. Substudy of the double-blind, placebo-controlled, multicenter trial NCT01965704 (98 mother/neonate dyads randomised 1:1).",
+    dose_range = "Neonates: ondansetron 0.07 mg/kg orally once every 24 h starting the day of birth, up to five doses (median 2, range 1-5; mean (SD) dose 0.21 (0.03) mg), first dose within 4-8 h of delivery. Mothers: ondansetron 8 mg intravenously within 4 h of delivery, repeated once if delivery had not occurred within 4 h (median 1, range 1-2 maternal doses).",
+    regions = "United States (multicenter)",
+    bioanalysis = "Plasma ondansetron quantified by an assay adapted from a similar study and described in the primary trial report; lower limit of quantification 1.0 ng/mL. Observations below the limit of quantification were excluded from the analysis (Methods 2.2).",
     maternal_transfer = "More than half of the neonates had measurable pre-dose ondansetron concentrations from transplacental maternal transfer. These were handled by initialising the neonatal central compartment to the observed maternal plasma concentration (Appendix S1 $PK: A_0(2) = C0 * S2). Maternal plasma ondansetron concentration at delivery: mean (SD) 28.2 (23.5) ng/mL, 29 maternal plasma samples (Table 1; Results 3, 3.1). The umbilical cord was not modelled as an intermediate compartment (Discussion).",
-    notes          = paste(
+    notes = paste(
       "36 neonates and 109 neonatal plasma samples (median 3 per neonate, range 1-5)",
       "plus 29 maternal plasma samples entered the PK analysis; 35 neonates entered",
       "the exploratory exposure-response analysis (one had no Finnegan scores).",

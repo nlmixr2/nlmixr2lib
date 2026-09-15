@@ -8,52 +8,52 @@ Hwang_2022_tremelimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tremelimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tremelimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tremelimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference weight 71 kg (Hwang 2022 Table 3 covariate rows and equations on page 1609).",
-      source_name        = "WT"
+      notes = "Power scaling on CL and Vc with reference weight 71 kg (Hwang 2022 Table 3 covariate rows and equations on page 1609).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 39 g/L (Hwang 2022 Table 3 covariate row and equation on page 1609). Hwang 2022 imputed physiologically infeasible baseline values to the population median (Table 2 footnote e). Hypoalbuminaemia clinically defined as serum albumin <25 g/L.",
-      source_name        = "ALB"
+      notes = "Power scaling on CL with reference 39 g/L (Hwang 2022 Table 3 covariate row and equation on page 1609). Hwang 2022 imputed physiologically infeasible baseline values to the population median (Table 2 footnote e). Hypoalbuminaemia clinically defined as serum albumin <25 g/L.",
+      source_name = "ALB"
     ),
     COMBO_DURVA = list(
-      description        = "Indicator for tremelimumab co-administered with durvalumab",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for tremelimumab co-administered with durvalumab",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tremelimumab monotherapy)",
-      notes              = "Hwang 2022 NONMEM control-stream column COMB selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters via IF(COMB.EQ.0) / IF(COMB.EQ.1) (supplement Supplementary Results, Final-model NONMEM control stream). Stored under the canonical COMBO_DURVA per inst/references/covariate-columns.md.",
-      source_name        = "COMB"
+      notes = "Hwang 2022 NONMEM control-stream column COMB selects between monotherapy and combination-with-durvalumab values of the time-varying-CL Tmax and lambda parameters via IF(COMB.EQ.0) / IF(COMB.EQ.1) (supplement Supplementary Results, Final-model NONMEM control stream). Stored under the canonical COMBO_DURVA per inst/references/covariate-columns.md.",
+      source_name = "COMB"
     )
   )
 
   population <- list(
-    n_subjects     = 956L,
-    n_studies      = 5L,
-    age_range      = "22-87 years",
-    age_median     = "65 years",
-    weight_range   = "35.5-149.0 kg",
-    weight_median  = "71.6 kg",
+    n_subjects = 956L,
+    n_studies = 5L,
+    age_range = "22-87 years",
+    age_median = "65 years",
+    weight_range = "35.5-149.0 kg",
+    weight_median = "71.6 kg",
     sex_female_pct = 36.8,
     race_ethnicity = c(White = 75.5, Asian = 19.3, Black = 1.4, Other = 3.9),
-    disease_state  = "Advanced solid tumours (pleural or peritoneal malignant mesothelioma 32.6%, lung cancer 22.1%, urothelial bladder cancer 17.1%, other 12.1%, biliary tract carcinoma 6.2%, oesophagus carcinoma 5.3%, breast cancer 3.1%)",
-    dose_range     = "1-10 mg/kg or 75-750 mg flat IV every 4 weeks (Q4W); monotherapy 10 mg/kg Q4W or 750 mg flat, combination with durvalumab 1 mg/kg, 3 mg/kg, or 75 mg flat Q4W",
-    regions        = "Global; Japan 6.7%, Korea 7.7%, Other 85.6%",
+    disease_state = "Advanced solid tumours (pleural or peritoneal malignant mesothelioma 32.6%, lung cancer 22.1%, urothelial bladder cancer 17.1%, other 12.1%, biliary tract carcinoma 6.2%, oesophagus carcinoma 5.3%, breast cancer 3.1%)",
+    dose_range = "1-10 mg/kg or 75-750 mg flat IV every 4 weeks (Q4W); monotherapy 10 mg/kg Q4W or 750 mg flat, combination with durvalumab 1 mg/kg, 3 mg/kg, or 75 mg flat Q4W",
+    regions = "Global; Japan 6.7%, Korea 7.7%, Other 85.6%",
     treatment_regimen = "Monotherapy 38.8%, in combination with durvalumab 61.2%",
     ecog_distribution = "ECOG 0 38.9%, ECOG 1 60.9%, ECOG 2 0.1%",
-    notes          = "Baseline demographics per Hwang 2022 Table 2 (model development N = 958 patients; the modelling dataset after sample exclusions was 4,043 PK samples from 956 patients). Trials pooled: Study 02 (NCT01938612, biliary tract / oesophageal cancer / SCCHN), Study 06 (NCT02000947, NSCLC), Study 10 (NCT02261220, urothelial cancer), DETERMINE (NCT01843374, pleural / peritoneal malignant mesothelioma), and D4884C00001 (NCT02527434, urothelial / triple-negative breast / pancreatic ductal adenocarcinoma). Median tumour size 73 mm (range 10-668). Median baseline albumin 39 g/L (range 15-52); median baseline LDH 209.5 U/L; postbaseline ADA-positive 6.1% (combination 7.8%, monotherapy 2.8%). External validation (n = 554, 4 phase 2/3 studies: ARCTIC, EAGLE, CONDOR, MYSTIC) not used for parameter estimation."
+    notes = "Baseline demographics per Hwang 2022 Table 2 (model development N = 958 patients; the modelling dataset after sample exclusions was 4,043 PK samples from 956 patients). Trials pooled: Study 02 (NCT01938612, biliary tract / oesophageal cancer / SCCHN), Study 06 (NCT02000947, NSCLC), Study 10 (NCT02261220, urothelial cancer), DETERMINE (NCT01843374, pleural / peritoneal malignant mesothelioma), and D4884C00001 (NCT02527434, urothelial / triple-negative breast / pancreatic ductal adenocarcinoma). Median tumour size 73 mm (range 10-668). Median baseline albumin 39 g/L (range 15-52); median baseline LDH 209.5 U/L; postbaseline ADA-positive 6.1% (combination 7.8%, monotherapy 2.8%). External validation (n = 554, 4 phase 2/3 studies: ARCTIC, EAGLE, CONDOR, MYSTIC) not used for parameter estimation."
   )
 
   ini({

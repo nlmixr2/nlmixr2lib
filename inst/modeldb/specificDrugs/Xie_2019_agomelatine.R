@@ -1,6 +1,6 @@
 # Load the xie_2019_agomelatine model from the paper supplement
 
-Xie_2019_agomelatine <- function () {
+Xie_2019_agomelatine <- function() {
   description <- "A semiphysiological population pharmacokinetic model of agomelatine and its metabolites in Chinese healthy volunteers"
   reference <- "Xie F, Vermeulen A, Colin P, Cheng Z. A semiphysiological population pharmacokinetic model of agomelatine and its metabolites in Chinese healthy volunteers. Br J Clin Pharmacol. 2019 May;85(5):1003-1014. doi: 10.1111/bcp.13902. Epub 2019 Mar 21. PMID: 30761579; PMCID: PMC6475681."
   vignette <- "Xie_2019_agomelatine"
@@ -16,72 +16,72 @@ Xie_2019_agomelatine <- function () {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot           = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2          = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
-    liver           = list(analyte = "agomelatine", units = "mg", specimen = "tissue", verified = FALSE),
-    central         = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_3oh     = list(analyte = "agomelatine-3OH", units = "mg", specimen = "plasma", verified = FALSE),
-    central_7dm     = list(analyte = "agomelatine-7DM", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
+    liver = list(analyte = "agomelatine", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3oh = list(analyte = "agomelatine-3OH", units = "mg", specimen = "plasma", verified = FALSE),
+    central_7dm = list(analyte = "agomelatine-7DM", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_7dm = list(analyte = "agomelatine-7DM", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE)
+    peripheral1 = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used inside liver-volume allometry: lv = 0.05012 * WT^0.78. No explicit reference weight reported; the allometric form uses the raw WT value directly.",
-      source_name        = "WT"
+      notes = "Used inside liver-volume allometry: lv = 0.05012 * WT^0.78. No explicit reference weight reported; the allometric form uses the raw WT value directly.",
+      source_name = "WT"
     ),
     OOC1 = list(
-      description        = "Occasion indicator for period 1 of the four-period crossover study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Occasion indicator for period 1 of the four-period crossover study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
-      notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between depot and depot2.",
-      source_name        = "ooc1"
+      notes = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between depot and depot2.",
+      source_name = "ooc1"
     ),
     OOC2 = list(
-      description        = "Occasion indicator for period 2 of the four-period crossover study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Occasion indicator for period 2 of the four-period crossover study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
-      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
-      source_name        = "ooc2"
+      notes = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name = "ooc2"
     ),
     OOC3 = list(
-      description        = "Occasion indicator for period 3 of the four-period crossover study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Occasion indicator for period 3 of the four-period crossover study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
-      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
-      source_name        = "ooc3"
+      notes = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name = "ooc3"
     ),
     OOC4 = list(
-      description        = "Occasion indicator for period 4 of the four-period crossover study",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Occasion indicator for period 4 of the four-period crossover study",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
-      notes              = "Lower-case name preserved from source per covariate-columns.md register.",
-      source_name        = "ooc4"
+      notes = "Lower-case name preserved from source per covariate-columns.md register.",
+      source_name = "ooc4"
     )
   )
 
   population <- list(
-    n_subjects     = "TODO: from source paper",
-    n_studies      = 1,
-    age_range      = "TODO: from source paper",
-    age_median     = "TODO: from source paper",
-    weight_range   = "TODO: from source paper",
-    weight_median  = "60 kg (used as representative weight in vignette simulations per Table 1 of source)",
+    n_subjects = "TODO: from source paper",
+    n_studies = 1,
+    age_range = "TODO: from source paper",
+    age_median = "TODO: from source paper",
+    weight_range = "TODO: from source paper",
+    weight_median = "60 kg (used as representative weight in vignette simulations per Table 1 of source)",
     sex_female_pct = "TODO: from source paper",
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy Chinese volunteers",
-    dose_range     = "25 mg single oral dose (vignette simulation; confirm full design in source)",
-    regions        = "China",
-    notes          = "Four-period crossover design (occasions OOC1..OOC4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
+    disease_state = "Healthy Chinese volunteers",
+    dose_range = "25 mg single oral dose (vignette simulation; confirm full design in source)",
+    regions = "China",
+    notes = "Four-period crossover design (occasions OOC1..OOC4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
   )
 
   ini({

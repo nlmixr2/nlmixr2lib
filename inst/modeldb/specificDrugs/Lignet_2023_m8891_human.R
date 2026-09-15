@@ -23,36 +23,36 @@ Lignet_2023_m8891_human <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "M8891", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "M8891", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "M8891", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "Met-EF1a modulation level", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect = list(analyte = "Met-EF1a modulation level", units = "mg", specimen = "not applicable", verified = FALSE),
     metef1a = list(analyte = "Met-EF1a", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Lignet 2023 reports the predicted human CL and Vss per kilogram of body weight (0.020 L/h/kg and 0.21 L/kg, Table III), so both scale linearly with WT: cl = 1.4 * (WT/70) L/h and vc = 14.7 * (WT/70) L. The 70 kg reference is the body weight the authors used for the human compartmental PK simulations (Lignet 2023 Supplementary Materials, 'System Parameterization' table: 'Body weight (compartmental PK model) 70 kg'; the accompanying PBPK population was 'HumanAmerican30YO_70 kg'). This is a unit-conversion scaling implied by the published per-kilogram parameterisation, not an allometric exponent estimated from human data.",
-      source_name        = "WT"
+      notes = "Time-fixed. Lignet 2023 reports the predicted human CL and Vss per kilogram of body weight (0.020 L/h/kg and 0.21 L/kg, Table III), so both scale linearly with WT: cl = 1.4 * (WT/70) L/h and vc = 14.7 * (WT/70) L. The 70 kg reference is the body weight the authors used for the human compartmental PK simulations (Lignet 2023 Supplementary Materials, 'System Parameterization' table: 'Body weight (compartmental PK model) 70 kg'; the accompanying PBPK population was 'HumanAmerican30YO_70 kg'). This is a unit-conversion scaling implied by the published per-kilogram parameterisation, not an allometric exponent estimated from human data.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human (predicted; no human subjects dosed in this analysis)",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = NA_character_,
-    weight_range   = "70 kg reference body weight",
-    weight_median  = "70 kg",
+    species = "human (predicted; no human subjects dosed in this analysis)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = NA_character_,
+    weight_range = "70 kg reference body weight",
+    weight_median = "70 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Intended population: patients with advanced solid tumours (renal cell carcinoma was the proof-of-concept indication). The projection supported the Phase Ia dose-escalation study NCT03138538.",
-    dose_range     = "Oral once-daily dosing. Lignet 2023 Fig. 5 simulates 150 mg QD, the dose predicted to hold tumour Met-EF1a above the 125 ug/mg-protein efficacy target; the supplement additionally simulates 50-400 mg QD (Table S7).",
-    regions        = NA_character_,
-    notes          = "Human CL and Vss are the mean of three preclinical-to-human scaling methods (Lignet 2023 Table III, bold row: NASfub / TME / SA-RoE for CL and SAfub / Oie-Tozer / human-dog proportionality for Vss), derived from single-dose i.v. PK in NMRI mice, Wistar rats, beagle dogs, and cynomolgus monkeys corrected for plasma protein binding and liver-microsomal CLint. The absorption rate constant and oral bioavailability come from a GastroPlus 9.5 PBPK/ACAT model calibrated on rat and dog data. The PD component (ke0, kin, kout, Imax, IC50) is transferred unchanged from the mouse Caki-1 xenograft fit. Lignet 2023 Discussion notes that the observed Phase Ia terminal half-life was about 30 h, roughly fourfold longer than the 7.3 h projected here, so this model over-predicts clearance and hence the required dose; the recommended Phase II dose was 35 mg, not the 150 mg predicted here (Carducci et al. 2023). The model is retained as the published translational projection, not as a description of observed human PK."
+    disease_state = "Intended population: patients with advanced solid tumours (renal cell carcinoma was the proof-of-concept indication). The projection supported the Phase Ia dose-escalation study NCT03138538.",
+    dose_range = "Oral once-daily dosing. Lignet 2023 Fig. 5 simulates 150 mg QD, the dose predicted to hold tumour Met-EF1a above the 125 ug/mg-protein efficacy target; the supplement additionally simulates 50-400 mg QD (Table S7).",
+    regions = NA_character_,
+    notes = "Human CL and Vss are the mean of three preclinical-to-human scaling methods (Lignet 2023 Table III, bold row: NASfub / TME / SA-RoE for CL and SAfub / Oie-Tozer / human-dog proportionality for Vss), derived from single-dose i.v. PK in NMRI mice, Wistar rats, beagle dogs, and cynomolgus monkeys corrected for plasma protein binding and liver-microsomal CLint. The absorption rate constant and oral bioavailability come from a GastroPlus 9.5 PBPK/ACAT model calibrated on rat and dog data. The PD component (ke0, kin, kout, Imax, IC50) is transferred unchanged from the mouse Caki-1 xenograft fit. Lignet 2023 Discussion notes that the observed Phase Ia terminal half-life was about 30 h, roughly fourfold longer than the 7.3 h projected here, so this model over-predicts clearance and hence the required dose; the recommended Phase II dose was 35 mg, not the 150 mg predicted here (Carducci et al. 2023). The model is retained as the published translational projection, not as a description of observed human PK."
   )
 
   ini({

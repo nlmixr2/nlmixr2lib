@@ -9,50 +9,50 @@ Soehoel_2022_tralokinumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric-style effect on CL/Q and Vc/Vp with reference weight 75 kg.",
-      source_name        = "WT"
+      notes = "Allometric-style effect on CL/Q and Vc/Vp with reference weight 75 kg.",
+      source_name = "WT"
     ),
     NON_ECZTRA = list(
-      description        = "Indicator for non-ECZTRA trial enrollment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for non-ECZTRA trial enrollment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECZTRA trial)",
-      notes              = "1 = any study other than ECZTRA; 0 = ECZTRA study. The source paper writes this column `nonECZTRA`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
-      source_name        = "nonECZTRA"
+      notes = "1 = any study other than ECZTRA; 0 = ECZTRA study. The source paper writes this column `nonECZTRA`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
+      source_name = "nonECZTRA"
     ),
     DILUTION = list(
-      description        = "Indicator for diluted drug product (study D2213C00001)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for diluted drug product (study D2213C00001)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not diluted)",
-      notes              = "1 = drug diluted as in study D2213C00001; 0 = not diluted (typical). The source paper writes this column `dilution`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
-      source_name        = "dilution"
+      notes = "1 = drug diluted as in study D2213C00001; 0 = not diluted (typical). The source paper writes this column `dilution`; renamed to the ALL-CAPS canonical per covariate-columns.md, with the source spelling kept in source_name.",
+      source_name = "dilution"
     )
   )
 
   population <- list(
-    n_subjects     = 2561,
-    n_studies      = 10,
-    age_range      = "18-92 years",
-    age_median     = "38 years (131 subjects >=65 years)",
-    weight_range   = "36-165 kg",
-    weight_median  = "74.5 kg",
+    n_subjects = 2561,
+    n_studies = 10,
+    age_range = "18-92 years",
+    age_median = "38 years (131 subjects >=65 years)",
+    weight_range = "36-165 kg",
+    weight_median = "74.5 kg",
     sex_female_pct = 44.9,
     race_ethnicity = "White 1721 (67%), Asian 560 (22%), Black/African American 183 (7%), Other 4%; Hispanic/Latino 222 (8.7%), Not Hispanic/Latino 2339 (91%)",
-    disease_state  = "Pooled across indications: atopic dermatitis 2066 (81%), asthma 441 (17%), healthy 54 (2%); baseline SCORE_EASI median 27.5 (range 12-72) in AD subjects",
-    dose_range     = "Single-dose phase 1 through multi-dose phase 3; labelled AD regimen is a 600 mg SC loading dose followed by 300 mg SC every 2 weeks (Q4W extensions evaluated)",
-    regions        = "Not explicitly stated in Soehoel 2022 Table 1; pooled from 10 multinational trials (3 phase 3 ECZTRA, 4 phase 2, 3 phase 1)",
-    notes          = "Demographics from Soehoel 2022 Table 1 (pooled analysis population, n=2561). 2204 subjects (86%) enrolled in ECZTRA phase 3 atopic-dermatitis trials; 49 subjects (2%) received diluted drug product in study D2213C00001."
+    disease_state = "Pooled across indications: atopic dermatitis 2066 (81%), asthma 441 (17%), healthy 54 (2%); baseline SCORE_EASI median 27.5 (range 12-72) in AD subjects",
+    dose_range = "Single-dose phase 1 through multi-dose phase 3; labelled AD regimen is a 600 mg SC loading dose followed by 300 mg SC every 2 weeks (Q4W extensions evaluated)",
+    regions = "Not explicitly stated in Soehoel 2022 Table 1; pooled from 10 multinational trials (3 phase 3 ECZTRA, 4 phase 2, 3 phase 1)",
+    notes = "Demographics from Soehoel 2022 Table 1 (pooled analysis population, n=2561). 2204 subjects (86%) enrolled in ECZTRA phase 3 atopic-dermatitis trials; 49 subjects (2%) received diluted drug product in study D2213C00001."
   )
 
   ini({

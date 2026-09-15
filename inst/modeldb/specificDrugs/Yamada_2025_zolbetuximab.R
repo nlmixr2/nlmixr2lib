@@ -8,83 +8,83 @@ Yamada_2025_zolbetuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "zolbetuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "zolbetuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "zolbetuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CLss, CLT, Q (exponent 1.06) and V1, V2 (exponent 0.968); reference 1.70 m^2 per the Yamada 2025 Figure 1 reference population. BSA computation method (DuBois / Mosteller / Haycock) is not specified in the paper.",
-      source_name        = "BSA"
+      notes = "Time-fixed baseline value. Power effect on CLss, CLT, Q (exponent 1.06) and V1, V2 (exponent 0.968); reference 1.70 m^2 per the Yamada 2025 Figure 1 reference population. BSA computation method (DuBois / Mosteller / Haycock) is not specified in the paper.",
+      source_name = "BSA"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on CLss (exponent -0.535) and Kdecay (exponent 1.48); reference 39.1 g/L per the Yamada 2025 Figure 1 reference population.",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline value. Power effect on CLss (exponent -0.535) and Kdecay (exponent 1.48); reference 39.1 g/L per the Yamada 2025 Figure 1 reference population.",
+      source_name = "ALB"
     ),
     PRIOR_GAST = list(
-      description        = "Prior gastrectomy indicator (time-fixed per subject)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior gastrectomy indicator (time-fixed per subject)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior gastrectomy)",
-      notes              = "Fractional-change (dummy-variable) effects on CLss (-0.182), CLT (-0.495), and V1 (+0.103) in the final time-dependent-clearance model (Yamada 2025 Table 1). Source column 'GAST' maps to the canonical general-scope PRIOR_GAST covariate.",
-      source_name        = "GAST"
+      notes = "Fractional-change (dummy-variable) effects on CLss (-0.182), CLT (-0.495), and V1 (+0.103) in the final time-dependent-clearance model (Yamada 2025 Table 1). Source column 'GAST' maps to the canonical general-scope PRIOR_GAST covariate.",
+      source_name = "GAST"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source paper uses the column label SEX (1 = female per the 'SEX on CLss (if female)' row of Table 1); renamed to the canonical SEXF per covariate-columns.md. Fractional-change effects on CLss (-0.195) and V1 (-0.108).",
-      source_name        = "SEX"
+      notes = "Source paper uses the column label SEX (1 = female per the 'SEX on CLss (if female)' row of Table 1); renamed to the canonical SEXF per covariate-columns.md. Fractional-change effects on CLss (-0.195) and V1 (-0.108).",
+      source_name = "SEX"
     ),
     HGB = list(
-      description        = "Baseline hemoglobin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline hemoglobin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on V1 (exponent -0.374); reference 118 g/L per the Yamada 2025 Figure 1 reference population.",
-      source_name        = "HGB"
+      notes = "Time-fixed baseline value. Power effect on V1 (exponent -0.374); reference 118 g/L per the Yamada 2025 Figure 1 reference population.",
+      source_name = "HGB"
     ),
     TBILI = list(
-      description        = "Baseline total bilirubin",
+      description = "Baseline total bilirubin",
       units = "umol/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on V1 (exponent 0.0347); reference 0.38 mg/dL per the Yamada 2025 Figure 1 reference population.",
-      source_name        = "TBILI"
+      notes = "Time-fixed baseline value. Power effect on V1 (exponent 0.0347); reference 0.38 mg/dL per the Yamada 2025 Figure 1 reference population.",
+      source_name = "TBILI"
     ),
     CONMED_EOX = list(
-      description        = "Concomitant EOX (epirubicin + oxaliplatin + capecitabine) chemotherapy backbone indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant EOX (epirubicin + oxaliplatin + capecitabine) chemotherapy backbone indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-EOX backbone; includes mFOLFOX6, CAPOX, and single-agent settings)",
-      notes              = "Source paper uses 'COMB' as the categorical column with EOX as the non-reference level; renamed to the canonical CONMED_EOX per covariate-columns.md to preserve the semantic meaning of the 1-level. Fractional-change effect on V1 (+0.466) in the time-dependent-clearance model (Yamada 2025 Table 1).",
-      source_name        = "COMB"
+      notes = "Source paper uses 'COMB' as the categorical column with EOX as the non-reference level; renamed to the canonical CONMED_EOX per covariate-columns.md to preserve the semantic meaning of the 1-level. Fractional-change effect on V1 (+0.466) in the time-dependent-clearance model (Yamada 2025 Table 1).",
+      source_name = "COMB"
     )
   )
 
   population <- list(
-    n_subjects         = 714L,
-    n_studies          = 8L,
-    phase_mix          = "3 phase 1, 3 phase 2 (MONO, FAST, ILUSTRO), and 2 phase 3 studies (SPOTLIGHT, GLOW)",
-    age_range          = "Adult (>= 18 years); full range not reported in the main paper (see Table S2).",
-    weight_range       = "Not reported in the main paper (see Table S2); reference BSA 1.70 m^2 approximates a 70 kg adult with average height.",
-    sex_female_pct     = NA_real_,
-    race_ethnicity     = "Multi-regional enrollment: White, Asian (including Chinese, Japanese, Korean subgroups), and others. Race/ethnicity had no clinically important effect on zolbetuximab PK in the final model.",
-    disease_state      = "Locally advanced unresectable or metastatic gastric (n = 540) or gastroesophageal junction (n = 174) adenocarcinoma. Prior gastrectomy status included as a covariate.",
-    dose_range         = "33-1000 mg/m^2 IV infusion. Clinical regimen: 800 mg/m^2 loading dose followed by 600 mg/m^2 every 3 weeks (phase 3), also evaluated as 800/400 mg/m^2 every 2 weeks.",
-    regions            = "Global / multi-regional.",
-    n_observations     = 5066L,
-    reference_subject  = "Male, BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, no prior gastrectomy, non-EOX chemotherapy backbone (per Yamada 2025 Figure 1 caption).",
-    notes              = "Immunogenicity was not retained as a covariate because of low ADA incidence; race and mild/moderate renal impairment and mild hepatic impairment also showed no clinically important effect. Severe renal impairment and moderate/severe hepatic impairment were under-represented and not evaluated. The final model selected in the paper (Table 1, footnote a) is the time-dependent-clearance (TDC) variant."
+    n_subjects = 714L,
+    n_studies = 8L,
+    phase_mix = "3 phase 1, 3 phase 2 (MONO, FAST, ILUSTRO), and 2 phase 3 studies (SPOTLIGHT, GLOW)",
+    age_range = "Adult (>= 18 years); full range not reported in the main paper (see Table S2).",
+    weight_range = "Not reported in the main paper (see Table S2); reference BSA 1.70 m^2 approximates a 70 kg adult with average height.",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Multi-regional enrollment: White, Asian (including Chinese, Japanese, Korean subgroups), and others. Race/ethnicity had no clinically important effect on zolbetuximab PK in the final model.",
+    disease_state = "Locally advanced unresectable or metastatic gastric (n = 540) or gastroesophageal junction (n = 174) adenocarcinoma. Prior gastrectomy status included as a covariate.",
+    dose_range = "33-1000 mg/m^2 IV infusion. Clinical regimen: 800 mg/m^2 loading dose followed by 600 mg/m^2 every 3 weeks (phase 3), also evaluated as 800/400 mg/m^2 every 2 weeks.",
+    regions = "Global / multi-regional.",
+    n_observations = 5066L,
+    reference_subject = "Male, BSA 1.70 m^2, ALB 39.1 g/L, HGB 118 g/L, TBILI 0.38 mg/dL, no prior gastrectomy, non-EOX chemotherapy backbone (per Yamada 2025 Figure 1 caption).",
+    notes = "Immunogenicity was not retained as a covariate because of low ADA incidence; race and mild/moderate renal impairment and mild hepatic impairment also showed no clinically important effect. Severe renal impairment and moderate/severe hepatic impairment were under-represented and not evaluated. The final model selected in the paper (Table 1, footnote a) is the time-dependent-clearance (TDC) variant."
   )
 
   ini({

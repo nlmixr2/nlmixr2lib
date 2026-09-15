@@ -13,38 +13,38 @@ Garg_2014_pertuzumab <- function() {
 
   covariateData <- list(
     LBM = list(
-      description        = "Lean body weight (canonical column LBM; source paper uses LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (canonical column LBM; source paper uses LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on linear CL (exponent 0.516), Vc (exponent 0.747), and Vp (exponent 0.83), each centred at the cohort median LBW = 48 kg (Garg 2014 Table 1 footnote and CL/Vc/Vp covariate equations on page 823). Body-composition formula not stated in the paper; mAb popPK literature most commonly uses the Hume (1966) or James (1976) formula for LBW. Stored under canonical LBM (lean body mass) per inst/references/covariate-columns.md; LBW and LBM refer to the same quantity. Body weight, BSA, sex, age, race (Japanese vs non-Japanese), and other patient demographics were screened during covariate analysis but only LBW was retained on volumes.",
-      source_name        = "LBW"
+      notes = "Power scaling on linear CL (exponent 0.516), Vc (exponent 0.747), and Vp (exponent 0.83), each centred at the cohort median LBW = 48 kg (Garg 2014 Table 1 footnote and CL/Vc/Vp covariate equations on page 823). Body-composition formula not stated in the paper; mAb popPK literature most commonly uses the Hume (1966) or James (1976) formula for LBW. Stored under canonical LBM (lean body mass) per inst/references/covariate-columns.md; LBW and LBM refer to the same quantity. Body weight, BSA, sex, age, race (Japanese vs non-Japanese), and other patient demographics were screened during covariate analysis but only LBW was retained on volumes.",
+      source_name = "LBW"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
+      description = "Baseline serum albumin concentration",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -1.06, i.e. approximately inversely proportional); reference 3.9 g/dL per Garg 2014 CL covariate equation (page 823, typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
-      source_name        = "ALBU"
+      notes = "Time-fixed baseline value (US convention, g/dL). Power effect on linear CL (exponent -1.06, i.e. approximately inversely proportional); reference 3.9 g/dL per Garg 2014 CL covariate equation (page 823, typical patient). Source column 'ALBU' maps to the canonical ALB covariate.",
+      source_name = "ALBU"
     )
   )
 
   population <- list(
-    n_subjects       = 481L,
-    n_studies        = 12L,
-    n_observations   = 4525L,
-    phase_mix        = "Pooled five phase I/Ib studies, six phase II studies, and the pivotal phase III trial CLEOPATRA. 392 patients received pertuzumab as a single agent; 356 received pertuzumab in combination with chemotherapy (gemcitabine, capecitabine, or docetaxel) and/or targeted therapy (trastuzumab or erlotinib). 20 patients were enrolled in CLEOPATRA.",
-    age_median       = "60 years",
-    weight_median    = "72 kg",
-    sex_female_pct   = 62.0,
-    race_ethnicity   = c(`non-Japanese` = 95.4, Japanese = 4.6),
-    disease_state    = "Solid tumors including metastatic breast cancer (MBC), non-small cell lung cancer (NSCLC), ovarian cancer, prostate cancer, and other HER2-targeted indications. 81.5% (392/481) received pertuzumab without chemotherapy; the remainder received pertuzumab with chemotherapy and/or other targeted therapy.",
-    dose_range       = "Body-weight-based: 0.5-25 mg/kg IV q3w (n = 39 in phase Ia dose-ranging; the three patients receiving 0.5 mg/kg were excluded from the population PK analysis owing to nonlinear PK at low concentrations and analyses were performed on doses >=2 mg/kg). Fixed dose: 1050 mg IV q3w (n = 96, 20%) or 840 mg IV loading dose followed by 420 mg IV q3w maintenance (n = 346, 72%; the labelled clinical regimen).",
-    regions          = "Global (multinational phase I-III studies).",
-    ecog_status      = "Almost all patients (479/481, 99.6%) had ECOG performance status 0 or 1.",
+    n_subjects = 481L,
+    n_studies = 12L,
+    n_observations = 4525L,
+    phase_mix = "Pooled five phase I/Ib studies, six phase II studies, and the pivotal phase III trial CLEOPATRA. 392 patients received pertuzumab as a single agent; 356 received pertuzumab in combination with chemotherapy (gemcitabine, capecitabine, or docetaxel) and/or targeted therapy (trastuzumab or erlotinib). 20 patients were enrolled in CLEOPATRA.",
+    age_median = "60 years",
+    weight_median = "72 kg",
+    sex_female_pct = 62.0,
+    race_ethnicity = c(`non-Japanese` = 95.4, Japanese = 4.6),
+    disease_state = "Solid tumors including metastatic breast cancer (MBC), non-small cell lung cancer (NSCLC), ovarian cancer, prostate cancer, and other HER2-targeted indications. 81.5% (392/481) received pertuzumab without chemotherapy; the remainder received pertuzumab with chemotherapy and/or other targeted therapy.",
+    dose_range = "Body-weight-based: 0.5-25 mg/kg IV q3w (n = 39 in phase Ia dose-ranging; the three patients receiving 0.5 mg/kg were excluded from the population PK analysis owing to nonlinear PK at low concentrations and analyses were performed on doses >=2 mg/kg). Fixed dose: 1050 mg IV q3w (n = 96, 20%) or 840 mg IV loading dose followed by 420 mg IV q3w maintenance (n = 346, 72%; the labelled clinical regimen).",
+    regions = "Global (multinational phase I-III studies).",
+    ecog_status = "Almost all patients (479/481, 99.6%) had ECOG performance status 0 or 1.",
     reference_subject = "Lean body weight 48 kg, serum albumin 3.9 g/dL (the cohort median per Garg 2014 Table 1 footnote and CL/Vc/Vp covariate equations on page 823).",
-    notes            = "Baseline demographics per Garg 2014 Results section 'Patient population' and Online Resource 2. The PK analysis dataset comprised 4,525 pertuzumab serum concentration time points; 115 (2.5%) data points from 65 patients were flagged as outliers (trough above peak, pharmacologically unexplained spike/drop, or below LLOQ) and omitted before fitting. Phase Ia patients receiving 0.5 mg/kg (n = 3) were excluded after preliminary nonlinear PK exploration was inconclusive. CRP, HER2 ECD, and HER2 expression were assessed by sensitivity analysis on subsets where the data were available, not as formal covariates."
+    notes = "Baseline demographics per Garg 2014 Results section 'Patient population' and Online Resource 2. The PK analysis dataset comprised 4,525 pertuzumab serum concentration time points; 115 (2.5%) data points from 65 patients were flagged as outliers (trough above peak, pharmacologically unexplained spike/drop, or below LLOQ) and omitted before fitting. Phase Ia patients receiving 0.5 mg/kg (n = 3) were excluded after preliminary nonlinear PK exploration was inconclusive. CRP, HER2 ECD, and HER2 expression were assessed by sensitivity analysis on subsets where the data were available, not as formal covariates."
   )
 
   ini({

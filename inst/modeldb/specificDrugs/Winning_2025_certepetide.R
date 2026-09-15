@@ -18,11 +18,11 @@ Winning_2025_certepetide <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline weight. Enters Vc and Vp as an estimated power",
         "function (WT / 70)^theta, per Winning 2025 Equation (6). The reference",
         "value 70 kg is the standard reference value named in the Equation (6)",
@@ -33,17 +33,17 @@ Winning_2025_certepetide <- function() {
         "Certepetide itself is dosed in mg/kg, so WT enters the simulation twice:",
         "once through the dose amount and once through the volume terms."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline creatinine clearance computed by the Cockcroft-Gault equation,",
         "in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source term 'baseline CrCL' / 'BCRCL'. Stored under the canonical CRCL",
         "column per inst/references/covariate-columns.md, which accepts raw",
         "Cockcroft-Gault mL/min when the source paper applies no BSA",
@@ -58,7 +58,7 @@ Winning_2025_certepetide <- function() {
         "90 mL/min is stated there as the reference value. Cohort median",
         "96.8 mL/min (range 48.2-172 mL/min)."
       ),
-      source_name        = "BCRCL"
+      source_name = "BCRCL"
     )
   )
 
@@ -68,9 +68,9 @@ Winning_2025_certepetide <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "An age effect on CL was retained in an intermediate model",
         "(dOFV = -17.07) but was replaced in the final model by baseline CrCL,",
         "because CrCL correlates strongly with both age and body weight and the",
@@ -81,9 +81,9 @@ Winning_2025_certepetide <- function() {
     ),
     SEXF = list(
       description = "Sex, 1 = female",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Sex was tested on CL and Vc and was not significant",
         "(dOFV < 10.83); removed in backward elimination",
         "(Winning 2025 Results, Pharmacokinetic Model)."
@@ -92,31 +92,31 @@ Winning_2025_certepetide <- function() {
   )
 
   compartmentData <- list(
-    central     = list(analyte = "certepetide", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "certepetide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "certepetide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 31,
+    n_studies = 1,
     n_observations = 1142,
-    age_range      = "42.6-79.3 years",
-    age_median     = "62.1 years",
-    weight_range   = "54.0-121 kg",
-    weight_median  = "73.7 kg",
+    age_range = "42.6-79.3 years",
+    age_median = "62.1 years",
+    weight_range = "54.0-121 kg",
+    weight_median = "73.7 kg",
     sex_female_pct = 35.5,
     race_ethnicity = c(White = 87.1, Black = 6.5, `Mixed or other` = 6.5),
-    disease_state  = paste(
+    disease_state = paste(
       "Unresectable metastatic exocrine pancreatic ductal adenocarcinoma,",
       "first-line treatment"
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "nab-paclitaxel 125 mg/m^2 IV over 30 min and gemcitabine 1000 mg/m^2",
       "IV over 30 min on days 1, 8 and 15 of each 28-day cycle; certepetide",
       "given immediately after nab-paclitaxel"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.2, 0.8, 1.6 and 3.2 mg/kg certepetide as a slow intravenous push over",
       "1 minute; monotherapy run-in followed by days 1, 8 and 15 of 28-day",
       "chemotherapy cycles"
@@ -130,8 +130,8 @@ Winning_2025_certepetide <- function() {
       "67.7% normal (AST and bilirubin <= ULN), 32.3% mild impairment",
       "(AST > ULN or ULN < bilirubin <= 1.5 * ULN)"
     ),
-    regions        = "Australia (3 clinical sites)",
-    notes          = paste(
+    regions = "Australia (3 clinical sites)",
+    notes = paste(
       "First-in-human phase 1 rising-dose study NCT03517176 (Dean et al.).",
       "Baseline demographics: Winning 2025 Results, Data Disposition, and",
       "Tables S3-S4. Of 1142 PK observations, 50 (4.4%) were below the 50.0",

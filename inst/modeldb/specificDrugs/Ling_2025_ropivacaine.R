@@ -30,11 +30,11 @@ Ling_2025_ropivacaine <- function() {
 
   covariateData <- list(
     PLT = list(
-      description        = "Preoperative platelet count from the routine complete blood count",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "Preoperative platelet count from the routine complete blood count",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ling 2025 Table 1 reports the platelet count as median (range) per concentration group:",
         "182 (43-341) in the 0.25 % group, 213 (133-344) in the 0.5 % group and 187 (132-240) in",
         "the 0.75 % group (p = 0.208 across groups). The n-weighted mean of those three medians is",
@@ -50,17 +50,17 @@ Ling_2025_ropivacaine <- function() {
         "195 to 200 rescales Vc/F by only 1.1 %. See the vignette Errata for the alternative",
         "readings that were considered and rejected."
       ),
-      source_name        = "Platelet count (x10^9 L^-1)"
+      source_name = "Platelet count (x10^9 L^-1)"
     ),
     FORM_ROPI_SOLN05 = list(
-      description        = paste(
+      description = paste(
         "Ropivacaine injectate-concentration indicator: 1 = the block was performed with the 0.5 %",
         "w/v (5 mg/mL) ropivacaine solution, 0 = a different solution strength was used"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the 0.25 % w/v solution when FORM_ROPI_SOLN075 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per patient: each patient received one single-shot block from one solution",
         "strength. Ling 2025 randomised patients to 0.25 %, 0.5 % and 0.75 % w/v ropivacaine at a",
         "constant 3 mg/kg dose, so the injected mass is the same in every arm and only the injected",
@@ -71,17 +71,17 @@ Ling_2025_ropivacaine <- function() {
         "with FORM_ROPI_SOLN075; both zero selects the 0.25 % reference stratum. The two",
         "indicators are mutually exclusive."
       ),
-      source_name        = "The concentration of ropivacaine (0.5 %)"
+      source_name = "The concentration of ropivacaine (0.5 %)"
     ),
     FORM_ROPI_SOLN075 = list(
-      description        = paste(
+      description = paste(
         "Ropivacaine injectate-concentration indicator: 1 = the block was performed with the",
         "0.75 % w/v (7.5 mg/mL) ropivacaine solution, 0 = a different solution strength was used"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the 0.25 % w/v solution when FORM_ROPI_SOLN05 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per patient; see FORM_ROPI_SOLN05. Selects the 0.75 % stratum estimate",
         "ka = 14.4 1/h (Ling 2025 Table 3). Ling 2025 also enrolled two patients who received the",
         "0.375 % solution; those two were held out for external validation and are NOT part of the",
@@ -90,7 +90,7 @@ Ling_2025_ropivacaine <- function() {
         "validation) -- that regression is a validation device, not part of the final model, and is",
         "not encoded here."
       ),
-      source_name        = "The concentration of ropivacaine (0.75 %)"
+      source_name = "The concentration of ropivacaine (0.75 %)"
     )
   )
 
@@ -99,44 +99,120 @@ Ling_2025_ropivacaine <- function() {
   # coefficient is published for any of them. Recorded here for provenance
   # only; none is referenced in model().
   covariatesDataExcluded <- list(
-    AGE   = list(description = "Age", units = "years", type = "continuous",
-                 notes = "Table 1 medians 60.5 / 58 / 59 y (range 31-75); screened, not retained."),
-    SEXF  = list(description = "Female sex indicator", units = "(binary)", type = "binary",
-                 notes = "Screened, not retained. Ling 2025 Table 1 does not report the sex distribution of the cohort at all."),
-    WT    = list(description = "Body weight", units = "kg", type = "continuous",
-                 notes = "Table 1 medians 57.3 / 60.5 / 60 kg (range 50-81). Screened, not retained; the Discussion attributes this to the narrow body-size range. Body weight still determines the administered dose (3 mg/kg)."),
-    WBC   = list(description = "White blood cell count", units = "10^9 cells/L", type = "continuous",
-                 notes = "Table 1 medians 5.26 / 6.97 / 6.31; screened, not retained."),
-    RBC   = list(description = "Red blood cell count", units = "10^12 cells/L", type = "continuous",
-                 notes = "Table 1 medians 4.09 / 4.33 / 4.17, printed with the units x10^9 L^-1 which is a typo for x10^12 L^-1; screened, not retained."),
-    HGB   = list(description = "Hemoglobin", units = "g/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    HCT   = list(description = "Hematocrit", units = "(fraction)", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    ALB   = list(description = "Serum albumin", units = "g/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained. The Discussion notes that protein binding is reported elsewhere to affect ropivacaine PK."),
-    TBIL  = list(description = "Total bilirubin", units = "umol/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    ALP   = list(description = "Alkaline phosphatase", units = "U/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    ALT   = list(description = "Alanine aminotransferase", units = "U/L", type = "continuous",
-                 notes = "Table 1 medians 15.3 / 16.6 / 20.1 U/L; screened, not retained."),
-    AST   = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
-                 notes = "Table 1 medians 20.6 / 20.9 / 24.4 U/L; screened, not retained."),
-    CREAT = list(description = "Serum creatinine", units = "umol/L", type = "continuous",
-                 notes = "Table 1 medians 65 / 57.5 / 65, printed with the units mmol/L which is a typo for umol/L (65 mmol/L is not a survivable creatinine). Screened, not retained."),
-    TBA   = list(description = "Serum total bile acid", units = "umol/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    EGFR  = list(description = "Glomerular filtration rate", units = "mL/min/1.73m^2", type = "continuous",
-                 notes = "Named in the screening list; the estimating equation is not stated and no summary statistics are printed. Not retained."),
-    URATE = list(description = "Serum uric acid", units = "umol/L", type = "continuous",
-                 notes = "Named in the screening list; no summary statistics printed. Not retained."),
-    CONMED_PROPOFOL  = list(description = "Concomitant propofol", units = "(binary)", type = "binary",
-                            notes = "Table 1: used in 25.0 / 71.4 / 66.7 % of the three groups (p = 0.035). Screened, not retained."),
-    CONMED_LIDOCAINE = list(description = "Concomitant lidocaine", units = "(binary)", type = "binary",
-                            notes = "Table 1: used in 58.3 / 57.1 / 53.3 % of the three groups (p = 0.962). Screened, not retained."),
-    CONMED_DYCLONINE = list(description = "Concomitant dyclonine mucilage", units = "(binary)", type = "binary",
-                            notes = "Table 1: used in 58.3 / 42.8 / 93.3 % of the three groups (p = 0.013). Screened, not retained. Only comedications used by more than 5 % of patients were tested.")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Table 1 medians 60.5 / 58 / 59 y (range 31-75); screened, not retained."
+    ),
+    SEXF = list(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened, not retained. Ling 2025 Table 1 does not report the sex distribution of the cohort at all."
+    ),
+    WT = list(
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1 medians 57.3 / 60.5 / 60 kg (range 50-81). Screened, not retained; the Discussion attributes this to the narrow body-size range. Body weight still determines the administered dose (3 mg/kg)."
+    ),
+    WBC = list(
+      description = "White blood cell count",
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = "Table 1 medians 5.26 / 6.97 / 6.31; screened, not retained."
+    ),
+    RBC = list(
+      description = "Red blood cell count",
+      units = "10^12 cells/L",
+      type = "continuous",
+      notes = "Table 1 medians 4.09 / 4.33 / 4.17, printed with the units x10^9 L^-1 which is a typo for x10^12 L^-1; screened, not retained."
+    ),
+    HGB = list(
+      description = "Hemoglobin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    HCT = list(
+      description = "Hematocrit",
+      units = "(fraction)",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained. The Discussion notes that protein binding is reported elsewhere to affect ropivacaine PK."
+    ),
+    TBIL = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    ALP = list(
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    ALT = list(
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 medians 15.3 / 16.6 / 20.1 U/L; screened, not retained."
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Table 1 medians 20.6 / 20.9 / 24.4 U/L; screened, not retained."
+    ),
+    CREAT = list(
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Table 1 medians 65 / 57.5 / 65, printed with the units mmol/L which is a typo for umol/L (65 mmol/L is not a survivable creatinine). Screened, not retained."
+    ),
+    TBA = list(
+      description = "Serum total bile acid",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    EGFR = list(
+      description = "Glomerular filtration rate",
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = "Named in the screening list; the estimating equation is not stated and no summary statistics are printed. Not retained."
+    ),
+    URATE = list(
+      description = "Serum uric acid",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Named in the screening list; no summary statistics printed. Not retained."
+    ),
+    CONMED_PROPOFOL = list(
+      description = "Concomitant propofol",
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1: used in 25.0 / 71.4 / 66.7 % of the three groups (p = 0.035). Screened, not retained."
+    ),
+    CONMED_LIDOCAINE = list(
+      description = "Concomitant lidocaine",
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1: used in 58.3 / 57.1 / 53.3 % of the three groups (p = 0.962). Screened, not retained."
+    ),
+    CONMED_DYCLONINE = list(
+      description = "Concomitant dyclonine mucilage",
+      units = "(binary)",
+      type = "binary",
+      notes = "Table 1: used in 58.3 / 42.8 / 93.3 % of the three groups (p = 0.013). Screened, not retained. Only comedications used by more than 5 % of patients were tested."
+    )
   )
 
   compartmentData <- list(
@@ -145,22 +221,22 @@ Ling_2025_ropivacaine <- function() {
     # plasma, so "plasma" is used and the arterial sampling site is recorded
     # here and in population$notes. The depot is the serratus anterior fascial
     # plane into which the block is injected.
-    depot       = list(analyte = "ropivacaine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ropivacaine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ropivacaine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ropivacaine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ropivacaine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
-    age_range      = "31-75 years (group medians 60.5, 58 and 59 years)",
-    weight_range   = "50-81 kg (group medians 57.3, 60.5 and 60 kg)",
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
+    age_range = "31-75 years (group medians 60.5, 58 and 59 years)",
+    weight_range = "50-81 kg (group medians 57.3, 60.5 and 60 kg)",
     sex_female_pct = NA_real_,
-    disease_state  = "Adults undergoing primary elective video-assisted thoracoscopic lung resection (lobectomy), ASA physical status I-III, without chronic pain, cognitive dysfunction or overt organ dysfunction",
-    dose_range     = "Single 3 mg/kg ropivacaine superficial serratus anterior plane block (150-243 mg observed) as a 0.25 %, 0.5 % or 0.75 % w/v solution",
-    regions        = "China (The First People's Hospital of Changzhou / The Third Affiliated Hospital of Soochow University)",
-    notes          = paste(
+    disease_state = "Adults undergoing primary elective video-assisted thoracoscopic lung resection (lobectomy), ASA physical status I-III, without chronic pain, cognitive dysfunction or overt organ dysfunction",
+    dose_range = "Single 3 mg/kg ropivacaine superficial serratus anterior plane block (150-243 mg observed) as a 0.25 %, 0.5 % or 0.75 % w/v solution",
+    regions = "China (The First People's Hospital of Changzhou / The Third Affiliated Hospital of Soochow University)",
+    notes = paste(
       "43 patients were enrolled between April and December 2023 and randomised by random-number",
       "table to 0.25 % (n = 12), 0.375 % (n = 2), 0.5 % (n = 14) and 0.75 % (n = 15) ropivacaine.",
       "388 arterial plasma concentrations from the 41 patients in the 0.25 / 0.5 / 0.75 % arms",

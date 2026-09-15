@@ -26,47 +26,47 @@ Abuhelwa_2015_itraconazole <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
     central_ohi = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FED = list(
-      description        = "Fed state at the time of itraconazole dose administration. 1 = fed (high-fat high-calorie breakfast eaten before dose); 0 = fasted (overnight fast of >= 10 h).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of itraconazole dose administration. 1 = fed (high-fat high-calorie breakfast eaten before dose); 0 = fasted (overnight fast of >= 10 h).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted state).",
-      notes              = "Per-dose-record indicator from the Abuhelwa 2015 crossover trials. Multiplicative effects on KTR (FEDKTR = -0.583, i.e. KTR_fed = 0.417 x KTR_fasted) and on relative bioavailability (FEDF = -0.269, i.e. F_fed = 0.731 x F_fasted), independent of formulation; see Abuhelwa 2015 Table 3 rows FEDKTR and FEDF.",
-      source_name        = "FED"
+      notes = "Per-dose-record indicator from the Abuhelwa 2015 crossover trials. Multiplicative effects on KTR (FEDKTR = -0.583, i.e. KTR_fed = 0.417 x KTR_fasted) and on relative bioavailability (FEDF = -0.269, i.e. F_fed = 0.731 x F_fasted), independent of formulation; see Abuhelwa 2015 Table 3 rows FEDKTR and FEDF.",
+      source_name = "FED"
     ),
     FORM_ITR_SUBA = list(
-      description        = "SUBA-itraconazole vs Sporanox capsule formulation indicator. 1 = SUBA-itraconazole (solid dispersion in a pH-dependent polymeric matrix); 0 = Sporanox capsule (innovator product, the structural reference with relative bioavailability fixed to 1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SUBA-itraconazole vs Sporanox capsule formulation indicator. 1 = SUBA-itraconazole (solid dispersion in a pH-dependent polymeric matrix); 0 = Sporanox capsule (innovator product, the structural reference with relative bioavailability fixed to 1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Sporanox capsule; relative bioavailability F = 1, FVAR variability scaling ETASCALE = 1).",
-      notes              = "Per-dose-record indicator from the Abuhelwa 2015 crossover trials (DRUG column in Appendix S1; 0 = Sporanox, 1 = SUBA-itraconazole). Multiplicative effect on relative bioavailability (FORMF = 0.729, i.e. F_SUBA = 1.729 x F_Sporanox = +73% relative bioavailability) and a separate multiplicative scaling of the FVAR random effect (ETASCALE = -0.213, i.e. F-variability for SUBA = 0.787 x F-variability for Sporanox) per Abuhelwa 2015 Table 3 rows FORMF and ETASCALE.",
-      source_name        = "DRUG"
+      notes = "Per-dose-record indicator from the Abuhelwa 2015 crossover trials (DRUG column in Appendix S1; 0 = Sporanox, 1 = SUBA-itraconazole). Multiplicative effect on relative bioavailability (FORMF = 0.729, i.e. F_SUBA = 1.729 x F_Sporanox = +73% relative bioavailability) and a separate multiplicative scaling of the FVAR random effect (ETASCALE = -0.213, i.e. F-variability for SUBA = 0.787 x F-variability for Sporanox) per Abuhelwa 2015 Table 3 rows FORMF and ETASCALE.",
+      source_name = "DRUG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 238L,
-    n_studies      = 7L,
-    age_range      = "18-60 years (US studies median 38 y; UK studies median 28 y; combined Abuhelwa 2015 Table 2)",
-    weight_range   = "49-108 kg (US studies 49-108 kg; UK studies 49.3-98.3 kg; combined Abuhelwa 2015 Table 2)",
+    species = "human",
+    n_subjects = 238L,
+    n_studies = 7L,
+    age_range = "18-60 years (US studies median 38 y; UK studies median 28 y; combined Abuhelwa 2015 Table 2)",
+    weight_range = "49-108 kg (US studies 49-108 kg; UK studies 49.3-98.3 kg; combined Abuhelwa 2015 Table 2)",
     sex_female_pct = 60.9,
     race_ethnicity = "Combined US + UK cohort: 76% White (182 of 238), 11% Black (25), 0.4% Asian (1), 13% Other (30) per Abuhelwa 2015 Table 2.",
-    disease_state  = "Healthy adult volunteers, non-tobacco-using, non-pregnant non-lactating, with no GI disease / malabsorption history and no CYP3A inhibitor or inducer exposure within 30 days of study entry.",
-    dose_range     = "Oral single doses of 50, 65, 100, or 200 mg itraconazole (SUBA-itraconazole capsule or Sporanox capsule) in fed and fasted crossover periods; multidose phase used 100 or 200 mg SUBA-itraconazole / 200 or 400 mg Sporanox daily for 15 days under fed conditions (the multidose-phase dose- and time-dependent CL and F mechanisms are not implemented in this single-dose extraction; see vignette Assumptions and deviations).",
-    regions        = "United States (5 trials, 154 subjects) and United Kingdom (2 trials, 84 subjects); Sporanox-source country (USA vs UK) is collinear with the study population indicator.",
-    notes          = "Pooled phase I crossover bioequivalence data from seven Mayne Pharma International trials (MPG009, HGN007, HGN008, 10850702, 10850703, 10850705, 10850706). The data set contained 15,097 itraconazole plasma concentrations and 9,868 hydroxy-itraconazole plasma concentrations; BLQ samples (~12.5% of itraconazole, ~17.5% of hydroxy-itraconazole) were excluded via the M1 method. Sample collection: 0-72 h after dose for most studies, with HGN008 and MPG009 extending to 96-120 h."
+    disease_state = "Healthy adult volunteers, non-tobacco-using, non-pregnant non-lactating, with no GI disease / malabsorption history and no CYP3A inhibitor or inducer exposure within 30 days of study entry.",
+    dose_range = "Oral single doses of 50, 65, 100, or 200 mg itraconazole (SUBA-itraconazole capsule or Sporanox capsule) in fed and fasted crossover periods; multidose phase used 100 or 200 mg SUBA-itraconazole / 200 or 400 mg Sporanox daily for 15 days under fed conditions (the multidose-phase dose- and time-dependent CL and F mechanisms are not implemented in this single-dose extraction; see vignette Assumptions and deviations).",
+    regions = "United States (5 trials, 154 subjects) and United Kingdom (2 trials, 84 subjects); Sporanox-source country (USA vs UK) is collinear with the study population indicator.",
+    notes = "Pooled phase I crossover bioequivalence data from seven Mayne Pharma International trials (MPG009, HGN007, HGN008, 10850702, 10850703, 10850705, 10850706). The data set contained 15,097 itraconazole plasma concentrations and 9,868 hydroxy-itraconazole plasma concentrations; BLQ samples (~12.5% of itraconazole, ~17.5% of hydroxy-itraconazole) were excluded via the M1 method. Sample collection: 0-72 h after dose for most studies, with HGN008 and MPG009 extending to 96-120 h."
   )
 
   ini({

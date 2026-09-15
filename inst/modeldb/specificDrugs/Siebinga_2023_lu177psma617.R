@@ -37,12 +37,17 @@ Siebinga_2023_lu177psma617 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood          = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    salivary_gland = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "administration site", verified = FALSE),
-    kidney         = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE),
-    liver          = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tumor          = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tumor", verified = FALSE),
-    other          = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE)
+    blood = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    salivary_gland = list(
+      analyte = "[177Lu]Lu-PSMA-617",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    kidney = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tumor = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tumor", verified = FALSE),
+    other = list(analyte = "[177Lu]Lu-PSMA-617", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(

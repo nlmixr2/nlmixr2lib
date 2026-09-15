@@ -34,11 +34,11 @@ Frederiksen_2023_brexpiprazole <- function() {
 
   covariateData <- list(
     FED = list(
-      description        = "Fed state at the time of dosing (1 = fed, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of dosing (1 = fed, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Frederiksen 2023 Table 2 reports two absorption rate constants,",
         "'Absorption rate constant fasted' = 1.02 /h (fixed) and",
         "'Absorption rate constant fed' = 0.535 /h (23.4 %RSE); the model",
@@ -55,14 +55,14 @@ Frederiksen_2023_brexpiprazole <- function() {
         "One of the 13 pooled studies (Table S1) was an 'AME, food effect'",
         "study in 24 healthy men at a single 2 mg dose."
       ),
-      source_name        = "food effect"
+      source_name = "food effect"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Applied to the DM-3411 central volume V6 as the linear-deviation",
         "form vc_dm3411 * (1 + e_bmi_vc_dm3411 * (BMI - 26)), the form",
         "documented for BMI in inst/references/covariate-columns.md.",
@@ -77,16 +77,16 @@ Frederiksen_2023_brexpiprazole <- function() {
         "covariate retained (forward inclusion OFV -19; retained in",
         "backward elimination). Time-fixed at baseline."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Table 1: median 76 kg, IQR 65-90, range 32-159 (n = 782).",
         "Screened in the stepwise covariate analysis (Methods,",
         "'Population pharmacokinetic modeling'); not retained."
@@ -94,55 +94,55 @@ Frederiksen_2023_brexpiprazole <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Table 1: median 170 cm, IQR 164-177, range 131-196 (n = 782).",
         "Screened; not retained."
       )
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Table 1: median 36 years, IQR 27-46, range 18-65 (n = 826).",
         "Screened; not retained."
       )
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Source column was 'gender'. Table 1: 295 of 826 female (35.7%).",
         "Screened; not retained."
       )
     ),
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault formula",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Table 1: median 119 mL/min, IQR 99-141, range 42-333 (n = 782);",
         "Table 1 footnote a. Screened; not retained."
       )
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "IU/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "IU/L",
+      type = "continuous",
+      notes = paste(
         "Reported as ALAT in Table 1: median 20 IU/L, IQR 15-28,",
         "range 5-107 (n = 791). Screened; not retained."
       )
     ),
     DOSE_BREX_MG = list(
       description = "Administered brexpiprazole dose",
-      units       = "mg",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg",
+      type = "continuous",
+      notes = paste(
         "Dose was screened as a covariate (Methods) to test for",
         "dose-dependent, i.e. non-linear, PK; not retained, so the final",
         "model is linear in dose across 0.15-12 mg."
@@ -152,44 +152,56 @@ Frederiksen_2023_brexpiprazole <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "Brexpiprazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "Brexpiprazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "Brexpiprazole", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "Brexpiprazole",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "Brexpiprazole", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "Brexpiprazole",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_dm3412 = list(
-      analyte = "DM-3412", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "DM-3412",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_dm3412 = list(
-      analyte = "DM-3412", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "DM-3412",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_dm3411 = list(
-      analyte = "DM-3411", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "DM-3411",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 826,
-    n_studies      = 13,
-    age_range      = "18-65 years",
-    age_median     = "36 years (IQR 27-46)",
-    weight_range   = "32-159 kg",
-    weight_median  = "76 kg (IQR 65-90)",
-    height_range   = "131-196 cm (median 170, IQR 164-177)",
-    bmi_range      = "16-57 kg/m^2 (median 26, IQR 23-30)",
+    species = "human",
+    n_subjects = 826,
+    n_studies = 13,
+    age_range = "18-65 years",
+    age_median = "36 years (IQR 27-46)",
+    weight_range = "32-159 kg",
+    weight_median = "76 kg (IQR 65-90)",
+    height_range = "131-196 cm (median 170, IQR 164-177)",
+    bmi_range = "16-57 kg/m^2 (median 26, IQR 23-30)",
     sex_female_pct = 35.7,
     race_ethnicity = c(White = 61.1, Black = 17.9, Asian = 19.5, Other = 1.5),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy subjects (179, 21.7%) and patients with",
       "schizophrenia (362, 43.8%), major depressive disorder",
       "(127, 15.4%), or attention deficit hyperactivity disorder",
@@ -198,14 +210,14 @@ Frederiksen_2023_brexpiprazole <- function() {
       "the analysis and concomitant CYP3A4 inducers and inhibitors were",
       "disallowed in all studies."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral brexpiprazole 0.15-12 mg, single dose (phase I ascending-dose",
       "and PET studies) and multiple dose (multiple-ascending-dose and",
       "phase II studies), as monotherapy (N = 541) or adjunctive treatment",
       "(N = 285); Table S1."
     ),
-    regions        = "United States, Europe, Japan, Korea",
-    genotype       = paste(
+    regions = "United States, Europe, Japan, Korea",
+    genotype = paste(
       "CYP2D6 genotyped in all studies (TaqMan, DNA sequencing, and",
       "gel-based assays). CYP2D6 predicted phenotype in the population PK",
       "set: ultra-rapid 15 (1.8%), normal 369 (44.7%), intermediate 215",
@@ -213,7 +225,7 @@ Frederiksen_2023_brexpiprazole <- function() {
       "NOT a covariate in the population PK model; it enters the paper",
       "only through the downstream metabolic-ratio regression."
     ),
-    notes          = paste(
+    notes = paste(
       "Nine phase I and four phase II studies (Table S1). Plasma sampling",
       "was rich (>20 samples/subject, N = 245), semi-sparse (8/subject,",
       "N = 314), or sparse (3-4/subject, N = 267). Brexpiprazole, DM-3411,",

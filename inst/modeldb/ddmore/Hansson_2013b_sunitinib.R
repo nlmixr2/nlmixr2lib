@@ -25,107 +25,107 @@ Hansson_2013b_sunitinib <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     skit_drug = list(analyte = "soluble KIT", units = "mg", specimen = "plasma", verified = FALSE),
-    skit_pla  = list(analyte = "soluble KIT", units = "mg", specimen = "plasma", verified = FALSE),
-    svegfr3   = list(analyte = "soluble VEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
-    tumor     = list(analyte = "tumour SLD", units = "mg", specimen = "tumor", verified = FALSE)
+    skit_pla = list(analyte = "soluble KIT", units = "mg", specimen = "plasma", verified = FALSE),
+    svegfr3 = list(analyte = "soluble VEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor = list(analyte = "tumour SLD", units = "mg", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013 GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles (4 weeks on / 2 weeks off in the Hansson 2013 GIST cohort) or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated) or 0 (placebo) at every record. The .mod feeds DOSE into AUC = DOS/CL in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during 4-week on-cycles and 0 mg during 2-week off-cycles.",
-      source_name        = "DOS"
+      notes = "DDMORE-bundle simulated dataset reports DOSE = 50 (treated) or 0 (placebo) at every record. The .mod feeds DOSE into AUC = DOS/CL in $PK at every event call, producing a per-cycle daily-AUC equivalent (mg*h/L). For typical-cohort vignette simulations the value is held at 50 mg during 4-week on-cycles and 0 mg during 2-week off-cycles.",
+      source_name = "DOS"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit. Per-subject, time-fixed.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The DDMORE-bundle simulated dataset carries CLI = 32.819 L/h for subject 1; this value (broadly consistent with the typical sunitinib CL reported by Houk et al. 2010) is used as the typical-value reference for the validation vignette's virtual cohort. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model.",
-      source_name        = "CL"
+      notes = "Required input. The DDMORE-bundle simulated dataset carries CLI = 32.819 L/h for subject 1; this value (broadly consistent with the typical sunitinib CL reported by Houk et al. 2010) is used as the typical-value reference for the validation vignette's virtual cohort. For a re-fit or new-population simulation the user must supply individual CL drawn from a sunitinib popPK model.",
+      source_name = "CL"
     ),
     TUMSZ = list(
-      description        = "Observed baseline tumor size (sum of longest diameters of target lesions, mm) at study entry; per-subject, time-fixed. Used both as the deterministic component of the tumor ODE initial condition (`tumor(0) = TUMSZ * (1 + etaibase * propSd_tumor)`, the IPP-style proportional baseline-residual construction of Dansirikul 2008) and as the typical-value scale for the proportional residual error.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Observed baseline tumor size (sum of longest diameters of target lesions, mm) at study entry; per-subject, time-fixed. Used both as the deterministic component of the tumor ODE initial condition (`tumor(0) = TUMSZ * (1 + etaibase * propSd_tumor)`, the IPP-style proportional baseline-residual construction of Dansirikul 2008) and as the typical-value scale for the proportional residual error.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The .mod reads OBASE dynamically from DV at TIME=0, FLAG=4 (`IF(TIME.EQ.0.AND.FLAG.EQ.4) THEN OBASE = DV`). nlmixr2 / rxode2 cannot replicate the in-record assignment idiom, so the observed baseline is supplied as a per-subject covariate column instead. Median baseline SLD in the cohort: 194 mm (study 1004), 108 mm (study 1047), 166 mm (study 1045), 255 mm (study 013) per Hansson 2013 Table 1.",
-      source_name        = "(read from DV at TIME=0/FLAG=4 via .mod IF block)"
+      notes = "Required input. The .mod reads OBASE dynamically from DV at TIME=0, FLAG=4 (`IF(TIME.EQ.0.AND.FLAG.EQ.4) THEN OBASE = DV`). nlmixr2 / rxode2 cannot replicate the in-record assignment idiom, so the observed baseline is supplied as a per-subject covariate column instead. Median baseline SLD in the cohort: 194 mm (study 1004), 108 mm (study 1047), 166 mm (study 1045), 255 mm (study 013) per Hansson 2013 Table 1.",
+      source_name = "(read from DV at TIME=0/FLAG=4 via .mod IF block)"
     ),
     BAS_SKIT = list(
-      description        = "Individual posthoc baseline sKIT (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; used as the initial condition for both the treated and placebo sKIT compartments.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sKIT (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; used as the initial condition for both the treated and placebo sKIT compartments.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical sKIT baseline of 39200 pg/mL (Table 2). For a typical-value simulation set every subject to that value; for an IIV simulation either (a) simulate from `Hansson_2013a_sunitinib` and take the per-subject posthoc baseline, or (b) draw from a log-normal centred at 39200 pg/mL with the upstream IIV (~50% CV).",
-      source_name        = "SBAS"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical sKIT baseline of 39200 pg/mL (Table 2). For a typical-value simulation set every subject to that value; for an IIV simulation either (a) simulate from `Hansson_2013a_sunitinib` and take the per-subject posthoc baseline, or (b) draw from a log-normal centred at 39200 pg/mL with the upstream IIV (~50% CV).",
+      source_name = "SBAS"
     ),
     MRT_SKIT = list(
-      description        = "Individual posthoc mean residence time of sKIT (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears as kout_skit = 1 / MRT_SKIT inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sKIT (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears as kout_skit = 1 / MRT_SKIT inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical sKIT MRT of 101 days = 2424 h (Table 2; ~2430 h matching Hansson_2013a_sunitinib's typical value). Same population-input strategy as BAS_SKIT.",
-      source_name        = "SMRT"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical sKIT MRT of 101 days = 2424 h (Table 2; ~2430 h matching Hansson_2013a_sunitinib's typical value). Same population-input strategy as BAS_SKIT.",
+      source_name = "SMRT"
     ),
     EC50_SKIT = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sKIT (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the drug-effect term eff_skit = auc / (EC50_SKIT + auc).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sKIT (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the drug-effect term eff_skit = auc / (EC50_SKIT + auc).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2). Same population-input strategy as BAS_SKIT.",
-      source_name        = "SEC5"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2). Same population-input strategy as BAS_SKIT.",
+      source_name = "SEC5"
     ),
     SLOPE_SKIT = list(
-      description        = "Individual posthoc linear disease-progression slope on the placebo / untreated sKIT compartment (1/h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the placebo-arm Kin expression dps = BAS_SKIT * (1 + SLOPE_SKIT * t).",
-      units              = "1/h",
-      type               = "continuous",
+      description = "Individual posthoc linear disease-progression slope on the placebo / untreated sKIT compartment (1/h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the placebo-arm Kin expression dps = BAS_SKIT * (1 + SLOPE_SKIT * t).",
+      units = "1/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical disease-progression slope of 0.0261 / month shared between VEGF and sKIT (Table 2); converted to 1/h that is approximately 3.5e-5 / h, matching Hansson_2013a_sunitinib's typical value. Same population-input strategy as BAS_SKIT.",
-      source_name        = "SLO"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical disease-progression slope of 0.0261 / month shared between VEGF and sKIT (Table 2); converted to 1/h that is approximately 3.5e-5 / h, matching Hansson_2013a_sunitinib's typical value. Same population-input strategy as BAS_SKIT.",
+      source_name = "SLO"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; used as the initial condition for the svegfr3 state and as the denominator in the relative-change driver bm_svegfr3 = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; used as the initial condition for the svegfr3 state and as the denominator in the relative-change driver bm_svegfr3 = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3.",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical sVEGFR-3 baseline of 63900 pg/mL (Table 2). Same population-input strategy as BAS_SKIT.",
-      source_name        = "BAS3"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical sVEGFR-3 baseline of 63900 pg/mL (Table 2). Same population-input strategy as BAS_SKIT.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears as kout_svegfr3 = 1 / MRT_SVEGFR3 inside model().",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears as kout_svegfr3 = 1 / MRT_SVEGFR3 inside model().",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical sVEGFR-3 MRT of 16.7 days = 401 h (Table 2). Same population-input strategy as BAS_SKIT.",
-      source_name        = "MRT3"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical sVEGFR-3 MRT of 16.7 days = 401 h (Table 2). Same population-input strategy as BAS_SKIT.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the drug-effect term eff_svegfr3 = auc / (EC50_SVEGFR3 + auc).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197); per-subject, time-fixed; appears in the drug-effect term eff_svegfr3 = auc / (EC50_SVEGFR3 + auc).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. The Hansson 2013 e84 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2). Same population-input strategy as BAS_SKIT.",
-      source_name        = "EC53"
+      notes = "Required input. The Hansson 2013 e84 paper reports a typical (common across the four biomarkers) IC50 of 1.0 mg*h/L (Table 2). Same population-input strategy as BAS_SKIT.",
+      source_name = "EC53"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 303L,
-    n_studies      = 4L,
-    age_range      = "adults with imatinib-resistant GIST (Hansson 2013 e84 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the on-disk Methods section of the trimmed PDF)",
-    weight_range   = "not reported in the on-disk paper trimmed text",
+    species = "human",
+    n_subjects = 303L,
+    n_studies = 4L,
+    age_range = "adults with imatinib-resistant GIST (Hansson 2013 e84 Table 1 lists baseline tumor size by study but does not break out age / weight / sex / race in the on-disk Methods section of the trimmed PDF)",
+    weight_range = "not reported in the on-disk paper trimmed text",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (NCT00075218 / study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (NCT00428220 / study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
-    dose_range     = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
-    regions        = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
-    biomarkers     = "Tumor size endpoint: sum of longest tumor diameters (SLD, mm). Baseline (median, range): 194 (35-822) mm in study 1004; 108 (29-191) mm in study 1047; 166 (31-644) mm in study 1045; 255 (55-687) mm in study 013 (Hansson 2013 e84 Table 1). Two soluble-biomarker time-courses driven from the upstream Hansson 2013a fit: sKIT and sVEGFR-3.",
-    notes          = "n_subjects = 303 reported in Hansson 2013 e84 Methods (`pooled four clinical studies, comprising a total of 303 patients with imatinib-resistant GIST`) and confirmed by the .lst header (`TOT. NO. OF INDIVIDUALS: 303`). The .lst also reports `TOT. NO. OF OBS RECS: 973` (tumor SLD observations only; FLAG=4 records). Detailed baseline demographics (age, weight, sex, race) at the cohort level are not in the trimmed paper text; populating those keys requires reading the original paper's untrimmed PDF or its supplement."
+    disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST). Pooled four sunitinib studies: Demetri 2006 (NCT00075218 / study 1004; placebo-controlled phase III; 202 active + 47 placebo), George 2009 (NCT00428220 / study 1047; phase II continuous-dosing 37.5 mg QD; n=13 in this analysis subset), Shirao 2010 (study 1045; Japanese phase I/II; 25-75 mg QD on a 4/2 schedule; n=36), Maki 2005 (study 013; phase I/II 25-75 mg QD on a 2/1 or 2/2 schedule; n=52).",
+    dose_range = "Sunitinib 25-75 mg PO QD on a 4/2, 2/2, 2/1 (weeks on / weeks off) or continuous treatment schedule. The largest cohort (study 1004) used 50 mg QD on a 4/2 schedule. Placebo arm: no sunitinib (study 1004 only).",
+    regions = "Phase III multinational (study 1004); Japanese phase I/II (study 1045); other studies regions not stated in the trimmed paper text.",
+    biomarkers = "Tumor size endpoint: sum of longest tumor diameters (SLD, mm). Baseline (median, range): 194 (35-822) mm in study 1004; 108 (29-191) mm in study 1047; 166 (31-644) mm in study 1045; 255 (55-687) mm in study 013 (Hansson 2013 e84 Table 1). Two soluble-biomarker time-courses driven from the upstream Hansson 2013a fit: sKIT and sVEGFR-3.",
+    notes = "n_subjects = 303 reported in Hansson 2013 e84 Methods (`pooled four clinical studies, comprising a total of 303 patients with imatinib-resistant GIST`) and confirmed by the .lst header (`TOT. NO. OF INDIVIDUALS: 303`). The .lst also reports `TOT. NO. OF OBS RECS: 973` (tumor SLD observations only; FLAG=4 records). Detailed baseline demographics (age, weight, sex, race) at the cohort level are not in the trimmed paper text; populating those keys requires reading the original paper's untrimmed PDF or its supplement."
   )
 
   ini({

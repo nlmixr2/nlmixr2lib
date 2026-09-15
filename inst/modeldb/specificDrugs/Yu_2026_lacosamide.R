@@ -13,11 +13,11 @@ Yu_2026_lacosamide <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only the apparent volume of distribution, which Yu 2026 fixed at",
         "0.6 L/kg (Table 2), so V/F = 0.6 * WT and the weight exponent on V/F is",
         "structurally 1 rather than an estimated allometric exponent. Body weight",
@@ -27,14 +27,14 @@ Yu_2026_lacosamide <- function() {
         "(Table 1).",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Yu 2026 Results (equation gloss following the CL/F equation) states",
         "'SEX is 1 for females and 0 for males', so the paper's SEX column maps",
         "directly onto the canonical SEXF with no value inversion. Females carry",
@@ -44,14 +44,14 @@ Yu_2026_lacosamide <- function() {
         "(Table 1).",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min, NOT BSA-normalized to",
         "mL/min/1.73 m^2 (Methods 'Patient inclusion': 'Creatinine clearance (CRCL)",
         "was calculated according to the Cockcroft-Gault equation'). Supply raw",
@@ -66,14 +66,14 @@ Yu_2026_lacosamide <- function() {
         "observation level. Baseline range 25.2-308 mL/min (Table 1).",
         sep = " "
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is receiving concomitant carbamazepine, an enzyme inducer that",
         "raises lacosamide apparent clearance 1.48-fold (Table 2), 0 = otherwise.",
         "28 of 180 subjects (15.6 percent) received carbamazepine (Table 1).",
@@ -89,29 +89,29 @@ Yu_2026_lacosamide <- function() {
         "starts or stops within the observation window.",
         sep = " "
       ),
-      source_name        = "CBZ"
+      source_name = "CBZ"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "lacosamide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lacosamide", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lacosamide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 180,
-    n_observations   = 294,
-    n_studies        = 1,
-    age_range        = "18-82.8 years",
-    age_median       = "32.9 years (IQR 24.9-51.2)",
-    weight_range     = "36.0-130 kg",
-    weight_median    = "65 kg (IQR 55.3-75.0)",
-    sex_female_pct   = 56.1,
-    disease_state    = "epilepsy",
-    dose_range       = "50-225 mg/day oral (median 100 mg/day, IQR 100-150)",
-    renal_function   = "creatinine clearance median 115 mL/min (IQR 95.5-137), range 25.2-308 mL/min (Cockcroft-Gault)",
-    co_medication    = paste(
+    species = "human",
+    n_subjects = 180,
+    n_observations = 294,
+    n_studies = 1,
+    age_range = "18-82.8 years",
+    age_median = "32.9 years (IQR 24.9-51.2)",
+    weight_range = "36.0-130 kg",
+    weight_median = "65 kg (IQR 55.3-75.0)",
+    sex_female_pct = 56.1,
+    disease_state = "epilepsy",
+    dose_range = "50-225 mg/day oral (median 100 mg/day, IQR 100-150)",
+    renal_function = "creatinine clearance median 115 mL/min (IQR 95.5-137), range 25.2-308 mL/min (Cockcroft-Gault)",
+    co_medication = paste(
       "Concomitant antiseizure medications (Table 1, percent of 180 subjects):",
       "levetiracetam 44.4, oxcarbazepine 28.3, valproic acid 26.7,",
       "lamotrigine 23.3, carbamazepine 15.6, perampanel 9.4, clonazepam 5.0,",
@@ -119,8 +119,8 @@ Yu_2026_lacosamide <- function() {
       "was retained as a covariate in the final model.",
       sep = " "
     ),
-    regions          = "China (single centre: Second Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
-    notes            = paste(
+    regions = "China (single centre: Second Affiliated Hospital, Zhejiang University School of Medicine, Hangzhou)",
+    notes = paste(
       "Retrospective therapeutic drug monitoring cohort of inpatients treated",
       "April 2022 to February 2024 (Methods 'Patient inclusion'); baseline",
       "demographics in Table 1. ALL 294 records were trough concentrations",

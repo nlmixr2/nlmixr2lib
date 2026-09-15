@@ -8,38 +8,38 @@ Hu_2017_peginterferon_beta_1a <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "peginterferon beta 1a", units = "ug", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "peginterferon beta 1a", units = "ug", specimen = "administration site", verified = FALSE),
     central = list(analyte = "peginterferon beta 1a", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Used with a power form on clearance ((BMI / 23.71)^e_bmi_cl) and an exponential-deviation form on central volume (exp(e_bmi_vc * (BMI - 23.71))). Reference value 23.71 kg/m^2 is the typical BMI used in Hu 2017 equations 12-13.",
-      source_name        = "BMI"
+      notes = "Time-fixed at baseline. Used with a power form on clearance ((BMI / 23.71)^e_bmi_cl) and an exponential-deviation form on central volume (exp(e_bmi_vc * (BMI - 23.71))). Reference value 23.71 kg/m^2 is the typical BMI used in Hu 2017 equations 12-13.",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 809,
-    n_studies      = 1,
-    age_range      = "20.5-54.7 years (2.5th-97.5th percentile; Table 1)",
-    age_median     = "36.6 years",
-    weight_range   = "46.0-103 kg (2.5th-97.5th percentile; Table 1)",
-    weight_median  = "65.0 kg",
-    bmi_range      = "17.4-35.5 kg/m^2 (2.5th-97.5th percentile; Table 1)",
-    bmi_median     = "23.3 kg/m^2",
+    species = "human",
+    n_subjects = 809,
+    n_studies = 1,
+    age_range = "20.5-54.7 years (2.5th-97.5th percentile; Table 1)",
+    age_median = "36.6 years",
+    weight_range = "46.0-103 kg (2.5th-97.5th percentile; Table 1)",
+    weight_median = "65.0 kg",
+    bmi_range = "17.4-35.5 kg/m^2 (2.5th-97.5th percentile; Table 1)",
+    bmi_median = "23.3 kg/m^2",
     sex_female_pct = 70.5,
     race_ethnicity = c(White = 82.6, Asian = 11.9, Other = 5.6),
-    disease_state  = "Relapsing multiple sclerosis (ADVANCE phase 3 trial).",
-    dose_range     = "125 ug SC every 2 weeks or every 4 weeks",
-    regions        = "26 countries, 183 sites (multicenter)",
-    trial          = "NCT00906399; ATTAIN extension NCT00910689 referenced in Hu 2017",
-    notes          = "Hu 2017 Table 1 final PK population: 239 males and 570 females, predominantly White (n=668) and Asian (n=96). 1512 patients were randomized 1:1:1 to placebo, peginterferon beta-1a 125 ug SC Q2W, or peginterferon beta-1a 125 ug SC Q4W in ADVANCE; the final PK analysis excluded BLQ data (62%), concentrations beyond 10 days postdose due to missing dose information (4%), three sparse PK subjects with positive baseline measurement, one outlier concentration (14700 pg/mL), and concentrations with positive anti-IFN antibodies (0.8%). Intensive PK sampling was performed in 25 subjects (12 on Q2W, 13 on Q4W); the remainder had sparse sampling."
+    disease_state = "Relapsing multiple sclerosis (ADVANCE phase 3 trial).",
+    dose_range = "125 ug SC every 2 weeks or every 4 weeks",
+    regions = "26 countries, 183 sites (multicenter)",
+    trial = "NCT00906399; ATTAIN extension NCT00910689 referenced in Hu 2017",
+    notes = "Hu 2017 Table 1 final PK population: 239 males and 570 females, predominantly White (n=668) and Asian (n=96). 1512 patients were randomized 1:1:1 to placebo, peginterferon beta-1a 125 ug SC Q2W, or peginterferon beta-1a 125 ug SC Q4W in ADVANCE; the final PK analysis excluded BLQ data (62%), concentrations beyond 10 days postdose due to missing dose information (4%), three sparse PK subjects with positive baseline measurement, one outlier concentration (14700 pg/mL), and concentrations with positive anti-IFN antibodies (0.8%). Intensive PK sampling was performed in 25 subjects (12 on Q2W, 13 on Q4W); the remainder had sparse sampling."
   )
 
   ini({

@@ -21,38 +21,43 @@ Patel_2025_radamts13_rtte_ldh <- function() {
   paper_specific_etas <- c("etallambda0")
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the drug input is the CAV data covariate, in IU/mL)",
     concentration = "probability (the model output `sur` is the elevated-LDH-event-free survival probability, not a drug concentration; the CAV covariate is in IU/mL)"
   )
 
   compartmentData <- list(
-    cumhaz = list(analyte = "elevated LDH event hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "elevated LDH event hazard",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Average plasma ADAMTS13 activity driving the instantaneous elevated-LDH hazard (IU/mL).",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Average plasma ADAMTS13 activity driving the instantaneous elevated-LDH hazard (IU/mL).",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required input. Per-record, and may be time-varying (paper Methods, 'Longitudinal repeated time-to-event exposure-response modeling'), but the paper's own reported simulations hold it constant at the treatment-arm median Cave: with a constant CAV this model reproduces all eight published Month-6 and Month-12 event-free probabilities in Table S8b to within 0.0008, which is how the validation vignette gates it. 1 IU/mL = 100% of normal ADAMTS13 activity. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here. Set to 0 for an untreated period, which collapses the hazard to the baseline lambda0. Table S8a median Cave values used for the published simulations: 0.0291 / 0.0582 IU/mL for PBT Q2W / Q1W and 0.192 / 0.384 IU/mL for rADAMTS13 Q2W / Q1W.",
-      source_name        = "Cave"
+      notes = "Required input. Per-record, and may be time-varying (paper Methods, 'Longitudinal repeated time-to-event exposure-response modeling'), but the paper's own reported simulations hold it constant at the treatment-arm median Cave: with a constant CAV this model reproduces all eight published Month-6 and Month-12 event-free probabilities in Table S8b to within 0.0008, which is how the validation vignette gates it. 1 IU/mL = 100% of normal ADAMTS13 activity. The companion PopPK model modellib('Patel_2025_radamts13') returns Cc in IU/L, so a solve of that model must be divided by 1000 before it is used here. Set to 0 for an untreated period, which collapses the hazard to the baseline lambda0. Table S8a median Cave values used for the published simulations: 0.0291 / 0.0582 IU/mL for PBT Q2W / Q1W and 0.192 / 0.384 IU/mL for rADAMTS13 Q2W / Q1W.",
+      source_name = "Cave"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 43L,
-    n_studies      = 1L,
-    age_range      = "All ages.",
-    weight_range   = "Not reported separately for the RTTE set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
+    species = "human",
+    n_subjects = 43L,
+    n_studies = 1L,
+    age_range = "All ages.",
+    weight_range = "Not reported separately for the RTTE set; the parent PK analysis set spans 18.3-130.0 kg (Table 2).",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported separately for the RTTE set.",
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: elevated LDH, defined as LDH raised to more than 1.5 times the baseline value or more than 1.5 times the upper limit of normal, used as a marker of microangiopathic hemolytic anemia (paper Methods, 'Exposure-response analyses').",
-    dose_range     = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
-    regions        = "Multinational phase III crossover study NCT03393975.",
-    notes          = "Same cohort and structure as modellib('Patel_2025_radamts13_rtte_thrombocytopenia'); only the endpoint and the fitted values differ. As for that model, n_subjects = 43 is inferred from Figure 1 footnote a (two patients in the RTTE analysis were not part of the 41-patient count cohort) rather than directly printed. Baseline LDH in the parent PK analysis set was a median of 178 U/L (range 106-1,030) (Table 2)."
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP). Endpoint: elevated LDH, defined as LDH raised to more than 1.5 times the baseline value or more than 1.5 times the upper limit of normal, used as a marker of microangiopathic hemolytic anemia (paper Methods, 'Exposure-response analyses').",
+    dose_range = "rADAMTS13 40 IU/kg IV Q1W or Q2W; PBT approximately 10 IU/kg IV.",
+    regions = "Multinational phase III crossover study NCT03393975.",
+    notes = "Same cohort and structure as modellib('Patel_2025_radamts13_rtte_thrombocytopenia'); only the endpoint and the fitted values differ. As for that model, n_subjects = 43 is inferred from Figure 1 footnote a (two patients in the RTTE analysis were not part of the 41-patient count cohort) rather than directly printed. Baseline LDH in the parent PK analysis set was a median of 178 U/L (range 106-1,030) (Table 2)."
   )
 
   ini({

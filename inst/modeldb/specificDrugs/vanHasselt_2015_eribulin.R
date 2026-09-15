@@ -10,8 +10,8 @@ vanHasselt_2015_eribulin <- function() {
   )
   vignette <- "vanHasselt_2015_eribulin"
   units <- list(
-    time          = "day",
-    dosing        = "ng*h/mL (predicted per-dose eribulin AUC, supplied as the amt for each dose event into compartment depot_kpd via the K-PD framework; the upstream eribulin popPK model -- Majid 2014 J Clin Pharmacol 54:1134; van Hasselt 2013 Br J Clin Pharmacol 76:412 -- is not encoded here)",
+    time = "day",
+    dosing = "ng*h/mL (predicted per-dose eribulin AUC, supplied as the amt for each dose event into compartment depot_kpd via the K-PD framework; the upstream eribulin popPK model -- Majid 2014 J Clin Pharmacol 54:1134; van Hasselt 2013 Br J Clin Pharmacol 76:412 -- is not encoded here)",
     concentration = "ng/mL (serum PSA)"
   )
 
@@ -20,41 +20,46 @@ vanHasselt_2015_eribulin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_kpd = list(analyte = "eribulin mesilate", units = NA_character_, specimen = "administration site", verified = FALSE),
-    PSA       = list(analyte = "prostate-specific antigen (PSA)", units = NA_character_, specimen = "serum", verified = FALSE)
+    depot_kpd = list(
+      analyte = "eribulin mesilate",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    PSA = list(analyte = "prostate-specific antigen (PSA)", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     PRIOR_TAXANE = list(
-      description        = "Binary indicator of prior taxane chemotherapy at study entry (1 = received any prior taxane regimen, 0 = taxane-naive).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator of prior taxane chemotherapy at study entry (1 = received any prior taxane regimen, 0 = taxane-naive).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (taxane-naive)",
-      notes              = "van Hasselt 2015 Methods 'Clinical study': 108 CRPC patients, 50 prior-docetaxel and 58 taxane-naive (paper notation PTAX = 1/0). Multiplies baseline PSA0 as psa0 = exp(lpsa0 + etalpsa0) * e_prior_taxane_psa0^PRIOR_TAXANE, encoding the Table 2 footnote 'Individual parameters were defined as: ... PSA0 = hPSA0 * hPSA0-PTAX * exp(gPSA0)'. Time-invariant within a subject (treatment history at study entry).",
-      source_name        = "PTAX"
+      notes = "van Hasselt 2015 Methods 'Clinical study': 108 CRPC patients, 50 prior-docetaxel and 58 taxane-naive (paper notation PTAX = 1/0). Multiplies baseline PSA0 as psa0 = exp(lpsa0 + etalpsa0) * e_prior_taxane_psa0^PRIOR_TAXANE, encoding the Table 2 footnote 'Individual parameters were defined as: ... PSA0 = hPSA0 * hPSA0-PTAX * exp(gPSA0)'. Time-invariant within a subject (treatment history at study entry).",
+      source_name = "PTAX"
     ),
     PRIOR_TAXANE_DAYS = list(
-      description        = "Cumulative number of days of prior taxane treatment at study entry (0 for taxane-naive patients).",
-      units              = "days",
-      type               = "continuous",
+      description = "Cumulative number of days of prior taxane treatment at study entry (0 for taxane-naive patients).",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "van Hasselt 2015 Methods 'Covariates model development': normalised by the population median 720 days. Enters KD0 as a power covariate kd0 = exp(lkd0 + etalkd0) * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0 per the paper's Eq. 4 (Pg = hP * (1 + NTRT_i / 720)^h_NTRT). For patients with PRIOR_TAXANE = 0 (taxane-naive), PRIOR_TAXANE_DAYS = 0 by construction and the multiplier (1 + 0/720)^theta = 1 collapses to no covariate effect on KD0. Time-invariant within a subject.",
-      source_name        = "NTRT"
+      notes = "van Hasselt 2015 Methods 'Covariates model development': normalised by the population median 720 days. Enters KD0 as a power covariate kd0 = exp(lkd0 + etalkd0) * (1 + PRIOR_TAXANE_DAYS / 720)^e_prior_taxane_days_kd0 per the paper's Eq. 4 (Pg = hP * (1 + NTRT_i / 720)^h_NTRT). For patients with PRIOR_TAXANE = 0 (taxane-naive), PRIOR_TAXANE_DAYS = 0 by construction and the multiplier (1 + 0/720)^theta = 1 collapses to no covariate effect on KD0. Time-invariant within a subject.",
+      source_name = "NTRT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 108L,
-    n_studies       = 1L,
-    age_range       = "adult metastatic CRPC patients (median ages by stratum reported in Supporting Table S1 of van Hasselt 2015; specific range not on disk in the main paper)",
-    weight_range    = "not reported in the main paper text on disk",
-    sex_female_pct  = 0,
-    race_ethnicity  = "not reported in the main paper text on disk",
-    disease_state   = "Metastatic castration-resistant prostate cancer (CRPC). Phase II trial of eribulin mesilate (E7389), de Bono et al. Ann Oncol 2012;23:1241; van Hasselt 2015 reference 33. Subset stratification: 50 patients with prior docetaxel/taxane therapy, 58 taxane-naive.",
-    dose_range      = "eribulin mesilate IV (per de Bono 2012 phase II protocol); per-dose AUC is provided as the amt input to the K-PD depot_kpd compartment in this model, not the mg dose itself. The upstream eribulin popPK model used to predict individual AUC (3-compartment linear elimination with albumin / alkaline phosphatase / total bilirubin on CL, Majid 2014 J Clin Pharmacol 54:1134-1143 and van Hasselt 2013 Br J Clin Pharmacol 76:412-424) is referenced but not encoded here.",
-    regions         = "not reported in the main paper text on disk",
-    notes           = "108 metastatic CRPC patients from a single Phase II trial of eribulin mesilate (de Bono et al. 2012). PSA-time profiles analysed with NONMEM 7.2 FOCE; survival analysed separately in R survreg. The PD model uses a K-PD approach where the predicted eribulin AUC per dose (from the external popPK model) drives a transient drug-effect compartment. PK data were not available for this study (van Hasselt 2015 Methods 'Pharmacokinetic model')."
+    species = "human",
+    n_subjects = 108L,
+    n_studies = 1L,
+    age_range = "adult metastatic CRPC patients (median ages by stratum reported in Supporting Table S1 of van Hasselt 2015; specific range not on disk in the main paper)",
+    weight_range = "not reported in the main paper text on disk",
+    sex_female_pct = 0,
+    race_ethnicity = "not reported in the main paper text on disk",
+    disease_state = "Metastatic castration-resistant prostate cancer (CRPC). Phase II trial of eribulin mesilate (E7389), de Bono et al. Ann Oncol 2012;23:1241; van Hasselt 2015 reference 33. Subset stratification: 50 patients with prior docetaxel/taxane therapy, 58 taxane-naive.",
+    dose_range = "eribulin mesilate IV (per de Bono 2012 phase II protocol); per-dose AUC is provided as the amt input to the K-PD depot_kpd compartment in this model, not the mg dose itself. The upstream eribulin popPK model used to predict individual AUC (3-compartment linear elimination with albumin / alkaline phosphatase / total bilirubin on CL, Majid 2014 J Clin Pharmacol 54:1134-1143 and van Hasselt 2013 Br J Clin Pharmacol 76:412-424) is referenced but not encoded here.",
+    regions = "not reported in the main paper text on disk",
+    notes = "108 metastatic CRPC patients from a single Phase II trial of eribulin mesilate (de Bono et al. 2012). PSA-time profiles analysed with NONMEM 7.2 FOCE; survival analysed separately in R survreg. The PD model uses a K-PD approach where the predicted eribulin AUC per dose (from the external popPK model) drives a transient drug-effect compartment. PK data were not available for this study (van Hasselt 2015 Methods 'Pharmacokinetic model')."
   )
 
   ini({

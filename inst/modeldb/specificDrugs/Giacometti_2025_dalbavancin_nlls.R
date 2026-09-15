@@ -30,7 +30,7 @@ Giacometti_2025_dalbavancin_nlls <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Giacometti 2025 Figure 2 is the schematic.
   compartmentData <- list(
-    central     = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -45,58 +45,58 @@ Giacometti_2025_dalbavancin_nlls <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.2, Appendix B). Table 1: range 18-92 y, mean 64 +/- 16 y."
+      units = "years",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.2, Appendix B). Table 1: range 18-92 y, mean 64 +/- 16 y."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.2, Appendix B). Table 1: range 145-190 cm, mean 171 +/- 9 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.2, Appendix B). Table 1: range 145-190 cm, mean 171 +/- 9 cm."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.2, Appendix B), so this model applies NO allometric scaling. Table 1: range 40-140 kg, mean 77 +/- 16 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.2, Appendix B), so this model applies NO allometric scaling. Table 1: range 40-140 kg, mean 77 +/- 16 kg."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened and not retained (Methods 2.2, Appendix B). Methods 2.1: 145 males and 73 females of 218 patients (33.5% female)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened and not retained (Methods 2.2, Appendix B). Methods 2.1: 145 males and 73 females of 218 patients (33.5% female)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened and not retained (Methods 2.2, Appendix B). Table 1 reports it in SI units as 'Creatine conc. (umol/L)', range 19-411, mean 94 +/- 48; creatinINE is meant (94 umol/L = 1.06 mg/dL). No eGFR or creatinine clearance is derived anywhere in the paper."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened and not retained (Methods 2.2, Appendix B). Table 1 reports it in SI units as 'Creatine conc. (umol/L)', range 19-411, mean 94 +/- 48; creatinINE is meant (94 umol/L = 1.06 mg/dL). No eGFR or creatinine clearance is derived anywhere in the paper."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 218L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 218L,
+    n_studies = 1L,
     n_observations = "669 dalbavancin plasma concentration measurements over 703 recorded administrations (Methods 2.1)",
-    age_range      = "18-92 years",
-    age_mean       = "64 +/- 16 years (Table 1)",
-    height_range   = "145-190 cm (mean 171 +/- 9 cm, Table 1)",
-    weight_range   = "40-140 kg",
-    weight_mean    = "77 +/- 16 kg (Table 1)",
+    age_range = "18-92 years",
+    age_mean = "64 +/- 16 years (Table 1)",
+    height_range = "145-190 cm (mean 171 +/- 9 cm, Table 1)",
+    weight_range = "40-140 kg",
+    weight_mean = "77 +/- 16 kg (Table 1)",
     sex_female_pct = 33.5,
     race_ethnicity = "Not reported; single-centre Italian cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults receiving dalbavancin under therapeutic drug monitoring for skin and soft tissue",
       "infections and, as a second-line agent, for staphylococcal bone and joint infections,",
       "vascular prosthetic joint infections and endocarditis (Methods 2.1). The paper does not",
       "tabulate the per-infection-type counts."
     ),
     renal_function = "Reported only as serum creatinine: range 19-411 umol/L, mean 94 +/- 48 umol/L (Table 1). No renal covariate is carried by the model.",
-    dose_range     = "350-1500 mg intravenously, 703 administrations across the 218 patients (Methods 2.1). The paper does not report the dosing intervals or the infusion duration.",
-    regions        = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
-    notes          = paste(
+    dose_range = "350-1500 mg intravenously, 703 administrations across the 218 patients (Methods 2.1). The paper does not report the dosing intervals or the infusion duration.",
+    regions = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
+    notes = paste(
       "Same retrospective single-centre therapeutic-drug-monitoring cohort as the NLME sibling",
       "modellib('Giacometti_2025_dalbavancin_nlme'), April 2021 to December 2024 (Ethics Committee",
       "897/2021/Oss/AOUBo). ESTIMATION IS NAIVE-POOLED NONLINEAR LEAST SQUARES, not a mixed-effects",

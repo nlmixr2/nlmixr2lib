@@ -8,19 +8,19 @@ Proctor_2026_durvalumab_poppk <- function() {
   # biological matrix. verified = TRUE against Proctor 2026 Table S3, whose
   # footnote defines Vc as the central and Vp as the peripheral volume.
   compartmentData <- list(
-    central     = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "durvalumab", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with advanced solid tumours receiving durvalumab monotherapy.",
-    dose_range     = "Simulated at 10 mg/kg IV every 2 weeks for 60 weeks in Proctor 2026 Methods 2.2.",
-    notes          = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with advanced solid tumours receiving durvalumab monotherapy.",
+    dose_range = "Simulated at 10 mg/kg IV every 2 weeks for 60 weeks in Proctor 2026 Methods 2.2.",
+    notes = paste(
       "PROVENANCE: this is a SECONDARY transcription. Proctor 2026 Table S3 lists",
       "the structural parameters for ten immune-checkpoint inhibitors taken from",
       "their original popPK publications; the durvalumab row is from Baverel 2018,",
@@ -33,7 +33,7 @@ Proctor_2026_durvalumab_poppk <- function() {
       "non-parametric confidence intervals that Proctor 2026 bootstrapped in",
       "Figure 5."
     ),
-    scope_note     = paste(
+    scope_note = paste(
       "Typical-value model only: Table S3 reports no IIV and no residual error, so",
       "both are fixed at zero. The other nine checkpoint inhibitors in Table S3",
       "are NOT packaged as model files -- they are other authors' models",

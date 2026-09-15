@@ -9,7 +9,11 @@ Bulitta_2010_colistin_URMC2 <- function() {
     sep = " "
   )
   vignette <- "Bulitta_2010_colistin"
-  units <- list(time = "h", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (colistin in broth)",
+    concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)"
+  )
 
   depends <- c("Ccolistin", "Ccations")
   paper_specific_compartments <- c("bact_slag", "bact_s", "bact_i", "bact_r", "signal")
@@ -19,44 +23,64 @@ Bulitta_2010_colistin_URMC2 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_slag = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_s    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_i    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_r    = list(analyte = "Pseudomonas aeruginosa URMC2", units = NA_character_, specimen = "administration site", verified = FALSE),
-    signal    = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    bact_slag = list(
+      analyte = "Pseudomonas aeruginosa URMC2",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_s = list(
+      analyte = "Pseudomonas aeruginosa URMC2",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_i = list(
+      analyte = "Pseudomonas aeruginosa URMC2",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_r = list(
+      analyte = "Pseudomonas aeruginosa URMC2",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    signal = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     Ccolistin = list(
-      description        = "Colistin concentration in growth medium",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Colistin concentration in growth medium",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Static concentration in supplemented LB broth held constant over the 24 h experiment. URMC2 was studied at 9 colistin concentrations up to 64 mg/L (64x the LB-broth MIC of 1 mg/L). In-vitro experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Ccolistin (Bulitta 2010 Methods, Time-kill experiments)"
+      notes = "Static concentration in supplemented LB broth held constant over the 24 h experiment. URMC2 was studied at 9 colistin concentrations up to 64 mg/L (64x the LB-broth MIC of 1 mg/L). In-vitro experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Ccolistin (Bulitta 2010 Methods, Time-kill experiments)"
     ),
     Ccations = list(
-      description        = "Sum of Mg2+ and Ca2+ molar concentration in the growth medium",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Sum of Mg2+ and Ca2+ molar concentration in the growth medium",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Default 1138 umol/L recovers the published LB-broth supplemented condition (0.514 mmol/L Mg2+ + 0.624 mmol/L Ca2+ per Bulitta 2010 Table 1 footnote f).",
-      source_name        = "Ccations (Bulitta 2010 Methods + Table 1 footnote f)"
+      notes = "Default 1138 umol/L recovers the published LB-broth supplemented condition (0.514 mmol/L Mg2+ + 0.624 mmol/L Ca2+ per Bulitta 2010 Table 1 footnote f).",
+      source_name = "Ccations (Bulitta 2010 Methods + Table 1 footnote f)"
     )
   )
 
   population <- list(
-    species             = "in vitro (Pseudomonas aeruginosa, URMC2 clinical isolate)",
-    n_subjects          = NA_integer_,
-    n_studies           = 1L,
-    organism            = "Pseudomonas aeruginosa URMC2 (clinical isolate from the University of Rochester Medical Center; LB-broth MIC 1.0 mg/L, MHB MIC 0.5 mg/L; four-fold more colistin-susceptible than PAO1)",
-    system              = "Static time-kill experiments at 37 C in supplemented cation-adjusted LB broth (25 mg/L Ca2+, 12.5 mg/L Mg2+); 20 mL cultures in constant shaking water bath",
-    medium              = "Supplemented LB broth (cation-adjusted)",
-    duration            = "24 h with sampling at 0, 0.5, 1, 2, 4, 6, 8, and 24 h",
-    inoculum_range      = "10^6, 10^8, and 10^9 CFU/mL",
-    mic_values          = c(colistin_LB_broth = "1.0 mg/L", colistin_MHB = "0.5 mg/L"),
-    regimens            = "9 colistin concentrations up to 64 mg/L (64x MIC in LB broth) at each initial inoculum; antibiotic-free growth controls; viable counts in duplicate.",
-    notes               = "In-vitro pharmacodynamic study; no human or animal subjects. URMC2 is the second of two clinical P. aeruginosa isolates packaged separately from PAO1 (NONMEM primary fit) and URMC1 (sibling S-ADAPT fit) so users can simulate either clinical strain by name. Random effects are not reported for the URMC strains."
+    species = "in vitro (Pseudomonas aeruginosa, URMC2 clinical isolate)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "Pseudomonas aeruginosa URMC2 (clinical isolate from the University of Rochester Medical Center; LB-broth MIC 1.0 mg/L, MHB MIC 0.5 mg/L; four-fold more colistin-susceptible than PAO1)",
+    system = "Static time-kill experiments at 37 C in supplemented cation-adjusted LB broth (25 mg/L Ca2+, 12.5 mg/L Mg2+); 20 mL cultures in constant shaking water bath",
+    medium = "Supplemented LB broth (cation-adjusted)",
+    duration = "24 h with sampling at 0, 0.5, 1, 2, 4, 6, 8, and 24 h",
+    inoculum_range = "10^6, 10^8, and 10^9 CFU/mL",
+    mic_values = c(colistin_LB_broth = "1.0 mg/L", colistin_MHB = "0.5 mg/L"),
+    regimens = "9 colistin concentrations up to 64 mg/L (64x MIC in LB broth) at each initial inoculum; antibiotic-free growth controls; viable counts in duplicate.",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. URMC2 is the second of two clinical P. aeruginosa isolates packaged separately from PAO1 (NONMEM primary fit) and URMC1 (sibling S-ADAPT fit) so users can simulate either clinical strain by name. Random effects are not reported for the URMC strains."
   )
 
   ini({

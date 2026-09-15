@@ -11,39 +11,39 @@ Boucher_2018_naproxen_mbma <- function() {
   )
   vignette <- "Boucher_2018_naproxen_mbma"
   units <- list(
-    time          = "week (time since start of treatment; the Emax is a function of time, not of dose or concentration)",
-    dosing        = "not applicable (MBMA summary-level time-course model; treatment is encoded by the NAPROXEN study-arm indicator covariate, not by rxode2 dose events)",
+    time = "week (time since start of treatment; the Emax is a function of time, not of dose or concentration)",
+    dosing = "not applicable (MBMA summary-level time-course model; treatment is encoded by the NAPROXEN study-arm indicator covariate, not by rxode2 dose events)",
     concentration = "WOMAC pain units / arm (0-10 normalised Western Ontario and McMaster Universities osteoarthritis index pain subscale; output Cc is the study-arm mean WOMAC pain score, NOT a drug concentration; the slash is only to satisfy checkModelConventions unit parsing)"
   )
 
   covariateData <- list(
     FLARE = list(
-      description        = "Study-arm flare-design indicator: 1 if the trial used a flare design (subjects washed out of pain medication and required a predefined pain flare-up to be randomized), 0 for a non-flare design.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm flare-design indicator: 1 if the trial used a flare design (subjects washed out of pain medication and required a predefined pain flare-up to be randomized), 0 for a non-flare design.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-flare design)",
-      notes              = "MBMA study-arm-level covariate (a property of the trial design, not of an individual patient). Documented inline rather than in the individual-level pop-PK canonical register inst/references/covariate-columns.md, following the Vargo_2014_statins_ezetimibe_mbma and Sadouki_2025 in-file-documentation precedent for MBMA / multi-drug study-arm covariates. Encoded as the indicator 'If' in Boucher 2018 Eqs 2 and 3: flare shifts both baseline E0 (e_flare_e0) and Emax (e_flare_emax). Of the 18 trials, 12 were flare designs and 6 were non-flare.",
-      source_name        = "If (Boucher 2018 Eqs 2-3)"
+      notes = "MBMA study-arm-level covariate (a property of the trial design, not of an individual patient). Documented inline rather than in the individual-level pop-PK canonical register inst/references/covariate-columns.md, following the Vargo_2014_statins_ezetimibe_mbma and Sadouki_2025 in-file-documentation precedent for MBMA / multi-drug study-arm covariates. Encoded as the indicator 'If' in Boucher 2018 Eqs 2 and 3: flare shifts both baseline E0 (e_flare_e0) and Emax (e_flare_emax). Of the 18 trials, 12 were flare designs and 6 were non-flare.",
+      source_name = "If (Boucher 2018 Eqs 2-3)"
     ),
     NAPROXEN = list(
-      description        = "Study-arm treatment indicator: 1 if the arm received naproxen, 0 if the arm received placebo.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm treatment indicator: 1 if the arm received naproxen, 0 if the arm received placebo.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm)",
-      notes              = "MBMA study-arm-level covariate (a property of the trial arm). Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 precedent rather than in the individual-level register. Encoded as the indicator 'In' in Boucher 2018 Eqs 3 and 4: naproxen shifts Emax (e_naproxen_emax) and shortens ET50 (e_naproxen_et50, additive on the log scale). All 18 included trials had both a naproxen and a placebo arm.",
-      source_name        = "In (Boucher 2018 Eqs 3-4)"
+      notes = "MBMA study-arm-level covariate (a property of the trial arm). Documented inline per the Vargo_2014_statins_ezetimibe_mbma / Sadouki_2025 precedent rather than in the individual-level register. Encoded as the indicator 'In' in Boucher 2018 Eqs 3 and 4: naproxen shifts Emax (e_naproxen_emax) and shortens ET50 (e_naproxen_et50, additive on the log scale). All 18 included trials had both a naproxen and a placebo arm.",
+      source_name = "In (Boucher 2018 Eqs 3-4)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 18L,
-    disease_state  = "adults with osteoarthritis (knee/hip) and OA pain; endpoint is the WOMAC pain subscale on a 0-10 scale",
-    design         = "18 randomized double-blind placebo-controlled parallel-group trials, each with both a naproxen and a placebo arm; 12 trials used a flare design (washout plus required pain flare-up for eligibility) and 6 did not. Source: internal clinical study reports plus publicly available literature.",
-    treatments     = "naproxen vs placebo (per-arm naproxen dose was not modeled; the model characterizes the time-course of response pooled across the naproxen doses studied)",
-    timepoints     = "WOMAC pain reported over a time-course up to about 13 weeks; the number of trials reporting at weeks 2, 6, and 12 was 13, 9, and 7 respectively (Boucher 2018 Results)",
-    notes          = "MBMA at the study-arm level: each modeled data point is the mean WOMAC pain in one trial arm at one timepoint, weighted by its observed standard error (variance SD^2/n). The model is intended for simulating study-arm-mean WOMAC pain time-courses and is NOT suitable for individual-subject simulation. Total patient count is reported only in Supplementary Table S2, which is not on disk; n_subjects is left NA. See Boucher 2018 'Example dataset' section and Figure 1 for the design and time-course."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 18L,
+    disease_state = "adults with osteoarthritis (knee/hip) and OA pain; endpoint is the WOMAC pain subscale on a 0-10 scale",
+    design = "18 randomized double-blind placebo-controlled parallel-group trials, each with both a naproxen and a placebo arm; 12 trials used a flare design (washout plus required pain flare-up for eligibility) and 6 did not. Source: internal clinical study reports plus publicly available literature.",
+    treatments = "naproxen vs placebo (per-arm naproxen dose was not modeled; the model characterizes the time-course of response pooled across the naproxen doses studied)",
+    timepoints = "WOMAC pain reported over a time-course up to about 13 weeks; the number of trials reporting at weeks 2, 6, and 12 was 13, 9, and 7 respectively (Boucher 2018 Results)",
+    notes = "MBMA at the study-arm level: each modeled data point is the mean WOMAC pain in one trial arm at one timepoint, weighted by its observed standard error (variance SD^2/n). The model is intended for simulating study-arm-mean WOMAC pain time-courses and is NOT suitable for individual-subject simulation. Total patient count is reported only in Supplementary Table S2, which is not on disk; n_subjects is left NA. See Boucher 2018 'Example dataset' section and Figure 1 for the design and time-course."
   )
 
   ini({

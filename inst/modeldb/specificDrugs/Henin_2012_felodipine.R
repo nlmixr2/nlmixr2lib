@@ -40,77 +40,77 @@ Henin_2012_felodipine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "felodipine", units = "mg", specimen = "administration site", verified = FALSE),
-    fundus      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    antrum      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "felodipine", units = "mg", specimen = "administration site", verified = FALSE),
+    fundus = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    antrum = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
     proximal_si = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    distal_si   = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    colon       = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
-    liver       = list(analyte = "felodipine", units = "mg", specimen = "tissue", verified = FALSE),
-    central     = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    distal_si = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    colon = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    liver = list(analyte = "felodipine", units = "mg", specimen = "tissue", verified = FALSE),
+    central = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; used for allometric scaling of liver blood flow (QH = 3.5 * WT^0.75) and the fixed per-kg liver volume (Vliver = 0.0143 * WT).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; used for allometric scaling of liver blood flow (QH = 3.5 * WT^0.75) and the fixed per-kg liver volume (Vliver = 0.0143 * WT).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Continuous covariate. The paper does not state a reference weight for the felodipine cohort (n = 6 healthy volunteers); the allometric parameters (QH and Vliver) are expressed per kg^0.75 and per kg respectively so any positive WT is admissible. See vignette Errata for the paper's population summary.",
-      source_name        = "WT"
+      notes = "Continuous covariate. The paper does not state a reference weight for the felodipine cohort (n = 6 healthy volunteers); the allometric parameters (QH and Vliver) are expressed per kg^0.75 and per kg respectively so any positive WT is admissible. See vignette Errata for the paper's population summary.",
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed-vs-fasted at-dosing indicator. 1 = fed condition (postprandial high-fat meal per Weitschies 2005 study design), 0 = fasted (overnight).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted at-dosing indicator. 1 = fed condition (postprandial high-fat meal per Weitschies 2005 study design), 0 = fasted (overnight).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-dose indicator. Enters the model via three fed/fasted parameter switches (Table I): K34 (antrum -> PSI dissolved-drug transfer) = 3.48 h^-1 fasted / 0.81 h^-1 fed; FA (gut-wall bioavailability fraction) = 0.23 fasted / 0.39 fed; and additionally the tablet-transit inflection points IP_FA (fundus -> antrum) and IP_APSI (antrum -> PSI) are longer in the fed state per Table II. Set FED per observation record so the model interpolates correctly.",
-      source_name        = "FED"
+      notes = "Per-dose indicator. Enters the model via three fed/fasted parameter switches (Table I): K34 (antrum -> PSI dissolved-drug transfer) = 3.48 h^-1 fasted / 0.81 h^-1 fed; FA (gut-wall bioavailability fraction) = 0.23 fasted / 0.39 fed; and additionally the tablet-transit inflection points IP_FA (fundus -> antrum) and IP_APSI (antrum -> PSI) are longer in the fed state per Table II. Set FED per observation record so the model interpolates correctly.",
+      source_name = "FED"
     ),
     IP_FA = list(
-      description        = "Individual inflection-point time (h) at which the sigmoid step for tablet transition from fundus to antrum equals 0.5. Sampled from the fixed population distribution IP_FA = MRT_fundus * exp(eta_fundus) with MRT_fundus = 0.4 h (fasted) or 1.04 h (fed) and eta_fundus ~ N(0, VRT_fundus) with VRT_fundus = 0.46 (fasted) or 1.09 (fed) h^2 per Table II (values fixed from the upstream Bergstrand 2009 Markov-chain fit).",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) at which the sigmoid step for tablet transition from fundus to antrum equals 0.5. Sampled from the fixed population distribution IP_FA = MRT_fundus * exp(eta_fundus) with MRT_fundus = 0.4 h (fasted) or 1.04 h (fed) and eta_fundus ~ N(0, VRT_fundus) with VRT_fundus = 0.46 (fasted) or 1.09 (fed) h^2 per Table II (values fixed from the upstream Bergstrand 2009 Markov-chain fit).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. Population MRT and VRT are fasted/fed-dependent; the vignette shows an example of sampling IP_FA and its siblings from these distributions.",
-      source_name        = "IP_FA"
+      notes = "Per-subject covariate. Population MRT and VRT are fasted/fed-dependent; the vignette shows an example of sampling IP_FA and its siblings from these distributions.",
+      source_name = "IP_FA"
     ),
     IP_APSI = list(
-      description        = "Individual inflection-point time (h) for tablet transition from antrum to proximal small intestine (STEP value 0.5). Sampled as MRT_antrum * exp(eta_antrum) with MRT_antrum = 0.32 h (fasted) or 1.58 h (fed) and eta ~ N(0, VRT_antrum) with VRT_antrum = 0.15 (fasted) or 2.50 (fed) h^2 per Table II.",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for tablet transition from antrum to proximal small intestine (STEP value 0.5). Sampled as MRT_antrum * exp(eta_antrum) with MRT_antrum = 0.32 h (fasted) or 1.58 h (fed) and eta ~ N(0, VRT_antrum) with VRT_antrum = 0.15 (fasted) or 2.50 (fed) h^2 per Table II.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. Fed-vs-fasted stratification of the population distribution is required.",
-      source_name        = "IP_APSI"
+      notes = "Per-subject covariate. Fed-vs-fasted stratification of the population distribution is required.",
+      source_name = "IP_APSI"
     ),
     IP_PSI_DSI = list(
-      description        = "Individual inflection-point time (h) for tablet transition from proximal to distal small intestine (STEP value 0.5). Sampled as MRT_psi * exp(eta_psi) with MRT_psi = 1.17 h and eta ~ N(0, VRT_psi) with VRT_psi = 1.37 h^2 per Table II.",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for tablet transition from proximal to distal small intestine (STEP value 0.5). Sampled as MRT_psi * exp(eta_psi) with MRT_psi = 1.17 h and eta ~ N(0, VRT_psi) with VRT_psi = 1.37 h^2 per Table II.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. Not fed/fasted dependent per Table II.",
-      source_name        = "IP_PSI_DSI"
+      notes = "Per-subject covariate. Not fed/fasted dependent per Table II.",
+      source_name = "IP_PSI_DSI"
     ),
     IP_DSI_C = list(
-      description        = "Individual inflection-point time (h) for tablet transition from distal small intestine to colon (STEP value 0.5). Sampled as MRT_dsi * exp(eta_dsi) with MRT_dsi = 1.22 h and eta ~ N(0, VRT_dsi) with VRT_dsi = 1.48 h^2 per Table II.",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual inflection-point time (h) for tablet transition from distal small intestine to colon (STEP value 0.5). Sampled as MRT_dsi * exp(eta_dsi) with MRT_dsi = 1.22 h and eta ~ N(0, VRT_dsi) with VRT_dsi = 1.48 h^2 per Table II.",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject covariate. Not fed/fasted dependent per Table II.",
-      source_name        = "IP_DSI_C"
+      notes = "Per-subject covariate. Not fed/fasted dependent per Table II.",
+      source_name = "IP_DSI_C"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6L,
-    n_studies      = 1L,
-    disease_state  = "Healthy volunteers",
-    dose_range     = "Single 10 mg extended-release felodipine tablet, oral, under fasting or fed (postprandial high-fat meal) conditions in a crossover design.",
-    regions        = "Charite, Berlin, Germany",
-    notes          = "Cross-over MMM study by Weitschies et al. (2005; Ref 16). Six healthy volunteers received magnetically labelled 10 mg extended-release felodipine tablets under fasting and fed conditions with simultaneous MMM tracking of tablet GI position, drug release, and plasma sampling. Extended-release formulation; 11 mm tablet diameter. Felodipine parameters extracted from Table I; GI transit residence-time distribution (fixed as prior information) from Table II; both were originally reported by Bergstrand et al. 2009 (CPT 86:77-83)."
+    species = "human",
+    n_subjects = 6L,
+    n_studies = 1L,
+    disease_state = "Healthy volunteers",
+    dose_range = "Single 10 mg extended-release felodipine tablet, oral, under fasting or fed (postprandial high-fat meal) conditions in a crossover design.",
+    regions = "Charite, Berlin, Germany",
+    notes = "Cross-over MMM study by Weitschies et al. (2005; Ref 16). Six healthy volunteers received magnetically labelled 10 mg extended-release felodipine tablets under fasting and fed conditions with simultaneous MMM tracking of tablet GI position, drug release, and plasma sampling. Extended-release formulation; 11 mm tablet diameter. Felodipine parameters extracted from Table I; GI transit residence-time distribution (fixed as prior information) from Table II; both were originally reported by Bergstrand et al. 2009 (CPT 86:77-83)."
   )
 
   ini({

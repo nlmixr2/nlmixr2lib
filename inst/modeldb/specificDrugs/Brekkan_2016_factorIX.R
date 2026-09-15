@@ -8,59 +8,59 @@ Brekkan_2016_factorIX <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "factorIX", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "factorIX", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "factorIX", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "factorIX", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL, Q2, Q3 (exponent fixed at 0.75) and on V1, V2, V3 (exponent fixed at 1.0) with reference weight 70 kg (Brekkan 2016 Table 2 footnote and Equation 1). Among three approaches tested for the CL exponent (estimated, fixed at 0.75, fixed to the original published 1.26), 0.75 was retained because all three gave similar fits.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL, Q2, Q3 (exponent fixed at 0.75) and on V1, V2, V3 (exponent fixed at 1.0) with reference weight 70 kg (Brekkan 2016 Table 2 footnote and Equation 1). Among three approaches tested for the CL exponent (estimated, fixed at 0.75, fixed to the original published 1.26), 0.75 was retained because all three gave similar fits.",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Age was tested as a covariate on CL using a fractional change per year deviation from median age (Brekkan 2016 Equation 2) but was not statistically significant (P < 0.05) and was not retained in the final model. Documented here only to record that it was screened."
+      units = "years",
+      type = "continuous",
+      notes = "Age was tested as a covariate on CL using a fractional change per year deviation from median age (Brekkan 2016 Equation 2) but was not statistically significant (P < 0.05) and was not retained in the final model. Documented here only to record that it was screened."
     ),
     PRODUCT = list(
       description = "Factor IX product identity",
-      units       = NA_character_,
-      type        = "categorical",
-      notes       = "Seven plasma-derived FIX products were tested as a categorical covariate on CL: AlphaNine (reference, most common), Factor IX Grifols, Immunine, Octanine, Nanotiv, Preconativ, Mononine. The likelihood-ratio test was statistically significant (P < 0.01, df = 6) but the largest deviation from AlphaNine was within +/- 20% of the typical CL (range 252-378 mL/h vs. 315 mL/h reference), so the clinical-significance criterion was not met and the product effect was dropped from the final model (Brekkan 2016 Results, p. 727). Documented here to record the screen."
+      units = NA_character_,
+      type = "categorical",
+      notes = "Seven plasma-derived FIX products were tested as a categorical covariate on CL: AlphaNine (reference, most common), Factor IX Grifols, Immunine, Octanine, Nanotiv, Preconativ, Mononine. The likelihood-ratio test was statistically significant (P < 0.01, df = 6) but the largest deviation from AlphaNine was within +/- 20% of the typical CL (range 252-378 mL/h vs. 315 mL/h reference), so the clinical-significance criterion was not met and the product effect was dropped from the final model (Brekkan 2016 Results, p. 727). Documented here to record the screen."
     ),
     OCC = list(
       description = "Occasion identifier",
-      units       = NA_character_,
-      type        = "count",
-      notes       = "Inter-occasion variability (IOV) on CL and V1 with a correlation between the two random effects was retained in the published model (CV 21.4% on CL, 20.1% on V1, correlation 0.902; Brekkan 2016 Table 2). The static library model omits IOV because there is no occasion variable on the standard library event grid; this is a deliberate simplification documented in the vignette's Assumptions and deviations section."
+      units = NA_character_,
+      type = "count",
+      notes = "Inter-occasion variability (IOV) on CL and V1 with a correlation between the two random effects was retained in the published model (CV 21.4% on CL, 20.1% on V1, correlation 0.902; Brekkan 2016 Table 2). The static library model omits IOV because there is no occasion variable on the standard library event grid; this is a deliberate simplification documented in the vignette's Assumptions and deviations section."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 5L,
-    age_range      = "Not stated as range; mean 27.5 (SD 10.9) years across all studies; per-study means 23.1-42.8 years",
-    age_median     = "Not reported",
-    weight_range   = "Not stated as range; mean 66.8 (SD 13.5) kg across all studies; per-study means 61.0-69.7 kg",
-    weight_median  = "Not reported; reference weight in the model is 70 kg",
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 5L,
+    age_range = "Not stated as range; mean 27.5 (SD 10.9) years across all studies; per-study means 23.1-42.8 years",
+    age_median = "Not reported",
+    weight_range = "Not stated as range; mean 66.8 (SD 13.5) kg across all studies; per-study means 61.0-69.7 kg",
+    weight_median = "Not reported; reference weight in the model is 70 kg",
     sex_female_pct = 0,
     race_ethnicity = "Not reported",
-    disease_state  = "Moderate or severe haemophilia B; 35 of 1794 samples had FIX activity below 0.01 U/mL (the common lower limit of quantification) and were retained.",
-    dose_range     = "Single-dose PK following intravenous administration of plasma-derived factor IX concentrate; specific dose ranges per study are not summarised in the paper.",
-    regions        = "Pooled across five previously published studies (Lissitchkov et al., Aznar et al., Berntorp et al., Bjorkman et al., Carlsson et al.); the latter three plus two additional unpublished studies fed the original model of Berntorp et al. [reference 15 in Brekkan 2016].",
-    n_samples      = "1,794 FIX activity samples across 34 unique patients; 7-17 samples per patient per occasion. Several patients contributed to more than one study.",
-    products       = "Seven plasma-derived FIX products: AlphaNine (most common; Grifols), Factor IX Grifols, Immunine (Baxter/Immuno), Octanine (Octapharma), Nanotiv (Pharmacia), Preconativ (Pharmacia), Mononine (Armour Pharmaceutical).",
-    notes          = "Patient demographics summarised in Brekkan 2016 Table 1. The model is intended for plasma-derived FIX products only; the Discussion notes the final model should be used with caution to describe FIX activity following administration of products that are not plasma-derived. Haemophilia B is X-linked, so the cohort is essentially all male."
+    disease_state = "Moderate or severe haemophilia B; 35 of 1794 samples had FIX activity below 0.01 U/mL (the common lower limit of quantification) and were retained.",
+    dose_range = "Single-dose PK following intravenous administration of plasma-derived factor IX concentrate; specific dose ranges per study are not summarised in the paper.",
+    regions = "Pooled across five previously published studies (Lissitchkov et al., Aznar et al., Berntorp et al., Bjorkman et al., Carlsson et al.); the latter three plus two additional unpublished studies fed the original model of Berntorp et al. [reference 15 in Brekkan 2016].",
+    n_samples = "1,794 FIX activity samples across 34 unique patients; 7-17 samples per patient per occasion. Several patients contributed to more than one study.",
+    products = "Seven plasma-derived FIX products: AlphaNine (most common; Grifols), Factor IX Grifols, Immunine (Baxter/Immuno), Octanine (Octapharma), Nanotiv (Pharmacia), Preconativ (Pharmacia), Mononine (Armour Pharmaceutical).",
+    notes = "Patient demographics summarised in Brekkan 2016 Table 1. The model is intended for plasma-derived FIX products only; the Discussion notes the final model should be used with caution to describe FIX activity following administration of products that are not plasma-derived. Haemophilia B is X-linked, so the cohort is essentially all male."
   )
 
   ini({

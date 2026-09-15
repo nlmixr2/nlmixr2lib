@@ -16,54 +16,56 @@ Rosenborg_2025_salmeterol <- function() {
     "F4_rel (indexed by SIDN) reproduces the paper's interstudy variability",
     "level. Companion models for the co-administered fluticasone propionate",
     "are Rosenborg_2025_fluticasone_300ug, Rosenborg_2025_fluticasone_750ug",
-    "and Rosenborg_2025_fluticasone_1500ug.")
+    "and Rosenborg_2025_fluticasone_1500ug."
+  )
   reference <- paste(
     "Rosenborg J, Backman P, Bengtsson T, Haughie S.",
     "Relative Bioavailability of Inhaled Fluticasone Propionate and Salmeterol",
     "- is Population Pharmacokinetic Modelling a Relevant Alternative to a",
     "Non-Compartmental Approach?",
-    "Drug Des Devel Ther. 2025;19:9653-9670. doi:10.2147/DDDT.S480189")
+    "Drug Des Devel Ther. 2025;19:9653-9670. doi:10.2147/DDDT.S480189"
+  )
   vignette <- "Rosenborg_2025_fluticasone_salmeterol"
-  units    <- list(time = "h", dosing = "ug", concentration = "ng/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "salmeterol", units = "ug", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "salmeterol", units = "ug", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "salmeterol", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "salmeterol", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "salmeterol", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "salmeterol", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FORM_WIXELA_INHUB = list(
-      description        = "Indicator that the inhalation was taken from the Wixela Inhub dry powder inhaler (test product), 1 = Wixela Inhub, 0 = Advair Diskus.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the inhalation was taken from the Wixela Inhub dry powder inhaler (test product), 1 = Wixela Inhub, 0 = Advair Diskus.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Advair Diskus, the reference product; its relative extent of bioavailability is the anchor F = 1).",
-      notes              = "Per-dose-record indicator. In this two-way crossover the same subject carries 1 on one period's dose row and 0 on the other's. The supplement's NONMEM code writes TREA = 1 for test and TREA = 2 for reference and derives TREA1 / TREA2 indicators from it; FORM_WIXELA_INHUB = TREA1. It gates two parameters (Rosenborg 2025 Figure 1): the monophasic absorption rate constant, K41 = EXP(TREA1*MU_7 + TREA2*MU_10 + ETA(7)), i.e. a separate typical value per product sharing one eta; and relative bioavailability, F4 = EXP(TREA1*(MU_11 + ETA(8) + ETA(9)) + TREA2*0), so reference doses get F = 1 exactly while test doses get F4_rel carrying both its subject-level and its study-level random effect.",
-      source_name        = "TREA (supplement Sect. 1: 'Treatment alternative, test (TREA=1) and reference (TREA=2) formulation')"
+      notes = "Per-dose-record indicator. In this two-way crossover the same subject carries 1 on one period's dose row and 0 on the other's. The supplement's NONMEM code writes TREA = 1 for test and TREA = 2 for reference and derives TREA1 / TREA2 indicators from it; FORM_WIXELA_INHUB = TREA1. It gates two parameters (Rosenborg 2025 Figure 1): the monophasic absorption rate constant, K41 = EXP(TREA1*MU_7 + TREA2*MU_10 + ETA(7)), i.e. a separate typical value per product sharing one eta; and relative bioavailability, F4 = EXP(TREA1*(MU_11 + ETA(8) + ETA(9)) + TREA2*0), so reference doses get F = 1 exactly while test doses get F4_rel carrying both its subject-level and its study-level random effect.",
+      source_name = "TREA (supplement Sect. 1: 'Treatment alternative, test (TREA=1) and reference (TREA=2) formulation')"
     ),
     SIDN = list(
-      description        = "Integer study index (1, 2 or 3) identifying which of the three crossover studies a subject's records belong to, used as the nesting level for the between-study random effect on relative bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer study index (1, 2 or 3) identifying which of the three crossover studies a subject's records belong to, used as the nesting level for the between-study random effect on relative bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = "n/a -- SIDN is a nesting level, not a covariate with a reference category. It indexes ETA(9), declared in the supplement's NONMEM code as $LEVEL STUD=(9[1]) ; interstudy variability.",
-      notes              = "The three studies are distinguished only by the fluticasone propionate strength inhaled alongside salmeterol (FP 3 x 100, 3 x 250 and 3 x 500 ug); the salmeterol dose was 3 x 50 ug in all three, which is why Model 4 pools them. SIDN maps directly onto the paper's STUD column (studies 1, 2 and 3). Because it is consumed by the ini() nesting syntax rather than by a model() expression, covariateData[['SIDN']] is deliberately not referenced anywhere in model(). Simulation caveat: an event table must carry at least two distinct SIDN values or rxSolve() fails, and omega must be passed explicitly because a nested omega is a list of matrices keyed by level.",
-      source_name        = "STUD"
+      notes = "The three studies are distinguished only by the fluticasone propionate strength inhaled alongside salmeterol (FP 3 x 100, 3 x 250 and 3 x 500 ug); the salmeterol dose was 3 x 50 ug in all three, which is why Model 4 pools them. SIDN maps directly onto the paper's STUD column (studies 1, 2 and 3). Because it is consumed by the ini() nesting syntax rather than by a model() expression, covariateData[['SIDN']] is deliberately not referenced anywhere in model(). Simulation caveat: an event table must carry at least two distinct SIDN values or rxSolve() fails, and omega must be passed explicitly because a nested omega is a list of matrices keyed by level.",
+      source_name = "STUD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 198L,
-    n_studies      = 3L,
-    age_range      = "mean age 33.8 years (study 1), 37.7 years (study 2) and 35.7 years (study 3); Rosenborg 2025 Materials and Methods",
+    species = "human",
+    n_subjects = 198L,
+    n_studies = 3L,
+    age_range = "mean age 33.8 years (study 1), 37.7 years (study 2) and 35.7 years (study 3); Rosenborg 2025 Materials and Methods",
     sex_female_pct = 54.0,
     race_ethnicity = c(White = NA_real_, Black = NA_real_, Asian = NA_real_, Other = NA_real_),
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = "Three inhalations of salmeterol 50 ug (150 ug total) in every study, co-formulated with fluticasone propionate 100, 250 or 500 ug per inhalation; single dose per period, two periods with a 7-day washout.",
-    regions        = "USA",
+    disease_state = "Healthy adult volunteers.",
+    dose_range = "Three inhalations of salmeterol 50 ug (150 ug total) in every study, co-formulated with fluticasone propionate 100, 250 or 500 ug per inhalation; single dose per period, two periods with a 7-day washout.",
+    regions = "USA",
     n_observations = "7186 salmeterol plasma concentrations (Rosenborg 2025 Results).",
-    notes          = "Three separate two-way crossover studies, each recruiting 66 healthy subjects (198 in total), of whom 61 to 65 per study completed both treatment periods. Panels were homogeneous, black and white, mean BMI approximately 26; study 1: 29 female / 37 male; study 2: 36 female / 30 male; study 3: 42 female / 24 male. Rosenborg 2025 states that 'neither demographic nor other covariates were considered in the evaluation of NCA-based results and therefore not in this alternative model analysis either', so product is the only fixed-effect covariate in the model. Sampling: pre-dose and 2, 5, 10, 15, 20, 30 and 45 min, and 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36 and 48 h post-dose; LLOQ 1 ng/L, with below-LLOQ values (55 samples from 24 h onwards across studies 1-3, Figure 5 caption) retained via the M3-style likelihood of Bauer 2019."
+    notes = "Three separate two-way crossover studies, each recruiting 66 healthy subjects (198 in total), of whom 61 to 65 per study completed both treatment periods. Panels were homogeneous, black and white, mean BMI approximately 26; study 1: 29 female / 37 male; study 2: 36 female / 30 male; study 3: 42 female / 24 male. Rosenborg 2025 states that 'neither demographic nor other covariates were considered in the evaluation of NCA-based results and therefore not in this alternative model analysis either', so product is the only fixed-effect covariate in the model. Sampling: pre-dose and 2, 5, 10, 15, 20, 30 and 45 min, and 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36 and 48 h post-dose; LLOQ 1 ng/L, with below-LLOQ values (55 samples from 24 h onwards across studies 1-3, Figure 5 caption) retained via the M3-style likelihood of Bauer 2019."
   )
 
   ini({

@@ -10,7 +10,7 @@ Nichols_2016_tazobactam <- function() {
     sep = " "
   )
   vignette <- "Nichols_2016_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -21,24 +21,24 @@ Nichols_2016_tazobactam <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear-additive effect on CL: TVCL = 3.43 * (1 - 0.285 * SEXF) +",
         "0.0676 * (WT - 18) L/h, centered at the cohort median 18 kg",
         "(Nichols 2016 Results; individual weights 9.5-30.1 kg in Table 1).",
         "The paper does not model a weight effect on V."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on CL: females have ~28.5% lower tazobactam",
         "CL than males (Nichols 2016 Table 2: theta3 = -0.285; entering the",
         "model as TVCL = theta1 * (1 + theta3 * SEXF) + theta4 * (WT - 18)).",
@@ -46,36 +46,36 @@ Nichols_2016_tazobactam <- function() {
         "0 = otherwise; this matches the canonical SEXF orientation with",
         "no value transformation. Reference category is 0 = male."
       ),
-      source_name        = "sex"
+      source_name = "sex"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "12 months to 9 years (1-9 y in text)",
-    age_median     = "5 years (IQR 1.75-6.5)",
-    weight_range   = "9.5-30.1 kg",
-    weight_median  = "17.8 kg (IQR 11.4-20); model equation centers WT at 18 kg",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "12 months to 9 years (1-9 y in text)",
+    age_median = "5 years (IQR 1.75-6.5)",
+    weight_range = "9.5-30.1 kg",
+    weight_median = "17.8 kg (IQR 11.4-20); model equation centers WT at 18 kg",
     sex_female_pct = 50,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to a pediatric intensive care unit",
       "with suspected or proven bacterial infection (most commonly pneumonia,",
       "VAP, sepsis, neutropenic fever); estimated GFR >= 60 mL/min/1.73 m^2",
       "(modified Schwartz)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "12.5 mg/kg tazobactam (with 100 mg/kg piperacillin, 8:1 ratio) every 8",
       "hours by IV extended infusion over 4 hours (per institutional",
       "protocol). Maximum 375 mg tazobactam per dose. Observed tazobactam",
       "doses 119-375 mg per dose in this cohort (calculated from the",
       "piperacillin doses in Table 1 / 8)."
     ),
-    regions        = "United States (Riley Hospital for Children, Indianapolis, IN)",
-    egfr_range     = "86-189 mL/min/1.73 m^2 (cohort median 103, IQR 96-111)",
-    notes          = paste(
+    regions = "United States (Riley Hospital for Children, Indianapolis, IN)",
+    egfr_range = "86-189 mL/min/1.73 m^2 (cohort median 103, IQR 96-111)",
+    notes = paste(
       "Twelve children sampled at steady state (6 samples per patient: pre-",
       "dose and at 2, 4 [end of infusion], 5, 6, and 8 hours after the start",
       "of the study dose). Patients had received a median of 5 prior doses",

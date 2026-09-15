@@ -14,12 +14,12 @@ McBride_2025_radamts13_qsp <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Allometric scaling of the rADAMTS13 PK on a 68.7 kg reference subject (Table S1 'Human PK parameters'): exponent 0.75 on CL and Q, 1.0 on Vc and Vp. Also converts the IU/kg dose to a delivered mg amount in the event table (see vignette).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject. Allometric scaling of the rADAMTS13 PK on a 68.7 kg reference subject (Table S1 'Human PK parameters'): exponent 0.75 on CL and Q, 1.0 on Vc and Vp. Also converts the IU/kg dose to a delivered mg amount in the event table (see vignette).",
+      source_name = "WT"
     )
   )
 
@@ -29,43 +29,103 @@ McBride_2025_radamts13_qsp <- function() {
   # equivalents (a platelet count of 1e9/L corresponds to 1/6.02e5 nM).
   # Verified against Methods S1 Eqs 4-25 and ADAMTS13_Model.m (Data S2).
   compartmentData <- list(
-    vg                    = list(analyte = "von Willebrand factor, globular monomer unit", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve                    = list(analyte = "von Willebrand factor, elongated (active) monomer unit", units = "nmol", specimen = "plasma", verified = TRUE),
-    adam                  = list(analyte = "endogenous ADAMTS13", units = "nmol", specimen = "plasma", verified = TRUE),
-    hb                    = list(analyte = "extracellular hemoglobin", units = "nmol", specimen = "plasma", verified = TRUE),
-    tsp1                  = list(analyte = "thrombospondin-1", units = "nmol", specimen = "plasma", verified = TRUE),
-    vg_adam               = list(analyte = "globular VWF:ADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve_adam               = list(analyte = "elongated VWF:ADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    vg_hb                 = list(analyte = "globular VWF:hemoglobin complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve_hb                 = list(analyte = "elongated VWF:hemoglobin complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve_tsp1               = list(analyte = "elongated VWF:thrombospondin-1 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    vg_frag               = list(analyte = "globular VWF cleavage fragments", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve_frag               = list(analyte = "elongated VWF cleavage fragments", units = "nmol", specimen = "plasma", verified = TRUE),
-    vg_radam              = list(analyte = "globular VWF:rADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    ve_radam              = list(analyte = "elongated VWF:rADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    platelet              = list(analyte = "free platelets", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_platelet           = list(analyte = "elongated VWF:platelet complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_adam_platelet      = list(analyte = "elongated VWF:ADAMTS13:platelet complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_tsp1_platelet      = list(analyte = "elongated VWF:thrombospondin-1:platelet complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_hb_platelet        = list(analyte = "elongated VWF:hemoglobin:platelet complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_radam_platelet     = list(analyte = "elongated VWF:rADAMTS13:platelet complex", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_platelet_coag      = list(analyte = "elongated VWF:multi-platelet aggregate", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_tsp1_platelet_coag = list(analyte = "elongated VWF:thrombospondin-1:multi-platelet aggregate", units = "nmol", specimen = "whole blood", verified = TRUE),
-    ve_hb_platelet_coag   = list(analyte = "elongated VWF:hemoglobin:multi-platelet aggregate", units = "nmol", specimen = "whole blood", verified = TRUE),
-    radam                 = list(analyte = "recombinant ADAMTS13 (TAK-755) in the pharmacodynamic compartment", units = "nmol", specimen = "plasma", verified = TRUE),
-    central               = list(analyte = "recombinant ADAMTS13 (TAK-755)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1           = list(analyte = "recombinant ADAMTS13 (TAK-755)", units = "mg", specimen = "plasma", verified = TRUE)
+    vg = list(
+      analyte = "von Willebrand factor, globular monomer unit",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    ve = list(
+      analyte = "von Willebrand factor, elongated (active) monomer unit",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    adam = list(analyte = "endogenous ADAMTS13", units = "nmol", specimen = "plasma", verified = TRUE),
+    hb = list(analyte = "extracellular hemoglobin", units = "nmol", specimen = "plasma", verified = TRUE),
+    tsp1 = list(analyte = "thrombospondin-1", units = "nmol", specimen = "plasma", verified = TRUE),
+    vg_adam = list(analyte = "globular VWF:ADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    ve_adam = list(analyte = "elongated VWF:ADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    vg_hb = list(analyte = "globular VWF:hemoglobin complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    ve_hb = list(analyte = "elongated VWF:hemoglobin complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    ve_tsp1 = list(
+      analyte = "elongated VWF:thrombospondin-1 complex",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    vg_frag = list(analyte = "globular VWF cleavage fragments", units = "nmol", specimen = "plasma", verified = TRUE),
+    ve_frag = list(analyte = "elongated VWF cleavage fragments", units = "nmol", specimen = "plasma", verified = TRUE),
+    vg_radam = list(analyte = "globular VWF:rADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    ve_radam = list(analyte = "elongated VWF:rADAMTS13 complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    platelet = list(analyte = "free platelets", units = "nmol", specimen = "whole blood", verified = TRUE),
+    ve_platelet = list(
+      analyte = "elongated VWF:platelet complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_adam_platelet = list(
+      analyte = "elongated VWF:ADAMTS13:platelet complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_tsp1_platelet = list(
+      analyte = "elongated VWF:thrombospondin-1:platelet complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_hb_platelet = list(
+      analyte = "elongated VWF:hemoglobin:platelet complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_radam_platelet = list(
+      analyte = "elongated VWF:rADAMTS13:platelet complex",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_platelet_coag = list(
+      analyte = "elongated VWF:multi-platelet aggregate",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_tsp1_platelet_coag = list(
+      analyte = "elongated VWF:thrombospondin-1:multi-platelet aggregate",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    ve_hb_platelet_coag = list(
+      analyte = "elongated VWF:hemoglobin:multi-platelet aggregate",
+      units = "nmol",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    radam = list(
+      analyte = "recombinant ADAMTS13 (TAK-755) in the pharmacodynamic compartment",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    central = list(analyte = "recombinant ADAMTS13 (TAK-755)", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "recombinant ADAMTS13 (TAK-755)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40,
-    n_studies      = 5,
-    age_range      = "adults and adolescents with cTTP (Phase 3 NCT03393975 enrolled patients >= 0 years; the QSP virtual population is the non-pregnant adult cTTP phenotype)",
-    weight_median  = "68.7 kg (allometric reference weight, Table S1 'Human PK parameters')",
-    disease_state  = "Congenital thrombotic thrombocytopenic purpura (cTTP), a severe inherited ADAMTS13 deficiency causing thrombotic microangiopathy",
-    dose_range     = "rADAMTS13 40 IU/kg IV Q1W or Q2W prophylaxis; plasma-based therapy (PBT) exposure equivalent to ~10 IU/kg ADAMTS13 (10-20 mL/kg fresh-frozen or solvent/detergent-treated plasma) Q1W or Q2W",
-    notes          = paste(
+    species = "human",
+    n_subjects = 40,
+    n_studies = 5,
+    age_range = "adults and adolescents with cTTP (Phase 3 NCT03393975 enrolled patients >= 0 years; the QSP virtual population is the non-pregnant adult cTTP phenotype)",
+    weight_median = "68.7 kg (allometric reference weight, Table S1 'Human PK parameters')",
+    disease_state = "Congenital thrombotic thrombocytopenic purpura (cTTP), a severe inherited ADAMTS13 deficiency causing thrombotic microangiopathy",
+    dose_range = "rADAMTS13 40 IU/kg IV Q1W or Q2W prophylaxis; plasma-based therapy (PBT) exposure equivalent to ~10 IU/kg ADAMTS13 (10-20 mL/kg fresh-frozen or solvent/detergent-treated plasma) Q1W or Q2W",
+    notes = paste(
       "Calibration/validation data (Table S2 and Figure 2): Phase 1 cTTP PK (NCT02216084, Scully 2017, N = 15);",
       "two adamts13-knockout mouse studies (Kopic 2016 and in-house #248.220.5098, 5 male + 5 female mice per dose);",
       "human baseline platelet counts and VWF activity from healthy individuals and untreated cTTP patients;",
@@ -90,12 +150,29 @@ McBride_2025_radamts13_qsp <- function() {
   # nomenclature (VE = elongated/active VWF monomer unit, VG = globular
   # VWF monomer unit, PLT = platelet, coag = multi-platelet aggregate).
   paper_specific_compartments <- c(
-    "vg", "ve", "adam", "hb", "tsp1",
-    "vg_adam", "ve_adam", "vg_hb", "ve_hb", "ve_tsp1",
-    "vg_frag", "ve_frag", "vg_radam", "ve_radam",
-    "platelet", "ve_platelet", "ve_adam_platelet", "ve_tsp1_platelet",
-    "ve_hb_platelet", "ve_radam_platelet",
-    "ve_platelet_coag", "ve_tsp1_platelet_coag", "ve_hb_platelet_coag",
+    "vg",
+    "ve",
+    "adam",
+    "hb",
+    "tsp1",
+    "vg_adam",
+    "ve_adam",
+    "vg_hb",
+    "ve_hb",
+    "ve_tsp1",
+    "vg_frag",
+    "ve_frag",
+    "vg_radam",
+    "ve_radam",
+    "platelet",
+    "ve_platelet",
+    "ve_adam_platelet",
+    "ve_tsp1_platelet",
+    "ve_hb_platelet",
+    "ve_radam_platelet",
+    "ve_platelet_coag",
+    "ve_tsp1_platelet_coag",
+    "ve_hb_platelet_coag",
     "radam"
   )
 

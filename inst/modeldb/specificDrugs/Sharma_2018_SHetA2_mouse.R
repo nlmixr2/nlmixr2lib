@@ -22,8 +22,8 @@ Sharma_2018_SHetA2_mouse <- function() {
   )
   vignette <- "Sharma_2018_SHetA2"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -31,29 +31,29 @@ Sharma_2018_SHetA2_mouse <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "SHetA2", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "SHetA2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "mouse (CD2F1 female)",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_range      = "(not reported in the source publication)",
-    weight_range   = "20.0-27.8 g",
+    species = "mouse (CD2F1 female)",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_range = "(not reported in the source publication)",
+    weight_range = "20.0-27.8 g",
     sex_female_pct = 100,
-    disease_state  = "healthy, non-tumor-bearing; not fasted",
-    dose_range     = paste(
+    disease_state = "healthy, non-tumor-bearing; not fasted",
+    dose_range = paste(
       "IV: 20 mg/kg tail-vein injection in 100 uL of PEG400:Ethanol:Saline",
       "(57.1%:14.3%:28.6%), n=3. PO: 20 and 60 mg/kg by gavage in 100 uL",
       "sesame oil, n=3 per dose. Reference [13] = Liu 2007 (cited as source",
       "of the mouse PK data)."
     ),
-    regions        = "USA (University of Oklahoma Health Sciences Center)",
-    notes          = paste(
+    regions = "USA (University of Oklahoma Health Sciences Center)",
+    notes = paste(
       "CD2F1 female mice (20.0-27.8 g) from a previously-published study",
       "(Sharma 2018 ref [13]). Blood collected by cardiac puncture at",
       "pre-dose and 0.08, 0.15, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 18, 24,",

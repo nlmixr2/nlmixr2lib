@@ -14,118 +14,118 @@ Dhoro_2015_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline) per the Dhoro 2015 single-sample sparse PK design. Linear-additive fractional shift on CL/F centred on the cohort median weight; the paper does not report the median value explicitly (Table 1 reports mean 61.5 kg for males / 57.9 kg for females, weighted mean 59.1 kg across n = 60 males + 125 females), and the model file uses 60 kg as the round-figure median. Effect magnitude: +21.1 % per +10 kg above 60 kg (Dhoro 2015 Results and Table 3).",
-      source_name        = "WT"
+      notes = "Time-fixed (baseline) per the Dhoro 2015 single-sample sparse PK design. Linear-additive fractional shift on CL/F centred on the cohort median weight; the paper does not report the median value explicitly (Table 1 reports mean 61.5 kg for males / 57.9 kg for females, weighted mean 59.1 kg across n = 60 males + 125 females), and the model file uses 60 kg as the round-figure median. Effect magnitude: +21.1 % per +10 kg above 60 kg (Dhoro 2015 Results and Table 3).",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Dhoro 2015 Table 3 reports a +22.2 % fractional shift on CL/F for females vs the male reference. Cohort distribution (Table 1): 60 males (32 %) / 125 females (68 %).",
-      source_name        = "Sex (Male / Female)"
+      notes = "Time-fixed per subject. Dhoro 2015 Table 3 reports a +22.2 % fractional shift on CL/F for females vs the male reference. Cohort distribution (Table 1): 60 males (32 %) / 125 females (68 %).",
+      source_name = "Sex (Male / Female)"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H, CYP2B6*6) T-alleles per subject (0 / 1 / 2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H, CYP2B6*6) T-alleles per subject (0 / 1 / 2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Dhoro 2015 Methods 'DNA extraction and TaqMan Genotyping' and Table 1 report this SNP as CYP2B6*6 (also known as rs3745274 / 516G>T). The Dhoro 2015 final-model parameterization uses the heterozygote (GT, count = 1) as the reference category, with multiplicative fractional shifts on CL/F for the homozygous groups: +93.1 % for GG (count = 0, wild-type) and -63.4 % for TT (count = 2, variant). This non-monotonic (U-shaped) encoding is unusual; the canonical count column reconstructs the indicators in model() as (count == 0) for GG and (count == 2) for TT. Cohort allele-genotype frequencies (Table 1, n = 185): GG 30.8 % (57/185), GT 45.4 % (84/185), TT 21.1 % (39/185).",
-      source_name        = "CYP2B6 G516T (rs3745274) / CYP2B6*6"
+      notes = "Time-fixed (germline genotype). Dhoro 2015 Methods 'DNA extraction and TaqMan Genotyping' and Table 1 report this SNP as CYP2B6*6 (also known as rs3745274 / 516G>T). The Dhoro 2015 final-model parameterization uses the heterozygote (GT, count = 1) as the reference category, with multiplicative fractional shifts on CL/F for the homozygous groups: +93.1 % for GG (count = 0, wild-type) and -63.4 % for TT (count = 2, variant). This non-monotonic (U-shaped) encoding is unusual; the canonical count column reconstructs the indicators in model() as (count == 0) for GG and (count == 2) for TT. Cohort allele-genotype frequencies (Table 1, n = 185): GG 30.8 % (57/185), GT 45.4 % (84/185), TT 21.1 % (39/185).",
+      source_name = "CYP2B6 G516T (rs3745274) / CYP2B6*6"
     ),
     SNP_CYP2B6_RS28399499_C_COUNT = list(
-      description        = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T, CYP2B6*18) C-alleles per subject (0 / 1 / 2). 0 = TT homozygous wild-type (extensive metaboliser), 1 = TC heterozygous (intermediate metaboliser), 2 = CC homozygous variant (poor metaboliser).",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.983T>C (rs28399499, p.I328T, CYP2B6*18) C-alleles per subject (0 / 1 / 2). 0 = TT homozygous wild-type (extensive metaboliser), 1 = TC heterozygous (intermediate metaboliser), 2 = CC homozygous variant (poor metaboliser).",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Dhoro 2015 Methods 'DNA extraction and TaqMan Genotyping' and Table 1 report this SNP as CYP2B6*18 (also known as rs28399499 / 983T>C). The Dhoro 2015 final-model stratifies the apparent oral clearance CL/F by CYP2B6*18 genotype with three distinct typical-value estimates (Table 3): CL/F = 7.01 L/h for TT (extensive metaboliser, count = 0, reference), 2.26 L/h for TC (intermediate metaboliser, count = 1), and 0.539 L/h for CC (poor metaboliser, count = 2). The reference category in the packaged model file is TT (extensive metaboliser); the non-reference shifts are encoded as log-ratio additive effects on log-CL/F to keep the single etalcl IIV applied uniformly. Cohort allele-genotype frequencies (Table 1, n = 185): TT 71.4 % (132/185), TC 25.4 % (47/185), CC 3.2 % (6/185).",
-      source_name        = "CYP2B6*18 (rs28399499)"
+      notes = "Time-fixed (germline genotype). Dhoro 2015 Methods 'DNA extraction and TaqMan Genotyping' and Table 1 report this SNP as CYP2B6*18 (also known as rs28399499 / 983T>C). The Dhoro 2015 final-model stratifies the apparent oral clearance CL/F by CYP2B6*18 genotype with three distinct typical-value estimates (Table 3): CL/F = 7.01 L/h for TT (extensive metaboliser, count = 0, reference), 2.26 L/h for TC (intermediate metaboliser, count = 1), and 0.539 L/h for CC (poor metaboliser, count = 2). The reference category in the packaged model file is TT (extensive metaboliser); the non-reference shifts are encoded as log-ratio additive effects on log-CL/F to keep the single etalcl IIV applied uniformly. Cohort allele-genotype frequencies (Table 1, n = 185): TT 71.4 % (132/185), TC 25.4 % (47/185), CC 3.2 % (6/185).",
+      source_name = "CYP2B6*18 (rs28399499)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 0.29, df = 1, p = 0.59, IIV explained = 0.01 %) but not retained in the final CL/F model. Cohort range (Table 1): mean 38.9 years (8.5 SD).",
-      source_name        = "Age"
+      notes = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 0.29, df = 1, p = 0.59, IIV explained = 0.01 %) but not retained in the final CL/F model. Cohort range (Table 1): mean 38.9 years (8.5 SD).",
+      source_name = "Age"
     ),
     SNP_CYP2A6_RS8192726 = list(
-      description        = "CYP2A6 c.-48T>G (rs8192726, CYP2A6*9) genotype indicator",
-      units              = "(genotype: GG / TT in source)",
-      type               = "categorical",
+      description = "CYP2A6 c.-48T>G (rs8192726, CYP2A6*9) genotype indicator",
+      units = "(genotype: GG / TT in source)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 3.836, df = 1, p = 0.0502, IIV explained = 2.7 %) but not retained in the final CL/F model at the 1 % backward-elimination threshold. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
-      source_name        = "CYP2A6*9 (rs8192726)"
+      notes = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 3.836, df = 1, p = 0.0502, IIV explained = 2.7 %) but not retained in the final CL/F model at the 1 % backward-elimination threshold. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
+      source_name = "CYP2A6*9 (rs8192726)"
     ),
     SNP_CYP2A6_RS28399454 = list(
-      description        = "CYP2A6 c.5065G>A (rs28399454, CYP2A6*17) genotype indicator",
-      units              = "(genotype: GG / GA / AA in source)",
-      type               = "categorical",
+      description = "CYP2A6 c.5065G>A (rs28399454, CYP2A6*17) genotype indicator",
+      units = "(genotype: GG / GA / AA in source)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 1.44, df = 2, p = 0.23, IIV explained = 1.8 %) but not retained in the final CL/F model. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
-      source_name        = "CYP2A6*17 (rs28399454)"
+      notes = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 1.44, df = 2, p = 0.23, IIV explained = 1.8 %) but not retained in the final CL/F model. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
+      source_name = "CYP2A6*17 (rs28399454)"
     ),
     SNP_ABCB1_RS1128503 = list(
-      description        = "ABCB1 c.1236C>T (rs1128503) genotype indicator",
-      units              = "(genotype: CC / CT / TT in source)",
-      type               = "categorical",
+      description = "ABCB1 c.1236C>T (rs1128503) genotype indicator",
+      units = "(genotype: CC / CT / TT in source)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Screened in Dhoro 2015 covariate analysis (Table 2 univariate ANOVA p = 0.841) and rejected; not in the final CL/F model. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
-      source_name        = "ABCB1 1236C/T (rs1128503)"
+      notes = "Screened in Dhoro 2015 covariate analysis (Table 2 univariate ANOVA p = 0.841) and rejected; not in the final CL/F model. Not registered as a canonical covariate column because no downstream nlmixr2lib model retains it; documented here for source provenance.",
+      source_name = "ABCB1 1236C/T (rs1128503)"
     ),
     EFV_RIF = list(
-      description        = "Concomitant rifampicin-containing anti-tuberculosis therapy indicator (1 = HIV/TB co-treatment, 0 = HIV treatment only)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin-containing anti-tuberculosis therapy indicator (1 = HIV/TB co-treatment, 0 = HIV treatment only)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV treatment only)",
-      notes              = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 1.932, df = 1, p = 0.165, IIV explained = 1.1 %) and rejected; not in the final CL/F model. The cohort comprised 95 HIV-only and 90 HIV/TB co-infected patients on EFV + rifampicin-containing anti-TB therapy.",
-      source_name        = "EFV-RIF interaction"
+      notes = "Screened in Dhoro 2015 covariate analysis (Table 4: drop in OFV = 1.932, df = 1, p = 0.165, IIV explained = 1.1 %) and rejected; not in the final CL/F model. The cohort comprised 95 HIV-only and 90 HIV/TB co-infected patients on EFV + rifampicin-containing anti-TB therapy.",
+      source_name = "EFV-RIF interaction"
     ),
     CNS_TOX = list(
-      description        = "Central-nervous-system toxicity status indicator (1 = patient has CNS adverse effects, 0 = no CNS adverse effects)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Central-nervous-system toxicity status indicator (1 = patient has CNS adverse effects, 0 = no CNS adverse effects)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CNS adverse effects)",
-      notes              = "Screened in Dhoro 2015 covariate analysis as an exploratory covariate (Table 4: drop in OFV = 1.011, df = 1, p = 0.315, IIV explained = 0.14 %) and not retained. Used in the paper's discussion of dose-response for CNS adverse effects (CNS-affected patients had ~27 % lower CL/F than unaffected patients in a stratified analysis) but not in the final population-PK structural model.",
-      source_name        = "CNS Toxicity"
+      notes = "Screened in Dhoro 2015 covariate analysis as an exploratory covariate (Table 4: drop in OFV = 1.011, df = 1, p = 0.315, IIV explained = 0.14 %) and not retained. Used in the paper's discussion of dose-response for CNS adverse effects (CNS-affected patients had ~27 % lower CL/F than unaffected patients in a stratified analysis) but not in the final population-PK structural model.",
+      source_name = "CNS Toxicity"
     ),
     HT = list(
-      description        = "Body height at baseline",
-      units              = "m",
-      type               = "continuous",
+      description = "Body height at baseline",
+      units = "m",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in Dhoro 2015 univariate covariate analysis (Methods + Table 1) and not retained in the final CL/F model. Cohort range (Table 1): male mean 1.72 m, female mean 1.61 m.",
-      source_name        = "Height"
+      notes = "Screened in Dhoro 2015 univariate covariate analysis (Methods + Table 1) and not retained in the final CL/F model. Cohort range (Table 1): male mean 1.72 m, female mean 1.61 m.",
+      source_name = "Height"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 185,
-    n_studies      = 1,
-    age_range      = "mean 38.9 years (SD 8.5); male mean 40.2 years (SD 9.1), female mean 38.3 years (SD 8.1)",
-    weight_range   = "male mean 61.5 kg (SD 10.1), female mean 57.9 kg (SD 11.3); weighted-mean 59.1 kg across the full cohort",
-    weight_median  = "60 kg (estimated; the source paper does not report the exact median used to centre the WT covariate effect)",
+    species = "human",
+    n_subjects = 185,
+    n_studies = 1,
+    age_range = "mean 38.9 years (SD 8.5); male mean 40.2 years (SD 9.1), female mean 38.3 years (SD 8.1)",
+    weight_range = "male mean 61.5 kg (SD 10.1), female mean 57.9 kg (SD 11.3); weighted-mean 59.1 kg across the full cohort",
+    weight_median = "60 kg (estimated; the source paper does not report the exact median used to centre the WT covariate effect)",
     sex_female_pct = 67.6,
     race_ethnicity = c(Zimbabwean = 100),
-    disease_state  = "HIV-positive adults receiving efavirenz-based combination antiretroviral therapy. 95 patients had HIV monoinfection on ART only; 90 patients were HIV/TB co-infected receiving ART plus a rifampicin-containing anti-tuberculosis regimen. All patients were evaluated for CNS adverse effects (sleep disorders, hallucinations, headaches) classified per WHO ADR grading.",
-    dose_range     = "600 mg orally once daily as part of EFV-based combination antiretroviral therapy. Common backbone regimens (Table 2): TDF/3TC/EFV, AZT/3TC/EFV, D4T/3TC/EFV. The packaged model and validation vignette also simulate the 200 mg and 400 mg daily reduced-dose scenarios investigated by Monte-Carlo simulation in the source paper.",
-    regions        = "Zimbabwe (Wilkins Hospital and Chitungwiza Hospital, Harare)",
-    cyp2b6_freq    = "CYP2B6*6 (rs3745274 / 516G>T): GG 30.8 %, GT 45.4 %, TT 21.1 %. CYP2B6*18 (rs28399499 / 983T>C): TT 71.4 %, TC 25.4 %, CC 3.2 % (Dhoro 2015 Table 1).",
-    notes          = "Single sparse plasma sample per subject collected 12-15 h post-dose by reverse-phase HPLC with UV detection (felodipine internal standard). 185 patients (60 male, 125 female) recruited from two Harare hospitals. The structural absorption-rate constant ka and apparent volume V/F were FIXED in NONMEM VI from the upstream Nyakutira et al. (2008) popPK in Zimbabwean patients (paper reference [37]). Clearance was the only structural parameter estimated; covariate screening retained CYP2B6*18, CYP2B6*6, body weight, and sex (Table 4) explaining 55 % of inter-individual variability in CL/F. Estimation method: FOCE INTER in NONMEM VI."
+    disease_state = "HIV-positive adults receiving efavirenz-based combination antiretroviral therapy. 95 patients had HIV monoinfection on ART only; 90 patients were HIV/TB co-infected receiving ART plus a rifampicin-containing anti-tuberculosis regimen. All patients were evaluated for CNS adverse effects (sleep disorders, hallucinations, headaches) classified per WHO ADR grading.",
+    dose_range = "600 mg orally once daily as part of EFV-based combination antiretroviral therapy. Common backbone regimens (Table 2): TDF/3TC/EFV, AZT/3TC/EFV, D4T/3TC/EFV. The packaged model and validation vignette also simulate the 200 mg and 400 mg daily reduced-dose scenarios investigated by Monte-Carlo simulation in the source paper.",
+    regions = "Zimbabwe (Wilkins Hospital and Chitungwiza Hospital, Harare)",
+    cyp2b6_freq = "CYP2B6*6 (rs3745274 / 516G>T): GG 30.8 %, GT 45.4 %, TT 21.1 %. CYP2B6*18 (rs28399499 / 983T>C): TT 71.4 %, TC 25.4 %, CC 3.2 % (Dhoro 2015 Table 1).",
+    notes = "Single sparse plasma sample per subject collected 12-15 h post-dose by reverse-phase HPLC with UV detection (felodipine internal standard). 185 patients (60 male, 125 female) recruited from two Harare hospitals. The structural absorption-rate constant ka and apparent volume V/F were FIXED in NONMEM VI from the upstream Nyakutira et al. (2008) popPK in Zimbabwean patients (paper reference [37]). Clearance was the only structural parameter estimated; covariate screening retained CYP2B6*18, CYP2B6*6, body weight, and sex (Table 4) explaining 55 % of inter-individual variability in CL/F. Estimation method: FOCE INTER in NONMEM VI."
   )
 
   ini({

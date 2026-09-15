@@ -1,34 +1,27 @@
 test_that("convertLogLin", {
-
   r1 <- readModelDb("PK_2cmt_no_depot") |>
     addDirectLin() |>
     convertLogLin()
 
-  expect_equal(rxode2::modelExtract(r1, effect),
-    "effect <- Ek * log(Cc)")
+  expect_equal(rxode2::modelExtract(r1, effect), "effect <- Ek * log(Cc)")
 
   r1 <- readModelDb("PK_2cmt_no_depot") |>
     addIndirectLin(stim = "out") |>
     convertLogLin()
 
-  expect_equal(rxode2::modelExtract(r1, d / dt(R)),
-    "d/dt(R) <- kin - kout * R * (1 + Ek * log(Cc))")
-
+  expect_equal(rxode2::modelExtract(r1, d / dt(R)), "d/dt(R) <- kin - kout * R * (1 + Ek * log(Cc))")
 
   r1 <- readModelDb("PK_2cmt_no_depot") |>
     addIndirectLin(inhib = "out") |>
     convertLogLin()
 
-  expect_equal(rxode2::modelExtract(r1, d / dt(R)),
-    "d/dt(R) <- kin - kout * R * (1 - Ik * log(Cc))")
-
+  expect_equal(rxode2::modelExtract(r1, d / dt(R)), "d/dt(R) <- kin - kout * R * (1 - Ik * log(Cc))")
 
   r1 <- readModelDb("PK_2cmt_no_depot") |>
     addEffectCmtLin() |>
     convertLogLin()
 
-  expect_equal(rxode2::modelExtract(r1, effect),
-    "effect <- Ek * log(Ce)")
+  expect_equal(rxode2::modelExtract(r1, effect), "effect <- Ek * log(Ce)")
 
   f <- function() {
     description <- "desc"
@@ -54,6 +47,5 @@ test_that("convertLogLin", {
   r1 <- rxode2::rxode2(f) |>
     convertLogLin()
   # Ek is not added here because Ek is already in the model.
-  expect_equal(rxode2::modelExtract(r1, effect),
-    "effect <- Ek * log(Ce)")
+  expect_equal(rxode2::modelExtract(r1, effect), "effect <- Ek * log(Ce)")
 })

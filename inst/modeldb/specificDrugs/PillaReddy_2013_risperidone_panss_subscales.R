@@ -54,13 +54,18 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "risperidone panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "risperidone panss subscales",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "risperidone panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -69,9 +74,9 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
   covariatesDataExcluded <- list(
     CYP2D6_PHENO = list(
       description = "CYP2D6 metabolizer phenotype (poor / medium / fast)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Part I Table 2 reports separate risperidone parent CL/F values",
         "by CYP2D6 phenotype (poor 0.44 L/h, medium 2.81 L/h, fast 18.4",
         "L/h). Because the active moiety Css depends on the relative",
@@ -85,38 +90,38 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     ),
     DIS = list(
       description = "Disease state at entry (acute vs chronic schizophrenia)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate; not implemented (typical-individual reference simulation targets acute stratum)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate; not implemented (typical-individual reference simulation targets acute stratum)."
     ),
     USA = list(
       description = "Study geographic origin (USA vs non-USA)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II placebo-model covariate on Pmax negative and residual error; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II placebo-model covariate on Pmax negative and residual error; not implemented."
     ),
     REG = list(
       description = "Dosing regimen (qd vs bid)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS negative; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS negative; not implemented."
     ),
     DUR = list(
       description = "Study duration (short vs long)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Part II residual-error covariate on PANSS positive; not implemented."
+      units = "(binary)",
+      type = "binary",
+      notes = "Part II residual-error covariate on PANSS positive; not implemented."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 741L,
-    n_studies       = 12L,
-    age_range       = "Adults with schizophrenia (specific range not tabulated in Part II; pooled from 12 industry-sponsored Phase II / III trials 1989-2009).",
-    weight_range    = "Adult schizophrenia population; specific demographics not tabulated in Part II (cross-reference Part I Table 1 for per-study summaries).",
-    sex_female_pct  = NA_real_,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 741L,
+    n_studies = 12L,
+    age_range = "Adults with schizophrenia (specific range not tabulated in Part II; pooled from 12 industry-sponsored Phase II / III trials 1989-2009).",
+    weight_range = "Adult schizophrenia population; specific demographics not tabulated in Part II (cross-reference Part I Table 1 for per-study summaries).",
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Adults with schizophrenia recruited into acute and chronic-stable",
       "Phase II / III double-blind clinical trials. Risperidone arms in",
       "Part I Table 1: INT-2 (0.5, 2, 4, 6, 8 mg) and INT-3 (1, 3, 5, 8",
@@ -124,9 +129,9 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
       "PANSS negative 24.7 (24.3-25), PANSS general 44 (43.7-44.2) for the",
       "atypical-antipsychotic pool (Part II Table 2)."
     ),
-    dose_range      = "Oral risperidone 0.5-8 mg/day, qd or bid (Part I Table 1, studies INT-2 and INT-3).",
-    regions         = "Pooled across multinational schizophrenia trials 1989-2009 (Part II Methods).",
-    notes           = paste(
+    dose_range = "Oral risperidone 0.5-8 mg/day, qd or bid (Part I Table 1, studies INT-2 and INT-3).",
+    regions = "Pooled across multinational schizophrenia trials 1989-2009 (Part II Methods).",
+    notes = paste(
       "The driving exposure variable in the PD model is the active moiety",
       "(parent risperidone + 9-hydroxy-risperidone); see description.",
       "The active-moiety Css value used for effective-dose calculation is",

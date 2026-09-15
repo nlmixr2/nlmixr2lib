@@ -1,67 +1,67 @@
 Martinez_2019_alirocumab <- function() {
   description <- "Two-compartment population PK model for alirocumab in healthy volunteers and adults with hypercholesterolemia (Martinez 2019, Part I), with first-order SC absorption (with lag time), linear plus Michaelis-Menten (target-mediated) elimination from the central compartment, and logit-transformed bioavailability."
-  reference   <- "Martinez JM, Brunet A, Hurbin F, DiCioccio AT, Rauch C, Fabre D. Population Pharmacokinetic Analysis of Alirocumab in Healthy Volunteers or Hypercholesterolemic Subjects Using a Michaelis-Menten Approximation of a Target-Mediated Drug Disposition Model - Support for a Biologics License Application Submission: Part I. Clin Pharmacokinet. 2019;58(1):101-113. doi:10.1007/s40262-018-0669-y"
-  vignette    <- "Martinez_2019_alirocumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  reference <- "Martinez JM, Brunet A, Hurbin F, DiCioccio AT, Rauch C, Fabre D. Population Pharmacokinetic Analysis of Alirocumab in Healthy Volunteers or Hypercholesterolemic Subjects Using a Michaelis-Menten Approximation of a Target-Mediated Drug Disposition Model - Support for a Biologics License Application Submission: Part I. Clin Pharmacokinet. 2019;58(1):101-113. doi:10.1007/s40262-018-0669-y"
+  vignette <- "Martinez_2019_alirocumab"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "alirocumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "alirocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying per the LOCF imputation in Martinez 2019)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying per the LOCF imputation in Martinez 2019)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on linear clearance CLL (additive): CLL = TVCLL + 2.92e-4 L/h/kg * (WT - 82.9) + 6.44e-3 L/h * CONMED_STATIN. Reference 82.9 kg is the median body weight in the pooled Martinez 2019 dataset. Converted to day-units in the model file (x24).",
-      source_name        = "WT"
+      notes = "Linear-deviation effect on linear clearance CLL (additive): CLL = TVCLL + 2.92e-4 L/h/kg * (WT - 82.9) + 6.44e-3 L/h * CONMED_STATIN. Reference 82.9 kg is the median body weight in the pooled Martinez 2019 dataset. Converted to day-units in the model file (x24).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (time-varying per LOCF; practically time-fixed since trial durations <= 104 weeks)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (time-varying per LOCF; practically time-fixed since trial durations <= 104 weeks)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on the peripheral volume of distribution V3: V3 = TVV3 * (AGE/60)^0.310. Reference age 60 years is the median of the Martinez 2019 dataset.",
-      source_name        = "AGE"
+      notes = "Power effect on the peripheral volume of distribution V3: V3 = TVV3 * (AGE/60)^0.310. Reference age 60 years is the median of the Martinez 2019 dataset.",
+      source_name = "AGE"
     ),
     CONMED_STATIN = list(
-      description        = "Concomitant conmed_statin administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant conmed_statin administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no conmed_statin coadministration)",
-      notes              = "Martinez 2019 codes CONMED_STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose), and 0 otherwise. Additive effect on linear clearance CLL: +0.00644 L/h = +0.15456 L/day when CONMED_STATIN = 1. Other lipid-lowering therapies (ezetimibe, fibrates) are not captured by CONMED_STATIN.",
-      source_name        = "CONMED_STATIN"
+      notes = "Martinez 2019 codes CONMED_STATIN = 1 for coadministration of rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose), and 0 otherwise. Additive effect on linear clearance CLL: +0.00644 L/h = +0.15456 L/day when CONMED_STATIN = 1. Other lipid-lowering therapies (ezetimibe, fibrates) are not captured by CONMED_STATIN.",
+      source_name = "CONMED_STATIN"
     ),
     FPCSK9 = list(
-      description        = "Free (unbound) serum proprotein convertase subtilisin/kexin type 9 concentration (time-varying, LOCF for missing)",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Free (unbound) serum proprotein convertase subtilisin/kexin type 9 concentration (time-varying, LOCF for missing)",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying additive effect on Km: Km = TVKM + (-0.541) * (FPCSK9/72.9). Reference FPCSK9 = 72.9 ng/mL is the median time-varying value in the Martinez 2019 dataset. Observed 5th-95th percentile range 0-392 ng/mL. Distinct from total PCSK9; only the free (drug-unbound) PCSK9 is the pharmacologically active target fraction.",
-      source_name        = "FPCSK9"
+      notes = "Time-varying additive effect on Km: Km = TVKM + (-0.541) * (FPCSK9/72.9). Reference FPCSK9 = 72.9 ng/mL is the median time-varying value in the Martinez 2019 dataset. Observed 5th-95th percentile range 0-392 ng/mL. Distinct from total PCSK9; only the free (drug-unbound) PCSK9 is the pharmacologically active target fraction.",
+      source_name = "FPCSK9"
     )
   )
 
   population <- list(
-    n_subjects          = 2799L,
-    n_observations      = 13717L,
-    n_studies           = 13L,
-    phases              = "Phase I, II, and III",
-    age_median          = "60 years",
-    weight_median       = "82.9 kg",
-    disease_state       = "Healthy volunteers (HV) and adult patients with hypercholesterolemia (including familial and non-familial hypercholesterolemia; subset with established coronary heart disease) not adequately controlled on a maximally tolerated conmed_statin regimen or with conmed_statin intolerance.",
-    dose_range          = "IV: 0.3-12 mg/kg single dose (n=30, phase I only). SC: 50-300 mg single or repeated (Q2W or Q4W over up to 104 weeks; current analysis included data up to 24 weeks). Marketed SC regimens are 75 mg or 150 mg Q2W.",
-    regions             = "Multi-regional pool of 13 Sanofi/Regeneron trials including two Japanese cohorts (NCT01448317 phase I, NCT01812707 phase II); ODYSSEY phase III programme (MONO, COMBO II, FH I, LONG TERM).",
-    fpcsk9_median       = "72.9 ng/mL (time-varying); 283 ng/mL baseline",
-    fpcsk9_range_5_95   = "0-392 ng/mL (time-varying 5th-95th percentiles)",
-    concomitant         = "CONMED_STATIN = 1 for rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose). CONMED_STATIN = 0 for monotherapy, other statins, or conmed_statin-intolerant subjects.",
-    notes               = "Median body weight, age, and free-PCSK9 reference values are taken from Table 2 footnotes a-c of Martinez 2019. The covariate-screening list (sex, race, renal function, BMI, ADA status, injection site, injection device) was non-significant and is not carried as a model covariate. Trials included in the pooled dataset are listed in Table 1 of Martinez 2019 with NCT identifiers."
+    n_subjects = 2799L,
+    n_observations = 13717L,
+    n_studies = 13L,
+    phases = "Phase I, II, and III",
+    age_median = "60 years",
+    weight_median = "82.9 kg",
+    disease_state = "Healthy volunteers (HV) and adult patients with hypercholesterolemia (including familial and non-familial hypercholesterolemia; subset with established coronary heart disease) not adequately controlled on a maximally tolerated conmed_statin regimen or with conmed_statin intolerance.",
+    dose_range = "IV: 0.3-12 mg/kg single dose (n=30, phase I only). SC: 50-300 mg single or repeated (Q2W or Q4W over up to 104 weeks; current analysis included data up to 24 weeks). Marketed SC regimens are 75 mg or 150 mg Q2W.",
+    regions = "Multi-regional pool of 13 Sanofi/Regeneron trials including two Japanese cohorts (NCT01448317 phase I, NCT01812707 phase II); ODYSSEY phase III programme (MONO, COMBO II, FH I, LONG TERM).",
+    fpcsk9_median = "72.9 ng/mL (time-varying); 283 ng/mL baseline",
+    fpcsk9_range_5_95 = "0-392 ng/mL (time-varying 5th-95th percentiles)",
+    concomitant = "CONMED_STATIN = 1 for rosuvastatin (< 20 mg/day), atorvastatin (< 40 mg/day), or simvastatin (any dose). CONMED_STATIN = 0 for monotherapy, other statins, or conmed_statin-intolerant subjects.",
+    notes = "Median body weight, age, and free-PCSK9 reference values are taken from Table 2 footnotes a-c of Martinez 2019. The covariate-screening list (sex, race, renal function, BMI, ADA status, injection site, injection device) was non-significant and is not carried as a model covariate. Trials included in the pooled dataset are listed in Table 1 of Martinez 2019 with NCT identifiers."
   )
 
   ini({

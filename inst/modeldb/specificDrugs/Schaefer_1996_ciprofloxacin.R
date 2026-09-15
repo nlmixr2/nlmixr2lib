@@ -27,19 +27,19 @@ Schaefer_1996_ciprofloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciprofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciprofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "ciprofloxacin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "ciprofloxacin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Schaefer 1996 (study window 24-48 h).",
         "Schaefer 1996 weight range 14.9-42.0 kg (mean 27.5 kg).",
         "Enters CL as a linear additive slope (CL = 8.8 + 0.396 * WT)",
@@ -48,33 +48,33 @@ Schaefer_1996_ciprofloxacin <- function() {
         "* WT). The source authors note that extrapolation outside",
         "15-42 kg is not appropriate."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "5.9-15.7 years",
-    age_median     = "10.1 years (mean; Table 1 gives 9.3-15.7 for the 8 oral-dose patients)",
-    weight_range   = "14.9-42.0 kg",
-    weight_median  = "27.5 kg (mean across N=10)",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "5.9-15.7 years",
+    age_median = "10.1 years (mean; Table 1 gives 9.3-15.7 for the 8 oral-dose patients)",
+    weight_range = "14.9-42.0 kg",
+    weight_median = "27.5 kg (mean across N=10)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric cystic fibrosis patients who had completed a standard",
       "2-week induction course of intravenous ceftazidime + amikacin",
       "(with inhaled amikacin and physiotherapy)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Each patient received two 30-min IV infusions of 10 mg/kg",
       "ciprofloxacin (maximum 400 mg) 12 h apart, followed by oral",
       "ciprofloxacin 15 mg/kg every 12 h. Two of the 10 patients did",
       "not receive the oral dose (Patients 7 and 9, Table 1)."
     ),
-    regions        = "Switzerland (University of Berne, Pediatric Infectious Diseases) and Germany (Bayer AG sponsor).",
-    notes          = paste(
+    regions = "Switzerland (University of Berne, Pediatric Infectious Diseases) and Germany (Bayer AG sponsor).",
+    notes = paste(
       "Sparse-rich popPK study; 232 ciprofloxacin concentrations (203",
       "plasma + 29 urine) analysed in NONMEM IV with first-order",
       "conditional estimation. Plasma protein binding approximately 34%",

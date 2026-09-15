@@ -21,17 +21,19 @@
   if (.n1 == 0L) {
     v1
   } else if (.n1 == 1L) {
-    switch(.combineEnv$default,
+    switch(
+      .combineEnv$default,
       camel = paste0(v1, toupper(v2)),
       snake = paste0(v1, "_", v2),
-      dot   = paste0(v1, ".", v2),
+      dot = paste0(v1, ".", v2),
       blank = paste0(v1, v2)
     )
   } else {
-    switch(.combineEnv$default,
+    switch(
+      .combineEnv$default,
       camel = paste0(v1, toupper(substr(v2, 1L, 1L)), substr(v2, 2L, .n1)),
       snake = paste0(v1, "_", v2),
-      dot   = paste0(v1, ".", v2),
+      dot = paste0(v1, ".", v2),
       blank = paste0(v1, v2)
     )
   }
@@ -80,9 +82,7 @@ defaultCombine <- function(...) {
   .args <- list(...)
   .n <- length(.args)
   if (.n == 0L) {
-    stop("no arguments provided",
-      call. = FALSE
-    )
+    stop("no arguments provided", call. = FALSE)
   } else if (.n == 1L) {
     .ret <- .args[[1L]]
     if (checkmate::testCharacter(.ret, len = 1, any.missing = FALSE)) {
@@ -92,9 +92,7 @@ defaultCombine <- function(...) {
     } else if (is.list(.ret)) {
       do.call(defaultCombine, .ret)
     } else {
-      stop("invalid argument",
-        call. = FALSE
-      )
+      stop("invalid argument", call. = FALSE)
     }
   } else {
     Reduce(.defaultCombine2, .args)
@@ -132,15 +130,19 @@ defaultCombine <- function(...) {
 #' combinePaste2("f", "depot", "dot")
 #'
 #' combinePaste2("f", "depot", "blank")
-combinePaste2 <- function(a, b,
-                          combineType = c(
-                            "default", "snake", "camel",
-                            "dot", "blank"
-                          )) {
+combinePaste2 <- function(
+  a,
+  b,
+  combineType = c(
+    "default",
+    "snake",
+    "camel",
+    "dot",
+    "blank"
+  )
+) {
   if (missing(a) && missing(b)) {
-    stop("no arguments provided",
-      call. = FALSE
-    )
+    stop("no arguments provided", call. = FALSE)
   }
   checkmate::assertCharacter(a, min.len = 1L, any.missing = FALSE)
   if (missing(b)) {
@@ -156,19 +158,32 @@ combinePaste2 <- function(a, b,
     })
   }
   if (checkmate::testCharacter(a, len = 1L, any.missing = FALSE)) {
-    vapply(b, function(x) {
-      .defaultCombine2(a, x)
-    }, character(1L), USE.NAMES = FALSE)
+    vapply(
+      b,
+      function(x) {
+        .defaultCombine2(a, x)
+      },
+      character(1L),
+      USE.NAMES = FALSE
+    )
   } else if (checkmate::testCharacter(b, len = 1L, any.missing = FALSE)) {
-    vapply(a, function(x) {
-      .defaultCombine2(x, b)
-    }, character(1L), USE.NAMES = FALSE)
-  } else if (checkmate::testCharacter(a, any.missing = FALSE) &&
-    checkmate::testCharacter(b, any.missing = FALSE) &&
-    length(a) == length(b)) {
+    vapply(
+      a,
+      function(x) {
+        .defaultCombine2(x, b)
+      },
+      character(1L),
+      USE.NAMES = FALSE
+    )
+  } else if (
+    checkmate::testCharacter(a, any.missing = FALSE) &&
+      checkmate::testCharacter(b, any.missing = FALSE) &&
+      length(a) == length(b)
+  ) {
     mapply(.defaultCombine2, a, b, SIMPLIFY = TRUE, USE.NAMES = FALSE)
   } else {
-    stop("combinePaste2 needs arguments that are the same size or one of the arguments to be a single string",
+    stop(
+      "combinePaste2 needs arguments that are the same size or one of the arguments to be a single string",
       call. = FALSE
     )
   }
@@ -253,8 +268,10 @@ setCombineType <- function(combineType = c("snake", "camel", "dot", "blank")) {
     return("default")
   }
   .tmp <- getOption(op, "default")
-  if (checkmate::testCharacter(.tmp, len = 1, any.missing = FALSE) &&
-    !(.tmp %in% c("default", "snake", "camel", "dot", "blank"))) {
+  if (
+    checkmate::testCharacter(.tmp, len = 1, any.missing = FALSE) &&
+      !(.tmp %in% c("default", "snake", "camel", "dot", "blank"))
+  ) {
     .tmp <- "default"
   } else if (!checkmate::testCharacter(.tmp, len = 1L, any.missing = FALSE)) {
     .tmp <- "default"

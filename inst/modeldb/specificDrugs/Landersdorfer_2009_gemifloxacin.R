@@ -14,43 +14,43 @@ Landersdorfer_2009_gemifloxacin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "gemifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "gemifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "gemifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "gemifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gemifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_PROBENECID = list(
-      description        = "1 = probenecid co-administered (oral 4.5 g total split into 8 doses across the gemifloxacin sampling window); 0 = gemifloxacin alone (reference). Time-fixed at the treatment-arm level in the source crossover study.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = probenecid co-administered (oral 4.5 g total split into 8 doses across the gemifloxacin sampling window); 0 = gemifloxacin alone (reference). Time-fixed at the treatment-arm level in the source crossover study.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no probenecid; gemifloxacin alone)",
-      notes              = "Encodes the treatment-arm switch for the static (non-mechanism-specific) probenecid effects on absorption rate (Ka 0.839 -> 0.897 1/h), absorption lag (Tlag 0.223 -> 0.129 h), and non-renal clearance (CL_NR 25.2 -> 21.0 L/h) reported in Landersdorfer 2009 Table 3. The mechanism-specific competitive inhibition at the renal tubular transporter (apparent Km = Km * (1 + [P] / Kic)) is encoded separately via the time-varying CP_PRB_MGL covariate so that the on / off transition between probenecid pharmacokinetics drives the renal-clearance term smoothly. Source dosing schedule (Landersdorfer 2009 Methods): probenecid 1000 mg at -10 h and -2 h relative to gemifloxacin, 250 mg at +6 h and +14 h, 500 mg at +24 h, +36 h, +48 h, and +60 h.",
-      source_name        = "(treatment arm indicator)"
+      notes = "Encodes the treatment-arm switch for the static (non-mechanism-specific) probenecid effects on absorption rate (Ka 0.839 -> 0.897 1/h), absorption lag (Tlag 0.223 -> 0.129 h), and non-renal clearance (CL_NR 25.2 -> 21.0 L/h) reported in Landersdorfer 2009 Table 3. The mechanism-specific competitive inhibition at the renal tubular transporter (apparent Km = Km * (1 + [P] / Kic)) is encoded separately via the time-varying CP_PRB_MGL covariate so that the on / off transition between probenecid pharmacokinetics drives the renal-clearance term smoothly. Source dosing schedule (Landersdorfer 2009 Methods): probenecid 1000 mg at -10 h and -2 h relative to gemifloxacin, 250 mg at +6 h and +14 h, 500 mg at +24 h, +36 h, +48 h, and +60 h.",
+      source_name = "(treatment arm indicator)"
     ),
     CP_PRB_MGL = list(
-      description        = "Instantaneous plasma probenecid concentration (mg/L) supplied as a time-varying covariate driving competitive inhibition of the saturable renal tubular secretion of gemifloxacin: apparent Km = Km * (1 + CP_PRB_MGL / Ki).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Instantaneous plasma probenecid concentration (mg/L) supplied as a time-varying covariate driving competitive inhibition of the saturable renal tubular secretion of gemifloxacin: apparent Km = Km * (1 + CP_PRB_MGL / Ki).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Set to 0 throughout the gemifloxacin-alone arm (CONMED_PROBENECID = 0) so the apparent-Km term collapses to Km. Set to the instantaneous plasma probenecid concentration during the gemifloxacin + probenecid arm. The Landersdorfer 2009 paper does NOT report a probenecid PK sub-model parameter table on disk -- the Methods describes the structural form (1-compartment + lag + parallel first-order + mixed-order elimination) but the corresponding parameter estimates are not in any on-disk table -- so users simulating the with-probenecid arm must supply CP_PRB_MGL from an external probenecid popPK source (e.g., literature digitisation of Landersdorfer 2009 Fig. 1C, or an unrelated published probenecid popPK model). Reference peak observed: ~30-60 mg/L during the gemifloxacin sampling window (Landersdorfer 2009 Fig. 1C).",
-      source_name        = "[P]"
+      notes = "Set to 0 throughout the gemifloxacin-alone arm (CONMED_PROBENECID = 0) so the apparent-Km term collapses to Km. Set to the instantaneous plasma probenecid concentration during the gemifloxacin + probenecid arm. The Landersdorfer 2009 paper does NOT report a probenecid PK sub-model parameter table on disk -- the Methods describes the structural form (1-compartment + lag + parallel first-order + mixed-order elimination) but the corresponding parameter estimates are not in any on-disk table -- so users simulating the with-probenecid arm must supply CP_PRB_MGL from an external probenecid popPK source (e.g., literature digitisation of Landersdorfer 2009 Fig. 1C, or an unrelated published probenecid popPK model). Reference peak observed: ~30-60 mg/L during the gemifloxacin sampling window (Landersdorfer 2009 Fig. 1C).",
+      source_name = "[P]"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 17L,
-    n_studies        = 1L,
-    age_range        = "healthy adults; per-subject ages not tabulated in Landersdorfer 2009.",
-    weight_range     = "mean 69.1 +/- 13 kg (Landersdorfer 2009 Results paragraph 1).",
-    height_range     = "mean 173 +/- 10 cm (Landersdorfer 2009 Results paragraph 1).",
-    sex_female_pct   = 47.1,
-    race_ethnicity   = c(White = 100),
-    disease_state    = "healthy Caucasian volunteers",
-    dose_range       = "single 320 mg oral gemifloxacin dose (Factive 320 mg tablet); 4.5 g total oral probenecid in the co-administration period split into 8 doses (1000 mg at -10 h and -2 h, 250 mg at +6 h and +14 h, 500 mg at +24 h / +36 h / +48 h / +60 h).",
-    regions          = "Germany (IBMP-Institute, Nuernberg-Heroldsberg).",
-    notes            = "Randomized, two-way crossover with washout >= 7 days between periods. Each subject received gemifloxacin alone in one period and gemifloxacin + probenecid in the other. Plasma sampled at 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48 h post-gemifloxacin-dose (14 samples per period) plus a predose; urine collected in 10 intervals through 72 h post-dose. WinNonlin (v4.0.1) was used for compartmental modeling and NCA; NONMEM (v V) was used only for visual predictive checks. Baseline demographics from Landersdorfer 2009 Results paragraph 1."
+    species = "human",
+    n_subjects = 17L,
+    n_studies = 1L,
+    age_range = "healthy adults; per-subject ages not tabulated in Landersdorfer 2009.",
+    weight_range = "mean 69.1 +/- 13 kg (Landersdorfer 2009 Results paragraph 1).",
+    height_range = "mean 173 +/- 10 cm (Landersdorfer 2009 Results paragraph 1).",
+    sex_female_pct = 47.1,
+    race_ethnicity = c(White = 100),
+    disease_state = "healthy Caucasian volunteers",
+    dose_range = "single 320 mg oral gemifloxacin dose (Factive 320 mg tablet); 4.5 g total oral probenecid in the co-administration period split into 8 doses (1000 mg at -10 h and -2 h, 250 mg at +6 h and +14 h, 500 mg at +24 h / +36 h / +48 h / +60 h).",
+    regions = "Germany (IBMP-Institute, Nuernberg-Heroldsberg).",
+    notes = "Randomized, two-way crossover with washout >= 7 days between periods. Each subject received gemifloxacin alone in one period and gemifloxacin + probenecid in the other. Plasma sampled at 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48 h post-gemifloxacin-dose (14 samples per period) plus a predose; urine collected in 10 intervals through 72 h post-dose. WinNonlin (v4.0.1) was used for compartmental modeling and NCA; NONMEM (v V) was used only for visual predictive checks. Baseline demographics from Landersdorfer 2009 Results paragraph 1."
   )
 
   ini({

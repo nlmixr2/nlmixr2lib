@@ -14,44 +14,44 @@ Standing_2008_diclofenac <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot1  = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot1 = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "diclofenac", units = "nmol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "diclofenac", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling with 70 kg reference: CL ~ (WT/70)^0.75, V ~ (WT/70)^1. Standing 2008 Methods page 847, equations under 'Pharmacokinetic model building'. Cohort weight range 9-94 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling with 70 kg reference: CL ~ (WT/70)^0.75, V ~ (WT/70)^1. Standing 2008 Methods page 847, equations under 'Pharmacokinetic model building'. Cohort weight range 9-94 kg (Table 1).",
+      source_name = "WT"
     ),
     CHILD = list(
-      description        = "Paediatric cohort indicator (1 = paediatric day-surgery patient, 0 = adult volunteer).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paediatric cohort indicator (1 = paediatric day-surgery patient, 0 = adult volunteer).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Used only to switch proportional residual error between cohorts. Standing 2008 estimated separate residual error for the two datasets because the two cohorts were analysed with different bioanalytical methods (HPLC/MS with ketoprofen internal standard on paediatric serum vs naproxen internal standard on adult plasma; assay LLOQs 10.1 ng/mL vs 10 ng/mL). Paper Methods page 848 'Pharmacokinetic model building'.",
-      source_name        = "CHILD"
+      notes = "Used only to switch proportional residual error between cohorts. Standing 2008 estimated separate residual error for the two datasets because the two cohorts were analysed with different bioanalytical methods (HPLC/MS with ketoprofen internal standard on paediatric serum vs naproxen internal standard on adult plasma; assay LLOQs 10.1 ng/mL vs 10 ng/mL). Paper Methods page 848 'Pharmacokinetic model building'.",
+      source_name = "CHILD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100L,
-    n_studies      = 2L,
-    age_range      = "1-28 years (children 1-12 years pooled with adults 18-28 years)",
-    age_median     = "3 years (paediatric), 21 years (adult); 9 years pooled (Table 1)",
-    weight_range   = "9-94 kg",
-    weight_median  = "17 kg (paediatric), 72 kg (adult); 34 kg pooled (Table 1)",
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 2L,
+    age_range = "1-28 years (children 1-12 years pooled with adults 18-28 years)",
+    age_median = "3 years (paediatric), 21 years (adult); 9 years pooled (Table 1)",
+    weight_range = "9-94 kg",
+    weight_median = "17 kg (paediatric), 72 kg (adult); 34 kg pooled (Table 1)",
     sex_female_pct = 45,
     race_ethnicity = "Not reported separately for the modelling cohort",
-    disease_state  = "Paediatric day-surgery patients (dermatology, general, plastic surgery) plus healthy adult volunteers",
-    dose_range     = "Single oral dose: 1 mg/kg diclofenac sodium suspension (paediatric, rounded to nearest 5 mg); 50 mg diclofenac sodium suspension (adult); formulation 50 mg/5 mL Rosemont Pharmaceuticals oral suspension",
-    regions        = "United Kingdom (Great Ormond Street Hospital, London) and Ireland (Shandon Clinic, Cork; adult bioequivalence cohort)",
-    notes          = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration)."
+    disease_state = "Paediatric day-surgery patients (dermatology, general, plastic surgery) plus healthy adult volunteers",
+    dose_range = "Single oral dose: 1 mg/kg diclofenac sodium suspension (paediatric, rounded to nearest 5 mg); 50 mg diclofenac sodium suspension (adult); formulation 50 mg/5 mL Rosemont Pharmaceuticals oral suspension",
+    regions = "United Kingdom (Great Ormond Street Hospital, London) and Ireland (Shandon Clinic, Cork; adult bioequivalence cohort)",
+    notes = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration)."
   )
 
   ini({

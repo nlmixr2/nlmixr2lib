@@ -8,34 +8,34 @@ Brillac_2025_isatuximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Body weight is the only retained covariate; allometric power scaling applied to CL, V1, Q, and V2 with reference 38 kg (population median in the pooled adult + pediatric analysis dataset; Brillac 2025 Table 1).",
-      source_name        = "WT"
+      notes = "Body weight is the only retained covariate; allometric power scaling applied to CL, V1, Q, and V2 with reference 38 kg (population median in the pooled adult + pediatric analysis dataset; Brillac 2025 Table 1).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 79L,
-    n_studies      = 2L,
-    age_range      = "1.4-74 years (pediatric 1.4-17.0; adults 16-74)",
-    age_median     = "8.0 years (pediatric only; adults: not reported individually)",
-    weight_range   = "8.8-108 kg (pediatric 8.8-108; adults 46-93)",
-    weight_median  = "38 kg (pooled population median; pediatric median 32.5 kg)",
+    n_subjects = 79L,
+    n_studies = 2L,
+    age_range = "1.4-74 years (pediatric 1.4-17.0; adults 16-74)",
+    age_median = "8.0 years (pediatric only; adults: not reported individually)",
+    weight_range = "8.8-108 kg (pediatric 8.8-108; adults 46-93)",
+    weight_median = "38 kg (pooled population median; pediatric median 32.5 kg)",
     sex_female_pct = 38.5,
     race_ethnicity = "not reported",
-    disease_state  = "Relapsed/refractory acute leukemia: pediatric AML (n = 26), pediatric B-ALL (n = 27), pediatric T-ALL (n = 12), and adult R/R T-ALL or T-cell lymphoblastic lymphoma (n = 14)",
-    dose_range     = "20 mg/kg IV infusion; QW for 4 doses then Q2W (ALL design: D1, 8, 15, 22, 29, 43, 57; AML design: D1, 8, 15 of C1 and optional C2)",
-    regions        = "Multicenter (ISLAY NCT02999633 and ISAKIDS NCT03860844)",
-    notes          = "Final pop-PK dataset of 674 plasma concentrations (555 pediatric + 119 adult; ~8 observations per patient). Pediatric subset baseline characteristics and weight/age distributions reported in Results / Patients section and Figure 1 of Brillac 2025; the only patient < 24 months in the analysis was a single 1.4-year-old infant. Sex split based on the 61.5% male statement for the 65 pediatric patients evaluable for PK; treated as the population value because adult-cohort sex is not separately reported. PopPK fit with Monolix 2021R2 SAEM (proportional error)."
+    disease_state = "Relapsed/refractory acute leukemia: pediatric AML (n = 26), pediatric B-ALL (n = 27), pediatric T-ALL (n = 12), and adult R/R T-ALL or T-cell lymphoblastic lymphoma (n = 14)",
+    dose_range = "20 mg/kg IV infusion; QW for 4 doses then Q2W (ALL design: D1, 8, 15, 22, 29, 43, 57; AML design: D1, 8, 15 of C1 and optional C2)",
+    regions = "Multicenter (ISLAY NCT02999633 and ISAKIDS NCT03860844)",
+    notes = "Final pop-PK dataset of 674 plasma concentrations (555 pediatric + 119 adult; ~8 observations per patient). Pediatric subset baseline characteristics and weight/age distributions reported in Results / Patients section and Figure 1 of Brillac 2025; the only patient < 24 months in the analysis was a single 1.4-year-old infant. Sex split based on the 61.5% male statement for the 65 pediatric patients evaluable for PK; treated as the population value because adult-cohort sex is not separately reported. PopPK fit with Monolix 2021R2 SAEM (proportional error)."
   )
 
   ini({

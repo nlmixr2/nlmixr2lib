@@ -32,19 +32,19 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
   vignette <- "Anbari_2023_atezolizumab_cibisatamab_qsp"
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
   covariateData <- list()
 
   population <- list(
-    species     = "human (in silico virtual cohort)",
-    n_subjects  = 500L,
-    n_studies   = 3L,
+    species = "human (in silico virtual cohort)",
+    n_subjects = 500L,
+    n_studies = 3L,
     disease_state = "metastatic colorectal cancer",
-    dose_range  = paste(
+    dose_range = paste(
       "Cibisatamab 0-100 mg QW to Q3W and atezolizumab 1200 mg Q3W; the",
       "calibration scenarios are 60 mg cibisatamab QW as monotherapy, 1200 mg",
       "atezolizumab Q3W as monotherapy, and their concurrent combination.",

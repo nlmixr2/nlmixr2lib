@@ -8,50 +8,50 @@ Hao_2018_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline per Hao 2018. Allometric power scaling on CL/F with reference 70 kg and the theory-based exponent 0.75 fixed (Hao 2018 Methods 'Covariate analysis': 'the allometric coefficients fixed at 0.75 for CL and 1 for V'); linear scaling on V/F with the same reference 70 kg and exponent 1.0 fixed. Study population mean (SD) 36.5 (17.4) kg, range 12.9-81.0 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline per Hao 2018. Allometric power scaling on CL/F with reference 70 kg and the theory-based exponent 0.75 fixed (Hao 2018 Methods 'Covariate analysis': 'the allometric coefficients fixed at 0.75 for CL and 1 for V'); linear scaling on V/F with the same reference 70 kg and exponent 1.0 fixed. Study population mean (SD) 36.5 (17.4) kg, range 12.9-81.0 kg (Table 1).",
+      source_name = "WT"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 nonexpresser)",
-      notes              = "Time-fixed germline genotype derived from rs776746 (CYP3A5 A6986G); the *1 (A) allele encodes functional CYP3A5 protein, the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Hao 2018 cohort (n = 28) the genotype distribution was *3/*3 = 21 (75%), *1/*3 = 6 (21.4%), *1/*1 = 1 (3.6%); CYP3A5_EXPR = 1 for the 7 *1 carriers, 0 for the 21 nonexpressers. Multiplicative effect on CL/F as `e_cyp3a5_expr_cl ^ CYP3A5_EXPR` with `e_cyp3a5_expr_cl = 1.60` (60% higher CL/F in expressers). Hao 2018 Table 2 final model equation: F_CYP3A5 = theta_3 = 1.60 if *1/*1 or *1/*3; F_CYP3A5 = 1 if *3/*3.",
-      source_name        = "FLAG1"
+      notes = "Time-fixed germline genotype derived from rs776746 (CYP3A5 A6986G); the *1 (A) allele encodes functional CYP3A5 protein, the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Hao 2018 cohort (n = 28) the genotype distribution was *3/*3 = 21 (75%), *1/*3 = 6 (21.4%), *1/*1 = 1 (3.6%); CYP3A5_EXPR = 1 for the 7 *1 carriers, 0 for the 21 nonexpressers. Multiplicative effect on CL/F as `e_cyp3a5_expr_cl ^ CYP3A5_EXPR` with `e_cyp3a5_expr_cl = 1.60` (60% higher CL/F in expressers). Hao 2018 Table 2 final model equation: F_CYP3A5 = theta_3 = 1.60 if *1/*1 or *1/*3; F_CYP3A5 = 1 if *3/*3.",
+      source_name = "FLAG1"
     )
   )
 
   population <- list(
-    species               = "human",
-    n_subjects            = 28L,
-    n_studies             = 1L,
-    n_observations        = 148L,
-    age_range             = "2.7-17.3 years",
-    age_median            = "9.4 years",
-    age_mean_sd           = "9.5 (4.4) years",
-    weight_range          = "12.9-81.0 kg",
-    weight_median         = "30.0 kg",
-    weight_mean_sd        = "36.5 (17.4) kg",
-    sex_female_pct        = 32.1,
-    race_ethnicity        = "Not reported in source paper (single-centre Chinese cohort, Children's Hospital of Hebei Province, Shijiazhuang).",
-    disease_state         = "Paediatric patients with nephrotic syndrome treated with twice-daily oral tacrolimus (Prograf, Astellas, Japan) as initial immunosuppressant. Children under 18 years of age were enrolled prospectively; participants with concomitant medical conditions that posed unacceptable additional risk were excluded. Study registered at ClinicalTrials.gov NCT03347357.",
-    dose_range            = "Starting dose 0.05 mg/kg twice daily (Methods: 'Tacrolimus (Prograf, Astellas, Japan), was administered orally at a dose of 0.05 mg kg-1 dose-1 twice daily'); actual administered tacrolimus per-dose range 1.0-8.0 mg twice daily (Table 1; median 4.0 mg, mean 3.8 mg SD 2.2 mg); weight-normalised range 0.0222-0.3876 mg/kg twice daily (Table 1; median 0.0909, mean 0.1199 SD 0.0860).",
-    regions               = "China (Children's Hospital of Hebei Province, Shijiazhuang).",
-    cyp3a5_distribution   = "*3/*3 = 21 (75%); *1/*3 = 6 (21.4%); *1/*1 = 1 (3.6%). Total n = 28. Determined from rs776746 (CYP3A5 A6986G) by TaqMan allelic discrimination (Hao 2018 Methods 'Analytical method of tacrolimus and genotyping').",
-    sampling_window       = "Steady-state full concentration-time profiles were obtained during hospitalisation after a steady-state condition was achieved. Per Methods, samples were drawn predose and at 1, 2, 3, 6, 9, and 12 h after a tacrolimus dose. 148 tacrolimus concentrations in total (1-7 samples per patient).",
-    assay                 = "Whole-blood tacrolimus measured by HPLC-MS/MS over the range 2.0-100 ng/mL (lower limit of quantification 2.0 ng/mL; intraday CV 4.4%, interday CV 7.2%). Concentrations below the LOQ (n = 11) were replaced with half-LOQ (1.0 ng/mL) in PK modelling per Methods 'Model building'.",
-    target_trough_window  = "Recommended target predose concentration (C0) of 5-10 ng/mL for paediatric nephrotic syndrome (Hao 2018 Discussion and references [8, 54]); the simulation-based dosing recommendation in this paper is 0.10 mg/kg twice daily for *3/*3 nonexpressers and 0.25 mg/kg twice daily for *1 carriers.",
-    notes                 = "Single-centre, prospective, open-label trial 2015-2017. The model is intended for paediatric nephrotic-syndrome patients receiving the twice-daily oral immediate-release formulation; it is NOT validated for adults, kidney transplant recipients, or the once-daily extended-release formulation. The Discussion (Limitations paragraph) explicitly notes that only internal validation was performed."
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
+    n_observations = 148L,
+    age_range = "2.7-17.3 years",
+    age_median = "9.4 years",
+    age_mean_sd = "9.5 (4.4) years",
+    weight_range = "12.9-81.0 kg",
+    weight_median = "30.0 kg",
+    weight_mean_sd = "36.5 (17.4) kg",
+    sex_female_pct = 32.1,
+    race_ethnicity = "Not reported in source paper (single-centre Chinese cohort, Children's Hospital of Hebei Province, Shijiazhuang).",
+    disease_state = "Paediatric patients with nephrotic syndrome treated with twice-daily oral tacrolimus (Prograf, Astellas, Japan) as initial immunosuppressant. Children under 18 years of age were enrolled prospectively; participants with concomitant medical conditions that posed unacceptable additional risk were excluded. Study registered at ClinicalTrials.gov NCT03347357.",
+    dose_range = "Starting dose 0.05 mg/kg twice daily (Methods: 'Tacrolimus (Prograf, Astellas, Japan), was administered orally at a dose of 0.05 mg kg-1 dose-1 twice daily'); actual administered tacrolimus per-dose range 1.0-8.0 mg twice daily (Table 1; median 4.0 mg, mean 3.8 mg SD 2.2 mg); weight-normalised range 0.0222-0.3876 mg/kg twice daily (Table 1; median 0.0909, mean 0.1199 SD 0.0860).",
+    regions = "China (Children's Hospital of Hebei Province, Shijiazhuang).",
+    cyp3a5_distribution = "*3/*3 = 21 (75%); *1/*3 = 6 (21.4%); *1/*1 = 1 (3.6%). Total n = 28. Determined from rs776746 (CYP3A5 A6986G) by TaqMan allelic discrimination (Hao 2018 Methods 'Analytical method of tacrolimus and genotyping').",
+    sampling_window = "Steady-state full concentration-time profiles were obtained during hospitalisation after a steady-state condition was achieved. Per Methods, samples were drawn predose and at 1, 2, 3, 6, 9, and 12 h after a tacrolimus dose. 148 tacrolimus concentrations in total (1-7 samples per patient).",
+    assay = "Whole-blood tacrolimus measured by HPLC-MS/MS over the range 2.0-100 ng/mL (lower limit of quantification 2.0 ng/mL; intraday CV 4.4%, interday CV 7.2%). Concentrations below the LOQ (n = 11) were replaced with half-LOQ (1.0 ng/mL) in PK modelling per Methods 'Model building'.",
+    target_trough_window = "Recommended target predose concentration (C0) of 5-10 ng/mL for paediatric nephrotic syndrome (Hao 2018 Discussion and references [8, 54]); the simulation-based dosing recommendation in this paper is 0.10 mg/kg twice daily for *3/*3 nonexpressers and 0.25 mg/kg twice daily for *1 carriers.",
+    notes = "Single-centre, prospective, open-label trial 2015-2017. The model is intended for paediatric nephrotic-syndrome patients receiving the twice-daily oral immediate-release formulation; it is NOT validated for adults, kidney transplant recipients, or the once-daily extended-release formulation. The Discussion (Limitations paragraph) explicitly notes that only internal validation was performed."
   )
 
   ini({

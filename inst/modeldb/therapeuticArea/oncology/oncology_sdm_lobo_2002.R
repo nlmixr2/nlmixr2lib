@@ -12,10 +12,10 @@ oncology_sdm_lobo_2002 <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     tumor_vol = list(analyte = "tumour_size", units = NA_character_, specimen = "tumor", verified = FALSE),
-    transit1  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit2  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit3  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    transit4  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE)
+    transit1 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   ini({

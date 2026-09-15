@@ -25,7 +25,7 @@ Zhang_2024_nirmatrelvir <- function() {
     sep = " "
   )
   vignette <- "Zhang_2024_nirmatrelvir"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE: the two states follow directly from
@@ -36,17 +36,17 @@ Zhang_2024_nirmatrelvir <- function() {
   # "serum concentrations" wording is inconsistent with the Methods; the
   # Methods matrix is used.
   compartmentData <- list(
-    depot   = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "nirmatrelvir", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "nirmatrelvir", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "A priori allometric scaling, not estimated. Zhang 2024 Methods,",
         "Model Development: 'a priori allometric scaling was employed, with",
         "volume terms multiplied by (WT/70) and clearance terms multiplied by",
@@ -58,14 +58,14 @@ Zhang_2024_nirmatrelvir <- function() {
         "(Table 1); the 70 kg reference is therefore above the cohort median.",
         "Table 4 simulates 40, 65, 90 and 115 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column CrCl. The only covariate retained after stepwise",
         "forward inclusion and backward elimination (Results, Model",
         "Development: 'the model retained only CrCl (objective function",
@@ -85,44 +85,44 @@ Zhang_2024_nirmatrelvir <- function() {
         "a BSA-normalized value here would silently rescale the renal term.",
         "Tables 3 simulates CrCl 15, 45, 70 and 100 mL/min."
       ),
-      source_name        = "CrCl"
+      source_name = "CrCl"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 129L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 129L,
+    n_studies = 1L,
     n_observations = 130L,
-    age_range      = "18.0-97.0 years",
-    age_median     = "76.0 years",
-    age_mean       = "73.2 years (SD 14.7)",
-    weight_range   = "37.5-96.0 kg",
-    weight_median  = "61.1 kg",
-    weight_mean    = "61.2 kg (SD 9.3)",
+    age_range = "18.0-97.0 years",
+    age_median = "76.0 years",
+    age_mean = "73.2 years (SD 14.7)",
+    weight_range = "37.5-96.0 kg",
+    weight_median = "61.1 kg",
+    weight_mean = "61.2 kg (SD 9.3)",
     sex_female_pct = 49.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "mild to moderate COVID-19 infection",
+    disease_state = "mild to moderate COVID-19 infection",
     renal_function = paste(
       "Creatinine clearance 56.7 +/- 33.1 mL/min, median 52.9,",
       "range 4.8-289.2 mL/min (Table 1); the cohort spans normal renal",
       "function through severe renal impairment."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Ritonavir 100 mg twice daily as the fixed nirmatrelvir/ritonavir",
       "combination. Patients who had used cytochrome P450 or P-glycoprotein",
       "inhibitors or inducers within the prior week were excluded. Other",
       "co-medication was not collected (Results, Demographic Parameters:",
       "'Information related to N/R co-administration not collected')."
     ),
-    dose_range     = "300 mg nirmatrelvir / 100 mg ritonavir orally twice daily for 5 days",
-    regions        = "China (Changxing People's Hospital, Zhejiang)",
-    sampling       = paste(
+    dose_range = "300 mg nirmatrelvir / 100 mg ritonavir orally twice daily for 5 days",
+    regions = "China (Changxing People's Hospital, Zhejiang)",
+    sampling = paste(
       "Sparse sampling; the sampling times 'mainly represent valley",
       "concentrations' (Results, Model Development), which is why V/F and Ka",
       "were fixed rather than estimated."
     ),
-    notes          = paste(
+    notes = paste(
       "Single-centre retrospective PK trial run December 2022 to June 2023.",
       "129 patients (65 male, 64 female) contributing 130 plasma samples.",
       "Baseline demographics in Table 1. Adults aged 18 years or older with",

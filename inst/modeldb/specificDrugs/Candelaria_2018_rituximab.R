@@ -8,38 +8,38 @@ Candelaria_2018_rituximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effect on V1 (central volume) with exponent 1.11; reference 1.72 m^2 (Candelaria 2018 Table 1 median). The paper uses median-centered power equations for continuous covariates (Methods 'Covariate analysis'). BSA computation formula is not specified in the paper (assume unspecified).",
-      source_name        = "BSA"
+      notes = "Time-fixed baseline value. Power effect on V1 (central volume) with exponent 1.11; reference 1.72 m^2 (Candelaria 2018 Table 1 median). The paper uses median-centered power equations for continuous covariates (Methods 'Covariate analysis'). BSA computation formula is not specified in the paper (assume unspecified).",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 251L,
-    n_studies      = 1L,
-    age_range      = "18-66 years",
-    age_median     = "51 years",
-    weight_range   = "33.0-137.3 kg",
-    weight_median  = "66.0 kg",
+    species = "human",
+    n_subjects = 251L,
+    n_studies = 1L,
+    age_range = "18-66 years",
+    age_median = "51 years",
+    weight_range = "33.0-137.3 kg",
+    weight_median = "66.0 kg",
     sex_female_pct = 45.4,
-    bsa_range      = "1.14-2.54 m^2",
-    bsa_median     = "1.72 m^2",
-    disease_state  = "Diffuse large B-cell lymphoma (DLBCL), Ann Arbor stage II-IV with bulky disease, ECOG performance status 0-2, IPI score 0-1; first-line treatment.",
-    dose_range     = "375 mg/m^2 IV every 3 weeks for 1-6 cycles, co-administered with CHOP chemotherapy (cyclophosphamide, doxorubicin, vincristine, prednisone). Loading and steady-state PK sampled at cycle 1 and cycle 6.",
-    regions        = "58 research sites in 12 countries (Argentina, Brazil, Colombia, India, Indonesia, Iran, Malaysia, Philippines, Russian Federation, South Africa).",
+    bsa_range = "1.14-2.54 m^2",
+    bsa_median = "1.72 m^2",
+    disease_state = "Diffuse large B-cell lymphoma (DLBCL), Ann Arbor stage II-IV with bulky disease, ECOG performance status 0-2, IPI score 0-1; first-line treatment.",
+    dose_range = "375 mg/m^2 IV every 3 weeks for 1-6 cycles, co-administered with CHOP chemotherapy (cyclophosphamide, doxorubicin, vincristine, prednisone). Loading and steady-state PK sampled at cycle 1 and cycle 6.",
+    regions = "58 research sites in 12 countries (Argentina, Brazil, Colombia, India, Indonesia, Iran, Malaysia, Philippines, Russian Federation, South Africa).",
     n_observations = 5341L,
     treatment_arms = "RTXM83-CHOP n=127 (50.6%); rituximab reference-CHOP n=124 (49.4%). PK pooled across both arms (similarity demonstrated).",
-    notes          = "Final pooled-arm population PK model in Candelaria 2018 Table 2. Both RTXM83 (biosimilar) and rituximab reference product were fitted with a single structural model demonstrating bioequivalence (AUC and Cmax 90% CI within 0.80-1.25 at both cycle 1 and cycle 6). Covariates evaluated and not retained: age, weight, sex, CD19+ count, bone marrow involvement, ECOG PS, bulky disease, extranodal lesions, IPI score, ADA status. Reference (median) covariate values: BSA 1.72 m^2 (Table 1). NCT02268045 (RTXM83-AC-01-11). Source NONMEM 7.3.0 with PsN 4.4.8; FOCE with INTERACTION."
+    notes = "Final pooled-arm population PK model in Candelaria 2018 Table 2. Both RTXM83 (biosimilar) and rituximab reference product were fitted with a single structural model demonstrating bioequivalence (AUC and Cmax 90% CI within 0.80-1.25 at both cycle 1 and cycle 6). Covariates evaluated and not retained: age, weight, sex, CD19+ count, bone marrow involvement, ECOG PS, bulky disease, extranodal lesions, IPI score, ADA status. Reference (median) covariate values: BSA 1.72 m^2 (Table 1). NCT02268045 (RTXM83-AC-01-11). Source NONMEM 7.3.0 with PsN 4.4.8; FOCE with INTERACTION."
   )
 
   ini({

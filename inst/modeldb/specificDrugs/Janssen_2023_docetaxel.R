@@ -20,7 +20,7 @@ Janssen_2023_docetaxel <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "docetaxel", units = "mg", specimen = "plasma", verified = FALSE)
   )

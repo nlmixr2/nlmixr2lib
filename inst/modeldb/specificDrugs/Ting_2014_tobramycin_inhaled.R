@@ -12,53 +12,53 @@ Ting_2014_tobramycin_inhaled <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tobramycin inhaled", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tobramycin inhaled", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tobramycin inhaled", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tobramycin inhaled", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tobramycin inhaled", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent central volume Vd/F: (BMI / 18.8)^0.624 (Ting 2014 Results, equation between Tables 1 and 2). Reference 18.8 kg/m^2 is the population median across the combined three-study cohort (Table 1). Baseline / time-fixed.",
-      source_name        = "BMI"
+      notes = "Power-form effect on apparent central volume Vd/F: (BMI / 18.8)^0.624 (Ting 2014 Results, equation between Tables 1 and 2). Reference 18.8 kg/m^2 is the population median across the combined three-study cohort (Table 1). Baseline / time-fixed.",
+      source_name = "BMI"
     ),
     FEV1_PCTPRED = list(
-      description        = "Baseline forced expiratory volume in 1 second as percent of the predicted value",
-      units              = "% predicted",
-      type               = "continuous",
+      description = "Baseline forced expiratory volume in 1 second as percent of the predicted value",
+      units = "% predicted",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on apparent central volume Vd/F: (FEV1_PCTPRED / 62.1)^-0.303 (Ting 2014 Results, equation between Tables 1 and 2). Reference 62.1 % predicted is the population median across the combined three-study cohort (Table 1). Source paper uses the unsubscripted notation 'FEV1% predicted'; the canonical column FEV1_PCTPRED carries the percent-predicted value as a number (e.g. 62.1, not 0.621). Baseline / time-fixed.",
-      source_name        = "FEV1% predicted"
+      notes = "Power-form effect on apparent central volume Vd/F: (FEV1_PCTPRED / 62.1)^-0.303 (Ting 2014 Results, equation between Tables 1 and 2). Reference 62.1 % predicted is the population median across the combined three-study cohort (Table 1). Source paper uses the unsubscripted notation 'FEV1% predicted'; the canonical column FEV1_PCTPRED carries the percent-predicted value as a number (e.g. 62.1, not 0.621). Baseline / time-fixed.",
+      source_name = "FEV1% predicted"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 139L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 139L,
+    n_studies = 3L,
     n_observations = 662L,
-    age_range      = "6-58 years",
-    age_median     = "17 years (SD 10.8) across the combined cohort; sub-study medians 21 (TPI001), 14 (C2301), 31 (C2302)",
-    age_groups     = c("6-11 yr" = 20.9, "12-17 yr" = 31.7, ">=18 yr" = 47.5),
-    weight_range   = "16.2-100.9 kg",
-    weight_median  = "49.5 kg (SD 17.7)",
-    bmi_range      = "11.4-31 kg/m^2",
-    bmi_median     = "18.8 kg/m^2 (SD 4.1)",
-    crcl_range     = "63.9-222.5 mL/min",
-    crcl_median    = "112.5 mL/min (SD 29.5)",
-    fev1_pctpred_range  = "24.1-119.7 % predicted",
+    age_range = "6-58 years",
+    age_median = "17 years (SD 10.8) across the combined cohort; sub-study medians 21 (TPI001), 14 (C2301), 31 (C2302)",
+    age_groups = c("6-11 yr" = 20.9, "12-17 yr" = 31.7, ">=18 yr" = 47.5),
+    weight_range = "16.2-100.9 kg",
+    weight_median = "49.5 kg (SD 17.7)",
+    bmi_range = "11.4-31 kg/m^2",
+    bmi_median = "18.8 kg/m^2 (SD 4.1)",
+    crcl_range = "63.9-222.5 mL/min",
+    crcl_median = "112.5 mL/min (SD 29.5)",
+    fev1_pctpred_range = "24.1-119.7 % predicted",
     fev1_pctpred_median = "62.1 % predicted (SD 20.6)",
     sex_female_pct = 53.2,
     race_ethnicity = c(White = 86.3, Black = 2.2, Hispanic = 8.6, Other = 2.9),
-    disease_state  = "Cystic fibrosis patients with Pseudomonas aeruginosa airway infection (ages 6+), pooled from one phase I (TPI001) and two phase III (C2301, C2302) studies.",
-    dose_range     = "Single doses of 28, 56, 84, or 112 mg TIP (phase I dose-escalation TPI001); 112 mg b.i.d. multiple doses for 28 days/cycle in phase III studies C2301 and C2302.",
+    disease_state = "Cystic fibrosis patients with Pseudomonas aeruginosa airway infection (ages 6+), pooled from one phase I (TPI001) and two phase III (C2301, C2302) studies.",
+    dose_range = "Single doses of 28, 56, 84, or 112 mg TIP (phase I dose-escalation TPI001); 112 mg b.i.d. multiple doses for 28 days/cycle in phase III studies C2301 and C2302.",
     administration = "Inhaled dry tobramycin powder delivered via the TOBI Podhaler (Novartis) dry-powder inhaler. Dose entered the model as the prescribed inhaled mass; absolute bioavailability is unidentifiable and absorbed into the apparent parameters CL/F, Vd/F, Q/F, V2/F.",
-    regions        = "Multinational (study locations not enumerated in the paper).",
-    notes          = "Baseline demographics from Ting 2014 Table 1 ('Combined' column). Three pooled studies: TPI001 (phase I dose-escalation, n=64), C2301 (phase III, n=62), C2302 (phase III, n=13)."
+    regions = "Multinational (study locations not enumerated in the paper).",
+    notes = "Baseline demographics from Ting 2014 Table 1 ('Combined' column). Three pooled studies: TPI001 (phase I dose-escalation, n=64), C2301 (phase III, n=62), C2302 (phase III, n=13)."
   )
 
   ini({

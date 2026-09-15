@@ -40,36 +40,36 @@ Yu_2015_sunitinib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_su12662     = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline; used for fixed-exponent allometric scaling with reference 70 kg. Yu 2015 Methods: exponent 0.75 on CL / Qh / Qi and 1.0 on Vc / Vp (Eqs 3-4). About 6% of subjects in the paper had no WT and were imputed to the population mean of 70 kg; the model assumes a finite positive WT is supplied per subject.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline; used for fixed-exponent allometric scaling with reference 70 kg. Yu 2015 Methods: exponent 0.75 on CL / Qh / Qi and 1.0 on Vc / Vp (Eqs 3-4). About 6% of subjects in the paper had no WT and were imputed to the population mean of 70 kg; the model assumes a finite positive WT is supplied per subject.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 70L,
-    n_studies      = 3L,
-    age_range      = "adult cancer patients (specific range not extractable from main text)",
-    weight_range   = "39-157 kg",
-    weight_median  = "82 kg",
+    species = "human",
+    n_subjects = 70L,
+    n_studies = 3L,
+    age_range = "adult cancer patients (specific range not extractable from main text)",
+    weight_range = "39-157 kg",
+    weight_median = "82 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Adult patients with cancer, pooled across three previously conducted PK studies (Study 1 n=50, Study 2 n=7, Study 3 n=13).",
-    dose_range     = "Oral sunitinib 25, 37.5, or 50 mg once daily; complete dosing histories were not available for each patient and pre-dose concentrations were handled via the Soy 'missing-dose' method during NONMEM estimation.",
-    regions        = "Three multi-centre clinical-pharmacology studies (Netherlands Cancer Institute and partner centres).",
-    notes          = "Pooled n = 1205 plasma samples (602 sunitinib + 603 SU12662) from 70 cancer patients. Baseline WT median 82 kg; per Yu 2015 Table 1 the WT range is 39-157 kg. Sex / race / age breakdown is not reported in the main text. Body weights for the simulation cohort follow a truncated log-normal distribution with mean 82.3 kg, SD 19.4 kg, truncated at 39-157 kg (Yu 2015 'Simulations of dosing regimens')."
+    disease_state = "Adult patients with cancer, pooled across three previously conducted PK studies (Study 1 n=50, Study 2 n=7, Study 3 n=13).",
+    dose_range = "Oral sunitinib 25, 37.5, or 50 mg once daily; complete dosing histories were not available for each patient and pre-dose concentrations were handled via the Soy 'missing-dose' method during NONMEM estimation.",
+    regions = "Three multi-centre clinical-pharmacology studies (Netherlands Cancer Institute and partner centres).",
+    notes = "Pooled n = 1205 plasma samples (602 sunitinib + 603 SU12662) from 70 cancer patients. Baseline WT median 82 kg; per Yu 2015 Table 1 the WT range is 39-157 kg. Sex / race / age breakdown is not reported in the main text. Body weights for the simulation cohort follow a truncated log-normal distribution with mean 82.3 kg, SD 19.4 kg, truncated at 39-157 kg (Yu 2015 'Simulations of dosing regimens')."
   )
 
   ini({

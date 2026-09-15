@@ -56,11 +56,11 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight; reference 80.1 kg, stated by",
         "Hadigol 2026 to be the population median (Table 5 Note: 'Baseline",
         "body weight and age were considered at the median values of",
@@ -77,14 +77,14 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
         "missing baseline body weight, imputed with the population median",
         "(Methods, Data for Analysis)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 71 years, the population median (Hadigol 2026 Table 5",
         "Note). Enters in TWO different functional forms: a LINEAR-deviation",
         "form on enzalutamide CLe/Fe, '1 - 0.003 * (Age - 71)' (equation 2),",
@@ -95,16 +95,16 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
         "the same stepwise search for enzalutamide (Results, Population PK",
         "Model for Enzalutamide)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Baseline creatinine clearance, RAW (not BSA-normalized) mL/min"
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw un-normalised creatinine clearance in mL/min, NOT the",
         "mL/min/1.73 m^2 BSA-normalised default of the CRCL canonical - the",
         "same per-model variant recorded for Delattre 2010 amikacin and Chen",
@@ -127,16 +127,16 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
         "patients had a missing baseline creatinine clearance, imputed with",
         "the population median (Methods, Data for Analysis)."
       ),
-      source_name        = "BCCL"
+      source_name = "BCCL"
     )
   )
 
   covariatesDataExcluded <- list(
     CONMED_CYP3A4_MOD = list(
       description = "Concomitant moderate CYP3A4 inhibitor",
-      units       = NA_character_,
-      type        = "binary",
-      notes       = paste(
+      units = NA_character_,
+      type = "binary",
+      notes = paste(
         "Screened and REJECTED twice. On enzalutamide CLe/Fe it entered the",
         "full model in the forward stepwise search but was eliminated in the",
         "single backward elimination step. On N-desmethyl enzalutamide CLn it",
@@ -149,9 +149,9 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
     ),
     CONMED_PGP_INHIB_MOD = list(
       description = "Concomitant moderate P-glycoprotein inhibitor",
-      units       = NA_character_,
-      type        = "binary",
-      notes       = paste(
+      units = NA_character_,
+      type = "binary",
+      notes = paste(
         "Explored as a categorical covariate on talazoparib relative",
         "bioavailability Ft and on kat, and not retained. The effect of",
         "STRONG P-gp inhibitors was not evaluated at all, because too few",
@@ -165,9 +165,9 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race (versus non-Asian)",
-      units       = NA_character_,
-      type        = "binary",
-      notes       = paste(
+      units = NA_character_,
+      type = "binary",
+      notes = paste(
         "Tested on talazoparib CLt/Ft because race (Asian versus non-Asian)",
         "was a significant covariate on CLt/Ft in the talazoparib",
         "monotherapy model; not retained here. No point estimate is",
@@ -176,9 +176,9 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
     ),
     REGION_CHINA = list(
       description = "Chinese region (versus non-Chinese)",
-      units       = NA_character_,
-      type        = "binary",
-      notes       = paste(
+      units = NA_character_,
+      type = "binary",
+      notes = paste(
         "Tested on talazoparib CLt0/Ft and Vct/Ft and found not to be a",
         "significant covariate on either (Results and Conclusions). No point",
         "estimate is reported."
@@ -187,24 +187,24 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
   )
 
   compartmentData <- list(
-    depot                = list(analyte = "talazoparib",                  units = "mg", specimen = "administration site", verified = TRUE),
-    central              = list(analyte = "talazoparib",                  units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1          = list(analyte = "talazoparib",                  units = "mg", specimen = "plasma",              verified = TRUE),
-    depot_enz            = list(analyte = "enzalutamide",                 units = "mg", specimen = "administration site", verified = TRUE),
-    central_enz          = list(analyte = "enzalutamide",                 units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1_enz      = list(analyte = "enzalutamide",                 units = "mg", specimen = "plasma",              verified = TRUE),
-    central_ndmenz       = list(analyte = "N-desmethyl enzalutamide",     units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1_ndmenz   = list(analyte = "N-desmethyl enzalutamide",     units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "talazoparib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "talazoparib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "talazoparib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot_enz = list(analyte = "enzalutamide", units = "mg", specimen = "administration site", verified = TRUE),
+    central_enz = list(analyte = "enzalutamide", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_enz = list(analyte = "enzalutamide", units = "mg", specimen = "plasma", verified = TRUE),
+    central_ndmenz = list(analyte = "N-desmethyl enzalutamide", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_ndmenz = list(analyte = "N-desmethyl enzalutamide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 811L,
-    n_studies      = 1L,
-    age_median     = "71 years",
-    weight_median  = "80.1 kg",
+    species = "human",
+    n_subjects = 811L,
+    n_studies = 1L,
+    age_median = "71 years",
+    weight_median = "80.1 kg",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Metastatic castration-resistant prostate cancer (mCRPC). All",
       "patients are men. 792 patients came from TALAPRO-2 Part 2 Cohort 1,",
       "which enrolled patients UNSELECTED for homologous recombination",
@@ -217,7 +217,7 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
       "enzalutamide data while only the 412 of 414 with at least one",
       "non-BLQ talazoparib observation contribute talazoparib data."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Enzalutamide 160 mg orally once daily, with protocol-permitted",
       "reductions to 120 mg and 80 mg once daily. Talazoparib 0.5 mg orally",
       "once daily, reduced to a 0.35 mg once-daily starting dose for",
@@ -235,7 +235,7 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
       "(severe) mL/min; the Table 4 Note records that there were NO",
       "patients with end-stage renal disease in the dataset."
     ),
-    notes          = paste(
+    notes = paste(
       "Data are pooled from Part 1 and Part 2 Cohort 1 of the Phase 3",
       "TALAPRO-2 trial (NCT03395197). Dense plasma sampling was designed",
       "for Part 1 and only SPARSE sampling for Part 2, which is the main",

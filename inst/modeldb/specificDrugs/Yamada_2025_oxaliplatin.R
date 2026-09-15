@@ -46,29 +46,29 @@ Yamada_2025_oxaliplatin <- function() {
   # ADMINISTERED OXALIPLATIN dose in mg (that is what "ng platinum/mL/mg"
   # means there). The vignette walks this check explicitly.
   compartmentData <- list(
-    central     = list(analyte = "platinum (free)", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "platinum (free)", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "platinum (free)", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "platinum (free)", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CONMED_ZOLBETUXIMAB = list(
-      description        = "Concomitant zolbetuximab coadministration (1 = oxaliplatin given in the presence of zolbetuximab, 0 = oxaliplatin alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant zolbetuximab coadministration (1 = oxaliplatin given in the presence of zolbetuximab, 0 = oxaliplatin alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oxaliplatin alone; ILUSTRO Cohort 2 Cycle 1, in which zolbetuximab was deliberately delayed to Day 3 so that oxaliplatin PK could be sampled without it)",
-      notes              = "Enters as the fractional covariate model P = theta_p * (1 + theta_zolbetuximab * X_zolbetuximab) (Methods, 'Evaluation of zolbetuximab effect as a covariate'; Article Equation a), applied with a single shared coefficient to V1, V2 and V3. The estimate is -0.123 (RSE 32.0%), i.e. a 12.3% reduction in each distribution volume and hence in steady-state volume; the paper judges this statistically significant (dOFV -13.834, likelihood-ratio P = 0.0002) but not clinically relevant. Effects on CL and on the free fraction fp were also screened and rejected (dOFV -3.649 and -10.654 respectively, against the 10.83 backward-elimination criterion at alpha = 0.001). Time-varying in principle -- a patient contributes X = 0 in Cycle 1 and X = 1 in Cycle 2 -- so this column belongs on the observation/dosing records rather than being a subject-level baseline.",
-      source_name        = "X_zolbetuximab"
+      notes = "Enters as the fractional covariate model P = theta_p * (1 + theta_zolbetuximab * X_zolbetuximab) (Methods, 'Evaluation of zolbetuximab effect as a covariate'; Article Equation a), applied with a single shared coefficient to V1, V2 and V3. The estimate is -0.123 (RSE 32.0%), i.e. a 12.3% reduction in each distribution volume and hence in steady-state volume; the paper judges this statistically significant (dOFV -13.834, likelihood-ratio P = 0.0002) but not clinically relevant. Effects on CL and on the free fraction fp were also screened and rejected (dOFV -3.649 and -10.654 respectively, against the 10.83 backward-elimination criterion at alpha = 0.001). Time-varying in principle -- a patient contributes X = 0 in Cycle 1 and X = 1 in Cycle 2 -- so this column belongs on the observation/dosing records rather than being a subject-level baseline.",
+      source_name = "X_zolbetuximab"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    disease_state  = "Adults with previously untreated, locally advanced unresectable or metastatic HER2-negative, CLDN18.2-positive gastric or gastroesophageal junction (G/GEJ) adenocarcinoma (CLDN18.2 positivity defined as >= 75% of tumor cells with moderate to strong membranous CLDN18 staining intensity). Cohort 2 of the phase 2 ILUSTRO study (NCT03505320).",
-    dose_range     = "Oxaliplatin 85 mg/m^2 IV infused over 2 h concurrently with folinic acid 400 mg/m^2, on Days 1, 15 and 29 of 42-day cycles for up to 4 cycles, as part of mFOLFOX6 (followed by 5-FU 400 mg/m^2 IV bolus over 5-15 min then 5-FU 2400 mg/m^2 over 46-48 h). Zolbetuximab 800 mg/m^2 loading dose then 600 mg/m^2, each a minimum 2-h IV infusion, on Days 1 and 22 of each cycle except Cycle 1, where it was given on Day 3 so that oxaliplatin PK could be sampled in its absence.",
-    notes          = "Baseline clinical and demographic characteristics are not tabulated in this paper; it cites the previously published ILUSTRO Cohort 2 report (reference 4) for them, which was not available on disk at extraction time. Analysis dataset: 232 non-BQL and 5 BQL free-platinum concentrations and 237 non-BQL total-platinum concentrations originally; the 5 BQL free-platinum values and 34 non-BQL values (17 free, 17 total) were excluded during base model development for duplicate sampling or measurement error. PK sampling: predose, end of infusion, and 0.5, 1, 2, 5 and 24 h after the start of dosing in Cycles 1 (chemotherapy alone) and 2 (chemotherapy plus zolbetuximab). Assay: validated ICP-MS, LLOQ 1 ng platinum/mL (total) and 3 ng platinum/mL (free). Estimation in NONMEM 7.5.0; the final model's covariance step used MATRIX=S and its condition number was 582.53."
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    disease_state = "Adults with previously untreated, locally advanced unresectable or metastatic HER2-negative, CLDN18.2-positive gastric or gastroesophageal junction (G/GEJ) adenocarcinoma (CLDN18.2 positivity defined as >= 75% of tumor cells with moderate to strong membranous CLDN18 staining intensity). Cohort 2 of the phase 2 ILUSTRO study (NCT03505320).",
+    dose_range = "Oxaliplatin 85 mg/m^2 IV infused over 2 h concurrently with folinic acid 400 mg/m^2, on Days 1, 15 and 29 of 42-day cycles for up to 4 cycles, as part of mFOLFOX6 (followed by 5-FU 400 mg/m^2 IV bolus over 5-15 min then 5-FU 2400 mg/m^2 over 46-48 h). Zolbetuximab 800 mg/m^2 loading dose then 600 mg/m^2, each a minimum 2-h IV infusion, on Days 1 and 22 of each cycle except Cycle 1, where it was given on Day 3 so that oxaliplatin PK could be sampled in its absence.",
+    notes = "Baseline clinical and demographic characteristics are not tabulated in this paper; it cites the previously published ILUSTRO Cohort 2 report (reference 4) for them, which was not available on disk at extraction time. Analysis dataset: 232 non-BQL and 5 BQL free-platinum concentrations and 237 non-BQL total-platinum concentrations originally; the 5 BQL free-platinum values and 34 non-BQL values (17 free, 17 total) were excluded during base model development for duplicate sampling or measurement error. PK sampling: predose, end of infusion, and 0.5, 1, 2, 5 and 24 h after the start of dosing in Cycles 1 (chemotherapy alone) and 2 (chemotherapy plus zolbetuximab). Assay: validated ICP-MS, LLOQ 1 ng platinum/mL (total) and 3 ng platinum/mL (free). Estimation in NONMEM 7.5.0; the final model's covariance step used MATRIX=S and its condition number was 582.53."
   )
 
   ini({

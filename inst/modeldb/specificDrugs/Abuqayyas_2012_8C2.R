@@ -8,39 +8,39 @@ Abuqayyas_2012_8C2 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "8C2", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "8C2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "8C2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Body weight enters the model as linear scaling on volumes and clearances (fixed exponent of 1). Abuqayyas 2012 reported the structural parameters in per-kg form (Table 2: L/kg for volumes, L/day/kg for clearances); body weight itself was not evaluated as a discrete covariate (mice were 20-38 g).",
-      source_name        = "WT"
+      notes = "Body weight enters the model as linear scaling on volumes and clearances (fixed exponent of 1). Abuqayyas 2012 reported the structural parameters in per-kg form (Table 2: L/kg for volumes, L/day/kg for clearances); body weight itself was not evaluated as a discrete covariate (mice were 20-38 g).",
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     STRAIN = list(
       description = "Mouse strain: C57BL/6 wild-type, B6.129P2-Fcer1g<tm1Rav> (Fc-gamma-RI/RIII gamma-chain knockout), or B6.129S4-Fcgr2b<tm1TtK> (Fc-gamma-RIIb knockout).",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened via forward selection with backward elimination on all structural parameters (Section 2.6). Pair-wise MVOF testing of CLc between each knockout strain and WT (Table 3): WT vs Fc-gamma-RI/RIII delta-MVOF = 0.22 (p = 0.639), WT vs Fc-gamma-RIIb delta-MVOF = 0.02 (p = 0.888). Not retained in the final model. Reference category (had the effect been retained): C57BL/6 wild-type."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened via forward selection with backward elimination on all structural parameters (Section 2.6). Pair-wise MVOF testing of CLc between each knockout strain and WT (Table 3): WT vs Fc-gamma-RI/RIII delta-MVOF = 0.22 (p = 0.639), WT vs Fc-gamma-RIIb delta-MVOF = 0.02 (p = 0.888). Not retained in the final model. Reference category (had the effect been retained): C57BL/6 wild-type."
     )
   )
 
   population <- list(
-    species        = "mouse (C57BL/6 wild-type; B6.129P2-Fcer1g<tm1Rav> Fc-gamma-RI/RIII knockout; B6.129S4-Fcgr2b<tm1TtK> Fc-gamma-RIIb knockout)",
-    n_subjects     = "n = 3-4 per dose per strain (three strains x three dose levels)",
-    n_studies      = 1,
-    weight_range   = "20-38 g (plasma PK study); 20-25 g (tissue distribution study)",
-    disease_state  = "Naive laboratory mice (no disease model); 8C2 has no known murine target so behaves as a non-target-binding tracer IgG1.",
-    dose_range     = "0.04, 0.1, and 0.4 mg/kg IV bolus of 125I-labelled 8C2 (tracer ~10 uCi/mouse).",
-    regions        = "United States (University at Buffalo; mice from Taconic Laboratories, Hudson NY).",
-    notes          = "Plasma sampled at 1, 3, 8 h and 1, 2, 4, 7, 10 days from retro-orbital plexus or sub-mandibular vein; radioactivity counted by gamma counter (LKB Wallac 1272) and decay-corrected. Concentrations reported in nM assuming an IgG molecular weight (see vignette for the nM <-> mg/L conversion). Mice were maintained on autoclaved KI-water (0.2 g/L) starting 2 days pre-injection to block thyroidal uptake of free iodine."
+    species = "mouse (C57BL/6 wild-type; B6.129P2-Fcer1g<tm1Rav> Fc-gamma-RI/RIII knockout; B6.129S4-Fcgr2b<tm1TtK> Fc-gamma-RIIb knockout)",
+    n_subjects = "n = 3-4 per dose per strain (three strains x three dose levels)",
+    n_studies = 1,
+    weight_range = "20-38 g (plasma PK study); 20-25 g (tissue distribution study)",
+    disease_state = "Naive laboratory mice (no disease model); 8C2 has no known murine target so behaves as a non-target-binding tracer IgG1.",
+    dose_range = "0.04, 0.1, and 0.4 mg/kg IV bolus of 125I-labelled 8C2 (tracer ~10 uCi/mouse).",
+    regions = "United States (University at Buffalo; mice from Taconic Laboratories, Hudson NY).",
+    notes = "Plasma sampled at 1, 3, 8 h and 1, 2, 4, 7, 10 days from retro-orbital plexus or sub-mandibular vein; radioactivity counted by gamma counter (LKB Wallac 1272) and decay-corrected. Concentrations reported in nM assuming an IgG molecular weight (see vignette for the nM <-> mg/L conversion). Mice were maintained on autoclaved KI-water (0.2 g/L) starting 2 days pre-injection to block thyroidal uptake of free iodine."
   )
 
   ini({

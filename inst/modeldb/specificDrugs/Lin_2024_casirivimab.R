@@ -8,125 +8,125 @@ Lin_2024_casirivimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "casirivimab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "casirivimab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "casirivimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "casirivimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "casirivimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; allometric scaling on CL and Vc with reference weight 81.6 kg (population median, Lin 2024 Table 1). Pediatrics < 6 years use fixed allometric exponents 0.75 (CL) and 1.0 (Vc); subjects >= 6 years use the estimated exponents 0.7959 (CL) and 0.5392 (Vc).",
-      source_name        = "WT"
+      notes = "Baseline; allometric scaling on CL and Vc with reference weight 81.6 kg (population median, Lin 2024 Table 1). Pediatrics < 6 years use fixed allometric exponents 0.75 (CL) and 1.0 (Vc); subjects >= 6 years use the estimated exponents 0.7959 (CL) and 0.5392 (Vc).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline; power scaling on CL with reference age 45 years. Also used to derive the pediatric indicator (AGE < 6) that switches the allometric exponents on CL/Vc and the SC bioavailability term.",
-      source_name        = "AGE"
+      notes = "Baseline; power scaling on CL with reference age 45 years. Also used to derive the pediatric indicator (AGE < 6) that switches the allometric exponents on CL/Vc and the SC bioavailability term.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effect on CL and Vc relative to the male reference.",
-      source_name        = "SEXF"
+      notes = "Multiplicative effect on CL and Vc relative to the male reference.",
+      source_name = "SEXF"
     ),
     RACE_WHITE = list(
-      description        = "White race indicator (1 = White, 0 = non-White)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White race indicator (1 = White, 0 = non-White)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-White, pooling Black/African American, Asian, American Indian/Alaska Native, Native Hawaiian/Pacific Islander, Other, Not reported, Unknown per Table 1 of Lin 2024)",
-      notes              = "Multiplicative effect on CL relative to the non-White reference. Renamed from source column RACE to canonical RACE_WHITE per inst/references/covariate-columns.md.",
-      source_name        = "RACE"
+      notes = "Multiplicative effect on CL relative to the non-White reference. Renamed from source column RACE to canonical RACE_WHITE per inst/references/covariate-columns.md.",
+      source_name = "RACE"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; power scaling on CL and Vc with reference 43 g/L (Lin 2024 Table 1 population median).",
-      source_name        = "ALB"
+      notes = "Time-varying; power scaling on CL and Vc with reference 43 g/L (Lin 2024 Table 1 population median).",
+      source_name = "ALB"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment per NCI ODWG criteria (1 = mild, 0 = others)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment per NCI ODWG criteria (1 = mild, 0 = others)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function or pooled moderate/severe; reference complement per Lin 2024)",
-      notes              = "Multiplicative effect on CL. Renamed from source column HEPIMP to canonical HEPIMP_MILD per inst/references/covariate-columns.md.",
-      source_name        = "HEPIMP"
+      notes = "Multiplicative effect on CL. Renamed from source column HEPIMP to canonical HEPIMP_MILD per inst/references/covariate-columns.md.",
+      source_name = "HEPIMP"
     ),
     SARS_VLOAD = list(
-      description        = "SARS-CoV-2 baseline viral load (RT-qPCR, nasopharyngeal swab)",
-      units              = "log10 copies/mL",
-      type               = "continuous",
+      description = "SARS-CoV-2 baseline viral load (RT-qPCR, nasopharyngeal swab)",
+      units = "log10 copies/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 6.4 log10 copies/mL (Lin 2024 Table 1 population median in COVID-positive subjects). Non-infected subjects encoded as 0 in the source dataset.",
-      source_name        = "VIRAL"
+      notes = "Power scaling on CL with reference 6.4 log10 copies/mL (Lin 2024 Table 1 population median in COVID-positive subjects). Non-infected subjects encoded as 0 in the source dataset.",
+      source_name = "VIRAL"
     ),
     SARS_SEROPOS = list(
-      description        = "SARS-CoV-2 baseline antibody serostatus positive (1 = positive, 0 = negative or other/unknown)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SARS-CoV-2 baseline antibody serostatus positive (1 = positive, 0 = negative or other/unknown)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (seronegative; 'Other' / unknown pooled into reference per Lin 2024 analysis plan)",
-      notes              = "Multiplicative effect on CL. Renamed from source column SERPOS to canonical SARS_SEROPOS per inst/references/covariate-columns.md.",
-      source_name        = "SERPOS"
+      notes = "Multiplicative effect on CL. Renamed from source column SERPOS to canonical SARS_SEROPOS per inst/references/covariate-columns.md.",
+      source_name = "SERPOS"
     ),
     CRP = list(
-      description        = "C-reactive protein (standard assay)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein (standard assay)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; power scaling on CL with reference 5.48 mg/L (Lin 2024 Table 1 pooled median across studies that collected CRP).",
-      source_name        = "CRP"
+      notes = "Time-varying; power scaling on CL with reference 5.48 mg/L (Lin 2024 Table 1 pooled median across studies that collected CRP).",
+      source_name = "CRP"
     ),
     NLR = list(
-      description        = "Neutrophil-to-lymphocyte ratio (CBC differential-derived)",
-      units              = "ratio",
-      type               = "continuous",
+      description = "Neutrophil-to-lymphocyte ratio (CBC differential-derived)",
+      units = "ratio",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; power scaling on CL with reference 2.11 (Lin 2024 Table 1 pooled median).",
-      source_name        = "NLR"
+      notes = "Time-varying; power scaling on CL with reference 2.11 (Lin 2024 Table 1 pooled median).",
+      source_name = "NLR"
     ),
     OXYSUP_LOW = list(
-      description        = "Low-flow supplemental oxygen at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Low-flow supplemental oxygen at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no supplemental oxygen at baseline)",
-      notes              = "Multiplicative effect on CL. Renamed from source column OXYSTAT1 to canonical OXYSUP_LOW per inst/references/covariate-columns.md.",
-      source_name        = "OXYSTAT1"
+      notes = "Multiplicative effect on CL. Renamed from source column OXYSTAT1 to canonical OXYSUP_LOW per inst/references/covariate-columns.md.",
+      source_name = "OXYSTAT1"
     ),
     OXYSUP_HIGH = list(
-      description        = "High-flow supplemental oxygen or mechanical ventilation at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-flow supplemental oxygen or mechanical ventilation at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no supplemental oxygen at baseline)",
-      notes              = "Multiplicative effect on CL. In Lin 2024 the small mechanical-ventilation subset was pooled into the high-flow indicator. Renamed from source column OXYSTAT2 to canonical OXYSUP_HIGH per inst/references/covariate-columns.md.",
-      source_name        = "OXYSTAT2"
+      notes = "Multiplicative effect on CL. In Lin 2024 the small mechanical-ventilation subset was pooled into the high-flow indicator. Renamed from source column OXYSTAT2 to canonical OXYSUP_HIGH per inst/references/covariate-columns.md.",
+      source_name = "OXYSTAT2"
     )
   )
 
   population <- list(
-    n_subjects     = 7598,
-    n_studies      = 7,
-    age_range      = "0-98 years (median 45)",
-    age_median     = 45,
-    weight_range   = "8.6-235 kg (median 81.6)",
-    weight_median  = 81.6,
+    n_subjects = 7598,
+    n_studies = 7,
+    age_range = "0-98 years (median 45)",
+    age_median = 45,
+    weight_range = "8.6-235 kg (median 81.6)",
+    weight_median = 81.6,
     sex_female_pct = 50.1,
     race_ethnicity = "White 81.8%, Black/African American 7.3%, Asian 3.3%, American Indian/Alaska Native 1.2%, Native Hawaiian/Pacific Islander 0.2%, Other/Not reported 3.5%, Unknown 2.7%, Missing < 0.1% (Lin 2024 Table 1)",
-    disease_state  = "Pediatric and adult non-infected individuals, ambulatory or hospitalized SARS-CoV-2-infected patients, and household contacts of infected patients (pooled).",
-    dose_range     = "300-8000 mg IV single dose; 600-1200 mg SC single dose; or 1200 mg SC every 4 weeks (Lin 2024 Methods).",
-    regions        = "Multinational (seven Phase 1/2/3 trials: NCT04426695, NCT04425629, NCT04452318, NCT04519437, NCT04666441, NCT05092581, NCT04992273)",
-    serostatus     = "Positive 31.0%, Negative 62.8%, Other 6.1%, Missing 0.1%",
-    oxygen_status  = "No supplemental oxygen 64.8%, Low-flow 23.8%, High-flow 1.4%, Mechanical ventilation 0.3%, Missing 9.7%",
-    notes          = "Joint popPK model fits casirivimab + imdevimab simultaneously; this nlmixr2lib entry implements the casirivimab arm only (independent ODE chain in the source model). Imdevimab can be added in a parallel file. Pediatric coverage extends to infants (one subject < 1 year), but >= 98% of pediatrics are 2+ years old."
+    disease_state = "Pediatric and adult non-infected individuals, ambulatory or hospitalized SARS-CoV-2-infected patients, and household contacts of infected patients (pooled).",
+    dose_range = "300-8000 mg IV single dose; 600-1200 mg SC single dose; or 1200 mg SC every 4 weeks (Lin 2024 Methods).",
+    regions = "Multinational (seven Phase 1/2/3 trials: NCT04426695, NCT04425629, NCT04452318, NCT04519437, NCT04666441, NCT05092581, NCT04992273)",
+    serostatus = "Positive 31.0%, Negative 62.8%, Other 6.1%, Missing 0.1%",
+    oxygen_status = "No supplemental oxygen 64.8%, Low-flow 23.8%, High-flow 1.4%, Mechanical ventilation 0.3%, Missing 9.7%",
+    notes = "Joint popPK model fits casirivimab + imdevimab simultaneously; this nlmixr2lib entry implements the casirivimab arm only (independent ODE chain in the source model). Imdevimab can be added in a parallel file. Pediatric coverage extends to infants (one subject < 1 year), but >= 98% of pediatrics are 2+ years old."
   )
 
   ini({

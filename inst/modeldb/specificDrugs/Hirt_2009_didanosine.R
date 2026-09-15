@@ -8,7 +8,7 @@ Hirt_2009_didanosine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "didanosine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "didanosine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "didanosine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -23,77 +23,77 @@ Hirt_2009_didanosine <- function() {
   # in covariatesDataExcluded rather than covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 11-37 kg (Table 1). Screened on CL/F and Vc/F via linear (per kg), allometric, and generalized-additive forms; not retained.",
-      source_name        = "WT"
+      notes = "Cohort range 11-37 kg (Table 1). Screened on CL/F and Vc/F via linear (per kg), allometric, and generalized-additive forms; not retained.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age (chronological time since birth)",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age (chronological time since birth)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 2.5-14 years, median 6.5 (Table 1). Screened (as 'postnatal age') on CL/F and Vc/F; not retained. None of the children were younger than 2.5 years, so ontogeny of CL could not be resolved in this dataset (Discussion).",
-      source_name        = "AGE"
+      notes = "Cohort range 2.5-14 years, median 6.5 (Table 1). Screened (as 'postnatal age') on CL/F and Vc/F; not retained. None of the children were younger than 2.5 years, so ontogeny of CL could not be resolved in this dataset (Discussion).",
+      source_name = "AGE"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 0.50-1.22 m^2, median 0.69 (Table 1). Screened on CL/F and Vc/F via linear (per m^2) and allometric forms; not retained. BSA also drove the dosing rule (240 mg/m^2 QD), so per-patient administered doses were 50-300 mg.",
-      source_name        = "BSA"
+      notes = "Cohort range 0.50-1.22 m^2, median 0.69 (Table 1). Screened on CL/F and Vc/F via linear (per m^2) and allometric forms; not retained. BSA also drove the dosing rule (240 mg/m^2 QD), so per-patient administered doses were 50-300 mg.",
+      source_name = "BSA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 6.6-126.4 umol/L, median 63 (Table 1). Screened on CL/F and Vc/F; not retained.",
-      source_name        = "creatinine"
+      notes = "Cohort range 6.6-126.4 umol/L, median 63 (Table 1). Screened on CL/F and Vc/F; not retained.",
+      source_name = "creatinine"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 7-92 IU/L, median 26 (Table 1). Screened on CL/F and Vc/F; not retained.",
-      source_name        = "ALT"
+      notes = "Cohort range 7-92 IU/L, median 26 (Table 1). Screened on CL/F and Vc/F; not retained.",
+      source_name = "ALT"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 12-200 IU/L, median 44 (Table 1). Screened on CL/F and Vc/F; not retained.",
-      source_name        = "AST"
+      notes = "Cohort range 12-200 IU/L, median 44 (Table 1). Screened on CL/F and Vc/F; not retained.",
+      source_name = "AST"
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort range 0.9-42.8 umol/L, median 6.5 (Table 1). Screened on CL/F and Vc/F; not retained. The paper also screened serum amylase (range 6-409 U/L, median 79) but amylase is not a canonical covariate column in nlmixr2lib.",
-      source_name        = "bilirubin"
+      notes = "Cohort range 0.9-42.8 umol/L, median 6.5 (Table 1). Screened on CL/F and Vc/F; not retained. The paper also screened serum amylase (range 6-409 U/L, median 79) but amylase is not a canonical covariate column in nlmixr2lib.",
+      source_name = "bilirubin"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 49,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 49,
+    n_studies = 1,
     n_observations = 183,
-    age_range      = "2.5-14 years",
-    age_median     = "6.5 years",
-    weight_range   = "11-37 kg",
+    age_range = "2.5-14 years",
+    age_median = "6.5 years",
+    weight_range = "11-37 kg",
     sex_female_pct = 38.8,
     race_ethnicity = "West African paediatric cohort (race not stratified in source).",
-    disease_state  = "HIV-1-infected children (CDC clinical category A, B, C, or N); antiretroviral-naive at enrolment (except for prophylaxis of mother-to-child transmission). Mean Z-scores -1.91 (weight-for-age) and -1.99 (height-for-age) at enrolment.",
-    dose_range     = "Videx (didanosine) chewable / dispersible tablets, 240 mg/m^2 once daily, rounded to combinations of 25, 50, 100, or 200 mg tablets. Median actual administered dose 213 mg/m^2 (range 164-313). Tablets dissolved in water; children fasted for 2 h before and 1 h after the dose. Aluminium hydroxide antacid (Maalox) added when fewer than two pills were prescribed.",
-    regions        = "Burkina Faso (Bobo-Dioulasso).",
-    notes          = "BURKINAM-ANRS 12103 open phase II trial (NCT00122538), once-daily didanosine + lamivudine + efavirenz combination. Pharmacokinetic sampling at day 15 (40 children) or between months 2 and 5 (9 children) of treatment, pre-dose and 1, 2, 3, 6, 12, and 24 h post-dose (10 children) or pre-dose and 1 and 3 h (39 children). Baseline median viral load 5.5 log10 copies/mL; 18 stage A, 25 stage B, 5 stage C, 1 stage N. Body surface area median 0.69 m^2 (range 0.50-1.22)."
+    disease_state = "HIV-1-infected children (CDC clinical category A, B, C, or N); antiretroviral-naive at enrolment (except for prophylaxis of mother-to-child transmission). Mean Z-scores -1.91 (weight-for-age) and -1.99 (height-for-age) at enrolment.",
+    dose_range = "Videx (didanosine) chewable / dispersible tablets, 240 mg/m^2 once daily, rounded to combinations of 25, 50, 100, or 200 mg tablets. Median actual administered dose 213 mg/m^2 (range 164-313). Tablets dissolved in water; children fasted for 2 h before and 1 h after the dose. Aluminium hydroxide antacid (Maalox) added when fewer than two pills were prescribed.",
+    regions = "Burkina Faso (Bobo-Dioulasso).",
+    notes = "BURKINAM-ANRS 12103 open phase II trial (NCT00122538), once-daily didanosine + lamivudine + efavirenz combination. Pharmacokinetic sampling at day 15 (40 children) or between months 2 and 5 (9 children) of treatment, pre-dose and 1, 2, 3, 6, 12, and 24 h post-dose (10 children) or pre-dose and 1 and 3 h (39 children). Baseline median viral load 5.5 log10 copies/mL; 18 stage A, 25 stage B, 5 stage C, 1 stage N. Body surface area median 0.69 m^2 (range 0.50-1.22)."
   )
 
   ini({

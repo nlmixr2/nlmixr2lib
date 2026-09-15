@@ -25,70 +25,70 @@ Foissac_2011_atazanavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F (exponent 0.75, FIXED) and V/F (exponent 1, FIXED), both referenced to 70 kg. The model is built on paediatric data (median 52 kg, range 13-79 kg per Table 1) but extrapolates to adults at WT = 70 kg by construction. Paper Table 2 footnote: [Typical value] = [Typical parameter] * (bodyweight/70)^PWR.",
-      source_name        = "BW"
+      notes = "Allometric scaling on CL/F (exponent 0.75, FIXED) and V/F (exponent 1, FIXED), both referenced to 70 kg. The model is built on paediatric data (median 52 kg, range 13-79 kg per Table 1) but extrapolates to adults at WT = 70 kg by construction. Paper Table 2 footnote: [Typical value] = [Typical parameter] * (bodyweight/70)^PWR.",
+      source_name = "BW"
     ),
     CONMED_RTV = list(
-      description        = "Concomitant low-dose ritonavir (RTV) indicator (pharmacokinetic booster)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant low-dose ritonavir (RTV) indicator (pharmacokinetic booster)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (boosted atazanavir/ritonavir; the cohort's most common regimen)",
-      notes              = "1 = subject receives low-dose ritonavir (typically 100 mg q.d.) as a pharmacokinetic booster of atazanavir; 0 = unboosted ATV. The Foissac 2011 cohort included 39 ATV/r-treated children and 9 ATV-only-treated children (3 subjects received both regimens successively). The typical CL/F reported in Table 2 (7.1 L/h at 70 kg) is the RTV-positive reference, so the model uses the polarity-flipped indicator (1 - CONMED_RTV) to apply the theta_NO_RTV effect of +0.80 only when ritonavir is absent: CL/F = exp(lcl) * (1 + e_no_rtv_cl * (1 - CONMED_RTV)) * (WT/70)^0.75. Without RTV, CL/F is multiplied by 1.80 (giving 12.8 L/h at 70 kg per Table 2 footnote).",
-      source_name        = "RTV"
+      notes = "1 = subject receives low-dose ritonavir (typically 100 mg q.d.) as a pharmacokinetic booster of atazanavir; 0 = unboosted ATV. The Foissac 2011 cohort included 39 ATV/r-treated children and 9 ATV-only-treated children (3 subjects received both regimens successively). The typical CL/F reported in Table 2 (7.1 L/h at 70 kg) is the RTV-positive reference, so the model uses the polarity-flipped indicator (1 - CONMED_RTV) to apply the theta_NO_RTV effect of +0.80 only when ritonavir is absent: CL/F = exp(lcl) * (1 + e_no_rtv_cl * (1 - CONMED_RTV)) * (WT/70)^0.75. Without RTV, CL/F is multiplied by 1.80 (giving 12.8 L/h at 70 kg per Table 2 footnote).",
+      source_name = "RTV"
     ),
     CONMED_TDF = list(
-      description        = "Concomitant tenofovir disoproxil fumarate (TDF) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant tenofovir disoproxil fumarate (TDF) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant TDF)",
-      notes              = "1 = subject receives concomitant TDF (typically 300 mg q.d.) as part of the NRTI backbone of the antiretroviral regimen; 0 = no TDF. 21 of the 39 ATV/r-treated children also received TDF (Foissac 2011 Results, Demographic data). TDF increases ATV/r apparent oral clearance by 25%: CL/F = exp(lcl) * (1 + e_tdf_cl * CONMED_TDF) * (WT/70)^0.75. With TDF (and RTV), CL/F is multiplied by 1.25 (giving 8.9 L/h at 70 kg per Table 2 footnote).",
-      source_name        = "TDF"
+      notes = "1 = subject receives concomitant TDF (typically 300 mg q.d.) as part of the NRTI backbone of the antiretroviral regimen; 0 = no TDF. 21 of the 39 ATV/r-treated children also received TDF (Foissac 2011 Results, Demographic data). TDF increases ATV/r apparent oral clearance by 25%: CL/F = exp(lcl) * (1 + e_tdf_cl * CONMED_TDF) * (WT/70)^0.75. With TDF (and RTV), CL/F is multiplied by 1.25 (giving 8.9 L/h at 70 kg per Table 2 footnote).",
+      source_name = "TDF"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 14 years (range 3-18). Screened as a Hill-equation effect on PK parameters per the Methods 'Population pharmacokinetic modelling of ATV/r' paragraph; not retained because the body-weight allometric scaling removed the residual age effect on PK parameters (Discussion paragraph 2)."
+      units = "years",
+      type = "continuous",
+      notes = "Median 14 years (range 3-18). Screened as a Hill-equation effect on PK parameters per the Methods 'Population pharmacokinetic modelling of ATV/r' paragraph; not retained because the body-weight allometric scaling removed the residual age effect on PK parameters (Discussion paragraph 2)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "25 girls and 26 boys (Table 1). Screened as a linear effect on the typical value of a given parameter per the Methods paragraph and not retained in the final model. Canonical SEXF (1 = female) matches the source paper's coding.",
+      units = "(binary)",
+      type = "binary",
+      notes = "25 girls and 26 boys (Table 1). Screened as a linear effect on the typical value of a given parameter per the Methods paragraph and not retained in the final model. Canonical SEXF (1 = female) matches the source paper's coding.",
       source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
+    species = "human",
+    n_subjects = 51L,
     n_observations = 151L,
-    age_range      = "3-18 years",
-    age_median     = "14 years",
-    weight_range   = "13-79 kg",
-    weight_median  = "52 kg",
+    age_range = "3-18 years",
+    age_median = "14 years",
+    weight_range = "13-79 kg",
+    weight_median = "52 kg",
     sex_female_pct = 49,
-    disease_state  = "HIV-1 infected children and adolescents experienced with antiretroviral therapy.",
-    dose_range     = paste(
+    disease_state = "HIV-1 infected children and adolescents experienced with antiretroviral therapy.",
+    dose_range = paste(
       "Oral atazanavir 150-600 mg q.d. (median 400 mg) given alone or boosted with ritonavir 100 mg q.d.",
       "(ATV/r dose 100-400 mg, median 300 mg). 21 of 51 children additionally received tenofovir disoproxil",
       "fumarate 150-300 mg q.d. (median 300 mg)."
     ),
-    regions        = "France (Paris-Necker, Trousseau, Cochin/Saint-Vincent-de-Paul, and Louis Mourier hospitals; APHP)",
-    notes          = paste(
+    regions = "France (Paris-Necker, Trousseau, Cochin/Saint-Vincent-de-Paul, and Louis Mourier hospitals; APHP)",
+    notes = paste(
       "Routine therapeutic-drug-monitoring data. Median 2 samples per patient (range 1-13) over a median 2.3-month",
       "follow-up (range 0-34 months); 151 ATV plasma concentrations across 51 subjects. Atazanavir assayed by HPLC",
       "with LOQ = 0.10 mg/L (interassay precision and bias < 15% and 5%, respectively, in the 0.05-5 mg/L calibration",

@@ -13,71 +13,71 @@ Wojciechowski_2023_ritlecitinib_base <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ritlecitinib", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote and Methods Sect. 2.3. Base-model analysis population median 77.2 kg (range 46.0-164).",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote and Methods Sect. 2.3. Base-model analysis population median 77.2 kg (range 46.0-164).",
+      source_name = "BWT"
     ),
     DIS_RA = list(
-      description        = "Rheumatoid arthritis patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rheumatoid arthritis patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant in this base-model analysis population)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 1). Carries a multiplicative effect on CL/F and, jointly with DIS_ALOPECIA_AREATA, defines the inflammatory-disease group that scales the IIV and residual-error magnitudes. The base-model dataset contains only healthy participants (PTST = 0), RA (PTST = 1) and alopecia areata (PTST = 3), so the reference category here is healthy participants.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 1). Carries a multiplicative effect on CL/F and, jointly with DIS_ALOPECIA_AREATA, defines the inflammatory-disease group that scales the IIV and residual-error magnitudes. The base-model dataset contains only healthy participants (PTST = 0), RA (PTST = 1) and alopecia areata (PTST = 3), so the reference category here is healthy participants.",
+      source_name = "PTST"
     ),
     DIS_ALOPECIA_AREATA = list(
-      description        = "Alopecia areata patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Alopecia areata patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant in this base-model analysis population)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and, jointly with DIS_RA, defines the inflammatory-disease group that scales the IIV and residual-error magnitudes.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and, jointly with DIS_RA, defines the inflammatory-disease group that scales the IIV and residual-error magnitudes.",
+      source_name = "PTST"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted, or food intake not controlled)",
-      notes              = "Per-dose-record indicator derived from the NONMEM FOOD column (0 = fasted, 1 = high-fat meal, 2 = not controlled for food); the control stream applies the effect only when FOOD = 1, so both fasted and not-controlled records are the reference. High-fat-meal effect established in the phase I relative-bioavailability / food-effect study B7981003 (NCT02684760).",
-      source_name        = "FOOD"
+      notes = "Per-dose-record indicator derived from the NONMEM FOOD column (0 = fasted, 1 = high-fat meal, 2 = not controlled for food); the control stream applies the effect only when FOOD = 1, so both fasted and not-controlled records are the reference. High-fat-meal effect established in the phase I relative-bioavailability / food-effect study B7981003 (NCT02684760).",
+      source_name = "FOOD"
     ),
     DOSE = list(
-      description        = "Administered ritlecitinib dose level for the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered ritlecitinib dose level for the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only as a step-function switch: the control stream applies a separate ka effect when DOSE = 800 exactly (IF (DOSE.EQ.800)), motivated by the prolonged absorption observed at the top single-ascending dose of the first-in-human study. Every dose level below 800 mg is the reference. Base-model dose range 5-800 mg.",
-      source_name        = "DOSE"
+      notes = "Used only as a step-function switch: the control stream applies a separate ka effect when DOSE = 800 exactly (IF (DOSE.EQ.800)), motivated by the prolonged absorption observed at the top single-ascending dose of the first-in-human study. Every dose level below 800 mg is the reference. Base-model dose range 5-800 mg.",
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 186L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 186L,
+    n_studies = 4L,
     n_observations = 2174L,
-    age_range      = "19.0-74.0 years",
-    age_median     = "39 years",
-    weight_range   = "46.0-164 kg",
-    weight_median  = "77.2 kg",
+    age_range = "19.0-74.0 years",
+    age_median = "39 years",
+    weight_range = "46.0-164 kg",
+    weight_median = "77.2 kg",
     sex_female_pct = 43.5,
     race_ethnicity = c(White = 91.9, Asian = 3.8, Black = 2.2, Other = 2.2),
-    disease_state  = "Healthy participants (74; 39.8%), rheumatoid arthritis patients (42; 22.6%) and alopecia areata patients (70; 37.6%).",
-    dose_range     = "5-800 mg/day oral ritlecitinib (single and multiple dose)",
-    regions        = "Global (12-trial ritlecitinib clinical development programme; the base-model subset draws on phase I studies in healthy participants plus phase II RA and AA studies)",
+    disease_state = "Healthy participants (74; 39.8%), rheumatoid arthritis patients (42; 22.6%) and alopecia areata patients (70; 37.6%).",
+    dose_range = "5-800 mg/day oral ritlecitinib (single and multiple dose)",
+    regions = "Global (12-trial ritlecitinib clinical development programme; the base-model subset draws on phase I studies in healthy participants plus phase II RA and AA studies)",
     renal_function = "Normal (severe renal impairment participants entered only at the final-model iteration)",
     hepatic_function = "Normal (moderate hepatic impairment participants entered only at the updated-model iteration)",
-    notes          = "Demographics from Wojciechowski 2023 Table 1, base-model column. Below-limit-of-quantification observations (LLOQ 0.5 ng/mL in the phase I studies) were excluded during estimation. Studies contributing to the base model are listed in Table S1 of the Electronic Supplementary Material."
+    notes = "Demographics from Wojciechowski 2023 Table 1, base-model column. Below-limit-of-quantification observations (LLOQ 0.5 ng/mL in the phase I studies) were excluded during estimation. Studies contributing to the base model are listed in Table S1 of the Electronic Supplementary Material."
   )
 
   # Implementation notes (see the vignette 'Assumptions and deviations'

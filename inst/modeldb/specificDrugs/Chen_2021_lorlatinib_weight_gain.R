@@ -34,18 +34,18 @@ Chen_2021_lorlatinib_weight_gain <- function() {
   )
   vignette <- "Chen_2021_lorlatinib_exposure_response"
   units <- list(
-    time          = "n/a (static landmark safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
-    dosing        = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
+    time = "n/a (static landmark safety regression; no time dimension. The treatment-duration covariate T_FIRSTDOSE is carried in canonical hours and divided by 24 inside model() to recover the paper's days)",
+    dosing = "n/a (no dose events, and no exposure covariate: this endpoint retained no lorlatinib exposure metric)",
     concentration = "prob_weight_gain (probability of grade >= 2 weight gain, 0-1; also logit_weight_gain)"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight (BWT).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight (BWT).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT centred and NOT allometrically scaled: Chen 2021 fits the raw",
         "kilogram value as a linear term on the logit, so the intercept",
         "-4.757 is the logit at WT = 0 kg and TE = 0 days rather than at",
@@ -58,14 +58,14 @@ Chen_2021_lorlatinib_weight_gain <- function() {
         "one of the four Chen 2021 safety endpoints that retains body",
         "weight."
       ),
-      source_name        = "BWT (baseline body weight)"
+      source_name = "BWT (baseline body weight)"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time on study from the first lorlatinib dose up to the event (TE).",
-      units              = "h",
-      type               = "continuous",
+      description = "Time on study from the first lorlatinib dose up to the event (TE).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Canonical units are hours, so model() divides by 24 to recover",
         "the DAYS in which Chen 2021 estimates the coefficient (0.003 per",
         "day, odds ratio 1.003 per day) -- exactly the convention the",
@@ -80,16 +80,16 @@ Chen_2021_lorlatinib_weight_gain <- function() {
         "either of these safety end points, independent of the level of",
         "lorlatinib exposure'."
       ),
-      source_name        = "TE (time from first dose up to the event, days)"
+      source_name = "TE (time from first dose up to the event, days)"
     )
   )
 
   covariatesDataExcluded <- list(
     CTROUGH = list(
       description = "Individual lorlatinib trough plasma concentration at steady state.",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "ng/mL",
+      type = "continuous",
+      notes = paste(
         "One of the nine lorlatinib exposure metrics screened for this",
         "endpoint (Chen 2021 Methods, 'Selection of lorlatinib exposure",
         "metrics'). Chen 2021 Results states plainly: 'For the safety end",
@@ -106,9 +106,9 @@ Chen_2021_lorlatinib_weight_gain <- function() {
     ),
     TCHOL = list(
       description = "Baseline total serum cholesterol.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Chen 2021 Methods includes 'the baseline laboratory parameters",
         "associated with the respective safety end point' in each safety",
         "base model; baseline cholesterol is the paired laboratory value",
@@ -118,9 +118,9 @@ Chen_2021_lorlatinib_weight_gain <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator; 1 = Asian, 0 = other.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained for this endpoint; retained only in the",
         "companion hypertriglyceridemia model. Safety analysis set Asian",
         "110/328 (34%) (Chen 2021 Table 1)."
@@ -129,18 +129,18 @@ Chen_2021_lorlatinib_weight_gain <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 328L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 328L,
+    n_studies = 1L,
     n_observations = "328 binary grade->=-2-weight-gain records (one per patient); the complete safety analysis set (Chen 2021 Table 3 n/N = 328/328), because body weight was recorded for every patient",
-    age_range      = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
-    weight_range   = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
+    age_range = "median 53.00 years, range 19.00-85.00 (Chen 2021 Table 1, safety population)",
+    weight_range = "median 66.79 kg, range 31.80-155.50 (Chen 2021 Table 1, safety population)",
     sex_female_pct = 58.0,
     race_ethnicity = c(White = 51.0, Asian = 34.0, Other = 4.0, Black = 2.0, Missing = 9.0),
-    disease_state  = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
-    dose_range     = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
-    regions        = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
-    notes          = paste0(
+    disease_state = "advanced anaplastic lymphoma kinase (ALK)-positive or c-ROS oncogene 1 (ROS1)-positive non-small cell lung cancer; ECOG performance status 0 (42%), 1 (54%), 2 (3%), 3 (0.3%); 85% had received at least one prior ALK inhibitor and 69% had CNS metastasis prior to or at any time on study",
+    dose_range = "lorlatinib 10, 25, 50, 75, 100, 150 or 200 mg orally once daily, or 35, 75 or 100 mg orally twice daily (phase I dose escalation); 100 mg orally once daily (phase II expansion, the labelled dose)",
+    regions = "Multicentre international phase I/II study B7461001 (NCT01970865); regional breakdown not reported in Chen 2021",
+    notes = paste0(
       "Weight gain was one of only four safety endpoints with an ",
       "incidence above 10% in all treated patients, the threshold Chen ",
       "2021 used to admit an endpoint to the exposure-response ",
