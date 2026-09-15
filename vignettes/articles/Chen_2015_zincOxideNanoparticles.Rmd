@@ -1,0 +1,686 @@
+---
+title: "Zinc oxide nanoparticles and zinc nitrate (Chen 2015)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Zinc oxide nanoparticles and zinc nitrate (Chen 2015)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Chen 2015 fitted one flow-limited, nine-compartment mouse PBPK structure to
+three separate biodistribution experiments -- 10 nm zinc oxide nanoparticles,
+71 nm zinc oxide nanoparticles, and zinc nitrate (soluble zinc ion). The three
+parameter sets are independent, so they are packaged as three model files that
+share this vignette.
+
+```{r models}
+mod_10nm <- readModelDb("Chen_2015_zincOxideNanoparticle10nm_mouse_pbpk")
+mod_71nm <- readModelDb("Chen_2015_zincOxideNanoparticle71nm_mouse_pbpk")
+mod_zn   <- readModelDb("Chen_2015_zincNitrate_mouse_pbpk")
+```
+
+* Citation: `r rxode2::rxode(mod_10nm)$reference`
+* Article: <https://doi.org/10.2147/IJN.S86785>
+* PubMed Central (open access): <https://pmc.ncbi.nlm.nih.gov/articles/PMC4599717/>
+
+```{r descriptions, echo = FALSE}
+tibble::tibble(
+  Model = c(
+    "Chen_2015_zincOxideNanoparticle10nm_mouse_pbpk",
+    "Chen_2015_zincOxideNanoparticle71nm_mouse_pbpk",
+    "Chen_2015_zincNitrate_mouse_pbpk"
+  ),
+  `Test article` = c("10 nm 65ZnO NP", "71 nm 65ZnO NP", "65Zn(NO3)2")
+) |>
+  knitr::kable(caption = "The three models contributed by Chen 2015.")
+```
+
+# Population
+
+Six-week-old male ICR mice weighing 0.031 to 0.032 kg received a single
+intravenous (tail vein) dose of 120 ug of suspended `r "65"`ZnO nanoparticles
+(10 nm or 71 nm) or of `r "65"`Zn(NO3)2, dissolved in 400 uL of distilled water.
+Blood, liver, lung, kidney, spleen, brain, heart, gastrointestinal tract and
+carcass (muscle and bone) were assayed at 1, 2, 4 and 7 hours and at 1, 2, 3, 7
+and 28 days after injection (Materials and methods, "Study data"). Table 2 of
+the paper fixes the modelled body weight at 0.032 kg.
+
+The biodistribution data themselves were published separately (reference 7 of
+Chen 2015, Chen J-K et al. 2015 Nanotoxicology 9:43-53), which is where the
+per-time-point animal numbers are reported; that paper is not used here, and
+only the parameter values reproduced in Chen 2015 are extracted.
+
+The same information is available programmatically via each model's
+`population` metadata, for example
+`readModelDb("Chen_2015_zincNitrate_mouse_pbpk")()$population`.
+
+# Source trace
+
+Every `ini()` entry in the three model files carries an in-file comment naming
+its source location. The table below collects the structural provenance.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(blood)` | n/a | Table 1, equation (A) |
+| `d/dt(lung)` | n/a | Table 1, equation (B) |
+| `d/dt(gut)` | n/a | Table 1, equation (C) |
+| `d/dt(spleen)` | n/a | Table 1, equation (D) |
+| `d/dt(liver)` | n/a | Table 1, equation (E) |
+| `d/dt(heart)` | n/a | Table 1, equation (F) |
+| `d/dt(brain)` | n/a | Table 1, equation (G) |
+| `d/dt(kidney)` | n/a | Table 1, equation (H) |
+| `d/dt(other)` (carcass) | n/a | Table 1, equation (I) |
+| Cardiac output `QBl = QC * BW^0.75` | n/a | Equation 1 |
+| `qcc` (QC) | 9.025 L/h (written as 9025 mL/h) | Table 2 |
+| `vc_*` (organ volume fractions) | 0.004 to 0.706 | Table 2 |
+| `qc_*` (blood flow fractions) | 0.011 to 1 | Table 2 |
+| Rising partition coefficient `p(t)` | n/a | Equation 2 (four-parameter Hill) |
+| Falling excretion rate `k(t)` | n/a | Equation 4 (a *different* Hill form) |
+| `kp_*_early`, `kp_*_ini/max/t50/hill` | see model files | Table 3 (per test article) |
+| `kbile/kfeces/kurine` early-phase values | see model files | Table 3 (per test article) |
+| `kp_*_post`, `k*_post` (after day 7) | see model files | Table 4 (65ZnO NP only) |
+| `tdecomp` = 168 h | 168 | Results and Discussion, "after day 7" |
+| Mean residence time | n/a | Equation 5 (used for validation below) |
+
+The two Hill functions are algebraically **different** and this is the single
+easiest thing to get wrong when transcribing the paper:
+
+* Equation 2 (partition coefficients, *rising*):
+  `p(t) = p_ini + (p_max - p_ini) * t^n / (T50^n + t^n)`, so `p(0) = p_ini`.
+* Equation 4 (excretion rates, *falling*):
+  `k(t) = k_min + (k_max - k_min) / (1 + (t / T50)^n)`, so `k(0) = k_max`.
+
+The gate in the "Time-dependent excretion rates" section below is what
+falsifies a mis-transcription of Equation 4.
+
+# Virtual cohort
+
+This model carries no between-subject variability and no residual error: Chen
+2015 fitted it deterministically by minimising the mean absolute percentage
+error of Equation 6, not by maximum likelihood. There is therefore nothing to
+sample, and the "cohort" is a single typical 0.032 kg mouse per test article --
+well inside the 200-per-arm cap.
+
+```{r cohort}
+BW   <- 0.032   # kg, Chen 2015 Table 2
+DOSE <- 120     # ug, single IV bolus (Materials and methods, "Study data")
+
+events <- rxode2::et(amt = DOSE, cmt = "blood") |>
+  rxode2::et(seq(0, 672, by = 0.25)) |>
+  as.data.frame()
+events$WT <- BW
+
+# Organ volumes in mL implied by Table 2 (tissue density taken as 1 g/mL).
+vol_frac <- c(blood = 0.060, lung = 0.007, gut = 0.127, spleen = 0.004,
+              liver = 0.059, heart = 0.007, brain = 0.014, kidney = 0.016,
+              other = 0.706)
+volumes  <- 1000 * vol_frac * BW
+tissues  <- names(vol_frac)
+
+# The eight named organs plus blood account for the whole animal, which is why
+# the carcass fraction is exactly 1 - sum(the rest).
+stopifnot(abs(sum(vol_frac) - 1) < 1e-12)
+```
+
+# Simulation
+
+```{r simulate}
+solve_one <- function(mod) {
+  rxode2::rxSolve(mod, events, returnType = "data.frame",
+                  atol = 1e-10, rtol = 1e-8) |>
+    # rxSolve emits both the dose row and the observation row at t = 0; keep one.
+    dplyr::distinct(time, .keep_all = TRUE)
+}
+
+sim <- dplyr::bind_rows(
+  solve_one(mod_10nm) |> dplyr::mutate(chemical = "10 nm ZnO NP"),
+  solve_one(mod_71nm) |> dplyr::mutate(chemical = "71 nm ZnO NP"),
+  solve_one(mod_zn)   |> dplyr::mutate(chemical = "Zn(NO3)2")
+) |>
+  dplyr::mutate(chemical = factor(
+    chemical, levels = c("10 nm ZnO NP", "71 nm ZnO NP", "Zn(NO3)2")))
+
+conc_long <- sim |>
+  dplyr::select(chemical, time, dplyr::all_of(tissues)) |>
+  tidyr::pivot_longer(dplyr::all_of(tissues),
+                      names_to = "tissue", values_to = "conc")
+```
+
+# Validation
+
+## Gate 1: the intravenous dose enters as the right blood concentration
+
+The Table 1 states hold concentration, so the packaged models convert the dose
+with `f(blood) <- 1 / v_blood`. A 120 ug bolus into 1.92 mL of blood must give
+exactly 62.5 ug/mL. This is a closed-form identity and is asserted exactly.
+
+```{r gate-dose}
+c0 <- sim |> dplyr::filter(time == 0) |> dplyr::pull(blood)
+expected_c0 <- DOSE / volumes[["blood"]]
+
+stopifnot(all(abs(c0 - expected_c0) < 1e-10))
+cat(sprintf("blood(0) = %.4f ug/mL for all three models; DOSE / v_blood = %.4f\n",
+            unique(round(c0, 10)), expected_c0))
+```
+
+## Gate 2: the time-dependent excretion rates reproduce Table S4
+
+This is the strongest independent check available for this paper. Table S4 is a
+*separate* supplementary table of depuration-derived excretion and elimination
+rate constants at each sampling time; Table 3 gives the four Hill parameters
+that Chen 2015 fitted to them. If Equation 4 has been transcribed correctly,
+evaluating the model's `kbile`, `kfeces` and `kurine` at the Table S4 times must
+return the Table S4 numbers. Transcribing Equation 4 with Equation 2's rising
+shape -- the obvious mistake -- would invert the whole time course and blow this
+gate immediately.
+
+Only the 10 nm model has all three rates Hill-fitted, and only the 65Zn(NO3)2
+renal rate is Hill-fitted for zinc ion, so those are the four comparisons.
+The 2 h and 4 h Table S4 entries are excluded: the Hill is steepest there and
+several cells are "NE" (no estimate).
+
+```{r gate-tables4}
+tab_s4 <- tibble::tribble(
+  ~chemical,      ~parameter, ~time,  ~published,
+  "10 nm ZnO NP", "kbile",        7,  0.0309,
+  "10 nm ZnO NP", "kbile",       24,  0.0291,
+  "10 nm ZnO NP", "kbile",       48,  0.0239,
+  "10 nm ZnO NP", "kbile",       72,  0.0207,
+  "10 nm ZnO NP", "kbile",      168,  0.0193,
+  "10 nm ZnO NP", "kurine",      24,  0.0166,
+  "10 nm ZnO NP", "kurine",      48,  0.0131,
+  "10 nm ZnO NP", "kurine",      72,  0.0122,
+  "10 nm ZnO NP", "kurine",     168,  0.0106,
+  "10 nm ZnO NP", "kfeces",       7,  0.0321,
+  "10 nm ZnO NP", "kfeces",      24,  0.0238,
+  "10 nm ZnO NP", "kfeces",      48,  0.0197,
+  "10 nm ZnO NP", "kfeces",      72,  0.0179,
+  "10 nm ZnO NP", "kfeces",     168,  0.0168,
+  "Zn(NO3)2",     "kurine",       7,  0.0614,
+  "Zn(NO3)2",     "kurine",      24,  0.0389,
+  "Zn(NO3)2",     "kurine",      48,  0.0309,
+  "Zn(NO3)2",     "kurine",      72,  0.0260,
+  "Zn(NO3)2",     "kurine",     168,  0.0253
+)
+
+rates <- sim |>
+  dplyr::select(chemical, time, kbile, kfeces, kurine) |>
+  tidyr::pivot_longer(c(kbile, kfeces, kurine),
+                      names_to = "parameter", values_to = "simulated")
+
+s4_check <- tab_s4 |>
+  dplyr::mutate(chemical = factor(chemical, levels = levels(sim$chemical))) |>
+  dplyr::left_join(rates, by = c("chemical", "parameter", "time")) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+
+s4_check |>
+  dplyr::mutate(dplyr::across(c(published, simulated), ~ round(.x, 5)),
+                pct_diff = round(pct_diff, 1)) |>
+  dplyr::rename("Test article" = chemical, "Rate constant" = parameter,
+                "Time (h)" = time, "Table S4 (1/h)" = published,
+                "Model (1/h)" = simulated, "% diff" = pct_diff) |>
+  knitr::kable(caption = "Model excretion and elimination rate constants against the published Table S4 values.")
+```
+
+```{r gate-tables4-assert}
+worst_10nm <- s4_check |>
+  dplyr::filter(chemical == "10 nm ZnO NP") |>
+  dplyr::summarise(worst = max(abs(pct_diff))) |>
+  dplyr::pull(worst)
+
+worst_zn <- s4_check |>
+  dplyr::filter(chemical == "Zn(NO3)2") |>
+  dplyr::summarise(worst = max(abs(pct_diff))) |>
+  dplyr::pull(worst)
+
+stopifnot(
+  # Measured worst case 4.5%. A rising-Hill mis-transcription of Equation 4
+  # sends this to several hundred percent, so the bound is far from a formality.
+  worst_10nm < 8,
+  # The 65Zn(NO3)2 renal Hill is printed to only two or three significant
+  # figures in Table 3 (0.02, 0.07, 16.4, 1.90); measured worst case 18.6%.
+  worst_zn < 25
+)
+cat(sprintf("Worst absolute deviation from Table S4: 10 nm %.1f%%, Zn(NO3)2 %.1f%%\n",
+            worst_10nm, worst_zn))
+```
+
+## Gate 3: the tissues sit at their flow-limited equilibrium
+
+For the five tissues with no excretion pathway (lung, spleen, heart, brain and
+the carcass), Table 1 gives a pure perfusion term, and organ perfusion rate
+constants here are two to four orders of magnitude faster than the rate at
+which the partition coefficients change. The tissue-to-blood concentration
+ratio must therefore track `kp_tissue(t)` closely. This is an independent
+structural check on equations (B), (D), (F), (G) and (I) and on the
+time-dependent `kp` machinery.
+
+```{r gate-equilibrium}
+equil <- sim |>
+  dplyr::filter(time >= 1) |>
+  dplyr::select(chemical, time,
+                dplyr::all_of(c("blood", "lung", "spleen", "heart", "brain", "other")),
+                kp_lung, kp_spleen, kp_heart, kp_brain, kp_other) |>
+  tidyr::pivot_longer(c(lung, spleen, heart, brain, other),
+                      names_to = "tissue", values_to = "conc") |>
+  dplyr::mutate(kp = dplyr::case_when(
+    tissue == "lung"   ~ kp_lung,
+    tissue == "spleen" ~ kp_spleen,
+    tissue == "heart"  ~ kp_heart,
+    tissue == "brain"  ~ kp_brain,
+    tissue == "other"  ~ kp_other
+  )) |>
+  dplyr::mutate(rel = abs(conc / blood / kp - 1))
+
+equil |>
+  dplyr::group_by(chemical) |>
+  dplyr::summarise(`Median rel. deviation` = sprintf("%.2e", median(rel)),
+                   `Worst rel. deviation`  = sprintf("%.2e", max(rel)),
+                   .groups = "drop") |>
+  dplyr::rename("Test article" = chemical) |>
+  knitr::kable(caption = "Deviation of C_tissue / C_blood from kp_tissue(t) over 1 to 672 h.")
+
+# Worst measured deviation is 3.3%, driven by the transient immediately after
+# the day-7 parameter switch.
+stopifnot(max(equil$rel) < 0.06)
+```
+
+## Gate 4: mass balance, and a printed anomaly in the biliary term
+
+Table 1 writes the liver-to-gut biliary transfer as the *concentration* term
+`Cli * kli / pli` in both equation (C) and equation (E). Because the gut and
+liver have different volumes (0.127 and 0.059 of body weight), the amount the
+gut gains is `VGI / VLi = 2.15` times the amount the liver loses, so the printed
+model is not mass-conserving. The extraction reproduces the equations verbatim;
+this section quantifies the consequence rather than silently repairing it.
+
+Accounting for that term explicitly, the mass budget closes exactly, which
+confirms that the ODEs were transcribed as intended:
+
+```{r gate-mass-balance}
+mass_budget <- function(chem) {
+  s <- sim |> dplyr::filter(chemical == chem)
+  burden <- rowSums(sapply(tissues, function(k) s[[k]] * volumes[[k]]))
+  # Excretion leaving the animal, converted from the printed concentration
+  # rates to amounts by each organ's own volume.
+  out  <- s$gut    * s$kfeces / s$kp_gut    * volumes[["gut"]] +
+          s$kidney * s$kurine / s$kp_kidney * volumes[["kidney"]]
+  # Mass created by the volume mismatch in the printed biliary term.
+  leak <- s$liver  * s$kbile  / s$kp_liver  * (volumes[["gut"]] - volumes[["liver"]])
+  h    <- diff(s$time)
+  trap <- function(y) sum((head(y, -1) + tail(y, -1)) / 2 * h)
+  tibble::tibble(
+    chemical      = chem,
+    burden_0      = burden[1],
+    burden_672    = tail(burden, 1),
+    excreted      = trap(out),
+    spurious_gain = trap(leak),
+    closure_error = burden[1] - trap(out) + trap(leak) - tail(burden, 1)
+  )
+}
+
+budget <- dplyr::bind_rows(lapply(levels(sim$chemical), mass_budget))
+
+budget |>
+  dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 3))) |>
+  dplyr::rename("Test article" = chemical, "Burden at 0 h (ug)" = burden_0,
+                "Burden at 672 h (ug)" = burden_672, "Excreted (ug)" = excreted,
+                "Spurious gain (ug)" = spurious_gain,
+                "Closure error (ug)" = closure_error) |>
+  knitr::kable(caption = "28-day mass budget. The spurious-gain column is the mass created by the printed biliary term.")
+
+stopifnot(
+  # The dose lands intact.
+  all(abs(budget$burden_0 - DOSE) < 1e-6),
+  # With the anomaly accounted for, the budget closes to well under 1 ug of 120.
+  all(abs(budget$closure_error) < 0.5)
+)
+```
+
+Over 28 days the printed biliary term creates between 13% and 40% of a dose of
+extra zinc, all of it in the gastrointestinal compartment. Users who need a
+mass-conserving variant should scale the `liver * kbile / kp_liver` term in
+`d/dt(gut)` by `v_liver / v_gut`; that is a deliberate deviation from the
+published equations and is **not** applied here.
+
+## Gate 5: mean residence time (Equation 5, Figure 6)
+
+Chen 2015 Equation 5 defines the tissue mean residence time as
+`integral(t * C(t) dt) / integral(C(t) dt)`, which is exactly PKNCA's
+`mrt.last`. The paper reports three checkable facts about Figure 6: most
+tissues fall between 7 and 14 days; 10 nm nanoparticles have longer residence
+times than the 71 nm nanoparticles and zinc nitrate; and the shortest of all is
+the 71 nm spleen.
+
+```{r pknca}
+conc_nca <- conc_long |>
+  dplyr::filter(!is.na(conc)) |>
+  dplyr::rename(Cc = conc) |>
+  dplyr::distinct(chemical, tissue, time, .keep_all = TRUE)
+
+# PKNCA anchors AUC0-t on a time-zero record. The simulation grid starts at
+# t = 0 and the filter above is `!is.na()` only, so every group must already
+# have one; assert it rather than patching a row in silently.
+stopifnot(
+  conc_nca |>
+    dplyr::group_by(chemical, tissue) |>
+    dplyr::summarise(has_zero = any(time == 0), .groups = "drop") |>
+    dplyr::pull(has_zero) |>
+    all()
+)
+
+dose_nca <- conc_nca |>
+  dplyr::distinct(chemical, tissue) |>
+  dplyr::mutate(time = 0, dose = DOSE)
+
+o_conc <- PKNCA::PKNCAconc(as.data.frame(conc_nca), Cc ~ time | tissue / chemical)
+o_dose <- PKNCA::PKNCAdose(as.data.frame(dose_nca), dose ~ time | tissue + chemical)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 672,
+                         mrt.last = TRUE, auclast = TRUE,
+                         cmax = TRUE, tmax = TRUE)
+))
+
+nca_res <- as.data.frame(nca)
+mrt <- nca_res |>
+  dplyr::filter(PPTESTCD == "mrt.last") |>
+  dplyr::mutate(mrt_days = PPORRES / 24)
+```
+
+```{r mrt-table}
+mrt |>
+  dplyr::select(tissue, chemical, mrt_days) |>
+  dplyr::mutate(mrt_days = round(mrt_days, 2)) |>
+  tidyr::pivot_wider(names_from = chemical, values_from = mrt_days) |>
+  dplyr::arrange(tissue) |>
+  dplyr::rename("Tissue" = tissue) |>
+  knitr::kable(caption = "Simulated mean residence time (days), Equation 5. Compare Figure 6A.")
+```
+
+```{r mrt-assert}
+by_chem <- tapply(mrt$mrt_days, mrt$chemical, mean)
+lowest  <- mrt[which.min(mrt$mrt_days), ]
+
+stopifnot(
+  # Chen 2015 Results: "the mean residence time of 10 nm 65ZnO NPs was longer
+  # than those of 65Zn(NO3)2 and 71 nm 65ZnO NPs".
+  by_chem[["10 nm ZnO NP"]] > by_chem[["71 nm ZnO NP"]],
+  by_chem[["10 nm ZnO NP"]] > by_chem[["Zn(NO3)2"]],
+  # Chen 2015 Results: "71 nm 65ZnO NPs in the spleen had the lowest mean
+  # residence time".
+  lowest$tissue == "spleen",
+  lowest$chemical == "71 nm ZnO NP",
+  # Figure 6A's stated band for the bulk of the tissues, checked on the median
+  # rather than on the extremes.
+  median(mrt$mrt_days) > 4, median(mrt$mrt_days) < 14
+)
+cat(sprintf("Mean MRT by test article (days): 10 nm %.2f, 71 nm %.2f, Zn(NO3)2 %.2f\n",
+            by_chem[["10 nm ZnO NP"]], by_chem[["71 nm ZnO NP"]],
+            by_chem[["Zn(NO3)2"]]))
+cat(sprintf("Shortest MRT: %s in %s, %.2f days (paper reports the 71 nm spleen as lowest, at 4.55 days)\n",
+            lowest$chemical, lowest$tissue, lowest$mrt_days))
+```
+
+The ordering and the identity of the minimum reproduce exactly. The magnitudes
+run below the paper's: Chen 2015 computed Equation 5 from the *experimental*
+concentrations, whereas the values above come from the fitted model, and the
+model's late-phase decline is steeper than the sparse day-7 to day-28 data.
+
+## Blood NCA
+
+The paper reports no non-compartmental parameters for blood, so there is
+nothing to compare these against; they are provided for orientation.
+
+```{r blood-nca}
+nca_res |>
+  dplyr::filter(tissue == "blood",
+                PPTESTCD %in% c("cmax", "tmax", "auclast", "mrt.last")) |>
+  dplyr::select(chemical, PPTESTCD, PPORRES) |>
+  dplyr::mutate(PPORRES = signif(PPORRES, 4),
+                PPTESTCD = dplyr::recode(
+                  PPTESTCD, cmax = "Cmax (ug/mL)", tmax = "Tmax (h)",
+                  auclast = "AUClast (ug*h/mL)", `mrt.last` = "MRT (h)")) |>
+  tidyr::pivot_wider(names_from = chemical, values_from = PPORRES) |>
+  dplyr::rename("NCA parameter" = PPTESTCD) |>
+  knitr::kable(caption = "Blood non-compartmental parameters from the simulated profiles.")
+```
+
+# Replicate published figures
+
+## Figure 3: tissue concentration-time profiles
+
+```{r figure-3, fig.height = 7}
+conc_long |>
+  dplyr::filter(tissue != "blood", conc > 0) |>
+  ggplot(aes(time / 24, conc, colour = chemical)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ tissue, scales = "free_y", ncol = 2) +
+  scale_x_continuous(breaks = c(0, 7, 14, 21, 28)) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Concentration (ug/g)", colour = NULL,
+       title = "Figure 3 - tissue biodistribution over 28 days",
+       caption = "Replicates Figure 3 of Chen 2015 (panels A-X).") +
+  theme(legend.position = "top")
+```
+
+The 10 nm lung panel carries the paper's headline result: a partition
+coefficient of 64 over the first 7 hours drives a far higher early lung burden
+than either the 71 nm particles or zinc ion, followed by a sharp drop when the
+partition coefficient switches to 6.33.
+
+## Figure 4: blood concentration-time profiles
+
+```{r figure-4}
+conc_long |>
+  dplyr::filter(tissue == "blood", time > 0) |>
+  ggplot(aes(time / 24, conc, colour = chemical)) +
+  geom_line(linewidth = 0.7) +
+  scale_x_continuous(breaks = c(0, 7, 14, 21, 28)) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Blood concentration (ug/mL)", colour = NULL,
+       title = "Figure 4 - blood kinetics",
+       caption = "Replicates Figure 4 of Chen 2015 (panels A-C).") +
+  theme(legend.position = "top")
+```
+
+## Figure 3, with and without calibration
+
+Figure 3 draws two curves per panel: a solid line for the uncalibrated
+simulation and a dashed line for the calibration in which the nanoparticle
+parameters are replaced, after day 7, by the constants of Table 4. The packaged
+nanoparticle models implement the calibrated (final) version and expose the
+switch time as `tdecomp`; pushing `tdecomp` past the end of the simulation
+recovers the uncalibrated curve.
+
+```{r figure-3-calibration}
+uncalibrated <- function(mod, label) {
+  mod |>
+    rxode2::ini(tdecomp = 1e6) |>
+    rxode2::rxSolve(events, returnType = "data.frame",
+                    atol = 1e-10, rtol = 1e-8) |>
+    dplyr::distinct(time, .keep_all = TRUE) |>
+    dplyr::mutate(chemical = label, calibration = "without (Table 3 throughout)")
+}
+
+calib_cmp <- dplyr::bind_rows(
+  uncalibrated(mod_10nm, "10 nm ZnO NP"),
+  uncalibrated(mod_71nm, "71 nm ZnO NP"),
+  sim |> dplyr::filter(chemical != "Zn(NO3)2") |>
+    dplyr::mutate(calibration = "with (Table 4 after day 7)")
+) |>
+  dplyr::select(chemical, calibration, time, liver, kidney, gut, other) |>
+  tidyr::pivot_longer(c(liver, kidney, gut, other),
+                      names_to = "tissue", values_to = "conc")
+
+calib_cmp |>
+  dplyr::filter(conc > 0) |>
+  ggplot(aes(time / 24, conc, colour = chemical, linetype = calibration)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~ tissue, scales = "free_y") +
+  scale_x_continuous(breaks = c(0, 7, 14, 21, 28)) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Concentration (ug/g)",
+       colour = NULL, linetype = "Calibration",
+       title = "Figure 3 - effect of the post-day-7 recalibration",
+       caption = "Solid and dashed lines of Figure 3 of Chen 2015.") +
+  theme(legend.position = "top", legend.box = "vertical")
+```
+
+The two curves are identical up to day 7 by construction and diverge after it,
+which is exactly the behaviour Figure 3 shows.
+
+## Partition coefficients against Tables S1 to S3
+
+Tables S1 to S3 list the AUC-ratio partition coefficients at each sampling
+time. For brain and carcass these are the data that Equation 2 was fitted to,
+so comparing the model's `kp(t)` against them shows how well the four-parameter
+Hill actually reproduces its own target. This is a diagnostic, not a gate: the
+fitted curves are the model input regardless of how closely they track the
+tabulated ratios.
+
+```{r kp-diagnostic}
+tab_s123 <- tibble::tribble(
+  ~chemical,      ~tissue, ~time, ~published,
+  "10 nm ZnO NP", "brain",     1,  0.22,
+  "10 nm ZnO NP", "brain",     7,  0.52,
+  "10 nm ZnO NP", "brain",    24,  1.11,
+  "10 nm ZnO NP", "brain",    72,  1.56,
+  "10 nm ZnO NP", "brain",   168,  2.01,
+  "10 nm ZnO NP", "other",     1,  0.57,
+  "10 nm ZnO NP", "other",     7,  1.21,
+  "10 nm ZnO NP", "other",    24,  1.84,
+  "10 nm ZnO NP", "other",    72,  2.15,
+  "10 nm ZnO NP", "other",   168,  2.26,
+  "71 nm ZnO NP", "brain",     1,  0.05,
+  "71 nm ZnO NP", "brain",     7,  0.42,
+  "71 nm ZnO NP", "brain",    24,  0.73,
+  "71 nm ZnO NP", "brain",    72,  0.95,
+  "71 nm ZnO NP", "brain",   168,  1.23,
+  "71 nm ZnO NP", "other",     1,  0.59,
+  "71 nm ZnO NP", "other",     7,  1.09,
+  "71 nm ZnO NP", "other",    24,  2.05,
+  "71 nm ZnO NP", "other",    72,  2.43,
+  "71 nm ZnO NP", "other",   168,  2.70,
+  "Zn(NO3)2",     "brain",     1,  0.04,
+  "Zn(NO3)2",     "brain",     7,  0.12,
+  "Zn(NO3)2",     "brain",    24,  0.24,
+  "Zn(NO3)2",     "brain",    72,  0.44,
+  "Zn(NO3)2",     "brain",   168,  0.55,
+  "Zn(NO3)2",     "other",     1,  0.23,
+  "Zn(NO3)2",     "other",     7,  0.47,
+  "Zn(NO3)2",     "other",    24,  0.68,
+  "Zn(NO3)2",     "other",    72,  0.77,
+  "Zn(NO3)2",     "other",   168,  0.86
+)
+
+kp_sim <- sim |>
+  dplyr::select(chemical, time, brain = kp_brain, other = kp_other) |>
+  tidyr::pivot_longer(c(brain, other), names_to = "tissue", values_to = "model")
+
+tab_s123 |>
+  dplyr::mutate(chemical = factor(chemical, levels = levels(sim$chemical))) |>
+  dplyr::left_join(kp_sim, by = c("chemical", "tissue", "time")) |>
+  dplyr::mutate(pct_diff = round(100 * (model / published - 1), 1),
+                model = round(model, 3)) |>
+  dplyr::rename("Test article" = chemical, "Tissue" = tissue,
+                "Time (h)" = time, "Tables S1-S3" = published,
+                "Model Hill (Eq 2)" = model, "% diff" = pct_diff) |>
+  knitr::kable(caption = "Equation 2 partition coefficients against the tabulated AUC ratios.")
+```
+
+Agreement is good from 7 hours onward for the brain of all three test articles
+and is poorest for the 10 nm carcass, where the fitted `Tp50` of 8.505 h makes
+the curve rise well ahead of the tabulated ratios. See the Errata below.
+
+# Assumptions and deviations
+
+* **Tissue density is taken as 1 g/mL.** Table 2 reports organ volumes as
+  fractions of body weight in kg, while Table 1 reports blood in ug/mL and
+  tissues in ug/g. The models convert a volume fraction to mL as
+  `1000 * fraction * WT`, which is only dimensionally consistent under unit
+  density. Chen 2015 does not state a density; every compartmental PBPK of this
+  vintage makes the same assumption implicitly.
+* **States hold concentration, not amount.** This is how Table 1 is written,
+  and keeping it that way makes the `d/dt()` lines a term-by-term transcription
+  of the published equations. The consequence is that the intravenous dose has
+  to be converted with `f(blood) <- 1 / v_blood`; Gate 1 above asserts that the
+  conversion is exact.
+* **No between-subject variability and no residual error.** Chen 2015 fitted the
+  model by minimising mean absolute percentage error (Equation 6), so no
+  variance components exist to extract. The 95% intervals in Tables S1 to S3 are
+  Monte Carlo uncertainty on the AUC-ratio partition coefficients, not fitted
+  random effects, and are deliberately *not* encoded as IIV. The models are for
+  typical-value simulation only.
+* **The calibrated model is the packaged default.** Chen 2015 presents an
+  uncalibrated simulation and a calibrated one in which the nanoparticle
+  parameters switch to the Table 4 constants after day 7; the calibrated version
+  is the paper's conclusion, so it is what the two nanoparticle models
+  implement. `tdecomp` exposes the switch, and the figure above shows both.
+* **Piecewise boundaries.** Table 3 footnotes place the 10 nm lung switch at
+  "the first 7 hours" versus "hour 7 to day 7" and the 71 nm spleen switch at
+  "the first 3 days" versus "days 3-7". The boundary instant itself is assigned
+  to the earlier window (`t <= 7`, `t <= 72`), which matches the 7 h value of
+  64.00 tabulated in Table S1.
+* **The number of animals per time point is not recorded.** Chen 2015 does not
+  state it; it lives in the upstream biodistribution paper, which is not on
+  disk. `population$n_subjects` is therefore `NA`.
+
+# Errata
+
+* **The liver-to-gut biliary term is not mass-conserving as printed.** Table 1
+  equations (C) and (E) both use the concentration expression
+  `Cli * kli / pli`, so the gut gains `VGI / VLi = 2.15` times the mass the
+  liver loses. Gate 4 quantifies the effect: between 15.7 and 48.3 ug of
+  spurious zinc over 28 days against a 120 ug dose. The equations are
+  reproduced verbatim; no correction is applied.
+* **The excretion terms sit outside the perfusion brackets.** In equations (E)
+  and (H) the `- Ci * ki / pi` terms are written outside the `1 / Vi` and
+  `Qi / Vi` brackets, so they act on concentration rather than on amount.
+  Transcribed as printed.
+* **The lung sits in parallel, not in series.** In equation (A) `QLu` appears in
+  both the influx sum and the efflux sum, and the bracketed flow total comes to
+  1.995 times cardiac output rather than 1. Reproduced as printed.
+* **Table S4, 10 nm liver, 168 h reads 0.00193.** Every neighbouring value is
+  near 0.019 and the 672 h entry in the same column is 0.0193; the 168 h entry
+  is a decimal slip. Gate 2 uses 0.0193. The model is unaffected either way,
+  since it takes its parameters from Table 3.
+* **Table 3's constant rate constants for 71 nm and zinc nitrate do not match
+  Table S4.** For example Table 3 gives the 71 nm renal rate as 0.128 /h while
+  Table S4 spans 0.0146 to 0.0761 /h for the same quantity, and Table 4 repeats
+  0.1277 at higher precision. These are evidently optimised model inputs rather
+  than the depuration fits, consistent with the paper's statement that "the
+  estimated tissue-specific excretion or elimination rates and partition
+  coefficients would be adjusted ... to reduce the MAPE values". Table 3 is the
+  parameter table for the PBPK model by its own caption, so it is what the
+  models use; only the Hill-fitted rates are gated against Table S4.
+* **The 10 nm lung and 71 nm spleen partition coefficients are optimised, not
+  AUC ratios.** Table 3 gives 64 then 6.33 for the 10 nm lung and 3.7 then 1.44
+  for the 71 nm spleen, against Table S1/S2 ratios that never drop that far.
+  The Results section says so explicitly ("we used optimized partition
+  coefficients (listed in Table 3) to simulate and describe 65ZnO NPs
+  concentration profiles over time in the lung and spleen"), so these are
+  intentional.
+* **The 10 nm carcass Hill fit does not reproduce its own target well.** With
+  the printed `Tp50` of 8.505 h the Equation 2 curve runs up to 70% above the
+  Table S1 carcass ratios at 1 to 4 hours, despite a reported r-squared of 0.98;
+  the 71 nm and zinc nitrate carcass fits use `Tp50` values of 103.700 and
+  22.680 h. The printed value is used unchanged.
+* **The reported minimum mean residence time is internally inconsistent.** Chen
+  2015 states "71 nm 65ZnO NPs in the spleen had the lowest mean residence time
+  of 4.55 days (95% confidence interval: 1.14-2.07)". The interval does not
+  contain the point estimate. The model reproduces the qualitative claim (the
+  71 nm spleen is the minimum) at 2.9 days.

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chen 2015 zinc oxide nanoparticles (10 nm and 71 nm) and zinc nitrate ([doi:10.2147/IJN.S86785](https://doi.org/10.2147/IJN.S86785)) -- male ICR mice given a single intravenous dose.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
