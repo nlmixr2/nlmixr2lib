@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yoshii 2016 acotiamide ([doi:10.1007/s11095-015-1787-y](https://doi.org/10.1007/s11095-015-1787-y)) — male Sprague-Dawley rats.
+
 - Type the GOLD spirometric-stage covariate columns (`DIS_COPD_GOLD`, and
   `DIS_COPD_GOLD_LOW` / `DIS_COPD_GOLD_HIGH`) as `categorical` rather than
   `ordinal`. No register's type vocabulary has an `ordinal` member: an
