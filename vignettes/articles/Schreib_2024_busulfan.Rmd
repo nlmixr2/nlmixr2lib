@@ -148,20 +148,28 @@ tibble::tibble(
 
 # Solve this model with `useLinCmt = FALSE`
 
-**Every `rxSolve()` call in this vignette passes `useLinCmt = FALSE`, and any
-simulation of this model must do the same.**
+**Every `rxSolve()` call in this vignette passes `useLinCmt = FALSE`.** That is
+now belt and braces rather than a necessity, and it is kept deliberately -- see
+below.
 
-Schreib 2024 is a one-compartment model with linear elimination, which is
-exactly the structure `rxSolve()` recognises and rewrites into a closed-form
-`linCmt()` solution by default (`useLinCmt = TRUE`). That closed form can only
-carry a **constant** elimination rate constant, so the rewrite silently
-substitutes `kel` at `t = 0` for all time and discards the entire time
-dependence -- which is the whole subject of this paper.
+Schreib 2024 is a one-compartment model with linear elimination, which is the
+structure `rxSolve()` recognises and can rewrite into a closed-form `linCmt()`
+solution. That closed form can only carry a **constant** elimination rate
+constant, so through rxode2 5.1.6 the rewrite silently substituted `kel` at
+`t = 0` for all time and discarded the entire time dependence -- the whole
+subject of this paper. The failure was silent, one-sided and large: under the
+default flag every interval collapsed to exactly `Dose / (kel(0) * vc)`.
 
-The failure is silent, one-sided, and large. The check below solves the same
-regimen both ways and compares each dosing interval's AUC against a hand
-integration. Under the default flag every interval collapses to exactly
-`Dose / (kel(0) * vc)`.
+rxode2 5.1.7 closed that hole from the other side. It now refuses the
+ODE-to-`linCmt()` conversion when the conversion would change a rate or when
+the model carries an exogenous input term, which covers this model, so the
+rewrite no longer happens and both flags give the same answer. The check below
+solves the same regimen both ways and asserts exactly that: the time
+dependence survives, and the two paths agree.
+
+Passing the flag explicitly is still worth doing. It states which solver path
+the numbers came from instead of inheriting a package default -- and that
+default itself changed in rxode2 5.1.8, from `TRUE` to `FALSE`.
 
 ```{r load-model}
 # rxode2() turns the model function returned by readModelDb() into the rxUi
@@ -198,16 +206,20 @@ tibble::tibble(
 ) |>
   knitr::kable(
     caption = paste(
-      "The default ODE-to-linCmt conversion holds kel at its t = 0 value.",
-      "The correct (ODE) column rises as clearance falls; the converted column",
-      "does not move after the first interval."
+      "From rxode2 5.1.7 the ODE-to-linCmt conversion is refused for this",
+      "model, so both columns rise as clearance falls and the under-prediction",
+      "is zero. Before 5.1.7 the converted column did not move after the first",
+      "interval, holding kel at its t = 0 value."
     )
   )
 
-# Regression guard: if a future edit drops useLinCmt = FALSE, this fails loudly
-# rather than shipping a silently constant-clearance vignette.
+# Regression guard, in two parts. The first is the physics and has always held:
+# clearance falls with time, so interval AUC must rise. The second used to
+# assert the linCmt column was FLAT -- the defect. rxode2 5.1.7 refuses the
+# conversion for this model, so the two paths now agree instead, and asserting
+# that catches both a reintroduced rewrite and a silent divergence.
 stopifnot(trap_ode[8] / trap_ode[1] > 1.15,
-          abs(trap_default[8] / trap_default[3] - 1) < 0.001)
+          max(abs(trap_default / trap_ode - 1)) < 1e-6)
 ```
 
 # Typical values at the reference covariates

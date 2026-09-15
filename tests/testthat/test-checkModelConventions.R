@@ -303,11 +303,29 @@ test_that("warning is emitted when issues exist and suppressed when clean", {
   )
 })
 
+# The whole-database sweep this block used to do now lives in
+# test-modeldb-conventions-01.R .. -08.R, which cover the same models split
+# across files so testthat's workers can share them. Running all 2912 models
+# in this one block put the entire suite behind a single ~1100s serial call.
+# What is left here is the no-argument wrapper's own job -- walk every name in
+# the database and stack the per-model results -- with the per-model check
+# stubbed, so the iteration is tested without rebuilding the library.
 test_that("iterating with no argument returns stacked data.frame with model column", {
+  .conventionStubAcc$seen <- character(0)
+  testthat::local_mocked_bindings(
+    .checkOneModel = .conventionStubCheckOneModel,
+    .package = "nlmixr2lib"
+  )
+
   res <- suppressWarnings(checkModelConventions(verbose = FALSE))
   expect_s3_class(res, "data.frame")
   expect_true("model" %in% names(res))
   expect_gt(length(unique(res$model)), 1)
+  # every model in the database was visited, not just the first
+  expect_setequal(
+    .conventionStubAcc$seen,
+    get0("modeldb", envir = asNamespace("nlmixr2lib"))$name
+  )
 })
 
 test_that("canonical covariates are parsed from inst/references/covariate-columns.md", {

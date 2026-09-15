@@ -39,30 +39,14 @@ addDepot <- function(ui,
   .after <- if (.w < length(.modelLines)) .modelLines[(.w + 1L):length(.modelLines)] else list()
   .modelLines <- c(.before, .newLines, list(.modLine), .after)
 
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.iniDf$name) == 0L) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.iniDf$ntheta)
-  }
-
-  .thetaka <- .get1theta(ka, .theta1, .ntheta,
-    label = paste0("First order absorption rate (", ka, ")"))
-  .ntheta <- .ntheta + 1
-
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaka,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  rxode2::rxUiCompress(.ui)
+  .ui <- .iniAddTheta(.ui, paste0("l", ka),
+    label = paste0("First order absorption rate (", ka, ")"))
+  rxode2::rxUiCompress(rxode2::as.rxUi(.ui))
 }
 
 
@@ -95,11 +79,10 @@ removeDepot <- function(ui, central = "central", depot = "depot",
   .modelLines <- c(.tmp$pre,
     .tmp$w,
     .tmp$post)
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .eta <- .tmp$eta
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .theta <- .dropTheta(.theta, ka)
   .eta <- .dropEta(.eta, ka)
   .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ka)

@@ -58,10 +58,9 @@ addWeibullAbs <- function(ui, ntransit, central = "central",
     ret = .wb),
   .tmp$post)
   # add parameter estimates
-  .tmp <- .getEtaThetaTheta1(.ui)
+  .tmp <- .getEtaTheta(.ui)
   .iniDf <- .tmp$iniDf
   .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
   .eta <- .tmp$eta
   .tmp <- .dropLines(.ui, .modelLines, .theta, .eta, ka)
   .modelLines <- .tmp$modelLines
@@ -69,28 +68,19 @@ addWeibullAbs <- function(ui, ntransit, central = "central",
   .eta <- .tmp$eta
   .ntheta <- .tmp$ntheta
 
-  if (length(.theta$name) == 0L) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-  .thetawa <- .get1theta(wa, .theta1, .ntheta,
-    label = paste0("Weibull absorption alpha (", wa, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetawb <- .get1theta(wb, .theta1, .ntheta,
-    label = paste0("Weibull absorption beta (", wa, ")"))
-  .ntheta <- .ntheta + 1
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetawa,
-    .thetawb,
-    .eta)
+  # .theta/.eta are subsets of this model's own iniDf (ka dropped), so binding
+  # them assumes nothing about its columns; the two new parameters go in
+  # through ini().
+  .ui$iniDf <- rbind(.theta, .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
 
   # modify model block
   rxode2::model(.ui) <- .modelLines
-  .ui
+  .ui <- .iniAddTheta(.ui, paste0("l", wa),
+    label = paste0("Weibull absorption alpha (", wa, ")"))
+  .iniAddTheta(.ui, paste0("l", wb),
+    label = paste0("Weibull absorption beta (", wb, ")"))
 }

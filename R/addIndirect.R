@@ -120,59 +120,31 @@ addIndirectLin <- function(ui,
   .modelLines,
   list(str2lang(paste0(R, "(0) <- ", kin, "/", kout)),
     .eff,
-    str2lang(paste0(effect, " <- ", R)),
-    str2lang(paste0(effect, " ~ add(", .effectSd, ")"))))
-
-  .tmp <- .getEtaThetaTheta1(.ui)
-  .iniDf <- .tmp$iniDf
-  .theta <- .tmp$theta
-  .theta1 <- .tmp$theta1
-  .eta <- .tmp$eta
-  if (length(.theta$ntheta) == 0) {
-    .ntheta <- 0
-  } else {
-    .ntheta <- max(.theta$ntheta)
-  }
-
-  .thetaKin <- .get1theta(kin, .theta1, .ntheta,
-    label = paste0("zero order response production(", kin, ")"))
-  .ntheta <- .ntheta + 1
-
-  .thetaKout <- .get1theta(kout, .theta1, .ntheta,
-    label = paste0("first order rate response loss (", kout, ")"))
-  .ntheta <- .ntheta + 1
-
-  if (.doStim) {
-    .thetaK <- .get1theta(ek, .theta1, .ntheta,
-      label = paste0("linear effect constant (", ek, ")"))
-  } else {
-    .thetaK <- .get1theta(ik, .theta1, .ntheta,
-      lower = -Inf, upper = 1,
-      label = paste0("linear inhibition constant (", ik, ")"))
-  }
-
-  .ntheta <- .ntheta + 1
-
-  .thetaErr <- .get1theta(.effectSd, .theta1, .ntheta,
-    lower = 0,
-    label = paste0("additive error for ", effect),
-    name = .effectSd)
-  .thetaErr$condition <- effect
-  .thetaErr$err <- "add"
+    str2lang(paste0(effect, " <- ", R))))
+  .errLine <- str2lang(paste0(effect, " ~ add(", .effectSd, ")"))
 
   .ui <- rxode2::rxUiDecompress(.ui)
-  .ui$iniDf <- rbind(.theta,
-    .thetaKin,
-    .thetaKout,
-    .thetaK,
-    .thetaErr,
-    .eta)
   if (exists("description", envir = .ui$meta)) {
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui
-
+  .ui <- .iniAddTheta(.ui, paste0("l", kin),
+    label = paste0("zero order response production(", kin, ")"))
+  .ui <- .iniAddTheta(.ui, paste0("l", kout),
+    label = paste0("first order rate response loss (", kout, ")"))
+  if (.doStim) {
+    .ui <- .iniAddTheta(.ui, paste0("l", ek),
+      label = paste0("linear effect constant (", ek, ")"))
+  } else {
+    .ui <- .iniAddTheta(.ui, paste0("l", ik),
+      lower = -Inf, upper = 1,
+      label = paste0("linear inhibition constant (", ik, ")"))
+  }
+  # the endpoint goes on by itself so rxode2 creates the residual parameter
+  # and decides its condition, err and lower bound
+  .ui <- .modelAppend(.ui, list(.errLine))
+  .iniAddTheta(.ui, .effectSd,
+    label = paste0("additive error for ", effect))
 }
 
 #' Add an indirect response model to a PK model

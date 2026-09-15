@@ -56,6 +56,36 @@
   "metabolite-suffix", "paper-named-param", "log-transformed-pk", "bare-pk"
 )
 
+# The other side of `.knownTypes`. That vector is the UNION over all three
+# registers, so it can only say a bad type is not one of nine spanning files
+# it does not belong to; each register additionally documents its OWN, much
+# narrower vocabulary in the `type:` line of its `## Entry schema` block.
+# Until it was machine-read that line was prose, and prose drifts: `ordinal`
+# shipped on two covariate entries even though `continuous | binary |
+# categorical | count` names no such type. Read here so the documented list is
+# checked against the entries in both directions -- exactly why the
+# `## Case convention` exemptions were moved out of prose and into
+# `.caseExemptions()`.
+.schemaTypes <- function(path) {
+  lines <- readLines(path, warn = FALSE)
+  start <- grep("^## Entry schema[[:space:]]*$", lines)
+  if (!length(start)) {
+    return(character())
+  }
+  rest <- lines[seq(start[[1]] + 1L, length(lines))]
+  nextSection <- grep("^## ", rest)
+  if (length(nextSection)) rest <- rest[seq_len(nextSection[[1]] - 1L)]
+  # Only the schema block's own `type:` field; the prose below it discusses
+  # `Type:` in backticked capitalised form and must not be read as a list.
+  decl <- grep("^[[:space:]]*type:[[:space:]]*[^[:space:]]", rest, value = TRUE)
+  if (!length(decl)) {
+    return(character())
+  }
+  spec <- sub("^[[:space:]]*type:[[:space:]]*", "", decl[[1]])
+  vals <- trimws(strsplit(spec, "|", fixed = TRUE)[[1]])
+  unique(vals[nzchar(vals)])
+}
+
 .allMatches <- function(x, pat) {
   m <- gregexpr(pat, x, perl = TRUE)
   hits <- regmatches(x, m)[[1]]
