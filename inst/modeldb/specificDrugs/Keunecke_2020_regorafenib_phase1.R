@@ -10,39 +10,84 @@ Keunecke_2020_regorafenib_phase1 <- function() {
     sep = " "
   )
   vignette <- "Keunecke_2020_regorafenib"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # The phase 1 model carries no covariate effects; sex and BMI enter only in
   # the phase 3 covariate model (Keunecke_2020_regorafenib_phase3).
   covariateData <- list()
 
   compartmentData <- list(
-    depot            = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1         = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2         = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1      = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder      = list(analyte = "regorafenib", units = "mg", specimen = "bile", verified = TRUE),
-    transit1_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3_m2      = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "administration site", verified = TRUE),
-    central_m2       = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m2   = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder_m2   = list(analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)", units = "mg", specimen = "bile", verified = TRUE),
-    central_m5       = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_m5   = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "plasma", verified = TRUE),
-    gallbladder_m5   = list(analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)", units = "mg", specimen = "bile", verified = TRUE)
+    depot = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "regorafenib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "regorafenib", units = "mg", specimen = "plasma", verified = TRUE),
+    gallbladder = list(analyte = "regorafenib", units = "mg", specimen = "bile", verified = TRUE),
+    transit1_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    transit2_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    transit3_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder_m2 = list(
+      analyte = "regorafenib M-2 (N-oxide, BAY 75-7495)",
+      units = "mg",
+      specimen = "bile",
+      verified = TRUE
+    ),
+    central_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    gallbladder_m5 = list(
+      analyte = "regorafenib M-5 (N-oxide N-desmethyl, BAY 81-8752)",
+      units = "mg",
+      specimen = "bile",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species     = "human",
-    n_subjects  = 62L,
-    n_studies   = 2L,
-    age_range   = "not reported for the phase 1 subset",
+    species = "human",
+    n_subjects = 62L,
+    n_studies = 2L,
+    age_range = "not reported for the phase 1 subset",
     disease_state = "Adults with advanced solid tumours.",
-    dose_range  = "Regorafenib 160 mg once daily (4 x 40 mg tablets), 3 weeks on / 1 week off; study 15823 additionally gave a single 160 mg dose on Day 1.",
-    regions     = "USA (study 14814) and Mainland China (study 15823).",
-    notes       = "Keunecke 2020 section 2.1.1 and Appendix Table A1. Study 14814 (NCT01339104, USA, n = 44, 774 PK observations) sampled cycle 1 day 21 predose, up to 10 h post-dose and 24 h post-dose. Study 15823 (NCT02398513, Mainland China, n = 18, 566 PK observations) sampled cycle 0 day 1 and cycle 1 day 21, predose and up to 96 h post-dose. 1340 parent regorafenib observations in total. Absorption (ka, its IIV, and the number of transit compartments) was determined from single-dose study 15823 data alone and then fixed; the parent structural parameters were fixed to the parent-only phase 1 model (Table 1) when the metabolite data were added. Baseline demographics for the phase 1 subset are not tabulated separately in the paper; Appendix Table A2 reports covariate distributions for the phase 3 studies only."
+    dose_range = "Regorafenib 160 mg once daily (4 x 40 mg tablets), 3 weeks on / 1 week off; study 15823 additionally gave a single 160 mg dose on Day 1.",
+    regions = "USA (study 14814) and Mainland China (study 15823).",
+    notes = "Keunecke 2020 section 2.1.1 and Appendix Table A1. Study 14814 (NCT01339104, USA, n = 44, 774 PK observations) sampled cycle 1 day 21 predose, up to 10 h post-dose and 24 h post-dose. Study 15823 (NCT02398513, Mainland China, n = 18, 566 PK observations) sampled cycle 0 day 1 and cycle 1 day 21, predose and up to 96 h post-dose. 1340 parent regorafenib observations in total. Absorption (ka, its IIV, and the number of transit compartments) was determined from single-dose study 15823 data alone and then fixed; the parent structural parameters were fixed to the parent-only phase 1 model (Table 1) when the metabolite data were added. Baseline demographics for the phase 1 subset are not tabulated separately in the paper; Appendix Table A2 reports covariate distributions for the phase 3 studies only."
   )
 
   ini({

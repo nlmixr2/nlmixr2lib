@@ -46,11 +46,11 @@ Chen_2025_hemoporfin <- function() {
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Body-size metric for all six disposition parameters, normalised to ",
         "46.1 kg (Chen 2025 Results 3.3: body_size_adult,typical was fixed ",
         "at the median FFM of the adult healthy volunteers). Computed with ",
@@ -64,14 +64,14 @@ Chen_2025_hemoporfin <- function() {
         "body weight and over normal fat mass in the stepwise body-size ",
         "screen of Figure S1."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     STUDY_PEDIATRIC = list(
-      description        = "Pediatric-trial cohort indicator (1 = the pediatric port-wine-stain trial NCT03125057, 0 = the 2012 adult healthy-volunteer phase I trial)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pediatric-trial cohort indicator (1 = the pediatric port-wine-stain trial NCT03125057, 0 = the 2012 adult healthy-volunteer phase I trial)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult healthy-volunteer phase I trial)",
-      notes              = paste0(
+      notes = paste0(
         "Chen 2025 Equation 2: F1 = 1 + theta_study * STUDY. Derived in the ",
         "source control stream from the subject identifier ",
         "(IF (ID.LT.1000) STUDY=1; IF (ID.GT.1000) STUDY=0). The estimate ",
@@ -82,33 +82,33 @@ Chen_2025_hemoporfin <- function() {
         "dose-selection simulations. Set to 0 to simulate the allometric ",
         "prediction without the inter-trial offset."
       ),
-      source_name        = "STUDY"
+      source_name = "STUDY"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "hemoporfin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "hemoporfin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "hemoporfin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "hemoporfin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 2L,
-    age_range      = "7-13 years (pediatric patients); 20-43 years (adult healthy volunteers)",
-    age_median     = "9 years (pediatric); 29 years (adult)",
-    weight_range   = "21-72 kg (pediatric); 50-75 kg (adult)",
-    weight_median  = "32 kg (pediatric); 62 kg (adult)",
-    height_range   = "120-164 cm (pediatric); 157-180 cm (adult)",
-    height_median  = "139 cm (pediatric); 167 cm (adult)",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 2L,
+    age_range = "7-13 years (pediatric patients); 20-43 years (adult healthy volunteers)",
+    age_median = "9 years (pediatric); 29 years (adult)",
+    weight_range = "21-72 kg (pediatric); 50-75 kg (adult)",
+    weight_median = "32 kg (pediatric); 62 kg (adult)",
+    height_range = "120-164 cm (pediatric); 157-180 cm (adult)",
+    height_median = "139 cm (pediatric); 167 cm (adult)",
     sex_female_pct = 45,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Port-wine stain (congenital capillary malformation) of the head and neck in the pediatric cohort; healthy volunteers in the adult cohort. Pediatric patients with alanine aminotransferase, aspartate transaminase, total bilirubin, serum creatinine or blood urea nitrogen above 1.5 times the upper limit of normal were excluded.",
-    dose_range     = "Single 5 mg/kg intravenous infusion over 20 minutes in both trials.",
+    disease_state = "Port-wine stain (congenital capillary malformation) of the head and neck in the pediatric cohort; healthy volunteers in the adult cohort. Pediatric patients with alanine aminotransferase, aspartate transaminase, total bilirubin, serum creatinine or blood urea nitrogen above 1.5 times the upper limit of normal were excluded.",
+    dose_range = "Single 5 mg/kg intravenous infusion over 20 minutes in both trials.",
     administration = "Intravenous infusion (20 minutes)",
-    regions        = "China",
-    notes          = paste0(
+    regions = "China",
+    notes = paste0(
       "Demographics from Chen 2025 Table 1. 24 pediatric patients ",
       "(10 female, 14 male) and 16 adult healthy volunteers (8 female, ",
       "8 male); the 45% female figure is the pooled 18/40. Adult volunteers ",

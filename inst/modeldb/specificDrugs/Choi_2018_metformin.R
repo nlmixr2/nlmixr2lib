@@ -8,44 +8,44 @@ Choi_2018_metformin <- function() {
     sep = " "
   )
   vignette <- "Choi_2018_metformin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_FDC = list(
-      description        = "Fixed-dose-combination tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fixed-dose-combination tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (single-agent metformin tablet; the typical-value reference for the structural Ka and the implicit relative bioavailability F = 1.0 in Choi 2018 Table 3)",
-      notes              = "Per-subject (per-occasion) binary covariate. 1 = subject received the metformin-containing fixed-dose-combination (FDC) tablet during this occasion; 0 = subject received the single-agent metformin tablet. The paper does not name the specific co-formulant drug; typical Korean metformin FDC products co-formulate metformin with sitagliptin, glimepiride, vildagliptin, or dapagliflozin. The 2-way crossover design assigns each of the 36 subjects to both formulation arms across two periods with a 1-week wash-out, so FORM_FDC is per-occasion (not per-subject). Formulation effects enter the model multiplicatively as power-style coefficients (Choi 2018 Methods Eq. 2: theta_test = theta_ref * X^formulation): ka = exp(lka + etalka) * (e_form_fdc_ka^FORM_FDC) shrinks Ka to 83.0% of its single-agent value when FORM_FDC = 1; f_rel = (e_form_fdc_f^FORM_FDC) shrinks the relative bioavailability to 94.0% of 1 when FORM_FDC = 1. Reference category orientation here (single-agent = 0 = ref) is the opposite of the Wilkins 2008 antitubercular precedent (where FDC = 1 = ref); the canonical column value semantics (1 = FDC, 0 = single-drug tablet) are preserved across both papers.",
-      source_name        = "formulation"
+      notes = "Per-subject (per-occasion) binary covariate. 1 = subject received the metformin-containing fixed-dose-combination (FDC) tablet during this occasion; 0 = subject received the single-agent metformin tablet. The paper does not name the specific co-formulant drug; typical Korean metformin FDC products co-formulate metformin with sitagliptin, glimepiride, vildagliptin, or dapagliflozin. The 2-way crossover design assigns each of the 36 subjects to both formulation arms across two periods with a 1-week wash-out, so FORM_FDC is per-occasion (not per-subject). Formulation effects enter the model multiplicatively as power-style coefficients (Choi 2018 Methods Eq. 2: theta_test = theta_ref * X^formulation): ka = exp(lka + etalka) * (e_form_fdc_ka^FORM_FDC) shrinks Ka to 83.0% of its single-agent value when FORM_FDC = 1; f_rel = (e_form_fdc_f^FORM_FDC) shrinks the relative bioavailability to 94.0% of 1 when FORM_FDC = 1. Reference category orientation here (single-agent = 0 = ref) is the opposite of the Wilkins 2008 antitubercular precedent (where FDC = 1 = ref); the canonical column value semantics (1 = FDC, 0 = single-drug tablet) are preserved across both papers.",
+      source_name = "formulation"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "20.0-42.0 years (mean 23.9, SD 5.0; Choi 2018 Table 1 + Results 'Dataset' prose)",
-    age_median     = "23.9 years (mean)",
-    weight_range   = "70.9 kg mean +/- 7.9 kg SD; full range not tabulated (Choi 2018 Results 'Dataset' prose -- the 'cm' unit on weight printed in the paper text 'Mean height and weight were 176.0 +/- 3.5 cm and 70.9 +/- 7.9 cm' is a typo; weight is in kg as confirmed by the Table 1 column header 'Weight (kg)')",
-    weight_median  = "70.9 kg (mean)",
-    height_range   = "169.1-183.5 cm (mean 176.0, SD 3.5; Choi 2018 Table 1 + Results 'Dataset' prose)",
-    height_median  = "176.0 cm (mean)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "20.0-42.0 years (mean 23.9, SD 5.0; Choi 2018 Table 1 + Results 'Dataset' prose)",
+    age_median = "23.9 years (mean)",
+    weight_range = "70.9 kg mean +/- 7.9 kg SD; full range not tabulated (Choi 2018 Results 'Dataset' prose -- the 'cm' unit on weight printed in the paper text 'Mean height and weight were 176.0 +/- 3.5 cm and 70.9 +/- 7.9 cm' is a typo; weight is in kg as confirmed by the Table 1 column header 'Weight (kg)')",
+    weight_median = "70.9 kg (mean)",
+    height_range = "169.1-183.5 cm (mean 176.0, SD 3.5; Choi 2018 Table 1 + Results 'Dataset' prose)",
+    height_median = "176.0 cm (mean)",
     sex_female_pct = 0,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adult Korean male volunteers recruited into a single-dose 2-way crossover bioequivalence study; no T2DM",
-    dose_range     = "Single oral metformin dose (specific mg amount not reported in the paper). Each subject received both a single-agent metformin tablet (reference) and a metformin-containing FDC tablet (test) across two periods of a 2-way crossover with a 1-week wash-out, administered with 150 mL water after 10 h of fasting.",
-    regions        = "Republic of Korea (Seoul St. Mary's Hospital, Catholic University of Korea, Seoul)",
-    notes          = "IRB approval KC14MDSF0913. Sampling at 0 (predose), 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h post-dose. Plasma metformin assayed by LC-MS/MS. Choi 2018 Table 1 contains a row-label typo: the values listed against 'Weight (kg)' (176.0; 169.1-183.5) are the height values, and the values listed against 'Height (cm)' (23.9; 20.0-42.0) are the age values; the correct mean +/- SD pairs are reproduced from the prose narrative. Covariates of age, weight, height, serum creatinine, and creatinine clearance were screened in stepwise selection but none was retained at p < 0.05; only formulation was retained as a final-model covariate (Choi 2018 Results 'Covariate Analysis and Formulation Difference')."
+    disease_state = "Healthy adult Korean male volunteers recruited into a single-dose 2-way crossover bioequivalence study; no T2DM",
+    dose_range = "Single oral metformin dose (specific mg amount not reported in the paper). Each subject received both a single-agent metformin tablet (reference) and a metformin-containing FDC tablet (test) across two periods of a 2-way crossover with a 1-week wash-out, administered with 150 mL water after 10 h of fasting.",
+    regions = "Republic of Korea (Seoul St. Mary's Hospital, Catholic University of Korea, Seoul)",
+    notes = "IRB approval KC14MDSF0913. Sampling at 0 (predose), 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, and 24 h post-dose. Plasma metformin assayed by LC-MS/MS. Choi 2018 Table 1 contains a row-label typo: the values listed against 'Weight (kg)' (176.0; 169.1-183.5) are the height values, and the values listed against 'Height (cm)' (23.9; 20.0-42.0) are the age values; the correct mean +/- SD pairs are reproduced from the prose narrative. Covariates of age, weight, height, serum creatinine, and creatinine clearance were screened in stepwise selection but none was retained at p < 0.05; only formulation was retained as a final-model covariate (Choi 2018 Results 'Covariate Analysis and Formulation Difference')."
   )
 
   ini({

@@ -11,28 +11,58 @@ Yadav_2017_imipenem_tobramycin_PA088 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
-    csig                          = list(analyte = "Signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cipm                          = list(analyte = "Imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    cags                          = list(analyte = "Tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa susceptible bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa susceptible bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    csig = list(analyte = "Signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cipm = list(analyte = "Imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cags = list(analyte = "Tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa FADDI-PA088, carbapenem- and tobramycin-resistant clinical isolate)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Double-resistant P. aeruginosa bacteremia (MIC_IPM 16 mg/L = 98th-percentile imipenem; MIC_TOB 32 mg/L = 98th-percentile tobramycin per EUCAST)",
-    model_system     = "48-h static-concentration time-kill (SCTK) assay in cation-adjusted Mueller-Hinton II broth, with imipenem supplemented at 6 and 30 h to offset thermal degradation",
+    species = "in vitro (Pseudomonas aeruginosa FADDI-PA088, carbapenem- and tobramycin-resistant clinical isolate)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Double-resistant P. aeruginosa bacteremia (MIC_IPM 16 mg/L = 98th-percentile imipenem; MIC_TOB 32 mg/L = 98th-percentile tobramycin per EUCAST)",
+    model_system = "48-h static-concentration time-kill (SCTK) assay in cation-adjusted Mueller-Hinton II broth, with imipenem supplemented at 6 and 30 h to offset thermal degradation",
     initial_inoculum = "~10^7.5 CFU/mL",
-    dose_range       = "Imipenem 8-36 mg/L, tobramycin 1-32 mg/L, monotherapies and combinations",
-    notes            = paste(
+    dose_range = "Imipenem 8-36 mg/L, tobramycin 1-32 mg/L, monotherapies and combinations",
+    notes = paste(
       "Mechanism-based model (S-ADAPT, importance sampling pmethod=4) fit jointly to total viable counts for all imipenem + tobramycin and imipenem + amikacin monotherapies and combinations against FADDI-PA088; this file uses the tobramycin-specific parameter estimates (Table 3 footnote a).",
       "Three pre-existing bacterial subpopulations: SS (IPM-susceptible, AGS-susceptible), RI (IPM-resistant, AGS-intermediate), IR (IPM-intermediate, AGS-resistant), each described by a two-state Bulitta life-cycle growth model (state 1 preparing for replication, state 2 immediately before replication, replication rate k21 fixed at 50/h).",
       "Outer-membrane synergy (Eq 5): aminoglycoside permeabilises the outer membrane and reduces the effective imipenem KC50 to OM_effect * KC50_IPM, where OM_effect ranges from 1 (no AGS) to 1 - imax_om at saturating AGS. For FADDI-PA088, KC50_IPM decreases up to 3.11-fold at high tobramycin (Table 3 footnote c).",

@@ -1,8 +1,8 @@
 Farrell_2013_conestatAlfa <- function() {
   description <- "One-compartment population PK model with Michaelis-Menten elimination for intravenous recombinant human C1 inhibitor (rhC1INH; conestat alfa; Ruconest) in healthy volunteers and adolescent / adult patients with hereditary angioedema (Farrell 2013). Total functional plasma C1INH is modelled as the sum of an estimated endogenous baseline (separate baselines for healthy volunteers and HAE patients) plus exogenously administered rhC1INH, with the endogenous production rate derived from the Michaelis-Menten elimination at baseline so the no-dose steady state is preserved. Allometric power scaling of central volume on body weight (exponent 0.612)."
-  reference   <- "Farrell C, Hayes S, Relan A, van Amersfoort ES, Pijpstra R, Hack CE. Population pharmacokinetics of recombinant human C1 inhibitor in patients with hereditary angioedema. Br J Clin Pharmacol. 2013;76(6):897-907. doi:10.1111/bcp.12132"
-  vignette    <- "Farrell_2013_conestatAlfa"
-  units       <- list(time = "h", dosing = "U", concentration = "U/mL")
+  reference <- "Farrell C, Hayes S, Relan A, van Amersfoort ES, Pijpstra R, Hack CE. Population pharmacokinetics of recombinant human C1 inhibitor in patients with hereditary angioedema. Br J Clin Pharmacol. 2013;76(6):897-907. doi:10.1111/bcp.12132"
+  vignette <- "Farrell_2013_conestatAlfa"
+  units <- list(time = "h", dosing = "U", concentration = "U/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,55 +13,55 @@ Farrell_2013_conestatAlfa <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power scaling (WT/70)^0.612 on the central volume (Farrell 2013 Table 2 row 'Effect of bodyweight on volume', 95% CI 0.351-0.873). Pooled-cohort range 45-128 kg, median 72 kg.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline. Power scaling (WT/70)^0.612 on the central volume (Farrell 2013 Table 2 row 'Effect of bodyweight on volume', 95% CI 0.351-0.873). Pooled-cohort range 45-128 kg, median 72 kg.",
+      source_name = "WT"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy participant indicator (1 = healthy volunteer, 0 = patient with hereditary angioedema)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy participant indicator (1 = healthy volunteer, 0 = patient with hereditary angioedema)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (hereditary angioedema patient)",
-      notes              = "Time-fixed per subject. Pooled across asymptomatic and symptomatic HAE for the HAE-patient reference (Farrell 2013 Methods 'Population (healthy volunteers, symptomatic patients and asymptomatic patients) ... were evaluated as covariates'). DIS_HEALTHY gates which endogenous baseline parameter and which baseline-IIV random effect apply for each subject: lrbase_hv (0.901 U/mL) with etalrbase_hv (12.7% CV) for healthy volunteers; lrbase_hae (0.176 U/mL) with etalrbase_hae (54.4% CV) for HAE patients. The cohort-specific baseline IIV magnitudes are reproduced verbatim from Farrell 2013 Table 2.",
-      source_name        = "Population (healthy volunteer vs HAE patient)"
+      notes = "Time-fixed per subject. Pooled across asymptomatic and symptomatic HAE for the HAE-patient reference (Farrell 2013 Methods 'Population (healthy volunteers, symptomatic patients and asymptomatic patients) ... were evaluated as covariates'). DIS_HEALTHY gates which endogenous baseline parameter and which baseline-IIV random effect apply for each subject: lrbase_hv (0.901 U/mL) with etalrbase_hv (12.7% CV) for healthy volunteers; lrbase_hae (0.176 U/mL) with etalrbase_hae (54.4% CV) for HAE patients. The cohort-specific baseline IIV magnitudes are reproduced verbatim from Farrell 2013 Table 2.",
+      source_name = "Population (healthy volunteer vs HAE patient)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at the time of dosing",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the Farrell 2013 covariate analysis but not retained in the final model (Methods 'Population ..., weight, age, gender, dose and study were evaluated as covariates ... No other relationships were evident between the individual random effects and covariates'). Cohort range 13-66 years, median 33."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the Farrell 2013 covariate analysis but not retained in the final model (Methods 'Population ..., weight, age, gender, dose and study were evaluated as covariates ... No other relationships were evident between the individual random effects and covariates'). Cohort range 13-66 years, median 33."
     ),
     SEXF = list(
       description = "Female-sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the Farrell 2013 covariate analysis but not retained in the final model (Methods 'gender ... evaluated as covariate ... No other relationships were evident'). Cohort breakdown: 86 / 133 female (64.7%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the Farrell 2013 covariate analysis but not retained in the final model (Methods 'gender ... evaluated as covariate ... No other relationships were evident'). Cohort breakdown: 86 / 133 female (64.7%)."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 133L,
-    n_studies       = 6L,
-    n_healthy       = 14L,
+    species = "human",
+    n_subjects = 133L,
+    n_studies = 6L,
+    n_healthy = 14L,
     n_patients_asym = 12L,
-    n_patients_sym  = 107L,
-    age_range       = "13 to 66 years",
-    age_median      = "33 years",
-    weight_range    = "45 to 128 kg",
-    weight_median   = "72 kg",
-    sex_female_pct  = round(100 * 86 / 133, 1),
-    race_ethnicity  = "Not reported",
-    disease_state   = "Pooled adolescent and adult patients with hereditary angioedema (HAE) together with healthy volunteers. The HAE patients comprise asymptomatic individuals dosed between attacks (Study C1 1101-01, n = 12) and patients treated for acute attacks of angioedema (Studies C1 1202-01, C1 1203-01, C1 1205-01, C1 1304-01; n = 107).",
-    dose_range      = "Intravenous rhC1INH 6.25-121 U/kg infused over 2 to 30 min; clinical regimen 50 U/kg up to a body weight of 84 kg or a fixed dose of 4200 U (= 2 x 2100 U vials) above 84 kg, with the option of a second 50 U/kg or 2100-4200 U dose within 4 h of the first if the attack had not resolved.",
-    regions         = "Multinational clinical-trial programme (six studies pooled).",
-    notes           = "Pooled data from six rhC1INH studies (Farrell 2013 Table 1): C1 1101-01 (12 asymptomatic HAE, 6.25-100 U/kg), C1 1106-02 (14 healthy volunteers, 100 U/kg), C1 1202-01 (4 symptomatic HAE, 100 U/kg), C1 1203-01 (10 symptomatic HAE, 100 U/kg), C1 1205-01 (52 symptomatic HAE, 50 and 100 U/kg), C1 1304-01 (41 symptomatic HAE, up to 3 x 2100 U). 294 administrations / 1362 quantifiable concentrations plus 656 below-quantification samples handled with the M4 likelihood method (BLQ included). Chromogenic functional-C1INH assay LLOQ 0.07 U/mL (specialized laboratory for Study 1101-01) or 0.28 U/mL (central contract laboratory for all other studies)."
+    n_patients_sym = 107L,
+    age_range = "13 to 66 years",
+    age_median = "33 years",
+    weight_range = "45 to 128 kg",
+    weight_median = "72 kg",
+    sex_female_pct = round(100 * 86 / 133, 1),
+    race_ethnicity = "Not reported",
+    disease_state = "Pooled adolescent and adult patients with hereditary angioedema (HAE) together with healthy volunteers. The HAE patients comprise asymptomatic individuals dosed between attacks (Study C1 1101-01, n = 12) and patients treated for acute attacks of angioedema (Studies C1 1202-01, C1 1203-01, C1 1205-01, C1 1304-01; n = 107).",
+    dose_range = "Intravenous rhC1INH 6.25-121 U/kg infused over 2 to 30 min; clinical regimen 50 U/kg up to a body weight of 84 kg or a fixed dose of 4200 U (= 2 x 2100 U vials) above 84 kg, with the option of a second 50 U/kg or 2100-4200 U dose within 4 h of the first if the attack had not resolved.",
+    regions = "Multinational clinical-trial programme (six studies pooled).",
+    notes = "Pooled data from six rhC1INH studies (Farrell 2013 Table 1): C1 1101-01 (12 asymptomatic HAE, 6.25-100 U/kg), C1 1106-02 (14 healthy volunteers, 100 U/kg), C1 1202-01 (4 symptomatic HAE, 100 U/kg), C1 1203-01 (10 symptomatic HAE, 100 U/kg), C1 1205-01 (52 symptomatic HAE, 50 and 100 U/kg), C1 1304-01 (41 symptomatic HAE, up to 3 x 2100 U). 294 administrations / 1362 quantifiable concentrations plus 656 below-quantification samples handled with the M4 likelihood method (BLQ included). Chromogenic functional-C1INH assay LLOQ 0.07 U/mL (specialized laboratory for Study 1101-01) or 0.28 U/mL (central contract laboratory for all other studies)."
   )
 
   ini({

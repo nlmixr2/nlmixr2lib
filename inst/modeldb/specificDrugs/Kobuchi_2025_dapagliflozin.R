@@ -38,24 +38,24 @@ Kobuchi_2025_dapagliflozin <- function() {
   paper_specific_compartments <- c("hba1c")
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
-    hba1c   = list(analyte = "HbA1c", units = "%", specimen = "blood cell", verified = TRUE)
+    hba1c = list(analyte = "HbA1c", units = "%", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING. Kobuchi 2025 Results 'Population PK model':",
         "covariate screening first identified baseline body weight on",
         "CL/F, but because dapagliflozin lowers body weight the authors",
@@ -67,14 +67,14 @@ Kobuchi_2025_dapagliflozin <- function() {
         "printed in Table 2 uses BW/77.0). Observed sequential change",
         "over 12 months was median -1.5 kg (range -10.8 to +6.0 kg)."
       ),
-      source_name        = "BW (Kobuchi 2025 Table 2 CL/F equation)"
+      source_name = "BW (Kobuchi 2025 Table 2 CL/F equation)"
     ),
     HBA1C = list(
-      description        = "Baseline (pre-treatment) glycated hemoglobin",
-      units              = "% (NGSP)",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) glycated hemoglobin",
+      units = "% (NGSP)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject BASELINE value, time-fixed. Kobuchi 2025 PD model",
         "section: 'The baseline HbA1c value for each patient was set to",
         "the corresponding observed value.' Used three ways inside",
@@ -87,21 +87,21 @@ Kobuchi_2025_dapagliflozin <- function() {
         "Kobuchi 2025 Table 1). NOT a covariate on a structural",
         "parameter -- it is a structural input of the turnover model."
       ),
-      source_name        = "HbA1c at baseline (Kobuchi 2025 equations 2-3, Table 1)"
+      source_name = "HbA1c at baseline (Kobuchi 2025 equations 2-3, Table 1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 85L,
-    n_studies      = 1L,
-    age_range      = "37-75 years",
-    age_median     = "59 years",
-    weight_range   = "49.0-118.0 kg",
-    weight_median  = "77.0 kg",
+    species = "human",
+    n_subjects = 85L,
+    n_studies = 1L,
+    age_range = "37-75 years",
+    age_median = "59 years",
+    weight_range = "49.0-118.0 kg",
+    weight_median = "77.0 kg",
     sex_female_pct = 28.2,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Japanese outpatients with type 2 diabetes mellitus at an early",
       "stage of diabetic nephropathy (urinary albumin-to-creatinine",
       "ratio < 30 mg/g Cr) or with inadequate glycemic control. Median",
@@ -111,21 +111,21 @@ Kobuchi_2025_dapagliflozin <- function() {
       "nephropathy 28/85, hypertension 59/85, hypercholesterolemia",
       "67/85 (Kobuchi 2025 Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Dapagliflozin 5 mg orally once daily after breakfast for 12",
       "months. This is the Japanese approved T2DM dose; escalation to",
       "10 mg/day is permitted in Japan but no patient in this cohort",
       "received it, so the 10 mg profiles in Kobuchi 2025 Figure 4 are",
       "model-based extrapolation, not observed data."
     ),
-    regions        = "Japan (single centre, Tonami General Hospital, Toyama)",
+    regions = "Japan (single centre, Tonami General Hospital, Toyama)",
     n_observations = "415 plasma dapagliflozin concentrations (all trough) and 508 HbA1c values",
-    co_medication  = paste(
+    co_medication = paste(
       "All patients received metformin (1000 mg/day or more) plus a",
       "dipeptidyl peptidase-4 inhibitor daily before dapagliflozin was",
       "started (Kobuchi 2025 Data sources)."
     ),
-    notes          = paste(
+    notes = paste(
       "Real-world observational single-centre single-arm cohort; visits",
       "at 1, 3, 6, 9 and 12 months with overnight fasting. Because every",
       "PK sample was a trough, ka and V/F are not identifiable from this",

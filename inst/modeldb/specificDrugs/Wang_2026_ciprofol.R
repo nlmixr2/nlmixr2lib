@@ -9,7 +9,7 @@ Wang_2026_ciprofol <- function() {
     sep = " "
   )
   vignette <- "Wang_2026_ciprofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE: the paper measures ciprofol in
@@ -17,27 +17,27 @@ Wang_2026_ciprofol <- function() {
   # and sample handling' / 'Determination of ciprofol concentration'), and
   # the disposition compartments hold unchanged parent ciprofol.
   compartmentData <- list(
-    central     = list(analyte = "ciprofol", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ciprofol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ciprofol", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "ciprofol", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; time-fixed over the 180 min sampling window).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; time-fixed over the 180 min sampling window).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Structural, not a screened covariate effect: Wang 2026 reports every disposition parameter per kilogram (Table 3 rows are 'CL, ml/min/kg', 'V1, ml/kg', etc.), so body weight multiplies CL, V1, Q2, V2, Q3 and V3 with a linear exponent of 1 and no reference weight. This is a reparameterisation rather than an estimated covariate relationship -- concentrations are invariant to WT provided the dose is also given per kilogram. The paper explicitly tested standard allometric scaling and established age-dependent maturation functions for clearance as structural covariates and did not retain them (Methods, 'Model selection and covariate analysis'), and found no further significant weight effect after per-kilogram dosing (Results, 'Population covariant analysis'). Source range 9.8-37 kg, mean 18.5 kg (Table 1).",
-      source_name        = "Weight"
+      notes = "Structural, not a screened covariate effect: Wang 2026 reports every disposition parameter per kilogram (Table 3 rows are 'CL, ml/min/kg', 'V1, ml/kg', etc.), so body weight multiplies CL, V1, Q2, V2, Q3 and V3 with a linear exponent of 1 and no reference weight. This is a reparameterisation rather than an estimated covariate relationship -- concentrations are invariant to WT provided the dose is also given per kilogram. The paper explicitly tested standard allometric scaling and established age-dependent maturation functions for clearance as structural covariates and did not retain them (Methods, 'Model selection and covariate analysis'), and found no further significant weight effect after per-kilogram dosing (Results, 'Population covariant analysis'). Source range 9.8-37 kg, mean 18.5 kg (Table 1).",
+      source_name = "Weight"
     ),
     BUN = list(
-      description        = "Baseline blood urea nitrogen, the single covariate retained in the final model.",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Baseline blood urea nitrogen, the single covariate retained in the final model.",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Acts on the central volume as a power of the ratio to the cohort median (Methods Eq. 5 continuous-covariate power model; Results 'Population covariant analysis'): V1 = V1_TV * (BUN / 5)^(-0.821). Adding BUN on V1 decreased the objective function by 9.55 units (p < 0.005) and reduced the V1 inter-individual variability from 41.6% to 35.1%. The paper does not print the median BUN used as the normalising constant -- Table 1 reports the cohort MEAN as 5.2 mmol/L -- but it is recovered exactly from the two V1 values the paper does print: V1 = 0.770 L/kg at BUN 3 mmol/L and V1 = 0.384 L/kg at BUN 7 mmol/L (Results, 'Population covariant analysis'). Solving 506 * (3/ref)^(-0.821) = 770 gives ref = 5.003, and 506 * (7/ref)^(-0.821) = 384 gives ref = 5.002; Table 4 independently simulates at BUN = 3, 5 and 7 mmol/L with 5 as the central level. The normalising constant is therefore 5 mmol/L. Note that the printed exponent -0.821 coincides numerically with the printed CL-V1 IIV correlation of -0.821; both were verified independently (the exponent by the V1 ratio 0.770/0.384 = 2.005 = (3/7)^(-0.821), the correlation by the Results text 'a correlation coefficient of -0.821 for the IIV of CL and V1'). Source range 2.9-7.6 mmol/L, mean 5.2 mmol/L (Table 1).",
-      source_name        = "BUN"
+      notes = "Acts on the central volume as a power of the ratio to the cohort median (Methods Eq. 5 continuous-covariate power model; Results 'Population covariant analysis'): V1 = V1_TV * (BUN / 5)^(-0.821). Adding BUN on V1 decreased the objective function by 9.55 units (p < 0.005) and reduced the V1 inter-individual variability from 41.6% to 35.1%. The paper does not print the median BUN used as the normalising constant -- Table 1 reports the cohort MEAN as 5.2 mmol/L -- but it is recovered exactly from the two V1 values the paper does print: V1 = 0.770 L/kg at BUN 3 mmol/L and V1 = 0.384 L/kg at BUN 7 mmol/L (Results, 'Population covariant analysis'). Solving 506 * (3/ref)^(-0.821) = 770 gives ref = 5.003, and 506 * (7/ref)^(-0.821) = 384 gives ref = 5.002; Table 4 independently simulates at BUN = 3, 5 and 7 mmol/L with 5 as the central level. The normalising constant is therefore 5 mmol/L. Note that the printed exponent -0.821 coincides numerically with the printed CL-V1 IIV correlation of -0.821; both were verified independently (the exponent by the V1 ratio 0.770/0.384 = 2.005 = (3/7)^(-0.821), the correlation by the Results text 'a correlation coefficient of -0.821 for the IIV of CL and V1'). Source range 2.9-7.6 mmol/L, mean 5.2 mmol/L (Table 1).",
+      source_name = "BUN"
     )
   )
 
@@ -49,60 +49,80 @@ Wang_2026_ciprofol <- function() {
   # referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age at surgery.", units = "years", type = "continuous",
+      description = "Age at surgery.",
+      units = "years",
+      type = "continuous",
       notes = "Screened as a candidate covariate and as the driver of established age-dependent maturation functions on clearance; neither was retained. Cohort 1.0-9.0 years, mean 4.2 years, enrolled in three balanced age strata (toddlers 1-2 y, preschoolers 3-5 y, school-age 6-9 y; Table 1)."
     ),
     SEXF = list(
-      description = "Biological sex indicator, 1 = female, 0 = male.", units = "(binary)", type = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened, not retained. 14 male / 11 female (Table 1). Source column 'Male (Female)' counts; SEXF = 1 - SEXM."
     ),
     BMI = list(
-      description = "Body mass index.", units = "kg/m^2", type = "continuous",
+      description = "Body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       notes = "Screened, not retained. Enrolment required BMI between the 25th and 75th percentile for age and sex, so the cohort is deliberately non-obese; cohort 13.2-20.5 kg/m^2, mean 16.7 (Table 1)."
     ),
     ALT = list(
-      description = "Alanine aminotransferase.", units = "U/L", type = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 9-27 U/L, mean 14.6 (Table 1)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase.", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 19-50 U/L, mean 30.9 (Table 1)."
     ),
     TBILI = list(
-      description = "Total bilirubin.", units = "umol/L", type = "continuous",
+      description = "Total bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 3.8-23.6 umol/L, mean 8.4 (Table 1)."
     ),
     ALB = list(
-      description = "Serum albumin.", units = "g/L", type = "continuous",
+      description = "Serum albumin.",
+      units = "g/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 40.3-49.2 g/L, mean 45.5 (Table 1)."
     ),
     CREAT = list(
-      description = "Serum creatinine.", units = "umol/L", type = "continuous",
+      description = "Serum creatinine.",
+      units = "umol/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 18.5-58.3 umol/L, mean 32.6 (Table 1). BUN was the only renal-function marker retained."
     ),
     HGB = list(
-      description = "Hemoglobin.", units = "g/L", type = "continuous",
+      description = "Hemoglobin.",
+      units = "g/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 110-145 g/L, mean 126.7 (Table 1)."
     ),
     TPRO = list(
-      description = "Total serum protein.", units = "g/L", type = "continuous",
+      description = "Total serum protein.",
+      units = "g/L",
+      type = "continuous",
       notes = "Screened, not retained. Cohort 57.5-75.4 g/L, mean 68.4 (Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25L,
-    n_studies      = 1L,
-    age_range      = "1.0-9.0 years",
-    age_median     = "4.2 years (cohort mean; Table 1 reports mean (min, max), not median)",
-    weight_range   = "9.8-37 kg",
-    weight_median  = "18.5 kg (cohort mean; Table 1 reports mean (min, max), not median)",
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
+    age_range = "1.0-9.0 years",
+    age_median = "4.2 years (cohort mean; Table 1 reports mean (min, max), not median)",
+    weight_range = "9.8-37 kg",
+    weight_median = "18.5 kg (cohort mean; Table 1 reports mean (min, max), not median)",
     sex_female_pct = 44,
-    disease_state  = "Healthy, non-obese children with American Society of Anesthesiologists physical status I or II scheduled for elective urologic surgery of anticipated duration > 2 h. Exclusions included predicted difficult airway, acute upper respiratory infection, uncontrolled asthma, cardiomyopathy, hepatic disease, renal insufficiency, and sedative-hypnotic use within 7 days before surgery.",
-    dose_range     = "Single 0.6 mg/kg intravenous bolus of ciprofol administered over 30 s at induction of general anaesthesia.",
-    regions        = "China (Second Affiliated Hospital and Yuying Children's Hospital of Wenzhou Medical University, Wenzhou, Zhejiang), January-August 2023.",
-    notes          = "27 children were enrolled in three balanced age strata (toddlers 1-2 years n = 9, preschoolers 3-5 years n = 9, school-age children 6-9 years n = 9); one withdrew when the operation was shortened to under 2 h and one was excluded for a blocked arterial catheter, leaving 25 children (14 male, 11 female; final strata 9 / 9 / 7). Thirteen arterial samples were planned per patient (pre-dose and 2, 4, 6, 8, 10, 20, 30, 45, 60, 90, 120 and 180 min post-injection); 8 of 325 samples were not collected, mostly the 180 min late-elimination sample, giving 317 samples for the analysis. Ciprofol was quantified by UPLC-APCI-MS/MS over 5-20000 ng/mL with an LLOQ of 5 ng/mL; no concentration fell below the limit of quantitation. All patients received midazolam 0.1-0.2 mg/kg before induction and fentanyl 2.0 ug/kg with ciprofol, followed by cisatracurium and sevoflurane maintenance. Fitted in NONMEM 7.4; the final model was evaluated by goodness-of-fit plots, a 1000-replicate bootstrap and a visual predictive check. Trial registration ChiCTR2200058405."
+    disease_state = "Healthy, non-obese children with American Society of Anesthesiologists physical status I or II scheduled for elective urologic surgery of anticipated duration > 2 h. Exclusions included predicted difficult airway, acute upper respiratory infection, uncontrolled asthma, cardiomyopathy, hepatic disease, renal insufficiency, and sedative-hypnotic use within 7 days before surgery.",
+    dose_range = "Single 0.6 mg/kg intravenous bolus of ciprofol administered over 30 s at induction of general anaesthesia.",
+    regions = "China (Second Affiliated Hospital and Yuying Children's Hospital of Wenzhou Medical University, Wenzhou, Zhejiang), January-August 2023.",
+    notes = "27 children were enrolled in three balanced age strata (toddlers 1-2 years n = 9, preschoolers 3-5 years n = 9, school-age children 6-9 years n = 9); one withdrew when the operation was shortened to under 2 h and one was excluded for a blocked arterial catheter, leaving 25 children (14 male, 11 female; final strata 9 / 9 / 7). Thirteen arterial samples were planned per patient (pre-dose and 2, 4, 6, 8, 10, 20, 30, 45, 60, 90, 120 and 180 min post-injection); 8 of 325 samples were not collected, mostly the 180 min late-elimination sample, giving 317 samples for the analysis. Ciprofol was quantified by UPLC-APCI-MS/MS over 5-20000 ng/mL with an LLOQ of 5 ng/mL; no concentration fell below the limit of quantitation. All patients received midazolam 0.1-0.2 mg/kg before induction and fentanyl 2.0 ug/kg with ciprofol, followed by cisatracurium and sevoflurane maintenance. Fitted in NONMEM 7.4; the final model was evaluated by goodness-of-fit plots, a 1000-replicate bootstrap and a visual predictive check. Trial registration ChiCTR2200058405."
   )
 
   ini({

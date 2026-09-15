@@ -26,32 +26,32 @@ Yao_2023_canagliflozin_mbma <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit3    = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    transit4    = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "canagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "canagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "canagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "canagliflozin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 158L,
-    n_studies      = 6L,
-    age_range      = "mean 46.82 years (SD 11.15)",
-    weight_range   = "mean 75.58 kg (SD 6.78)",
+    species = "human",
+    n_subjects = 158L,
+    n_studies = 6L,
+    age_range = "mean 46.82 years (SD 11.15)",
+    weight_range = "mean 75.58 kg (SD 6.78)",
     sex_female_pct = 27.15,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Pooled healthy subjects and patients with type 2 diabetes mellitus ",
       "(76 of 158 healthy). Studies in patients with moderate or severe ",
       "renal impairment or hepatic insufficiency were excluded; the PK/PD ",
       "data come from subjects with glomerular filtration rate above ",
       "60 mL/min/1.73 m2."
     ),
-    dose_range     = "25, 50, 100, 188, 200, 300, 400 mg oral",
-    regions        = "International (published clinical trials indexed on PubMed to July 2016)",
-    notes          = paste0(
+    dose_range = "25, 50, 100, 188, 200, 300, 400 mg oral",
+    regions = "International (published clinical trials indexed on PubMed to July 2016)",
+    notes = paste0(
       "Model-based meta-analysis: the unit of observation is a published ",
       "summary-level (study-arm mean) plasma concentration, not an ",
       "individual measurement. Demographics from Yao 2023 Table S2 (PK row ",

@@ -26,18 +26,18 @@ JacoboCabral_2015_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HOM = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype at rs776746). ",
         "1 = CYP3A5*1/*3 heterozygote (one functional *1 allele); ",
         "0 = otherwise (the union of *3/*3 nonexpressers and *1/*1 homozygotes; ",
@@ -48,14 +48,14 @@ JacoboCabral_2015_tacrolimus <- function() {
         "(SLCO1B1_HAP15 / Passey 2011 precedent); reference category is the ",
         "*3/*3 nonexpresser stratum with both indicators = 0."
       ),
-      source_name        = "CYP3A5*1/*3"
+      source_name = "CYP3A5*1/*3"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser, when paired with CYP3A5_STAR1_HET = 0)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype at rs776746). ",
         "1 = CYP3A5*1/*1 homozygote (two functional *1 alleles); ",
         "0 = otherwise (the union of *3/*3 nonexpressers and *1/*3 heterozygotes; ",
@@ -63,14 +63,14 @@ JacoboCabral_2015_tacrolimus <- function() {
         "Jacobo-Cabral 2015 cohort (Table 1): 3/53 (5.7%) were *1/*1 homozygotes. ",
         "Paired with CYP3A5_STAR1_HET to encode the three-level genotype factor."
       ),
-      source_name        = "CYP3A5*1/*1"
+      source_name = "CYP3A5*1/*1"
     ),
     FORM_TAC_LIMUSTIN = list(
-      description        = "Limustin Mexican generic tacrolimus formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Limustin Mexican generic tacrolimus formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled Prograf + Framebin + Tenacrine; reference Ka and F)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (formulation does not switch within subject in this cohort). ",
         "1 = subject received Limustin (a Mexican generic IR tacrolimus product); ",
         "0 = subject received any of the three reference-pool formulations (Prograf ",
@@ -82,14 +82,14 @@ JacoboCabral_2015_tacrolimus <- function() {
         "reference pool covers 37/53 (70%; Prograf 29, Framebin 5, Tenacrine 3); ",
         "7/53 (13%) had unknown formulation (-> FORM_TAC_UNK = 1)."
       ),
-      source_name        = "FOR"
+      source_name = "FOR"
     ),
     FORM_TAC_UNK = list(
-      description        = "Tacrolimus unrecorded-formulation indicator (Jacobo-Cabral 2015 cohort missingness stratum)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tacrolimus unrecorded-formulation indicator (Jacobo-Cabral 2015 cohort missingness stratum)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (formulation documented)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. 1 = subject's tacrolimus formulation was not ",
         "recorded in the source cohort (n = 7 of 53; 13%); ",
         "0 = subject's formulation was documented (any of Prograf, Limustin, ",
@@ -100,14 +100,14 @@ JacoboCabral_2015_tacrolimus <- function() {
         "(formulation is known by design); the indicator is included for ",
         "faithful reproduction of the published equations only."
       ),
-      source_name        = "FOR"
+      source_name = "FOR"
     ),
     DOSE = list(
-      description        = "Current per-dose administered tacrolimus amount",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current per-dose administered tacrolimus amount",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Per-dose administered amount in mg. Used inside the dose-dependent ",
         "bioavailability term `F_DTOT = exp(e_dtot_fdepot * (DOSE - 2))` (Jacobo-",
         "Cabral 2015 Table 2 'F = e^[theta10 * (Dose - 2)]'; theta10 = -0.30), so ",
@@ -121,22 +121,22 @@ JacoboCabral_2015_tacrolimus <- function() {
         "in nlmixr2lib (Zheng 2016 sifalimumab, Hansson 2013 sunitinib, etc.); the ",
         "paper labels it DTOT."
       ),
-      source_name        = "DTOT"
+      source_name = "DTOT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 53L,
-    n_studies       = 1L,
-    n_observations  = 405L,
-    age_range       = "2-19 years (median 16)",
-    age_median      = "16 years",
-    weight_range    = "11.2-75.5 kg (mean 48.2, SD 15.2; median 48)",
-    weight_median   = "48 kg",
-    sex_female_pct  = 35.8,
-    race_ethnicity  = "Mexican paediatric renal-transplant recipients (single-centre, Federico Gomez Children's Hospital, Mexico City)",
-    disease_state   = paste0(
+    species = "human",
+    n_subjects = 53L,
+    n_studies = 1L,
+    n_observations = 405L,
+    age_range = "2-19 years (median 16)",
+    age_median = "16 years",
+    weight_range = "11.2-75.5 kg (mean 48.2, SD 15.2; median 48)",
+    weight_median = "48 kg",
+    sex_female_pct = 35.8,
+    race_ethnicity = "Mexican paediatric renal-transplant recipients (single-centre, Federico Gomez Children's Hospital, Mexico City)",
+    disease_state = paste0(
       "Paediatric renal-transplant recipients on standardized maintenance ",
       "immunosuppression (tacrolimus + mycophenolate mofetil +/- prednisone). ",
       "Standardized triple therapy in 44 of 53 subjects (tacrolimus + MMF + ",
@@ -144,14 +144,14 @@ JacoboCabral_2015_tacrolimus <- function() {
       "post-transplant condition (mean post-operative day 391.6, SD 327.2; median ",
       "244 days, range 50-1230)."
     ),
-    dose_range      = paste0(
+    dose_range = paste0(
       "Oral tacrolimus 0.5-6 mg twice daily (every 12 h) titrated to target ",
       "trough concentrations of 5-10 ng/mL. Per-dose median 2 mg; weighted dose ",
       "median 0.047 mg/kg/dose. Patients received one of Prograf (innovator, ",
       "n = 29), Limustin (generic, n = 9), Framebin (generic, n = 5), Tenacrine ",
       "(generic, n = 3); 7 patients had unknown formulation."
     ),
-    regions         = "Mexico (Federico Gomez Children's Hospital of Mexico, Mexico City)",
+    regions = "Mexico (Federico Gomez Children's Hospital of Mexico, Mexico City)",
     sampling_design = paste0(
       "One full PK profile per patient at steady state (after morning dose): ",
       "pre-dose plus 0.5, 1, 2, 3, 4, 6, 8 and 12 h postdose (nine timepoints per ",
@@ -161,9 +161,13 @@ JacoboCabral_2015_tacrolimus <- function() {
     ),
     cyp3a5_genotype = c(`*3/*3` = 54.7, `*1/*3` = 39.6, `*1/*1` = 5.7),
     formulation_distribution = c(
-      Prograf = 54.7, Limustin = 17.0, Framebin = 9.4, Tenacrine = 5.7, Unknown = 13.2
+      Prograf = 54.7,
+      Limustin = 17.0,
+      Framebin = 9.4,
+      Tenacrine = 5.7,
+      Unknown = 13.2
     ),
-    notes           = paste0(
+    notes = paste0(
       "Software: NONMEM v7.2 (FOCE + INTERACTION); PsN v3.4.2 for stepwise ",
       "covariate modelling (SCM) and bootstrap; Xpose / R 3.0.1 for diagnostics. ",
       "Steady-state q12h dosing modelled using the NONMEM SS = 1 option. ",

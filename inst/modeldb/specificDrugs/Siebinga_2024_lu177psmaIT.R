@@ -149,13 +149,28 @@ Siebinga_2024_lu177psmaIT <- function() {
   )
 
   compartmentData <- list(
-    central         = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "whole blood", verified = TRUE),
-    salivary_gland  = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tissue", verified = TRUE),
-    kidney          = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tissue", verified = TRUE),
-    tumor           = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tumor", verified = TRUE),
-    other           = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tissue", verified = FALSE),
-    effect          = list(analyte = "[177Lu]Lu-PSMA-I&T effect-compartment activity concentration", units = "MBq/L", specimen = "not applicable", verified = FALSE),
-    PSA             = list(analyte = "prostate-specific antigen", units = "ug/L", specimen = "serum", verified = TRUE)
+    central = list(
+      analyte = "[177Lu]Lu-PSMA-I&T radioactivity",
+      units = "MBq",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    salivary_gland = list(
+      analyte = "[177Lu]Lu-PSMA-I&T radioactivity",
+      units = "MBq",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    kidney = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tissue", verified = TRUE),
+    tumor = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tumor", verified = TRUE),
+    other = list(analyte = "[177Lu]Lu-PSMA-I&T radioactivity", units = "MBq", specimen = "tissue", verified = FALSE),
+    effect = list(
+      analyte = "[177Lu]Lu-PSMA-I&T effect-compartment activity concentration",
+      units = "MBq/L",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    PSA = list(analyte = "prostate-specific antigen", units = "ug/L", specimen = "serum", verified = TRUE)
   )
 
   population <- list(

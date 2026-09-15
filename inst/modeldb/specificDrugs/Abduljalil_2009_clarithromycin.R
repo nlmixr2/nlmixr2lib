@@ -16,38 +16,38 @@ Abduljalil_2009_clarithromycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "clarithromycin", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = FALSE),
-    effect        = list(analyte = "clarithromycin", units = "mg", specimen = "not applicable", verified = FALSE),
+    depot = list(analyte = "clarithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "clarithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    effect = list(analyte = "clarithromycin", units = "mg", specimen = "not applicable", verified = FALSE),
     central_ohcla = list(analyte = "14-OH-clarithromycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; allometrically scales CL and V for parent and metabolite",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; allometrically scales CL and V for parent and metabolite",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Reference 70 kg with fixed allometric exponents 0.75 on CL (parent and metabolite) and 1.00 on V (parent and metabolite); see Abduljalil 2009 Methods (Population pharmacokinetic analysis, Model development paragraph 4): CL_i = CL * (BW/70)^0.75 and V_i = V * (BW/70).",
-      source_name        = "BW"
+      notes = "Time-fixed baseline. Reference 70 kg with fixed allometric exponents 0.75 on CL (parent and metabolite) and 1.00 on V (parent and metabolite); see Abduljalil 2009 Methods (Population pharmacokinetic analysis, Model development paragraph 4): CL_i = CL * (BW/70)^0.75 and V_i = V * (BW/70).",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "19-41 years (mean 28, SD 8)",
-    age_median     = "approximately 28 years (mean)",
-    weight_range   = "45.1-86.1 kg (mean 66.5, SD 11.8)",
-    weight_median  = "66.5 kg (mean)",
-    height_range   = "150.0-186.0 cm (mean 168.4, SD 9.7)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "19-41 years (mean 28, SD 8)",
+    age_median = "approximately 28 years (mean)",
+    weight_range = "45.1-86.1 kg (mean 66.5, SD 11.8)",
+    weight_median = "66.5 kg (mean)",
+    height_range = "150.0-186.0 cm (mean 168.4, SD 9.7)",
     sex_female_pct = 41.7,
     race_ethnicity = c(White = 100),
-    disease_state  = "Healthy adult Caucasian volunteers (7 men, 5 women), nonsmokers or former smokers, judged healthy on medical history, vital signs, physical examination, neurology, 12-lead ECG, and clinical chemistry / hematology / urine / virology screens.",
-    dose_range     = "Clarithromycin 500 mg oral suspension (Klacid, Abbott) every 12 h for 7 doses (4 consecutive days) in the fasting state with 240 mL low-carbonation calcium-poor mineral water.",
-    regions        = "Republic of Moldova (single-centre study, approved by the Ethics Committee of the Ministry of Health Clinic Hospital of the Republic of Moldavia, Chisinau).",
-    notes          = "Demographics from Abduljalil 2009 Methods, Subjects and treatments paragraph. A total of 624 clarithromycin and 624 14-(R)-hydroxy-clarithromycin plasma samples were comodeled by NONMEM V FOCE-I, ADVAN6 differential-equation system. Grapefruit products, methylxanthine-containing foods and beverages, alcohol, and fatty foods were restricted around the study."
+    disease_state = "Healthy adult Caucasian volunteers (7 men, 5 women), nonsmokers or former smokers, judged healthy on medical history, vital signs, physical examination, neurology, 12-lead ECG, and clinical chemistry / hematology / urine / virology screens.",
+    dose_range = "Clarithromycin 500 mg oral suspension (Klacid, Abbott) every 12 h for 7 doses (4 consecutive days) in the fasting state with 240 mL low-carbonation calcium-poor mineral water.",
+    regions = "Republic of Moldova (single-centre study, approved by the Ethics Committee of the Ministry of Health Clinic Hospital of the Republic of Moldavia, Chisinau).",
+    notes = "Demographics from Abduljalil 2009 Methods, Subjects and treatments paragraph. A total of 624 clarithromycin and 624 14-(R)-hydroxy-clarithromycin plasma samples were comodeled by NONMEM V FOCE-I, ADVAN6 differential-equation system. Grapefruit products, methylxanthine-containing foods and beverages, alcohol, and fatty foods were restricted around the study."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

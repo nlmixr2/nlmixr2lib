@@ -17,13 +17,9 @@
 #'   addDirectLin() |>
 #'   convertEmax()
 #'
-addDirectLin <- function(ui,
-                         ek = "Ek",
-                         cc = c("Ce", "Cc"),
-                         effect = "effect") {
+addDirectLin <- function(ui, ek = "Ek", cc = c("Ce", "Cc"), effect = "effect") {
   if (missing(ui)) {
-    return(fakeCc(addDirectLin,
-      ek = ek, cc = cc, effect = effect))
+    return(fakeCc(addDirectLin, ek = ek, cc = cc, effect = effect))
   }
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
@@ -33,9 +29,7 @@ addDirectLin <- function(ui,
   rxode2::assertVariableNew(.ui, .effectSd)
 
   .eff <- str2lang(paste0(effect, " <- ", ek, "*", cc))
-  .modelLines <- c(list(paste0(ek, " <- u", ek)),
-    .ui$lstExpr,
-    .eff)
+  .modelLines <- c(list(paste0(ek, " <- u", ek)), .ui$lstExpr, .eff)
   .errLine <- str2lang(paste0(effect, " ~ add(", .effectSd, ")"))
 
   .ui <- rxode2::rxUiDecompress(.ui)
@@ -43,11 +37,9 @@ addDirectLin <- function(ui,
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .ui <- .iniAddTheta(.ui, paste0("u", ek),
-    label = paste0("untransformed slope (", ek, ")"))
+  .ui <- .iniAddTheta(.ui, paste0("u", ek), label = paste0("untransformed slope (", ek, ")"))
   # the endpoint goes on by itself so rxode2 creates the residual parameter
   # and decides its condition, err and lower bound
   .ui <- .modelAppend(.ui, list(.errLine))
-  .iniAddTheta(.ui, .effectSd,
-    label = paste0("additive error for ", effect))
+  .iniAddTheta(.ui, .effectSd, label = paste0("additive error for ", effect))
 }

@@ -32,8 +32,8 @@ Wang_2023_zoledronicAcid_mbma <- function() {
   )
   vignette <- "Wang_2023_zoledronicAcid"
   units <- list(
-    time          = "month",
-    dosing        = "ng",
+    time = "month",
+    dosing = "ng",
     concentration = "g/cm^2"
     # units$dosing is ng, NOT mg. The virtual K-PD amount compartment must
     # carry the dose in nanograms for the published EDK50 of 41300 ng/month
@@ -49,14 +49,14 @@ Wang_2023_zoledronicAcid_mbma <- function() {
 
   compartmentData <- list(
     depot_kpd = list(
-      analyte  = "zoledronic acid",
-      units    = "ng",
+      analyte = "zoledronic acid",
+      units = "ng",
       specimen = "administration site",
       verified = TRUE
     ),
     BMD_LS = list(
-      analyte  = "bone mineral density (lumbar spine)",
-      units    = "g/cm^2",
+      analyte = "bone mineral density (lumbar spine)",
+      units = "g/cm^2",
       specimen = "tissue",
       verified = TRUE
     )
@@ -64,7 +64,7 @@ Wang_2023_zoledronicAcid_mbma <- function() {
 
   covariateData <- list(
     BMD_BL = list(
-      description        = paste(
+      description = paste(
         "Pre-treatment lumbar-spine (vertebral) bone mineral density measured by",
         "dual-energy X-ray absorptiometry (DXA). Time-fixed per study arm. Sets",
         "the BMD state initial condition (`BMD_LS(0) <- BMD_BL`) and, through",
@@ -72,10 +72,10 @@ Wang_2023_zoledronicAcid_mbma <- function() {
         "rate, so that an undosed arm holds exactly at its own baseline (up to",
         "the desensitisation term)."
       ),
-      units              = "g/cm^2",
-      type               = "continuous",
+      units = "g/cm^2",
+      type = "continuous",
       reference_category = "n/a -- per-arm anchor; no covariate coefficient is estimated on it",
-      notes              = paste(
+      notes = paste(
         "Wang 2023 Table 1 reports the per-study baseline vertebral BMD for each",
         "of the 10 included trials: 1.03, 1.03, 0.81, 0.79, 0.64, 0.93, 0.75,",
         "0.66, 1.06 and 1.03 g/cm^2 (range 0.64-1.06). The paper calls this",
@@ -87,16 +87,16 @@ Wang_2023_zoledronicAcid_mbma <- function() {
         "absolute g/cm^2 scale, which is why the paper's own figures are all",
         "plotted as percent change from baseline."
       ),
-      source_name        = "Baseline of vertebral BMD (Wang 2023 Table 1); BASE (Wang 2023 Equations 3 and 4)"
+      source_name = "Baseline of vertebral BMD (Wang 2023 Table 1); BASE (Wang 2023 Equations 3 and 4)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years. Wang 2023 Table 1 reports per-study mean ages from 57.2 to 85.4 years.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Wang 2023 Methods 2.4 lists age among the candidate covariates screened",
         "by NONMEM stepwise SCM (forward dOFV > 6.63, backward dOFV > 10.83).",
         "Results 3.2: 'At present, no covariates associated with it were filtered",
@@ -106,47 +106,47 @@ Wang_2023_zoledronicAcid_mbma <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female). Wang 2023 Table 1 reports 100% female in 9 of the 10 included trials and 93.6% female in the tenth (Nakamura 2017), i.e. 99.7% female overall.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). The Discussion notes 'the number of male subjects included in the model was too few' to support a sex effect."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). The Discussion notes 'the number of male subjects included in the model was too few' to support a sex effect."
     ),
     BMI = list(
       description = "Body mass index. Wang 2023 Table 1 reports per-study mean BMI from 22.7 to 28.2 kg/m^2 for the 6 trials that reported it.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). BMI and body weight were both candidates and Methods 2.4 states that for covariate pairs with correlation > 0.8 only one was carried forward."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). BMI and body weight were both candidates and Methods 2.4 states that for covariate pairs with correlation > 0.8 only one was carried forward."
     ),
     WT = list(
       description = "Body weight in kg. Wang 2023 Table 1 reports per-study mean weights from 52.4 to 68.0 kg for the 6 trials that reported it.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). The Introduction motivates weight as a candidate because zoledronic-acid dose requirement should track skeletal size, but the covariate search returned nothing significant."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened per Wang 2023 Methods 2.4; not retained (Results 3.2). The Introduction motivates weight as a candidate because zoledronic-acid dose requirement should track skeletal size, but the covariate search returned nothing significant."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 6014L,
-    n_studies      = 10L,
-    age_range      = "57.2-85.4 years (per-study means; Wang 2023 Table 1)",
-    weight_range   = "52.4-68.0 kg (per-study means, 6 of 10 trials reported weight; Wang 2023 Table 1)",
+    species = "human",
+    n_subjects = 6014L,
+    n_studies = 10L,
+    age_range = "57.2-85.4 years (per-study means; Wang 2023 Table 1)",
+    weight_range = "52.4-68.0 kg (per-study means, 6 of 10 trials reported weight; Wang 2023 Table 1)",
     sex_female_pct = 99.7,
     race_ethnicity = c(
       `Chinese or Japanese (Liang 2017, Li 2022, Nakamura 2017)` = 16.0,
-      `predominantly White (Grey, Black, Greenspan trials)`      = 84.0
+      `predominantly White (Grey, Black, Greenspan trials)` = 84.0
     ),
-    disease_state  = "Primary osteoporosis or osteopenia; baseline vertebral BMD 0.64-1.06 g/cm^2 (Wang 2023 Table 1)",
-    dose_range     = "Zoledronic acid 1, 2.5 or 5 mg intravenously as a single dose, or 5 mg intravenously once yearly for up to 6 years (Wang 2023 Table 1)",
-    regions        = "New Zealand, United States, multinational, China, Japan",
+    disease_state = "Primary osteoporosis or osteopenia; baseline vertebral BMD 0.64-1.06 g/cm^2 (Wang 2023 Table 1)",
+    dose_range = "Zoledronic acid 1, 2.5 or 5 mg intravenously as a single dose, or 5 mg intravenously once yearly for up to 6 years (Wang 2023 Table 1)",
+    regions = "New Zealand, United States, multinational, China, Japan",
     followup_range = "12-72 months (Wang 2023 Results 3.1)",
-    data_source    = paste(
+    data_source = paste(
       "Aggregate (arm-level) data digitised from published figures and tables",
       "with GetData Graph Digitizer 1.9; no individual patient data. 454 trials",
       "were screened and 10 met the inclusion criteria (randomised controlled",
       "trials of zoledronic acid in primary osteoporosis reporting both lumbar",
       "spine and total hip DXA BMD)."
     ),
-    notes          = paste(
+    notes = paste(
       "Wang 2023 Table 1 lists the 10 contributing trials: Grey 2014 (n = 180),",
       "Grey 2012a (n = 180), Black 2012 (n = 616), Black 2007 (n = 3875),",
       "Liang 2017 (n = 175), Greenspan 2015 (n = 89), Li 2022 (n = 458),",

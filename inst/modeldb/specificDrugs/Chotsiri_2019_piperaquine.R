@@ -53,22 +53,27 @@ Chotsiri_2019_piperaquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
-    cumhaz      = list(analyte = "Cumulative hazard of new P. falciparum infection", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz = list(
+      analyte = "Cumulative hazard of new P. falciparum infection",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Chotsiri 2019 Table 1 reports",
         "median (range) body weight 11.0 (4.20-18.3) kg in the 179 children",
         "of the PKPD group. Applied as a fixed allometric function on every",
@@ -87,14 +92,14 @@ Chotsiri_2019_piperaquine <- function() {
         "(Supplementary Table 2).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CONMED_DHA = list(
-      description        = "Dihydroartemisinin parasite-clearance coverage window (1 = covered)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dihydroartemisinin parasite-clearance coverage window (1 = covered)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Time-varying record-level indicator, 1 while the dihydroartemisinin",
         "component of a DHA-PQ treatment round is deemed to eliminate any",
         "emerging blood-stage infection and 0 otherwise. Chotsiri 2019",
@@ -113,7 +118,7 @@ Chotsiri_2019_piperaquine <- function() {
         "model() because it depends on FUTURE doses.",
         sep = " "
       ),
-      source_name        = "DHA_EFF (reverse-coded)"
+      source_name = "DHA_EFF (reverse-coded)"
     )
   )
 
@@ -129,9 +134,9 @@ Chotsiri_2019_piperaquine <- function() {
   covariatesDataExcluded <- list(
     PAGE = list(
       description = "Postmenstrual age",
-      units       = "months",
-      type        = "continuous",
-      notes       = paste(
+      units = "months",
+      type = "continuous",
+      notes = paste(
         "Driver of the enzyme-maturation factor evaluated on elimination",
         "clearance, MF = PMA^HILL / (TM50^HILL + PMA^HILL) (Chotsiri 2019",
         "Eq. 2, Anderson & Holford form). The Results state that including",
@@ -146,9 +151,9 @@ Chotsiri_2019_piperaquine <- function() {
     ),
     AGE = list(
       description = "Chronological age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Chotsiri 2019 Table 1 reports median (range) age 32.1 (2.33-58.1)",
         "months in the PKPD group; the trial enrolled children aged 3-59",
         "months. Screened on the pharmacokinetic parameters and on the",
@@ -158,15 +163,15 @@ Chotsiri_2019_piperaquine <- function() {
     ),
     SEXF = list(
       description = "Sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the pharmacokinetic parameters and on the baseline hazard; not retained. Chotsiri 2019 Table 1 reports 93/179 (51.9%) male in the PKPD group, i.e. 48.1% female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the pharmacokinetic parameters and on the baseline hazard; not retained. Chotsiri 2019 Table 1 reports 93/179 (51.9%) male in the PKPD group, i.e. 48.1% female."
     ),
     PARA = list(
       description = "Plasmodium falciparum parasitaemia",
-      units       = "parasites/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "parasites/uL",
+      type = "continuous",
+      notes = paste(
         "Screened as a pharmacokinetic covariate and not retained.",
         "Parasitaemia at the time a recurrent infection is detected does",
         "enter the pharmacodynamic ANALYSIS, but as data rather than as a",
@@ -184,28 +189,28 @@ Chotsiri_2019_piperaquine <- function() {
     ),
     MAL_NOURISH = list(
       description = "Nutritional status indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the pharmacokinetic parameters ('All other covariates (parasitaemia, gender, age, and nutritional status) were investigated by a stepwise addition ... approach'); not retained. Children with severe malnutrition were excluded from the parent trial."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the pharmacokinetic parameters ('All other covariates (parasitaemia, gender, age, and nutritional status) were investigated by a stepwise addition ... approach'); not retained. Children with severe malnutrition were excluded from the parent trial."
     ),
     BODYTEMP = list(
       description = "Axillary body temperature at admission",
-      units       = "degC",
-      type        = "continuous",
-      notes       = "Reported in Chotsiri 2019 Table 1 (median 36.7 degC, range 35.0-39.3 in the PKPD group) but not listed among the covariates tested; not in the final model."
+      units = "degC",
+      type = "continuous",
+      notes = "Reported in Chotsiri 2019 Table 1 (median 36.7 degC, range 35.0-39.3 in the PKPD group) but not listed among the covariates tested; not in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 179L,
-    n_subjects_pk  = 179L,
-    n_subjects_pd  = 741L,
-    n_studies      = 1L,
-    age_range      = "2.33-58.1 months; median 32.1 months (Table 1, PKPD group). Trial inclusion criterion 3-59 months.",
-    weight_range   = "4.20-18.3 kg; median 11.0 kg (Table 1, PKPD group). Allometric centring value 18.0 kg, taken from the typical child of the Tarning 2012 prior model.",
+    species = "human",
+    n_subjects = 179L,
+    n_subjects_pk = 179L,
+    n_subjects_pd = 741L,
+    n_studies = 1L,
+    age_range = "2.33-58.1 months; median 32.1 months (Table 1, PKPD group). Trial inclusion criterion 3-59 months.",
+    weight_range = "4.20-18.3 kg; median 11.0 kg (Table 1, PKPD group). Allometric centring value 18.0 kg, taken from the typical child of the Tarning 2012 prior model.",
     sex_female_pct = 48.1,
-    disease_state  = paste(
+    disease_state = paste(
       "Apparently healthy children receiving seasonal malaria",
       "chemoprevention during the high-transmission season. Malaria at",
       "enrolment was not an exclusion criterion: 71/179 (39.6%) of the PKPD",
@@ -215,7 +220,7 @@ Chotsiri_2019_piperaquine <- function() {
       "condition requiring hospitalisation were excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Three-day courses of a fixed oral dihydroartemisinin-piperaquine",
       "combination (Duocotexin, 40 mg dihydroartemisinin + 320 mg",
       "piperaquine tetra-phosphate per tablet), once monthly for three",
@@ -230,8 +235,8 @@ Chotsiri_2019_piperaquine <- function() {
       "(Supplementary Table 2).",
       sep = " "
     ),
-    regions        = "Burkina Faso (three rural health facilities in the district of Lena, 40-50 km from Bobo-Dioulasso)",
-    notes          = paste(
+    regions = "Burkina Faso (three rural health facilities in the district of Lena, 40-50 km from Bobo-Dioulasso)",
+    notes = paste(
       "Parent trial NCT00941785, an SMC efficacy trial comparing",
       "sulfadoxine-pyrimethamine + amodiaquine against DHA-PQ; only the",
       "DHA-PQ arm contributed pharmacokinetic data. 466 capillary",

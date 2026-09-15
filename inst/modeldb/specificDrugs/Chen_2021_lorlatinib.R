@@ -43,24 +43,24 @@ Chen_2021_lorlatinib <- function() {
     sep = " "
   )
   vignette <- "Chen_2021_lorlatinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lorlatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lorlatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Chen 2021. Cohort mean 70.53 kg",
         "(SD 16.89) across 425 subjects (Chen 2021 Table 3). Reference",
         "70 kg with fixed allometric exponents 0.75 on CL (both CLI and",
@@ -69,14 +69,14 @@ Chen_2021_lorlatinib <- function() {
         "TVV2 = THETA(2)*(BWT/70), TVCLMX = THETA(9)*(BWT/70)**0.75).",
         "V3, Q, ka, D1, F1 have no allometric scaling."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Chen 2021. Retained as a significant",
         "covariate on CL in the final model. Enters as a linear centered",
         "multiplier on both CLI and CLMX: 1 + e_alb_cl * (ALB - 40 g/L)",
@@ -90,14 +90,14 @@ Chen_2021_lorlatinib <- function() {
         "trend to ALB as a marker of overall health status rather than a",
         "direct binding-driven effect."
       ),
-      source_name        = "BALB (in g/dL; convert to canonical g/L by multiplying by 10)"
+      source_name = "BALB (in g/dL; convert to canonical g/L by multiplying by 10)"
     ),
     DOSE_LOR_MGD = list(
-      description        = "Current total daily lorlatinib dose",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Current total daily lorlatinib dose",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record covariate; constant within an inter-dose",
         "interval and updated when the prescriber alters the daily dose.",
         "For q.d. regimens equals the single-dose amount (100 mg q.d.",
@@ -114,14 +114,14 @@ Chen_2021_lorlatinib <- function() {
         "exposure'), attributed by the Discussion to concentration-",
         "related increases in auto-induction potency at higher doses."
       ),
-      source_name        = "TDOSE (total daily lorlatinib dose in mg)"
+      source_name = "TDOSE (total daily lorlatinib dose in mg)"
     ),
     CRCL = list(
-      description        = "Baseline weight-normalized creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline weight-normalized creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline in Chen 2021. Retained as a significant",
         "covariate on CL in the final model. Derived from the Cockcroft-",
         "Gault estimate BCCL by weight-normalization to remove the",
@@ -138,14 +138,14 @@ Chen_2021_lorlatinib <- function() {
         "the canonical CRCL column accepts either normalization form",
         "with the derivation documented per-model here."
       ),
-      source_name        = "WNCL (weight-normalized creatinine clearance in mL/min)"
+      source_name = "WNCL (weight-normalized creatinine clearance in mL/min)"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant proton-pump inhibitor use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant proton-pump inhibitor use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no PPI co-administration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying per dose record: 1 = subject received a PPI",
         "(rabeprazole in the founding study B7461008) concurrent with",
         "lorlatinib, 0 otherwise. Retained as a significant covariate",
@@ -157,66 +157,66 @@ Chen_2021_lorlatinib <- function() {
         "with PPI co-administration. Cohort prevalence 5% (23 of 425",
         "subjects; Chen 2021 Table 3 'No PPI use = 402 / 95%')."
       ),
-      source_name        = "PPI"
+      source_name = "PPI"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Baseline subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate on CL and V2 (Chen 2021",
         "Table 2 evaluated-covariates list) but not retained in the",
         "final model. Cohort mean 49.86 years (SD 13.20). Not required",
         "for simulation."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate on CL and V2 but not",
         "retained in the final model. Cohort 191 / 425 female (45%)",
         "per Chen 2021 Table 3."
       ),
-      source_name        = "SEX (paper coded as SEX; 1-female / 0-male convention preserved)"
+      source_name = "SEX (paper coded as SEX; 1-female / 0-male convention preserved)"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate on CL and V2 but not",
         "retained in the final model. Cohort 113 / 425 Asian (27%) per",
         "Chen 2021 Table 3 (RACE: White 220 / 52%, Black 32 / 8%,",
         "Asian 113 / 27%, Other 29 / 7%)."
       ),
-      source_name        = "RACE (Asian sub-level of the paper's RACE column)"
+      source_name = "RACE (Asian sub-level of the paper's RACE column)"
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black)",
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate but not retained. Cohort",
         "32 / 425 Black (8%) per Chen 2021 Table 3."
       ),
-      source_name        = "RACE (Black sub-level)"
+      source_name = "RACE (Black sub-level)"
     ),
     CYP3A5_EM = list(
-      description        = "CYP3A5 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (poor / intermediate / ultra-rapid CYP3A5 metabolizer)",
-      notes              = paste(
+      notes = paste(
         "Screened but not retained in the final model. Cohort CYP3A5",
         "phenotype distribution per Chen 2021 Table 3: Poor 195 / 46%,",
         "Intermediate 66 / 16%, Extensive 17 / 4%, Ultra-rapid 0 / 0%.",
@@ -225,61 +225,61 @@ Chen_2021_lorlatinib <- function() {
         "a null CYP3A5 phenotype covariate is consistent with the",
         "mechanism."
       ),
-      source_name        = "CYP3A5 (phenotype code encoded as ordinal 1-4)"
+      source_name = "CYP3A5 (phenotype code encoded as ordinal 1-4)"
     ),
     CYP2C19_EM = list(
-      description        = "CYP2C19 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (poor / intermediate / ultra-rapid CYP2C19 metabolizer)",
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Cohort CYP2C19 phenotype:",
         "Poor 18 / 4%, Intermediate 100 / 24%, Extensive 153 / 36%,",
         "Ultra-rapid 7 / 2% (Chen 2021 Table 3)."
       ),
-      source_name        = "CYP2C19 (phenotype code encoded as ordinal 1-4)"
+      source_name = "CYP2C19 (phenotype code encoded as ordinal 1-4)"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal food-effect indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal food-effect indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Screened as a candidate covariate on ka and F but not",
         "retained. Study B7461008 also showed that administration of",
         "lorlatinib with a high-fat meal had no meaningful effect on",
         "lorlatinib exposure (Chen 2021 Intro paragraph 2)."
       ),
-      source_name        = "FOOD"
+      source_name = "FOOD"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild-hepatic-impairment indicator (NCI B1 or B2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild-hepatic-impairment indicator (NCI B1 or B2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function)",
-      notes              = paste(
+      notes = paste(
         "Screened but not retained in the final model. Cohort baseline",
         "hepatic impairment per Chen 2021 Table 3: Normal (A) 365 / 86%,",
         "Mild (B1) 50 / 12%, Mild (B2) 10 / 2%, Moderate-Severe (C-D)",
         "0 / 0%. The paper's Table S1 confirms no monotonic trend of",
         "CL with hepatic-impairment stage."
       ),
-      source_name        = "BHGRADE (paper's ordinal 1-4 NCI classification)"
+      source_name = "BHGRADE (paper's ordinal 1-4 NCI classification)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 425L,
-    n_studies       = 7L,
-    n_observations  = 5806L,
-    age_range       = "18-83 years (approximate; Chen 2021 Table 3 cohort mean 49.86 years, SD 13.20)",
-    age_median      = "50 years",
-    weight_range    = "35-136 kg (approximate; Chen 2021 Table 3 cohort mean 70.53 kg, SD 16.89)",
-    weight_median   = "70 kg",
-    sex_female_pct  = 45.0,
-    race_ethnicity  = c(White = 52.0, Black = 8.0, Asian = 27.0, Other = 7.0),
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 425L,
+    n_studies = 7L,
+    n_observations = 5806L,
+    age_range = "18-83 years (approximate; Chen 2021 Table 3 cohort mean 49.86 years, SD 13.20)",
+    age_median = "50 years",
+    weight_range = "35-136 kg (approximate; Chen 2021 Table 3 cohort mean 70.53 kg, SD 16.89)",
+    weight_median = "70 kg",
+    sex_female_pct = 45.0,
+    race_ethnicity = c(White = 52.0, Black = 8.0, Asian = 27.0, Other = 7.0),
+    disease_state = paste(
       "Pooled cohort of 330 patients with advanced anaplastic",
       "lymphoma kinase (ALK)-positive or c-ROS oncogene 1",
       "(ROS1)-positive non-small cell lung cancer (NSCLC) enrolled",
@@ -290,19 +290,19 @@ Chen_2021_lorlatinib <- function() {
       "bioavailability, B7461008 rabeprazole/food effect, B7461011",
       "rifampin CYP3A4 induction, B7461016 bioequivalence)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Phase I patients: 10, 25, 50, 75, 100, 150, 200 mg orally q.d.,",
       "or 35, 75, or 100 mg orally b.i.d. Phase II patients: 100 mg",
       "orally q.d. (the labelled dose). Healthy volunteers: single",
       "oral 100 mg tablet (B7461005, B7461008, B7461011, B7461016) or",
       "single 50 mg intravenous vs 100 mg oral crossover (B7461007)."
     ),
-    regions         = "Not summarised in Chen 2021 (multicentre phase I/II NSCLC study plus multi-site healthy-volunteer studies).",
+    regions = "Not summarised in Chen 2021 (multicentre phase I/II NSCLC study plus multi-site healthy-volunteer studies).",
     baseline_creatinine_clearance = "Cohort mean 98.31 mL/min (SD 32.13) per Chen 2021 Table 3 (Cockcroft-Gault estimate; renal impairment stages A normal 57%, B mild 31%, C moderate 12%, D severe 0.2%).",
-    baseline_hepatic_function     = "Cohort: NCI A normal 86%, B1 mild 12%, B2 mild 2%, C-D moderate-severe 0% per Chen 2021 Table 3.",
-    cyp3a5_phenotype              = "Poor 46%, Intermediate 16%, Extensive 4%, Ultra-rapid 0% per Chen 2021 Table 3.",
-    cyp2c19_phenotype             = "Poor 4%, Intermediate 24%, Extensive 36%, Ultra-rapid 2% per Chen 2021 Table 3.",
-    notes           = paste(
+    baseline_hepatic_function = "Cohort: NCI A normal 86%, B1 mild 12%, B2 mild 2%, C-D moderate-severe 0% per Chen 2021 Table 3.",
+    cyp3a5_phenotype = "Poor 46%, Intermediate 16%, Extensive 4%, Ultra-rapid 0% per Chen 2021 Table 3.",
+    cyp2c19_phenotype = "Poor 4%, Intermediate 24%, Extensive 36%, Ultra-rapid 2% per Chen 2021 Table 3.",
+    notes = paste(
       "Chen 2021 Results 'Analysis dataset' and Table 1 summarise the",
       "pooled 5806-observation, 425-subject analysis dataset drawn from",
       "seven Pfizer B7461-series studies. The parameter estimates in",

@@ -1,5 +1,5 @@
 PK_double_sim_10 <- function() {
-  description <-  "PK double absorption model with simultaneous first order and zero order absorptions"
+  description <- "PK double absorption model with simultaneous first order and zero order absorptions"
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -7,8 +7,8 @@ PK_double_sim_10 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot2  = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot1 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

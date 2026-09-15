@@ -35,53 +35,53 @@ Kleiber_2017_clonidine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The most recently measured pre-ECMO body weight was used for both dose calculation and PK analysis (paper Methods, Clinical parameters). Time-fixed per subject in the source analysis. Standard fixed allometric exponents 0.75 on CL and 1 on V, centred at 70 kg (paper Methods, Eqs 4-5).",
-      source_name        = "WT"
+      notes = "The most recently measured pre-ECMO body weight was used for both dose calculation and PK analysis (paper Methods, Clinical parameters). Time-fixed per subject in the source analysis. Standard fixed allometric exponents 0.75 on CL and 1 on V, centred at 70 kg (paper Methods, Eqs 4-5).",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Kleiber 2017 reports PNA and T50_PNA in weeks (Eq 8, Table 3); the canonical PNA carries months. model() converts PNA (months) to pna_weeks = PNA * 4.345 before entering the Hill maturation function so the paper-reported T50_PNA = 1.13 weeks and Hill exponent 3.02 stay in paper-natural units.",
-      source_name        = "PNA"
+      notes = "Time-varying. Kleiber 2017 reports PNA and T50_PNA in weeks (Eq 8, Table 3); the canonical PNA carries months. model() converts PNA (months) to pna_weeks = PNA * 4.345 before entering the Hill maturation function so the paper-reported T50_PNA = 1.13 weeks and Hill exponent 3.02 stay in paper-natural units.",
+      source_name = "PNA"
     ),
     CONMED_DIURETIC = list(
-      description        = "Binary indicator of any-diuretic coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator of any-diuretic coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diuretic exposure)",
-      notes              = "Time-varying per-time-point indicator. Kleiber 2017 pools four diuretic classes into a single DIURETIC column: furosemide intermittent (63.6% of patients), furosemide infusion (18%), spironolactone (31.8%), and bumetanide (9.1%). Multiplicative effect on CL: CL x Theta2^DIURETIC with Theta2 = 0.659 (Table 3 / Table 4), i.e. 34.1% reduction in CL when any diuretic is active.",
-      source_name        = "DIURETIC"
+      notes = "Time-varying per-time-point indicator. Kleiber 2017 pools four diuretic classes into a single DIURETIC column: furosemide intermittent (63.6% of patients), furosemide infusion (18%), spironolactone (31.8%), and bumetanide (9.1%). Multiplicative effect on CL: CL x Theta2^DIURETIC with Theta2 = 0.659 (Table 3 / Table 4), i.e. 34.1% reduction in CL when any diuretic is active.",
+      source_name = "DIURETIC"
     ),
     T_ECMO = list(
-      description        = "Time since ECMO cannulation start",
-      units              = "hour",
-      type               = "continuous",
+      description = "Time since ECMO cannulation start",
+      units = "hour",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; 0 before ECMO cannulation, monotonically increasing thereafter. Kleiber 2017 does not reverse the covariate at decannulation; the sigmoidal Emax effect saturates around 72 h so post-decannulation values sit in the saturated region (paper Discussion: 'Time dependent changes in clearance or volume after ECMO decannulation were not detected'). Enters as a sigmoidal Emax multiplier on V: V x (1 + Emax * t_ECMO^Hill / (T50_EC^Hill + t_ECMO^Hill)) with Emax = 0.55, T50_EC = 51.7 h, Hill = 18.5 (Table 3, Eq 9). At T_ECMO = 0 the multiplier evaluates to 1 (baseline V).",
-      source_name        = "tec"
+      notes = "Time-varying; 0 before ECMO cannulation, monotonically increasing thereafter. Kleiber 2017 does not reverse the covariate at decannulation; the sigmoidal Emax effect saturates around 72 h so post-decannulation values sit in the saturated region (paper Discussion: 'Time dependent changes in clearance or volume after ECMO decannulation were not detected'). Enters as a sigmoidal Emax multiplier on V: V x (1 + Emax * t_ECMO^Hill / (T50_EC^Hill + t_ECMO^Hill)) with Emax = 0.55, T50_EC = 51.7 h, Hill = 18.5 (Table 3, Eq 9). At T_ECMO = 0 the multiplier evaluates to 1 (baseline V).",
+      source_name = "tec"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "3 days to 6 years postnatal at ECMO start (paper Discussion: youngest 3 days, oldest 6 years); gestational age at birth median 38.9 weeks (IQR 5.6)",
-    age_median     = "1 month postnatal (IQR 6.4 months); postmenstrual age median 42.8 weeks (IQR 17.6)",
-    weight_range   = "not reported explicitly",
-    weight_median  = "4 kg (IQR 3.1)",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "3 days to 6 years postnatal at ECMO start (paper Discussion: youngest 3 days, oldest 6 years); gestational age at birth median 38.9 weeks (IQR 5.6)",
+    age_median = "1 month postnatal (IQR 6.4 months); postmenstrual age median 42.8 weeks (IQR 17.6)",
+    weight_range = "not reported explicitly",
+    weight_median = "4 kg (IQR 3.1)",
     sex_female_pct = 50.0,
     race_ethnicity = NULL,
-    disease_state  = "Critically ill neonates and children on ECMO for respiratory or cardiac failure. Primary diagnoses (Table 2): pulmonary 31.8%, meconium aspiration syndrome 22.7%, cardiac 18.2%, congenital diaphragmatic hernia 13.6%, sepsis 9.1%, persistent pulmonary hypertension of the newborn 4.5%.",
-    dose_range     = "IV clonidine infusion 0.1-1 ug/kg/h (median infusion dose 0.24 ug/kg/h, IQR 0.15); IV boluses 1-2 ug/kg per physician discretion (occasionally administered as a 10-min slow infusion when hemodynamically unstable). Simulation scenarios in the paper use 5 ug/kg boluses.",
-    regions        = "Single centre, Erasmus MC-Sophia Pediatric Intensive Care Unit, Rotterdam, Netherlands.",
-    notes          = "May 2007-July 2009. ECMO modality 68.2% VV / 31.8% VA (Table 2). Median ECMO duration 6.2 days (IQR 7.1); 90.9% of patients received concomitant CVVH at median flow 300 mL/min. Diuretic exposure common: 72.7% of patients received any diuretic. Concomitant sedatives were midazolam and morphine (all patients); some received pentobarbital, propofol, or ketamine. Survival 77.3%. 375 plasma clonidine samples (median 12.5 per patient, IQR 13); 4.2% below LOQ were ignored during model building. Clonidine measured by LC-MS/MS on serum; validated range 0.100-20.0 ug/L. Neonatal ECMO system used for children <10-12 kg (1.5 m^2 oxygenator, 350 mL prime); paediatric system used for larger children (2.5 m^2 oxygenator, 900 mL prime)."
+    disease_state = "Critically ill neonates and children on ECMO for respiratory or cardiac failure. Primary diagnoses (Table 2): pulmonary 31.8%, meconium aspiration syndrome 22.7%, cardiac 18.2%, congenital diaphragmatic hernia 13.6%, sepsis 9.1%, persistent pulmonary hypertension of the newborn 4.5%.",
+    dose_range = "IV clonidine infusion 0.1-1 ug/kg/h (median infusion dose 0.24 ug/kg/h, IQR 0.15); IV boluses 1-2 ug/kg per physician discretion (occasionally administered as a 10-min slow infusion when hemodynamically unstable). Simulation scenarios in the paper use 5 ug/kg boluses.",
+    regions = "Single centre, Erasmus MC-Sophia Pediatric Intensive Care Unit, Rotterdam, Netherlands.",
+    notes = "May 2007-July 2009. ECMO modality 68.2% VV / 31.8% VA (Table 2). Median ECMO duration 6.2 days (IQR 7.1); 90.9% of patients received concomitant CVVH at median flow 300 mL/min. Diuretic exposure common: 72.7% of patients received any diuretic. Concomitant sedatives were midazolam and morphine (all patients); some received pentobarbital, propofol, or ketamine. Survival 77.3%. 375 plasma clonidine samples (median 12.5 per patient, IQR 13); 4.2% below LOQ were ignored during model building. Clonidine measured by LC-MS/MS on serum; validated range 0.100-20.0 ug/L. Neonatal ECMO system used for children <10-12 kg (1.5 m^2 oxygenator, 350 mL prime); paediatric system used for larger children (2.5 m^2 oxygenator, 900 mL prime)."
   )
 
   ini({

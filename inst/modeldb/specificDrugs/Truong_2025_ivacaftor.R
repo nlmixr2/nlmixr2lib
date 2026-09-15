@@ -1,25 +1,25 @@
 Truong_2025_ivacaftor <- function() {
   description <- "One-compartment population PK model for oral ivacaftor in children with cystic fibrosis aged 2-18 years carrying at least one F508del allele (Truong 2025, MODUL-CF). Absorption lag time and first-order absorption, first-order elimination, with allometric scaling of CL/F (exponent 0.75 fixed) and V/F (exponent 1 fixed) on body weight normalised to 70 kg. The lag time and absorption rate constant were not estimable from the sparse therapeutic-drug-monitoring design and were fixed to previously published values. Between-subject variability was estimable on apparent clearance only; residual variability is combined additive plus proportional, the only one of the three drugs to need an additive term. One of three independent per-drug models the paper reports for the elexacaftor/tezacaftor/ivacaftor combination; ivacaftor is dosed every 12 h whereas the two correctors are dosed once daily."
-  reference   <- "Truong NH, Benaboud S, Bouazza N, et al. Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in Pediatric Patients With Cystic Fibrosis. Clin Transl Sci. 2025;18(5):e70245. doi:10.1111/cts.70245"
-  vignette    <- "Truong_2025_elexacaftor_tezacaftor_ivacaftor"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Truong NH, Benaboud S, Bouazza N, et al. Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in Pediatric Patients With Cystic Fibrosis. Clin Transl Sci. 2025;18(5):e70245. doi:10.1111/cts.70245"
+  vignette <- "Truong_2025_elexacaftor_tezacaftor_ivacaftor"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Truong 2025 Methods 2.3 (plasma
   # concentrations assayed by LC-MS/MS, mg/L) and 2.5 (oral mg doses).
   compartmentData <- list(
-    depot   = list(analyte = "ivacaftor", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "ivacaftor", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "ivacaftor", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the final model. Body weight enters as classical allometric scaling on both CL/F and V/F with the power exponents fixed to the theoretical values 0.75 and 1 respectively (Truong 2025 Methods 2.4, final paragraph, and Results 3.2). Weight was compared against BMI and BSA as size descriptors and 'the latter showed the most significant effect' (Results 3.2); adding it reduced the BIC by 35.2 for ivacaftor - the smallest of the three drugs - and reduced the between-subject variability on CL/F from 0.48 to 0.37. The reference weight of 70 kg is the normalisation the paper itself uses when it tabulates CL/F in L/h/70kg and V/F in L/70kg (Table 2) and when it compares the standardised estimates against adult values (Discussion paragraph 1). The paper does not state whether the weight column was time-varying across the 2022-2024 therapeutic-drug-monitoring period or fixed at baseline; Table 1 reports baseline weight only.",
-      source_name        = "WT"
+      notes = "The only covariate retained in the final model. Body weight enters as classical allometric scaling on both CL/F and V/F with the power exponents fixed to the theoretical values 0.75 and 1 respectively (Truong 2025 Methods 2.4, final paragraph, and Results 3.2). Weight was compared against BMI and BSA as size descriptors and 'the latter showed the most significant effect' (Results 3.2); adding it reduced the BIC by 35.2 for ivacaftor - the smallest of the three drugs - and reduced the between-subject variability on CL/F from 0.48 to 0.37. The reference weight of 70 kg is the normalisation the paper itself uses when it tabulates CL/F in L/h/70kg and V/F in L/70kg (Table 2) and when it compares the standardised estimates against adult values (Discussion paragraph 1). The paper does not state whether the weight column was time-varying across the 2022-2024 therapeutic-drug-monitoring period or fixed at baseline; Table 1 reports baseline weight only.",
+      source_name = "WT"
     )
   )
 
@@ -29,52 +29,52 @@ Truong_2025_ivacaftor <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a main covariate and not retained (Truong 2025 Methods 2.4 and Results 3.2: 'None of the other covariates including AGE, SEX, and GAL were related to PK parameters'). Age-related maturation functions were additionally evaluated on CL/F and on bioavailability and 'did not enhance the fit', which the authors attribute to CYP3A4/5 reaching 80% of adult activity by age two (Discussion paragraph 2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a main covariate and not retained (Truong 2025 Methods 2.4 and Results 3.2: 'None of the other covariates including AGE, SEX, and GAL were related to PK parameters'). Age-related maturation functions were additionally evaluated on CL/F and on bioavailability and 'did not enhance the fit', which the authors attribute to CYP3A4/5 reaching 80% of adult activity by age two (Discussion paragraph 2)."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as covariate SEX and not retained (Truong 2025 Results 3.2). The cohort was 66.7% male (Results 3.1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as covariate SEX and not retained (Truong 2025 Results 3.2). The cohort was 66.7% male (Results 3.1)."
     ),
     BMI = list(
       description = "Body mass index at baseline.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as an alternative size descriptor against body weight and body surface area; body weight showed the most significant effect and BMI was not retained (Truong 2025 Results 3.2)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as an alternative size descriptor against body weight and body surface area; body weight showed the most significant effect and BMI was not retained (Truong 2025 Results 3.2)."
     ),
     BSA = list(
       description = "Body surface area at baseline.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened as an alternative size descriptor against body weight and BMI; body weight showed the most significant effect and BSA was not retained (Truong 2025 Results 3.2). The BSA computation formula is not stated in the paper."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened as an alternative size descriptor against body weight and BMI; body weight showed the most significant effect and BSA was not retained (Truong 2025 Results 3.2). The BSA computation formula is not stated in the paper."
     ),
     FORM_ETI_GRANULES = list(
       description = "Elexacaftor/tezacaftor/ivacaftor formulation indicator (1 = oral granule packet, 0 = tablet).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as covariate GAL (type of ETI formulation, granules or tablet) and not retained (Truong 2025 Methods 2.4 and Results 3.2). Recorded here under the canonical FORM_<drug>_<formulation> family name for provenance; because it is not retained it is not registered in inst/references/covariate-columns.md."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as covariate GAL (type of ETI formulation, granules or tablet) and not retained (Truong 2025 Methods 2.4 and Results 3.2). Recorded here under the canonical FORM_<drug>_<formulation> family name for provenance; because it is not retained it is not registered in inst/references/covariate-columns.md."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96,
-    n_studies      = 1,
-    age_range      = "2-18 years",
-    age_strata     = "47 children <6 years (median 4.0 years, IQR 3.2-5.0); 19 children 6 to <12 years (median 8.8, IQR 7.0-10.4); 30 children >=12 years (median 15.8, IQR 14.6-16.6)",
-    weight_range   = "Median weight by age stratum (Truong 2025 Table 1): 16.0 kg (IQR 14.0-17.5) for <6 years; 25.0 kg (IQR 21.6-31.2) for 6 to <12 years; 51.1 kg (IQR 44.5-57.5) for >=12 years. Overall cohort median 21 kg (IQR 16-43) per Table S1.",
-    weight_median  = "21 kg (IQR 16-43), overall cohort (Truong 2025 Table S1)",
+    species = "human",
+    n_subjects = 96,
+    n_studies = 1,
+    age_range = "2-18 years",
+    age_strata = "47 children <6 years (median 4.0 years, IQR 3.2-5.0); 19 children 6 to <12 years (median 8.8, IQR 7.0-10.4); 30 children >=12 years (median 15.8, IQR 14.6-16.6)",
+    weight_range = "Median weight by age stratum (Truong 2025 Table 1): 16.0 kg (IQR 14.0-17.5) for <6 years; 25.0 kg (IQR 21.6-31.2) for 6 to <12 years; 51.1 kg (IQR 44.5-57.5) for >=12 years. Overall cohort median 21 kg (IQR 16-43) per Table S1.",
+    weight_median = "21 kg (IQR 16-43), overall cohort (Truong 2025 Table S1)",
     sex_female_pct = 33.3,
     race_ethnicity = "Not reported. Cystic fibrosis was 'initially identified in the Caucasian population' (Introduction), but the paper tabulates no race or ethnicity data and did not screen either as a covariate.",
-    disease_state  = "Cystic fibrosis with at least one F508del CFTR allele, receiving elexacaftor/tezacaftor/ivacaftor per marketing authorisation and undergoing therapeutic drug monitoring. None of the children had renal failure, liver disease, or coadministration of strong CYP3A inducers or inhibitors (Discussion, limitations paragraph).",
-    dose_range     = "Weight-banded label dosing of ivacaftor (Truong 2025 Methods 2.5): 60 mg each morning and 59.5 mg each evening for <14 kg; 75 mg every 12 h for 14-30 kg; 150 mg every 12 h for >30 kg or age >12 years.",
-    regions        = "France; 20 pediatric university hospital centres.",
+    disease_state = "Cystic fibrosis with at least one F508del CFTR allele, receiving elexacaftor/tezacaftor/ivacaftor per marketing authorisation and undergoing therapeutic drug monitoring. None of the children had renal failure, liver disease, or coadministration of strong CYP3A inducers or inhibitors (Discussion, limitations paragraph).",
+    dose_range = "Weight-banded label dosing of ivacaftor (Truong 2025 Methods 2.5): 60 mg each morning and 59.5 mg each evening for <14 kg; 75 mg every 12 h for 14-30 kg; 150 mg every 12 h for >30 kg or age >12 years.",
+    regions = "France; 20 pediatric university hospital centres.",
     n_observations = "150 ivacaftor plasma concentrations. Median 1 sample per child per compound (range 1-5). Exactly one sample across all three compounds fell below the limit of quantification, an ivacaftor measurement from a 3-year-old, handled as left-censored.",
-    co_medication  = "Concomitant elexacaftor and tezacaftor as part of the fixed triple combination. Strong CYP3A inducers and inhibitors were absent from the cohort.",
-    notes          = "Ancillary pharmacokinetic sub-study of the MODUL-CF French prospective multicentre cohort (EUDRACT 2018-002624-16, NCT03894657), enrolling March 2022 to March 2024. Sparse therapeutic-drug-monitoring design: a trough just before intake and/or a peak roughly 4 h after intake. Estimation by MCMC-SAEM in Monolix 2023R1; concentrations below the limit of quantification were handled as left-censored. Assay validated over 0.0525-14 mg/L for ivacaftor. Model qualified by prediction-corrected VPC (Figure 1) and NPDE (Figure S2). Dietary fat intake was not recorded, so the label's food effect on ivacaftor bioavailability (AUC 2.5- to 4-fold higher with a moderate-fat meal) is not represented in this model; all parameters are apparent (X/F) under real-world dosing conditions."
+    co_medication = "Concomitant elexacaftor and tezacaftor as part of the fixed triple combination. Strong CYP3A inducers and inhibitors were absent from the cohort.",
+    notes = "Ancillary pharmacokinetic sub-study of the MODUL-CF French prospective multicentre cohort (EUDRACT 2018-002624-16, NCT03894657), enrolling March 2022 to March 2024. Sparse therapeutic-drug-monitoring design: a trough just before intake and/or a peak roughly 4 h after intake. Estimation by MCMC-SAEM in Monolix 2023R1; concentrations below the limit of quantification were handled as left-censored. Assay validated over 0.0525-14 mg/L for ivacaftor. Model qualified by prediction-corrected VPC (Figure 1) and NPDE (Figure S2). Dietary fat intake was not recorded, so the label's food effect on ivacaftor bioavailability (AUC 2.5- to 4-fold higher with a moderate-fat meal) is not represented in this model; all parameters are apparent (X/F) under real-world dosing conditions."
   )
 
   ini({

@@ -31,10 +31,10 @@ Hawwa_2008_mercaptopurine <- function() {
     "the two metabolite clearances; no IIV on FM3 was estimable."
   )
   reference <- "Hawwa AF, Collier PS, Millership JS, McCarthy A, Dempsey S, Cairns C, McElnay JC. Population pharmacokinetic and pharmacogenetic analysis of 6-mercaptopurine in paediatric patients with acute lymphoblastic leukaemia. Br J Clin Pharmacol. 2008;66(6):826-837. doi:10.1111/j.1365-2125.2008.03281.x"
-  vignette  <- "Hawwa_2008_mercaptopurine"
-  units     <- list(
-    time          = "h",
-    dosing        = "mg",
+  vignette <- "Hawwa_2008_mercaptopurine"
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -43,48 +43,58 @@ Hawwa_2008_mercaptopurine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_tgn  = list(analyte = "6-thioguanine nucleotides (6-TGNs)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_mmpn = list(analyte = "6-methylmercaptopurine nucleotides (6-mMPNs)", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_tgn = list(
+      analyte = "6-thioguanine nucleotides (6-TGNs)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    central_mmpn = list(
+      analyte = "6-methylmercaptopurine nucleotides (6-mMPNs)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline, computed from height and weight by the formula the source paper applied (Hawwa 2008 Table 1 lists BSA as a per-patient summary; the formula was not stated explicitly).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline, computed from height and weight by the formula the source paper applied (Hawwa 2008 Table 1 lists BSA as a per-patient summary; the formula was not stated explicitly).",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on the apparent clearance of 6-TGNs anchored to BSA = 1 m^2: CL_6TGNs = theta_CL_6TGNs * BSA^theta_BSA with theta_BSA = 1.16 (Hawwa 2008 Table 4). The cohort BSA range was 0.59 - 2.00 m^2 (median 1.14 m^2); the model can be evaluated outside that range but extrapolation to adult-size BSA (>= 2 m^2) is not supported by the source data. Time-fixed at baseline within the source dataset.",
-      source_name        = "BSA"
+      notes = "Power scaling on the apparent clearance of 6-TGNs anchored to BSA = 1 m^2: CL_6TGNs = theta_CL_6TGNs * BSA^theta_BSA with theta_BSA = 1.16 (Hawwa 2008 Table 4). The cohort BSA range was 0.59 - 2.00 m^2 (median 1.14 m^2); the model can be evaluated outside that range but extrapolation to adult-size BSA (>= 2 m^2) is not supported by the source data. Time-fixed at baseline within the source dataset.",
+      source_name = "BSA"
     ),
     TPMT_MUT = list(
-      description        = "Pooled binary indicator of any reduced-function TPMT variant allele (TPMT*3A, TPMT*3B, or TPMT*3C; heterozygous or homozygous) -- i.e., TPMT genotype-derived thiopurine S-methyltransferase deficiency status.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pooled binary indicator of any reduced-function TPMT variant allele (TPMT*3A, TPMT*3B, or TPMT*3C; heterozygous or homozygous) -- i.e., TPMT genotype-derived thiopurine S-methyltransferase deficiency status.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (TPMT*1/*1 wild-type across the TPMT*3A, TPMT*3B, and TPMT*3C panel; full canonical TPMT activity).",
-      notes              = "Hawwa 2008 Table 1 reports the cohort genotyping panel as TPMT*3A (1 heterozygote / 0 homozygotes), TPMT*3B (none observed), and TPMT*3C (2 heterozygotes / 0 homozygotes); the TPMT*2 allele was not assayed. The covariate enters the model as a power-of-binary multiplicative factor on the fractional metabolic transformation of 6-MP into 6-TGNs: FM3 = TVFM3 * theta_TPMT^TPMT_MUT with theta_TPMT = 2.56 (Hawwa 2008 Table 4). Carriers therefore have FM3 = 0.0489 (vs 0.0191 in wild-type), a 156% increase consistent with shunting of 6-MP away from TPMT-mediated mMPN methylation towards 6-TGN production.",
-      source_name        = "TPMT"
+      notes = "Hawwa 2008 Table 1 reports the cohort genotyping panel as TPMT*3A (1 heterozygote / 0 homozygotes), TPMT*3B (none observed), and TPMT*3C (2 heterozygotes / 0 homozygotes); the TPMT*2 allele was not assayed. The covariate enters the model as a power-of-binary multiplicative factor on the fractional metabolic transformation of 6-MP into 6-TGNs: FM3 = TVFM3 * theta_TPMT^TPMT_MUT with theta_TPMT = 2.56 (Hawwa 2008 Table 4). Carriers therefore have FM3 = 0.0489 (vs 0.0191 in wild-type), a 156% increase consistent with shunting of 6-MP away from TPMT-mediated mMPN methylation towards 6-TGN production.",
+      source_name = "TPMT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 19L,
-    n_studies      = 1L,
-    age_range      = "3 - 17 years",
-    age_median     = "10 years",
-    weight_range   = "13.2 - 77.5 kg",
-    weight_median  = "33.4 kg",
-    bsa_range      = "0.59 - 2.00 m^2",
-    bsa_median     = "1.14 m^2",
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    age_range = "3 - 17 years",
+    age_median = "10 years",
+    weight_range = "13.2 - 77.5 kg",
+    weight_median = "33.4 kg",
+    bsa_range = "0.59 - 2.00 m^2",
+    bsa_median = "1.14 m^2",
     sex_female_pct = 32.0,
-    disease_state  = "Paediatric patients with acute lymphoblastic leukaemia (ALL) on continuous / maintenance 6-mercaptopurine + weekly methotrexate maintenance chemotherapy. Children had to have been on a constant 6-MP daily dose for at least one week and had received no intensification therapy or red blood cell transfusion within the preceding two months.",
-    dose_range     = "Target 6-MP oral dose 75 mg/m^2/day; per-patient daily-dose range 10 - 100 mg (median 50 mg) titrated to leucocyte count and clinically relevant infection status. Co-medications during 6-MP chemotherapy: methotrexate 5 - 25 mg/week (median 15), cotrimoxazole 120 - 480 mg b.d. twice weekly (median 360); monthly IV vincristine.",
-    regions        = "Northern Ireland (Royal Belfast Hospital for Sick Children, Belfast Health and Social Care Trust).",
+    disease_state = "Paediatric patients with acute lymphoblastic leukaemia (ALL) on continuous / maintenance 6-mercaptopurine + weekly methotrexate maintenance chemotherapy. Children had to have been on a constant 6-MP daily dose for at least one week and had received no intensification therapy or red blood cell transfusion within the preceding two months.",
+    dose_range = "Target 6-MP oral dose 75 mg/m^2/day; per-patient daily-dose range 10 - 100 mg (median 50 mg) titrated to leucocyte count and clinically relevant infection status. Co-medications during 6-MP chemotherapy: methotrexate 5 - 25 mg/week (median 15), cotrimoxazole 120 - 480 mg b.d. twice weekly (median 360); monthly IV vincristine.",
+    regions = "Northern Ireland (Royal Belfast Hospital for Sick Children, Belfast Health and Social Care Trust).",
     n_observations = "150 erythrocyte metabolite concentrations across 75 sampling occasions (one sample per occasion, up to five occasions per patient, sampled at least 12 h after the preceding 6-MP dose and prior to monthly vincristine administration). Patients were assigned randomly to an index group (n = 15) for model development and a validation group (n = 4) for internal predictive-performance assessment; the final-model parameters in this file come from refitting the FINAL covariate model to the full dataset (n = 19).",
-    baseline_chem  = "Haemoglobin 10.9 - 16.5 g/dL (median 12.9), WBC 1.2 - 9.1 x 10^9/L (median 3.3), platelets 66 - 648 x 10^9/L (median 282), absolute neutrophil count 0.3 - 8.3 x 10^9/L (median 1.68). No clinically significant renal impairment in any patient.",
-    notes          = "Demographics from Hawwa 2008 Table 1. Modelling software NONMEM VI level 1.1 (double precision), DIGITAL Visual Fortran compiler v5.0.A, PREDPP subroutine ADVAN6 (general nonlinear ODE solver), first-order conditional estimation (FOCE) with INTERACTION. The genotyped polymorphisms outside TPMT (XO A1936G and A2107G; ITPA C94A and IVS2+21A>C) were screened in univariate analysis but did not reach the OFV-retention threshold and were not included in the FINAL model -- they are not represented in this file."
+    baseline_chem = "Haemoglobin 10.9 - 16.5 g/dL (median 12.9), WBC 1.2 - 9.1 x 10^9/L (median 3.3), platelets 66 - 648 x 10^9/L (median 282), absolute neutrophil count 0.3 - 8.3 x 10^9/L (median 1.68). No clinically significant renal impairment in any patient.",
+    notes = "Demographics from Hawwa 2008 Table 1. Modelling software NONMEM VI level 1.1 (double precision), DIGITAL Visual Fortran compiler v5.0.A, PREDPP subroutine ADVAN6 (general nonlinear ODE solver), first-order conditional estimation (FOCE) with INTERACTION. The genotyped polymorphisms outside TPMT (XO A1936G and A2107G; ITPA C94A and IVS2+21A>C) were screened in univariate analysis but did not reach the OFV-retention threshold and were not included in the FINAL model -- they are not represented in this file."
   )
 
   ini({

@@ -32,75 +32,79 @@ Vujkovic_2018_efavirenz <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "efavirenz", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "efavirenz",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "efavirenz", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "efavirenz",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives 0.75-exponent allometric scaling of apparent oral clearance CL/F, normalised to a 70 kg reference weight. Vujkovic 2018 Methods 'Population PK Model Development' paragraph 2: 'Weight was included in an allometric model and fixed at 0.75 CL/F and normalized to a reference weight of 70 kg.' The apparent volume of distribution was held fixed at 150 L and is NOT weight-scaled in this model. The paper does not report the cohort body-weight distribution (Vujkovic 2018 Table 1 lists body mass index, median 22.0 kg/m2, IQR 19.8-25.1, but neither weight nor height), so downstream users must supply WT themselves; at WT = 70 kg the allometric factor is exactly 1 and the published typical CL/F values apply directly.",
-      source_name        = "subject weight"
+      notes = "Drives 0.75-exponent allometric scaling of apparent oral clearance CL/F, normalised to a 70 kg reference weight. Vujkovic 2018 Methods 'Population PK Model Development' paragraph 2: 'Weight was included in an allometric model and fixed at 0.75 CL/F and normalized to a reference weight of 70 kg.' The apparent volume of distribution was held fixed at 150 L and is NOT weight-scaled in this model. The paper does not report the cohort body-weight distribution (Vujkovic 2018 Table 1 lists body mass index, median 22.0 kg/m2, IQR 19.8-25.1, but neither weight nor height), so downstream users must supply WT themselves; at WT = 70 kg the allometric factor is exactly 1 and the published typical CL/F values apply directly.",
+      source_name = "subject weight"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type (normal metaboliser), 1 = GT heterozygous (slow), 2 = TT homozygous variant (very slow).",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type (normal metaboliser), 1 = GT heterozygous (slow), 2 = TT homozygous variant (very slow).",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1 reports the three genotype-specific typical apparent clearances directly: 'CYP2B6 516G>T genotypes demonstrated an impact on EFV clearance for normal (GG, 9.439 L/hr/70kg), slow (GT, 7.233 L/hr/70kg), and very slow (TT, 4.033 L/hr/70kg) genotypes respectively, with a MOFV of 2085.' The count column is decomposed in model() into two mutually exclusive indicators, ('count == 1') and ('count == 2'), following the Schipani 2011 / Siccardi 2012 precedent; the paper's estimates are not a per-allele dose-response (the TT shift is not twice the GT shift), so a single per-allele slope would not reproduce the published values. Cohort genotype counts, derived from Vujkovic 2018 Table 3 by summing over the 983T>C and extensive-SNP strata: GG n = 309 (39%), GT n = 375 (47%), TT n = 115 (14%); 814 of 941 enrolled participants were successfully genotyped for rs3745274.",
-      source_name        = "CYP2B6 516G>T (rs3745274)"
+      notes = "Time-fixed (germline genotype). Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1 reports the three genotype-specific typical apparent clearances directly: 'CYP2B6 516G>T genotypes demonstrated an impact on EFV clearance for normal (GG, 9.439 L/hr/70kg), slow (GT, 7.233 L/hr/70kg), and very slow (TT, 4.033 L/hr/70kg) genotypes respectively, with a MOFV of 2085.' The count column is decomposed in model() into two mutually exclusive indicators, ('count == 1') and ('count == 2'), following the Schipani 2011 / Siccardi 2012 precedent; the paper's estimates are not a per-allele dose-response (the TT shift is not twice the GT shift), so a single per-allele slope would not reproduce the published values. Cohort genotype counts, derived from Vujkovic 2018 Table 3 by summing over the 983T>C and extensive-SNP strata: GG n = 309 (39%), GT n = 375 (47%), TT n = 115 (14%); 814 of 941 enrolled participants were successfully genotyped for rs3745274.",
+      source_name = "CYP2B6 516G>T (rs3745274)"
     )
   )
 
   covariatesDataExcluded <- list(
     SNP_CYP2B6_RS28399499_C_COUNT = list(
       description = "Count of CYP2B6 c.983T>C (rs28399499) C-alleles per subject (0/1/2)",
-      units       = "(count, 0/1/2)",
-      type        = "continuous",
-      notes       = "Screened univariately on CL/F and strongly significant (Vujkovic 2018 Table 2: wild-type 7.984, heterozygote 4.691, homozygote 1.440 L/h per 70 kg; MOFV 1862 vs 2075 for the pre-SNP model), but the paper did NOT carry it into a joint multivariate PK model. Its role in the paper is to define the composite CYP2B6 metaboliser group (Table 3) used in the downstream pharmacodynamic analyses, not to extend the PK model. Carrying the univariate estimate alongside the retained rs3745274 effect would double-count the shared CYP2B6 signal; see the vignette Assumptions and deviations section."
+      units = "(count, 0/1/2)",
+      type = "continuous",
+      notes = "Screened univariately on CL/F and strongly significant (Vujkovic 2018 Table 2: wild-type 7.984, heterozygote 4.691, homozygote 1.440 L/h per 70 kg; MOFV 1862 vs 2075 for the pre-SNP model), but the paper did NOT carry it into a joint multivariate PK model. Its role in the paper is to define the composite CYP2B6 metaboliser group (Table 3) used in the downstream pharmacodynamic analyses, not to extend the PK model. Carrying the univariate estimate alongside the retained rs3745274 effect would double-count the shared CYP2B6 signal; see the vignette Assumptions and deviations section."
     ),
     SEXF = list(
       description = "Female sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a covariate on CL/F and not retained. Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1: 'History of tuberculosis, gender, and drug adherence did not significantly improve MOFV'. No point estimate is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a covariate on CL/F and not retained. Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1: 'History of tuberculosis, gender, and drug adherence did not significantly improve MOFV'. No point estimate is reported."
     ),
     TB_HX = list(
       description = "Suspected or confirmed tuberculosis co-occurrence (1 = yes, 0 = no)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as a covariate on CL/F and not retained (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1). Prevalence in the cohort was 3.8% (31 of 941; Vujkovic 2018 Table 1). No point estimate is reported. Name is descriptive only -- no canonical register entry was created because the covariate is not used in model()."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as a covariate on CL/F and not retained (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1). Prevalence in the cohort was 3.8% (31 of 941; Vujkovic 2018 Table 1). No point estimate is reported. Name is descriptive only -- no canonical register entry was created because the covariate is not used in model()."
     ),
     ADHERENCE = list(
       description = "Efavirenz medication possession ratio over the first month of therapy",
-      units       = "(fraction)",
-      type        = "continuous",
-      notes       = "Tested as a covariate on CL/F and not retained (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1). Derived from pharmacy refill data as (doses dispensed - doses returned) / (days between the initial fill and the fill closest to the target date); Vujkovic 2018 Methods 'Medication Adherence'. No point estimate is reported. Name is descriptive only -- no canonical register entry was created because the covariate is not used in model()."
+      units = "(fraction)",
+      type = "continuous",
+      notes = "Tested as a covariate on CL/F and not retained (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1). Derived from pharmacy refill data as (doses dispensed - doses returned) / (days between the initial fill and the fill closest to the target date); Vujkovic 2018 Methods 'Medication Adherence'. No point estimate is reported. Name is descriptive only -- no canonical register entry was created because the covariate is not used in model()."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 742L,
-    n_studies      = 1L,
-    age_range      = "21 years and older (inclusion criterion)",
-    age_median     = "37 years (IQR 33-44; Vujkovic 2018 Table 1)",
-    weight_range   = "not reported",
-    weight_median  = "not reported; body mass index median 22.0 kg/m2 (IQR 19.8-25.1), Vujkovic 2018 Table 1. The model's allometric reference weight is 70 kg.",
+    species = "human",
+    n_subjects = 742L,
+    n_studies = 1L,
+    age_range = "21 years and older (inclusion criterion)",
+    age_median = "37 years (IQR 33-44; Vujkovic 2018 Table 1)",
+    weight_range = "not reported",
+    weight_median = "not reported; body mass index median 22.0 kg/m2 (IQR 19.8-25.1), Vujkovic 2018 Table 1. The model's allometric reference weight is 70 kg.",
     sex_female_pct = 51.0,
     race_ethnicity = "black African (study inclusion criterion (ii): 'black African origin'); all participants recruited in and around Gaborone, Botswana",
-    disease_state  = "HIV-1 infection, antiretroviral-naive at enrolment, initiating a first three-drug regimen containing efavirenz plus two nucleoside reverse-transcriptase inhibitors. Median baseline CD4 count 196 cells/mm3 (IQR 112-256) and median plasma viral load 4.9 log10 copies/mL (IQR 4.2-5.4); 3.8% had a history of tuberculosis (Vujkovic 2018 Table 1).",
-    dose_range     = "efavirenz 600 mg once daily (fixed dose; study inclusion criterion (v))",
-    regions        = "Botswana (clinics in and around Gaborone), enrolment June 2009 to November 2013",
-    notes          = "941 participants were enrolled, 814 were successfully genotyped for CYP2B6 516G>T (rs3745274), and 742 of those contributed at least one steady-state plasma efavirenz concentration at month 1; 562 also contributed a month-6 sample (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1 and Table 1). Samples were single midpoint draws per visit collected once steady state had been reached (efavirenz reaches steady state within 6-10 days); the date and time of both the blood draw and the last dose were recorded, so the analysis dataset carries an observed time after dose rather than a nominal one. Assay was HPLC-MS/MS in negative ionisation mode with multiple reaction monitoring, lower limit of quantification 1 ng/mL (Vujkovic 2018 Methods 'Drug assay'). Median observed plasma efavirenz was 2.17 ug/mL (IQR 1.62-3.88) at month 1 and 2.05 ug/mL at month 6. Fitted in NONMEM VII with ADVAN2 and FOCE-I with interaction."
+    disease_state = "HIV-1 infection, antiretroviral-naive at enrolment, initiating a first three-drug regimen containing efavirenz plus two nucleoside reverse-transcriptase inhibitors. Median baseline CD4 count 196 cells/mm3 (IQR 112-256) and median plasma viral load 4.9 log10 copies/mL (IQR 4.2-5.4); 3.8% had a history of tuberculosis (Vujkovic 2018 Table 1).",
+    dose_range = "efavirenz 600 mg once daily (fixed dose; study inclusion criterion (v))",
+    regions = "Botswana (clinics in and around Gaborone), enrolment June 2009 to November 2013",
+    notes = "941 participants were enrolled, 814 were successfully genotyped for CYP2B6 516G>T (rs3745274), and 742 of those contributed at least one steady-state plasma efavirenz concentration at month 1; 562 also contributed a month-6 sample (Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1 and Table 1). Samples were single midpoint draws per visit collected once steady state had been reached (efavirenz reaches steady state within 6-10 days); the date and time of both the blood draw and the last dose were recorded, so the analysis dataset carries an observed time after dose rather than a nominal one. Assay was HPLC-MS/MS in negative ionisation mode with multiple reaction monitoring, lower limit of quantification 1 ng/mL (Vujkovic 2018 Methods 'Drug assay'). Median observed plasma efavirenz was 2.17 ug/mL (IQR 1.62-3.88) at month 1 and 2.05 ug/mL at month 6. Fitted in NONMEM VII with ADVAN2 and FOCE-I with interaction."
   )
 
   ini({

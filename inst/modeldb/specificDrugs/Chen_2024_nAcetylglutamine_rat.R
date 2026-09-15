@@ -34,11 +34,11 @@ Chen_2024_nAcetylglutamine_rat <- function() {
 
   covariateData <- list(
     DOSE_GHI_MLKG = list(
-      description        = "Administered guhong injection volume dose; selects the dose-group-specific disposition and sigmoid-Emax parameter set",
-      units              = "mL/kg",
-      type               = "continuous",
+      description = "Administered guhong injection volume dose; selects the dose-group-specific disposition and sigmoid-Emax parameter set",
+      units = "mL/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per rat. Chen 2024 Section 2.3 gives three GHI dose groups -",
         "GHI-L 2.5 mL/kg, GHI-M 5 mL/kg and GHI-H 10 mL/kg - each fitted as an",
         "independent two-compartment model, so this column is a group selector",
@@ -47,25 +47,25 @@ Chen_2024_nAcetylglutamine_rat <- function() {
         "GHI-H at or above 7.5 mL/kg (midpoints of the studied levels); values",
         "outside 2.5-10 mL/kg are extrapolations of the nearest fitted group."
       ),
-      source_name        = "GHI dose (mL/kg)"
+      source_name = "GHI dose (mL/kg)"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "N-acetyl-L-glutamine", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "N-acetyl-L-glutamine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "N-acetyl-L-glutamine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "rat (Sprague-Dawley)",
-    n_subjects    = 18,
-    n_studies     = 1,
-    sex           = "male",
-    weight_range  = "320-340 g",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 18,
+    n_studies = 1,
+    sex = "male",
+    weight_range = "320-340 g",
     disease_state = "myocardial ischemia/reperfusion injury (30 min LAD ligation, 1 h reperfusion)",
-    dose_range    = "guhong injection 2.5, 5 or 10 mL/kg as a single tail-vein injection",
-    regions       = "China",
-    notes         = paste(
+    dose_range = "guhong injection 2.5, 5 or 10 mL/kg as a single tail-vein injection",
+    regions = "China",
+    notes = paste(
       "Chen 2024 Sections 2.2-2.4: adult male Sprague-Dawley rats, 320-340 g,",
       "randomised to six groups (sham, model, GHI-L, GHI-M, GHI-H, verapamil",
       "hydrochloride 0.95 mg/kg positive control). The PK parameters in Table 7",

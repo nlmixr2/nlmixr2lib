@@ -12,69 +12,79 @@ Retout_2026_baloxavir <- function() {
   # administered baloxavir marboxil dose, so compartment amounts are expressed
   # in mg of baloxavir marboxil dose equivalents.
   compartmentData <- list(
-    depot       = list(analyte = "baloxavir marboxil", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "baloxavir", units = "mg (baloxavir marboxil dose equivalents)", specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "baloxavir", units = "mg (baloxavir marboxil dose equivalents)", specimen = "plasma", verified = TRUE)
+    depot = list(analyte = "baloxavir marboxil", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "baloxavir",
+      units = "mg (baloxavir marboxil dose equivalents)",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    peripheral1 = list(
+      analyte = "baloxavir",
+      units = "mg (baloxavir marboxil dose equivalents)",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric) scaling centered on a 70 kg reference weight; a single exponent is shared by CL/F and Q/F and a second exponent is shared by Vc/F and Vp/F (Retout 2026 Table 1 footnote d). Pooled dataset median 65.7 kg, range 4-217 kg (Table S2).",
-      source_name        = "bodyweight"
+      notes = "Power (allometric) scaling centered on a 70 kg reference weight; a single exponent is shared by CL/F and Q/F and a second exponent is shared by Vc/F and Vp/F (Retout 2026 Table 1 footnote d). Pooled dataset median 65.7 kg, range 4-217 kg (Table S2).",
+      source_name = "bodyweight"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Bodyweight-independent fractional reduction of CL/F, Vc/F and Q/F in Asian patients relative to non-Asian patients; Vp/F carries no race effect. Retout 2026 Table 1 footnote d defines Asian = 1 for Asian patients and 0 for non-Asian patients. Note that the demographic listing in Table S3 prints the opposite index labels ('0: Asian', '1: Non-Asian'); the model equations, the direction of the covariate estimates and the Discussion (CL/F ~50% lower in Asian patients) all pin the model indicator to Asian = 1.",
-      source_name        = "Asian"
+      notes = "Bodyweight-independent fractional reduction of CL/F, Vc/F and Q/F in Asian patients relative to non-Asian patients; Vp/F carries no race effect. Retout 2026 Table 1 footnote d defines Asian = 1 for Asian patients and 0 for non-Asian patients. Note that the demographic listing in Table S3 prints the opposite index labels ('0: Asian', '1: Non-Asian'); the model equations, the direction of the covariate estimates and the Discussion (CL/F ~50% lower in Asian patients) all pin the model indicator to Asian = 1.",
+      source_name = "Asian"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Fractional reduction of ka in female patients (Retout 2026 Table 1 footnote d, Sex = 1 for female patients).",
-      source_name        = "Sex"
+      notes = "Fractional reduction of ka in female patients (Retout 2026 Table 1 footnote d, Sex = 1 for female patients).",
+      source_name = "Sex"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on ka centered on 37 years, the median age of the pooled popPK dataset (Retout 2026 Table 1 footnote d; Table S2 median age 37.0 years).",
-      source_name        = "age"
+      notes = "Power effect on ka centered on 37 years, the median age of the pooled popPK dataset (Retout 2026 Table 1 footnote d; Table S2 median age 37.0 years).",
+      source_name = "age"
     ),
     FORM_BXM_TAB10 = list(
-      description        = "Baloxavir marboxil 10 mg tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baloxavir marboxil 10 mg tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other formulations used in the analysis: 20 mg tablet, 2% granules, granules for oral suspension 2 mg/mL)",
-      notes              = "Relative bioavailability was set to 1.00 for every formulation in the analysis except the 10 mg tablet used in study T0822, for which F_rel was set to 0.88 (Retout 2026 Methods, PopPK analysis; 'Roche data on file'). Set to 0 for the currently marketed formulations.",
-      source_name        = "10 mg tablet formulation (T0822)"
+      notes = "Relative bioavailability was set to 1.00 for every formulation in the analysis except the 10 mg tablet used in study T0822, for which F_rel was set to 0.88 (Retout 2026 Methods, PopPK analysis; 'Roche data on file'). Set to 0 for the currently marketed formulations.",
+      source_name = "10 mg tablet formulation (T0822)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1795,
-    n_studies      = 6,
+    species = "human",
+    n_subjects = 1795,
+    n_studies = 6,
     n_observations = 6399,
-    age_range      = "0.12-85 years",
-    age_median     = "37.0 years",
-    weight_range   = "4-217 kg",
-    weight_median  = "65.7 kg",
+    age_range = "0.12-85 years",
+    age_median = "37.0 years",
+    weight_range = "4-217 kg",
+    weight_median = "65.7 kg",
     sex_female_pct = 50.2,
     race_ethnicity = c(Asian = 54.9, `Non-Asian` = 45.1),
-    disease_state  = "Uncomplicated influenza; 63.0% otherwise healthy and 37.0% at high risk of influenza-related complications",
-    dose_range     = "Single oral dose of baloxavir marboxil: 1 mg/kg or 2 mg/kg bodyweight-based dosing, or fixed doses of 5, 10, 20, 40 or 80 mg depending on study and bodyweight",
-    regions        = "Asia 53.2%, North America / Europe 45.0%, other 1.8%",
-    notes          = "Pooled from six treatment studies: T0821 (JapicCTI-153090), CAPSTONE-1 (NCT02954354), CAPSTONE-2 (NCT02949011), miniSTONE-2 (NCT03629184), T0822 (JapicCTI-163417) and T0833 (JapicCTI-173811). BLOCKSTONE (JapicCTI-184180, post-exposure prophylaxis) and T0835 (JapicCTI-194577) were not used for estimation; Bayesian post hoc estimates for those two studies were derived from this model. Baseline demographics: Retout 2026 Tables S1-S3."
+    disease_state = "Uncomplicated influenza; 63.0% otherwise healthy and 37.0% at high risk of influenza-related complications",
+    dose_range = "Single oral dose of baloxavir marboxil: 1 mg/kg or 2 mg/kg bodyweight-based dosing, or fixed doses of 5, 10, 20, 40 or 80 mg depending on study and bodyweight",
+    regions = "Asia 53.2%, North America / Europe 45.0%, other 1.8%",
+    notes = "Pooled from six treatment studies: T0821 (JapicCTI-153090), CAPSTONE-1 (NCT02954354), CAPSTONE-2 (NCT02949011), miniSTONE-2 (NCT03629184), T0822 (JapicCTI-163417) and T0833 (JapicCTI-173811). BLOCKSTONE (JapicCTI-184180, post-exposure prophylaxis) and T0835 (JapicCTI-194577) were not used for estimation; Bayesian post hoc estimates for those two studies were derived from this model. Baseline demographics: Retout 2026 Tables S1-S3."
   )
 
   ini({

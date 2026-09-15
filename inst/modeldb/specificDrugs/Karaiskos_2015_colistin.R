@@ -19,39 +19,39 @@ Karaiskos_2015_colistin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
-    central_cms2     = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    central_cms2 = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1_cms2 = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
-    central_col      = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE)
+    central_col = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance computed from ideal body weight (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance computed from ideal body weight (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate on CMS clearance. Source column CL_CR. Computed by the Cockcroft-Gault equation using ideal body weight (IBW) per Karaiskos 2015 Materials and Methods. Values are capped at 150 mL/min in the analysis dataset; the cap is reproduced in model() via `if (CRCL > 150) CRCL_cap <- 150`. The paper's covariate formula CL_R (L/h) = Sl_CRCL * CR_CL (L/h) requires conversion from mL/min to L/h (multiply by 60/1000). The renal CL effect applies to both CMS1 and CMS2 central compartments with the same slope. Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization).",
-      source_name        = "CL_CR"
+      notes = "Time-varying covariate on CMS clearance. Source column CL_CR. Computed by the Cockcroft-Gault equation using ideal body weight (IBW) per Karaiskos 2015 Materials and Methods. Values are capped at 150 mL/min in the analysis dataset; the cap is reproduced in model() via `if (CRCL > 150) CRCL_cap <- 150`. The paper's covariate formula CL_R (L/h) = Sl_CRCL * CR_CL (L/h) requires conversion from mL/min to L/h (multiply by 60/1000). The renal CL effect applies to both CMS1 and CMS2 central compartments with the same slope. Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization).",
+      source_name = "CL_CR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47L,
-    n_studies      = 3L,
-    age_range      = "18-86 years",
-    age_median     = "56.2 years (current study mean)",
-    weight_range   = "50-120 kg (current study actual BW)",
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = 47L,
+    n_studies = 3L,
+    age_range = "18-86 years",
+    age_median = "56.2 years (current study mean)",
+    weight_range = "50-120 kg (current study actual BW)",
+    weight_median = NA_character_,
     sex_female_pct = 42,
     race_ethnicity = "Not reported (Greek ICU population)",
-    disease_state  = "Critically ill adults with suspected or microbiologically documented extensively drug-resistant (XDR) Gram-negative infections (Acinetobacter baumannii, Pseudomonas aeruginosa, Klebsiella pneumoniae, Citrobacter spp.); ICU patients NOT on renal replacement therapy. Indications include ventilator-associated pneumonia and tracheobronchitis, bacteremia, complicated intra-abdominal infection, complicated urinary tract infection, catheter-related bloodstream infection, and necrotizing fasciitis. Mean APACHE II score 18.4, mean serum albumin 2.8 g/dL.",
-    dose_range     = "9 MU CMS loading dose (approximately 270 mg colistin base activity; approximately 413 umol CMS) over 30 min or 1 h IV infusion, followed by 4.5 MU q12h maintenance commenced 24 h after the loading dose; in patients with creatinine clearance < 60 mL/min the maintenance dose was reduced per the modified Garonzik formula (daily maintenance colistin dose IU = CLCR/10 + 2).",
-    regions        = "Greece (Hygeia General Hospital and Sotiria Chest Diseases and General Hospital, Athens)",
+    disease_state = "Critically ill adults with suspected or microbiologically documented extensively drug-resistant (XDR) Gram-negative infections (Acinetobacter baumannii, Pseudomonas aeruginosa, Klebsiella pneumoniae, Citrobacter spp.); ICU patients NOT on renal replacement therapy. Indications include ventilator-associated pneumonia and tracheobronchitis, bacteremia, complicated intra-abdominal infection, complicated urinary tract infection, catheter-related bloodstream infection, and necrotizing fasciitis. Mean APACHE II score 18.4, mean serum albumin 2.8 g/dL.",
+    dose_range = "9 MU CMS loading dose (approximately 270 mg colistin base activity; approximately 413 umol CMS) over 30 min or 1 h IV infusion, followed by 4.5 MU q12h maintenance commenced 24 h after the loading dose; in patients with creatinine clearance < 60 mL/min the maintenance dose was reduced per the modified Garonzik formula (daily maintenance colistin dose IU = CLCR/10 + 2).",
+    regions = "Greece (Hygeia General Hospital and Sotiria Chest Diseases and General Hospital, Athens)",
     renal_function = "Median creatinine clearance 92.1 mL/min on day 1 (capped at 150 mL/min in the PK analysis); range across the current cohort 29-220 mL/min on day 1.",
-    notes          = "The PK analysis pools 19 new ICU patients (current study; 9 MU loading) with 28 patients from two earlier studies of the same group (3 MU q8h and 6 MU loading + 3 MU q8h regimens) for a total of 47 patients and 1144 observed concentrations. Baseline demographics for the current cohort per Karaiskos 2015 Table 1. The packaged model assumes the new-study dosing convention (F1 = 1, all dose into CMS1 central); users reproducing the earlier-study cohorts can split each dose between central and central_cms2 using the source-reported F1 = 0.892 and F = 0.610 fractions (see the validation vignette for the recipe)."
+    notes = "The PK analysis pools 19 new ICU patients (current study; 9 MU loading) with 28 patients from two earlier studies of the same group (3 MU q8h and 6 MU loading + 3 MU q8h regimens) for a total of 47 patients and 1144 observed concentrations. Baseline demographics for the current cohort per Karaiskos 2015 Table 1. The packaged model assumes the new-study dosing convention (F1 = 1, all dose into CMS1 central); users reproducing the earlier-study cohorts can split each dose between central and central_cms2 using the source-reported F1 = 0.892 and F = 0.610 fractions (see the validation vignette for the recipe)."
   )
 
   ini({

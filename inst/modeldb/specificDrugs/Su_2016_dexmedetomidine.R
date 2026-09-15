@@ -16,61 +16,61 @@ Su_2016_dexmedetomidine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (per-subject weight at study entry, ranging 2.3-11.9 kg across the 59 evaluable subjects; median 5.97 kg per Table 3). A priori allometric scaling per Su 2016 Methods 'Full Covariate Model': CL and Q scale as (WT/70)^0.75 and V1 and V2 scale as (WT/70)^1, with reference weight 70 kg chosen for comparison with adult populations.",
-      source_name        = "WT"
+      notes = "Time-fixed per subject (per-subject weight at study entry, ranging 2.3-11.9 kg across the 59 evaluable subjects; median 5.97 kg per Table 3). A priori allometric scaling per Su 2016 Methods 'Full Covariate Model': CL and Q scale as (WT/70)^0.75 and V1 and V2 scale as (WT/70)^1, with reference weight 70 kg chosen for comparison with adult populations.",
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (per-subject postnatal age at study entry, ranging 0.03 months / 1 day-20.4 months across the 59 evaluable subjects; median 4.3 months per Table 3). Su 2016 Methods 'Full Covariate Model' enters age as an Emax-form maturation on CL: CL_maturation = Age / (TM50 + Age) with TM50 = 0.032 months (~1 day). The model is silent on whether the covariate is gestational, postmenstrual, or postnatal -- the cohort is full-term neonates and infants so postmenstrual age equals (40 weeks + PNA) and the maturation effect is anchored at chronological birth (PNA = 0). The covariate column is therefore mapped to the canonical PNA. At PNA = 0 the maturation multiplier evaluates to 0; for prospective simulation the youngest subject is set at PNA = 0.03 months (the cohort minimum) so the multiplier is well-defined.",
-      source_name        = "Age"
+      notes = "Time-fixed per subject (per-subject postnatal age at study entry, ranging 0.03 months / 1 day-20.4 months across the 59 evaluable subjects; median 4.3 months per Table 3). Su 2016 Methods 'Full Covariate Model' enters age as an Emax-form maturation on CL: CL_maturation = Age / (TM50 + Age) with TM50 = 0.032 months (~1 day). The model is silent on whether the covariate is gestational, postmenstrual, or postnatal -- the cohort is full-term neonates and infants so postmenstrual age equals (40 weeks + PNA) and the maturation effect is anchored at chronological birth (PNA = 0). The covariate column is therefore mapped to the canonical PNA. At PNA = 0 the maturation multiplier evaluates to 0; for prospective simulation the youngest subject is set at PNA = 0.03 months (the cohort minimum) so the multiplier is well-defined.",
+      source_name = "Age"
     ),
     T_CPB = list(
-      description        = "Total cardiopulmonary bypass time during the immediately preceding open heart surgery",
-      units              = "minutes",
-      type               = "continuous",
+      description = "Total cardiopulmonary bypass time during the immediately preceding open heart surgery",
+      units = "minutes",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (single per-subject scalar set at surgery close; cohort median 63 min, range 16-169 min per Table 3). Reference 60 minutes (the cohort median, used in the Abstract and Discussion as the typical-patient anchor). Su 2016 Methods 'Full Covariate Model': power-form effect on CL, (T_CPB / 60)^(-0.31), so longer bypass time reduces post-operative CL (negative exponent).",
-      source_name        = "TBYP"
+      notes = "Time-fixed per subject (single per-subject scalar set at surgery close; cohort median 63 min, range 16-169 min per Table 3). Reference 60 minutes (the cohort median, used in the Abstract and Discussion as the typical-patient anchor). Su 2016 Methods 'Full Covariate Model': power-form effect on CL, (T_CPB / 60)^(-0.31), so longer bypass time reduces post-operative CL (negative exponent).",
+      source_name = "TBYP"
     ),
     ICSHUNT_R2L = list(
-      description        = "Right-to-left intracardiac shunt indicator (Qp:Qs < 1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Right-to-left intracardiac shunt indicator (Qp:Qs < 1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no right-to-left shunt; Qp:Qs >= 1)",
-      notes              = "Time-fixed per subject. 1 = patient cardiac anatomy produces right-to-left intracardiac shunting with pulmonary-blood-flow-to-systemic-blood-flow ratio Qp:Qs < 1; 0 = otherwise. Most common shunt anatomy in this cohort was single-ventricle physiology after stage 2 palliation (Glenn or hemi-Fontan procedure). 19 of 59 subjects (32%) had a right-to-left shunt per Table 3. Su 2016 Methods 'Full Covariate Model': multiplicative effect on CL of 1.24 when ICSHUNT_R2L = 1, hypothesised mechanism is shunt-induced reduction in first-pass lung extraction combined with increased hepatic perfusion via increased systemic blood flow.",
-      source_name        = "intracardiac shunt"
+      notes = "Time-fixed per subject. 1 = patient cardiac anatomy produces right-to-left intracardiac shunting with pulmonary-blood-flow-to-systemic-blood-flow ratio Qp:Qs < 1; 0 = otherwise. Most common shunt anatomy in this cohort was single-ventricle physiology after stage 2 palliation (Glenn or hemi-Fontan procedure). 19 of 59 subjects (32%) had a right-to-left shunt per Table 3. Su 2016 Methods 'Full Covariate Model': multiplicative effect on CL of 1.24 when ICSHUNT_R2L = 1, hypothesised mechanism is shunt-induced reduction in first-pass lung extraction combined with increased hepatic perfusion via increased systemic blood flow.",
+      source_name = "intracardiac shunt"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 59L,
-    n_studies       = 1L,
-    age_range       = "0.03-20.4 months (1 day-20.4 months postnatal)",
-    age_median      = "4.3 months",
-    weight_range    = "2.3-11.9 kg",
-    weight_median   = "5.97 kg",
-    sex_female_pct  = 45.8,                                # 27/59 female per Table 3
-    race_ethnicity  = NULL,                                # Not separately tabulated in Table 3
-    disease_state   = "Full-term neonates (1 day-1 month, n = 23) and infants (1-24 months, n = 36) with congenital heart disease requiring mechanical ventilation after open heart surgery; adequate hepatic and renal function; no evidence of heart block. The most common shunt anatomy in shunt-positive subjects was single-ventricle physiology after stage 2 palliation (Glenn or hemi-Fontan procedure).",
-    dose_range      = "Loading dose 0.25-1 ug/kg administered IV over 10 minutes followed by a continuous IV infusion (CIVI) of 0.2-0.75 ug/kg/h for up to 24 hours (Table 1; cohort dependent). Median duration of dexmedetomidine administration 10.1 hours (range 3.2-24.3 h).",
-    regions         = "USA (single-centre dose-escalation trial conducted at The Children's Hospital of Philadelphia under FDA IND #69,758).",
-    cpb_time        = "Median 63 min (range 16-169 min; Table 3)",
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
+    age_range = "0.03-20.4 months (1 day-20.4 months postnatal)",
+    age_median = "4.3 months",
+    weight_range = "2.3-11.9 kg",
+    weight_median = "5.97 kg",
+    sex_female_pct = 45.8, # 27/59 female per Table 3
+    race_ethnicity = NULL, # Not separately tabulated in Table 3
+    disease_state = "Full-term neonates (1 day-1 month, n = 23) and infants (1-24 months, n = 36) with congenital heart disease requiring mechanical ventilation after open heart surgery; adequate hepatic and renal function; no evidence of heart block. The most common shunt anatomy in shunt-positive subjects was single-ventricle physiology after stage 2 palliation (Glenn or hemi-Fontan procedure).",
+    dose_range = "Loading dose 0.25-1 ug/kg administered IV over 10 minutes followed by a continuous IV infusion (CIVI) of 0.2-0.75 ug/kg/h for up to 24 hours (Table 1; cohort dependent). Median duration of dexmedetomidine administration 10.1 hours (range 3.2-24.3 h).",
+    regions = "USA (single-centre dose-escalation trial conducted at The Children's Hospital of Philadelphia under FDA IND #69,758).",
+    cpb_time = "Median 63 min (range 16-169 min; Table 3)",
     intracardiac_shunt_pct = "32% (19/59 with Qp:Qs < 1)",
-    notes           = "Dose-escalation cohorts: infants 1 (0.35 ug/kg + 0.25 ug/kg/h, n = 12), 2 (0.7 + 0.5, n = 12), 3 (1 + 0.75, n = 12); neonates 4 (0.25 + 0.2, n = 9), 4A (0.35 + 0.3, n = 9), 5 (0.5 + 0.4, n = 5; stopped early at MTD). NONMEM v6 level 2.0 with ADVAN 3 TRANS 4 and FOCE-I. PK samples below the LLOQ of 5 pg/mL were excluded (3% of neonatal, 8% of infant samples)."
+    notes = "Dose-escalation cohorts: infants 1 (0.35 ug/kg + 0.25 ug/kg/h, n = 12), 2 (0.7 + 0.5, n = 12), 3 (1 + 0.75, n = 12); neonates 4 (0.25 + 0.2, n = 9), 4A (0.35 + 0.3, n = 9), 5 (0.5 + 0.4, n = 5; stopped early at MTD). NONMEM v6 level 2.0 with ADVAN 3 TRANS 4 and FOCE-I. PK samples below the LLOQ of 5 pg/mL were excluded (3% of neonatal, 8% of infant samples)."
   )
 
   ini({

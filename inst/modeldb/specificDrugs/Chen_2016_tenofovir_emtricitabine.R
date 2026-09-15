@@ -11,61 +11,96 @@ Chen_2016_tenofovir_emtricitabine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot             = list(analyte = "Tenofovir Disoproxil Fumarate (TDF)", units = "mg", specimen = "administration site", verified = FALSE),
-    central           = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1       = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_ftc         = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "administration site", verified = FALSE),
-    central_ftc       = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_ftc   = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
-    effect_tfvdp      = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect_ftctp      = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "not applicable", verified = FALSE),
-    tfvdp             = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_tfvdp = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
-    ftctp             = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_ftctp = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "plasma", verified = FALSE),
-    datp              = list(analyte = "Diphospho-Thymidine Triphosphate (dATP)", units = "mg", specimen = "not applicable", verified = FALSE),
-    dgtp              = list(analyte = "Guanosine-Diphosphate (dGTP)", units = "mg", specimen = "not applicable", verified = FALSE),
-    dctp              = list(analyte = "Deoxy-Cytidine Triphosphate (dCTP)", units = "mg", specimen = "not applicable", verified = FALSE),
-    ttp               = list(analyte = "Thymidine-Triphosphate (TTP)", units = "mg", specimen = "not applicable", verified = FALSE)
+    depot = list(
+      analyte = "Tenofovir Disoproxil Fumarate (TDF)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_ftc = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_ftc = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ftc = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_tfvdp = list(
+      analyte = "Tenofovir-Diphosphate (TFV-DP)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    effect_ftctp = list(
+      analyte = "Emtricitabine-Triphosphate (FTC-TP)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    tfvdp = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_tfvdp = list(
+      analyte = "Tenofovir-Diphosphate (TFV-DP)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    ftctp = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ftctp = list(
+      analyte = "Emtricitabine-Triphosphate (FTC-TP)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    datp = list(
+      analyte = "Diphospho-Thymidine Triphosphate (dATP)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    dgtp = list(analyte = "Guanosine-Diphosphate (dGTP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    dctp = list(
+      analyte = "Deoxy-Cytidine Triphosphate (dCTP)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    ttp = list(analyte = "Thymidine-Triphosphate (TTP)", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) per the canonical SEXF register; matches Chen 2016 'sex = 0 (female)' once values are inverted",
-      notes              = "Chen 2016 reports the FTC plasma Vc/F covariate effect using a male indicator: tvVc/F = 99.4 + 24.3 * SEX with male = 1, female = 0 (Table 1B). The canonical column in inst/references/covariate-columns.md is SEXF (1 = female), so values invert: SEXF = 1 - source_SEX. The model applies the +24.3 L additive shift via (1 - SEXF) so that males (SEXF = 0) get Vc/F = 123.7 L and females (SEXF = 1) get Vc/F = 99.4 L, preserving the paper's parameterisation. No effect on TFV plasma or any intracellular compartment.",
-      source_name        = "SEX (male = 1, female = 0)"
+      notes = "Chen 2016 reports the FTC plasma Vc/F covariate effect using a male indicator: tvVc/F = 99.4 + 24.3 * SEX with male = 1, female = 0 (Table 1B). The canonical column in inst/references/covariate-columns.md is SEXF (1 = female), so values invert: SEXF = 1 - source_SEX. The model applies the +24.3 L additive shift via (1 - SEXF) so that males (SEXF = 0) get Vc/F = 123.7 L and females (SEXF = 1) get Vc/F = 99.4 L, preserving the paper's parameterisation. No effect on TFV plasma or any intracellular compartment.",
+      source_name = "SEX (male = 1, female = 0)"
     ),
     HIV_POS = list(
-      description        = "HIV-1 serostatus at study entry (1 = HIV-positive, 0 = HIV-negative)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 serostatus at study entry (1 = HIV-positive, 0 = HIV-negative)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = "Chen 2016 reports the FTC-TP intracellular Kf covariate effect as tvKf = 41.6 + 31.3 * HIV with HIV-positive = 1 and HIV-negative = 0 (Table 1B, FTC-TP IC section). Source column orientation matches the canonical HIV_POS (1 = positive). The +31.3 1/day additive shift gives HIV-positive subjects a 75.2% higher FTC-TP formation rate (the paper's reported effect). HIV-positive subjects in this cohort received daily co-administered efavirenz 600 mg in addition to TDF/FTC; the model does not separate the HIV-status indicator from possible efavirenz-mediated effects (see vignette Assumptions and deviations). No effect on TFV plasma, FTC plasma, TFV-DP IC, or any of the four dNTP responses.",
-      source_name        = "HIV"
+      notes = "Chen 2016 reports the FTC-TP intracellular Kf covariate effect as tvKf = 41.6 + 31.3 * HIV with HIV-positive = 1 and HIV-negative = 0 (Table 1B, FTC-TP IC section). Source column orientation matches the canonical HIV_POS (1 = positive). The +31.3 1/day additive shift gives HIV-positive subjects a 75.2% higher FTC-TP formation rate (the paper's reported effect). HIV-positive subjects in this cohort received daily co-administered efavirenz 600 mg in addition to TDF/FTC; the model does not separate the HIV-status indicator from possible efavirenz-mediated effects (see vignette Assumptions and deviations). No effect on TFV plasma, FTC plasma, TFV-DP IC, or any of the four dNTP responses.",
+      source_name = "HIV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "20-52 years (median 31)",
-    age_median     = "31 years",
-    weight_range   = "56.5-127 kg (median 81.1)",
-    weight_median  = "81.1 kg",
-    bmi_range      = "19.9-37.7 kg/m^2 (median 26.6)",
-    bmi_median     = "26.6 kg/m^2",
-    egfr_range     = "66.0-131 mL/min/1.73m^2 (median 93.3)",
-    egfr_median    = "93.3 mL/min/1.73m^2",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "20-52 years (median 31)",
+    age_median = "31 years",
+    weight_range = "56.5-127 kg (median 81.1)",
+    weight_median = "81.1 kg",
+    bmi_range = "19.9-37.7 kg/m^2 (median 26.6)",
+    bmi_median = "26.6 kg/m^2",
+    egfr_range = "66.0-131 mL/min/1.73m^2 (median 93.3)",
+    egfr_median = "93.3 mL/min/1.73m^2",
     sex_female_pct = 32.5,
     race_ethnicity = c(White = 47.5, Black_or_African_American = 40.0, Hispanic = 12.5),
-    disease_state  = "21 HIV-negative healthy adults and 19 HIV-positive adults (the Cell-PrEP study; protocol NCT01040091). HIV-negative subjects received daily oral co-formulated TDF 300 mg / FTC 200 mg for 30 days followed by a washout period (days 35, 45, 60). HIV-positive subjects received daily TDF/FTC + efavirenz 600 mg for 60 days. Baseline dNTP samples taken prior to first dose.",
-    dose_range     = "TDF 300 mg (= TFV 136 mg) + FTC 200 mg by mouth once daily for 30 days (HIV-negative) or 60 days (HIV-positive). HIV-positive group co-administered efavirenz 600 mg PO QD.",
-    regions        = "University of Colorado Anschutz Medical Campus, USA (single-center; enrollment 2010-2013)",
-    notes          = "Demographics from Chen 2016 Results 'Study demographics' (page 6 of the PLOS ONE PDF). Sampling on day 1 and day 30 at 1, 2, 4, 8, 24 hours post-dose; on days 3, 7, 20 pre-dose and 2, 8 hours post-dose; single samples on days 35, 45, 60. dNTP pool components (dATP, dGTP, dCTP, TTP) measured in PBMC at baseline, 1, 2, 4, 8, 24 hours post-dose on day 1, and 8 hours post-dose on subsequent visits. 34 of 40 subjects completed all visits. Below-limit-of-quantitation (BLQ) samples were treated as missing during NONMEM estimation."
+    disease_state = "21 HIV-negative healthy adults and 19 HIV-positive adults (the Cell-PrEP study; protocol NCT01040091). HIV-negative subjects received daily oral co-formulated TDF 300 mg / FTC 200 mg for 30 days followed by a washout period (days 35, 45, 60). HIV-positive subjects received daily TDF/FTC + efavirenz 600 mg for 60 days. Baseline dNTP samples taken prior to first dose.",
+    dose_range = "TDF 300 mg (= TFV 136 mg) + FTC 200 mg by mouth once daily for 30 days (HIV-negative) or 60 days (HIV-positive). HIV-positive group co-administered efavirenz 600 mg PO QD.",
+    regions = "University of Colorado Anschutz Medical Campus, USA (single-center; enrollment 2010-2013)",
+    notes = "Demographics from Chen 2016 Results 'Study demographics' (page 6 of the PLOS ONE PDF). Sampling on day 1 and day 30 at 1, 2, 4, 8, 24 hours post-dose; on days 3, 7, 20 pre-dose and 2, 8 hours post-dose; single samples on days 35, 45, 60. dNTP pool components (dATP, dGTP, dCTP, TTP) measured in PBMC at baseline, 1, 2, 4, 8, 24 hours post-dose on day 1, and 8 hours post-dose on subsequent visits. 34 of 40 subjects completed all visits. Below-limit-of-quantitation (BLQ) samples were treated as missing during NONMEM estimation."
   )
 
   ini({

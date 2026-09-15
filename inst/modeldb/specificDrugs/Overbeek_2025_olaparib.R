@@ -1,58 +1,58 @@
 Overbeek_2025_olaparib <- function() {
   description <- "Well-stirred liver model for oral olaparib in patients with solid tumours, with Erlang-type absorption through one transit compartment, a mechanistic hepatic-extraction central/liver disposition driven by unbound intrinsic clearance per litre of liver, a priori allometric scaling to 70 kg, and concomitant cobicistat raising prehepatic bioavailability 1.65-fold while lowering intrinsic clearance to 0.37-fold with its own reduced between-subject variability (Overbeek 2025)"
-  reference   <- "Overbeek JK, van Erp NP, Burger DM, den Broeder AA, Koolen SLW, Huitema ADR, ter Heine R. Population Pharmacokinetics of Cobicistat and its Effect on the Pharmacokinetics of the Anticancer Drug Olaparib. Clin Pharmacokinet. 2025;64(3):425-435. doi:10.1007/s40262-025-01480-w"
-  vignette    <- "Overbeek_2025_cobicistat_olaparib_boosting"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Overbeek JK, van Erp NP, Burger DM, den Broeder AA, Koolen SLW, Huitema ADR, ter Heine R. Population Pharmacokinetics of Cobicistat and its Effect on the Pharmacokinetics of the Anticancer Drug Olaparib. Clin Pharmacokinet. 2025;64(3):425-435. doi:10.1007/s40262-025-01480-w"
+  vignette <- "Overbeek_2025_cobicistat_olaparib_boosting"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters in three distinct ways. (1) A priori allometric scaling to a standardised total body weight of 70 kg with exponents 0.75 for flow (hepatic plasma flow), 1 for volume (Vc) and -0.25 for the absorption rate constant ktr (Overbeek 2025 Methods 2.3, final paragraph before Eq 5). (2) The liver volume that scales intrinsic clearance, VL = 0.10 * TBW^0.59 (Eq 5), which is a function of the raw weight in kg and is deliberately NOT re-normalised to 70 kg. (3) Because CLint = theta_CLint * VL (Eq 6), the weight dependence of clearance is carried entirely by VL and no separate allometric exponent is applied to CLint. The olaparib cohort (PROACTIVE) had a median weight of 67 kg, range 54-104 kg (Table 1).",
-      source_name        = "WEIGHT"
+      notes = "Enters in three distinct ways. (1) A priori allometric scaling to a standardised total body weight of 70 kg with exponents 0.75 for flow (hepatic plasma flow), 1 for volume (Vc) and -0.25 for the absorption rate constant ktr (Overbeek 2025 Methods 2.3, final paragraph before Eq 5). (2) The liver volume that scales intrinsic clearance, VL = 0.10 * TBW^0.59 (Eq 5), which is a function of the raw weight in kg and is deliberately NOT re-normalised to 70 kg. (3) Because CLint = theta_CLint * VL (Eq 6), the weight dependence of clearance is carried entirely by VL and no separate allometric exponent is applied to CLint. The olaparib cohort (PROACTIVE) had a median weight of 67 kg, range 54-104 kg (Table 1).",
+      source_name = "WEIGHT"
     ),
     CONMED_COBICISTAT = list(
-      description        = "Concomitant cobicistat (PK boosting) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant cobicistat (PK boosting) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (olaparib 300 mg twice daily monotherapy)",
-      notes              = "1 = the boosted arm, olaparib 100 mg twice daily co-administered with cobicistat 150 mg twice daily; 0 = the monotherapy arm, olaparib 300 mg twice daily. Drives two simultaneous multiplicative power-form effects (Overbeek 2025 Results 3.2): a 1.65-fold increase in prehepatic bioavailability, attributed to inhibition of intestinal CYP3A and P-glycoprotein, and a reduction of intrinsic clearance to 0.37-fold, attributed to hepatic CYP3A inhibition. It also selects which of two between-subject variance terms applies to intrinsic clearance, because the paper estimated a separate omega per arm and found variability lower under boosting. Time-varying within a subject: PROACTIVE was a randomised cross-over trial in which every patient contributed one week on each arm, so the indicator switches when the arm changes. The indicator is confounded with the olaparib dose level by design (100 mg boosted vs 300 mg unboosted), but the dose difference is carried by the amt column rather than by this covariate, so the coefficients are dose-independent. Named BOOST in the NONMEM control stream (Online Resource Material 2, $INPUT).",
-      source_name        = "BOOST"
+      notes = "1 = the boosted arm, olaparib 100 mg twice daily co-administered with cobicistat 150 mg twice daily; 0 = the monotherapy arm, olaparib 300 mg twice daily. Drives two simultaneous multiplicative power-form effects (Overbeek 2025 Results 3.2): a 1.65-fold increase in prehepatic bioavailability, attributed to inhibition of intestinal CYP3A and P-glycoprotein, and a reduction of intrinsic clearance to 0.37-fold, attributed to hepatic CYP3A inhibition. It also selects which of two between-subject variance terms applies to intrinsic clearance, because the paper estimated a separate omega per arm and found variability lower under boosting. Time-varying within a subject: PROACTIVE was a randomised cross-over trial in which every patient contributed one week on each arm, so the indicator switches when the arm changes. The indicator is confounded with the olaparib dose level by design (100 mg boosted vs 300 mg unboosted), but the dose difference is carried by the amt column rather than by this covariate, so the coefficients are dose-independent. Named BOOST in the NONMEM control stream (Online Resource Material 2, $INPUT).",
+      source_name = "BOOST"
     )
   )
 
   covariatesDataExcluded <- list(
     AUC_COBICISTAT = list(
       description = "Cobicistat area under the plasma concentration-time curve over one dosing interval (AUCtau)",
-      units       = "mg*h/L",
-      type        = "continuous",
-      notes       = "Screened but not retained. Overbeek 2025 Methods 2.5 pre-specified that, if a physiologically plausible relationship were seen, cobicistat AUCtau (computed as Dose / (CLH/F), Eq 8) would be tested as a covariate on olaparib intrinsic clearance. Results 3.2 and Online Resource Fig. 3 report no association between cobicistat exposure and the boosted-to-monotherapy intrinsic-clearance ratio, which the Discussion interprets as saturation of the CYP3A-inhibiting effect at 150 mg twice daily. The column is carried in the analysis dataset as AUCCOBI (Online Resource Material 2, $INPUT) but appears in no $PK expression of the final model, so no coefficient exists to encode."
+      units = "mg*h/L",
+      type = "continuous",
+      notes = "Screened but not retained. Overbeek 2025 Methods 2.5 pre-specified that, if a physiologically plausible relationship were seen, cobicistat AUCtau (computed as Dose / (CLH/F), Eq 8) would be tested as a covariate on olaparib intrinsic clearance. Results 3.2 and Online Resource Fig. 3 report no association between cobicistat exposure and the boosted-to-monotherapy intrinsic-clearance ratio, which the Discussion interprets as saturation of the CYP3A-inhibiting effect at 150 mg twice daily. The column is carried in the analysis dataset as AUCCOBI (Online Resource Material 2, $INPUT) but appears in no $PK expression of the final model, so no coefficient exists to encode."
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),
-    liver    = list(analyte = "olaparib", units = "mg", specimen = "tissue", verified = TRUE),
-    central  = list(analyte = "olaparib", units = "mg", specimen = "plasma", verified = TRUE)
+    liver = list(analyte = "olaparib", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "olaparib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
     n_observations = 261L,
-    age_range      = "55-78 years (median 63)",
-    age_median     = "63 years",
-    weight_range   = "54-104 kg (median 67)",
-    weight_median  = "67 kg",
+    age_range = "55-78 years (median 63)",
+    age_median = "63 years",
+    weight_range = "54-104 kg (median 67)",
+    weight_median = "67 kg",
     sex_female_pct = 58.3,
-    disease_state  = "Patients with solid tumours receiving olaparib",
-    dose_range     = "Olaparib 300 mg orally twice daily as monotherapy for 1 week, and olaparib 100 mg orally twice daily with cobicistat 150 mg twice daily for 1 week",
-    regions        = "The Netherlands",
-    notes          = "The PROACTIVE trial (NCT05078671), a randomised cross-over comparison of reduced-dose boosted olaparib against standard olaparib monotherapy; demographics from Overbeek 2025 Table 1. Sex is reported as 5 of 12 male (42%), so 58.3% female. All 261 olaparib samples were above the limit of quantification. Because only 12 patients contributed, the paper's predictive checks used 12.5th / 50th / 87.5th percentiles rather than the usual 2.5th / 97.5th (Methods 2.6)."
+    disease_state = "Patients with solid tumours receiving olaparib",
+    dose_range = "Olaparib 300 mg orally twice daily as monotherapy for 1 week, and olaparib 100 mg orally twice daily with cobicistat 150 mg twice daily for 1 week",
+    regions = "The Netherlands",
+    notes = "The PROACTIVE trial (NCT05078671), a randomised cross-over comparison of reduced-dose boosted olaparib against standard olaparib monotherapy; demographics from Overbeek 2025 Table 1. Sex is reported as 5 of 12 male (42%), so 58.3% female. All 261 olaparib samples were above the limit of quantification. Because only 12 patients contributed, the paper's predictive checks used 12.5th / 50th / 87.5th percentiles rather than the usual 2.5th / 97.5th (Methods 2.6)."
   )
 
   ini({

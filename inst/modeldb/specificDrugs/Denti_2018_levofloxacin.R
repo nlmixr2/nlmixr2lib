@@ -24,24 +24,24 @@ Denti_2018_levofloxacin <- function() {
     sep = " "
   )
   vignette <- "Denti_2018_levofloxacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "levofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "levofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the allometric scaling of CL and Q",
         "(exponent 0.75 fixed) and Vc and Vp (exponent 1 fixed) with",
         "12 kg as the reference weight, matching the typical-value",
@@ -49,14 +49,14 @@ Denti_2018_levofloxacin <- function() {
         "typical values reported here refer to a 12-kg child aged 2",
         "years.')."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the Hill-type maturation function on",
         "CL with PMAGE_50 = 10.6 months and shape parameter gamma =",
         "3.39 (Denti 2018 Methods 'Population pharmacokinetic model",
@@ -69,14 +69,14 @@ Denti_2018_levofloxacin <- function() {
         "assumed term gestation; maturation 97.9% complete per",
         "Table 2 footnote a)."
       ),
-      source_name        = "PMAGE"
+      source_name = "PMAGE"
     ),
     HIV_POS = list(
-      description        = "HIV-1 infection status indicator (1 = HIV-positive on ART, 0 = HIV-negative)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HIV-1 infection status indicator (1 = HIV-positive on ART, 0 = HIV-negative)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative; structural reference for the Table 2 typical CL of 4.70 L/h)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Multiplicative effect on CL:",
         "(1 + e_hiv_pos_cl * HIV_POS) with e_hiv_pos_cl = -0.159 per",
         "Denti 2018 Table 2 'HIV+ on CL (%)'. All 16 HIV-positive",
@@ -86,14 +86,14 @@ Denti_2018_levofloxacin <- function() {
         "have power to ascribe the effect to a particular ART",
         "regimen."
       ),
-      source_name        = "HIV"
+      source_name = "HIV"
     ),
     ROUTE_NGT = list(
-      description        = "Nasogastric-tube administration indicator (1 = NGT, 0 = oral)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Nasogastric-tube administration indicator (1 = NGT, 0 = oral)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral administration; structural reference for the Table 2 T_lag of 0.242 h)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Multiplicative effect on T_lag:",
         "(1 + e_route_ngt_tlag * ROUTE_NGT) with e_route_ngt_tlag =",
         "-0.856 per Denti 2018 Table 2 'NGT on T_lag (%)'. NGT",
@@ -103,21 +103,21 @@ Denti_2018_levofloxacin <- function() {
         "(11.0%) by crushed tablet orally, and 7 / 109 (6.4%) by",
         "whole tablet orally (Table 1)."
       ),
-      source_name        = "NGT"
+      source_name = "NGT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 109L,
-    n_studies      = 1L,
-    age_range      = "0.32 to 8.65 years",
-    age_median     = "2.1 years",
-    weight_range   = "5.88 to 21.8 kg",
-    weight_median  = "12.4 kg",
+    species = "human",
+    n_subjects = 109L,
+    n_studies = 1L,
+    age_range = "0.32 to 8.65 years",
+    age_median = "2.1 years",
+    weight_range = "5.88 to 21.8 kg",
+    weight_median = "12.4 kg",
     sex_female_pct = 100 * (1 - 56 / 109),
     race_ethnicity = c(Black = 63.3, MixedRace = 36.7),
-    disease_state  = paste(
+    disease_state = paste(
       "Children routinely treated with levofloxacin for confirmed,",
       "probable, or possible multidrug-resistant tuberculosis (MDR-TB)",
       "disease (71 / 109; 65.1%) or preventive therapy following",
@@ -126,7 +126,7 @@ Denti_2018_levofloxacin <- function() {
       "and on antiretroviral therapy (lopinavir-ritonavir n = 13 or",
       "efavirenz n = 3)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Once-daily oral levofloxacin 10 to 15 mg/kg (2012 to 2013) or",
       "15 to 20 mg/kg (2013 to 2017) using the 250 mg adult tablet",
       "(Austel, South Africa). The dose was administered as a whole",
@@ -136,7 +136,7 @@ Denti_2018_levofloxacin <- function() {
       "individual dose 212 mg (range 88.5 to 435), median 15 mg/kg",
       "(range 10 to 21.4)."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Pre-dose plus 1, 2, 4, 6, and 8 hours post-dose. 662",
       "quantifiable levofloxacin concentrations were analysed (3",
       "participants contributed data from more than one sampling",
@@ -144,8 +144,8 @@ Denti_2018_levofloxacin <- function() {
       "pre-dose record and were imputed at LLOQ / 2 per Beal's M6",
       "method."
     ),
-    regions        = "South Africa (Cape Town).",
-    notes          = paste(
+    regions = "South Africa (Cape Town).",
+    notes = paste(
       "Baseline demographics from Denti 2018 Table 1 and Results 'Study",
       "population and pharmacokinetic samples'. Gestational age at",
       "birth was not recorded; postmenstrual age was assumed to be",

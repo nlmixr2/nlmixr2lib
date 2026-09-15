@@ -5,73 +5,81 @@ Crass_2024_pegcetacoplan <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_residual_sds <- c(
-    "expSd_healthy", "expSd_pnh_ph12", "expSd_pnh_ph3"
+    "expSd_healthy",
+    "expSd_pnh_ph12",
+    "expSd_pnh_ph3"
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pegcetacoplan", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "pegcetacoplan",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Enters CL and Vc as estimated power exponents referenced to 70 kg (ESM Table 1 PK control stream: MWT=70; TVCL = THETA(1)*(1+PNH*THETA(9))*((WT/MWT)**THETA(10)); TVV2 = THETA(2)*((WT/MWT)**THETA(11))). The control stream substitutes the 70 kg reference whenever BWT is missing or non-positive. Analysis-set median 70.0 kg, range 41-156 kg (ESM Table 2, Total column); the 5th-95th percentile band cited in the paper's forest-plot discussion is 54-95 kg.",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline body weight. Enters CL and Vc as estimated power exponents referenced to 70 kg (ESM Table 1 PK control stream: MWT=70; TVCL = THETA(1)*(1+PNH*THETA(9))*((WT/MWT)**THETA(10)); TVV2 = THETA(2)*((WT/MWT)**THETA(11))). The control stream substitutes the 70 kg reference whenever BWT is missing or non-positive. Analysis-set median 70.0 kg, range 41-156 kg (ESM Table 2, Total column); the 5th-95th percentile band cited in the paper's forest-plot discussion is 54-95 kg.",
+      source_name = "BWT"
     ),
     DIS_PNH = list(
-      description        = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = healthy participant or renal-impairment participant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Paroxysmal nocturnal hemoglobinuria indicator: 1 = patient with PNH, 0 = healthy participant or renal-impairment participant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-PNH participant: healthy adults from CP0713-1, CP1014, 101, 102, 401 and the healthy plus renal-impaired participants of AIRIS)",
-      notes              = "Time-fixed per subject. Carries a fractional (linear) increase in clearance, `cl * (1 + e_dis_pnh_cl * DIS_PNH)` with e_dis_pnh_cl = 0.257 (ESM Table 1 PK control stream TVCL line; ESM Table 3 theta 9). Also selects which of the three residual-error strata applies. Analysis-set split 124 healthy (44%) / 160 PNH (56%) (ESM Table 2, Total column).",
-      source_name        = "PNH"
+      notes = "Time-fixed per subject. Carries a fractional (linear) increase in clearance, `cl * (1 + e_dis_pnh_cl * DIS_PNH)` with e_dis_pnh_cl = 0.257 (ESM Table 1 PK control stream TVCL line; ESM Table 3 theta 9). Also selects which of the three residual-error strata applies. Analysis-set split 124 healthy (44%) / 160 PNH (56%) (ESM Table 2, Total column).",
+      source_name = "PNH"
     ),
     STUDY_PEGCET_PHASE3 = list(
-      description        = "Phase 3 pegcetacoplan study cohort indicator: 1 = participant enrolled in PEGASUS (NCT03500549) or PRINCE (NCT04085601), 0 = any other study in the pooled analysis.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 pegcetacoplan study cohort indicator: 1 = participant enrolled in PEGASUS (NCT03500549) or PRINCE (NCT04085601), 0 = any other study in the pooled analysis.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase 1 / phase 1b / phase 2a studies: CP0713-1, CP1014, 101, 102, 401, AIRIS, PHAROAH, PADDOCK, PALOMINO)",
-      notes              = "Time-fixed per subject. Used only in the residual-error switch, never in the structural model. The source control stream builds two study-group flags, PNH3 (STUD 302 or 308, i.e. the phase 3 studies PEGASUS and PRINCE) and PNH2 (STUD 202, 204, or 514, i.e. the phase 1/2 PNH studies PHAROAH, PADDOCK, PALOMINO), and selects W from THETA(5) / THETA(6) / THETA(7) accordingly. Because PNH2 and PNH3 partition the PNH cohort exactly, the two source flags are re-expressed here as DIS_PNH x STUDY_PEGCET_PHASE3.",
-      source_name        = "(derived from STUD; STUD 302 = PEGASUS and STUD 308 = PRINCE map to 1)"
+      notes = "Time-fixed per subject. Used only in the residual-error switch, never in the structural model. The source control stream builds two study-group flags, PNH3 (STUD 302 or 308, i.e. the phase 3 studies PEGASUS and PRINCE) and PNH2 (STUD 202, 204, or 514, i.e. the phase 1/2 PNH studies PHAROAH, PADDOCK, PALOMINO), and selects W from THETA(5) / THETA(6) / THETA(7) accordingly. Because PNH2 and PNH3 partition the PNH cohort exactly, the two source flags are re-expressed here as DIS_PNH x STUDY_PEGCET_PHASE3.",
+      source_name = "(derived from STUD; STUD 302 = PEGASUS and STUD 308 = PRINCE map to 1)"
     ),
     FORM_PEGCET_LYOPHILIZED = list(
-      description        = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation (sorbitol, dextrose, or mannitol vehicle).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pegcetacoplan lyophilized-powder formulation indicator: 1 = lyophilized powder reconstituted before subcutaneous administration, 0 = a ready-to-use solution formulation (sorbitol, dextrose, or mannitol vehicle).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ready-to-use solution formulations; source FORM levels 1 = sorbitol, 2 = dextrose, 3 = mannitol)",
-      notes              = "Per-regimen categorical indicator. Carries a fractional (linear) increase in subcutaneous bioavailability, `fdepot * (1 + e_form_pegcet_lyophilized_fdepot * FORM_PEGCET_LYOPHILIZED)` with coefficient 0.220 (ESM Table 1 PK control stream `F1 = THETA(4)*(1+FORM4*THETA(8))`; ESM Table 3 theta 8, labelled 'Lyophilized formulation on F1'). Applies only to the subcutaneous depot; intravenous doses enter the central compartment directly and are not scaled.",
-      source_name        = "FORM (level 4 = POWDER)"
+      notes = "Per-regimen categorical indicator. Carries a fractional (linear) increase in subcutaneous bioavailability, `fdepot * (1 + e_form_pegcet_lyophilized_fdepot * FORM_PEGCET_LYOPHILIZED)` with coefficient 0.220 (ESM Table 1 PK control stream `F1 = THETA(4)*(1+FORM4*THETA(8))`; ESM Table 3 theta 8, labelled 'Lyophilized formulation on F1'). Applies only to the subcutaneous depot; intravenous doses enter the central compartment directly and are not scaled.",
+      source_name = "FORM (level 4 = POWDER)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 284,
-    n_studies      = 11,
-    age_median     = "36 years",
-    age_range      = "19-81 years",
-    weight_median  = "70.0 kg",
-    weight_range   = "41-156 kg",
+    species = "human",
+    n_subjects = 284,
+    n_studies = 11,
+    age_median = "36 years",
+    age_range = "19-81 years",
+    weight_median = "70.0 kg",
+    weight_range = "41-156 kg",
     sex_female_pct = 44.4,
     race_ethnicity = c(White = 54.2, Black = 2.5, Asian = 29.9, Other = 7.7, Missing = 5.6),
-    disease_state  = "44% healthy adults (including one renal-impairment study); 56% adults with paroxysmal nocturnal hemoglobinuria, both complement C5-inhibitor naive and C5-inhibitor experienced",
-    dose_range     = "Subcutaneous 25-2600 mg as single doses, once daily, twice weekly, or once weekly (including the approved 1080 mg twice-weekly regimen); intravenous 200-2300 mg single doses (study 401)",
-    regions        = "Multinational; the PRINCE phase 3 cohort is predominantly Asian (32/45, 71%)",
-    notes          = "Baseline demographics from Crass 2024 ESM Table 2 (categorical and continuous covariates by study) and Table 1 (study designs and dosing regimens). Median baseline complement C3 across all participants 1.00 g/L (range 0.47-1.64 g/L). 5195 PK samples were analysed, of which 4737 (91%) were quantifiable and 458 (9%) were below the lower limit of quantification."
+    disease_state = "44% healthy adults (including one renal-impairment study); 56% adults with paroxysmal nocturnal hemoglobinuria, both complement C5-inhibitor naive and C5-inhibitor experienced",
+    dose_range = "Subcutaneous 25-2600 mg as single doses, once daily, twice weekly, or once weekly (including the approved 1080 mg twice-weekly regimen); intravenous 200-2300 mg single doses (study 401)",
+    regions = "Multinational; the PRINCE phase 3 cohort is predominantly Asian (32/45, 71%)",
+    notes = "Baseline demographics from Crass 2024 ESM Table 2 (categorical and continuous covariates by study) and Table 1 (study designs and dosing regimens). Median baseline complement C3 across all participants 1.00 g/L (range 0.47-1.64 g/L). 5195 PK samples were analysed, of which 4737 (91%) were quantifiable and 458 (9%) were below the lower limit of quantification."
   )
 
   ini({

@@ -28,17 +28,17 @@ Ueshima_2018_apixaban <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed (baseline) per subject. Ueshima 2018 Methods: 'Ccr was ",
         "calculated using the Cockcroft-Gault equation' (raw mL/min; not ",
         "BSA-normalised). Cohort range 30.6-145.5 mL/min, median 69.8 ",
@@ -49,14 +49,14 @@ Ueshima_2018_apixaban <- function() {
         "canonical CRCL description notes that BSA-normalised vs raw is ",
         "paper-dependent and recorded in per-model notes."
       ),
-      source_name        = "Ccr"
+      source_name = "Ccr"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles at rs776746)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles at rs776746)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*1/*3 heterozygote or CYP3A5*3/*3 nonexpresser; i.e., NOT CYP3A5*1/*1)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject is ",
         "CYP3A5*1/*1 homozygote; 0 = otherwise (the union of *3/*3 ",
         "nonexpressers and *1/*3 heterozygotes). Ueshima 2018 cohort: ",
@@ -73,14 +73,14 @@ Ueshima_2018_apixaban <- function() {
         "*1/*3-vs-*3/*3 effect (the cohort had only n = 4 *1/*1 subjects ",
         "and likely could not have identified a three-level effect)."
       ),
-      source_name        = "CYP3A5 *3 carrier indicator (paper Methods Eq.: CYP3A5 = 1 if *1/*3 or *3/*3, 0 if *1/*1)"
+      source_name = "CYP3A5 *3 carrier indicator (paper Methods Eq.: CYP3A5 = 1 if *1/*3 or *3/*3, 0 if *1/*1)"
     ),
     SNP_ABCG2_RS2231142_HOM = list(
-      description        = "ABCG2 rs2231142 (Q141K / c.421C>A) homozygous-variant indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCG2 rs2231142 (Q141K / c.421C>A) homozygous-variant indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type 421C/C or heterozygous 421C/A; i.e., NOT 421A/A)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = subject is ",
         "homozygous variant 421A/A; 0 = otherwise (the union of 421C/C ",
         "homozygous wild-type and 421C/A heterozygous variant carriers). ",
@@ -92,22 +92,22 @@ Ueshima_2018_apixaban <- function() {
         "(paper Methods Eq.: ABCG2 = 1 if 421A/A, 0 if 421C/C or 421C/A; ",
         "Table 4 theta6 = 0.341 multiplier on the non-renal arm)."
       ),
-      source_name        = "ABCG2 421A/A genotype indicator (paper Methods Eq.: ABCG2 = 1 if 421A/A, 0 if 421C/C or 421C/A)"
+      source_name = "ABCG2 421A/A genotype indicator (paper Methods Eq.: ABCG2 = 1 if 421A/A, 0 if 421C/C or 421C/A)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 81L,
-    n_studies        = 1L,
-    n_observations   = 276L,
-    age_range        = "40.5-84.9 years (median 68.1)",
-    age_median       = "68.1 years",
-    weight_range     = "41.0-92.2 kg (median 65.0)",
-    weight_median    = "65.0 kg",
-    sex_female_pct   = 24.7,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = paste0(
+    species = "human",
+    n_subjects = 81L,
+    n_studies = 1L,
+    n_observations = 276L,
+    age_range = "40.5-84.9 years (median 68.1)",
+    age_median = "68.1 years",
+    weight_range = "41.0-92.2 kg (median 65.0)",
+    weight_median = "65.0 kg",
+    sex_female_pct = 24.7,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste0(
       "Japanese adult inpatients and outpatients with non-valvular ",
       "atrial fibrillation receiving oral apixaban at Shiga University ",
       "of Medical Science Hospital from February 2015 to May 2016. ",
@@ -118,7 +118,7 @@ Ueshima_2018_apixaban <- function() {
       "permitted but did not survive covariate selection. Patients with ",
       "poor drug compliance were excluded."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral apixaban (Eliquis, Bristol-Myers Squibb / Pfizer) 5, 10, or ",
       "20 mg/day total, given as twice-daily 2.5, 5, or 10 mg tablets. ",
       "Inpatients sampled trough + 0.5-2 h + 9-12 h post-dose; ",
@@ -127,14 +127,14 @@ Ueshima_2018_apixaban <- function() {
       "LC/MS/MS (lower limit of quantification 2.5 ng/mL; linear range ",
       "2.5-500 ng/mL)."
     ),
-    regions          = "Japan (single-centre observational study at Shiga University of Medical Science Hospital)",
+    regions = "Japan (single-centre observational study at Shiga University of Medical Science Hospital)",
     creatinine_clearance = "30.6-145.5 mL/min, median 69.8 (Cockcroft-Gault; raw mL/min, not BSA-normalised)",
     serum_creatinine = "0.41-1.34 mg/dL, median 0.88 (Table 1)",
-    ast_range        = "13-97 IU/L, median 23",
-    alt_range        = "5-115 IU/L, median 19",
-    cyp3a5_genotype  = c(`*1/*1` = 4.9, `*1/*3` = 37.0, `*3/*3` = 58.1),
+    ast_range = "13-97 IU/L, median 23",
+    alt_range = "5-115 IU/L, median 19",
+    cyp3a5_genotype = c(`*1/*1` = 4.9, `*1/*3` = 37.0, `*3/*3` = 58.1),
     abcg2_421_genotype = c(`421C/C` = 48.2, `421C/A` = 40.7, `421A/A` = 11.1),
-    notes            = paste0(
+    notes = paste0(
       "Software: NONMEM 7.3.0 (FOCE-I); Perl-speaks-NONMEM v4.7.0 for ",
       "bootstrap. Baseline demographics in Table 1; final-model parameter ",
       "estimates in Table 4. Covariates tested and NOT retained: AST, ALT, ",

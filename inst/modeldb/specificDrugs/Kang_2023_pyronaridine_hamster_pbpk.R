@@ -38,11 +38,11 @@ Kang_2023_pyronaridine_hamster_pbpk <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "pyronaridine", units = "ug", specimen = "administration site", verified = FALSE),
-    blood   = list(analyte = "pyronaridine", units = "ug", specimen = "whole blood", verified = FALSE),
-    lung    = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "pyronaridine", units = "ug", specimen = "administration site", verified = FALSE),
+    blood = list(analyte = "pyronaridine", units = "ug", specimen = "whole blood", verified = FALSE),
+    lung = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE),
     trachea = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE),
-    other   = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE)
+    other = list(analyte = "pyronaridine", units = "ug", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()

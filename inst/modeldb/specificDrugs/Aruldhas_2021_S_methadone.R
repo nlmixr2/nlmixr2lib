@@ -39,19 +39,19 @@ Aruldhas_2021_S_methadone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "methadone", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "methadone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
     central_eddp = list(analyte = "S-EDDP", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight; allometrically scales S-methadone total clearance CL",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight; allometrically scales S-methadone total clearance CL",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Reference 70 kg with fixed allometric exponent",
         "0.75 on S-methadone CL per Aruldhas 2021 Results 'Covariate modeling on",
         "S methadone' paragraph 1 (same wording as for R-methadone): the",
@@ -60,14 +60,14 @@ Aruldhas_2021_S_methadone <- function() {
         "retained; only CL carries the WT covariate. Cohort weight median 53.60",
         "kg (IQR 47.90-60.10)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AAG = list(
-      description        = "Plasma alpha-1 acid glycoprotein (AAG) concentration; time-varying covariate on S-methadone central volume V2",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Plasma alpha-1 acid glycoprotein (AAG) concentration; time-varying covariate on S-methadone central volume V2",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: measured at every methadone-concentration time point per",
         "Aruldhas 2021 Methods 'Covariate models' paragraph 1. Centered on the",
         "cohort average 94.76 ug/mL per Aruldhas 2021 Results 'Covariate",
@@ -80,14 +80,14 @@ Aruldhas_2021_S_methadone <- function() {
         "2021 reports AAG in ug/mL and uses ug/mL as the model unit throughout",
         "(1 g/L = 1000 ug/mL)."
       ),
-      source_name        = "AAG"
+      source_name = "AAG"
     ),
     SNP_ORM1_RS17650 = list(
-      description        = "Number of active alleles of the ORM1 SNP rs17650 (0, 1, or 2); time-fixed genotype covariate on S-methadone central volume V2",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Number of active alleles of the ORM1 SNP rs17650 (0, 1, or 2); time-fixed genotype covariate on S-methadone central volume V2",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Centered on n_active = 1 (heterozygous), so the reported V2 typical",
         "value applies at a heterozygous rs17650 genotype. rs17650 distinguishes",
         "the F (fast-migrating; variant) and S (slow-migrating; reference)",
@@ -97,14 +97,14 @@ Aruldhas_2021_S_methadone <- function() {
         "distribution: 7 wild-type / 30 heterozygous / 15 homozygous per Table",
         "S3."
       ),
-      source_name        = "rs17650"
+      source_name = "rs17650"
     ),
     CYP2B6 = list(
-      description        = "CYP2B6 individual metabolic-activity score (five-level: 0, 0.5, 1, 1.5, 2 for PM / IM / NM / RM / UM); time-fixed genotype-derived phenotype covariate on the fractional S-methadone clearance to S-EDDP",
-      units              = "(activity score, 0 to 2)",
-      type               = "continuous",
+      description = "CYP2B6 individual metabolic-activity score (five-level: 0, 0.5, 1, 1.5, 2 for PM / IM / NM / RM / UM); time-fixed genotype-derived phenotype covariate on the fractional S-methadone clearance to S-EDDP",
+      units = "(activity score, 0 to 2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Derived from Aldy-imputed *-haplotype diplotypes using the CPIC",
         "efavirenz guideline mapping (poor metabolizer = 0, intermediate = 0.5,",
         "normal / extensive = 1, rapid = 1.5, ultra-rapid = 2). Per-diplotype",
@@ -116,14 +116,14 @@ Aruldhas_2021_S_methadone <- function() {
         "the activity score imputed as the cohort mode (NM = 1) per Aruldhas",
         "2021 Results 'Covariate modeling on S methadone' paragraph 4."
       ),
-      source_name        = "CYP2B6 activity score"
+      source_name = "CYP2B6 activity score"
     ),
     SNP_CYP3A4_RS2246709 = list(
-      description        = "Number of active alleles of the intronic CYP3A4 SNP rs2246709 (0, 1, or 2); time-fixed genotype covariate on the fractional S-methadone clearance to S-EDDP",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Number of active alleles of the intronic CYP3A4 SNP rs2246709 (0, 1, or 2); time-fixed genotype covariate on the fractional S-methadone clearance to S-EDDP",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Centered on n_active = 1 (heterozygous), so the reported CLF typical",
         "value applies at heterozygous rs2246709 with CYP2B6 activity score 1.",
         "Aruldhas 2021 tested both an intronic CYP2B6 rs11882424 covariate",
@@ -143,14 +143,14 @@ Aruldhas_2021_S_methadone <- function() {
         "the paper's noted limitation (documented in the vignette Assumptions",
         "and deviations)."
       ),
-      source_name        = "rs2246709"
+      source_name = "rs2246709"
     ),
     FORM_TABLET = list(
-      description        = "Oral formulation indicator (1 = tablet, 0 = oral suspension); per-dose covariate that selects the S-methadone absorption rate constant Ka",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral formulation indicator (1 = tablet, 0 = oral suspension); per-dose covariate that selects the S-methadone absorption rate constant Ka",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral suspension; the reference formulation for the canonical Ka value)",
-      notes              = paste(
+      notes = paste(
         "Per-oral-dose indicator: 1 = tablet, 0 = suspension. Selects between",
         "the two independently-estimated absorption rate constants Ka_tab and",
         "Ka_susp reported in Aruldhas 2021 Table 2 (Ka_tab = 0.257 h^-1,",
@@ -165,30 +165,30 @@ Aruldhas_2021_S_methadone <- function() {
         "were assumed equivalent). Does not affect IV doses (Ka only applies to",
         "oral doses through the depot compartment)."
       ),
-      source_name        = "formulation code (paper narrative; tablet vs suspension per-dose)"
+      source_name = "formulation code (paper narrative; tablet vs suspension per-dose)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 61L,
-    n_studies        = 1L,
-    age_range        = "11-17 years (paper Results paragraph 1 reports 11-17 years even though the eligibility range was 8-17.9 years)",
-    age_median       = "14.74 years (IQR 13.62-15.66)",
-    weight_range     = "cohort median 53.60 kg (IQR 47.90-60.10)",
-    weight_median    = "53.60 kg",
-    height_median    = "164.50 cm (IQR 158.00-171.50)",
-    bmi_median       = "19.40 (IQR 17.61-22.50)",
-    aag_baseline     = "median 84 ug/mL (IQR 62-109)",
-    sex_female_pct   = 50.8,
-    race_ethnicity   = c(White = 80.3, `African American` = 11.5, Hispanic = 4.9, `Native American` = 1.6, Unknown = 1.6),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 1L,
+    age_range = "11-17 years (paper Results paragraph 1 reports 11-17 years even though the eligibility range was 8-17.9 years)",
+    age_median = "14.74 years (IQR 13.62-15.66)",
+    weight_range = "cohort median 53.60 kg (IQR 47.90-60.10)",
+    weight_median = "53.60 kg",
+    height_median = "164.50 cm (IQR 158.00-171.50)",
+    bmi_median = "19.40 (IQR 17.61-22.50)",
+    aag_baseline = "median 84 ug/mL (IQR 62-109)",
+    sex_female_pct = 50.8,
+    race_ethnicity = c(White = 80.3, `African American` = 11.5, Hispanic = 4.9, `Native American` = 1.6, Unknown = 1.6),
+    disease_state = paste(
       "Children and adolescents undergoing pectus excavatum repair (n = 25) or",
       "posterior spinal fusion surgery for idiopathic scoliosis (n = 36).",
       "Exclusions: methadone allergy, developmental delay, neurologic disorder,",
       "liver or renal disease, pre-operative pain requiring analgesics."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "0.1 mg/kg racemic methadone IV intra-operatively (first dose), then 0.1",
       "mg/kg oral racemic methadone (either tablet or suspension per patient",
       "convenience) every 12 h post-operatively for four to six additional",
@@ -197,8 +197,8 @@ Aruldhas_2021_S_methadone <- function() {
       "interdose intervals) inform the individual S-methadone and S-EDDP",
       "profiles."
     ),
-    regions          = "United States (Indiana University School of Medicine, IRB #1707525204, ClinicalTrials.gov NCT03495388)",
-    notes            = paste(
+    regions = "United States (Indiana University School of Medicine, IRB #1707525204, ClinicalTrials.gov NCT03495388)",
+    notes = paste(
       "Racemic methadone dose is split 50/50 between the R and S enantiomers.",
       "This model file describes only the S-methadone enantiomer + its S-EDDP",
       "metabolite; the R-methadone + R-EDDP is in the sibling file",

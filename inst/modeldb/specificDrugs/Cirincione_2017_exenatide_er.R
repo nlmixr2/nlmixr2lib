@@ -23,54 +23,54 @@ Cirincione_2017_exenatide_er <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "exenatide er", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "exenatide er", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "exenatide er", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "exenatide er", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "exenatide er", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume; reference weight 84.8 kg inherited from the IR Cirincione 2017 BJCP model. Table I baseline-only.",
-      source_name        = "WT"
+      notes = "Power effect on central volume; reference weight 84.8 kg inherited from the IR Cirincione 2017 BJCP model. Table I baseline-only.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate (creatinine-based, BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Modification of Diet in Renal Disease (MDRD) estimated glomerular filtration rate (creatinine-based, BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on linear clearance; reference 80 mL/min/1.73 m^2 inherited from the IR Cirincione 2017 BJCP model. Source column 'eGFR' (MDRD eGFR) maps to the canonical general-scope CRCL covariate.",
-      source_name        = "eGFR"
+      notes = "Power effect on linear clearance; reference 80 mL/min/1.73 m^2 inherited from the IR Cirincione 2017 BJCP model. Source column 'eGFR' (MDRD eGFR) maps to the canonical general-scope CRCL covariate.",
+      source_name = "eGFR"
     ),
     STUDY_MD = list(
-      description        = "Multi-dose study cohort indicator (1 = phase II multi-dose study with weekly ER exenatide, 0 = phase II single-dose study)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Multi-dose study cohort indicator (1 = phase II multi-dose study with weekly ER exenatide, 0 = phase II single-dose study)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (single-dose phase II study)",
-      notes              = "Switches between study-specific relative bioavailability (f_rel(SD) vs f_rel(MD)) and between study-specific log-scale residual SDs (RV SD vs RV MD); see Table II. For the phase III external validation cohort (weekly 2 mg ER for 24 weeks), use STUDY_MD = 1.",
-      source_name        = "derived"
+      notes = "Switches between study-specific relative bioavailability (f_rel(SD) vs f_rel(MD)) and between study-specific log-scale residual SDs (RV SD vs RV MD); see Table II. For the phase III external validation cohort (weekly 2 mg ER for 24 weeks), use STUDY_MD = 1.",
+      source_name = "derived"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 2L,
-    age_range      = "30-72 years",
-    age_mean       = "53.5 years (SD 9.78)",
-    weight_range   = "59-155 kg",
-    weight_mean    = "95.7 kg (SD 21)",
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 2L,
+    age_range = "30-72 years",
+    age_mean = "53.5 years (SD 9.78)",
+    weight_range = "59-155 kg",
+    weight_mean = "95.7 kg (SD 21)",
     sex_female_pct = 42,
     race_ethnicity = c(White = 37.5, Hispanic = 37.5, Black = 10.9, Asian = 7.8, Other = 6.3),
     renal_function = c(normal = 23, mild = 38, moderate = 3),
-    disease_state  = "Type 2 diabetes mellitus.",
-    dose_range     = "Single 2.5, 5, 7, or 10 mg SC (single-dose phase II study, n=41) or 0.8 mg or 2 mg SC once weekly for 15 weeks (multi-dose phase II study, n=23).",
+    disease_state = "Type 2 diabetes mellitus.",
+    dose_range = "Single 2.5, 5, 7, or 10 mg SC (single-dose phase II study, n=41) or 0.8 mg or 2 mg SC once weekly for 15 weeks (multi-dose phase II study, n=23).",
     administration = "Subcutaneous, ER (PLGA microsphere) formulation",
-    regions        = "Not reported in detail",
-    notes          = "Demographics from Table I (combined single-dose + multi-dose cohorts). Mean eGFR 89.6 mL/min/1.73 m^2 (SD 23.2; range 56-169). External validation in a phase III multi-dose cohort (n=119, 2 mg weekly x 24 weeks) is described in the paper Results."
+    regions = "Not reported in detail",
+    notes = "Demographics from Table I (combined single-dose + multi-dose cohorts). Mean eGFR 89.6 mL/min/1.73 m^2 (SD 23.2; range 56-169). External validation in a phase III multi-dose cohort (n=119, 2 mg weekly x 24 weeks) is described in the paper Results."
   )
 
   ini({

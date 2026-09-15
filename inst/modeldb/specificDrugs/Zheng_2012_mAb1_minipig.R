@@ -19,23 +19,23 @@ Zheng_2012_mAb1_minipig <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mAb1", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mAb1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mAb1", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mAb1", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mAb1", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "Gottingen minipig",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    weight_range   = "IV: 9.4 kg mean; SC: 9.9 kg mean (Table 5)",
+    species = "Gottingen minipig",
+    n_subjects = 9L,
+    n_studies = 1L,
+    weight_range = "IV: 9.4 kg mean; SC: 9.9 kg mean (Table 5)",
     sex_female_pct = 100,
-    disease_state  = "Healthy Gottingen minipig; non-disclosed humanized IgG1 or stabilized IgG4 (approx 150 kDa) mAb preclinical PK.",
-    dose_range     = "5 mg/kg IV bolus (n = 4); 5 mg/kg SC scapular (n = 5) (Table 5)",
-    regions        = "Contract research organizations (Denmark, UK, USA)",
-    notes          = paste(
+    disease_state = "Healthy Gottingen minipig; non-disclosed humanized IgG1 or stabilized IgG4 (approx 150 kDa) mAb preclinical PK.",
+    dose_range = "5 mg/kg IV bolus (n = 4); 5 mg/kg SC scapular (n = 5) (Table 5)",
+    regions = "Contract research organizations (Denmark, UK, USA)",
+    notes = paste(
       "Zheng 2012 Tables 1 and 5; pI = 6.1 (Table 4). Non-disclosed",
       "humanized IgG (IgG1 or stabilized IgG4) around 150 kDa. IIV and",
       "residual error were reported in prose (log-normal IIV; proportional",

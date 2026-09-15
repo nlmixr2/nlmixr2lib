@@ -24,15 +24,25 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
   # which has no entry in the biological-specimen vocabulary. The matrix is
   # recorded in the analyte strings and in population$system.
   compartmentData <- list(
-    central = list(analyte = "liposomal amphotericin B in the internal compartment (RPMI-1640 growth medium)", units = "mg", specimen = "not applicable", verified = TRUE),
-    bact    = list(analyte = "Candida albicans viable count in the internal compartment (RPMI-1640 growth medium)", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    central = list(
+      analyte = "liposomal amphotericin B in the internal compartment (RPMI-1640 growth medium)",
+      units = "mg",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact = list(
+      analyte = "Candida albicans viable count in the internal compartment (RPMI-1640 growth medium)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "in vitro (two Candida albicans isolates; one-compartment dilution PK/PD model)",
-    n_subjects     = 2L,
-    n_studies      = 1L,
-    organism       = paste(
+    species = "in vitro (two Candida albicans isolates; one-compartment dilution PK/PD model)",
+    n_subjects = 2L,
+    n_studies = 1L,
+    organism = paste(
       "Two Candida albicans isolates (Beredaki 2024 Table 1, median MIC in",
       "mg/L, CLSI M27-A3, amphotericin B deoxycholate / liposomal",
       "amphotericin B): C. albicans K1, wild type, 0.25 / 0.25, kindly",
@@ -46,7 +56,7 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
       "K1 and >16 mg/L for SSI-2699, i.e. the deoxycholate values of",
       "Table 1)."
     ),
-    system         = paste(
+    system = paste(
       "Previously validated one-compartment in vitro PK/PD dilution model:",
       "a 250 mL conical glass culture vessel (internal compartment) holding an",
       "initial 5 mL of fresh RPMI-1640, connected to a peristaltic pump",
@@ -59,8 +69,8 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
       "chloramphenicol. L-AMB was AmBisome (Gilead Sciences) reconstituted to",
       "4 mg/mL."
     ),
-    disease_state  = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
-    dose_range     = paste(
+    disease_state = "In vitro infection of the internal compartment at a starting inoculum of 10^4 CFU/mL",
+    dose_range = paste(
       "L-AMB target peak concentrations Cmax 0.125-128 mg/L, added once",
       "daily. Target average half-life 11 h, chosen to reproduce the L-AMB",
       "exposures of the neutropenic mouse model of disseminated candidiasis",
@@ -68,7 +78,7 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
       "arm validates against; achieved in vitro half-life 8 h (range 7-11 h)",
       "with peak concentrations within 20% of target."
     ),
-    sampling       = paste(
+    sampling = paste(
       "PK: samples from the internal compartment assayed by microbiological",
       "diffusion against a Paecilomyces variotii strain; lowest limit of",
       "detection 0.03 mg/L for the 80% partial growth inhibition zone, linear",
@@ -79,8 +89,8 @@ Beredaki_2024_amphotericinB_liposomal_calbicans <- function() {
       "incubated at 30 degrees C for 24 h; dilutions yielding 10-50 colonies",
       "were counted (Figure 1 shows 0, 3, 6, 24, 27 and 48 h)."
     ),
-    regions        = "Greece (Clinical Microbiology Laboratory, Attikon University Hospital, Athens)",
-    notes          = paste(
+    regions = "Greece (Clinical Microbiology Laboratory, Attikon University Hospital, Athens)",
+    notes = paste(
       "Two independent experiments were conducted. This arm exists to",
       "validate the in vitro dilution model: the C. albicans K1 isolate had",
       "previously been used in a published neutropenic mouse model of",

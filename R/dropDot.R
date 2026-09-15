@@ -17,10 +17,9 @@
 #' .dropDotAddExpr(list(str2lang("d/dt(central) <- . - kel * central")))
 .dropDotAddExpr <- function(x) {
   if (is.list(x)) {
-    return(lapply(seq_along(x),
-      function(i) {
-        .dropDotAddExpr(x[[i]])
-      }))
+    return(lapply(seq_along(x), function(i) {
+      .dropDotAddExpr(x[[i]])
+    }))
   }
   if (is.call(x)) {
     if (length(x) == 2) {
@@ -34,8 +33,10 @@
       } else {
         .x2 <- x[[2]]
       }
-      if (identical(.x1, quote(`+`)) ||
-        identical(.x1, quote(`-`))) {
+      if (
+        identical(.x1, quote(`+`)) ||
+          identical(.x1, quote(`-`))
+      ) {
         return(.x2)
       }
     }
@@ -55,8 +56,10 @@
       } else {
         .x3 <- x[[3]]
       }
-      if (identical(.x1, quote(`=`)) ||
-        identical(.x1, quote(`<-`))) {
+      if (
+        identical(.x1, quote(`=`)) ||
+          identical(.x1, quote(`<-`))
+      ) {
         return(as.call(list(.x1, .x2, .x3)))
       }
       if (identical(.x1, quote(`-`))) {

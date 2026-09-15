@@ -9,108 +9,108 @@ Naik_2013_peginesatide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "peginesatide", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "peginesatide", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor5  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor6  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor7  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor8  = list(analyte = "hemoglobin", units = "ug", specimen = "blood cell", verified = FALSE)
+    precursor1 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor5 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor6 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor7 = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor8 = list(analyte = "hemoglobin", units = "ug", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to convert the paper-reported per-kg volumes (V2 in mL/kg, V3 in mL/kg) and per-kg inter-compartmental clearance (Q in mL/kg/h) to absolute volumes (L) and flow (L/h) inside model(). Naik 2013 PK-population mean 79.4 kg (Table 3).",
-      source_name        = "WT"
+      notes = "Used to convert the paper-reported per-kg volumes (V2 in mL/kg, V3 in mL/kg) and per-kg inter-compartmental clearance (Q in mL/kg/h) to absolute volumes (L) and flow (L/h) inside model(). Naik 2013 PK-population mean 79.4 kg (Table 3).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation covariate on Vc (mL/kg per year, reference 59 yr; Naik 2013 eq 14) and exponential-log covariate on the empirical Hgb drift factor CF (per year, reference 58 yr; Naik 2013 eq 17). Paper-reported median 58.4 yr (PK population) / 57.9 yr (PK-PD population) (Table 3).",
-      source_name        = "AGE"
+      notes = "Linear-deviation covariate on Vc (mL/kg per year, reference 59 yr; Naik 2013 eq 14) and exponential-log covariate on the empirical Hgb drift factor CF (per year, reference 58 yr; Naik 2013 eq 17). Paper-reported median 58.4 yr (PK population) / 57.9 yr (PK-PD population) (Table 3).",
+      source_name = "AGE"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on Vc (reference 26 kg/m^2; Naik 2013 eq 14). Paper-reported median BMI 26 kg/m^2 used as the centering value in the discussion.",
-      source_name        = "BMI"
+      notes = "Power covariate on Vc (reference 26 kg/m^2; Naik 2013 eq 14). Paper-reported median BMI 26 kg/m^2 used as the centering value in the discussion.",
+      source_name = "BMI"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin at baseline",
-      units              = "umol/L (paper-reported as 'g/L', interpreted here as umol/L since the values mean 9.1, range 2-38 are inconsistent with g/L but match clinical-PK total-bilirubin ranges in umol/L)",
-      type               = "continuous",
+      description = "Total serum bilirubin at baseline",
+      units = "umol/L (paper-reported as 'g/L', interpreted here as umol/L since the values mean 9.1, range 2-38 are inconsistent with g/L but match clinical-PK total-bilirubin ranges in umol/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation covariate on Vc (mL/kg per umol/L, reference 9; Naik 2013 eq 14). See vignette Errata for the units interpretation. Source column TBIL renamed to canonical TBILI.",
-      source_name        = "TBIL"
+      notes = "Linear-deviation covariate on Vc (mL/kg per umol/L, reference 9; Naik 2013 eq 14). See vignette Errata for the units interpretation. Source column TBIL renamed to canonical TBILI.",
+      source_name = "TBIL"
     ),
     ALP = list(
-      description        = "Alkaline phosphatase at baseline",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alkaline phosphatase at baseline",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on the Michaelis-Menten Km (reference 87 U/L; Naik 2013 eq 15).",
-      source_name        = "ALP"
+      notes = "Power covariate on the Michaelis-Menten Km (reference 87 U/L; Naik 2013 eq 15).",
+      source_name = "ALP"
     ),
     CREAT = list(
-      description        = "Serum creatinine at baseline",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine at baseline",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation covariate on Ka, applied only in non-dialysis subjects via the (1 - RRT_HEMODIAL_STATUS) gate (reference 3.3 mg/dL; Naik 2013 eq 13). Source column CR renamed to canonical CREAT.",
-      source_name        = "CR"
+      notes = "Linear-deviation covariate on Ka, applied only in non-dialysis subjects via the (1 - RRT_HEMODIAL_STATUS) gate (reference 3.3 mg/dL; Naik 2013 eq 13). Source column CR renamed to canonical CREAT.",
+      source_name = "CR"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Hemodialysis-treatment-status indicator at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-treatment-status indicator at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on hemodialysis)",
-      notes              = "1 = subject on hemodialysis (89.6% of PK population per Table 2). Used to gate the CREAT effect on Ka: the CREAT slope applies only when RRT_HEMODIAL_STATUS = 0, matching the paper PDIA indicator (PDIA = 1 - RRT_HEMODIAL_STATUS). Source column PDIA renamed to canonical RRT_HEMODIAL_STATUS with value inversion (RRT_HEMODIAL_STATUS = 1 - PDIA).",
-      source_name        = "PDIA"
+      notes = "1 = subject on hemodialysis (89.6% of PK population per Table 2). Used to gate the CREAT effect on Ka: the CREAT slope applies only when RRT_HEMODIAL_STATUS = 0, matching the paper PDIA indicator (PDIA = 1 - RRT_HEMODIAL_STATUS). Source column PDIA renamed to canonical RRT_HEMODIAL_STATUS with value inversion (RRT_HEMODIAL_STATUS = 1 - PDIA).",
+      source_name = "PDIA"
     ),
     RACE_HISPANIC = list(
-      description        = "Hispanic / Latino ethnicity indicator at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hispanic / Latino ethnicity indicator at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Hispanic)",
-      notes              = "1 = Hispanic (14.7% of PK population per Table 2). Used as an additive shift on Ka (Naik 2013 eq 13): the paper-reported ETHN column codes 1 = non-Hispanic, so RACE_HISPANIC = 1 - ETHN and the paper term 0.00811 * (1 - ETHN) maps to 0.00811 * RACE_HISPANIC.",
-      source_name        = "ETHN"
+      notes = "1 = Hispanic (14.7% of PK population per Table 2). Used as an additive shift on Ka (Naik 2013 eq 13): the paper-reported ETHN column codes 1 = non-Hispanic, so RACE_HISPANIC = 1 - ETHN and the paper term 0.00811 * (1 - ETHN) maps to 0.00811 * RACE_HISPANIC.",
+      source_name = "ETHN"
     ),
     ESAD = list(
-      description        = "Previous erythropoiesis-stimulating-agent (ESA) dose at baseline",
-      units              = "units/week (epoetin-equivalent activity per week)",
-      type               = "continuous",
+      description = "Previous erythropoiesis-stimulating-agent (ESA) dose at baseline",
+      units = "units/week (epoetin-equivalent activity per week)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Recorded prior ESA dose for hemodialysis subjects switching to peginesatide. Reference 7996 units/week (paper-reported median; Naik 2013 eq 16). When ESAD = 0 the ESADF indicator gate disables the covariate effect on HgbBL (matching paper text 'no effect of ESAD was incorporated for subjects whose ESAD dose information was not available'). Paper-reported PK-PD population mean 11030 units/week (SD 11866, range 954-105910). New entry proposed alongside the Naik 2013 peginesatide extraction; first-of-class covariate for ESA-switch popPK/PD models.",
-      source_name        = "ESAD"
+      notes = "Recorded prior ESA dose for hemodialysis subjects switching to peginesatide. Reference 7996 units/week (paper-reported median; Naik 2013 eq 16). When ESAD = 0 the ESADF indicator gate disables the covariate effect on HgbBL (matching paper text 'no effect of ESAD was incorporated for subjects whose ESAD dose information was not available'). Paper-reported PK-PD population mean 11030 units/week (SD 11866, range 954-105910). New entry proposed alongside the Naik 2013 peginesatide extraction; first-of-class covariate for ESA-switch popPK/PD models.",
+      source_name = "ESAD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 672L,
-    n_studies      = 5L,
-    age_range      = "21.0-93.0 years (PK population, Table 3)",
-    age_median     = "58.4 years (PK population mean, SD 14.6)",
-    weight_range   = "38.0-187.5 kg (PK population, Table 3)",
-    weight_median  = "79.4 kg (PK population mean, SD 21.6)",
+    species = "human",
+    n_subjects = 672L,
+    n_studies = 5L,
+    age_range = "21.0-93.0 years (PK population, Table 3)",
+    age_median = "58.4 years (PK population mean, SD 14.6)",
+    weight_range = "38.0-187.5 kg (PK population, Table 3)",
+    weight_median = "79.4 kg (PK population mean, SD 21.6)",
     sex_female_pct = 39.3,
     race_ethnicity = c(White = 57.1, Black = 37.2, Asian = 3.6, Other = 2.1, Hispanic = 14.7),
-    disease_state  = "Chronic kidney disease (CKD) on or not on hemodialysis. PK cohort N = 672 (89.6% on dialysis, 10.4% non-dialysis); PK-PD cohort N = 517 hemodialysis subjects only. 2,665 plasma peginesatide concentrations and 18,857 hemoglobin observations.",
-    dose_range     = "Peginesatide 0.025-0.16 mg/kg or fixed doses 3-16 mg, IV or subcutaneous, every 4 weeks (some cohorts every 2 weeks)",
-    regions        = "Not stated explicitly; Takeda-sponsored phase 2 and phase 3 trials",
-    notes          = "Trials AFX01-02, AFX01-03 (NCT00228449), AFX01-04 (NCT00228436), AFX01-07, and AFX01-14 (NCT00597584 EMERALD 1). 63 subjects had hemoglobin samples excluded around transfusions, phlebotomy, GI bleeding, or trauma. Peginesatide was approved as OMONTYS for treatment of CKD-associated anemia in adults on dialysis but was withdrawn from the market by the manufacturer prior to publication of this analysis."
+    disease_state = "Chronic kidney disease (CKD) on or not on hemodialysis. PK cohort N = 672 (89.6% on dialysis, 10.4% non-dialysis); PK-PD cohort N = 517 hemodialysis subjects only. 2,665 plasma peginesatide concentrations and 18,857 hemoglobin observations.",
+    dose_range = "Peginesatide 0.025-0.16 mg/kg or fixed doses 3-16 mg, IV or subcutaneous, every 4 weeks (some cohorts every 2 weeks)",
+    regions = "Not stated explicitly; Takeda-sponsored phase 2 and phase 3 trials",
+    notes = "Trials AFX01-02, AFX01-03 (NCT00228449), AFX01-04 (NCT00228436), AFX01-07, and AFX01-14 (NCT00597584 EMERALD 1). 63 subjects had hemoglobin samples excluded around transfusions, phlebotomy, GI bleeding, or trauma. Peginesatide was approved as OMONTYS for treatment of CKD-associated anemia in adults on dialysis but was withdrawn from the market by the manufacturer prior to publication of this analysis."
   )
 
   ini({

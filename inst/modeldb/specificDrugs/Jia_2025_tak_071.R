@@ -16,74 +16,78 @@ Jia_2025_tak_071 <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on clearance, normalized to 70 years (Methods, Population PK Model Development: 'age to 70 years'; Table 1 footnote c). Control-stream line TVCL = TVCL * (AGE/70)**THETA(17). Observed range 18-83 years (Table S1).",
-      source_name        = "AGE"
+      notes = "Power covariate on clearance, normalized to 70 years (Methods, Population PK Model Development: 'age to 70 years'; Table 1 footnote c). Control-stream line TVCL = TVCL * (AGE/70)**THETA(17). Observed range 18-83 years (Table S1).",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power covariate on central volume, normalized to 80 kg (Methods, Population PK Model Development: 'body weight was normalized to 80 kg'; Table 1 footnote d). Control-stream line TVVC = TVVC * (WEIGHT/80)**THETA(16). Observed range 47.3-122 kg (Table S1).",
-      source_name        = "WEIGHT"
+      notes = "Power covariate on central volume, normalized to 80 kg (Methods, Population PK Model Development: 'body weight was normalized to 80 kg'; Table 1 footnote d). Control-stream line TVVC = TVVC * (WEIGHT/80)**THETA(16). Observed range 47.3-122 kg (Table S1).",
+      source_name = "WEIGHT"
     ),
     DOSE_TAK071_MG = list(
-      description        = "Administered TAK-071 dose level for the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered TAK-071 dose level for the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-dose-record dose level in mg, normalized to 5 mg (Methods: 'dose to 5 mg'; Table 1 footnote b). Enters twice in the control stream: a power effect on relative bioavailability (TVFREL = THETA(1) * (DOSE/5)**THETA(14)) and a power effect on the slow absorption rate (TVKA = TVKA * (DOSE/5)**THETA(12)). Relative bioavailability and absorption rate both decrease as dose increases. Studied dose levels: 1, 3, 9, 20, 40, 80, 120, 160 mg single dose and 3, 5, 7.5, 9, 15 mg once daily.",
-      source_name        = "DOSE"
+      notes = "Per-dose-record dose level in mg, normalized to 5 mg (Methods: 'dose to 5 mg'; Table 1 footnote b). Enters twice in the control stream: a power effect on relative bioavailability (TVFREL = THETA(1) * (DOSE/5)**THETA(14)) and a power effect on the slow absorption rate (TVKA = TVKA * (DOSE/5)**THETA(12)). Relative bioavailability and absorption rate both decrease as dose increases. Studied dose levels: 1, 3, 9, 20, 40, 80, 120, 160 mg single dose and 3, 5, 7.5, 9, 15 mg once daily.",
+      source_name = "DOSE"
     ),
     FORM_TABLET = list(
-      description        = "Oral formulation indicator: 1 = tablet, 0 = drug-in-capsule (DIC)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral formulation indicator: 1 = tablet, 0 = drug-in-capsule (DIC)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (drug-in-capsule, DIC)",
-      notes              = "Per-dose-record formulation flag. NOTE: the comparator here is a CAPSULE (drug-in-capsule), not the non-tablet oral liquid named as this canonical's default reference category -- same orientation as Wada_2023_sparsentan.R. Source column FORM, where FORM == 2 is the tablet; the control stream applies both tablet effects under IF(FORM == 2). The tablet carries (a) a multiplicative factor on the LOGIT of the slow-absorption fraction (IF(FORM == 2) TVFRAC_ = TVFRAC_ * THETA(15)) and (b) a multiplicative factor on the slow absorption rate (IF(FORM == 2) TVKA = TVKA * THETA(13)). Consistent with the observed median tmax of 2.00 h for the tablet vs 4.98 h for the capsule after a single 10 mg dose (Discussion).",
-      source_name        = "FORM"
+      notes = "Per-dose-record formulation flag. NOTE: the comparator here is a CAPSULE (drug-in-capsule), not the non-tablet oral liquid named as this canonical's default reference category -- same orientation as Wada_2023_sparsentan.R. Source column FORM, where FORM == 2 is the tablet; the control stream applies both tablet effects under IF(FORM == 2). The tablet carries (a) a multiplicative factor on the LOGIT of the slow-absorption fraction (IF(FORM == 2) TVFRAC_ = TVFRAC_ * THETA(15)) and (b) a multiplicative factor on the slow absorption rate (IF(FORM == 2) TVKA = TVKA * THETA(13)). Consistent with the observed median tmax of 2.00 h for the tablet vs 4.98 h for the capsule after a single 10 mg dose (Discussion).",
+      source_name = "FORM"
     ),
     SAMPLE_INTENSIVE = list(
-      description        = "Sampling-design indicator: 1 = dense (intensive) PK sampling, 0 = sparse PK sampling",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sampling-design indicator: 1 = dense (intensive) PK sampling, 0 = sparse PK sampling",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse sampling)",
-      notes              = "Source column SAMPLING, where SAMPLING == 2 is the sparse subset (participants with Parkinson disease in the Phase 2 main cohort, TAK-071-2002). Unlike the Macpherson 2015 founding example this flag does NOT vary within a subject in this analysis -- it is a per-subject design attribute, so set it once per participant. It switches three things in the control stream: the between-subject random effect on the logit slow-absorption fraction is suppressed (IF(SAMPLING == 2) FRAC_ = TVFRAC_), the between-subject random effect on the slow absorption rate is suppressed (IF(SAMPLING == 2) KA = TVKA), and the residual error is inflated (IF(SAMPLING == 2) W = W * THETA(11), ratio 1.21). Rationale (Results): 'The sparse PK data collected in patients with PD did not allow for reliable estimation of individual absorption rates and fraction parameters, which is why no random effects for ka and frac were estimated for this subset. In addition, the model could quantify an inflated residual variability in this subset of approximately 21%.'",
-      source_name        = "SAMPLING"
+      notes = "Source column SAMPLING, where SAMPLING == 2 is the sparse subset (participants with Parkinson disease in the Phase 2 main cohort, TAK-071-2002). Unlike the Macpherson 2015 founding example this flag does NOT vary within a subject in this analysis -- it is a per-subject design attribute, so set it once per participant. It switches three things in the control stream: the between-subject random effect on the logit slow-absorption fraction is suppressed (IF(SAMPLING == 2) FRAC_ = TVFRAC_), the between-subject random effect on the slow absorption rate is suppressed (IF(SAMPLING == 2) KA = TVKA), and the residual error is inflated (IF(SAMPLING == 2) W = W * THETA(11), ratio 1.21). Rationale (Results): 'The sparse PK data collected in patients with PD did not allow for reliable estimation of individual absorption rates and fraction parameters, which is why no random effects for ka and frac were estimated for this subset. In addition, the model could quantify an inflated residual variability in this subset of approximately 21%.'",
+      source_name = "SAMPLING"
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2   = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
-    depot3   = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "TAK-071", units = "mg", specimen = "plasma", verified = TRUE)
+    depot2 = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
+    depot3 = list(analyte = "TAK-071", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "TAK-071", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 165L,
-    n_studies      = 2L,
-    age_range      = "18-83 years",
-    age_median     = "44 years",
-    weight_range   = "47.3-122 kg",
-    weight_median  = "78.7 kg",
+    species = "human",
+    n_subjects = 165L,
+    n_studies = 2L,
+    age_range = "18-83 years",
+    age_median = "44 years",
+    weight_range = "47.3-122 kg",
+    weight_median = "78.7 kg",
     sex_female_pct = 11.8,
     race_ethnicity = c(
-      White = 65.4, `Black or African American` = 15.0, Asian = 12.4,
-      Multiple = 3.3, `Native Hawaiian or other Pacific Islander` = 2.0,
-      `American Indian or Alaska Native` = 0.7, `Not reported` = 1.3
+      White = 65.4,
+      `Black or African American` = 15.0,
+      Asian = 12.4,
+      Multiple = 3.3,
+      `Native Hawaiian or other Pacific Islander` = 2.0,
+      `American Indian or Alaska Native` = 0.7,
+      `Not reported` = 1.3
     ),
-    disease_state  = "healthy adults, and participants with Parkinson disease with cognitive impairment and an elevated risk of falls",
-    dose_range     = "1-160 mg single oral dose and 3-15 mg once daily (Phase 1, TAK-071-1001); 7.5 mg single dose and 5 or 7.5 mg once daily (Phase 2, TAK-071-2002)",
+    disease_state = "healthy adults, and participants with Parkinson disease with cognitive impairment and an elevated risk of falls",
+    dose_range = "1-160 mg single oral dose and 3-15 mg once daily (Phase 1, TAK-071-1001); 7.5 mg single dose and 5 or 7.5 mg once daily (Phase 2, TAK-071-2002)",
     renal_function = "creatinine clearance 56.9-180 mL/min/1.73m2; eGFR 57.1-143 mL/min (Table S1); neither was a significant covariate on clearance",
-    notes          = "Two studies: TAK-071-1001 (Phase 1 single- and multiple-ascending-dose with a 3-way crossover food-effect and relative-bioavailability arm, healthy adults 18-55 years, 96% men, 16% Japanese, NCT02769065) and TAK-071-2002 (Phase 2 randomized double-blind placebo-controlled 2-period crossover, sentinel cohort of healthy participants older than 55 years plus a main cohort of participants with Parkinson disease aged 40-85 years, no Japanese participants, NCT04334317). Counts differ between the paper's own sources: the Abstract and the Results Data Set section give 165 participants (112 healthy = 104 from TAK-071-1001 plus 8 sentinel, and 53 with Parkinson disease = 37 at 5 mg plus 16 at 7.5 mg), whereas Table S1 reports 153 individuals (92 healthy, 61 with Parkinson disease). The demographic summaries recorded here (median/range, sex, race) are Table S1 values and are therefore computed on the n = 153 denominator."
+    notes = "Two studies: TAK-071-1001 (Phase 1 single- and multiple-ascending-dose with a 3-way crossover food-effect and relative-bioavailability arm, healthy adults 18-55 years, 96% men, 16% Japanese, NCT02769065) and TAK-071-2002 (Phase 2 randomized double-blind placebo-controlled 2-period crossover, sentinel cohort of healthy participants older than 55 years plus a main cohort of participants with Parkinson disease aged 40-85 years, no Japanese participants, NCT04334317). Counts differ between the paper's own sources: the Abstract and the Results Data Set section give 165 participants (112 healthy = 104 from TAK-071-1001 plus 8 sentinel, and 53 with Parkinson disease = 37 at 5 mg plus 16 at 7.5 mg), whereas Table S1 reports 153 individuals (92 healthy, 61 with Parkinson disease). The demographic summaries recorded here (median/range, sex, race) are Table S1 values and are therefore computed on the n = 153 denominator."
   )
 
   ini({

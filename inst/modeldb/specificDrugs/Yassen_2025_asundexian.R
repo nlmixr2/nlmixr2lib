@@ -15,69 +15,69 @@ Yassen_2025_asundexian <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "asundexian", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "asundexian", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "asundexian", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "asundexian", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F and Vc/F with reference 79 kg (typical participant in PACIFIC-STROKE).",
-      source_name        = "BW"
+      notes = "Power scaling on CL/F and Vc/F with reference 79 kg (typical participant in PACIFIC-STROKE).",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F and Vc/F with reference 68 years (population median).",
-      source_name        = "AGE"
+      notes = "Power scaling on CL/F and Vc/F with reference 68 years (population median).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Proportional-shift effect on CL/F (-12.1%) and Vc/F (-14.0%) for females vs the male reference.",
-      source_name        = "SEX"
+      notes = "Proportional-shift effect on CL/F (-12.1%) and Vc/F (-14.0%) for females vs the male reference.",
+      source_name = "SEX"
     ),
     CRCL = list(
-      description        = "CKD-EPI estimated glomerular filtration rate (eGFR)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI estimated glomerular filtration rate (eGFR)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F with reference 77 mL/min/1.73 m^2 (typical participant in PACIFIC-STROKE). Computed from serum creatinine via the CKD-EPI formula per the source paper.",
-      source_name        = "EGFR"
+      notes = "Power scaling on CL/F with reference 77 mL/min/1.73 m^2 (typical participant in PACIFIC-STROKE). Computed from serum creatinine via the CKD-EPI formula per the source paper.",
+      source_name = "EGFR"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = on inhibitor, 0 = none)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = on inhibitor, 0 = none)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor coadministration)",
-      notes              = "Pools weak and moderate CYP3A4 inhibitors into the CONMED_CYP3A4_INH = 1 category. Strong CYP3A4 inhibitors were a Phase II exclusion criterion; only 0.6% of participants received a strong inhibitor in Phase I, and the source paper combined all three strength tiers into a single covariate after testing weak / moderate alone showed no separable signal. Proportional-shift effect on CL/F (-5.3%) when CONMED_CYP3A4_INH = 1. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "CYP3AI"
+      notes = "Pools weak and moderate CYP3A4 inhibitors into the CONMED_CYP3A4_INH = 1 category. Strong CYP3A4 inhibitors were a Phase II exclusion criterion; only 0.6% of participants received a strong inhibitor in Phase I, and the source paper combined all three strength tiers into a single covariate after testing weak / moderate alone showed no separable signal. Proportional-shift effect on CL/F (-5.3%) when CONMED_CYP3A4_INH = 1. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "CYP3AI"
     )
   )
 
   population <- list(
-    n_subjects     = 2914,
-    n_studies      = 9,
-    age_range      = "21-92 years",
-    age_median     = "68 years",
-    weight_range   = "34.6-178 kg",
-    weight_median  = "80 kg",
+    n_subjects = 2914,
+    n_studies = 9,
+    age_range = "21-92 years",
+    age_median = "68 years",
+    weight_range = "34.6-178 kg",
+    weight_median = "80 kg",
     sex_female_pct = 30.8,
     race_ethnicity = c(White = 83.3, Asian = 15.0, Black = 0.769, Other = 0.879),
-    disease_state  = "Pooled cohort: healthy volunteers (six Phase I studies including age/sex, multiple-dose, renal-impairment, hepatic-impairment, Japanese, and Chinese sub-studies) and adult participants at risk for thromboembolic / cardiovascular events from three Phase II studies (PACIFIC-STROKE, acute non-cardioembolic ischaemic stroke; PACIFIC-AMI, recent acute myocardial infarction; PACIFIC-AF, atrial fibrillation).",
-    dose_range     = "10, 20, 25, 50, and 100 mg oral once daily across studies (Phase I 25/50/100 mg OD or BID; Phase II 10/20/50 mg OD).",
-    regions        = "Multinational; Phase I included Japanese and Chinese sub-studies",
-    notes          = "Baseline demographics from Tables 2 and 3 (n = 2914 across all nine pooled studies; 16,599 PK observations). eGFR is computed by CKD-EPI; CYP3A4 inhibitor coadministration pools weak + moderate strengths."
+    disease_state = "Pooled cohort: healthy volunteers (six Phase I studies including age/sex, multiple-dose, renal-impairment, hepatic-impairment, Japanese, and Chinese sub-studies) and adult participants at risk for thromboembolic / cardiovascular events from three Phase II studies (PACIFIC-STROKE, acute non-cardioembolic ischaemic stroke; PACIFIC-AMI, recent acute myocardial infarction; PACIFIC-AF, atrial fibrillation).",
+    dose_range = "10, 20, 25, 50, and 100 mg oral once daily across studies (Phase I 25/50/100 mg OD or BID; Phase II 10/20/50 mg OD).",
+    regions = "Multinational; Phase I included Japanese and Chinese sub-studies",
+    notes = "Baseline demographics from Tables 2 and 3 (n = 2914 across all nine pooled studies; 16,599 PK observations). eGFR is computed by CKD-EPI; CYP3A4 inhibitor coadministration pools weak + moderate strengths."
   )
 
   ini({

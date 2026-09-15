@@ -34,11 +34,11 @@ Yin_2023_soticlestat <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Soticlestat dose level of the current administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Soticlestat dose level of the current administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Empirical dose-nonlinearity covariate entering as (DOSE/300)^exponent on the TYPICAL",
         "VALUES of CL/F, Q/F and Vp/F (NONMEM $PK 'TVCL = THETA(4)*((DOSE/300.00)**THETA(9))'",
         "and its Q and Vp analogues; Table 2 'Dose effect (exponent)' rows). Reference 300 mg.",
@@ -50,14 +50,14 @@ Yin_2023_soticlestat <- function() {
         "No formal covariate screening was performed; dose was tested specifically to",
         "characterise the observed PK nonlinearity (paper, 'Covariate model development')."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power (allometric) effect on CL/F, Vc/F, Q/F and Vp/F, reference 70 kg. Weight was",
         "NOT a covariate of the estimated model: 'Weight was not tested as a covariate because",
         "of the limited range in the analysis data set; however, weight was added to the model",
@@ -68,16 +68,16 @@ Yin_2023_soticlestat <- function() {
         "See the vignette Errata for the printed Vc/F sign and for the two exponents the paper",
         "did not print."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Collected at baseline across the four studies (paper, 'Study population and data",
         "collection'; Table S1 reports mean (SD) 34.7 (9.6) years) but not retained in any",
         "layer of the final model. The paediatric simulations explicitly assume no maturation",
@@ -87,33 +87,33 @@ Yin_2023_soticlestat <- function() {
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Collected at baseline (Table S1, mean (SD) 25.6 (2.9) kg/m^2); not retained in the final model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Collected at baseline (Table S1, mean (SD) 25.6 (2.9) kg/m^2); not retained in the final model."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected at baseline (Table S1; 74/108 (69%) male); not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected at baseline (Table S1; 74/108 (69%) male); not retained in the final model."
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected at baseline (Table S1; 78/108 (72%) White); not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected at baseline (Table S1; 78/108 (72%) White); not retained in the final model."
     ),
     RACE_BLACK = list(
       description = "Black or African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected at baseline (Table S1; 28/108 (26%) Black or African American); not retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected at baseline (Table S1; 28/108 (26%) Black or African American); not retained in the final model."
     ),
     FORM_TABLET = list(
       description = "Tablet (vs oral solution) formulation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "The formulation difference IS in the model, but as a routing choice rather than a",
         "covariate: the tablet doses into transit1 and the oral solution doses into depot",
         "(Appendix S2: 'The transit compartment 1 is the dosing compartment for the tablet",
@@ -125,60 +125,60 @@ Yin_2023_soticlestat <- function() {
 
   compartmentData <- list(
     transit1 = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     transit2 = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     depot = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     peripheral1 = list(
-      analyte  = "soticlestat",
-      units    = "mg",
+      analyte = "soticlestat",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     effect = list(
-      analyte  = "soticlestat",
-      units    = "ng/mL",
+      analyte = "soticlestat",
+      units = "ng/mL",
       specimen = "not applicable",
       verified = TRUE
     ),
     hc24 = list(
-      analyte  = "24S-hydroxycholesterol",
-      units    = "ng/mL",
+      analyte = "24S-hydroxycholesterol",
+      units = "ng/mL",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 104,
-    n_studies      = 4,
-    age_range      = "19-55 years across the four studies; mean (SD) 34.7 (9.6) years",
-    weight_range   = "not reported; mean (SD) body mass index 25.6 (2.9) kg/m^2",
+    species = "human",
+    n_subjects = 104,
+    n_studies = 4,
+    age_range = "19-55 years across the four studies; mean (SD) 34.7 (9.6) years",
+    weight_range = "not reported; mean (SD) body mass index 25.6 (2.9) kg/m^2",
     sex_female_pct = 31,
     race_ethnicity = c(White = 72, `Black or African American` = 26, Multiracial = 2),
-    disease_state  = "healthy adults",
-    dose_range     = "15-1350 mg single oral dose, or 100-600 mg q.d. and 300 mg b.i.d. for 10-14 days",
-    notes          = paste(
+    disease_state = "healthy adults",
+    dose_range = "15-1350 mg single oral dose, or 100-600 mg q.d. and 300 mg b.i.d. for 10-14 days",
+    notes = paste(
       "Four phase I studies in healthy adults (Table 1): a single-rising-dose study",
       "(NCT02201056, n = 48), a multiple-rising-dose study (NCT02539134, n = 40), an",
       "open-label [18F]MNI-792 PET enzyme-occupancy study (NCT02497235, n = 11), and a",

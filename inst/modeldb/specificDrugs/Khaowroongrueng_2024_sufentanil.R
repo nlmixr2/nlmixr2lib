@@ -23,8 +23,8 @@ Khaowroongrueng_2024_sufentanil <- function() {
   )
   vignette <- "Khaowroongrueng_2024_sufentanil"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -33,17 +33,17 @@ Khaowroongrueng_2024_sufentanil <- function() {
   # plasma concentration by LC-MS/MS (Methods "Study sample handling"), so
   # the observed matrix is plasma.
   compartmentData <- list(
-    central     = list(analyte = "sufentanil", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "sufentanil", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "sufentanil", units = "ug", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CPB_ON = list(
-      description        = "Cardiopulmonary bypass phase indicator (before rewarming begins)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cardiopulmonary bypass phase indicator (before rewarming begins)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pre-CPB or post-CPB)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. 1 = the record falls in the CPB phase",
         "proper, i.e. from commencement of cardiopulmonary bypass until",
         "rewarming begins; 0 otherwise. Khaowroongrueng 2024 Methods",
@@ -59,14 +59,14 @@ Khaowroongrueng_2024_sufentanil <- function() {
         "during rewarming, so 'on CPB in the broad sense' is",
         "CPB_ON + CPB_REWARM == 1, not CPB_ON == 1."
       ),
-      source_name        = "CPB phase (0/1/2/3, level 1)"
+      source_name = "CPB phase (0/1/2/3, level 1)"
     ),
     CPB_REWARM = list(
-      description        = "Cardiopulmonary bypass rewarming phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cardiopulmonary bypass rewarming phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pre-CPB, CPB proper, or post-CPB)",
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. 1 = the record falls in the rewarming",
         "phase, i.e. from the start of rewarming until separation from",
         "cardiopulmonary bypass; 0 otherwise. Decoded from level 2 of the",
@@ -80,23 +80,23 @@ Khaowroongrueng_2024_sufentanil <- function() {
         "so estimated a single typical value spanning both windows; the",
         "central-volume effect was retained for the CPB phase only."
       ),
-      source_name        = "CPB phase (0/1/2/3, level 2)"
+      source_name = "CPB phase (0/1/2/3, level 2)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "23-77 years",
-    age_median     = "66 years",
-    weight_range   = "46.7-99.8 kg",
-    weight_median  = "66.4 kg",
-    height_range   = "150.1-189.2 cm",
-    bmi_range      = "16.0-34.3 kg/m^2",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "23-77 years",
+    age_median = "66 years",
+    weight_range = "46.7-99.8 kg",
+    weight_median = "66.4 kg",
+    height_range = "150.1-189.2 cm",
+    bmi_range = "16.0-34.3 kg/m^2",
     sex_female_pct = 36.4,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (>19 years) undergoing cardiac surgery with cardiopulmonary",
       "bypass support: valvuloplasty or valve replacement (13), coronary",
       "artery bypass graft (6), left ventricular assist device (1), and",
@@ -109,7 +109,7 @@ Khaowroongrueng_2024_sufentanil <- function() {
       "primed with 1700 mL Plasma Solution A, 100 mL 20% albumin,",
       "2000 units heparin and 40 mEq bicarbonate."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IV bolus of 1 ug/kg (generally 50 ug) at intubation, plus two further",
       "50 ug IV boluses at the onset of CPB and at the onset of rewarming.",
       "Continuous IV infusion at 20 ug/h between incision and CPB",
@@ -118,8 +118,8 @@ Khaowroongrueng_2024_sufentanil <- function() {
       "bolus dose 2.3 (1.5-3.3) ug/kg and total IV infusion dose",
       "2.1 (0.9-4.3) ug/kg (Table 1)."
     ),
-    regions        = "South Korea (single-centre, Gachon University Gil Medical Center, Incheon)",
-    notes          = paste(
+    regions = "South Korea (single-centre, Gachon University Gil Medical Center, Incheon)",
+    notes = paste(
       "Prospective PK study conducted May 2021 to June 2022 (IRB",
       "GDIRB 2021-184; CRIS KCT0008742). 22 participants enrolled and",
       "described in Table 1; 110 samples collected. Two participants (12",

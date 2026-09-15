@@ -58,28 +58,28 @@ Xu_2025_enrofloxacin_largemouthBass_iv <- function() {
   # rather than in covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight of the individual fish. Xu 2025 Table 5 screened body weight against V1, V2, CL and CL2 in all sixteen on/off combinations for the intravenous dataset. Section 3.3 selected V2-wt as the lowest -2LL with the fewest parameters (-2LL 270.34, AIC 290.34, 10 parameters, versus 272.70 / 290.70 / 9 for no covariate) and fitted it (Table 6, 'Importing covariate of wt': dV2dwt = -0.21, SE 0.23, RSE -113.84%, 95% CI -0.67 to 0.26). Section 3.3 then rejected it on two grounds: the standard errors and RSEs of the four fixed effects barely moved relative to the covariate-free fit, and dV2dwt was estimated as a negative value.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight of the individual fish. Xu 2025 Table 5 screened body weight against V1, V2, CL and CL2 in all sixteen on/off combinations for the intravenous dataset. Section 3.3 selected V2-wt as the lowest -2LL with the fewest parameters (-2LL 270.34, AIC 290.34, 10 parameters, versus 272.70 / 290.70 / 9 for no covariate) and fitted it (Table 6, 'Importing covariate of wt': dV2dwt = -0.21, SE 0.23, RSE -113.84%, 95% CI -0.67 to 0.26). Section 3.3 then rejected it on two grounds: the standard errors and RSEs of the four fixed effects barely moved relative to the covariate-free fit, and dV2dwt was estimated as a negative value.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened, fitted, and then rejected; not retained in the final model. Note that dV2dwt's own 95% CI (-0.67 to 0.26) spans zero and its RSE exceeds 100%, so the estimate is not distinguishable from no effect -- a stronger argument for dropping it than the sign argument the paper makes. As in the companion oral model, weight scaling is nevertheless built into the units rather than fitted: the dose is mg/kg BW and all volumes and clearances are per kg BW, i.e. exponent-1 proportionality is assumed a priori. The rejected covariate test was therefore for a DEPARTURE from that proportionality. The fish used were 243.11 +/- 54.86 g (Section 2.2); no per-fish weights are published, so the dV2dwt centring/reference weight cannot be recovered and the covariate form is not reproducible even if a user wanted it."
+      notes = "Screened, fitted, and then rejected; not retained in the final model. Note that dV2dwt's own 95% CI (-0.67 to 0.26) spans zero and its RSE exceeds 100%, so the estimate is not distinguishable from no effect -- a stronger argument for dropping it than the sign argument the paper makes. As in the companion oral model, weight scaling is nevertheless built into the units rather than fitted: the dose is mg/kg BW and all volumes and clearances are per kg BW, i.e. exponent-1 proportionality is assumed a priori. The rejected covariate test was therefore for a DEPARTURE from that proportionality. The fish used were 243.11 +/- 54.86 g (Section 2.2); no per-fish weights are published, so the dV2dwt centring/reference weight cannot be recovered and the covariate form is not reproducible even if a user wanted it."
     )
   )
 
   population <- list(
-    species            = "largemouth bass (Micropterus salmoides)",
-    n_subjects         = 24L,
-    n_studies          = 1L,
-    weight_mean        = "243.11 +/- 54.86 g (the 60-fish purchase lot from which both route cohorts were drawn; Section 2.2)",
-    dose_range         = "single 10 mg/kg body weight intravenous injection into the caudal vein (20 mg/mL enrofloxacin in pure water, delivered from a 1 mL microinjector)",
-    disease_state      = "healthy",
-    regions            = "China (Yangtze River Fisheries Research Institute, Wuhan; fish sourced from Huazhong Agricultural University)",
-    water_temperature  = "25.0 +/- 0.5 degC (air-conditioned)",
-    water_quality      = "480 L tanks at 26 L/min; dissolved oxygen, total ammonia nitrogen, nitrite nitrogen and pH checked daily and held in the ranges of Xu 2023 (Animals 13:1749)",
-    design             = "24 fish randomised to four groups of six. Fish that bled heavily after needle withdrawal, or in which the needle translocated during injection, were removed and replaced. At least 14 days of acclimation on antibiotic-free feed before dosing (Sections 2.2 and 2.3.2).",
-    sampling           = "Sparse: each fish sampled 4 times from the caudal vessels, on the same schedule as the oral cohort (Section 2.3.2 'The planning of sampling time points was consistent with oral administration'). Four repeating schedules of four times each: group 1 (5 min, 1, 8, 48 h), group 2 (10 min, 2, 12, 72 h), group 3 (15 min, 4, 16, 96 h), group 4 (0.5, 6, 24, 120 h), so all 16 nominal times are covered by six fish each.",
-    bioanalysis        = "HPLC with fluorescence detection (excitation 280 nm, emission 450 nm), Poroshell 120 EC-C18; LOD 0.003 ug/mL, LOQ 0.01 ug/mL; recovery 83.29-103.12%, intra-day RSD 2.07-3.21%, inter-day RSD 3.01-6.72% (Sections 2.5 and 3.1, Table 1).",
-    notes              = "The same 24-fish design was run at 20 mg/kg orally and fitted separately; see Xu_2025_enrofloxacin_largemouthBass_oral. Only one water temperature was studied. Section 4 compares these estimates with conventional PK studies in other species (allogynogenetic silver crucian carp, snakehead fish, brown trout) that all report substantially shorter terminal half-lives and higher clearances. No individual concentration or weight data are published (Data Availability Statement: available on request)."
+    species = "largemouth bass (Micropterus salmoides)",
+    n_subjects = 24L,
+    n_studies = 1L,
+    weight_mean = "243.11 +/- 54.86 g (the 60-fish purchase lot from which both route cohorts were drawn; Section 2.2)",
+    dose_range = "single 10 mg/kg body weight intravenous injection into the caudal vein (20 mg/mL enrofloxacin in pure water, delivered from a 1 mL microinjector)",
+    disease_state = "healthy",
+    regions = "China (Yangtze River Fisheries Research Institute, Wuhan; fish sourced from Huazhong Agricultural University)",
+    water_temperature = "25.0 +/- 0.5 degC (air-conditioned)",
+    water_quality = "480 L tanks at 26 L/min; dissolved oxygen, total ammonia nitrogen, nitrite nitrogen and pH checked daily and held in the ranges of Xu 2023 (Animals 13:1749)",
+    design = "24 fish randomised to four groups of six. Fish that bled heavily after needle withdrawal, or in which the needle translocated during injection, were removed and replaced. At least 14 days of acclimation on antibiotic-free feed before dosing (Sections 2.2 and 2.3.2).",
+    sampling = "Sparse: each fish sampled 4 times from the caudal vessels, on the same schedule as the oral cohort (Section 2.3.2 'The planning of sampling time points was consistent with oral administration'). Four repeating schedules of four times each: group 1 (5 min, 1, 8, 48 h), group 2 (10 min, 2, 12, 72 h), group 3 (15 min, 4, 16, 96 h), group 4 (0.5, 6, 24, 120 h), so all 16 nominal times are covered by six fish each.",
+    bioanalysis = "HPLC with fluorescence detection (excitation 280 nm, emission 450 nm), Poroshell 120 EC-C18; LOD 0.003 ug/mL, LOQ 0.01 ug/mL; recovery 83.29-103.12%, intra-day RSD 2.07-3.21%, inter-day RSD 3.01-6.72% (Sections 2.5 and 3.1, Table 1).",
+    notes = "The same 24-fish design was run at 20 mg/kg orally and fitted separately; see Xu_2025_enrofloxacin_largemouthBass_oral. Only one water temperature was studied. Section 4 compares these estimates with conventional PK studies in other species (allogynogenetic silver crucian carp, snakehead fish, brown trout) that all report substantially shorter terminal half-lives and higher clearances. No individual concentration or weight data are published (Data Availability Statement: available on request)."
   )
 
   ini({

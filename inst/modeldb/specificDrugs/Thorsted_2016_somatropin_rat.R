@@ -32,25 +32,25 @@ Thorsted_2016_somatropin_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
-    effect1     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
-    effect2     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
-    effect3     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
-    igf1        = list(analyte = "IGF-1", units = "ug", specimen = "plasma", verified = FALSE),
-    bw          = list(analyte = "body weight", units = "ug", specimen = "not applicable", verified = FALSE)
+    effect1 = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    effect2 = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    effect3 = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    igf1 = list(analyte = "IGF-1", units = "ug", specimen = "plasma", verified = FALSE),
+    bw = list(analyte = "body weight", units = "ug", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling around a reference rat body weight of 0.1 kg",
         "(100 g) per Thorsted 2016 Methods. Clearance terms (CL, Q) and",
         "the Michaelis-Menten maximum elimination capacity (Vmax) scale",
@@ -65,25 +65,25 @@ Thorsted_2016_somatropin_rat <- function() {
         "grams while the WT covariate is in kg.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley, hypophysectomized; male, 90-110 g, age 6-8 weeks)",
-    n_subjects     = 230L,
-    n_studies      = 6L,
-    age_range      = "6-8 weeks at study start (hypophysectomized at 4 weeks; acclimatized 1-2 weeks)",
-    weight_range   = "90-110 g (approximately 0.1 kg)",
+    species = "rat (Sprague-Dawley, hypophysectomized; male, 90-110 g, age 6-8 weeks)",
+    n_subjects = 230L,
+    n_studies = 6L,
+    age_range = "6-8 weeks at study start (hypophysectomized at 4 weeks; acclimatized 1-2 weeks)",
+    weight_range = "90-110 g (approximately 0.1 kg)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Hypophysectomized rat model of growth hormone deficiency",
       "(pituitary gland surgically removed at age 4 weeks); plasma rhGH",
       "and IGF-1 measured by LOCI immunoassay and ELISA respectively;",
       "bodyweight measured daily during the multiple-dose PD studies.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "rhGH 11-3319 ug as i.v. tail-vein bolus or s.c. injection into",
       "the scruff of the neck; six study cohorts in total (one",
       "single-dose PKPD study + five multiple-dose PD studies of up to",
@@ -91,8 +91,8 @@ Thorsted_2016_somatropin_rat <- function() {
       "PD model because of anti-drug-antibody formation thereafter).",
       sep = " "
     ),
-    regions        = "Denmark (Novo Nordisk A/S, Maaloev)",
-    notes          = paste(
+    regions = "Denmark (Novo Nordisk A/S, Maaloev)",
+    notes = paste(
       "230 male hypophysectomized Sprague-Dawley rats from Taconic M&B",
       "(Ejby, Denmark); 304 rhGH plasma concentrations, 717 IGF-1",
       "plasma concentrations, and 1248 bodyweight measurements. See",

@@ -14,86 +14,86 @@ Alsultan_2023_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Scaled to the cohort MEDIAN bodyweight of 0.93 kg (Results 'Population pharmacokinetics': 'Bodyweight was scaled to the median bodyweight of 0.93 kg'), not to the 70 kg adult standard, so the reported CL and V thetas are already neonate-sized. Allometric exponents were FIXED, not estimated: CL ~ (WT/0.93)^0.75 and V ~ (WT/0.93)^1 (Methods 'Covariates', citing Anderson & Holford). Cohort current weight 1.0 kg (SD 0.29, range 0.46-1.7) in training and 1.1 kg (SD 0.3, range 0.5-2.2) in validation (Table 2); the simulation dataset spanned 0.46-2.2 kg (Results 'Simulation').",
-      source_name        = "Weight"
+      notes = "Time-varying. Scaled to the cohort MEDIAN bodyweight of 0.93 kg (Results 'Population pharmacokinetics': 'Bodyweight was scaled to the median bodyweight of 0.93 kg'), not to the 70 kg adult standard, so the reported CL and V thetas are already neonate-sized. Allometric exponents were FIXED, not estimated: CL ~ (WT/0.93)^0.75 and V ~ (WT/0.93)^1 (Methods 'Covariates', citing Anderson & Holford). Cohort current weight 1.0 kg (SD 0.29, range 0.46-1.7) in training and 1.1 kg (SD 0.3, range 0.5-2.2) in validation (Table 2); the simulation dataset spanned 0.46-2.2 kg (Results 'Simulation').",
+      source_name = "Weight"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months. Alsultan 2023 writes the sigmoidal Hill maturation function on CL directly in weeks (TMA50 = 26.3 weeks, Hill = 4.42; Results equation and Table 3), and the register explicitly permits a weeks-scaled PAGE for models whose source equations are written that way. The maturation term is NOT normalized to a reference PMA -- it is the bare Hill fraction PMA^4.42/(PMA^4.42 + 26.3^4.42), which equals 0.487 at PMA 26 weeks and approaches 1 only well beyond the studied range. Cohort PMA 29.8 weeks (SD 3.15, range 22-39) in training and 30.7 (SD 3.4, range 24-42) in validation (Table 2); the simulation dataset spanned 22-42 weeks (Results 'Simulation'). Table 1 footnote a defines PMA as gestational age plus postnatal age.",
-      source_name        = "PMA"
+      notes = "WEEKS, not the register-default months. Alsultan 2023 writes the sigmoidal Hill maturation function on CL directly in weeks (TMA50 = 26.3 weeks, Hill = 4.42; Results equation and Table 3), and the register explicitly permits a weeks-scaled PAGE for models whose source equations are written that way. The maturation term is NOT normalized to a reference PMA -- it is the bare Hill fraction PMA^4.42/(PMA^4.42 + 26.3^4.42), which equals 0.487 at PMA 26 weeks and approaches 1 only well beyond the studied range. Cohort PMA 29.8 weeks (SD 3.15, range 22-39) in training and 30.7 (SD 3.4, range 24-42) in validation (Table 2); the simulation dataset spanned 22-42 weeks (Results 'Simulation'). Table 1 footnote a defines PMA as gestational age plus postnatal age.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "mg/dL, NOT the SI umol/L (divide umol/L by 88.4 to convert). Time-varying; enters CL as the RECIPROCAL power ratio (0.6 / CREAT)^0.48 with reference 0.6 mg/dL, so clearance FALLS as creatinine rises. This is equivalent to (CREAT / 0.6)^(-0.48); the model keeps the paper's printed orientation so that the Table 3 estimate 0.48 appears verbatim. Values from the two centers using the enzymatic assay were converted to the Jaffe scale by the authors before modelling, as Jaffe = 0.122 + enzymatic / 1.05 (Methods 'Analytical assay', citing Srivastava 2009); a user supplying enzymatic creatinine should apply the same conversion. Cohort 0.65 mg/dL (SD 0.22, range 0.2-1.5) in training and 0.62 (SD 0.23, range 0.15-1.4) in validation (Table 2). The model does not apply above 1.2 mg/dL: only five patients exceeded it, the Monte Carlo simulations were capped there, and the Discussion states 'our model does not apply to this population'.",
-      source_name        = "Scr"
+      notes = "mg/dL, NOT the SI umol/L (divide umol/L by 88.4 to convert). Time-varying; enters CL as the RECIPROCAL power ratio (0.6 / CREAT)^0.48 with reference 0.6 mg/dL, so clearance FALLS as creatinine rises. This is equivalent to (CREAT / 0.6)^(-0.48); the model keeps the paper's printed orientation so that the Table 3 estimate 0.48 appears verbatim. Values from the two centers using the enzymatic assay were converted to the Jaffe scale by the authors before modelling, as Jaffe = 0.122 + enzymatic / 1.05 (Methods 'Analytical assay', citing Srivastava 2009); a user supplying enzymatic creatinine should apply the same conversion. Cohort 0.65 mg/dL (SD 0.22, range 0.2-1.5) in training and 0.62 (SD 0.23, range 0.15-1.4) in validation (Table 2). The model does not apply above 1.2 mg/dL: only five patients exceeded it, the Monte Carlo simulations were capped there, and the Discussion states 'our model does not apply to this population'.",
+      source_name = "Scr"
     )
   )
 
   covariatesDataExcluded <- list(
     PNA = list(
       description = "Postnatal age",
-      units       = "days",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Methods 'Covariates') but not retained; postmenstrual age carried the maturation signal. Cohort 10.7 days (SD 7.5, range 1-30) in training (Table 2)."
+      units = "days",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Methods 'Covariates') but not retained; postmenstrual age carried the maturation signal. Cohort 10.7 days (SD 7.5, range 1-30) in training (Table 2)."
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods 'Covariates'); it is a component of the retained PAGE. Cohort 28.0 weeks (SD 2.9, range 22-35) in training (Table 2)."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened but not retained (Methods 'Covariates'); it is a component of the retained PAGE. Cohort 28.0 weeks (SD 2.9, range 22-35) in training (Table 2)."
     ),
     WT_BIRTH = list(
       description = "Birth weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened via the VLBW-vs-ELBW (birth weight < 1.0 kg) contrast (Methods 'Covariates') but not retained; current weight was the retained size descriptor. Cohort 0.95 kg (SD 0.27, range 0.46-1.5) in training (Table 2).",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened via the VLBW-vs-ELBW (birth weight < 1.0 kg) contrast (Methods 'Covariates') but not retained; current weight was the retained size descriptor. Cohort 0.95 kg (SD 0.27, range 0.46-1.5) in training (Table 2).",
       source_name = "Birth weight"
     ),
     HT = list(
       description = "Body length / height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained (Methods 'Covariates'); no cohort summary is reported."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained (Methods 'Covariates'); no cohort summary is reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained (Methods 'Covariates'). Sex was missing for 22% of the training and 18% of the validation cohort (Table 2), which limited its power as a covariate."
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained (Methods 'Covariates'). Sex was missing for 22% of the training and 18% of the validation cohort (Table 2), which limited its power as a covariate."
     ),
     DIS_CHD = list(
       description = "Congenital heart disease indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained (Methods 'Covariates'). Present in 26% of training and 37% of validation patients (Table 2)."
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained (Methods 'Covariates'). Present in 26% of training and 37% of validation patients (Table 2)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 236L,
-    n_studies      = 1L,
-    age_range      = "1-30 days postnatal; postmenstrual age 22-42 weeks",
-    age_median     = "10.7 days postnatal (mean), 29.8 weeks postmenstrual (mean), training set",
-    weight_range   = "0.46-2.2 kg current body weight; 0.46-1.5 kg birth weight",
-    weight_median  = "1.0 kg current body weight (mean), training set",
+    species = "human",
+    n_subjects = 236L,
+    n_studies = 1L,
+    age_range = "1-30 days postnatal; postmenstrual age 22-42 weeks",
+    age_median = "10.7 days postnatal (mean), 29.8 weeks postmenstrual (mean), training set",
+    weight_range = "0.46-2.2 kg current body weight; 0.46-1.5 kg birth weight",
+    weight_median = "1.0 kg current body weight (mean), training set",
     sex_female_pct = 32,
     race_ethnicity = "Not reported; single-country cohort recruited in Saudi Arabia",
-    disease_state  = "Very low birth weight neonates (birth weight < 1.5 kg, 58% of them extremely low birth weight < 1.0 kg) admitted to a NICU and treated with intravenous vancomycin for proven or suspected MRSA or methicillin-resistant coagulase-negative staphylococcal infection; 36% had a culture-confirmed infection. Patients with renal failure or on haemodialysis were excluded.",
-    dose_range     = "Total daily dose 22 mg/kg (SD 8, range 7.5-55) in the training set and 24.1 mg/kg (SD 11.5, range 9-68) in the validation set; initial doses followed NeoFax or Lexicomp neonatal guidance (Table 1) with subsequent trough-guided adjustment",
-    regions        = "Saudi Arabia (six centers: King Saud University Medical City, King Faisal Specialist Hospital Riyadh and Jeddah, National Guard Hospital Riyadh, Prince Sultan Military Medical City, Armed Forces Hospital Southern Region)",
+    disease_state = "Very low birth weight neonates (birth weight < 1.5 kg, 58% of them extremely low birth weight < 1.0 kg) admitted to a NICU and treated with intravenous vancomycin for proven or suspected MRSA or methicillin-resistant coagulase-negative staphylococcal infection; 36% had a culture-confirmed infection. Patients with renal failure or on haemodialysis were excluded.",
+    dose_range = "Total daily dose 22 mg/kg (SD 8, range 7.5-55) in the training set and 24.1 mg/kg (SD 11.5, range 9-68) in the validation set; initial doses followed NeoFax or Lexicomp neonatal guidance (Table 1) with subsequent trough-guided adjustment",
+    regions = "Saudi Arabia (six centers: King Saud University Medical City, King Faisal Specialist Hospital Riyadh and Jeddah, National Guard Hospital Riyadh, Prince Sultan Military Medical City, Armed Forces Hospital Southern Region)",
     renal_function = "Renal failure and haemodialysis were exclusion criteria. Serum creatinine 0.65 mg/dL (SD 0.22, range 0.2-1.5) in training. Only five patients had creatinine > 1.2 mg/dL, so the simulations -- and the model's stated domain of applicability -- were capped at 1.2 mg/dL (Results 'Simulation'; Discussion).",
-    notes          = "Retrospective multicenter observational study. The 236 neonates were split randomly 70/30 into a training set (n = 162, 214 concentrations) and an external validation set (n = 74, 97 concentrations); the parameters carried here are from the training-set fit (Table 3), which the authors then evaluated on the validation set by VPC and NPDE (mean NPDE 0.043, SD 1.1). Baseline demographics per Table 2. Sampling was sparse -- 1-2 samples per patient, predominantly steady-state troughs drawn 30 min before the next dose, with peaks (1 h after end of infusion) collected only at one of the six centers -- so the volume of distribution is far less well informed than clearance; the authors list this among the study limitations."
+    notes = "Retrospective multicenter observational study. The 236 neonates were split randomly 70/30 into a training set (n = 162, 214 concentrations) and an external validation set (n = 74, 97 concentrations); the parameters carried here are from the training-set fit (Table 3), which the authors then evaluated on the validation set by VPC and NPDE (mean NPDE 0.043, SD 1.1). Baseline demographics per Table 2. Sampling was sparse -- 1-2 samples per patient, predominantly steady-state troughs drawn 30 min before the next dose, with peaks (1 h after end of infusion) collected only at one of the six centers -- so the volume of distribution is far less well informed than clearance; the authors list this among the study limitations."
   )
 
   ini({

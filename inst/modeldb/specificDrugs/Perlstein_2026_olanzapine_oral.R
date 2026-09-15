@@ -16,57 +16,57 @@ Perlstein_2026_olanzapine_oral <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "olanzapine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "olanzapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight at baseline",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search (Methods, Covariate Analysis) and retained in the TV-44749 model, but Supplemental Table 2 reports NO covariate effect for the oral olanzapine model; the oral model is therefore covariate-free."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search (Methods, Covariate Analysis) and retained in the TV-44749 model, but Supplemental Table 2 reports NO covariate effect for the oral olanzapine model; the oral model is therefore covariate-free."
     ),
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
     ),
     BMI = list(
       description = "Body mass index at baseline",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate search but not present in the reported oral olanzapine model (Supplemental Table 2)."
     ),
     SMOKER = list(
       description = "Current smoker indicator (1 = smoker, 0 = non-smoker)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened because smoking induces CYP1A2-mediated olanzapine clearance (Discussion) but not present in the reported oral olanzapine model (Supplemental Table 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened because smoking induces CYP1A2-mediated olanzapine clearance (Discussion) but not present in the reported oral olanzapine model (Supplemental Table 2)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 90,
-    n_studies      = 1,
-    age_range      = "18-60 years (healthy participants) and 18-65 years (patients); cohort mean 45.6 years (SD 10.3)",
-    weight_mean    = "85.8 kg (SD 15.7)",
-    bmi_mean       = "28.3 kg/m^2 (SD 4.7)",
+    species = "human",
+    n_subjects = 90,
+    n_studies = 1,
+    age_range = "18-60 years (healthy participants) and 18-65 years (patients); cohort mean 45.6 years (SD 10.3)",
+    weight_mean = "85.8 kg (SD 15.7)",
+    bmi_mean = "28.3 kg/m^2 (SD 4.7)",
     sex_female_pct = 27,
     race_ethnicity = c(Black = 79, White = 29),
-    disease_state  = "Healthy participants, and adults with a DSM-5-confirmed diagnosis of schizophrenia or schizoaffective disorder on a clinically stable oral olanzapine regimen.",
-    dose_range     = "Daily oral olanzapine (ZYPREXA) 2.5 or 5 mg in healthy participants; 10, 15 or 20 mg in patients.",
-    regions        = "United States",
-    notes          = paste(
+    disease_state = "Healthy participants, and adults with a DSM-5-confirmed diagnosis of schizophrenia or schizoaffective disorder on a clinically stable oral olanzapine regimen.",
+    dose_range = "Daily oral olanzapine (ZYPREXA) 2.5 or 5 mg in healthy participants; 10, 15 or 20 mg in patients.",
+    regions = "United States",
+    notes = paste(
       "Phase 1 study TV-44749-SAD-10154. The oral olanzapine lead-in period preceded the",
       "TV-44749 treatment period; 1196 PK samples from 90 oral olanzapine recipients entered",
       "this model (Results, Data). The model was used to quantify the carryover of residual",

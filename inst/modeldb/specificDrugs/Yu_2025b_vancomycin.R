@@ -17,36 +17,36 @@ Yu_2025b_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Current dosing weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current dosing weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying: Yu 2025 Methods 2.1.2 lists weight among the covariates that 'were tested by incorporating them as regressors in the Monolix software', which is Monolix's mechanism for a time-varying covariate. Referenced to the cohort MEDIAN dosing weight of 2.8 kg, not the 70 kg adult standard (Results 3.2: 'CL and Vd were standardized to a median weight of 2.8 kg using an allometric scaling model'), so the Table 2 thetas 0.46 L/h and 2.12 L are already neonate-sized. Both allometric exponents were FIXED, not estimated -- 0.75 for CL and 1 for Vd (Results 3.2, citing the Anderson & Holford allometry reference) -- and neither appears in Table 2, which lists only estimated parameters with an S.E. Weight is the only retained covariate on Vd. Cohort dosing weight median 2.80 kg, 5th-95th percentile 0.654-6.53 kg (Table 1). Table 1 calls the column 'Dose weight (kg)' and Methods 2.1.1 calls it 'current dosing weight (weight)'; the printed CL and Vd equations use the bare symbol 'weight'.",
-      source_name        = "weight"
+      notes = "Time-varying: Yu 2025 Methods 2.1.2 lists weight among the covariates that 'were tested by incorporating them as regressors in the Monolix software', which is Monolix's mechanism for a time-varying covariate. Referenced to the cohort MEDIAN dosing weight of 2.8 kg, not the 70 kg adult standard (Results 3.2: 'CL and Vd were standardized to a median weight of 2.8 kg using an allometric scaling model'), so the Table 2 thetas 0.46 L/h and 2.12 L are already neonate-sized. Both allometric exponents were FIXED, not estimated -- 0.75 for CL and 1 for Vd (Results 3.2, citing the Anderson & Holford allometry reference) -- and neither appears in Table 2, which lists only estimated parameters with an S.E. Weight is the only retained covariate on Vd. Cohort dosing weight median 2.80 kg, 5th-95th percentile 0.654-6.53 kg (Table 1). Table 1 calls the column 'Dose weight (kg)' and Methods 2.1.1 calls it 'current dosing weight (weight)'; the printed CL and Vd equations use the bare symbol 'weight'.",
+      source_name = "weight"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months. Yu 2025 writes the Hill maturation function on CL directly in weeks (PMA_T50 = 42.6 weeks, PMA_Hill = 2.24; Results 3.2 CL equation and Table 2), and the register explicitly permits a weeks-scaled PAGE for models whose source equations are written that way. Time-varying (Methods 2.1.2 lists PMA among the regressor-coded time-varying covariates). The maturation term is the BARE Hill fraction PMA^2.24 / (42.6^2.24 + PMA^2.24), NOT normalised to a reference PMA, so it equals 0.5 exactly at PMA 42.6 weeks and 0.468 at the cohort median PMA of 40.2 weeks -- the Table 2 Cl_pop of 0.46 L/h is therefore the fully-mature clearance, roughly twice the typical clearance of a median subject. Cohort PMA median 40.2 weeks, 5th-95th percentile 26.5-66.3 weeks (Table 1). PMA is strongly collinear with weight in this cohort (r = 0.93, Results 3.1 and Figure S1), which the Discussion invokes to explain why weight -- retained by the population PK covariate search -- did not rank in the top 10 features of any ensemble machine-learning model.",
-      source_name        = "PMA"
+      notes = "WEEKS, not the register-default months. Yu 2025 writes the Hill maturation function on CL directly in weeks (PMA_T50 = 42.6 weeks, PMA_Hill = 2.24; Results 3.2 CL equation and Table 2), and the register explicitly permits a weeks-scaled PAGE for models whose source equations are written that way. Time-varying (Methods 2.1.2 lists PMA among the regressor-coded time-varying covariates). The maturation term is the BARE Hill fraction PMA^2.24 / (42.6^2.24 + PMA^2.24), NOT normalised to a reference PMA, so it equals 0.5 exactly at PMA 42.6 weeks and 0.468 at the cohort median PMA of 40.2 weeks -- the Table 2 Cl_pop of 0.46 L/h is therefore the fully-mature clearance, roughly twice the typical clearance of a median subject. Cohort PMA median 40.2 weeks, 5th-95th percentile 26.5-66.3 weeks (Table 1). PMA is strongly collinear with weight in this cohort (r = 0.93, Results 3.1 and Figure S1), which the Discussion invokes to explain why weight -- retained by the population PK covariate search -- did not rank in the top 10 features of any ensemble machine-learning model.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "mg/dL, NOT the SI umol/L (divide umol/L by 88.4 to convert). Table 1 reports 'Serum creatinine (mg/dL)' with median 0.305 and 5th-95th percentile 0.113-1.18. Time-varying (Methods 2.1.2 regressor list). Enters CL as the RECIPROCAL power ratio (0.3 / SCr)^0.543 as printed in the Results 3.2 CL equation, so clearance FALLS as creatinine rises; this is identical to (CREAT / 0.3)^(-0.543), and the model keeps the paper's printed orientation so that the Table 2 estimate 0.543 (row SCr_pop) appears verbatim with a positive sign. The reference constant is the 0.3 mg/dL printed inside the equation, which is the cohort median 0.305 rounded to one significant figure; the model uses the printed 0.3, not 0.305. The assay is a Michigan Medicine Laboratories clinical creatinine measurement; the paper does not state whether it is Jaffe or enzymatic, so no inter-assay conversion is applied. Together with PMA, SCr was one of the two covariates that both the population PK covariate search and every ensemble machine-learning feature-importance ranking selected (Results 3.4, Figure 4).",
-      source_name        = "SCr"
+      notes = "mg/dL, NOT the SI umol/L (divide umol/L by 88.4 to convert). Table 1 reports 'Serum creatinine (mg/dL)' with median 0.305 and 5th-95th percentile 0.113-1.18. Time-varying (Methods 2.1.2 regressor list). Enters CL as the RECIPROCAL power ratio (0.3 / SCr)^0.543 as printed in the Results 3.2 CL equation, so clearance FALLS as creatinine rises; this is identical to (CREAT / 0.3)^(-0.543), and the model keeps the paper's printed orientation so that the Table 2 estimate 0.543 (row SCr_pop) appears verbatim with a positive sign. The reference constant is the 0.3 mg/dL printed inside the equation, which is the cohort median 0.305 rounded to one significant figure; the model uses the printed 0.3, not 0.305. The assay is a Michigan Medicine Laboratories clinical creatinine measurement; the paper does not state whether it is Jaffe or enzymatic, so no inter-assay conversion is applied. Together with PMA, SCr was one of the two covariates that both the population PK covariate search and every ensemble machine-learning feature-importance ranking selected (Results 3.4, Figure 4).",
+      source_name = "SCr"
     ),
     OCC = list(
-      description        = "Occasion index for the interoccasion variability on clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for the interoccasion variability on clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Decomposed inside model() into the indicators occ1..occ7 that select the per-occasion IOV etas on CL. Yu 2025 defines an occasion explicitly: Methods 2.1.1, 'A new occasion was defined as a discontinuation of dosing exceeding 4 days'. Results 3.1 gives the observed range directly -- 18 of 42 patients (43%) experienced multiple treatment occasions, range 2-7, with a mean of 2.6 vancomycin concentrations per occasion -- so SEVEN occasion slots are encoded here, which covers the whole observed range rather than a guess. A user with more occasions can extend the pattern by adding further etaiov_cl_<k> slots at the same fixed variance. Adding IOV on CL to the base model dropped the objective function from 1447.63 to 1347.04 (Results 3.2), which is why it is in the final model. Records outside 1..7 contribute no IOV, i.e. they behave as the typical occasion.",
-      source_name        = "occasion"
+      notes = "Decomposed inside model() into the indicators occ1..occ7 that select the per-occasion IOV etas on CL. Yu 2025 defines an occasion explicitly: Methods 2.1.1, 'A new occasion was defined as a discontinuation of dosing exceeding 4 days'. Results 3.1 gives the observed range directly -- 18 of 42 patients (43%) experienced multiple treatment occasions, range 2-7, with a mean of 2.6 vancomycin concentrations per occasion -- so SEVEN occasion slots are encoded here, which covers the whole observed range rather than a guess. A user with more occasions can extend the pattern by adding further etaiov_cl_<k> slots at the same fixed variance. Adding IOV on CL to the base model dropped the objective function from 1447.63 to 1347.04 (Results 3.2), which is why it is in the final model. Records outside 1..7 contribute no IOV, i.e. they behave as the typical occasion.",
+      source_name = "occasion"
     )
   )
 
@@ -61,82 +61,82 @@ Yu_2025b_vancomycin <- function() {
   covariatesDataExcluded <- list(
     WT_BIRTH = list(
       description = "Birth weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained; current dosing weight was the retained size descriptor. Cohort median 0.835 kg, 5th-95th percentile 0.495-3.37 kg (Table 1). One of the ten clinical machine-learning input features (Results 3.4).",
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained; current dosing weight was the retained size descriptor. Cohort median 0.835 kg, 5th-95th percentile 0.495-3.37 kg (Table 1). One of the ten clinical machine-learning input features (Results 3.4).",
       source_name = "BW"
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened but not retained; it is a component of the retained PAGE. Cohort median 28.3 weeks, 5th-95th percentile 23.9-38.3 weeks (Table 1). One of the ten clinical machine-learning input features (Results 3.4).",
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened but not retained; it is a component of the retained PAGE. Cohort median 28.3 weeks, 5th-95th percentile 23.9-38.3 weeks (Table 1). One of the ten clinical machine-learning input features (Results 3.4).",
       source_name = "GA"
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "WEEKS in this paper, not the register-default months -- Table 1 reports 'Postnatal Age (week)' with median 8.64 and 5th-95th percentile 0.430-37.9. Screened but not retained; it is a component of the retained PAGE. One of the ten clinical machine-learning input features (Results 3.4).",
+      units = "weeks",
+      type = "continuous",
+      notes = "WEEKS in this paper, not the register-default months -- Table 1 reports 'Postnatal Age (week)' with median 8.64 and 5th-95th percentile 0.430-37.9. Screened but not retained; it is a component of the retained PAGE. One of the ten clinical machine-learning input features (Results 3.4).",
       source_name = "PNA"
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 20 of 42 female (47.6%), 22 male (52.4%) (Table 1). One of the ten clinical machine-learning input features (Results 3.4), where the paper calls the column 'gender'.",
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 20 of 42 female (47.6%), 22 male (52.4%) (Table 1). One of the ten clinical machine-learning input features (Results 3.4), where the paper calls the column 'gender'.",
       source_name = "gender"
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "g/dL as reported by Yu 2025 Table 1 ('Albumin (g/dL)', median 3.00, 5th-95th percentile 2.21-4.00), NOT the register-canonical g/L -- multiply by 10 to convert. Screened but not retained. One of the ten clinical machine-learning input features (Results 3.4).",
+      units = "g/dL",
+      type = "continuous",
+      notes = "g/dL as reported by Yu 2025 Table 1 ('Albumin (g/dL)', median 3.00, 5th-95th percentile 2.21-4.00), NOT the register-canonical g/L -- multiply by 10 to convert. Screened but not retained. One of the ten clinical machine-learning input features (Results 3.4).",
       source_name = "ALB"
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "mg/dL. Cohort median 19.0, 5th-95th percentile 6.08-65.6 (Table 1, 'Urea nitrogen (mg/dL)'). Screened but not retained; it was highly correlated with the retained SCr (r = 0.71, Results 3.1 and Figure S1). One of the ten clinical machine-learning input features (Results 3.4).",
+      units = "mg/dL",
+      type = "continuous",
+      notes = "mg/dL. Cohort median 19.0, 5th-95th percentile 6.08-65.6 (Table 1, 'Urea nitrogen (mg/dL)'). Screened but not retained; it was highly correlated with the retained SCr (r = 0.71, Results 3.1 and Figure S1). One of the ten clinical machine-learning input features (Results 3.4).",
       source_name = "BUN"
     ),
     RACE_WHITE = list(
       description = "White race indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 31 of 42 (73.8%) (Table 1). Race was one of the ten clinical machine-learning input features (Results 3.4); the paper does not state how the three-level race column was numerically encoded for the machine-learning models.",
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 31 of 42 (73.8%) (Table 1). Race was one of the ten clinical machine-learning input features (Results 3.4); the paper does not state how the three-level race column was numerically encoded for the machine-learning models.",
       source_name = "race"
     ),
     RACE_BLACK = list(
       description = "Black / African American race indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 9 of 42 (21.4%) (Table 1).",
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 9 of 42 (21.4%) (Table 1).",
       source_name = "race"
     ),
     RACE_OTHER = list(
       description = "Race-category 'Other' indicator",
-      units       = "",
-      type        = "binary",
-      notes       = "Screened but not retained. Cohort 2 of 42 (4.76%) (Table 1).",
+      units = "",
+      type = "binary",
+      notes = "Screened but not retained. Cohort 2 of 42 (4.76%) (Table 1).",
       source_name = "race"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
-    age_range      = "Gestational age 23.9-38.3 weeks (5th-95th percentile; median 28.3); postnatal age 0.430-37.9 weeks (median 8.64); postmenstrual age 26.5-66.3 weeks (median 40.2). The cohort is 25 neonates and 17 infants.",
-    weight_range   = "Current dosing weight 0.654-6.53 kg (5th-95th percentile; median 2.80); birth weight 0.495-3.37 kg (median 0.835)",
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
+    age_range = "Gestational age 23.9-38.3 weeks (5th-95th percentile; median 28.3); postnatal age 0.430-37.9 weeks (median 8.64); postmenstrual age 26.5-66.3 weeks (median 40.2). The cohort is 25 neonates and 17 infants.",
+    weight_range = "Current dosing weight 0.654-6.53 kg (5th-95th percentile; median 2.80); birth weight 0.495-3.37 kg (median 0.835)",
     sex_female_pct = 47.6,
     race_ethnicity = "White 31 (73.8%), Black 9 (21.4%), Other 2 (4.76%) (Table 1)",
-    disease_state  = "Neonates and infants admitted to the University of Michigan Neonatal Intensive Care Unit between 2019 and 2022 and treated with intravenous vancomycin for suspected or confirmed Gram-positive bacterial infection. Inclusion required at least one recorded serum vancomycin concentration; no renal-function exclusion is stated.",
-    dose_range     = "3.5-25 mg/kg per dose, given every 6, 8, 12, 18 or 24 h as a 60-minute intravenous infusion (Results 3.1)",
-    regions        = "United States (single centre: University of Michigan Neonatal Intensive Care Unit, Ann Arbor, MI)",
+    disease_state = "Neonates and infants admitted to the University of Michigan Neonatal Intensive Care Unit between 2019 and 2022 and treated with intravenous vancomycin for suspected or confirmed Gram-positive bacterial infection. Inclusion required at least one recorded serum vancomycin concentration; no renal-function exclusion is stated.",
+    dose_range = "3.5-25 mg/kg per dose, given every 6, 8, 12, 18 or 24 h as a 60-minute intravenous infusion (Results 3.1)",
+    regions = "United States (single centre: University of Michigan Neonatal Intensive Care Unit, Ann Arbor, MI)",
     renal_function = "Serum creatinine 0.113-1.18 mg/dL (5th-95th percentile; median 0.305) and blood urea nitrogen 6.08-65.6 mg/dL (median 19.0) (Table 1). Renal replacement therapy is not mentioned as an exclusion criterion, and no renal-impairment stratum is defined, so the model's domain of applicability is the observed creatinine range.",
-    notes          = "Retrospective single-centre electronic-medical-record study approved by the University of Michigan IRB. 214 serum vancomycin concentrations from 42 patients, a mean of 5 per patient (range 1-22), predominantly steady-state troughs with some peak and random levels; the assay LLOQ was 4.0 ug/mL and below-LLOQ records were excluded from the population PK analysis. 18 of 42 patients (43%) contributed multiple occasions (range 2-7), an occasion being a dosing gap of more than 4 days, at a mean of 2.6 concentrations per occasion. Estimated by SAEM in Monolix 2024R1. A two-compartment model was tested and rejected: it did not lower the objective function and the R.S.E.% for V1, Q and V2 were much higher (Results 3.2). Approximately 47.7% of the analysed trough concentrations lay in the 10-20 ug/mL target range (Results 3.1). Vd is poorly informed by these largely trough-only data -- its shrinkage is 52.7% versus 15.8% for CL (Table 2) -- so individual Vd predictions from this model are close to the population mean. The paper's second half compares eleven machine-learning regressors, trained on the model's own empirical-Bayes CL estimates, using clinical covariates and/or untargeted plasma metabolomics; the best (gradient boosting on the ten clinical covariates) reached R^2 0.830, metabolomics added nothing, and none of that analysis alters the structural model carried here."
+    notes = "Retrospective single-centre electronic-medical-record study approved by the University of Michigan IRB. 214 serum vancomycin concentrations from 42 patients, a mean of 5 per patient (range 1-22), predominantly steady-state troughs with some peak and random levels; the assay LLOQ was 4.0 ug/mL and below-LLOQ records were excluded from the population PK analysis. 18 of 42 patients (43%) contributed multiple occasions (range 2-7), an occasion being a dosing gap of more than 4 days, at a mean of 2.6 concentrations per occasion. Estimated by SAEM in Monolix 2024R1. A two-compartment model was tested and rejected: it did not lower the objective function and the R.S.E.% for V1, Q and V2 were much higher (Results 3.2). Approximately 47.7% of the analysed trough concentrations lay in the 10-20 ug/mL target range (Results 3.1). Vd is poorly informed by these largely trough-only data -- its shrinkage is 52.7% versus 15.8% for CL (Table 2) -- so individual Vd predictions from this model are close to the population mean. The paper's second half compares eleven machine-learning regressors, trained on the model's own empirical-Bayes CL estimates, using clinical covariates and/or untargeted plasma metabolomics; the best (gradient boosting on the ten clinical covariates) reached R^2 0.830, metabolomics added nothing, and none of that analysis alters the structural model carried here."
   )
 
   ini({

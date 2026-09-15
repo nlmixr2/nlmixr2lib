@@ -41,36 +41,51 @@ Fan_2025_nb457trimer_human <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling covariate, reference 70 kg. The exponent on the central volume is fixed at 1 and the exponent on linear clearance at 0.85, both taken from Materials and Methods 'Extrapolation of the mouse model to humans'. The 70 kg reference weight is not printed in the paper; it is recovered from the paper's own arithmetic (a 0.02 kg mouse V3 of 0.73 mL scaled with exponent 1 gives 36.5 mL/kg against the reported 36.26 mL/kg, and CL of 0.69 mL/h scaled with exponent 0.85 gives 10.15 mL/h/kg against the reported 10.21 mL/h/kg).",
-      source_name        = "Not a fitted covariate; the paper applies the scaling to a per-kilogram basis."
+      notes = "Allometric scaling covariate, reference 70 kg. The exponent on the central volume is fixed at 1 and the exponent on linear clearance at 0.85, both taken from Materials and Methods 'Extrapolation of the mouse model to humans'. The 70 kg reference weight is not printed in the paper; it is recovered from the paper's own arithmetic (a 0.02 kg mouse V3 of 0.73 mL scaled with exponent 1 gives 36.5 mL/kg against the reported 36.26 mL/kg, and CL of 0.69 mL/h scaled with exponent 0.85 gives 10.15 mL/h/kg against the reported 10.21 mL/h/kg).",
+      source_name = "Not a fitted covariate; the paper applies the scaling to a per-kilogram basis."
     )
   )
 
   compartmentData <- list(
-    depot_ip     = list(analyte = "Nb457-NbHSA-Nb457", units = "mg", specimen = "administration site", verified = TRUE),
-    depot_sc     = list(analyte = "Nb457-NbHSA-Nb457", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "Nb457-NbHSA-Nb457 (total: free plus CD4-bound)", units = "mg", specimen = "serum", verified = TRUE),
-    total_target = list(analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)", units = "ug/mL", specimen = "blood cell", verified = FALSE),
-    infected     = list(analyte = "HIV-1-infected CD4+ T cells", units = "cells/mL", specimen = "whole blood", verified = FALSE),
-    virus        = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
+    depot_ip = list(analyte = "Nb457-NbHSA-Nb457", units = "mg", specimen = "administration site", verified = TRUE),
+    depot_sc = list(analyte = "Nb457-NbHSA-Nb457", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(
+      analyte = "Nb457-NbHSA-Nb457 (total: free plus CD4-bound)",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    total_target = list(
+      analyte = "CD4 receptor (total, free plus drug-bound; carried as a drug-equivalent concentration)",
+      units = "ug/mL",
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    infected = list(
+      analyte = "HIV-1-infected CD4+ T cells",
+      units = "cells/mL",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    virus = list(analyte = "HIV-1 RNA", units = "copies/mL", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human (allometric projection from mouse; no human PK or PD data)",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "Not applicable; no human subjects contributed to this model.",
-    weight_range   = "Not applicable; simulations are anchored at a 70 kg reference adult.",
+    species = "human (allometric projection from mouse; no human PK or PD data)",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "Not applicable; no human subjects contributed to this model.",
+    weight_range = "Not applicable; simulations are anchored at a 70 kg reference adult.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not applicable.",
-    disease_state  = "Intended target population is HIV-1 infection; no human data were fitted.",
-    dose_range     = "Simulated regimens only: 20 mg/kg SC once every 2 days (Fig. 4 and Fig. 5), plus 20 mg/kg once daily and 40 mg/kg once every 2 days in the Fig. 5 dose-intensity comparison, each for one month.",
-    regions        = "Not applicable.",
-    notes          = "This is a forward projection, not a fit. Only CL and the volumes were scaled; all CD4-target and viral-dynamic parameters were carried over from the murine fit unchanged. The authors validated the scaling procedure on ibalizumab, for which clinical PK were available (Fig. S7 and S8), and state that the PD extrapolation could not be validated for either drug because human viral-dynamic data under these scenarios do not exist. The Discussion also flags that interspecies differences in albumin binding by the NbHSA arm were not modelled, and that CD4 downregulation in chronic HIV-1 infection would reduce target-mediated clearance in patients."
+    disease_state = "Intended target population is HIV-1 infection; no human data were fitted.",
+    dose_range = "Simulated regimens only: 20 mg/kg SC once every 2 days (Fig. 4 and Fig. 5), plus 20 mg/kg once daily and 40 mg/kg once every 2 days in the Fig. 5 dose-intensity comparison, each for one month.",
+    regions = "Not applicable.",
+    notes = "This is a forward projection, not a fit. Only CL and the volumes were scaled; all CD4-target and viral-dynamic parameters were carried over from the murine fit unchanged. The authors validated the scaling procedure on ibalizumab, for which clinical PK were available (Fig. S7 and S8), and state that the PD extrapolation could not be validated for either drug because human viral-dynamic data under these scenarios do not exist. The Discussion also flags that interspecies differences in albumin binding by the NbHSA arm were not modelled, and that CD4 downregulation in chronic HIV-1 infection would reduce target-mediated clearance in patients."
   )
 
   ini({

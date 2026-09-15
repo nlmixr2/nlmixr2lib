@@ -38,24 +38,24 @@ Wang_2023_dorzagliatin <- function() {
     sep = " "
   )
   vignette <- "Wang_2023_dorzagliatin"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "dorzagliatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "dorzagliatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "dorzagliatin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Overall population median 69.0 kg",
         "(range 40.0-110; Wang 2023 Table 2 'TBW, kg' Overall column),",
         "which is the normalization constant used by both covariate",
@@ -68,14 +68,14 @@ Wang_2023_dorzagliatin <- function() {
         "resulting 10th-90th percentile spread (55 kg and 83 kg) as",
         "-5.63% to +4.83% on CL/F and -11.8% to +10.8% on Vc/F."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Overall population median 55.0 years",
         "(range 19.0-74.2; Wang 2023 Table 2 'AGE, year' Overall column),",
         "used as the normalization constant. Retained on CL/F as the",
@@ -86,14 +86,14 @@ Wang_2023_dorzagliatin <- function() {
         "older than 74.2 years, so the relationship is not established",
         "in pediatric or very elderly subjects."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Overall population median 18.0 U/L",
         "(range 8.00-74.0; Wang 2023 Table 2 'AST, U/L' Overall column),",
         "used as the normalization constant. Reported by the paper in",
@@ -106,14 +106,14 @@ Wang_2023_dorzagliatin <- function() {
         "10th-90th percentiles. AST is the only retained hepatic marker;",
         "ALT and total bilirubin were screened and dropped."
       ),
-      source_name        = "AST"
+      source_name = "AST"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. The source column GEND is coded 1 =",
         "female, 0 = male (Wang 2023 Table 3 footnote: 'GEND: 1 for",
         "female, 0 for male'), which is exactly the canonical SEXF",
@@ -126,14 +126,14 @@ Wang_2023_dorzagliatin <- function() {
         "Wang 2023 Section 3.3) while Cmax,ss is 9.09% higher and",
         "Cmin,ss 11.6% lower in females."
       ),
-      source_name        = "GEND"
+      source_name = "GEND"
     ),
     STUDY_DORZA_EARLY = list(
-      description        = "Early-phase dorzagliatin study indicator (HMM0102 / HMM0103 / HMM0110)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Early-phase dorzagliatin study indicator (HMM0102 / HMM0103 / HMM0110)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (later-phase studies HMM0201 / HMM0301 / HMM0302)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; set from the trial identifier. 1 = the",
         "subject was enrolled in study HMM0102 (NCT02077452), HMM0103",
         "(NCT02386982) or HMM0110 (NCT04324424); 0 = HMM0201",
@@ -149,14 +149,14 @@ Wang_2023_dorzagliatin <- function() {
         "the sparsely-sampled later studies, so the between-trial",
         "difference was absorbed into CL/F instead of F."
       ),
-      source_name        = "Study"
+      source_name = "Study"
     ),
     MEAL_DELAY_1H = list(
-      description        = "Delayed-meal indicator: food consumed at least 1 h after dosing rather than 0.5 h after dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Delayed-meal indicator: food consumed at least 1 h after dosing rather than 0.5 h after dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (food consumed 0.5 h after dosing)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. 1 = the subject started eating at",
         "least 1 h after taking the dose; 0 = the subject started eating",
         "0.5 h after taking the dose (Wang 2023 Table 3 footnote:",
@@ -176,17 +176,17 @@ Wang_2023_dorzagliatin <- function() {
         "confirms 'patients with time to food consumption of >= 1 h",
         "after drug administration had higher D1'."
       ),
-      source_name        = "FOOD"
+      source_name = "FOOD"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the stepwise forward-inclusion / backward-",
         "elimination covariate search (Wang 2023 Section 2.4) but not",
         "retained in the final model. Overall median 25.2 kg/m^2",
@@ -196,66 +196,66 @@ Wang_2023_dorzagliatin <- function() {
         "population, driven by correlated covariates rather than a",
         "retained BMI effect."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     BSA = list(
-      description        = "Baseline body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Baseline body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened (Wang 2023 Section 2.4 covariate list) but not",
         "retained; body weight was the size descriptor kept on both",
         "CL/F and Vc/F. Not tabulated in Wang 2023 Table 2."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Overall median 46.2 g/L (range",
         "33.2-57.0) per Wang 2023 Table 2; already in canonical SI",
         "units, so no conversion is needed."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     ALT = list(
-      description        = "Baseline alanine aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained; AST was the hepatic marker kept on",
         "CL/F. Overall median 19.0 U/L (range 2.50-110) per Wang 2023",
         "Table 2. Wang 2023 Section 3.2 states explicitly that ALT",
         "'had no significant effect on the pharmacokinetics of",
         "dorzagliatin'."
       ),
-      source_name        = "ALT"
+      source_name = "ALT"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Overall median 67.0 umol/L (range",
         "35.0-943) per Wang 2023 Table 2; the extreme upper end comes",
         "from study HMM0110, the dedicated renal-impairment study",
         "(median 235 umol/L in that cohort). Already in canonical SI",
         "units."
       ),
-      source_name        = "CR"
+      source_name = "CR"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Not tabulated in Wang 2023 Table 2",
         "(the reported renal marker is serum creatinine). Wang 2023",
         "Section 3.2 states creatinine clearance 'had no significant",
@@ -266,14 +266,14 @@ Wang_2023_dorzagliatin <- function() {
         "stage of renal impairment. The paper does not state whether",
         "the screened column was BSA-normalized."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     TBILI = list(
-      description        = "Baseline total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Overall median 10.0 umol/L (range",
         "1.25-40.0) per Wang 2023 Table 2; already in canonical SI",
         "units. Used together with AST to assign the FDA hepatic-",
@@ -282,23 +282,23 @@ Wang_2023_dorzagliatin <- function() {
         "bilirubin and 40 IU/L for AST), but it carries no retained",
         "effect on any PK parameter."
       ),
-      source_name        = "TBIL"
+      source_name = "TBIL"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 1062L,
-    n_studies       = 6L,
-    n_observations  = 7686L,
-    age_range       = "19.0-74.2 years",
-    age_median      = "55.0 years",
-    weight_range    = "40.0-110 kg",
-    weight_median   = "69.0 kg",
-    bmi_median      = "25.2 kg/m^2 (range 18.2-34.9)",
-    sex_female_pct  = 37.4,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 1062L,
+    n_studies = 6L,
+    n_observations = 7686L,
+    age_range = "19.0-74.2 years",
+    age_median = "55.0 years",
+    weight_range = "40.0-110 kg",
+    weight_median = "69.0 kg",
+    bmi_median = "25.2 kg/m^2 (range 18.2-34.9)",
+    sex_female_pct = 37.4,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste(
       "Pooled cohort of healthy volunteers and adult patients with type 2",
       "diabetes mellitus from six trials (Wang 2023 Table 1): two phase I",
       "studies (HMM0102 / NCT02077452 multiple ascending dose;",
@@ -309,14 +309,14 @@ Wang_2023_dorzagliatin <- function() {
       "renal-impairment study with matched healthy volunteers",
       "(HMM0110 / NCT04324424)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "25-400 mg/day orally: 25, 50, 100, 150 and 200 mg twice daily",
       "(HMM0102); 75 mg once or twice daily and 100 mg once daily",
       "(HMM0103, HMM0201, HMM0301, HMM0302); 25 mg twice daily",
       "(HMM0110). The approved and pivotal-trial regimen is 75 mg",
       "twice daily."
     ),
-    regions         = "China (all six trials were conducted by Hua Medicine in Chinese subjects)",
+    regions = "China (all six trials were conducted by Hua Medicine in Chinese subjects)",
     hepatic_function = paste(
       "Per the FDA hepatic-impairment categories derived from AST and",
       "total bilirubin (Wang 2023 Table S3): normal 974 / 92.2%, mild",
@@ -324,14 +324,14 @@ Wang_2023_dorzagliatin <- function() {
       "18.0 U/L (8.00-74.0), ALT 19.0 U/L (2.50-110), albumin 46.2 g/L",
       "(33.2-57.0), total bilirubin 10.0 umol/L (1.25-40.0)."
     ),
-    renal_function  = paste(
+    renal_function = paste(
       "Baseline serum creatinine median 67.0 umol/L (35.0-943); the wide",
       "upper range comes from the dedicated renal-impairment study",
       "HMM0110 (cohort median 235 umol/L), which enrolled subjects",
       "through end-stage renal disease. Wang 2023 Table S4 groups the",
       "analysis population as normal 936 and mild 109 by eGFR."
     ),
-    notes           = paste(
+    notes = paste(
       "Wang 2023 Table 2 summarises baseline demographics by study and",
       "overall; Table 1 lists the study designs, dose regimens and PK",
       "sampling schedules. Parameter estimates implemented here are the",

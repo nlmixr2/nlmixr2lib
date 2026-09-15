@@ -22,66 +22,66 @@ Wallender_2021_piperaquine_malaria <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Acts on the EMBEDDED PK model only (allometric exponent 0.75 on all clearances and 1 on all volumes, referenced to the study-median 8.6 kg), and thereby on the malaria hazard indirectly through piperaquine concentration. Body weight was screened as a direct predictor of the malaria hazard and was not retained.",
-      source_name        = "WEIGHT"
+      notes = "Time-varying. Acts on the EMBEDDED PK model only (allometric exponent 0.75 on all clearances and 1 on all volumes, referenced to the study-median 8.6 kg), and thereby on the malaria hazard indirectly through piperaquine concentration. Body weight was screened as a direct predictor of the malaria hazard and was not retained.",
+      source_name = "WEIGHT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age).",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age).",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months. Acts on the EMBEDDED PK model only, through the Emax maturation term PMA / (PMA + 96) on clearance. Age was screened as a direct covariate on the malaria hazard and was not retained.",
-      source_name        = "Post menstrual age"
+      notes = "WEEKS, not the register-default months. Acts on the EMBEDDED PK model only, through the Emax maturation term PMA / (PMA + 96) on clearance. Age was screened as a direct covariate on the malaria hazard and was not retained.",
+      source_name = "Post menstrual age"
     ),
     WAZ = list(
-      description        = "Weight-for-age z-score against the WHO Child Growth Standards.",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Weight-for-age z-score against the WHO Child Growth Standards.",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Acts on the EMBEDDED PK model only, through relative oral bioavailability, and therefore reaches the malaria hazard only through reduced piperaquine exposure. This is the paper's mechanism for the higher predicted malaria incidence in malnourished children: 'Sex, IPT arm, maternal IPT regimen, WAZ, WHZ, and HAZ were not associated with the hazard of incident malaria' -- the association runs entirely through exposure.",
-      source_name        = "WAZ"
+      notes = "Time-varying. Acts on the EMBEDDED PK model only, through relative oral bioavailability, and therefore reaches the malaria hazard only through reduced piperaquine exposure. This is the paper's mechanism for the higher predicted malaria incidence in malnourished children: 'Sex, IPT arm, maternal IPT regimen, WAZ, WHZ, and HAZ were not associated with the hazard of incident malaria' -- the association runs entirely through exposure.",
+      source_name = "WAZ"
     ),
     SELFADMIN = list(
-      description        = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (directly observed therapy)",
-      notes              = "Per dosing occasion. Acts on the EMBEDDED PK model only, multiplying relative oral bioavailability by 0.397. This is the covariate the paper's adherence scenarios manipulate: full adherence uses SELFADMIN = 0 (the bioavailability of the directly observed group) and 1/3 adherence uses SELFADMIN = 1 (the bioavailability observed for non-directly-observed therapy).",
-      source_name        = "Self-administered DP"
+      notes = "Per dosing occasion. Acts on the EMBEDDED PK model only, multiplying relative oral bioavailability by 0.397. This is the covariate the paper's adherence scenarios manipulate: full adherence uses SELFADMIN = 0 (the bioavailability of the directly observed group) and 1/3 adherence uses SELFADMIN = 1 (the bioavailability observed for non-directly-observed therapy).",
+      source_name = "Self-administered DP"
     ),
     OCC = list(
-      description        = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "One occasion per three-day DP course; values 1 to 25 are multiplexed inside model() onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance. OCC = 0, or any value outside 1..25, yields the occasion-free typical value. See modellib('Wallender_2021_piperaquine') for the full annotation.",
-      source_name        = "OCC"
+      notes = "One occasion per three-day DP course; values 1 to 25 are multiplexed inside model() onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance. OCC = 0, or any value outside 1..25, yields the occasion-free typical value. See modellib('Wallender_2021_piperaquine') for the full annotation.",
+      source_name = "OCC"
     ),
     TRANSM_HIGH_2015 = list(
-      description        = "2015 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2015 high-transmission period, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "2015 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2015 high-transmission period, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled low-transmission periods across all study years)",
-      notes              = "TIME-VARYING. High transmission is defined in Methods as 1 March to 31 August annually in Tororo, Uganda. The three annual indicators are mutually exclusive one-hot columns; all three set to 0 selects the low-transmission reference, whose hazard multiplier is 1. The paper included the transmission period as a time-varying categorical covariate coded 0 for low-intensity seasons and 1-3 for the three high-transmission seasons (Peer Review File, response to reviewer 3 comment on line 153); the authors would have preferred a parametric surge or cosine function but could not use one because the periods were fixed to calendar time rather than to age and the peaks differed by year for ecological reasons.",
-      source_name        = "Transmission period 2015"
+      notes = "TIME-VARYING. High transmission is defined in Methods as 1 March to 31 August annually in Tororo, Uganda. The three annual indicators are mutually exclusive one-hot columns; all three set to 0 selects the low-transmission reference, whose hazard multiplier is 1. The paper included the transmission period as a time-varying categorical covariate coded 0 for low-intensity seasons and 1-3 for the three high-transmission seasons (Peer Review File, response to reviewer 3 comment on line 153); the authors would have preferred a parametric surge or cosine function but could not use one because the periods were fixed to calendar time rather than to age and the peaks differed by year for ecological reasons.",
+      source_name = "Transmission period 2015"
     ),
     TRANSM_HIGH_2016 = list(
-      description        = "2016 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2016 high-transmission period, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "2016 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2016 high-transmission period, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled low-transmission periods across all study years)",
-      notes              = "Time-varying; same calendar definition and reference as TRANSM_HIGH_2015. The three multipliers span 1.29 to 7.83 because district-wide indoor residual spraying changed insecticide between years (bendiocarb through 2015, pirimiphos-methyl from 2016), so the annual peaks are not exchangeable."
+      notes = "Time-varying; same calendar definition and reference as TRANSM_HIGH_2015. The three multipliers span 1.29 to 7.83 because district-wide indoor residual spraying changed insecticide between years (bendiocarb through 2015, pirimiphos-methyl from 2016), so the annual peaks are not exchangeable."
     ),
     TRANSM_HIGH_2017 = list(
-      description        = "2017 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2017 high-transmission period, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "2017 high-malaria-transmission calendar-period indicator: 1 = the record falls in the 2017 high-transmission period, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled low-transmission periods across all study years)",
-      notes              = "Time-varying; same calendar definition and reference as TRANSM_HIGH_2015."
+      notes = "Time-varying; same calendar definition and reference as TRANSM_HIGH_2015."
     )
   )
 
@@ -89,65 +89,70 @@ Wallender_2021_piperaquine_malaria <- function() {
   # or retained only in an exploratory model. Documentation only.
   covariatesDataExcluded <- list(
     SES_MATERNAL = list(
-      description        = "Maternal socioeconomic status, a propensity score summarising household property and income, valued between -1 and 3.",
-      units              = "unitless (propensity score)",
-      type               = "continuous",
+      description = "Maternal socioeconomic status, a propensity score summarising household property and income, valued between -1 and 3.",
+      units = "unitless (propensity score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SIGNIFICANT but NOT RETAINED. In univariate analysis each 1-unit increase in maternal socioeconomic status was associated with a 26.2% decreased risk of malaria (delta-OFV -7.21), but 'when we incorporated SES into the full PK/PD model we encountered unacceptable model instability and confidence intervals could not be reliably acquired by bootstrap, so maternal SES was not included in the final model'. No point estimate is tabulated -- only the 26.2% univariate risk reduction -- so no coefficient can be encoded. The authors note it reduced intraindividual variability but did not modify the key exposure-response relationships or the baseline hazard, and recommend an externally validated socioeconomic measure in future studies (Discussion)."
+      notes = "SIGNIFICANT but NOT RETAINED. In univariate analysis each 1-unit increase in maternal socioeconomic status was associated with a 26.2% decreased risk of malaria (delta-OFV -7.21), but 'when we incorporated SES into the full PK/PD model we encountered unacceptable model instability and confidence intervals could not be reliably acquired by bootstrap, so maternal SES was not included in the final model'. No point estimate is tabulated -- only the 26.2% univariate risk reduction -- so no coefficient can be encoded. The authors note it reduced intraindividual variability but did not modify the key exposure-response relationships or the baseline hazard, and recommend an externally validated socioeconomic measure in future studies (Discussion)."
     ),
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened on the malaria hazard; explicitly reported as not associated with it."
+      notes = "Screened on the malaria hazard; explicitly reported as not associated with it."
     ),
     HAZ = list(
-      description        = "Height-for-age z-score (stunting axis).",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Height-for-age z-score (stunting axis).",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a time-varying covariate on the malaria hazard; explicitly reported as not associated with it. It does reach the hazard indirectly in the PK model, where it was significant on bioavailability but was not the retained malnutrition index -- see modellib('Wallender_2021_piperaquine')."
+      notes = "Screened as a time-varying covariate on the malaria hazard; explicitly reported as not associated with it. It does reach the hazard indirectly in the PK model, where it was significant on bioavailability but was not the retained malnutrition index -- see modellib('Wallender_2021_piperaquine')."
     ),
     WHZ = list(
-      description        = "Weight-for-height z-score (wasting axis).",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Weight-for-height z-score (wasting axis).",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a time-varying covariate on the malaria hazard; explicitly reported as not associated with it."
+      notes = "Screened as a time-varying covariate on the malaria hazard; explicitly reported as not associated with it."
     ),
     IPT_MATERNAL = list(
-      description        = "Maternal intermittent preventive treatment regimen received during pregnancy: sulfadoxine-pyrimethamine every 8 weeks, dihydroartemisinin-piperaquine every 8 weeks, or dihydroartemisinin-piperaquine every 4 weeks.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Maternal intermittent preventive treatment regimen received during pregnancy: sulfadoxine-pyrimethamine every 8 weeks, dihydroartemisinin-piperaquine every 8 weeks, or dihydroartemisinin-piperaquine every 4 weeks.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "sulfadoxine-pyrimethamine every 8 weeks",
-      notes              = "Screened on the malaria hazard and explicitly reported as not associated with it; also screened on the PK parameters, where 'the maternal chemoprevention regimen was not associated with PK exposure'. Table 1 gives the distribution. Not encoded because no coefficient is reported."
+      notes = "Screened on the malaria hazard and explicitly reported as not associated with it; also screened on the PK parameters, where 'the maternal chemoprevention regimen was not associated with PK exposure'. Table 1 gives the distribution. Not encoded because no coefficient is reported."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
-    cumhaz      = list(analyte = "Cumulative hazard of incident malaria", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    cumhaz = list(
+      analyte = "Cumulative hazard of incident malaria",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 280L,
-    n_studies      = 1L,
-    age_range      = "2 to 36 months (dosed from 8 to 104 weeks of age; malaria surveillance to 156 weeks)",
-    weight_median  = "8.6 kg (study median, used as the allometric reference)",
+    species = "human",
+    n_subjects = 280L,
+    n_studies = 1L,
+    age_range = "2 to 36 months (dosed from 8 to 104 weeks of age; malaria surveillance to 156 weeks)",
+    weight_median = "8.6 kg (study median, used as the allometric reference)",
     sex_female_pct = 48.9,
-    disease_state  = "Healthy Ugandan infants and toddlers receiving intermittent preventive treatment against Plasmodium falciparum malaria in a high-transmission setting with district-wide indoor residual spraying.",
-    dose_range     = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days per course, every 4 weeks (n = 96) or every 12 weeks (n = 184) from 8 to 104 weeks of age (Supplementary Table 1).",
-    regions        = "Tororo District, Uganda",
+    disease_state = "Healthy Ugandan infants and toddlers receiving intermittent preventive treatment against Plasmodium falciparum malaria in a high-transmission setting with district-wide indoor residual spraying.",
+    dose_range = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days per course, every 4 weeks (n = 96) or every 12 weeks (n = 184) from 8 to 104 weeks of age (Supplementary Table 1).",
+    regions = "Tororo District, Uganda",
     n_observations = 326L,
-    biomarkers     = "Repeated time to incident malaria, defined as a temperature above 38 degrees C or a history of fever in the last 24 h together with a positive thick blood smear, more than 14 days after any prior malaria episode. 326 events in 280 children.",
-    notes          = "Randomised controlled trial NCT02163447. Malaria incidence was 0.017 episodes per person-year in the every-4-weeks arm versus 0.322 in the every-12-weeks arm (incidence rate ratio 0.05, 95% CI 0.012-0.16), a protective efficacy of 95% (95% CI 84-99%). Exponential, Weibull and Gompertz baseline distributions were tested and the exponential (constant) baseline fit best. Confidence intervals are bootstrap-derived (n = 1000). Two structural limitations the authors state: there was no placebo arm, so the baseline hazard rests on the every-12-weeks arm adjusted for piperaquine exposure and may be underestimated; and the parasiticidal contribution of dihydroartemisinin was not quantified, so cumulative survival was assumed to return to 100% whenever DP was given. Estimation in NONMEM 7.4."
+    biomarkers = "Repeated time to incident malaria, defined as a temperature above 38 degrees C or a history of fever in the last 24 h together with a positive thick blood smear, more than 14 days after any prior malaria episode. 326 events in 280 children.",
+    notes = "Randomised controlled trial NCT02163447. Malaria incidence was 0.017 episodes per person-year in the every-4-weeks arm versus 0.322 in the every-12-weeks arm (incidence rate ratio 0.05, 95% CI 0.012-0.16), a protective efficacy of 95% (95% CI 84-99%). Exponential, Weibull and Gompertz baseline distributions were tested and the exponential (constant) baseline fit best. Confidence intervals are bootstrap-derived (n = 1000). Two structural limitations the authors state: there was no placebo arm, so the baseline hazard rests on the every-12-weeks arm adjusted for piperaquine exposure and may be underestimated; and the parasiticidal contribution of dihydroartemisinin was not quantified, so cumulative survival was assumed to return to 100% whenever DP was given. Estimation in NONMEM 7.4."
   )
 
   ini({

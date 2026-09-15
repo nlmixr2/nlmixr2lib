@@ -15,63 +15,63 @@ Mukonzo_2009_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Mukonzo 2009 Table 3 reports a multiplicative factor of 2.08 (95% CI 1.64, 2.52) on the apparent peripheral volume Vp/F for females relative to males. Cohort distribution (Results paragraph 1): 121 healthy adults of whom 57% (n = 69) female.",
-      source_name        = "sex"
+      notes = "Time-fixed per subject. Mukonzo 2009 Table 3 reports a multiplicative factor of 2.08 (95% CI 1.64, 2.52) on the apparent peripheral volume Vp/F for females relative to males. Cohort distribution (Results paragraph 1): 121 healthy adults of whom 57% (n = 69) female.",
+      source_name = "sex"
     ),
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H, CYP2B6*6) T-alleles per subject (0 / 1 / 2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H, CYP2B6*6) T-alleles per subject (0 / 1 / 2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports CYP2B6 c.516G>T (rs3745274) and c.785A>G (rs2279343) as in complete linkage disequilibrium in the Ugandan cohort, jointly defining the CYP2B6*6 haplotype. Either SNP alone deterministically identifies *6 status; the canonical column uses rs3745274 (T-allele count) to match existing nlmixr2lib precedent (Dhoro 2015, Schipani 2011, Olagunju 2018). Mukonzo 2009 Table 3 reports a -20.9% multiplicative shift on CL/F for homozygous mutant (T/T, count = 2) only; heterozygotes are pooled with wild-type and receive no shift (Results: 'Homozygous CYP2B6*6 (G516T, A785G) ... displayed 21 ... percent lower apparent oral clearance'). Cohort allele frequencies (Table 1, n = 121): 516G>T 35.6%, 785A>G 36.4%.",
-      source_name        = "CYP2B6 516G>T (rs3745274) and 785A>G (rs2279343); CYP2B6*6 haplotype"
+      notes = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports CYP2B6 c.516G>T (rs3745274) and c.785A>G (rs2279343) as in complete linkage disequilibrium in the Ugandan cohort, jointly defining the CYP2B6*6 haplotype. Either SNP alone deterministically identifies *6 status; the canonical column uses rs3745274 (T-allele count) to match existing nlmixr2lib precedent (Dhoro 2015, Schipani 2011, Olagunju 2018). Mukonzo 2009 Table 3 reports a -20.9% multiplicative shift on CL/F for homozygous mutant (T/T, count = 2) only; heterozygotes are pooled with wild-type and receive no shift (Results: 'Homozygous CYP2B6*6 (G516T, A785G) ... displayed 21 ... percent lower apparent oral clearance'). Cohort allele frequencies (Table 1, n = 121): 516G>T 35.6%, 785A>G 36.4%.",
+      source_name = "CYP2B6 516G>T (rs3745274) and 785A>G (rs2279343); CYP2B6*6 haplotype"
     ),
     SNP_CYP2B6_RS35303484_G_COUNT = list(
-      description        = "Count of CYP2B6 c.136A>G (rs35303484, p.M46V, CYP2B6*11) G-alleles per subject (0 / 1 / 2). 0 = AA homozygous wild-type, 1 = AG heterozygous, 2 = GG homozygous variant.",
-      units              = "(count, 0/1/2)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.136A>G (rs35303484, p.M46V, CYP2B6*11) G-alleles per subject (0 / 1 / 2). 0 = AA homozygous wild-type, 1 = AG heterozygous, 2 = GG homozygous variant.",
+      units = "(count, 0/1/2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports CYP2B6 c.136A>G (rs35303484) as defining the CYP2B6*11 phenotypic-null allele. Table 3 reports a -19.9% multiplicative shift on CL/F for homozygous mutant (G/G, count = 2) only; heterozygotes are pooled with wild-type and receive no shift (Results: 'CYP2B6*11 polymorphism resulted in a 20% lower efavirenz clearance following single-dose administration'). Cohort allele frequency (Table 1, n = 121): 136A>G 13.6%.",
-      source_name        = "CYP2B6 136A>G (rs35303484); CYP2B6*11"
+      notes = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports CYP2B6 c.136A>G (rs35303484) as defining the CYP2B6*11 phenotypic-null allele. Table 3 reports a -19.9% multiplicative shift on CL/F for homozygous mutant (G/G, count = 2) only; heterozygotes are pooled with wild-type and receive no shift (Results: 'CYP2B6*11 polymorphism resulted in a 20% lower efavirenz clearance following single-dose administration'). Cohort allele frequency (Table 1, n = 121): 136A>G 13.6%.",
+      source_name = "CYP2B6 136A>G (rs35303484); CYP2B6*11"
     ),
     SNP_ABCB1_RS3842 = list(
-      description        = "ABCB1 c.4036A>G (rs3842) mutant-allele carrier indicator (1 = G allele present, heterozygous or homozygous; 0 = AA wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ABCB1 c.4036A>G (rs3842) mutant-allele carrier indicator (1 = G allele present, heterozygous or homozygous; 0 = AA wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AA homozygous wild-type)",
-      notes              = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports rs3842 (c.4036A>G) as a previously uncharacterised polymorphism in the ABCB1 3' UTR. Table 3 reports a +25.7% multiplicative shift on relative bioavailability Frel for mutant carriers regardless of zygosity (Results: 'Mutant homozygote and heterozygote individuals for ABCB1 rs3842 exhibited 26% greater efavirenz bioavailability than wild-type carriers'). Encoded as binary (any G allele = 1) to match the carrier-grouping in the source paper. Cohort allele frequency (Table 1, n = 121): 4036A>G 16.8%.",
-      source_name        = "ABCB1 4036A>G (rs3842)"
+      notes = "Time-fixed (germline genotype). Mukonzo 2009 Table 1 reports rs3842 (c.4036A>G) as a previously uncharacterised polymorphism in the ABCB1 3' UTR. Table 3 reports a +25.7% multiplicative shift on relative bioavailability Frel for mutant carriers regardless of zygosity (Results: 'Mutant homozygote and heterozygote individuals for ABCB1 rs3842 exhibited 26% greater efavirenz bioavailability than wild-type carriers'). Encoded as binary (any G allele = 1) to match the carrier-grouping in the source paper. Cohort allele frequency (Table 1, n = 121): 4036A>G 16.8%.",
+      source_name = "ABCB1 4036A>G (rs3842)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 121L,
-    n_studies        = 1L,
-    n_observations   = 402L,
-    age_range        = "mean 26.5 years (SD 8.2)",
-    weight_range     = "mean 57.5 kg (SD 5.9)",
-    sex_female_pct   = 57,
-    race_ethnicity   = c(Ugandan = 100),
-    disease_state    = "healthy adult volunteers",
-    dose_range       = "600 mg single oral dose efavirenz (Stocrin)",
-    regions          = "Uganda (Kampala)",
-    sampling_window  = "intensive (n = 32): 0, 1, 2, 4, 8, 24, 48, and 72 h post-dose; sparse (n = 89): 4 and 24 h post-dose",
+    species = "human",
+    n_subjects = 121L,
+    n_studies = 1L,
+    n_observations = 402L,
+    age_range = "mean 26.5 years (SD 8.2)",
+    weight_range = "mean 57.5 kg (SD 5.9)",
+    sex_female_pct = 57,
+    race_ethnicity = c(Ugandan = 100),
+    disease_state = "healthy adult volunteers",
+    dose_range = "600 mg single oral dose efavirenz (Stocrin)",
+    regions = "Uganda (Kampala)",
+    sampling_window = "intensive (n = 32): 0, 1, 2, 4, 8, 24, 48, and 72 h post-dose; sparse (n = 89): 4 and 24 h post-dose",
     biochem_baseline = "mean serum albumin 41.0 g/L (SD 8.9); ALT 10.8 U/L (SD 9.7); urea 4.14 mmol/L (SD 9.0); creatinine 108.4 umol/L (SD 37.4) -- Results paragraph 1",
-    cyp2b6_freq      = "CYP2B6*6 (rs3745274/rs2279343, complete LD): 516G>T 35.6%, 785A>G 36.4%. CYP2B6*11 (rs35303484): 136A>G 13.6% (Mukonzo 2009 Table 1).",
-    abcb1_freq       = "ABCB1 rs3842 (4036A>G): 16.8% (Mukonzo 2009 Table 1).",
-    notes            = "Adult Ugandan healthy volunteers receiving a single 600 mg oral efavirenz dose; plasma concentrations measured by HPLC-UV (LLOQ 0.35 micromol/L). NONMEM VI FOCE-INTER estimation with stepwise univariate covariate inclusion (P < 0.05) and backward elimination (P < 0.01). HIV / hepatitis B serology and liver / renal function tests confirmed health; subjects were drug-free for one week pre-dose."
+    cyp2b6_freq = "CYP2B6*6 (rs3745274/rs2279343, complete LD): 516G>T 35.6%, 785A>G 36.4%. CYP2B6*11 (rs35303484): 136A>G 13.6% (Mukonzo 2009 Table 1).",
+    abcb1_freq = "ABCB1 rs3842 (4036A>G): 16.8% (Mukonzo 2009 Table 1).",
+    notes = "Adult Ugandan healthy volunteers receiving a single 600 mg oral efavirenz dose; plasma concentrations measured by HPLC-UV (LLOQ 0.35 micromol/L). NONMEM VI FOCE-INTER estimation with stepwise univariate covariate inclusion (P < 0.05) and backward elimination (P < 0.01). HIV / hepatitis B serology and liver / renal function tests confirmed health; subjects were drug-free for one week pre-dose."
   )
 
   ini({

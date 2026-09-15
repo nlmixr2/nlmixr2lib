@@ -1,6 +1,6 @@
 Morcos_2023_copanlisib <- function() {
   description <- "Three-compartment population PK model for intravenous copanlisib in adults with advanced solid tumors or non-Hodgkin lymphoma, pooled across nine phase I-III studies (n = 712), with categorical covariate effects of rifampicin and itraconazole comedication, sex, hepatic impairment, Japanese region and CHRONOS-3 study membership on clearance and central volume, and an infusion-time / study-phase stratified log-additive residual error"
-  reference   <- paste(
+  reference <- paste(
     "Morcos PN, Moss J, Austin R, Hiemeyer F, Zinzani PL, Beckert V,",
     "Mongay Soler L, Childs BH, Garmann D.",
     "Copanlisib population pharmacokinetics from phase I-III studies and",
@@ -9,16 +9,16 @@ Morcos_2023_copanlisib <- function() {
     "doi:10.1002/psp4.13000.",
     sep = " "
   )
-  vignette    <- "Morcos_2023_copanlisib"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  vignette <- "Morcos_2023_copanlisib"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Retained on BOTH clearance and central volume. Morcos 2023 Results",
         "'PopPK meta-analyses': 'females had 42.9% lower V1 than males' and",
         "'females had 16.7% lower CL than males'. The Table 2 footnotes d and e",
@@ -29,14 +29,14 @@ Morcos_2023_copanlisib <- function() {
         "here (see the vignette Errata).",
         sep = " "
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     HEPIMP = list(
-      description        = "Any hepatic impairment (NCI ODWG group >= 2) versus normal hepatic function",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any hepatic impairment (NCI ODWG group >= 2) versus normal hepatic function",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, NCI ODWG group 1)",
-      notes              = paste(
+      notes = paste(
         "Morcos 2023 Table 2 describes theta_NCICL as the 'influence of NCI for",
         "any hepatic impairment category relative to normal hepatic function on",
         "clearance', i.e. mild, moderate and severe are pooled into a single",
@@ -45,14 +45,14 @@ Morcos_2023_copanlisib <- function() {
         "so HEPIMP = 1 in 15.9% of the 712 patients.",
         sep = " "
       ),
-      source_name        = "NCI"
+      source_name = "NCI"
     ),
     REGION_JAPAN = list(
-      description        = "Enrolled at a Japanese study site",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Enrolled at a Japanese study site",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all non-Japan regions: North America, Europe, mainland China, other Asia, other)",
-      notes              = paste(
+      notes = paste(
         "Morcos 2023 Results: 'patients from Japan had 20.4% lower CL than",
         "patients from other regions'. Table 1 gives 61 of 712 (8.6%) Japanese",
         "patients. Table S2 lists Europe, North America, mainland China, Japan",
@@ -61,14 +61,14 @@ Morcos_2023_copanlisib <- function() {
         "recorded in covariatesDataExcluded.",
         sep = " "
       ),
-      source_name        = "Region = Japan"
+      source_name = "Region = Japan"
     ),
     CONMED_RIFAMPICIN = list(
-      description        = "Concomitant rifampicin (strong CYP3A4 inducer) coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin (strong CYP3A4 inducer) coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no rifampicin coadministration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying. Morcos 2023 Table S2: 'Covariate is set to 1 during",
         "periods of rifampin comedication in study 16270 and set to 0 at all",
         "other times for patients in study 16270, and set to 0 at all times for",
@@ -79,28 +79,28 @@ Morcos_2023_copanlisib <- function() {
         "uses the INN 'rifampicin'.",
         sep = " "
       ),
-      source_name        = "Comedication with rifampin in study 16270"
+      source_name = "Comedication with rifampin in study 16270"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole (strong CYP3A4 inhibitor) coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole (strong CYP3A4 inhibitor) coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no itraconazole coadministration)",
-      notes              = paste(
+      notes = paste(
         "Time-varying, defined exactly as CONMED_RIFAMPICIN but for arm A of",
         "study 16270, which received itraconazole 200 mg twice daily on cycle 1",
         "day 12 and 200 mg once daily on cycle 1 days 13-21 (Morcos 2023",
         "Tables S1 and S2). Retained on CL only (-36.1%).",
         sep = " "
       ),
-      source_name        = "Comedication with itraconazole in study 16270"
+      source_name = "Comedication with itraconazole in study 16270"
     ),
     STUDY_CHRONOS3 = list(
-      description        = "Enrolled in Bayer study 17067 (CHRONOS-3, NCT02367040)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Enrolled in Bayer study 17067 (CHRONOS-3, NCT02367040)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any of the eight phase I / phase II studies in the pooled analysis)",
-      notes              = paste(
+      notes = paste(
         "Carries two distinct roles in this model. (1) Structural: a -18.4%",
         "effect on clearance (Morcos 2023 Table 2, theta_17067CL). The authors",
         "note this 'could not be robustly assigned to co-administration with",
@@ -114,7 +114,7 @@ Morcos_2023_copanlisib <- function() {
         "from study 17067 (Table 1).",
         sep = " "
       ),
-      source_name        = "Study 17067"
+      source_name = "Study 17067"
     )
   )
 
@@ -129,79 +129,79 @@ Morcos_2023_copanlisib <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Baseline body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as an allometric term P = Ptv * (BW/BWmed)^theta (Morcos 2023 Methods); not retained. Pooled median 70.0 kg (range 41.1-165), Table 1."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as an allometric term P = Ptv * (BW/BWmed)^theta (Morcos 2023 Methods); not retained. Pooled median 70.0 kg (range 41.1-165), Table 1."
     ),
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened (Table S2); not retained. Pooled median 63 years (range 20-91), Table 1."
+      units = "years",
+      type = "continuous",
+      notes = "Screened (Table S2); not retained. Pooled median 63 years (range 20-91), Table 1."
     ),
     ALB = list(
       description = "Baseline serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened (Table S2, reported there in g/dL); not retained. Pooled median 4.14 g/dL = 41.4 g/L (range 1.6-6.5 g/dL), Table 1."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened (Table S2, reported there in g/dL); not retained. Pooled median 4.14 g/dL = 41.4 g/L (range 1.6-6.5 g/dL), Table 1."
     ),
     CRCL = list(
       description = "Baseline estimated glomerular filtration rate",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened as eGFR (Table S2); not retained. Pooled median 87.9 mL/min (range 13.64-155.91), Table 1."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as eGFR (Table S2); not retained. Pooled median 87.9 mL/min (range 13.64-155.91), Table 1."
     ),
     REGION_EUROPE = list(
       description = "Enrolled at a European study site",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Table S2); not retained. 351 of 712 patients (49.3%), Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Table S2); not retained. 351 of 712 patients (49.3%), Table 1."
     ),
     REGION_USA = list(
       description = "Enrolled at a North American study site",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'Region = North America' (Table S2); not retained. 147 of 712 patients (20.6%), Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'Region = North America' (Table S2); not retained. 147 of 712 patients (20.6%), Table 1."
     ),
     REGION_CHINA = list(
       description = "Enrolled at a mainland China study site",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (Table S2); not retained. 70 of 712 patients (9.8%), Table 1."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (Table S2); not retained. 70 of 712 patients (9.8%), Table 1."
     ),
     REGION_ROW = list(
       description = "Enrolled outside Europe, North America, mainland China and Japan",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'Region = Others' (Table S2); not retained. Table 1 splits this into other Asia (28, 3.9%) and other (55, 7.7%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'Region = Others' (Table S2); not retained. Table 1 splits this into other Asia (28, 3.9%) and other (55, 7.7%)."
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "copanlisib", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "copanlisib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "copanlisib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "copanlisib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 712,
-    n_studies      = 9,
+    species = "human",
+    n_subjects = 712,
+    n_studies = 9,
     n_observations = 5958,
-    age_range      = "20-91 years",
-    age_median     = "63 years",
-    weight_range   = "41.1-165 kg",
-    weight_median  = "70.0 kg",
+    age_range = "20-91 years",
+    age_median = "63 years",
+    weight_range = "41.1-165 kg",
+    weight_median = "70.0 kg",
     sex_female_pct = 52.4,
-    disease_state  = "advanced solid tumors, aggressive non-Hodgkin lymphoma, or indolent non-Hodgkin lymphoma (chiefly relapsed follicular lymphoma); one phase I study also enrolled healthy participants alongside hepatic- and renal-impairment cohorts",
-    dose_range     = "0.1-1.2 mg/kg or 12-60 mg flat, given as a 1-h intravenous infusion on days 1, 8 and 15 of a 28-day cycle (3 weeks on / 1 week off); the approved and phase III regimen is 60 mg flat",
-    regions        = "Europe (49.3%), North America (20.6%), mainland China (9.8%), Japan (8.6%), other Asia (3.9%), other (7.7%)",
+    disease_state = "advanced solid tumors, aggressive non-Hodgkin lymphoma, or indolent non-Hodgkin lymphoma (chiefly relapsed follicular lymphoma); one phase I study also enrolled healthy participants alongside hepatic- and renal-impairment cohorts",
+    dose_range = "0.1-1.2 mg/kg or 12-60 mg flat, given as a 1-h intravenous infusion on days 1, 8 and 15 of a 28-day cycle (3 weeks on / 1 week off); the approved and phase III regimen is 60 mg flat",
+    regions = "Europe (49.3%), North America (20.6%), mainland China (9.8%), Japan (8.6%), other Asia (3.9%), other (7.7%)",
     hepatic_function = "84.1% normal, 14.9% mild, 0.4% moderate, 0.6% severe (NCI ODWG)",
-    renal_function   = "46.8% normal, 40.2% mild, 11.8% moderate, 1.3% severe (NCI criteria)",
-    albumin_median   = "4.14 g/dL (range 1.6-6.5)",
-    egfr_median      = "87.9 mL/min (range 13.64-155.91)",
-    co_medication    = "rituximab 375 mg/m2 in study 17067 (CHRONOS-3) only; rifampicin or itraconazole in the dedicated DDI study 16270 only",
-    notes          = paste(
+    renal_function = "46.8% normal, 40.2% mild, 11.8% moderate, 1.3% severe (NCI criteria)",
+    albumin_median = "4.14 g/dL (range 1.6-6.5)",
+    egfr_median = "87.9 mL/min (range 13.64-155.91)",
+    co_medication = "rituximab 375 mg/m2 in study 17067 (CHRONOS-3) only; rifampicin or itraconazole in the dedicated DDI study 16270 only",
+    notes = paste(
       "Baseline demographics are Morcos 2023 Table 1, column 'Pooled PopPK",
       "analyses'; the per-study designs, dosing regimens and PK sampling",
       "schedules are Table S1. The nine studies are 12871, 15205, 16270,",

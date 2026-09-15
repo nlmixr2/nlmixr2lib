@@ -8,51 +8,51 @@ Desai_2016_isavuconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (1 = Child-Pugh Class A, 0 = healthy or moderate)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (1 = Child-Pugh Class A, 0 = healthy or moderate)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy or moderate; paired with HEPIMP_MOD so all-zero on both indicators selects the healthy reference)",
-      notes              = "Classification scheme: Child-Pugh Class A (composite score 5-6 across bilirubin, albumin, prothrombin time). Desai 2016 used Child-Pugh A for the mild stratum (Methods 'Subjects'; Table 3 reports mild Child-Pugh scores 5.18-5.75 across the two source studies). Renamed from the paper's liver-function index HEP1 to canonical HEPIMP_MILD per inst/references/covariate-columns.md.",
-      source_name        = "HEP1"
+      notes = "Classification scheme: Child-Pugh Class A (composite score 5-6 across bilirubin, albumin, prothrombin time). Desai 2016 used Child-Pugh A for the mild stratum (Methods 'Subjects'; Table 3 reports mild Child-Pugh scores 5.18-5.75 across the two source studies). Renamed from the paper's liver-function index HEP1 to canonical HEPIMP_MILD per inst/references/covariate-columns.md.",
+      source_name = "HEP1"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = Child-Pugh Class B, 0 = healthy or mild)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = Child-Pugh Class B, 0 = healthy or mild)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy or mild; paired with HEPIMP_MILD so all-zero on both indicators selects the healthy reference)",
-      notes              = "Classification scheme: Child-Pugh Class B (composite score 7-9 across bilirubin, albumin, prothrombin time). Desai 2016 used Child-Pugh B for the moderate stratum (Methods 'Subjects'; Table 3 reports moderate Child-Pugh scores 7.43-8.31 across the two source studies). Renamed from the paper's liver-function index HEP2 to canonical HEPIMP_MOD per inst/references/covariate-columns.md.",
-      source_name        = "HEP2"
+      notes = "Classification scheme: Child-Pugh Class B (composite score 7-9 across bilirubin, albumin, prothrombin time). Desai 2016 used Child-Pugh B for the moderate stratum (Methods 'Subjects'; Table 3 reports moderate Child-Pugh scores 7.43-8.31 across the two source studies). Renamed from the paper's liver-function index HEP2 to canonical HEPIMP_MOD per inst/references/covariate-columns.md.",
+      source_name = "HEP2"
     ),
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference BMI 27.00 kg/m^2 (Desai 2016 best-covariate model equation on p. 3028; corresponds to the median of the pooled cohort). Linear-deviation effect on Vp: Vp = Vp_pop * (1 + e_bmi_vp * (BMI - 27)).",
-      source_name        = "BMI"
+      notes = "Reference BMI 27.00 kg/m^2 (Desai 2016 best-covariate model equation on p. 3028; corresponds to the median of the pooled cohort). Linear-deviation effect on Vp: Vp = Vp_pop * (1 + e_bmi_vp * (BMI - 27)).",
+      source_name = "BMI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 96,
-    n_studies       = 2,
-    age_range       = "37-64 years (median 50 healthy, 54 mild, 54 moderate per Table 2)",
-    weight_range    = "53-107 kg (median 78 healthy, 76 mild, 76 moderate per Table 2)",
-    bmi_range       = "21-34 kg/m^2 (median 27 healthy, 28 mild, 26 moderate per Table 2)",
-    sex_female_pct  = 34,
-    disease_state   = "Healthy controls and adults with mild (Child-Pugh A) or moderate (Child-Pugh B) hepatic impairment due to either alcoholic cirrhosis (Study 1, 48 subjects) or chronic hepatitis B/C (Study 2, 48 subjects). Equal n=32 in each of three hepatic-impairment strata.",
+    species = "human",
+    n_subjects = 96,
+    n_studies = 2,
+    age_range = "37-64 years (median 50 healthy, 54 mild, 54 moderate per Table 2)",
+    weight_range = "53-107 kg (median 78 healthy, 76 mild, 76 moderate per Table 2)",
+    bmi_range = "21-34 kg/m^2 (median 27 healthy, 28 mild, 26 moderate per Table 2)",
+    sex_female_pct = 34,
+    disease_state = "Healthy controls and adults with mild (Child-Pugh A) or moderate (Child-Pugh B) hepatic impairment due to either alcoholic cirrhosis (Study 1, 48 subjects) or chronic hepatitis B/C (Study 2, 48 subjects). Equal n=32 in each of three hepatic-impairment strata.",
     hepatic_function = "Child-Pugh A (mild; mean composite score 5.18 alcoholic cirrhosis cohort / 5.75 hepatitis B/C cohort) and Child-Pugh B (moderate; mean 7.43 / 8.31). Healthy controls matched to impaired subjects on age (within +-7 years), sex, body weight (within +-8 kg), and BMI (within +-4 kg/m^2). See Table 3.",
-    dose_range      = "Single 100 mg isavuconazole equivalent (186 mg isavuconazonium sulfate prodrug) administered either orally (p.o.) or as a 2-h continuous intravenous infusion.",
-    smoking_status  = "Healthy 59% smokers; mild 75%; moderate 75% (Table 2).",
-    notes           = "Data pooled across two Phase 1 single-dose hepatic-impairment studies for combined popPK analysis. Plasma sampling 0.5 to 480 h post-dose. 2,016 total isavuconazole plasma concentrations. Estimation in NONMEM 7.2 with FOCE method. Severe hepatic impairment (Child-Pugh C) was not studied."
+    dose_range = "Single 100 mg isavuconazole equivalent (186 mg isavuconazonium sulfate prodrug) administered either orally (p.o.) or as a 2-h continuous intravenous infusion.",
+    smoking_status = "Healthy 59% smokers; mild 75%; moderate 75% (Table 2).",
+    notes = "Data pooled across two Phase 1 single-dose hepatic-impairment studies for combined popPK analysis. Plasma sampling 0.5 to 480 h post-dose. 2,016 total isavuconazole plasma concentrations. Estimation in NONMEM 7.2 with FOCE method. Severe hepatic impairment (Child-Pugh C) was not studied."
   )
 
   ini({

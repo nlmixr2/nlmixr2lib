@@ -15,71 +15,71 @@ Eissing_2024_finerenone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "finerenone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "finerenone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on Vc/F with reference 87 kg (median in FIGARO-DKD PK dataset, per supplement NONMEM code header).",
-      source_name        = "BW0"
+      notes = "Power scaling on Vc/F with reference 87 kg (median in FIGARO-DKD PK dataset, per supplement NONMEM code header).",
+      source_name = "BW0"
     ),
     CRCL = list(
-      description        = "CKD-EPI estimated glomerular filtration rate (eGFR)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "CKD-EPI estimated glomerular filtration rate (eGFR)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F and inversely on F1 with reference 60.6 mL/min/1.73 m^2 (FIGARO-DKD median). Derived per CKD Epidemiology Collaboration formula (eGFR-EPI). Source column EGFREP in the NONMEM supplement.",
-      source_name        = "EGFREP"
+      notes = "Power scaling on CL/F and inversely on F1 with reference 60.6 mL/min/1.73 m^2 (FIGARO-DKD median). Derived per CKD Epidemiology Collaboration formula (eGFR-EPI). Source column EGFREP in the NONMEM supplement.",
+      source_name = "EGFREP"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F only (does NOT enter F1) with reference 73 U/L (FIGARO-DKD median). Replaces serum creatinine and gamma-glutamyl transferase as the retained hepatic-secretion / liver-function descriptor in the FIGARO-DKD final PK model.",
-      source_name        = "ALP"
+      notes = "Power scaling on CL/F only (does NOT enter F1) with reference 73 U/L (FIGARO-DKD median). Replaces serum creatinine and gamma-glutamyl transferase as the retained hepatic-secretion / liver-function descriptor in the FIGARO-DKD final PK model.",
+      source_name = "ALP"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F and inversely on F1 with reference 1.97 m^2 (FIGARO-DKD median). Selected in FIGARO-DKD in preference to body height (which was the analogous descriptor retained in FIDELIO-DKD).",
-      source_name        = "BSA"
+      notes = "Power scaling on CL/F and inversely on F1 with reference 1.97 m^2 (FIGARO-DKD median). Selected in FIGARO-DKD in preference to body height (which was the analogous descriptor retained in FIDELIO-DKD).",
+      source_name = "BSA"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F and inversely on F1 with reference 71 g/L (= 7.1 g/dL FIGARO-DKD median in the supplement code). The supplement reports the reference and coefficient in g/dL; the model converts the canonical TPRO g/L input to g/dL inline via tpro_gdL <- TPRO * 0.1 so the structural coefficient remains aligned with its original calibration (per inst/references/covariate-columns.md TPRO Section g/L canonical convention).",
-      source_name        = "PROT"
+      notes = "Power scaling on CL/F and inversely on F1 with reference 71 g/L (= 7.1 g/dL FIGARO-DKD median in the supplement code). The supplement reports the reference and coefficient in g/dL; the model converts the canonical TPRO g/L input to g/dL inline via tpro_gdL <- TPRO * 0.1 so the structural coefficient remains aligned with its original calibration (per inst/references/covariate-columns.md TPRO Section g/L canonical convention).",
+      source_name = "PROT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3102,
-    n_studies      = 1,
-    age_range      = "median (5th-95th percentile) not separately tabulated for the PK subpopulation; FIGARO-DKD overall median age 64 years",
-    age_median     = "65 years (FIGARO-DKD population)",
-    weight_range   = "5th-95th percentile 58.0-123.6 kg",
-    weight_median  = "87 kg (FIGARO-DKD PK dataset; reference in NONMEM code header)",
+    species = "human",
+    n_subjects = 3102,
+    n_studies = 1,
+    age_range = "median (5th-95th percentile) not separately tabulated for the PK subpopulation; FIGARO-DKD overall median age 64 years",
+    age_median = "65 years (FIGARO-DKD population)",
+    weight_range = "5th-95th percentile 58.0-123.6 kg",
+    weight_median = "87 kg (FIGARO-DKD PK dataset; reference in NONMEM code header)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Adults with chronic kidney disease (CKD) and type 2 diabetes (T2D); eGFR 25-90 mL/min/1.73 m^2, urine albumin-creatinine ratio 30-5000 mg/g, and serum potassium <= 4.8 mmol/L at screening. Median (5th-95th percentile) eGFR-EPI was 67.6 (33.3-103) mL/min/1.73 m^2 and median UACR was 308 (36.8-2115) mg/g.",
-    dose_range     = "10 or 20 mg oral once daily, with potassium- and eGFR-guided dose titration during the trial (starting 10 mg if baseline eGFR < 60 mL/min/1.73 m^2 and 20 mg if baseline eGFR >= 60); average dose level over time was 17.5 mg in FIGARO-DKD.",
-    regions        = "Global multinational phase 3 trial (NCT02540993; FIGARO-DKD).",
-    notes          = "PK dataset: 8142 valid finerenone plasma concentrations from 3102 patients (Results, Pharmacokinetics, paragraph 1). Median exposure parameters were 10% (AUC) and 7% (Cmax) lower than the more advanced-disease FIDELIO-DKD cohort. The full FIDELITY pool (FIGARO-DKD + FIDELIO-DKD) randomized 13026 participants. This model file extracts the FIGARO-DKD final population PK model only; the paper's downstream serum-potassium, UACR, eGFR, and parametric time-to-event PK/PD models use individual posthoc CL/F and F1 from this PK fit as fixed inputs and are out of scope for the compact nlmixr2lib fittable popPK/PD format."
+    disease_state = "Adults with chronic kidney disease (CKD) and type 2 diabetes (T2D); eGFR 25-90 mL/min/1.73 m^2, urine albumin-creatinine ratio 30-5000 mg/g, and serum potassium <= 4.8 mmol/L at screening. Median (5th-95th percentile) eGFR-EPI was 67.6 (33.3-103) mL/min/1.73 m^2 and median UACR was 308 (36.8-2115) mg/g.",
+    dose_range = "10 or 20 mg oral once daily, with potassium- and eGFR-guided dose titration during the trial (starting 10 mg if baseline eGFR < 60 mL/min/1.73 m^2 and 20 mg if baseline eGFR >= 60); average dose level over time was 17.5 mg in FIGARO-DKD.",
+    regions = "Global multinational phase 3 trial (NCT02540993; FIGARO-DKD).",
+    notes = "PK dataset: 8142 valid finerenone plasma concentrations from 3102 patients (Results, Pharmacokinetics, paragraph 1). Median exposure parameters were 10% (AUC) and 7% (Cmax) lower than the more advanced-disease FIDELIO-DKD cohort. The full FIDELITY pool (FIGARO-DKD + FIDELIO-DKD) randomized 13026 participants. This model file extracts the FIGARO-DKD final population PK model only; the paper's downstream serum-potassium, UACR, eGFR, and parametric time-to-event PK/PD models use individual posthoc CL/F and F1 from this PK fit as fixed inputs and are out of scope for the compact nlmixr2lib fittable popPK/PD format."
   )
 
   ini({

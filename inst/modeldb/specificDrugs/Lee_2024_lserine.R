@@ -8,45 +8,51 @@ Lee_2024_lserine <- function() {
   # biological matrix.
   compartmentData <- list(
     central = list(
-      analyte = "L-serine (AST-001, exogenous only)", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "L-serine (AST-001, exogenous only)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "L-serine (AST-001, exogenous only)", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "L-serine (AST-001, exogenous only)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     effect = list(
-      analyte = "L-serine effect-site concentration (Ce)", units = "ug/mL",
-      specimen = "not applicable", verified = TRUE
+      analyte = "L-serine effect-site concentration (Ce)",
+      units = "ug/mL",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Empirical allometric scaling of the fixed upstream adult PK parameters to",
         "pediatric size, normalized to a 70 kg adult. Exponent 0.75 on CL/F and Q/F",
         "and 1 on V1/F and V2/F, both fixed rather than estimated (Lee 2024 'Pharmacokinetic",
         "model'; Lee 2022 Equation 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Only covariate retained in the final model. Power function on the baseline",
         "K-VABS-II-ABC score E0, normalized to the 5-year median age of the analysis",
         "population (Lee 2024 Table 1 footnote: 'beta_age, exponent of power relationship",
         "between normalized age (5 years) and E0')."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
@@ -59,36 +65,36 @@ Lee_2024_lserine <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a PD covariate but not retained in the final model. Study population was 120 male (82.8%) / 25 female (17.2%)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a PD covariate but not retained in the final model. Study population was 120 male (82.8%) / 25 female (17.2%)."
     ),
     SERINE_BL = list(
       description = "Baseline total serum serine concentration",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a PD covariate but not retained in the final model. Median (min-max) 128 (74.8-609) umol/L."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a PD covariate but not retained in the final model. Median (min-max) 128 (74.8-609) umol/L."
     )
   )
 
   population <- list(
-    n_subjects    = 145,
+    n_subjects = 145,
     n_observations = 570,
-    n_studies     = 1,
-    species       = "human",
-    age_range     = "2-11 years",
-    weight_range  = "10.7-58.1 kg (median 20.5)",
+    n_studies = 1,
+    species = "human",
+    age_range = "2-11 years",
+    weight_range = "10.7-58.1 kg (median 20.5)",
     sex_female_pct = 17.2,
     race_ethnicity = "Korean",
     disease_state = "Autism spectrum disorder (pediatric)",
-    dose_range    = paste(
+    dose_range = paste(
       "Weight-tiered fixed doses. High-dose arm 2, 4, 7, 10 and 14 g twice daily for",
       "the 10-14, 15-24, 25-37, 38-51 and 52-60 kg weight bands respectively",
       "(~400 mg/kg/day); low-dose arm half of those (~200 mg/kg/day). 12-week primary",
       "period plus a 12-week extension; follow-up at 36 weeks."
     ),
-    regions       = "Republic of Korea",
-    notes         = paste(
+    regions = "Republic of Korea",
+    notes = paste(
       "Phase II multi-center, randomized, double-blind, placebo-controlled trial",
       "(KCT0007519); 49 placebo / 50 low-dose / 46 high-dose. NO pediatric PK samples",
       "were collected -- the PK layer is fixed from the upstream healthy-adult model",

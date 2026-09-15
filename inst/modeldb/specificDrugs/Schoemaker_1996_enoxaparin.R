@@ -30,8 +30,8 @@ Schoemaker_1996_enoxaparin <- function() {
   )
   vignette <- "Schoemaker_1996_low_molecular_weight_heparin_modeling"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -45,14 +45,14 @@ Schoemaker_1996_enoxaparin <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "Not reported in Schoemaker 1996; see the upstream Stiekema 1993 paper.",
-    weight_range   = "Not reported in Schoemaker 1996; see the upstream Stiekema 1993 paper.",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "Not reported in Schoemaker 1996; see the upstream Stiekema 1993 paper.",
+    weight_range = "Not reported in Schoemaker 1996; see the upstream Stiekema 1993 paper.",
     sex_female_pct = NA,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers in an open randomised cross-over study comparing",
       "the anti-clotting effects of three low molecular weight heparins",
       "(Fragmin / Clexane / Fraxiparine) and the glycosaminoglycuronan",
@@ -60,15 +60,15 @@ Schoemaker_1996_enoxaparin <- function() {
       "of all four drugs on separate occasions. Only the Clexane (enoxaparine)",
       "arm is modelled here (Schoemaker 1996 Example 2)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous bolus. The Schoemaker 1996 paper does not list the absolute",
       "dose amount in either anti-Xa IU or mg; see the upstream Stiekema 1993",
       "report for the dose specification. Figure 2 (subjects 4 and 5) shows",
       "peak anti-Xa activity in the 0.4-1.0 IU/mL range, consistent with a",
       "single IV bolus of approximately 5000 anti-Xa IU (~50 mg of enoxaparine)."
     ),
-    regions        = "Single-centre, Centre for Human Drug Research, Leiden, The Netherlands.",
-    notes          = paste(
+    regions = "Single-centre, Centre for Human Drug Research, Leiden, The Netherlands.",
+    notes = paste(
       "Baseline demographics are reported in the upstream Stiekema 1993 paper",
       "(reference [10] of Schoemaker 1996) which was NOT on disk at extraction",
       "time. The Schoemaker 1996 paper itself reports only that 12 subjects",

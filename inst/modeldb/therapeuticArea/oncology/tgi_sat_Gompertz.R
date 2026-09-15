@@ -1,4 +1,4 @@
-tgi_sat_Gompertz<- function() {
+tgi_sat_Gompertz <- function() {
   description <- "One compartment TGI model with tumor growth proportional to tumor size through a generalized logistic function, with saturation."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
@@ -7,8 +7,8 @@ tgi_sat_Gompertz<- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
     tumor_size = list(analyte = "tumour cells", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 

@@ -10,24 +10,24 @@ Cao_2013_PAmAb <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "PAmAb", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "PAmAb", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "PAmAb", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "PAmAb", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "PAmAb", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "PAmAb", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "PAmAb", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "healthy adult volunteers (per Subramanian 2005 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "healthy adult volunteers (per Subramanian 2005 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "Phase 1 single-dose study of PAmAb (a fully human monoclonal antibody against Bacillus anthracis protective antigen) in healthy volunteers (Subramanian 2005).",
-    dose_range     = "1, 3, 10, 20, 40 mg/kg IV (Cao 2013 Figure 5 PAmAb panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Subramanian GM et al. Clin Infect Dis 2005;41:12-20 (PMID 15937757). sigma_tight was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
+    disease_state = "Phase 1 single-dose study of PAmAb (a fully human monoclonal antibody against Bacillus anthracis protective antigen) in healthy volunteers (Subramanian 2005).",
+    dose_range = "1, 3, 10, 20, 40 mg/kg IV (Cao 2013 Figure 5 PAmAb panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Subramanian GM et al. Clin Infect Dis 2005;41:12-20 (PMID 15937757). sigma_tight was fixed at 0.950 in Cao 2013 (not estimated; CV reported as not applicable in Table 2)."
   )
 
   ini({

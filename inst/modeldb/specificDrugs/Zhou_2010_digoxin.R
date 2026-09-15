@@ -8,55 +8,55 @@ Zhou_2010_digoxin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "digoxin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "digoxin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "digoxin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 62.9 kg (population mean, Zhou 2010 Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.0101 * (WT - 62.9)). Population observed range 34-91 kg.",
-      source_name        = "WT"
+      notes = "Reference 62.9 kg (population mean, Zhou 2010 Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.0101 * (WT - 62.9)). Population observed range 34-91 kg.",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine (baseline)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine (baseline)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 126.8 umol/L (population mean, Zhou 2010 Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.00120 * (CREAT - 126.8)). Source paper column 'Cr' in umol/L; population observed range 36-686 umol/L. Patients with serious hepatic or renal dysfunction were excluded.",
-      source_name        = "Cr"
+      notes = "Reference 126.8 umol/L (population mean, Zhou 2010 Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.00120 * (CREAT - 126.8)). Source paper column 'Cr' in umol/L; population observed range 36-686 umol/L. Patients with serious hepatic or renal dysfunction were excluded.",
+      source_name = "Cr"
     ),
     CONMED_SPIRON = list(
-      description        = "Concomitant spironolactone coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant spironolactone coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant spironolactone)",
-      notes              = "32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone (Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.412 * CONMED_SPIRON), i.e. spironolactone reduces digoxin Cl/F by ~41%, consistent with spironolactone's inhibition of renal-tubular digoxin secretion (Zhou 2010 Discussion).",
-      source_name        = "SPI"
+      notes = "32 of 119 subjects (27%) in Zhou 2010 were coadministered spironolactone (Table 1). Applied as a multiplicative linear-deviation effect on Cl/F: cl *= (1 - 0.412 * CONMED_SPIRON), i.e. spironolactone reduces digoxin Cl/F by ~41%, consistent with spironolactone's inhibition of renal-tubular digoxin secretion (Zhou 2010 Discussion).",
+      source_name = "SPI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 119L,
-    n_studies       = 1L,
-    age_range       = "60-88 years (mean 71.0)",
-    age_median      = "71 years (mean; Zhou 2010 Table 1)",
-    weight_range    = "34-91 kg (mean 62.9)",
-    weight_median   = "62.9 kg (mean; Zhou 2010 Table 1)",
-    sex_female_pct  = 42,
-    race_ethnicity  = "Han Chinese (PLA General Hospital of Air Force, Beijing)",
-    disease_state   = "Older patients (>=60 years) on chronic oral digoxin (>=7 days); 113/119 (95%) with congestive heart failure of varying severity. Patients with serious hepatic or renal dysfunction were excluded.",
-    dose_range      = "Oral digoxin tablets 0.25 mg/pellet (Sine Pharmaceutical, Shanghai). 173 trough-leaning samples; median 22.9 h (range 6-192 h) between last dose and phlebotomy.",
-    regions         = "China (Beijing)",
-    concomitant     = "SPI 32, nifedipine 53, diltiazem 1, nitrate 86, propafenone 27 (Zhou 2010 Table 1). Only SPI retained as covariate on Cl/F in the final model.",
-    renal_function  = "Serum creatinine mean 126.8 umol/L (range 36-686); BUN mean 9.0 mmol/L (range 2.5-28.9). Patients with serious renal dysfunction excluded.",
+    species = "human",
+    n_subjects = 119L,
+    n_studies = 1L,
+    age_range = "60-88 years (mean 71.0)",
+    age_median = "71 years (mean; Zhou 2010 Table 1)",
+    weight_range = "34-91 kg (mean 62.9)",
+    weight_median = "62.9 kg (mean; Zhou 2010 Table 1)",
+    sex_female_pct = 42,
+    race_ethnicity = "Han Chinese (PLA General Hospital of Air Force, Beijing)",
+    disease_state = "Older patients (>=60 years) on chronic oral digoxin (>=7 days); 113/119 (95%) with congestive heart failure of varying severity. Patients with serious hepatic or renal dysfunction were excluded.",
+    dose_range = "Oral digoxin tablets 0.25 mg/pellet (Sine Pharmaceutical, Shanghai). 173 trough-leaning samples; median 22.9 h (range 6-192 h) between last dose and phlebotomy.",
+    regions = "China (Beijing)",
+    concomitant = "SPI 32, nifedipine 53, diltiazem 1, nitrate 86, propafenone 27 (Zhou 2010 Table 1). Only SPI retained as covariate on Cl/F in the final model.",
+    renal_function = "Serum creatinine mean 126.8 umol/L (range 36-686); BUN mean 9.0 mmol/L (range 2.5-28.9). Patients with serious renal dysfunction excluded.",
     hepatic_function = "ALT mean 29.3 U/L (range 3-383); AST mean 33.9 U/L (range 8-402); ALB mean 63.3 g/L (range 31-89). Patients with serious hepatic dysfunction excluded.",
-    assay           = "Fluorescence polarization immunoassay (TDx-FLx, Abbott); LLOQ 0.2 ug/L.",
-    notes           = "Baseline demographics per Zhou 2010 Table 1. Retrospective single-center cohort. Digoxin serum concentration mean 1.11 ug/L (range 0.07-4.45). Validation: bootstrap intra-validation (10 groups, dOFV < 3.84) and an external 8-patient cohort with -4.3% to +25% percent difference between observed and individual-predicted concentrations."
+    assay = "Fluorescence polarization immunoassay (TDx-FLx, Abbott); LLOQ 0.2 ug/L.",
+    notes = "Baseline demographics per Zhou 2010 Table 1. Retrospective single-center cohort. Digoxin serum concentration mean 1.11 ug/L (range 0.07-4.45). Validation: bootstrap intra-validation (10 groups, dOFV < 3.84) and an external 8-patient cohort with -4.3% to +25% percent difference between observed and individual-predicted concentrations."
   )
 
   ini({

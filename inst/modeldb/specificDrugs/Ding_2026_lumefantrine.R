@@ -45,25 +45,25 @@ Ding_2026_lumefantrine <- function() {
   # scheme', 'Drug quantification': venous plasma lumefantrine and
   # desbutyllumefantrine by LC-MS/MS) and Figure S8.
   compartmentData <- list(
-    depot           = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    transit1        = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    transit2        = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    transit3        = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    transit4        = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    transit5        = list(analyte = "lumefantrine",           units = "mg", specimen = "administration site", verified = TRUE),
-    central         = list(analyte = "lumefantrine",           units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1     = list(analyte = "lumefantrine",           units = "mg", specimen = "plasma",              verified = TRUE),
-    central_desbutlum     = list(analyte = "desbutyl-lumefantrine",  units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1_desbutlum = list(analyte = "desbutyl-lumefantrine",  units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit3 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit4 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit5 = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_desbutlum = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_desbutlum = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Ding 2026 Methods ('Covariates model'):",
         "'bodyweight was included on all clearance and volume parameters",
         "using a conventional allometric function with fixed exponents of",
@@ -77,14 +77,14 @@ Ding_2026_lumefantrine <- function() {
         "(TACT-CV); range 9.0-98.8 kg (Table 1).",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     DOSE = list(
-      description        = "Lumefantrine amount administered at the current dose event (mg)",
-      units              = "mg",
-      type               = "continuous",
+      description = "Lumefantrine amount administered at the current dose event (mg)",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) of the canonical DOSE entry, supplied per dose",
         "record. Required so the model can form the milligram-per-kilogram",
         "dose DOSE / WT that drives relative bioavailability. The Table 4",
@@ -106,14 +106,14 @@ Ding_2026_lumefantrine <- function() {
         "bands).",
         sep = " "
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     PARA = list(
-      description        = "Admission asexual Plasmodium falciparum parasite count",
-      units              = "parasites/uL",
-      type               = "continuous",
+      description = "Admission asexual Plasmodium falciparum parasite count",
+      units = "parasites/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only / time-fixed. The Table 4 footnote gives the form",
         "verbatim: 'Baseline parasitaemia (PBM) was implemented on F as",
         "[1 + (theta x (log(PBM)-4.56)]'. The logarithm is base 10, pinned",
@@ -132,14 +132,14 @@ Ding_2026_lumefantrine <- function() {
         "(higher admission parasitaemia, lower relative bioavailability).",
         sep = " "
       ),
-      source_name        = "PBM"
+      source_name = "PBM"
     ),
     BODYTEMP = list(
-      description        = "Admission body temperature",
-      units              = "degC",
-      type               = "continuous",
+      description = "Admission body temperature",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Admission-only / time-fixed. The Table 4 footnote gives the form",
         "verbatim: 'baseline temperature (TEMP) was included on F using",
         "[1 + (theta x (TEMP-37.5)]', and the same footnote names the",
@@ -155,14 +155,14 @@ Ding_2026_lumefantrine <- function() {
         "the effect on mean transit time.",
         sep = " "
       ),
-      source_name        = "TEMP"
+      source_name = "TEMP"
     ),
     STUDY_TACTCV = list(
-      description        = "TACT-CV trial indicator (1 = TACT-CV, 0 = TRACII)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "TACT-CV trial indicator (1 = TACT-CV, 0 = TRACII)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = TRACII (NCT02453308)",
-      notes              = paste(
+      notes = paste(
         "Binary study-of-origin indicator for the pooled two-trial",
         "analysis. The Table 4 footnote gives the form verbatim: 'Study",
         "effect (TACT) was implemented on VC/F LF as a proportional",
@@ -182,14 +182,14 @@ Ding_2026_lumefantrine <- function() {
         "in TRACII, 80 mL milk in TACT-CV).",
         sep = " "
       ),
-      source_name        = "TACT"
+      source_name = "TACT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Enters desbutyl-lumefantrine clearance",
         "only, as the maturation function the Table 4 footnote gives",
         "verbatim: 'Age was added on CL/F DLF as [age/(theta + age)]', a",
@@ -207,16 +207,16 @@ Ding_2026_lumefantrine <- function() {
         "desethylamodiaquine (Discussion, limitation 4).",
         sep = " "
       ),
-      source_name        = "age"
+      source_name = "age"
     )
   )
 
   covariatesDataExcluded <- list(
     CONMED_AMODIAQUINE = list(
       description = "Coadministration of amodiaquine (triple ACT versus artemether-lumefantrine alone)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a binary drug-drug-interaction covariate on every PK",
         "parameter of lumefantrine and desbutyl-lumefantrine, and",
         "additionally assessed by a 500-bootstrap full covariate model, but",
@@ -234,9 +234,9 @@ Ding_2026_lumefantrine <- function() {
     ),
     PARA_GAMETOCYTE = list(
       description = "Admission Plasmodium falciparum gametocyte density",
-      units       = "parasites/uL",
-      type        = "continuous",
-      notes       = paste(
+      units = "parasites/uL",
+      type = "continuous",
+      notes = paste(
         "Identified as statistically significant on desbutyl-lumefantrine",
         "inter-compartmental clearance by the stepwise covariate search but",
         "deliberately discarded: Ding 2026 Results 3.1.3, 'One additional",
@@ -258,9 +258,9 @@ Ding_2026_lumefantrine <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 885L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 885L,
+    n_studies = 2L,
     n_observations = paste(
       "1448 lumefantrine (96 below the lower limit of quantification, 93 of",
       "them in the absorption phase) and 1448 desbutyl-lumefantrine (319",
@@ -268,16 +268,16 @@ Ding_2026_lumefantrine <- function() {
       "censored values were retained by the Beal M3 likelihood method",
       "(Results 3.1.3)"
     ),
-    age_range      = "17.0 years (TRACII) and 25.0 years (TACT-CV), medians (range 1.6-65.0 years) (Table 1)",
-    weight_range   = "41.5 kg (TRACII) and 52.2 kg (TACT-CV), medians (range 9.0-98.8 kg) (Table 1)",
+    age_range = "17.0 years (TRACII) and 25.0 years (TACT-CV), medians (range 1.6-65.0 years) (Table 1)",
+    weight_range = "41.5 kg (TRACII) and 52.2 kg (TACT-CV), medians (range 9.0-98.8 kg) (Table 1)",
     sex_female_pct = 24.6,
-    disease_state  = paste(
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria. Median admission",
       "asexual parasite count 47,500-52,500 parasites/uL (TRACII) and",
       "14,390-21,500 parasites/uL (TACT-CV); median admission body",
       "temperature 37.5-37.7 degC, range 35.0-40.9 degC (Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Standard fixed-dose artemether-lumefantrine (20 mg artemether +",
       "120 mg lumefantrine per tablet) given orally as six doses over 3 days",
       "at 0, 8, 24, 36, 48 and 60 h, directly observed, with a fatty snack",
@@ -286,12 +286,12 @@ Ding_2026_lumefantrine <- function() {
       "3 (25-34.9 kg), 4 (>35 kg) (Table S1). Cohort median lumefantrine",
       "dose 18.3-20.9 mg/kg/day (range 9.5-32.0) (Table 1)."
     ),
-    regions        = paste(
+    regions = paste(
       "TRACII (NCT02453308, n = 575): Bangladesh, India, Myanmar,",
       "Democratic Republic of Congo and Lao PDR. TACT-CV (NCT03355664,",
       "n = 310): western and eastern Cambodia and Vietnam."
     ),
-    notes          = paste(
+    notes = paste(
       "All 885 randomised patients contribute, combining dense PK sampling",
       "in 79 patients (1, 2, 4, 6, 8, 12, 24, 64 h and Days 4, 7, 14, 28",
       "after the first dose; additionally 52 h in TRACII) with sparse",

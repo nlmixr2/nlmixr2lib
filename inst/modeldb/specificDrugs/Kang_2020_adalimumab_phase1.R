@@ -31,53 +31,53 @@ Kang_2020_adalimumab_phase1 <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline body weight, normalised to a 70 kg reference. Allometric exponents were fixed at 0.75 on the clearance-related parameters (CL/F, Q/F) and 1 on the volume-related parameters (Vc/F, Vp/F) rather than estimated (Kang 2020 Section 3.2.1 and the Table 2 row labels).",
-      source_name        = "WT"
+      notes = "Baseline body weight, normalised to a 70 kg reference. Allometric exponents were fixed at 0.75 on the clearance-related parameters (CL/F, Q/F) and 1 on the volume-related parameters (Vc/F, Vp/F) rather than estimated (Kang 2020 Section 3.2.1 and the Table 2 row labels).",
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug-antibody positivity at the time of the PK sample",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug-antibody positivity at the time of the PK sample",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (ADA-positive). NOTE: this model's reference subject is ADA-POSITIVE at a titre of 16, not ADA-negative -- see notes.",
-      notes              = "Time-varying. Kang 2020 Equation 5 writes the covariate as ADA-, an indicator taking the value 1 for a negative ADA test and 0 for a positive test; this file carries the canonical ADA_POS orientation and forms the paper's indicator inside model() as (1 - ADA_POS). The reference covariate set for the typical CL/F is an ADA-POSITIVE subject at a titre of 16 (Section 3.2.1), so exp(e_ada_neg_cl) = 0.421 is the multiplicative CL/F factor applied to ADA-negative subjects. Because 95% of subjects were ADA-negative at baseline, a typical ADA-negative 70 kg subject has CL/F = 0.0278 * 0.421 = 0.0117 L/h, which is the value comparable to published adalimumab clearances of about 0.3 L/day.",
-      source_name        = "ADA-"
+      notes = "Time-varying. Kang 2020 Equation 5 writes the covariate as ADA-, an indicator taking the value 1 for a negative ADA test and 0 for a positive test; this file carries the canonical ADA_POS orientation and forms the paper's indicator inside model() as (1 - ADA_POS). The reference covariate set for the typical CL/F is an ADA-POSITIVE subject at a titre of 16 (Section 3.2.1), so exp(e_ada_neg_cl) = 0.421 is the multiplicative CL/F factor applied to ADA-negative subjects. Because 95% of subjects were ADA-negative at baseline, a typical ADA-negative 70 kg subject has CL/F = 0.0278 * 0.421 = 0.0117 L/h, which is the value comparable to published adalimumab clearances of about 0.3 L/day.",
+      source_name = "ADA-"
     ),
     ADA_TITER = list(
-      description        = "Anti-drug-antibody titre, reciprocal-dilution convention",
-      units              = "reciprocal dilution (powers of 2: 1, 2, 4, 8, 16, 32, ...)",
-      type               = "continuous",
+      description = "Anti-drug-antibody titre, reciprocal-dilution convention",
+      units = "reciprocal dilution (powers of 2: 1, 2, 4, 8, 16, 32, ...)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying, matched in time to the PK sample. Determined by a 3-tier bridging electrochemiluminescence assay as the lowest 2-fold dilution still giving a positive response, so the values are generally powers of 2 (Kang 2020 Section 2.2). Zero-encoding convention: ADA-NEGATIVE records carry the REFERENCE titre of 16, not 0 and not 1, so that log(ADA_TITER / 16) vanishes and the entire ADA-negative effect is carried by the ADA_POS = 0 indicator. This is the only encoding consistent with the paper's own arithmetic: Table 2 reports (ADA-) * exp(theta7) = 0.421 and Section 3.2.1 states that ADA-negative subjects have 42.1% of the CL/F of subjects at a titre of 16, i.e. exactly the 0.421 factor with no additional titre contribution. model() applies a defensive guard so any ADA_TITER coding on ADA-negative records gives the same result. The titre of 16 was chosen as the reference because it was the commonly observed value and it aided convergence (Section 3.1).",
-      source_name        = "ADA"
+      notes = "Time-varying, matched in time to the PK sample. Determined by a 3-tier bridging electrochemiluminescence assay as the lowest 2-fold dilution still giving a positive response, so the values are generally powers of 2 (Kang 2020 Section 2.2). Zero-encoding convention: ADA-NEGATIVE records carry the REFERENCE titre of 16, not 0 and not 1, so that log(ADA_TITER / 16) vanishes and the entire ADA-negative effect is carried by the ADA_POS = 0 indicator. This is the only encoding consistent with the paper's own arithmetic: Table 2 reports (ADA-) * exp(theta7) = 0.421 and Section 3.2.1 states that ADA-negative subjects have 42.1% of the CL/F of subjects at a titre of 16, i.e. exactly the 0.421 factor with no additional titre contribution. model() applies a defensive guard so any ADA_TITER coding on ADA-negative records gives the same result. The titre of 16 was chosen as the reference because it was the commonly observed value and it aided convergence (Section 3.1).",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 324,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 324,
+    n_studies = 1,
     n_observations = 7255,
-    age_range      = "18-55 years",
-    age_median     = "mean 30.5 years (adalimumab-adbm arm) and 30.7 years (Humira arms)",
-    weight_range   = "54.9-110 kg",
-    weight_median  = "mean 79.4 kg (adalimumab-adbm arm) and 78.3 kg (Humira arms)",
+    age_range = "18-55 years",
+    age_median = "mean 30.5 years (adalimumab-adbm arm) and 30.7 years (Humira arms)",
+    weight_range = "54.9-110 kg",
+    weight_median = "mean 79.4 kg (adalimumab-adbm arm) and 78.3 kg (Humira arms)",
     sex_female_pct = 0,
     race_ethnicity = c(White = 80, Black = 1, Asian = 7, `Native Hawaiian or other Pacific Islander` = 2, Other = 10),
-    disease_state  = "healthy",
-    dose_range     = "single 40 mg subcutaneous dose",
-    regions        = "not reported",
-    notes          = paste(
+    disease_state = "healthy",
+    dose_range = "single 40 mg subcutaneous dose",
+    regions = "not reported",
+    notes = paste(
       "Phase 1 study NCT02045979, a randomised, double-blind, single-dose,",
       "parallel-arm, active-comparator 3-way bioequivalence study in healthy",
       "male subjects randomised 1:1:1 to adalimumab-adbm (n = 108),",

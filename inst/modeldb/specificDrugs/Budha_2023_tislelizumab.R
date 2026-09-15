@@ -8,91 +8,91 @@ Budha_2023_tislelizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "tislelizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "tislelizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tislelizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "tislelizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference weight 65 kg (Budha 2023 Equations 5 and 6).",
-      source_name        = "WT"
+      notes = "Power scaling on CL and Vc with reference weight 65 kg (Budha 2023 Equations 5 and 6).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on Vc with reference age 60 years (Budha 2023 Equation 6).",
-      source_name        = "AGE"
+      notes = "Power scaling on Vc with reference age 60 years (Budha 2023 Equation 6).",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 41 g/L (Budha 2023 Equation 5). Budha 2023 reports albumin in g/L (SI), not g/dL.",
-      source_name        = "ALB"
+      notes = "Power scaling on CL with reference 41 g/L (Budha 2023 Equation 5). Budha 2023 reports albumin in g/L (SI), not g/dL.",
+      source_name = "ALB"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size (sum of diameters for solid tumors; sum of products of perpendicular diameters for cHL)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size (sum of diameters for solid tumors; sum of products of perpendicular diameters for cHL)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 63 mm (Budha 2023 Equation 5; Table 2 median 63.3 mm).",
-      source_name        = "TUMSZ"
+      notes = "Power scaling on CL with reference 63 mm (Budha 2023 Equation 5; Table 2 median 63.3 mm).",
+      source_name = "TUMSZ"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on Vc for females relative to males (Budha 2023 Equation 6). Renamed from source column SEX (character 'Female'/'Male') to the canonical SEXF per covariate-columns.md.",
-      source_name        = "SEX"
+      notes = "Exponential effect on Vc for females relative to males (Budha 2023 Equation 6). Renamed from source column SEX (character 'Female'/'Male') to the canonical SEXF per covariate-columns.md.",
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody status (treatment-emergent)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody status (treatment-emergent)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Exponential effect on CL for ADA-positive patients (Budha 2023 Equation 5). Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
-      source_name        = "ADA"
+      notes = "Exponential effect on CL for ADA-positive patients (Budha 2023 Equation 5). Renamed from source column ADA to the canonical ADA_POS per covariate-columns.md.",
+      source_name = "ADA"
     ),
     TUMTP_HODGKIN_CLASSICAL = list(
-      description        = "Tumor-type indicator for classical Hodgkin lymphoma",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for classical Hodgkin lymphoma",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types: NSCLC, EC, HCC, UC, GC, CRC, NPC, ovarian cancer, Other)",
-      notes              = "Exponential effect on CL for cHL patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_HODGKIN_CLASSICAL = as.integer(TUMTP == 'cHL').",
-      source_name        = "TUMTP"
+      notes = "Exponential effect on CL for cHL patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_HODGKIN_CLASSICAL = as.integer(TUMTP == 'cHL').",
+      source_name = "TUMTP"
     ),
     TUMTP_GASTRIC = list(
-      description        = "Tumor-type indicator for gastric cancer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tumor-type indicator for gastric cancer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all other tumor types)",
-      notes              = "Exponential effect on CL for GC patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_GASTRIC = as.integer(TUMTP == 'GC').",
-      source_name        = "TUMTP"
+      notes = "Exponential effect on CL for GC patients (Budha 2023 Equation 5). Derived from the source categorical column TUMTP as TUMTP_GASTRIC = as.integer(TUMTP == 'GC').",
+      source_name = "TUMTP"
     )
   )
 
   population <- list(
-    n_subjects     = 2596,
-    n_studies      = 12,
-    age_range      = "18-90 years",
-    age_median     = "60 years",
-    weight_range   = "31.9-130 kg",
-    weight_median  = "65 kg",
+    n_subjects = 2596,
+    n_studies = 12,
+    age_range = "18-90 years",
+    age_median = "60 years",
+    weight_range = "31.9-130 kg",
+    weight_median = "65 kg",
     sex_female_pct = 26.0,
     race_ethnicity = c(White = 20.3, Asian = 76.7, `Black/African American` = 0.4, Other = 1.7, Missing = 0.9),
-    disease_state  = "Advanced / metastatic solid tumors or classical Hodgkin lymphoma (NSCLC 44.3%, EC 14.4%, HCC 12.2%, UC 5.8%, GC 3.9%, CRC 3.1%, cHL 2.7%, OC 2.0%, NPC 0.8%, Other 10.7%).",
-    dose_range     = "0.5-10 mg/kg IV q2w or q3w, or 200 mg IV q3w (flat) across 12 studies",
-    regions        = "Global (4 studies), China (7 studies), China/Korea (1 study)",
-    notes          = "Baseline demographics and covariate distributions per Budha 2023 Tables 1 and 2. 14,473 serum concentration observations. ADA-positive 16.6%, ADA-negative 82.3%, missing 1.1%. ECOG PS 0: 31.5%, ECOG PS 1: 68.5%. Therapy: monotherapy 78.7%, combination 21.0%."
+    disease_state = "Advanced / metastatic solid tumors or classical Hodgkin lymphoma (NSCLC 44.3%, EC 14.4%, HCC 12.2%, UC 5.8%, GC 3.9%, CRC 3.1%, cHL 2.7%, OC 2.0%, NPC 0.8%, Other 10.7%).",
+    dose_range = "0.5-10 mg/kg IV q2w or q3w, or 200 mg IV q3w (flat) across 12 studies",
+    regions = "Global (4 studies), China (7 studies), China/Korea (1 study)",
+    notes = "Baseline demographics and covariate distributions per Budha 2023 Tables 1 and 2. 14,473 serum concentration observations. ADA-positive 16.6%, ADA-negative 82.3%, missing 1.1%. ECOG PS 0: 31.5%, ECOG PS 1: 68.5%. Therapy: monotherapy 78.7%, combination 21.0%."
   )
 
   ini({

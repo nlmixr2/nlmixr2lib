@@ -28,29 +28,29 @@ Schipani_2013_atazanavir_ritonavir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_rtv   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
     central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 3L,
     n_observations = 600L,
-    age_range      = "22-62 years",
-    age_median     = "43 years",
-    weight_range   = "46-110 kg",
-    weight_median  = "75.5 kg",
+    age_range = "22-62 years",
+    age_median = "43 years",
+    weight_range = "46-110 kg",
+    weight_median = "75.5 kg",
     sex_female_pct = 10,
     race_ethnicity = "Predominantly white; 5 Black-Africans and 3 Hispanics among 30 subjects (Schipani 2013 Methods, Patients section)",
-    disease_state  = "HIV-1 infection on a regimen containing ATV/RTV 300/100 mg once daily; median baseline HIV viral load 61 copies/mL (range <50-72)",
-    dose_range     = "ATV 300 mg + RTV 100 mg orally once daily (study regimen). Dose-reduction simulations in the paper additionally evaluated ATV/RTV 300/50, 200/50, and 200/100 mg once daily.",
-    regions        = "United Kingdom (St Stephen's Centre, Chelsea and Westminster Foundation Trust, London)",
-    notes          = paste(
+    disease_state = "HIV-1 infection on a regimen containing ATV/RTV 300/100 mg once daily; median baseline HIV viral load 61 copies/mL (range <50-72)",
+    dose_range = "ATV 300 mg + RTV 100 mg orally once daily (study regimen). Dose-reduction simulations in the paper additionally evaluated ATV/RTV 300/50, 200/50, and 200/100 mg once daily.",
+    regions = "United Kingdom (St Stephen's Centre, Chelsea and Westminster Foundation Trust, London)",
+    notes = paste(
       "Pooled cohort from three previously reported studies (Schipani 2013",
       "Methods refs 15-17). 27 of 30 subjects were male. 5 of 30 were",
       "receiving tenofovir 300 mg once daily; TDF co-administration was",

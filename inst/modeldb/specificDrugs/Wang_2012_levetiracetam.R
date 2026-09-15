@@ -1,44 +1,44 @@
 Wang_2012_levetiracetam <- function() {
   description <- "One-compartment population PK model for levetiracetam (LEV) in Chinese pediatric epilepsy patients (Wang 2012). First-order oral absorption and linear elimination (NONMEM ADVAN2 TRANS2). Body weight is the only retained covariate; it enters CL/F as a power-style allometric term with reference weight 25 kg (cohort median)."
-  reference   <- "Wang YH, Wang L, Lu W, Shang DW, Wei MJ, Wu Y. Population pharmacokinetics modeling of levetiracetam in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Jun;33(6):845-851. doi:10.1038/aps.2012.57"
-  vignette    <- "Wang_2012_levetiracetam"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Wang YH, Wang L, Lu W, Shang DW, Wei MJ, Wu Y. Population pharmacokinetics modeling of levetiracetam in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Jun;33(6):845-851. doi:10.1038/aps.2012.57"
+  vignette <- "Wang_2012_levetiracetam"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "levetiracetam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "levetiracetam", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "levetiracetam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 25 kg = cohort median (Wang 2012 Discussion paragraph 1; Table 1). Power-style scaling on CL/F only via (WT/25)^e_wt_cl. Wang 2012 treated weight as baseline-only; no time-varying schedule was reported.",
-      source_name        = "WEIG"
+      notes = "Reference weight 25 kg = cohort median (Wang 2012 Discussion paragraph 1; Table 1). Power-style scaling on CL/F only via (WT/25)^e_wt_cl. Wang 2012 treated weight as baseline-only; no time-varying schedule was reported.",
+      source_name = "WEIG"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 311,
-    n_studies       = 1,
-    n_observations  = 368,
-    age_range       = "0.5-14 years (Wang 2012 Table 1).",
-    age_median      = "Mean 6.34 years (Wang 2012 Table 1).",
-    weight_range    = "5-70 kg (Wang 2012 Table 1).",
-    weight_median   = "25 kg (Wang 2012 Discussion paragraph 1); mean 25.17 kg (Table 1).",
-    sex_female_pct  = 48.6,
-    race_ethnicity  = c(Asian_Chinese = 100),
-    disease_state   = "Children with epilepsy: partial, generalized, and undetermined syndromes (Wang 2012 Methods - Patients). Normal renal and hepatic function in all subjects.",
-    dose_range      = "20-60 mg/kg/day (Methods - Patients); total daily dose 250-2000 mg, mean 655 mg/d (Table 1).",
-    regions         = "China (single centre: Peking University First Hospital, Beijing).",
-    co_medication   = "40% on LEV monotherapy; 60% on combination AED therapy. Most common concomitant AEDs: valproic acid (VPA), lamotrigine (LTG), carbamazepine (CBZ), oxcarbazepine (OXC), topiramate (TPM). No significant interaction with concomitant AEDs detected (Wang 2012 Results paragraph 2; Table 2).",
-    notes           = "Retrospective single-centre population PK analysis. The PPK model group used 311 patients (368 concentration-time points); a separate 50-patient PPK validation group (50 points) was used for external prediction-error checks. Sampling intervals 0.1-13 hours after last dose; trough-style with limited absorption-phase coverage."
+    species = "human",
+    n_subjects = 311,
+    n_studies = 1,
+    n_observations = 368,
+    age_range = "0.5-14 years (Wang 2012 Table 1).",
+    age_median = "Mean 6.34 years (Wang 2012 Table 1).",
+    weight_range = "5-70 kg (Wang 2012 Table 1).",
+    weight_median = "25 kg (Wang 2012 Discussion paragraph 1); mean 25.17 kg (Table 1).",
+    sex_female_pct = 48.6,
+    race_ethnicity = c(Asian_Chinese = 100),
+    disease_state = "Children with epilepsy: partial, generalized, and undetermined syndromes (Wang 2012 Methods - Patients). Normal renal and hepatic function in all subjects.",
+    dose_range = "20-60 mg/kg/day (Methods - Patients); total daily dose 250-2000 mg, mean 655 mg/d (Table 1).",
+    regions = "China (single centre: Peking University First Hospital, Beijing).",
+    co_medication = "40% on LEV monotherapy; 60% on combination AED therapy. Most common concomitant AEDs: valproic acid (VPA), lamotrigine (LTG), carbamazepine (CBZ), oxcarbazepine (OXC), topiramate (TPM). No significant interaction with concomitant AEDs detected (Wang 2012 Results paragraph 2; Table 2).",
+    notes = "Retrospective single-centre population PK analysis. The PPK model group used 311 patients (368 concentration-time points); a separate 50-patient PPK validation group (50 points) was used for external prediction-error checks. Sampling intervals 0.1-13 hours after last dose; trough-style with limited absorption-phase coverage."
   )
 
   ini({

@@ -1,8 +1,8 @@
 Hashimoto_1994_zonisamide <- function() {
   description <- "Steady-state Michaelis-Menten population PK model for zonisamide in 68 Japanese epileptic patients (pediatric + adult) on chronic oral zonisamide. A power-of-weight body-size factor scales both volume of distribution and Vmax; concomitant carbamazepine multiplicatively increases Vmax (Hashimoto 1994 Eqs. 1-4)."
-  reference   <- "Hashimoto Y, Odani A, Tanigawara Y, Yasuhara M, Okuno T, Hori R. Population analysis of the dose-dependent pharmacokinetics of zonisamide in epileptic patients. Biol Pharm Bull. 1994;17(2):323-326. doi:10.1248/bpb.17.323"
-  vignette    <- "Hashimoto_1994_zonisamide"
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  reference <- "Hashimoto Y, Odani A, Tanigawara Y, Yasuhara M, Okuno T, Hori R. Population analysis of the dose-dependent pharmacokinetics of zonisamide in epileptic patients. Biol Pharm Bull. 1994;17(2):323-326. doi:10.1248/bpb.17.323"
+  vignette <- "Hashimoto_1994_zonisamide"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,59 +13,59 @@ Hashimoto_1994_zonisamide <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 33 kg per Hashimoto 1994 Eq. 2 (page 324): SIZE_i = 33 * (WT_i/33)^theta1 with theta1 = 0.741 (Table II). The same SIZE factor scales both V (Eq. 3) and Vmax (Eq. 4 rearrangement). Time-fixed at baseline in the TDM dataset (chronic oral maintenance therapy).",
-      source_name        = "WT"
+      notes = "Reference 33 kg per Hashimoto 1994 Eq. 2 (page 324): SIZE_i = 33 * (WT_i/33)^theta1 with theta1 = 0.741 (Table II). The same SIZE factor scales both V (Eq. 3) and Vmax (Eq. 4 rearrangement). Time-fixed at baseline in the TDM dataset (chronic oral maintenance therapy).",
+      source_name = "WT"
     ),
     CONMED_CBZ = list(
-      description        = "Indicator for concomitant carbamazepine coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for concomitant carbamazepine coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = "Hashimoto 1994 Eq. 4 (page 324) defines CBZ = 1 in patients receiving carbamazepine concomitantly, otherwise CBZ = 0. When CONMED_CBZ = 1, Vmax is multiplied by theta2 = 1.13 (Table II), i.e., Vmax is 13 percent higher in patients on carbamazepine. Valproate and phenytoin coadministration were tested as covariates but did not significantly affect zonisamide PK (page 325) and are not included. Phenobarbital was not tested because only 5 of 68 patients received it.",
-      source_name        = "CBZ"
+      notes = "Hashimoto 1994 Eq. 4 (page 324) defines CBZ = 1 in patients receiving carbamazepine concomitantly, otherwise CBZ = 0. When CONMED_CBZ = 1, Vmax is multiplied by theta2 = 1.13 (Table II), i.e., Vmax is 13 percent higher in patients on carbamazepine. Valproate and phenytoin coadministration were tested as covariates but did not significantly affect zonisamide PK (page 325) and are not included. Phenobarbital was not tested because only 5 of 68 patients received it.",
+      source_name = "CBZ"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in Hashimoto 1994 preliminary analysis (page 325, Figs. 1-2 stratified younger <=10 yr vs older >10 yr) but not retained as a covariate in the final model. The age effect on zonisamide PK is fully captured by the power-of-weight SIZE factor (Eq. 2); the age-stratified fits of Eq. 6 were identical across the two age groups."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in Hashimoto 1994 preliminary analysis (page 325, Figs. 1-2 stratified younger <=10 yr vs older >10 yr) but not retained as a covariate in the final model. The age effect on zonisamide PK is fully captured by the power-of-weight SIZE factor (Eq. 2); the age-stratified fits of Eq. 6 were identical across the two age groups."
     ),
     CONMED_VPA = list(
       description = "Indicator for concomitant valproate coadministration",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in Hashimoto 1994 (page 325, 'data not shown') but not retained as a covariate; valproate did not significantly affect the size-corrected dose vs serum concentration relationship."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in Hashimoto 1994 (page 325, 'data not shown') but not retained as a covariate; valproate did not significantly affect the size-corrected dose vs serum concentration relationship."
     ),
     CONMED_PHT = list(
       description = "Indicator for concomitant phenytoin coadministration",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in Hashimoto 1994 (page 325, 'data not shown') but not retained as a covariate; phenytoin did not significantly affect the size-corrected dose vs serum concentration relationship."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in Hashimoto 1994 (page 325, 'data not shown') but not retained as a covariate; phenytoin did not significantly affect the size-corrected dose vs serum concentration relationship."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 68L,
-    n_observations   = 266L,
-    n_studies        = 1L,
-    age_range        = "30 patients <=10 yr, 5 patients >20 yr (remainder 11-20 yr)",
-    age_median       = "mean 11.2 (SD 6.4) years",
-    weight_range     = "approx 10-70 kg (mean 33.4 SD 17.7)",
-    weight_median    = "mean 33.4 (SD 17.7) kg",
-    sex_female_pct   = 45.6,
-    race_ethnicity   = "Japanese (single-centre cohort at Kyoto University Hospital)",
-    disease_state    = "Epileptic patients on chronic oral zonisamide (Excegran tablet or powder, Dainippon Pharmaceutical Co., Osaka). 2 patients on zonisamide alone; 37 also on carbamazepine, 32 on valproate, 27 on phenytoin, 5 on phenobarbital (overlap permitted).",
-    dose_range       = "Mean daily dose 135 (SD 104) mg/d, administered orally at 12-hour intervals to 62 of 68 patients (tau = 0.5 day). 26 patients sampled at a single dose level; 17 at three or more dose levels.",
-    regions          = "Japan (Kyoto University Hospital, single centre, November 1989-July 1992).",
-    notes            = "Hashimoto 1994 Table I baseline demographics. 60 outpatients, 31 females, 37 males. 78 percent (208/266) of samples taken 2-6 h post-dose (approximate peak); 12 percent (33/266) at trough 12 h post-dose. All samples obtained at steady-state after more than one month of stable therapy. Bioavailability assumed F = 1 (page 326)."
+    species = "human",
+    n_subjects = 68L,
+    n_observations = 266L,
+    n_studies = 1L,
+    age_range = "30 patients <=10 yr, 5 patients >20 yr (remainder 11-20 yr)",
+    age_median = "mean 11.2 (SD 6.4) years",
+    weight_range = "approx 10-70 kg (mean 33.4 SD 17.7)",
+    weight_median = "mean 33.4 (SD 17.7) kg",
+    sex_female_pct = 45.6,
+    race_ethnicity = "Japanese (single-centre cohort at Kyoto University Hospital)",
+    disease_state = "Epileptic patients on chronic oral zonisamide (Excegran tablet or powder, Dainippon Pharmaceutical Co., Osaka). 2 patients on zonisamide alone; 37 also on carbamazepine, 32 on valproate, 27 on phenytoin, 5 on phenobarbital (overlap permitted).",
+    dose_range = "Mean daily dose 135 (SD 104) mg/d, administered orally at 12-hour intervals to 62 of 68 patients (tau = 0.5 day). 26 patients sampled at a single dose level; 17 at three or more dose levels.",
+    regions = "Japan (Kyoto University Hospital, single centre, November 1989-July 1992).",
+    notes = "Hashimoto 1994 Table I baseline demographics. 60 outpatients, 31 females, 37 males. 78 percent (208/266) of samples taken 2-6 h post-dose (approximate peak); 12 percent (33/266) at trough 12 h post-dose. All samples obtained at steady-state after more than one month of stable therapy. Bioavailability assumed F = 1 (page 326)."
   )
 
   ini({

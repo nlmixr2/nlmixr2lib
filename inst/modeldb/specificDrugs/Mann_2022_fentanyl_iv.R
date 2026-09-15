@@ -31,8 +31,8 @@ Mann_2022_fentanyl_iv <- function() {
   )
   vignette <- "Laffont_2025_opioid_overdose_reversal_simulation"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -41,19 +41,19 @@ Mann_2022_fentanyl_iv <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "fentanyl", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "fentanyl", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric a priori scaling per Mann 2022 Supplement 1",
         "Pharmacokinetic Component section: CL = CL_TV * (WT/70)^0.75",
         "and V = V_TV * (WT/70). The inter-compartmental clearances Q2",
@@ -63,14 +63,14 @@ Mann_2022_fentanyl_iv <- function() {
         "WT = 70 kg (Supplement 1 Pharmacokinetic Component, last",
         "paragraph)."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     Q_TOTAL_LPM = list(
-      description        = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the central / biophase compartment as hyperperfusion drives Q above baseline.",
-      units              = "L/min",
-      type               = "continuous",
+      description = "Total cardiac output Qb + Qt feeding the FDA delaymymod.c lines 358-368 shock-state Q_Scale feedback that concentrates the opioid in the central / biophase compartment as hyperperfusion drives Q above baseline.",
+      units = "L/min",
+      type = "continuous",
       reference_category = "4.87 (baseline, gives Q_Scale ~ 1, no amplification)",
-      notes              = paste(
+      notes = paste(
         "When this PK layer runs standalone (no downstream physiology),",
         "leave Q_TOTAL_LPM at the baseline 4.87 L/min reference so",
         "Q_Scale = 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))",
@@ -85,32 +85,32 @@ Mann_2022_fentanyl_iv <- function() {
         "Source: FDA delaymymod.c Q_0 = 4.87/60 L/s baseline (line 353)",
         "and Q_Scale sigmoid (lines 358-368)."
       ),
-      source_name        = "(none; new canonical covariate registered for this model)"
+      source_name = "(none; new canonical covariate registered for this model)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30L,
-    n_studies      = 1L,
-    age_range      = "Adult (Algera 2021 cohort: 18-55 years)",
-    weight_range   = "Algera 2021 cohort weight range; Mann 2022 virtual-population simulations assume 70 kg",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "Adult (Algera 2021 cohort: 18-55 years)",
+    weight_range = "Algera 2021 cohort weight range; Mann 2022 virtual-population simulations assume 70 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy opioid-naive volunteers (n = 14) and chronic",
       "high-dose opioid-user volunteers (n = 16) from Algera 2021;",
       "Mann 2022 uses the pooled-population fit for the IV-fentanyl",
       "PK component."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Algera 2021: IV fentanyl 75 or 150 ug/70 kg (opioid-naive)",
       "and 250 or 350 ug/70 kg (chronic opioid users), administered",
       "as 90-second infusions. Mann 2022 simulates IV bolus overdose",
       "scenarios at 1.625 mg and 2.965 mg in chronic users."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "PK component imported from Algera 2021 nonlinear mixed-effects",
       "fit without re-estimation in Mann 2022. omega^2 values in",
       "Table S1 are reported on the log scale (variance of the",

@@ -40,36 +40,36 @@ Ravva_2010_varenicline_car_w4_7_study2 <- function() {
   )
   vignette <- "Ravva_2010_varenicline_exposure_response"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
+    time = "week",
+    dosing = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
     concentration = "p_car (probability of continuous abstinence at weeks 4-7, 0-1; also logit_car)"
   )
 
   covariateData <- list(
     AUC_VAREN = list(
-      description        = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only predictor in this preliminary model; it enters the logit additively alongside the intercept. Set to 0 for placebo subjects, consistent with the treatment of exposure throughout Ravva 2010. Study 2 randomized subjects to varenicline 0.5 mg b.i.d. and 1 mg b.i.d. plus placebo (Ravva 2010 Supplementary Table S1), the same two active regimens carried into the confirmatory trials. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
-      source_name        = "AUC(0-24)ss"
+      notes = "The only predictor in this preliminary model; it enters the logit additively alongside the intercept. Set to 0 for placebo subjects, consistent with the treatment of exposure throughout Ravva 2010. Study 2 randomized subjects to varenicline 0.5 mg b.i.d. and 1 mg b.i.d. plus placebo (Ravva 2010 Supplementary Table S1), the same two active regimens carried into the confirmatory trials. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
+      source_name = "AUC(0-24)ss"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 609L,
-    n_studies      = 1L,
-    age_range      = "19-66 years (pooled weeks 4-7 analysis database)",
-    age_mean       = "43 years (pooled weeks 4-7 analysis database)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 609L,
+    n_studies = 1L,
+    age_range = "19-66 years (pooled weeks 4-7 analysis database)",
+    age_mean = "43 years (pooled weeks 4-7 analysis database)",
+    weight_range = NA_character_,
     sex_female_pct = 51.0,
     race_ethnicity = c(White = 83.0, Black = 11.0, Other = 6.0),
-    disease_state  = "Adult cigarette smokers motivated to stop smoking.",
-    dose_range     = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo, over a 12-week treatment period.",
-    regions        = "Multicenter.",
+    disease_state = "Adult cigarette smokers motivated to stop smoking.",
+    dose_range = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo, over a 12-week treatment period.",
+    regions = "Multicenter.",
     smoking_marker = "Baseline exhaled carbon monoxide mean 24 ppm, range 1-98 ppm (pooled weeks 4-7 analysis database).",
-    notes          = "Study 2 is the 12-week, randomized, double-blind, placebo-controlled, parallel-group, multicenter dose-ranging trial of Ravva 2010 Supplementary Table S1, which enrolled 627 male and female smokers; 609 contributed to both the weeks 4-7 and the weeks 9-12 CAR analyses (Ravva 2010 Table 1). Baseline demographics in Ravva 2010 Table 1 are reported for the POOLED weeks 4-7 database (studies 1 and 2 together, n = 1,099), not per study, so the demographic entries above describe that pooled database and not study 2 alone. Pharmacokinetic sampling at weeks 1, 2, 4 and 12 (or early termination). Because both CAR endpoints are available from this one study, Ravva 2010 compared them directly (Supplementary Figure S1): extending the treatment period to 12 weeks produced a steeper exposure-response slope and a greater quit probability at the higher exposures associated with 1 mg b.i.d."
+    notes = "Study 2 is the 12-week, randomized, double-blind, placebo-controlled, parallel-group, multicenter dose-ranging trial of Ravva 2010 Supplementary Table S1, which enrolled 627 male and female smokers; 609 contributed to both the weeks 4-7 and the weeks 9-12 CAR analyses (Ravva 2010 Table 1). Baseline demographics in Ravva 2010 Table 1 are reported for the POOLED weeks 4-7 database (studies 1 and 2 together, n = 1,099), not per study, so the demographic entries above describe that pooled database and not study 2 alone. Pharmacokinetic sampling at weeks 1, 2, 4 and 12 (or early termination). Because both CAR endpoints are available from this one study, Ravva 2010 compared them directly (Supplementary Figure S1): extending the treatment period to 12 weeks produced a steeper exposure-response slope and a greater quit probability at the higher exposures associated with 1 mg b.i.d."
   )
 
   ini({

@@ -9,126 +9,126 @@ Wang_2026_serplulimab <- function() {
   # model with time-varying clearance) and Section 3.1 ("14,687 serplulimab
   # serum concentration measurements from 2110 subjects").
   compartmentData <- list(
-    central     = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "serplulimab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL (exponent 0.514) and on Vc (exponent 0.470); no weight effect on Vp was retained. Reference 62 kg, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('WT/62'); it equals the PK-dataset median of 62.0 kg in Table 1. Weight is the single most influential covariate: the Figure 1 sensitivity forest plot reports Cavg,ss changes of -14.66% at 85 kg and +16.03% at 46 kg relative to the 62 kg reference under a flat 300 mg Q3W regimen, i.e. exposure DECREASES with increasing weight under flat dosing.",
-      source_name        = "WT"
+      notes = "Power-form effect on baseline CL (exponent 0.514) and on Vc (exponent 0.470); no weight effect on Vp was retained. Reference 62 kg, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('WT/62'); it equals the PK-dataset median of 62.0 kg in Table 1. Weight is the single most influential covariate: the Figure 1 sensitivity forest plot reports Cavg,ss changes of -14.66% at 85 kg and +16.03% at 46 kg relative to the 62 kg reference under a flat 300 mg Q3W regimen, i.e. exposure DECREASES with increasing weight under flat dosing.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL (exponent -0.714), on Vc (exponent -0.320) and on Vp (exponent -1.05). Reference 41.4 g/L, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('ALB/41.4'), which equals the PK-dataset median in Table 1 exactly. Source paper reports albumin in g/L (SI convention), matching the canonical unit. Higher albumin lowers CL and therefore raises exposure (Figure 1: Cavg,ss -15.42% at 32.8 g/L and +10.68% at 47.7 g/L). Wang 2026 Section 4 attributes the weight and albumin effects to FcRn-mediated recycling.",
-      source_name        = "ALB"
+      notes = "Power-form effect on baseline CL (exponent -0.714), on Vc (exponent -0.320) and on Vp (exponent -1.05). Reference 41.4 g/L, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('ALB/41.4'), which equals the PK-dataset median in Table 1 exactly. Source paper reports albumin in g/L (SI convention), matching the canonical unit. Higher albumin lowers CL and therefore raises exposure (Figure 1: Cavg,ss -15.42% at 32.8 g/L and +10.68% at 47.7 g/L). Wang 2026 Section 4 attributes the weight and albumin effects to FcRn-mediated recycling.",
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Baseline alkaline phosphatase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL only (exponent 0.0553). Reference 94 U/L, taken verbatim from the printed final-model equation in Wang 2026 Section 3.1 ('ALP/94'), equal to the PK-dataset median in Table 1. Higher ALP raises CL and lowers exposure, but the effect is the weakest retained covariate: Figure 1 reports Cavg,ss -4.75% at 236.06 U/L and +2.66% at 57 U/L, and Wang 2026 Section 3.2 calls the maximum change 'not exceeding 3%' for the interquartile span. New to the 2026 analysis; ALP was not retained in Wang 2025.",
-      source_name        = "ALP"
+      notes = "Power-form effect on baseline CL only (exponent 0.0553). Reference 94 U/L, taken verbatim from the printed final-model equation in Wang 2026 Section 3.1 ('ALP/94'), equal to the PK-dataset median in Table 1. Higher ALP raises CL and lowers exposure, but the effect is the weakest retained covariate: Figure 1 reports Cavg,ss -4.75% at 236.06 U/L and +2.66% at 57 U/L, and Wang 2026 Section 3.2 calls the maximum change 'not exceeding 3%' for the interquartile span. New to the 2026 analysis; ALP was not retained in Wang 2025.",
+      source_name = "ALP"
     ),
     TUM_SLD = list(
-      description        = "Baseline tumour burden, expressed as the sum of longest diameters of target lesions (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumour burden, expressed as the sum of longest diameters of target lesions (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL (exponent 0.0548) and on Vp (exponent 0.107). Reference 73 mm, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('TUMBUR/73'); the PK-dataset median in Table 1 is 72.9 mm, so 73 is the rounded population median. Higher tumour burden raises CL and lowers exposure (Figure 1: Cavg,ss -4.8% at 177.31 mm and +7.96% at 18.21 mm). Wang 2026 Section 4 reads this as disease-related proteolysis and TMDD-like target-mediated loss. The source column is named TUMBUR and is reported in mm, i.e. a RECIST sum-of-longest-diameters length, which is the TUM_SLD canonical rather than the volumetric TUM_VOL. New to the 2026 analysis; tumour burden was screened but not retained in Wang 2025.",
-      source_name        = "TUMBUR"
+      notes = "Power-form effect on baseline CL (exponent 0.0548) and on Vp (exponent 0.107). Reference 73 mm, taken verbatim from the printed final-model equations in Wang 2026 Section 3.1 ('TUMBUR/73'); the PK-dataset median in Table 1 is 72.9 mm, so 73 is the rounded population median. Higher tumour burden raises CL and lowers exposure (Figure 1: Cavg,ss -4.8% at 177.31 mm and +7.96% at 18.21 mm). Wang 2026 Section 4 reads this as disease-related proteolysis and TMDD-like target-mediated loss. The source column is named TUMBUR and is reported in mm, i.e. a RECIST sum-of-longest-diameters length, which is the TUM_SLD canonical rather than the volumetric TUM_VOL. New to the 2026 analysis; tumour burden was screened but not retained in Wang 2025.",
+      source_name = "TUMBUR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on baseline CL (coefficient -0.145) and on Vc (coefficient -0.14). Wang 2026 Section 3.1 defines 'SEX represents gender (sex = 0 for male, sex = 1 for female)', which matches canonical SEXF directly with no value transformation. Female subjects therefore have exp(-0.145) = 0.865 of the male CL and exp(-0.14) = 0.869 of the male Vc, giving higher exposure in females (Figure 1: Cavg,ss +15.09%, Cmax,ss +15.86%, Cmin,ss +17.76%). The PK dataset was 20.62% female (435/2110; Table 1). Wang 2025 retained a sex effect on Vc only; the 2026 analysis adds the CL effect.",
-      source_name        = "SEX"
+      notes = "Exponential effect on baseline CL (coefficient -0.145) and on Vc (coefficient -0.14). Wang 2026 Section 3.1 defines 'SEX represents gender (sex = 0 for male, sex = 1 for female)', which matches canonical SEXF directly with no value transformation. Female subjects therefore have exp(-0.145) = 0.865 of the male CL and exp(-0.14) = 0.869 of the male Vc, giving higher exposure in females (Figure 1: Cavg,ss +15.09%, Cmax,ss +15.86%, Cmin,ss +17.76%). The PK dataset was 20.62% female (435/2110; Table 1). Wang 2025 retained a sex effect on Vc only; the 2026 analysis adds the CL effect.",
+      source_name = "SEX"
     ),
     TUMTP_NSCLC_SQUAM = list(
-      description        = "Squamous non-small-cell-lung-cancer tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Squamous non-small-cell-lung-cancer tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other tumour type in this model; when all six TUMTP_* indicators are 0 the subject is non-squamous NSCLC, which is the model's reference histology)",
-      notes              = "Selects the Sq. NSCLC baseline clearance (0.204 L/day) and central volume (3.38 L) from Wang 2026 Table 2. 441/2110 (20.90%) of the PK dataset. Wang 2026 Section 2.2 states that 'separate parameter estimates were obtained for each relevant tumor type rather than pooling them', so tumour type enters as a per-stratum CL0 and Vc rather than as a covariate coefficient.",
-      source_name        = "TUMTP"
+      notes = "Selects the Sq. NSCLC baseline clearance (0.204 L/day) and central volume (3.38 L) from Wang 2026 Table 2. 441/2110 (20.90%) of the PK dataset. Wang 2026 Section 2.2 states that 'separate parameter estimates were obtained for each relevant tumor type rather than pooling them', so tumour type enters as a per-stratum CL0 and Vc rather than as a covariate coefficient.",
+      source_name = "TUMTP"
     ),
     TUMTP_HCC = list(
-      description        = "Hepatocellular carcinoma tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatocellular carcinoma tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other tumour type in this model; all six indicators 0 = non-squamous NSCLC reference)",
-      notes              = "Selects the HCC baseline clearance (0.204 L/day) and central volume (3.20 L) from Wang 2026 Table 2. 125/2110 (5.92%) of the PK dataset. HCC shares the Sq. NSCLC CL0 to three significant figures but has its own Vc, so the two histologies are not interchangeable.",
-      source_name        = "TUMTP"
+      notes = "Selects the HCC baseline clearance (0.204 L/day) and central volume (3.20 L) from Wang 2026 Table 2. 125/2110 (5.92%) of the PK dataset. HCC shares the Sq. NSCLC CL0 to three significant figures but has its own Vc, so the two histologies are not interchangeable.",
+      source_name = "TUMTP"
     ),
     TUMTP_CRC = list(
-      description        = "Colorectal cancer tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Colorectal cancer tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other tumour type in this model; all six indicators 0 = non-squamous NSCLC reference)",
-      notes              = "Selects the CRC baseline clearance (0.182 L/day) and central volume (3.19 L) from Wang 2026 Table 2. 151/2110 (7.16%) of the PK dataset, contributed largely by the HLX10-015-mCRC301 Phase II/III trial newly added in the 2026 analysis.",
-      source_name        = "TUMTP"
+      notes = "Selects the CRC baseline clearance (0.182 L/day) and central volume (3.19 L) from Wang 2026 Table 2. 151/2110 (7.16%) of the PK dataset, contributed largely by the HLX10-015-mCRC301 Phase II/III trial newly added in the 2026 analysis.",
+      source_name = "TUMTP"
     ),
     TUMTP_SCLC = list(
-      description        = "Small cell lung cancer tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Small cell lung cancer tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other tumour type in this model; all six indicators 0 = non-squamous NSCLC reference)",
-      notes              = "Selects the SCLC baseline clearance (0.171 L/day) and central volume (3.45 L) from Wang 2026 Table 2. 390/2110 (18.48%) of the PK dataset, from the Phase III ASTRUM-005 trial (HLX10-005-SCLC301 / NCT04063163). SCLC has the LOWEST clearance of the seven histologies and therefore the highest exposure (Figure 1: Cavg,ss +7.17%, Cmin,ss +11.77% vs the non-squamous NSCLC reference).",
-      source_name        = "TUMTP"
+      notes = "Selects the SCLC baseline clearance (0.171 L/day) and central volume (3.45 L) from Wang 2026 Table 2. 390/2110 (18.48%) of the PK dataset, from the Phase III ASTRUM-005 trial (HLX10-005-SCLC301 / NCT04063163). SCLC has the LOWEST clearance of the seven histologies and therefore the highest exposure (Figure 1: Cavg,ss +7.17%, Cmin,ss +11.77% vs the non-squamous NSCLC reference).",
+      source_name = "TUMTP"
     ),
     TUMTP_ESCC = list(
-      description        = "Oesophageal squamous cell carcinoma tumour-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oesophageal squamous cell carcinoma tumour-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other tumour type in this model; all six indicators 0 = non-squamous NSCLC reference)",
-      notes              = "Selects the ESCC baseline clearance (0.178 L/day) and central volume (3.48 L) from Wang 2026 Table 2. 389/2110 (18.44%) of the PK dataset, from the HLX10-007-EC301 Phase III trial newly added in the 2026 analysis. ESCC has the largest central volume of the seven histologies. Wang 2026 Figure 1 labels this row 'EC'.",
-      source_name        = "TUMTP"
+      notes = "Selects the ESCC baseline clearance (0.178 L/day) and central volume (3.48 L) from Wang 2026 Table 2. 389/2110 (18.44%) of the PK dataset, from the HLX10-007-EC301 Phase III trial newly added in the 2026 analysis. ESCC has the largest central volume of the seven histologies. Wang 2026 Figure 1 labels this row 'EC'.",
+      source_name = "TUMTP"
     ),
     TUMTP_OTHER = list(
-      description        = "Residual 'other tumour types' indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Residual 'other tumour types' indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any named histology in this model; all six indicators 0 = non-squamous NSCLC reference)",
-      notes              = "Selects the 'other' baseline clearance (0.211 L/day) and central volume (3.19 L) from Wang 2026 Table 2. 116/2110 (5.50%) of the PK dataset: the residual bucket complementing Sq. NSCLC, non-sq. NSCLC, SCLC, ESCC, HCC and CRC, populated mainly by the MSI-H/dMMR solid-tumour, cervical-cancer and head-and-neck cohorts of the Phase I/II trials (Table S1). This group has the HIGHEST clearance and therefore the lowest exposure (Figure 1: Cavg,ss -12.17% vs the non-squamous NSCLC reference).",
-      source_name        = "TUMTP"
+      notes = "Selects the 'other' baseline clearance (0.211 L/day) and central volume (3.19 L) from Wang 2026 Table 2. 116/2110 (5.50%) of the PK dataset: the residual bucket complementing Sq. NSCLC, non-sq. NSCLC, SCLC, ESCC, HCC and CRC, populated mainly by the MSI-H/dMMR solid-tumour, cervical-cancer and head-and-neck cohorts of the Phase I/II trials (Table S1). This group has the HIGHEST clearance and therefore the lowest exposure (Figure 1: Cavg,ss -12.17% vs the non-squamous NSCLC reference).",
+      source_name = "TUMTP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2110L,
-    n_studies      = 11L,
+    species = "human",
+    n_subjects = 2110L,
+    n_studies = 11L,
     n_observations = 14687L,
-    age_range      = "23.0-83.0 years",
-    age_median     = "61.0 years",
-    weight_range   = "32.9-131 kg",
-    weight_median  = "62.0 kg",
-    height_median  = "167 cm (128-191 cm)",
-    bmi_median     = "22.6 kg/m^2 (13.3-42.3 kg/m^2)",
-    bsa_median     = "1.70 m^2 (1.19-2.55 m^2)",
+    age_range = "23.0-83.0 years",
+    age_median = "61.0 years",
+    weight_range = "32.9-131 kg",
+    weight_median = "62.0 kg",
+    height_median = "167 cm (128-191 cm)",
+    bmi_median = "22.6 kg/m^2 (13.3-42.3 kg/m^2)",
+    bsa_median = "1.70 m^2 (1.19-2.55 m^2)",
     sex_female_pct = 20.62,
     race_ethnicity = c(Asian = 87.44, `Non-Asian` = 12.56),
-    disease_state  = "Adults with advanced solid tumours. Tumour-type mix in the PK dataset (n = 2110; Table 1): non-squamous NSCLC 498 (23.60%), squamous NSCLC 441 (20.90%), SCLC 390 (18.48%), ESCC 389 (18.44%), colorectal cancer 151 (7.16%), hepatocellular carcinoma 125 (5.92%), other tumour types 116 (5.50%).",
-    dose_range     = "Serplulimab 0.3-10 mg/kg IV plus flat doses of 200 mg Q2W, 300 mg Q3W and 400 mg Q4W across the pooled trials (Table S1). The weight-based regimens taken forward were 3 mg/kg Q2W and 4.5 mg/kg Q3W; the flat regimens evaluated for the dosing transition were 200 mg Q2W and 300 mg Q3W, each as a 1-h infusion.",
-    regions        = "Predominantly China (Asian 87.44%); the ASTRUM-004 / ASTRUM-005 Phase III programmes were multinational and contribute the 12.56% non-Asian subjects.",
-    ada_status     = "ADA-negative 1977 (93.70%); ADA-positive 133 (6.30%). Wang 2026 Section 3.2 reports no more than a 3% reduction in steady-state exposure among ADA-positive patients; ADA was not retained in the final model.",
-    ecog_status    = "ECOG performance status 0 in 567 (26.87%), 1 in 1539 (72.94%), 2 in 3, missing in 1.",
-    albumin        = "41.4 g/L median (23.8-67.9 g/L range).",
-    tumour_burden  = "72.9 mm median (0.00-350 mm range), as the RECIST sum of longest target-lesion diameters.",
+    disease_state = "Adults with advanced solid tumours. Tumour-type mix in the PK dataset (n = 2110; Table 1): non-squamous NSCLC 498 (23.60%), squamous NSCLC 441 (20.90%), SCLC 390 (18.48%), ESCC 389 (18.44%), colorectal cancer 151 (7.16%), hepatocellular carcinoma 125 (5.92%), other tumour types 116 (5.50%).",
+    dose_range = "Serplulimab 0.3-10 mg/kg IV plus flat doses of 200 mg Q2W, 300 mg Q3W and 400 mg Q4W across the pooled trials (Table S1). The weight-based regimens taken forward were 3 mg/kg Q2W and 4.5 mg/kg Q3W; the flat regimens evaluated for the dosing transition were 200 mg Q2W and 300 mg Q3W, each as a 1-h infusion.",
+    regions = "Predominantly China (Asian 87.44%); the ASTRUM-004 / ASTRUM-005 Phase III programmes were multinational and contribute the 12.56% non-Asian subjects.",
+    ada_status = "ADA-negative 1977 (93.70%); ADA-positive 133 (6.30%). Wang 2026 Section 3.2 reports no more than a 3% reduction in steady-state exposure among ADA-positive patients; ADA was not retained in the final model.",
+    ecog_status = "ECOG performance status 0 in 567 (26.87%), 1 in 1539 (72.94%), 2 in 3, missing in 1.",
+    albumin = "41.4 g/L median (23.8-67.9 g/L range).",
+    tumour_burden = "72.9 mm median (0.00-350 mm range), as the RECIST sum of longest target-lesion diameters.",
     renal_function = "Creatinine clearance 87.3 mL/min median (26.4-291 mL/min, Cockcroft-Gault, not BSA-normalised); serum creatinine 68.7 umol/L median (23.0-162 umol/L). Neither was retained. Wang 2026 Section 3.2 reports 8.92%-21.5% HIGHER exposure in mild or moderate renal impairment than in normal renal function, judged not clinically meaningful.",
     hepatic_function = "Wang 2026 Section 3.2 reports 1.06%-6.64% lower exposure with mild hepatic impairment than with normal hepatic function; the moderate-impairment subgroup (n = 4) was too small to interpret.",
     concomitant_therapy = "Concomitant chemotherapy in 1640 (77.73%); combination antibody-based anti-tumour therapy in 482 (22.84%).",
-    notes          = "Baseline demographics per Wang 2026 Table 1 (PK dataset column). Pooled dataset spans eleven serplulimab (HLX10) trials listed in Table S1 with their per-trial N: HLX10-001 / NCT03468751 (Phase I, n = 57), HLX10HLX04-001 / NCT03757936 (Phase I, n = 26), HLX10-008-HCC201 / NCT03973112 (Phase II, n = 123), HLX10-010-MSI201 / NCT03941574 (Phase II, n = 108), HLX10-011-CC201 / NCT04150575 (Phase II, n = 21), HLX10HLX07-001 / NCT04297995 (Phase II, n = 13), HLX10-002-NSCLC301 / NCT03952403 (Phase III, n = 491), HLX10-004-NSCLC303 / NCT04033354 (Phase III, n = 439), HLX10-005-SCLC301 / NCT04063163 (Phase III, n = 389), HLX10-007-EC301 / NCT03958890 (Phase III, n = 389), HLX10-015-mCRC301 / NCT04547166 (Phase II/III, n = 64). The last three are the trials newly added relative to the eight-trial Wang 2025 analysis; the other eight carry updated cut-off dates. 14,687 serum concentrations from 2110 subjects entered the final PopPK dataset. Fit in NONMEM with stepwise forward inclusion (p < 0.01) and backward elimination (p < 0.001); no covariate was removed during backward elimination. Model performance assessed by bootstrap resampling and prediction-corrected VPC stratified by tumour type."
+    notes = "Baseline demographics per Wang 2026 Table 1 (PK dataset column). Pooled dataset spans eleven serplulimab (HLX10) trials listed in Table S1 with their per-trial N: HLX10-001 / NCT03468751 (Phase I, n = 57), HLX10HLX04-001 / NCT03757936 (Phase I, n = 26), HLX10-008-HCC201 / NCT03973112 (Phase II, n = 123), HLX10-010-MSI201 / NCT03941574 (Phase II, n = 108), HLX10-011-CC201 / NCT04150575 (Phase II, n = 21), HLX10HLX07-001 / NCT04297995 (Phase II, n = 13), HLX10-002-NSCLC301 / NCT03952403 (Phase III, n = 491), HLX10-004-NSCLC303 / NCT04033354 (Phase III, n = 439), HLX10-005-SCLC301 / NCT04063163 (Phase III, n = 389), HLX10-007-EC301 / NCT03958890 (Phase III, n = 389), HLX10-015-mCRC301 / NCT04547166 (Phase II/III, n = 64). The last three are the trials newly added relative to the eight-trial Wang 2025 analysis; the other eight carry updated cut-off dates. 14,687 serum concentrations from 2110 subjects entered the final PopPK dataset. Fit in NONMEM with stepwise forward inclusion (p < 0.01) and backward elimination (p < 0.001); no covariate was removed during backward elimination. Model performance assessed by bootstrap resampling and prediction-corrected VPC stratified by tumour type."
   )
 
   # Covariates collected and screened by Wang 2026 but NOT retained in the final
@@ -137,87 +137,87 @@ Wang_2026_serplulimab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 61.0 y, range 23.0-83.0 y) and not retained. Wang 2026 Section 3.2 reports an exploratory EBE-based subgroup contrast of only -0.266% to +1.14% between patients <= 65 y and > 65 y, so no coefficient exists to encode."
+      units = "years",
+      type = "continuous",
+      notes = "Collected (Table 1: median 61.0 y, range 23.0-83.0 y) and not retained. Wang 2026 Section 3.2 reports an exploratory EBE-based subgroup contrast of only -0.266% to +1.14% between patients <= 65 y and > 65 y, so no coefficient exists to encode."
     ),
     HT = list(
       description = "Baseline height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 167 cm) and not retained; body weight was the retained body-size descriptor."
+      units = "cm",
+      type = "continuous",
+      notes = "Collected (Table 1: median 167 cm) and not retained; body weight was the retained body-size descriptor."
     ),
     BMI = list(
       description = "Baseline body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 22.6 kg/m^2) and not retained; correlated with the retained WT."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Collected (Table 1: median 22.6 kg/m^2) and not retained; correlated with the retained WT."
     ),
     BSA = list(
       description = "Baseline body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 1.70 m^2) and not retained; correlated with the retained WT."
+      units = "m^2",
+      type = "continuous",
+      notes = "Collected (Table 1: median 1.70 m^2) and not retained; correlated with the retained WT."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not involved in covariate screening. Wang 2026 Section 3.2 reports an exploratory EBE-based contrast of 10.1%-11.8% LOWER exposure in White than in Asian patients (Figure 2), judged not clinically meaningful. No model coefficient is published, so the effect cannot be encoded."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not involved in covariate screening. Wang 2026 Section 3.2 reports an exploratory EBE-based contrast of 10.1%-11.8% LOWER exposure in White than in Asian patients (Figure 2), judged not clinically meaningful. No model coefficient is published, so the effect cannot be encoded."
     ),
     ADA_POS = list(
       description = "Anti-drug-antibody positivity status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not retained. 133/2110 (6.30%) ADA-positive; Wang 2026 Section 3.2 reports no more than a 3% exposure reduction in ADA-positive patients (Figure 2). No model coefficient is published."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not retained. 133/2110 (6.30%) ADA-positive; Wang 2026 Section 3.2 reports no more than a 3% exposure reduction in ADA-positive patients (Figure 2). No model coefficient is published."
     ),
     LDH = list(
       description = "Baseline lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 208 U/L) and not retained in the final PK model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected (Table 1: median 208 U/L) and not retained in the final PK model."
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 21.0 U/L) and not retained. Note that the related ALP WAS retained, on CL."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected (Table 1: median 21.0 U/L) and not retained. Note that the related ALP WAS retained, on CL."
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 18.0 U/L) and not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Collected (Table 1: median 18.0 U/L) and not retained."
     ),
     TBILI = list(
       description = "Baseline total bilirubin (source column BILI)",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 10.3 umol/L) and not retained. Reported in SI units (umol/L), matching the canonical."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected (Table 1: median 10.3 umol/L) and not retained. Reported in SI units (umol/L), matching the canonical."
     ),
     CREAT = list(
       description = "Baseline serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 68.7 umol/L) and not retained."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected (Table 1: median 68.7 umol/L) and not retained."
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Collected (Table 1: median 87.3 mL/min) and not retained. Reported as an absolute Cockcroft-Gault clearance in mL/min, NOT the BSA-normalised mL/min/1.73 m^2 of the canonical CRCL entry. Consistent with a 148 kDa IgG4 mAb not being renally cleared."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Collected (Table 1: median 87.3 mL/min) and not retained. Reported as an absolute Cockcroft-Gault clearance in mL/min, NOT the BSA-normalised mL/min/1.73 m^2 of the canonical CRCL entry. Consistent with a 148 kDa IgG4 mAb not being renally cleared."
     ),
     ECOG_GE1 = list(
       description = "Eastern Cooperative Oncology Group performance status >= 1 (source column ECOG, levels 0 / 1 / 2)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected (Table 1: ECOG 0 in 26.87%, 1 in 72.94%, 2 in 3 subjects) and not retained in the final PK model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected (Table 1: ECOG 0 in 26.87%, 1 in 72.94%, 2 in 3 subjects) and not retained in the final PK model."
     ),
     CONMED_CHEMO = list(
       description = "Concomitant chemotherapy indicator (source column COMB)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Collected (Table 1: 1640/2110, 77.73%) and not retained in the final PK model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Collected (Table 1: 1640/2110, 77.73%) and not retained in the final PK model."
     )
   )
 

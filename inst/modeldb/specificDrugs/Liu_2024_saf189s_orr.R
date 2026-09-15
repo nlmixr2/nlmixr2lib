@@ -40,18 +40,18 @@ Liu_2024_saf189s_orr <- function() {
   )
   vignette <- "Liu_2024_saf189s"
   units <- list(
-    time          = "n/a (static landmark exposure-efficacy regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
+    time = "n/a (static landmark exposure-efficacy regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
     concentration = "prob_orr_central (probability of an IRC-assessed complete or partial response, 0-1; also logit_orr_central)"
   )
 
   covariateData <- list(
     CTROUGH = list(
-      description        = "Individual SAF-189s steady-state trough plasma concentration (Cmin,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's most prevalent dose level (Liu 2024 Methods, E-R analysis).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual SAF-189s steady-state trough plasma concentration (Cmin,ss), per subject. Supplied as data: this model has no PK layer, and the source analysis used the individual post hoc parameters of the companion population PK model together with the patient's most prevalent dose level (Liu 2024 Methods, E-R analysis).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (not unbound) plasma concentration, at STEADY STATE, and",
         "computed at the MOST PREVALENT dose the patient received --",
         "not at the first dose. That distinction is load-bearing in this",
@@ -72,23 +72,23 @@ Liu_2024_saf189s_orr <- function() {
         "Cmin,ss quartile boundaries as 18, 60.7, 79, 108 and",
         "182 ng/mL (61 patients per quartile)."
       ),
-      source_name        = "C min,ss (steady-state minimum concentration) estimated using the most prevalent dose"
+      source_name = "C min,ss (steady-state minimum concentration) estimated using the most prevalent dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 244L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 244L,
+    n_studies = 1L,
     n_observations = "244 binary response records (one per patient; landmark analysis, no repeated measures)",
-    age_range      = "SAF001 phase II: median 54.1 years, range 20.0-84.0 (Liu 2024 Supplementary Table 1)",
-    weight_range   = "SAF001 phase II pooled with the rest of the PK-evaluable cohort: median 63.2 kg, range 37.3-92.5",
+    age_range = "SAF001 phase II: median 54.1 years, range 20.0-84.0 (Liu 2024 Supplementary Table 1)",
+    weight_range = "SAF001 phase II pooled with the rest of the PK-evaluable cohort: median 63.2 kg, range 37.3-92.5",
     sex_female_pct = 53.6,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "ALK-positive or ROS1-positive advanced non-small cell lung cancer; response assessed by an independent review committee under RECIST 1.1, ORR = complete response or partial response",
-    dose_range     = "SAF-189s 80, 120, 160 or 210 mg orally once daily in 21-day cycles (phase IIa) or 160 mg once daily (phase IIb)",
-    regions        = "China",
-    notes          = paste0(
+    disease_state = "ALK-positive or ROS1-positive advanced non-small cell lung cancer; response assessed by an independent review committee under RECIST 1.1, ORR = complete response or partial response",
+    dose_range = "SAF-189s 80, 120, 160 or 210 mg orally once daily in 21-day cycles (phase IIa) or 160 mg once daily (phase IIb)",
+    regions = "China",
+    notes = paste0(
       "The exposure-efficacy analysis set is the 244 phase II patients ",
       "with IRC assessment, a subset of the 317 PK-evaluable subjects ",
       "used to fit the companion population PK model (Liu 2024 Results, ",

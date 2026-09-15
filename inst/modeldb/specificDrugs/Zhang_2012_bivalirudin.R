@@ -14,45 +14,45 @@ Zhang_2012_bivalirudin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bivalirudin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bivalirudin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bivalirudin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline; time-fixed within the single study).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline; time-fixed within the single study).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-kg multiplier on CL, V1, Q, and V2. Zhang 2012 reports all PK structural parameters in per-kg units (Table 2: 0.323 L/h/kg, 0.086 L/kg, 0.0957 L/h/kg, 0.0554 L/kg). The model recovers the individual values as cl = exp(lcl + etalcl) * WT (and analogously for vc, q, vp). Bivalirudin dosing in the four study arms is also weight-adjusted (0.5 / 0.75 / 1.05 mg/kg IV bolus and 1.75 mg/kg/h IV infusion). Cohort total-body-weight range 50-78 kg, group means 55.4-61.6 kg (Zhang 2012 Table 1).",
-      source_name        = "Weight"
+      notes = "Per-kg multiplier on CL, V1, Q, and V2. Zhang 2012 reports all PK structural parameters in per-kg units (Table 2: 0.323 L/h/kg, 0.086 L/kg, 0.0957 L/h/kg, 0.0554 L/kg). The model recovers the individual values as cl = exp(lcl + etalcl) * WT (and analogously for vc, q, vp). Bivalirudin dosing in the four study arms is also weight-adjusted (0.5 / 0.75 / 1.05 mg/kg IV bolus and 1.75 mg/kg/h IV infusion). Cohort total-body-weight range 50-78 kg, group means 55.4-61.6 kg (Zhang 2012 Table 1).",
+      source_name = "Weight"
     ),
     RBC = list(
-      description        = "Red blood cell (erythrocyte) count.",
-      units              = "10^12 cells/L",
-      type               = "continuous",
+      description = "Red blood cell (erythrocyte) count.",
+      units = "10^12 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline value (Zhang 2012 Table 1 demographic table; the asterisk in the paper's column heading 'RBC*' marks the per-subject demographic value). Reference value 4.40 x 10^12 cells/L is the across-cohort median used by Zhang 2012 in the centred linear-deviation effect on EC50: EC50_i = theta_EC50 * exp(eta_EC50) * (1 + 1.70 * (RBC - 4.40)) per the equation printed on page 1391. Cohort range 3.79-5.17 x 10^12 cells/L across the four dose groups (Table 1). The biological rationale offered in the Discussion (page 1391-1392) is dilution of clotting-factor concentration during the in-vitro ACT measurement when RBC is low, not a direct pharmacological effect of erythrocytes on bivalirudin potency.",
-      source_name        = "RBC*"
+      notes = "Baseline value (Zhang 2012 Table 1 demographic table; the asterisk in the paper's column heading 'RBC*' marks the per-subject demographic value). Reference value 4.40 x 10^12 cells/L is the across-cohort median used by Zhang 2012 in the centred linear-deviation effect on EC50: EC50_i = theta_EC50 * exp(eta_EC50) * (1 + 1.70 * (RBC - 4.40)) per the equation printed on page 1391. Cohort range 3.79-5.17 x 10^12 cells/L across the four dose groups (Table 1). The biological rationale offered in the Discussion (page 1391-1392) is dilution of clotting-factor concentration during the in-vitro ACT measurement when RBC is low, not a direct pharmacological effect of erythrocytes on bivalirudin potency.",
+      source_name = "RBC*"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 36L,
-    n_studies      = 1L,
-    age_range      = "29-37 years",
-    age_median     = "33 years (cohort mean across the four dose groups)",
-    weight_range   = "50-78 kg",
-    weight_median  = "approximately 60 kg (group means 55.4-61.6 kg, Zhang 2012 Table 1)",
+    species = "human",
+    n_subjects = 36L,
+    n_studies = 1L,
+    age_range = "29-37 years",
+    age_median = "33 years (cohort mean across the four dose groups)",
+    weight_range = "50-78 kg",
+    weight_median = "approximately 60 kg (group means 55.4-61.6 kg, Zhang 2012 Table 1)",
     sex_female_pct = 52.8,
     race_ethnicity = "100% Chinese Han",
-    disease_state  = "Healthy adult volunteers in a phase I study; no anticoagulation indication; placebo-controlled randomisation.",
-    dose_range     = "Bivalirudin 0.5 mg/kg IV bolus, 0.75 mg/kg IV bolus, 1.05 mg/kg IV bolus, and 0.75 mg/kg IV bolus followed by 1.75 mg/kg/h IV infusion for 4 h (n = 9 per arm).",
-    regions        = "China (Peking University First Hospital, Beijing).",
+    disease_state = "Healthy adult volunteers in a phase I study; no anticoagulation indication; placebo-controlled randomisation.",
+    dose_range = "Bivalirudin 0.5 mg/kg IV bolus, 0.75 mg/kg IV bolus, 1.05 mg/kg IV bolus, and 0.75 mg/kg IV bolus followed by 1.75 mg/kg/h IV infusion for 4 h (n = 9 per arm).",
+    regions = "China (Peking University First Hospital, Beijing).",
     rbc_distribution = "Group mean +/- SD (range), x 10^12 cells/L: 4.4 +/- 0.1 (4.22-4.61); 4.5 +/- 0.4 (4.12-5.17); 4.5 +/- 0.4 (3.85-5.02); 4.3 +/- 0.2 (3.79-4.58); covariate reference value used in the EC50 equation is 4.40 (Zhang 2012 Table 1).",
     sampling_design = "423 plasma bivalirudin concentrations and a paired ACT time course per subject (LC-MS/MS for bivalirudin concentration; Hemochron Response device for ACT). Placebo-treated n = 12 subjects were not included in modelling but informed the placebo-corrected ACT baseline.",
-    notes          = "48 subjects randomised (36 bivalirudin, 12 placebo). The placebo arm is excluded from the population PK-PD modelling but contributes to baseline / placebo correction (Zhang 2012 Methods). All subjects have normal renal function (GFR > 90 mL/min); Discussion notes that renal-impairment effects on bivalirudin CL reported in references 19-20 could not be assessed in this cohort. Baseline demographics from Zhang 2012 Table 1."
+    notes = "48 subjects randomised (36 bivalirudin, 12 placebo). The placebo arm is excluded from the population PK-PD modelling but contributes to baseline / placebo correction (Zhang 2012 Methods). All subjects have normal renal function (GFR > 90 mL/min); Discussion notes that renal-impairment effects on bivalirudin CL reported in references 19-20 could not be assessed in this cohort. Baseline demographics from Zhang 2012 Table 1."
   )
 
   ini({

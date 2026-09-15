@@ -6,30 +6,38 @@ FernandezTeruel_2024_capivasertib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral2 = list(
-      analyte = "capivasertib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "capivasertib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BBW (baseline body weight). Reference 67 kg, the pooled",
         "median of Fernandez-Teruel 2024 Table 2. Enters twice, in two different",
         "functional forms taken verbatim from the paper's covariate equations:",
@@ -39,14 +47,14 @@ FernandezTeruel_2024_capivasertib <- function() {
         "logitffo * (WT / 67)^e_wt_logitffo. Baseline-only (time-fixed);",
         "the analysis carried a single per-patient weight."
       ),
-      source_name        = "BBW"
+      source_name = "BBW"
     ),
     FASTED_STRICT = list(
-      description        = "Overnight-fasted dosing indicator (1 = dose taken after an overnight fast; 0 = semi-fasted or fed)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Overnight-fasted dosing indicator (1 = dose taken after an overnight fast; 0 = semi-fasted or fed)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (semi-fasted or fed)",
-      notes              = paste(
+      notes = paste(
         "Source column FASTED. The paper's three prandial protocols collapse to",
         "a strict-vs-relaxed contrast, which is exactly this canonical's axis:",
         "an overnight fast is FASTED_STRICT = 1, while the semi-fasted protocol",
@@ -59,14 +67,14 @@ FernandezTeruel_2024_capivasertib <- function() {
         "dosed the same patients under both prandial states in a fixed-sequence",
         "crossover."
       ),
-      source_name        = "FASTED"
+      source_name = "FASTED"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator (1 = capsule; 0 = tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator (1 = capsule; 0 = tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet)",
-      notes              = paste(
+      notes = paste(
         "Source column CAP. The comparator is the capivasertib tablet, and both",
         "arms carry F = 1 in the apparent (/F) parameterisation: unlike most",
         "members of this family the formulation does NOT act on bioavailability",
@@ -77,14 +85,14 @@ FernandezTeruel_2024_capivasertib <- function() {
         "narrow role as in Xu_2025_aficamten.R. Per dose record: the OAK study",
         "compared the two formulations within patient."
       ),
-      source_name        = "CAP"
+      source_name = "CAP"
     ),
     DOSE_CAPIVASERTIB_MG = list(
-      description        = "Planned capivasertib dose level per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Planned capivasertib dose level per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column DOSE. The planned twice-daily dose level, 80-800 mg",
         "(Fernandez-Teruel 2024 Table 2 'Capivasertib planned dose'), not the",
         "daily total. Enters the maximal auto-inhibition of CL/F as a",
@@ -97,14 +105,14 @@ FernandezTeruel_2024_capivasertib <- function() {
         "etTrans consumes a column literally named DOSE and never exposes it to",
         "model()."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     CONMED_PACLITAXEL = list(
-      description        = "Concomitant paclitaxel indicator (1 = capivasertib given with paclitaxel)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant paclitaxel indicator (1 = capivasertib given with paclitaxel)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (capivasertib monotherapy, or with fulvestrant)",
-      notes              = paste(
+      notes = paste(
         "Source column PACL. Paclitaxel was given only in the BEECH study",
         "(90 of 441 patients, 20.4%); the reference level pools capivasertib",
         "monotherapy and capivasertib + fulvestrant, since fulvestrant was not a",
@@ -115,7 +123,7 @@ FernandezTeruel_2024_capivasertib <- function() {
         "paclitaxel is confounded with the BEECH study, whose sparse post-144 h",
         "sampling limits the ability to resolve the time-dependent PK."
       ),
-      source_name        = "PACL"
+      source_name = "PACL"
     )
   )
 
@@ -128,15 +136,21 @@ FernandezTeruel_2024_capivasertib <- function() {
   # verdict).
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Screened; not significant. Median 56 years (range 27-87), Table 2."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant. 79.6% female, Table 2."
     ),
     CRCL = list(
-      description = "Creatinine clearance", units = "mL/min", type = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       notes = paste(
         "Screened; not significant. Median 97 mL/min (range 35-304), Table 2.",
         "The categorical renal-function stratification derived from it",
@@ -144,11 +158,15 @@ FernandezTeruel_2024_capivasertib <- function() {
       )
     ),
     RACE_BLACK = list(
-      description = "Black race indicator", units = "(binary)", type = "binary",
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as part of the race covariate; not significant. 2.0% of patients, Table 2."
     ),
     RACE_ASIAN = list(
-      description = "Asian race indicator", units = "(binary)", type = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened as part of the race covariate; not significant. 17.0% of",
         "patients (14.3% Japanese, 2.7% other Asian), Table 2. Study 4 was an",
@@ -156,30 +174,42 @@ FernandezTeruel_2024_capivasertib <- function() {
       )
     ),
     SMOKING = list(
-      description = "Current smoking status indicator", units = "(binary)", type = "binary",
+      description = "Current smoking status indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant. Not tabulated in the main text (ESM Table 2)."
     ),
     CONMED_FULVESTRANT = list(
-      description = "Concomitant fulvestrant indicator", units = "(binary)", type = "binary",
+      description = "Concomitant fulvestrant indicator",
+      units = "(binary)",
+      type = "binary",
       notes = paste(
         "Screened; not significant, unlike the paclitaxel arm which was retained.",
         "16.8% of patients, Table 2."
       )
     ),
     CONMED_CYP3A4_INHIB = list(
-      description = "Concomitant CYP3A inhibitor indicator", units = "(binary)", type = "binary",
+      description = "Concomitant CYP3A inhibitor indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant."
     ),
     CONMED_CYP3A4_IND = list(
-      description = "Concomitant CYP3A inducer indicator", units = "(binary)", type = "binary",
+      description = "Concomitant CYP3A inducer indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant."
     ),
     CONMED_ARA = list(
-      description = "Concomitant acid-reducing agent indicator", units = "(binary)", type = "binary",
+      description = "Concomitant acid-reducing agent indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened; not significant. 31.5% of patients, Sect. 3.1."
     ),
     HEPATIC_IMPAIR = list(
-      description = "NCI-ODWG hepatic function category", units = "(category)", type = "categorical",
+      description = "NCI-ODWG hepatic function category",
+      units = "(category)",
+      type = "categorical",
       notes = paste(
         "Screened; not significant. Normal 67.1%, mild 31.3%, moderate 1.4%,",
         "no severe, Table 2."
@@ -188,21 +218,25 @@ FernandezTeruel_2024_capivasertib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 441L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 441L,
+    n_studies = 4L,
     n_observations = 3963L,
-    age_range      = "27-87 years",
-    age_median     = "56 years",
-    weight_range   = "32-129 kg",
-    weight_median  = "67 kg",
+    age_range = "27-87 years",
+    age_median = "56 years",
+    weight_range = "32-129 kg",
+    weight_median = "67 kg",
     sex_female_pct = 79.6,
     race_ethnicity = c(
-      White = 74.1, Black = 2.0, Asian = 17.0,
-      `American Indian or Alaska Native` = 2.9, Other = 2.9, Missing = 0.9
+      White = 74.1,
+      Black = 2.0,
+      Asian = 17.0,
+      `American Indian or Alaska Native` = 2.9,
+      Other = 2.9,
+      Missing = 0.9
     ),
-    disease_state  = "Advanced or metastatic solid tumours (including advanced / metastatic breast cancer)",
-    dose_range     = paste(
+    disease_state = "Advanced or metastatic solid tumours (including advanced / metastatic breast cancer)",
+    dose_range = paste(
       "80-800 mg orally twice daily over 21-day and 28-day cycles, as",
       "monotherapy or with paclitaxel or fulvestrant; continuous dosing or one",
       "of two intermittent schedules, 4 days on / 3 days off (4/3, 73.7% of",
@@ -210,9 +244,9 @@ FernandezTeruel_2024_capivasertib <- function() {
     ),
     renal_function = "Normal (CrCL >= 90 mL/min) 58.0%, mild (60-89) 32.9%, moderate (30-59) 8.8%, no severe impairment",
     hepatic_function = "Normal 67.1%, mild 31.3%, moderate 1.4%, no severe impairment",
-    co_medication  = "Paclitaxel 20.4% (BEECH only), fulvestrant 16.8% (Study 1 only), acid-reducing agent 31.5%",
-    regions        = "Global (Study 1, BEECH and OAK multinational; Study 4 all-Japanese)",
-    notes          = paste(
+    co_medication = "Paclitaxel 20.4% (BEECH only), fulvestrant 16.8% (Study 1 only), acid-reducing agent 31.5%",
+    regions = "Global (Study 1, BEECH and OAK multinational; Study 4 all-Japanese)",
+    notes = paste(
       "Pooled from four phase I / II studies: Study 1 (n = 280), BEECH",
       "(n = 90), Study 4 (n = 41, Japanese) and OAK (n = 30). Baseline",
       "demographics are Fernandez-Teruel 2024 Table 2 (key covariates) and ESM",

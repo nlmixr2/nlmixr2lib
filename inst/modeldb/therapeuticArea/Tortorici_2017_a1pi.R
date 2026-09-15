@@ -12,61 +12,61 @@ Tortorici_2017_a1pi <- function() {
   )
   vignette <- "Tortorici_2017_a1pi"
   units <- list(
-    time          = "day",
-    dosing        = "mg/day (per-subject average dose rate, supplied as the DOSE covariate column; the model is an empirical regression and does not consume rxode2 dose events)",
+    time = "day",
+    dosing = "mg/day (per-subject average dose rate, supplied as the DOSE covariate column; the model is an empirical regression and does not consume rxode2 dose events)",
     concentration = "umol/L (serum A1-PI, observation Cc); g/L (CT lung density at total lung capacity, observation lungDens)"
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject time-fixed average A1-PI dose rate during the modelled study phase (mg/day; not weight-normalised). Computed from the prescribed weekly weight-based regimen as DOSE = (mg_per_kg_per_week * WT) / 7. The reference 60 mg/kg/wk regimen for a 77 kg subject corresponds to DOSE ~ 660 mg/day; the placebo arm has DOSE = 0.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-subject time-fixed average A1-PI dose rate during the modelled study phase (mg/day; not weight-normalised). Computed from the prescribed weekly weight-based regimen as DOSE = (mg_per_kg_per_week * WT) / 7. The reference 60 mg/kg/wk regimen for a 77 kg subject corresponds to DOSE ~ 660 mg/day; the placebo arm has DOSE = 0.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tortorici 2017 dose-exposure model (DOSE in equation 6 is the average daily mg dose, denoted Dij). Time-fixed within a study phase; the user can switch DOSE between simulation phases by stratifying the dataset, but the algebraic dose-exposure relationship has no PK lag, so transitions appear as instantaneous step changes in Cc. Use case (a) of the canonical DOSE entry: per-subject assigned dose level used as a regressor in a PD / dose-exposure model that does not instantiate a PK ODE.",
-      source_name        = "Dij"
+      notes = "Tortorici 2017 dose-exposure model (DOSE in equation 6 is the average daily mg dose, denoted Dij). Time-fixed within a study phase; the user can switch DOSE between simulation phases by stratifying the dataset, but the algebraic dose-exposure relationship has no PK lag, so transitions appear as instantaneous step changes in Cc. Use case (a) of the canonical DOSE entry: per-subject assigned dose level used as a regressor in a PD / dose-exposure model that does not instantiate a PK ODE.",
+      source_name = "Dij"
     ),
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tortorici 2017 used baseline weight; mean (SD) reported in Table 1 was 75.9 (16.2) kg in the A1-PI arm and 79.5 (13.9) kg in placebo. Power-form effect on the dose-exposure slope: (WT/77)^theta3 with reference 77 kg (the median-weight reference individual the paper uses for covariate predictions).",
-      source_name        = "WT"
+      notes = "Tortorici 2017 used baseline weight; mean (SD) reported in Table 1 was 75.9 (16.2) kg in the A1-PI arm and 79.5 (13.9) kg in placebo. Power-form effect on the dose-exposure slope: (WT/77)^theta3 with reference 77 kg (the median-weight reference individual the paper uses for covariate predictions).",
+      source_name = "WT"
     ),
     A1PI = list(
-      description        = "Baseline (pre-treatment) endogenous serum alpha-1 proteinase inhibitor concentration. Each subject's screening A1-PI value, used as the Cbase covariate in equation 6.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) endogenous serum alpha-1 proteinase inhibitor concentration. Each subject's screening A1-PI value, used as the Cbase covariate in equation 6.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Two power-form effects: (A1PI/5.5)^theta5 with theta5 = 0.73 on the placebo-arm post-treatment exposure intercept (treats subjects with higher endogenous A1-PI as having proportionally higher placebo-arm levels), and (A1PI/5.5)^theta4 with theta4 = -0.12 on the dose-rate slope. The reference 5.5 umol/L corresponds approximately to the median pre-treatment A1-PI in the RAPID-RCT placebo arm (paper Methods, dose-exposure section). RAPID enrolment criteria restricted A1PI to <= 11 umol/L (severe deficiency).",
-      source_name        = "Cbase"
+      notes = "Two power-form effects: (A1PI/5.5)^theta5 with theta5 = 0.73 on the placebo-arm post-treatment exposure intercept (treats subjects with higher endogenous A1-PI as having proportionally higher placebo-arm levels), and (A1PI/5.5)^theta4 with theta4 = -0.12 on the dose-rate slope. The reference 5.5 umol/L corresponds approximately to the median pre-treatment A1-PI in the RAPID-RCT placebo arm (paper Methods, dose-exposure section). RAPID enrolment criteria restricted A1PI to <= 11 umol/L (severe deficiency).",
+      source_name = "Cbase"
     ),
     FEV1 = list(
-      description        = "Baseline forced expiratory volume in 1 second; absolute volume in litres.",
-      units              = "L",
-      type               = "continuous",
+      description = "Baseline forced expiratory volume in 1 second; absolute volume in litres.",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear-deviation effect on the lung-density decline rate: theta5 * (FEV1 - 1.6), where 1.6 L is the cohort median (Table 1 shows mean (SD) of 1.6 (0.5) L in both arms of RAPID-RCT). theta5 = +0.56 (g/L/year per L FEV1); patients with lower FEV1 have steeper natural decline rates independent of A1-PI exposure. The covariate effect modifies the natural disease-progression rate, not the exposure response itself.",
-      source_name        = "FEV1"
+      notes = "Linear-deviation effect on the lung-density decline rate: theta5 * (FEV1 - 1.6), where 1.6 L is the cohort median (Table 1 shows mean (SD) of 1.6 (0.5) L in both arms of RAPID-RCT). theta5 = +0.56 (g/L/year per L FEV1); patients with lower FEV1 have steeper natural decline rates independent of A1-PI exposure. The covariate effect modifies the natural disease-progression rate, not the exposure response itself.",
+      source_name = "FEV1"
     )
   )
 
   population <- list(
-    n_subjects       = 134L,
-    n_studies        = 2L,
-    age_range        = "approximately 30-65 years",
-    age_median       = "53 years",
-    weight_range     = "approximately 50-150 kg",
-    weight_median    = "77 kg",
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Adults with severe alpha-1 antitrypsin deficiency and clinical emphysema (RAPID enrolment criteria: PI*ZZ or rare deficient genotype, A1-PI level <= 11 umol/L, FEV1 35-70% predicted, post-bronchodilator FEV1/FVC < 70%).",
-    dose_range       = "60 mg/kg weekly intravenous infusion (single dose level studied in RAPID-RCT and RAPID-OLE). Bootstrap dose-exposure simulations in the paper extrapolated to 90 and 120 mg/kg/week.",
-    regions          = "International multi-center: Australia, Canada, multiple European countries, USA in RAPID-RCT (n=180); RAPID-OLE continued non-USA enrolment (n=140) because A1-PI augmentation therapy was already approved in the USA.",
-    fev1_median      = "1.6 L",
-    a1pi_bl_median   = "approximately 6 umol/L (Table 1: 6.38 (4.62) umol/L active arm; 5.94 (2.42) umol/L placebo arm)",
-    notes            = "Population is the exposure-response analysis set: 134 subjects (61 placebo and 73 A1-PI active) who had at least one post-baseline CT lung-density measurement. The dose-exposure analysis included a slightly larger 308-subject set (170 from RAPID-RCT plus 138 from the RAPID-OLE continuation, with overlap) but the structural-model parameters reported here come from the exposure-response analysis set's contribution to the joint sequential model. Trial NCT identifiers: NCT00261833 (RAPID-RCT), NCT00670007 (RAPID-OLE). Population characteristics are reproduced from Table 1 of Tortorici 2017 (RAPID-RCT ITT n=180 column)."
+    n_subjects = 134L,
+    n_studies = 2L,
+    age_range = "approximately 30-65 years",
+    age_median = "53 years",
+    weight_range = "approximately 50-150 kg",
+    weight_median = "77 kg",
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Adults with severe alpha-1 antitrypsin deficiency and clinical emphysema (RAPID enrolment criteria: PI*ZZ or rare deficient genotype, A1-PI level <= 11 umol/L, FEV1 35-70% predicted, post-bronchodilator FEV1/FVC < 70%).",
+    dose_range = "60 mg/kg weekly intravenous infusion (single dose level studied in RAPID-RCT and RAPID-OLE). Bootstrap dose-exposure simulations in the paper extrapolated to 90 and 120 mg/kg/week.",
+    regions = "International multi-center: Australia, Canada, multiple European countries, USA in RAPID-RCT (n=180); RAPID-OLE continued non-USA enrolment (n=140) because A1-PI augmentation therapy was already approved in the USA.",
+    fev1_median = "1.6 L",
+    a1pi_bl_median = "approximately 6 umol/L (Table 1: 6.38 (4.62) umol/L active arm; 5.94 (2.42) umol/L placebo arm)",
+    notes = "Population is the exposure-response analysis set: 134 subjects (61 placebo and 73 A1-PI active) who had at least one post-baseline CT lung-density measurement. The dose-exposure analysis included a slightly larger 308-subject set (170 from RAPID-RCT plus 138 from the RAPID-OLE continuation, with overlap) but the structural-model parameters reported here come from the exposure-response analysis set's contribution to the joint sequential model. Trial NCT identifiers: NCT00261833 (RAPID-RCT), NCT00670007 (RAPID-OLE). Population characteristics are reproduced from Table 1 of Tortorici 2017 (RAPID-RCT ITT n=180 column)."
   )
 
   ini({

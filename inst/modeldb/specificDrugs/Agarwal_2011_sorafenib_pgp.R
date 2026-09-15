@@ -40,39 +40,39 @@ Agarwal_2011_sorafenib_pgp <- function() {
   vignette <- "Agarwal_2011_sorafenib_transporters"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
     concentration = "(observation vbl_accum is the fold increase in intracellular vinblastine accumulation relative to untreated control, dimensionless; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration in the incubation medium in ng/mL)"
   )
 
   covariateData <- list(
     CP_SORAFENIB_NGML = list(
-      description        = "Sorafenib concentration in the cell-assay incubation medium, supplied as a covariate. Reused canonical: in this in-vitro model the column carries an incubation-medium concentration rather than a plasma concentration, but the quantity and units are identical. The same column drives the companion BCRP model, where it carries a Transwell donor-compartment concentration.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Sorafenib concentration in the cell-assay incubation medium, supplied as a covariate. Reused canonical: in this in-vitro model the column carries an incubation-medium concentration rather than a plasma concentration, but the quantity and units are identical. The same column drives the companion BCRP model, where it carries a Transwell donor-compartment concentration.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Methods 'P-gp and BCRP Inhibition Assays' states that intracellular accumulation was determined in the presence of sorafenib concentrations spanning 20 ng/mL to 60 ug/mL. The Figure 6A x-axis is labelled in ug/mL and spans about 0.4 to 120 ug/mL, with plotted observations from about 0.64 to 64 ug/mL; the lower decades of the Methods range appear only in the Figure 6B (BCRP probe) panel, whose axis starts at 0.01 ug/mL.",
         "UNIT CONVERSION: the source prints this model's potency in ug/mL (15.9) while the covariate column is in ng/mL, so the ini() value is the exact, lossless conversion 15.9 ug/mL = 15900 ng/mL. A single ng/mL column is used for both Agarwal 2011 models so that one canonical covariate serves the whole paper.",
         "The paper reports ic50 in both mass and molar units (15.9 ug/mL = 25 uM), implying a molecular weight of 636 g/mol. That is NOT the sorafenib free base (464.8 g/mol) but matches sorafenib tosylate (637.0 g/mol), the salt the authors purchased (Methods 'Chemicals and Reagents'). The companion BCRP model's dual-unit report (3.6 ng/mL = 5.5 nM) implies about 655 g/mol, corroborating the same tosylate convention. Users converting between mass and molar units should apply the authors' convention or the potencies will disagree with the printed values.",
         "Clinical context supplied by the authors (Discussion): sorafenib plasma concentrations in humans on the accepted 100-400 mg b.i.d. regimen have been reported at 1-15 uM, i.e. the same order as this 25 uM IC50."
       ),
-      source_name        = "sorafenib concentration (C)"
+      source_name = "sorafenib concentration (C)"
     )
   )
 
   population <- list(
-    species          = "in vitro (MDCKII canine kidney epithelial cells stably transfected with human MDR1)",
-    n_subjects       = NA_integer_,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- transfected cell line.",
-    dose_range       = "Sorafenib concentrations spanning 20 ng/mL to 60 ug/mL (Methods 'P-gp and BCRP Inhibition Assays'); the Figure 6A observations run from about 0.64 to 64 ug/mL.",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (MDCKII canine kidney epithelial cells stably transfected with human MDR1)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- transfected cell line.",
+    dose_range = "Sorafenib concentrations spanning 20 ng/mL to 60 ug/mL (Methods 'P-gp and BCRP Inhibition Assays'); the Figure 6A observations run from about 0.64 to 64 ug/mL.",
+    regions = NA_character_,
+    notes = paste(
       "Confluent MDCKII-MDR1 monolayers in 24-well plates at 2e5 cells/well; intracellular accumulation of tritiated vinblastine measured at 60 min in the presence of increasing sorafenib concentrations, normalised to the protein concentration of the solubilised cell fraction and expressed relative to the no-sorafenib control (Methods 'Intracellular Accumulation' and 'P-gp and BCRP Inhibition Assays'). n = 4 per concentration.",
       "Assay validity: accumulation of the prototypical P-gp substrate vinblastine in the MDR1 transfects was about 10% of wild-type levels, confirming functional P-gp expression (Results, Figure 1B).",
       "IMPORTANT ASYMMETRY. Sorafenib inhibits P-gp (this model) but is not transported by it -- accumulation of sorafenib itself in MDR1 transfects did not differ from wild-type (Figure 1B) and there was no directional flux (Figure 4). Conversely sorafenib IS a high-affinity BCRP substrate (companion model, km = 3.6 ng/mL) yet did NOT inhibit BCRP-mediated transport of either prazosin or mitoxantrone (Figure 6B), which is why no BCRP inhibition curve exists to extract. The authors infer that sorafenib binds BCRP at a site not overlapping those probes.",

@@ -25,7 +25,7 @@ Olivo_2024_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Olivo_2024_methotrexate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Olivo 2024 Results 3.3 ("a
@@ -35,17 +35,17 @@ Olivo_2024_methotrexate <- function() {
   # inter-compartmental clearance (Q)") and Methods 2.3 (MTX quantified in
   # serum by chemiluminescent microparticle immunoassay).
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column SCr. Power-form effect on CL normalized to the cohort",
         "median, per Olivo 2024 Eq. 8:",
         "'CL_i = 14.8 x (SCr / 0.58)^-0.192 x e^(...)'. The 0.58 mg/dL",
@@ -66,14 +66,14 @@ Olivo_2024_methotrexate <- function() {
         "mechanistically coherent because MTX elimination is mostly renal",
         "(Discussion)."
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     ),
     BSA = list(
-      description        = "Body surface area (Haycock equation)",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area (Haycock equation)",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on Vc normalized to the cohort median, per Olivo",
         "2024 Eq. 9: 'Vc_i = 82.5 x (BSA / 1.45)^0.301 x e^(...)'. The",
         "1.45 m^2 reference is the cohort median BSA reported in Table 2",
@@ -88,14 +88,14 @@ Olivo_2024_methotrexate <- function() {
         "Abstract and Results 3.3 all place it on Vc, which is what is",
         "encoded here."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     OCC = list(
-      description        = "Integer-valued MTX cycle (occasion) indicator for between-occasion variability on CL",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued MTX cycle (occasion) indicator for between-occasion variability on CL",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Olivo 2024 Methods 2.3 investigated between-occasion variability",
         "(BOV) and coded occasions per Ho Hui 2019 despite non-sequential",
         "cycles. Results 3.3: 'The inclusion of exponential BOV in CL (15.1%)",
@@ -113,16 +113,16 @@ Olivo_2024_methotrexate <- function() {
         "zeros every indicator and yields the typical-value CL with BSV only.",
         "For single-cycle simulation pass OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Discussion: 'patient's age was not well",
         "distributed around all childhood lifetime stages, which probably",
         "explains why, in the current POPPK model, patient's age was not",
@@ -133,9 +133,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Listed among the covariates tested in Methods 2.3 ('Covariates",
         "tested were weight, age, height, body surface area, body mass index,",
         "sex, race, serum creatinine, creatinine clearance, hepatic enzymes,",
@@ -146,9 +146,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and not retained. Results 3.3: 'The investigation of",
         "height as a covariate for CL, which is also used in the Schwartz",
         "equation to calculate CrCL, had no impact on BSV or BOV.' Table 2",
@@ -157,9 +157,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     BMI = list(
       description = "Body mass index (Quetelet equation)",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Tested per Methods 2.3 but not retained. Table 2 median 18.11",
         "kg/m^2 (range 10.43-28.56), footnote b 'calculated with Quetelet",
         "equation'."
@@ -167,9 +167,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested per Methods 2.3 but not retained. Results 3.1: 'Gender was",
         "well distributed in this population, comprising 18 males and 14",
         "females.'"
@@ -177,9 +177,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     RACE_BLACK = list(
       description = "Black race indicator (1 = Black, 0 otherwise)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was tested per Methods 2.3 but not retained. Results 3.1:",
         "'Around 78% of the patients were white, 18% black, and 3% were from",
         "another ethnicity.' The Discussion notes that cross-centre use of",
@@ -190,9 +190,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance (Schwartz equation)",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and deliberately superseded by the primary biomarker.",
         "Results 3.3: 'The use of CrCL as a covariate on CL led to a similar",
         "decrease in the OFV as SCr, indicating that the primary biomarker",
@@ -203,9 +203,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Retained as a CL covariate in the same group's earlier paediatric",
         "ALL model (Henz 2023) but NOT in this osteosarcoma model.",
         "Discussion: 'Differently from our model for MTX in ALL patients, in",
@@ -216,9 +216,9 @@ Olivo_2024_methotrexate <- function() {
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Hepatic enzymes were tested but were not estimable here.",
         "Discussion: 'In the population used to build the present model,",
         "liver enzymes varied largely (from 6-8 to 1052 U/L), preventing the",
@@ -228,27 +228,27 @@ Olivo_2024_methotrexate <- function() {
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Tested with AST and not estimable for the same reason (Discussion).",
         "Table 2 median 47 U/L (range 6-1052)."
       )
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Tested per Methods 2.3 but not retained. Table 2 median 28.9%",
         "(range 10-52.20)."
       )
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Tested per Methods 2.3 but not retained. Table 2 median 9.6 g/dL",
         "(range 3.28-13.2)."
       )
@@ -256,18 +256,18 @@ Olivo_2024_methotrexate <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "5 to 18 years",
-    age_median     = "13.25 years (mean 13.25; 24 of 32 patients were adolescents > 12 years)",
-    weight_range   = "13.80 to 85.50 kg",
-    weight_median  = "47 kg",
-    height_range   = "115 to 177 cm (median 159)",
-    bsa_range      = "0.67 to 2.03 m^2 (median 1.45; Haycock equation)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "5 to 18 years",
+    age_median = "13.25 years (mean 13.25; 24 of 32 patients were adolescents > 12 years)",
+    weight_range = "13.80 to 85.50 kg",
+    weight_median = "47 kg",
+    height_range = "115 to 177 cm (median 159)",
+    bsa_range = "0.67 to 2.03 m^2 (median 1.45; Haycock equation)",
     sex_female_pct = 100 * 14 / 32,
     race_ethnicity = c(White = 78.1, Black = 18.8, Other = 3.1),
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric osteosarcoma treated on the Brazilian Osteosarcoma",
       "Treatment Group (BOTG) protocol: MAP chemotherapy (high-dose",
       "methotrexate + doxorubicin + cisplatin) for weeks 1-10, surgery in",
@@ -284,14 +284,14 @@ Olivo_2024_methotrexate <- function() {
       "median 7.5 (range 7-9). Observations beyond 96 h were removed",
       "because in extensive TDM patients are selected for dialysis."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "High-dose methotrexate 12 g/m^2 per cycle as a 4 h intravenous",
       "infusion, 12 cycles per patient; realised dose median 11.9 g/m^2",
       "(range 5.9-12.9 g/m^2 depending on the patient's clinical",
       "condition)."
     ),
-    regions        = "Brazil (Hospital de Clinicas de Porto Alegre, Rio Grande do Sul; southern Brazilian public reference hospital).",
-    notes          = paste(
+    regions = "Brazil (Hospital de Clinicas de Porto Alegre, Rio Grande do Sul; southern Brazilian public reference hospital).",
+    notes = paste(
       "Retrospective therapeutic-drug-monitoring data collected between",
       "January 2015 and March 2023. Cycles were included if they had at",
       "least 2 observed MTX concentrations and the patient was monitored up",

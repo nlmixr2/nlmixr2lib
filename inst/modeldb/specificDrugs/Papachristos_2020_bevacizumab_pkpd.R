@@ -8,52 +8,52 @@ Papachristos_2020_bevacizumab_pkpd <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed in source analysis; applied as power-form covariate on CL with reference weight 70 kg.",
-      source_name        = "weight"
+      notes = "Time-fixed in source analysis; applied as power-form covariate on CL with reference weight 70 kg.",
+      source_name = "weight"
     ),
     SNP_ICAM1_RS1799969 = list(
-      description        = "ICAM-1 rs1799969 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ICAM-1 rs1799969 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type)",
-      notes              = "Time-fixed per subject. Multiplicative effect on CL.",
-      source_name        = "cat (Papachristos 2020 Table 3 narrative)"
+      notes = "Time-fixed per subject. Multiplicative effect on CL.",
+      source_name = "cat (Papachristos 2020 Table 3 narrative)"
     ),
     SNP_VEGFA_RS699947 = list(
-      description        = "VEGF-A rs699947 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "VEGF-A rs699947 mutant-allele-presence indicator (1 = heterozygous or homozygous mutant; 0 = homozygous wild-type)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (homozygous wild-type)",
-      notes              = "Time-fixed per subject. Multiplicative effect on Q.",
-      source_name        = "cat (Papachristos 2020 Table 3 narrative)"
+      notes = "Time-fixed per subject. Multiplicative effect on Q.",
+      source_name = "cat (Papachristos 2020 Table 3 narrative)"
     )
   )
 
   population <- list(
-    n_subjects        = 46,
-    n_studies         = 1,
-    age_range         = "IQR 53-72 years",
-    age_median        = "63 years",
-    weight_range      = "IQR 64.15-81.75 kg",
-    weight_median     = "74.5 kg",
-    sex_female_pct    = 39,
-    race_ethnicity    = "Greek (single-centre study); race not formally reported.",
-    disease_state     = "Adults with metastatic colorectal cancer (mCRC); ECOG performance status 0-2.",
-    dose_range        = "5 mg/kg IV every 2 weeks (76% of patients) or 7.5 mg/kg IV every 3 weeks (24%) with chemotherapy.",
-    regions           = "Greece",
-    n_observations    = "156 bevacizumab + 169 free VEGF-A serum concentrations",
-    co_medication     = "BEV-FOLFIRI, BEV-FOLFOX, BEV-CapIRI, or BEV-CapOX.",
-    notes             = "Single-centre prospective observational study (Papachristos 2020 sec. 2.1, 4.1)."
+    n_subjects = 46,
+    n_studies = 1,
+    age_range = "IQR 53-72 years",
+    age_median = "63 years",
+    weight_range = "IQR 64.15-81.75 kg",
+    weight_median = "74.5 kg",
+    sex_female_pct = 39,
+    race_ethnicity = "Greek (single-centre study); race not formally reported.",
+    disease_state = "Adults with metastatic colorectal cancer (mCRC); ECOG performance status 0-2.",
+    dose_range = "5 mg/kg IV every 2 weeks (76% of patients) or 7.5 mg/kg IV every 3 weeks (24%) with chemotherapy.",
+    regions = "Greece",
+    n_observations = "156 bevacizumab + 169 free VEGF-A serum concentrations",
+    co_medication = "BEV-FOLFIRI, BEV-FOLFOX, BEV-CapIRI, or BEV-CapOX.",
+    notes = "Single-centre prospective observational study (Papachristos 2020 sec. 2.1, 4.1)."
   )
 
   ini({

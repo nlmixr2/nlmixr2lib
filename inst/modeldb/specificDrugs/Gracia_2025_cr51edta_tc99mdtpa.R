@@ -32,8 +32,8 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte  = "51Cr-EDTA or 99mTc-DTPA (the tracer selected by TRACER_TC99M_DTPA)",
-      units    = "MBq",
+      analyte = "51Cr-EDTA or 99mTc-DTPA (the tracer selected by TRACER_TC99M_DTPA)",
+      units = "MBq",
       specimen = "plasma",
       verified = TRUE
     )
@@ -41,11 +41,11 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
 
   covariateData <- list(
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source symbol Scr. Enters CL as the power term (Scr/42.25)^theta3",
         "with theta3 = -0.568 (Gracia 2025 Table 2). The 42.25 umol/L",
         "centering constant is inherited unchanged from the CYSPED equation",
@@ -56,14 +56,14 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
         "(Table 1). Time-varying: collected at baseline and at the end of",
         "treatment, i.e. once per GFR measurement occasion."
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     ),
     CYSC = list(
-      description        = "Plasma cystatin C",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Plasma cystatin C",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source symbol PcysC. Enters CL as the power term",
         "(PcysC/0.7738)^theta4 with theta4 = -0.295 (Gracia 2025 Table 2).",
         "Measured by automated particle-enhanced nephelometric immunoassay",
@@ -77,14 +77,14 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
         "and is used here; see the vignette Errata.",
         "Time-varying: one value per GFR measurement occasion."
       ),
-      source_name        = "PcysC"
+      source_name = "PcysC"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source symbol BW. Enters CL as the power term (BW/35.70)^theta5",
         "with theta5 = +1.06, and enters V linearly as V = theta7 * BW with",
         "theta7 = 256 mL/kg (Gracia 2025 Table 2). The volume term is not",
@@ -98,14 +98,14 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
         "Body weight also sets the 99mTc-DTPA bolus dose (6, 9 or 12 MBq",
         "for < 10, 10-20 and > 20 kg)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     TRACER_TC99M_DTPA = list(
-      description        = "Exogenous GFR tracer identity: 1 = 99mTc-DTPA, 0 = 51Cr-EDTA",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Exogenous GFR tracer identity: 1 = 99mTc-DTPA, 0 = 51Cr-EDTA",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (51Cr-EDTA, the historical reference tracer and the group supplying 40 of the 59 children)",
-      notes              = paste(
+      notes = paste(
         "Source column MES ('GFR measurement'), defined in Gracia 2025",
         "Methods 'Pharmacokinetic analysis' and in the Table 2 footnote as",
         "'MES = 0 or = 1, respectively, for 51Cr-EDTA or 99mTc-DTPA data'.",
@@ -124,14 +124,14 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
         "the tracer-identity canonical is used rather than a STUDY_*",
         "indicator."
       ),
-      source_name        = "MES"
+      source_name = "MES"
     ),
     OCC = list(
-      description        = "GFR measurement occasion",
-      units              = "(count)",
-      type               = "categorical",
+      description = "GFR measurement occasion",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "One occasion per GFR measurement. Gracia 2025 Methods 'Patients",
         "and data': 'Between one and five (median three) GFR measurements",
         "were taken per patient depending on the number of cycles of",
@@ -140,32 +140,32 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
         "five inter-occasion-variability etas on log-CL (Methods:",
         "'Interoccasion variability of CL was included')."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59,
-    n_studies      = 2,
-    age_range      = "1.4-17.8 years (51Cr-EDTA group); 2.0-16.3 years (99mTc-DTPA group)",
-    age_mean       = "10.6 years (51Cr-EDTA group); 10.1 years (99mTc-DTPA group)",
-    weight_range   = "9.07-72.0 kg (51Cr-EDTA group); 10.0-91.8 kg (99mTc-DTPA group)",
-    weight_mean    = "34.3 kg (51Cr-EDTA group); 42.9 kg (99mTc-DTPA group)",
+    species = "human",
+    n_subjects = 59,
+    n_studies = 2,
+    age_range = "1.4-17.8 years (51Cr-EDTA group); 2.0-16.3 years (99mTc-DTPA group)",
+    age_mean = "10.6 years (51Cr-EDTA group); 10.1 years (99mTc-DTPA group)",
+    weight_range = "9.07-72.0 kg (51Cr-EDTA group); 10.0-91.8 kg (99mTc-DTPA group)",
+    weight_mean = "34.3 kg (51Cr-EDTA group); 42.9 kg (99mTc-DTPA group)",
     sex_female_pct = 55.9,
-    disease_state  = paste(
+    disease_state = paste(
       "Pediatric malignancy (osteosarcoma 33, neuroblastoma 9, germinal",
       "tumor 7, rhabdomyosarcoma 3, other 7) treated with cisplatin and/or",
       "ifosfamide and requiring GFR monitoring for chemotherapy",
       "nephrotoxicity"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "2.072 MBq 51Cr-EDTA IV bolus; 6, 9 or 12 MBq 99mTc-DTPA IV bolus for",
       "body weight < 10 kg, 10-20 kg and > 20 kg respectively"
     ),
-    regions        = "France (Toulouse University Hospital)",
+    regions = "France (Toulouse University Hospital)",
     renal_function = "Not restricted at inclusion; GFR monitored for nephrotoxicity of cisplatin and/or ifosfamide",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Gracia 2025 Table 1 (characteristics",
       "before the first GFR measurement). 40 children from the Cysped",
       "clinical trial (NCT02822404, 51Cr-EDTA, February 2012 to September",

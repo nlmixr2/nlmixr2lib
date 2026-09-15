@@ -3,8 +3,8 @@ Shen_2013_belatacept <- function() {
   reference <- "Shen J, Townsend R, You X, Shen Y, Zhan P, Zhou Z, Geng D, Wu D, McGirr N, Soucek K, Proszynski E, Pursley J, Masson E. Pharmacokinetics, pharmacodynamics, and immunogenicity of belatacept in adult kidney transplant recipients. Clin Drug Investig. 2014;34(2):117-126 (published online 12 November 2013). doi:10.1007/s40261-013-0153-2"
   vignette <- "Shen_2013_belatacept"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL (belatacept Cc); MESF (free CD86 receptor); percent (CD86 receptor occupancy)"
   )
 
@@ -18,18 +18,18 @@ Shen_2013_belatacept <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_pd_subjects  = 62L,
-    n_studies      = 5L,
-    age_range      = NA,
-    weight_range   = NA,
+    species = "human",
+    n_subjects = 24L,
+    n_pd_subjects = 62L,
+    n_studies = 5L,
+    age_range = NA,
+    weight_range = NA,
     sex_female_pct = NA,
     race_ethnicity = NA,
-    disease_state  = "De novo adult kidney transplant recipients (KTRs) receiving kidneys from living, standard-criteria, or extended-criteria donors. All subjects received basiliximab induction plus mycophenolate mofetil and a corticosteroid taper.",
-    dose_range     = "Belatacept 5 or 10 mg/kg administered as a 30-min IV infusion. Initial phase: 10 mg/kg loading doses; maintenance phase: 5 mg/kg every 4 weeks. Two phase III regimens (LI and MI) differ only in loading-phase frequency (see Fig. 1 of Shen 2013).",
-    regions        = NA,
-    notes          = "Pharmacokinetic analyses pool the open-label 10 mg/kg PK study (n = 10 completing week 16; intensive sampling around week 12 dose) with the 5 mg/kg PK substudy of the phase II long-term-extension study IM103100 (n = 14; intensive sampling after first substudy dose). Pharmacodynamic analyses use the phase II corticosteroid-avoidance study IM103034 (n = 62 receiving the MI regimen). Trough-concentration tables draw on the phase III BENEFIT (n = 197-208 LI; n = 162-202 MI) and BENEFIT-EXT (n = 95-150 LI; n = 89-155 MI) studies. Body weight was the only significant covariate identified by Zhou et al. (2012) on CL and V; that covariate effect is not encoded in this model because Shen 2013 itself reports only NCA point estimates and the Zhou paper is the appropriate source for a covariate-aware popPK."
+    disease_state = "De novo adult kidney transplant recipients (KTRs) receiving kidneys from living, standard-criteria, or extended-criteria donors. All subjects received basiliximab induction plus mycophenolate mofetil and a corticosteroid taper.",
+    dose_range = "Belatacept 5 or 10 mg/kg administered as a 30-min IV infusion. Initial phase: 10 mg/kg loading doses; maintenance phase: 5 mg/kg every 4 weeks. Two phase III regimens (LI and MI) differ only in loading-phase frequency (see Fig. 1 of Shen 2013).",
+    regions = NA,
+    notes = "Pharmacokinetic analyses pool the open-label 10 mg/kg PK study (n = 10 completing week 16; intensive sampling around week 12 dose) with the 5 mg/kg PK substudy of the phase II long-term-extension study IM103100 (n = 14; intensive sampling after first substudy dose). Pharmacodynamic analyses use the phase II corticosteroid-avoidance study IM103034 (n = 62 receiving the MI regimen). Trough-concentration tables draw on the phase III BENEFIT (n = 197-208 LI; n = 162-202 MI) and BENEFIT-EXT (n = 95-150 LI; n = 89-155 MI) studies. Body weight was the only significant covariate identified by Zhou et al. (2012) on CL and V; that covariate effect is not encoded in this model because Shen 2013 itself reports only NCA point estimates and the Zhou paper is the appropriate source for a covariate-aware popPK."
   )
 
   ini({

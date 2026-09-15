@@ -40,8 +40,8 @@ Yang_2024_naloxone_buprenorphine <- function() {
   )
   vignette <- "Yang_2024_naloxone_opioid_reversal"
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ng/mL"
   )
   # The absorption-chain heuristic in buildModelDb() recognises only
@@ -54,27 +54,42 @@ Yang_2024_naloxone_buprenorphine <- function() {
   # (A) $MODEL block, which names every compartment, and its unit header
   # ("; AMT in ug ... ; PK volumes = L ... ventilation = L/min").
   compartmentData <- list(
-    central              = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
-    peripheral1          = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
-    peripheral2          = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
-    effect               = list(analyte = "buprenorphine biophase (effect-site) concentration", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    depot_naloxone       = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit1_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit2_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    transit3_naloxone    = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
-    central_naloxone     = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
+    peripheral2 = list(analyte = "buprenorphine", units = "ug", specimen = "plasma", verified = TRUE),
+    effect = list(
+      analyte = "buprenorphine biophase (effect-site) concentration",
+      units = "ng/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    depot_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit2_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    transit3_naloxone = list(analyte = "naloxone", units = "ug", specimen = "administration site", verified = TRUE),
+    central_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
     peripheral1_naloxone = list(analyte = "naloxone", units = "ug", specimen = "plasma", verified = TRUE),
-    effect_naloxone      = list(analyte = "naloxone biophase (effect-site) concentration", units = "ng/mL", specimen = "not applicable", verified = TRUE),
-    RL_op                = list(analyte = "apparent fractional buprenorphine occupancy of the mu-opioid receptor pool", units = "fraction", specimen = "not applicable", verified = TRUE)
+    effect_naloxone = list(
+      analyte = "naloxone biophase (effect-site) concentration",
+      units = "ng/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    RL_op = list(
+      analyte = "apparent fractional buprenorphine occupancy of the mu-opioid receptor pool",
+      units = "fraction",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Acts only on naloxone apparent clearance:",
         "CL/F = 3.26 * (WT/70)^0.538 (Yang 2024 Table S4). The reference",
         "weight of 70 kg is explicit in control stream (A)",
@@ -84,26 +99,26 @@ Yang_2024_naloxone_buprenorphine <- function() {
         "here so subject-level weight can vary. The buprenorphine PK",
         "parameters carry no weight scaling in Yassen 2007."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "Healthy adults (naloxone layer 23-54 years)",
-    weight_range   = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "Healthy adults (naloxone layer 23-54 years)",
+    weight_range = "Simulations fix WT = 70 kg; naloxone PK data spanned 57.2-100.2 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers. The buprenorphine PK-PD layer comes",
       "from the Yassen 2007 healthy-volunteer study of",
       "buprenorphine-induced respiratory depression reversed by a",
       "naloxone infusion; the naloxone PK layer is Yang 2024's own",
       "auto-injector population PK in 48 healthy adults."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Yang 2024 simulated IV buprenorphine at 0.9, 9.9 and",
       "18.9 ug/kg (the lowest corresponding to 50 percent ventilation",
       "suppression, the highest 21-fold higher), each with naloxone",
@@ -113,8 +128,8 @@ Yang_2024_naloxone_buprenorphine <- function() {
       "because buprenorphine's respiratory depressant effect has a",
       "slow onset)."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Yang 2024 validated this constructed model by digitising the",
       "ventilation-time profiles for buprenorphine 0.2 and 0.4 mg/70 kg",
       "from Figure 3 of Yassen 2007 and confirming that most observed",

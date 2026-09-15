@@ -2,53 +2,57 @@ Le_2015_lampalizumab <- function() {
   description <- "Combined ocular-serum target-mediated drug-disposition (TMDD) model with quasi-steady-state binding approximation for intravitreally administered lampalizumab (anti-complement factor D Fab) and total complement factor D (CFD) in adults with geographic atrophy secondary to age-related macular degeneration. Vitreous humor is the dosing compartment (depot) and the site of drug-target binding; aqueous humor lampalizumab and aqueous humor total CFD observations are derived from vitreous via constant partition coefficients; serum lampalizumab is the central elimination compartment with linear first-order clearance. Age and female sex modify ocular and systemic elimination rates respectively (Le 2015 Table 1, Eq. 1-7)."
   reference <- "Le KN, Gibiansky L, van Lookeren Campagne M, Good J, Davancaze T, Loyet KM, Morimoto A, Strauss EC, Jin JY. Population Pharmacokinetics and Pharmacodynamics of Lampalizumab Administered Intravitreally to Patients With Geographic Atrophy. CPT Pharmacometrics Syst Pharmacol. 2015;4(10):595-604. doi:10.1002/psp4.12031. PMID: 26535160."
   vignette <- "Le_2015_lampalizumab"
-  units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL) for lampalizumab and total CFD")
+  units <- list(
+    time = "day",
+    dosing = "mg",
+    concentration = "mg/L (equivalent to ug/mL) for lampalizumab and total CFD"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "lampalizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lampalizumab", units = "mg", specimen = "administration site", verified = FALSE),
     total_target = list(analyte = "complement factor D (CFD)", units = "mg", specimen = "vitreous", verified = FALSE),
-    central      = list(analyte = "lampalizumab", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "lampalizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power-form effect on the ocular elimination rate (kout) and the systemic elimination rate (k), normalised by reference age 80 years per Le 2015 Table 1 footnote 'For a typical 80-year-old male patient'. Exponents -0.770 (kout) and -1.63 (k); older patients have slower elimination.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Power-form effect on the ocular elimination rate (kout) and the systemic elimination rate (k), normalised by reference age 80 years per Le 2015 Table 1 footnote 'For a typical 80-year-old male patient'. Exponents -0.770 (kout) and -1.63 (k); older patients have slower elimination.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Time-fixed per subject. Multiplicative effect on the systemic elimination rate k; females have k multiplied by 0.739 relative to males (Le 2015 Table 1 row 'Multiplier for sex effect on k'). Reference category is male.",
-      source_name        = "SEX (derived to SEXF: SEXF = as.integer(SEX == 'F'))"
+      notes = "Time-fixed per subject. Multiplicative effect on the systemic elimination rate k; females have k multiplied by 0.739 relative to males (Le 2015 Table 1 row 'Multiplier for sex effect on k'). Reference category is male.",
+      source_name = "SEX (derived to SEXF: SEXF = as.integer(SEX == 'F'))"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 117L,
-    n_studies         = 2L,
-    age_range         = "Reference 80 years (Le 2015 Table 1 footnote; per-subject age statistics live in Supplemental Table 1 which was not bundled with the main PDF)",
-    age_median        = "Typical 80-year-old (Le 2015 Table 1 reference patient)",
-    weight_range      = NULL,
-    weight_median     = NULL,
-    sex_female_pct    = NULL,
-    race_ethnicity    = NULL,
-    disease_state     = "Adults with geographic atrophy (GA) secondary to age-related macular degeneration (AMD).",
-    dose_range        = "Single ITV doses 0.1, 0.5, 1, 2, 5, 10 mg per eye (phase Ia, CFD4711g; n=18). Multiple ITV doses 10 mg per eye every 4 weeks or every 8 weeks for up to 18 months (phase Ib/II MAHALO, CFD4870g; n=99).",
-    regions           = NULL,
-    n_observations    = "697 serum lampalizumab + 24 aqueous humor lampalizumab + 62 aqueous humor total CFD concentrations; ocular PK/PD subset n=21.",
+    species = "human",
+    n_subjects = 117L,
+    n_studies = 2L,
+    age_range = "Reference 80 years (Le 2015 Table 1 footnote; per-subject age statistics live in Supplemental Table 1 which was not bundled with the main PDF)",
+    age_median = "Typical 80-year-old (Le 2015 Table 1 reference patient)",
+    weight_range = NULL,
+    weight_median = NULL,
+    sex_female_pct = NULL,
+    race_ethnicity = NULL,
+    disease_state = "Adults with geographic atrophy (GA) secondary to age-related macular degeneration (AMD).",
+    dose_range = "Single ITV doses 0.1, 0.5, 1, 2, 5, 10 mg per eye (phase Ia, CFD4711g; n=18). Multiple ITV doses 10 mg per eye every 4 weeks or every 8 weeks for up to 18 months (phase Ib/II MAHALO, CFD4870g; n=99).",
+    regions = NULL,
+    n_observations = "697 serum lampalizumab + 24 aqueous humor lampalizumab + 62 aqueous humor total CFD concentrations; ocular PK/PD subset n=21.",
     trial_identifiers = "CFD4711g (NCT00973011); CFD4870g MAHALO (NCT01229215).",
-    notes             = "Detailed baseline demographics (weight, race, exact age distribution) reside in Supplemental Table 1 of the source paper, which was not on disk with the main PDF. The systemic PK dataset spans all 117 subjects; the ocular subset has 21 subjects with aqueous humor samples."
+    notes = "Detailed baseline demographics (weight, race, exact age distribution) reside in Supplemental Table 1 of the source paper, which was not on disk with the main PDF. The systemic PK dataset spans all 117 subjects; the ocular subset has 21 subjects with aqueous humor samples."
   )
 
   ini({

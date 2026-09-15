@@ -25,42 +25,42 @@ Okada_2024_triazolam <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters both Vd/F and CL/F as a power law centred at 30 years",
         "(Okada 2024 Eq 1: parameter = theta * (age/30)^theta_cov).",
         "Only two ages informed the fit (30 years young, 69 years elderly),",
         "so the paper's own Limitations section states that predictions at",
         "other ages are extrapolations."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Okada 2024 Table 3 reports theta3 in L/hr/kg, i.e. CL/F is the",
         "per-kilogram value multiplied by body weight (a linear per-kg scaling,",
         "not an estimated allometric exponent). Vd/F (theta2 = 119 L) is",
         "absolute and is NOT weight-scaled. Weights used in the paper's",
         "simulations were 72 kg (young, 30 years) and 69 kg (elderly, 69 years)."
       ),
-      source_name        = "weight"
+      source_name = "weight"
     ),
     AUCR = list(
-      description        = paste(
+      description = paste(
         "Fold increase in triazolam AUC caused by a co-administered",
         "CYP3A-inhibiting drug"
       ),
-      units              = "(unitless ratio)",
-      type               = "continuous",
+      units = "(unitless ratio)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Okada 2024 Table 1 footnote: AUCR = triazolam AUC with precipitant /",
         "triazolam AUC without precipitant. Reference value 1.0 = no",
         "interacting drug. Enters CL/F as a divisor (Table 3:",
@@ -73,30 +73,30 @@ Okada_2024_triazolam <- function() {
         "cimetidine 2.20, isoniazid 1.46, hormonal contraceptives 1.44,",
         "ranitidine 1.31."
       ),
-      source_name        = "AUCR"
+      source_name = "AUCR"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "triazolam", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "triazolam", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "triazolam", units = "mg", specimen = "plasma", verified = TRUE),
-    effect  = list(analyte = "triazolam", units = "ng/mL", specimen = "not applicable", verified = TRUE)
+    effect = list(analyte = "triazolam", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "30 and 69 years (two mean profiles only)",
-    age_median     = NA_character_,
-    weight_range   = "69 and 72 kg (two mean profiles only)",
-    weight_median  = NA_character_,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "30 and 69 years (two mean profiles only)",
+    age_median = NA_character_,
+    weight_range = "69 and 72 kg (two mean profiles only)",
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Healthy young and elderly volunteers.",
-    dose_range     = "0.25 mg oral triazolam, single dose (fitted); 0.0625-0.25 mg simulated",
-    regions        = "United States (source PK/PD data); model built in Japan",
-    notes          = paste(
+    disease_state = "Healthy young and elderly volunteers.",
+    dose_range = "0.25 mg oral triazolam, single dose (fitted); 0.0625-0.25 mg simulated",
+    regions = "United States (source PK/PD data); model built in Japan",
+    notes = paste(
       "Okada 2024 did not collect new subjects. Mean plasma triazolam",
       "concentration, sedation (visual analogue scale) and cognitive-function",
       "time courses were digitised with WebPlotDigitizer 4.3 from Greenblatt",

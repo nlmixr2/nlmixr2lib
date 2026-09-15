@@ -11,7 +11,7 @@ Svensson_2018_rifampicin <- function() {
   )
   vignette <- "Svensson_2018_rifampicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  ddmore_id    <- "DDMODEL00000244"
+  ddmore_id <- "DDMODEL00000244"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -19,47 +19,47 @@ Svensson_2018_rifampicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
-    enzyme  = list(analyte = "Induced enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
+    enzyme = list(analyte = "Induced enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on a 70 kg reference fat-free mass: Vmax scales (FFM/70)^0.75, V2 scales (FFM/70)^1. The Svensson 2018 HIGHRIF1 cohort had a typical FFM well below 70 kg (the bundled simulated dataset uses FFM = 34.87 kg corresponding to WT = 46.5 kg / HT = 1.78 m / male). Both scaling exponents are theory-based (Anderson & Holford), not estimated.",
-      source_name        = "FFM"
+      notes = "Allometric scaling on a 70 kg reference fat-free mass: Vmax scales (FFM/70)^0.75, V2 scales (FFM/70)^1. The Svensson 2018 HIGHRIF1 cohort had a typical FFM well below 70 kg (the bundled simulated dataset uses FFM = 34.87 kg corresponding to WT = 46.5 kg / HT = 1.78 m / male). Both scaling exponents are theory-based (Anderson & Holford), not estimated.",
+      source_name = "FFM"
     ),
     DOSE = list(
-      description        = "Per-record administered rifampicin dose (mg) used as the input to the saturable bioavailability function f_dose(DOSE) = 1 + femax*(DOSE-450)/(fed50+(DOSE-450)).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-record administered rifampicin dose (mg) used as the input to the saturable bioavailability function f_dose(DOSE) = 1 + femax*(DOSE-450)/(fed50+(DOSE-450)).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference dose 450 mg (the standard adult rifampicin dose) where f_dose = 1 by construction. Calibrated by Svensson 2018 against HIGHRIF1 cohorts at 10, 20, and 35 mg/kg (~600, 1200, 2100 mg for a 60 kg adult); behaviour below 450 mg or above ~3000 mg is unconstrained and should not be extrapolated. Per record (= per dose event); assumed constant within an occasion.",
-      source_name        = "DOSE"
+      notes = "Reference dose 450 mg (the standard adult rifampicin dose) where f_dose = 1 by construction. Calibrated by Svensson 2018 against HIGHRIF1 cohorts at 10, 20, and 35 mg/kg (~600, 1200, 2100 mg for a 60 kg adult); behaviour below 450 mg or above ~3000 mg is unconstrained and should not be extrapolated. Per record (= per dose event); assumed constant within an occasion.",
+      source_name = "DOSE"
     ),
     OCC = list(
-      description        = "Integer-valued dosing-occasion indicator for the IOV multiplexers (1 = day 7, 2 = day 14).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued dosing-occasion indicator for the IOV multiplexers (1 = day 7, 2 = day 14).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Two-occasion crossover within subject. Decomposed inside model() into binary indicators oc1 / oc2 that select per-occasion etas on bioavailability, MTT, KM, and KA. The Svensson 2018 design sampled dense profiles on study days 7 and 14 of repeated daily dosing.",
-      source_name        = "OCC"
+      notes = "Two-occasion crossover within subject. Decomposed inside model() into binary indicators oc1 / oc2 that select per-occasion etas on bioavailability, MTT, KM, and KA. The Svensson 2018 design sampled dense profiles on study days 7 and 14 of repeated daily dosing.",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    n_subjects     = 83L,
-    n_studies      = 1L,
-    age_range      = "Adults (HIGHRIF1 enrolled adult pulmonary TB patients; per-subject demographics not transcribed from the publication, which is not on disk in this worktree).",
-    weight_range   = "Adults (HIGHRIF1; the bundled Simulated_Rif_PK_data.csv carries WT = 46.5 kg as the smoke-test cohort's single weight).",
-    disease_state  = "Adult pulmonary tuberculosis on high-dose rifampicin-containing antitubercular therapy.",
-    dose_range     = "Oral rifampicin 600, 1200, and 2100 mg once daily (the HIGHRIF1 dose-escalation cohorts at 10, 20, and 35 mg/kg for ~60 kg adults). Dense PK sampling at study days 7 and 14 of repeat daily dosing.",
-    regions        = "South Africa and Tanzania (PanACEA HIGHRIF1 trial sites).",
-    notes          = "The Svensson 2018 publication itself is not on disk in this worktree, so per-subject demographics here are reproduced from the DDMODEL00000244 RDF abstract and the .mod $INPUT column comments rather than the paper's Table 1. The bundle's Simulated_Rif_PK_data.csv is a single-subject smoke-test cohort (ID 1, WT = 46.5 kg, FFM = 34.87 kg, male, 600 mg QD x ~7 days at occasion 1 then x ~7 days at occasion 2, dense sampling at days 7 and 14). N_subjects = 83 is the total in the listing's 'TOT. NO. OF INDIVIDUALS' field; the RDF model-has-description-long abstract describes the structural model but does not enumerate per-subject demographics."
+    n_subjects = 83L,
+    n_studies = 1L,
+    age_range = "Adults (HIGHRIF1 enrolled adult pulmonary TB patients; per-subject demographics not transcribed from the publication, which is not on disk in this worktree).",
+    weight_range = "Adults (HIGHRIF1; the bundled Simulated_Rif_PK_data.csv carries WT = 46.5 kg as the smoke-test cohort's single weight).",
+    disease_state = "Adult pulmonary tuberculosis on high-dose rifampicin-containing antitubercular therapy.",
+    dose_range = "Oral rifampicin 600, 1200, and 2100 mg once daily (the HIGHRIF1 dose-escalation cohorts at 10, 20, and 35 mg/kg for ~60 kg adults). Dense PK sampling at study days 7 and 14 of repeat daily dosing.",
+    regions = "South Africa and Tanzania (PanACEA HIGHRIF1 trial sites).",
+    notes = "The Svensson 2018 publication itself is not on disk in this worktree, so per-subject demographics here are reproduced from the DDMODEL00000244 RDF abstract and the .mod $INPUT column comments rather than the paper's Table 1. The bundle's Simulated_Rif_PK_data.csv is a single-subject smoke-test cohort (ID 1, WT = 46.5 kg, FFM = 34.87 kg, male, 600 mg QD x ~7 days at occasion 1 then x ~7 days at occasion 2, dense sampling at days 7 and 14). N_subjects = 83 is the total in the listing's 'TOT. NO. OF INDIVIDUALS' field; the RDF model-has-description-long abstract describes the structural model but does not enumerate per-subject demographics."
   )
 
   ini({

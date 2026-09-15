@@ -37,26 +37,26 @@ Hoglund_2018_mefloquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mefloquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "mefloquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mefloquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mefloquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "mefloquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mefloquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mefloquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "human",
-    n_subjects      = 129L,
-    n_studies       = 1L,
-    n_cured         = 93L,
-    n_recrudescent  = 36L,
-    age_range       = "16-50 years (Table 1)",
-    age_median      = "25 years (Table 1)",
-    weight_range    = "39-73.5 kg (Table 1)",
-    weight_median   = "52.5 kg (Table 1)",
-    sex_female_pct  = 49.6,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 129L,
+    n_studies = 1L,
+    n_cured = 93L,
+    n_recrudescent = 36L,
+    age_range = "16-50 years (Table 1)",
+    age_median = "25 years (Table 1)",
+    weight_range = "39-73.5 kg (Table 1)",
+    weight_median = "52.5 kg (Table 1)",
+    sex_female_pct = 49.6,
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria in adults",
       "(Burmese migrant population, all aged over 15 years) in a",
       "multidrug-resistant transmission area. Pregnant and",
@@ -64,7 +64,7 @@ Hoglund_2018_mefloquine <- function() {
       "malaria and severe malnutrition were exclusion criteria",
       "(Methods, Patients and treatment)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Standard 3-day artesunate-mefloquine combination. Mefloquine",
       "was administered on days 0 and 1 only: day 0 mefloquine",
       "15 mg/kg (given as a fixed 750 mg dose = 3 tablets of 250 mg",
@@ -75,9 +75,9 @@ Hoglund_2018_mefloquine <- function() {
       "primaquine 0.6 mg/kg (no mefloquine). All doses observed; if",
       "patients vomited within 30 min, the dose was repeated."
     ),
-    regions         = "Thai-Myanmar border (Mae Tao clinic for migrant workers, Tak Province, Thailand; March 2008 to February 2009)",
+    regions = "Thai-Myanmar border (Mae Tao clinic for migrant workers, Tak Province, Thailand; March 2008 to February 2009)",
     parasitaemia_range = "1260-84,000 parasites/uL at admission (median 5320; Table 1)",
-    notes           = paste(
+    notes = paste(
       "Demographics from Hoglund 2018 Table 1. Total observations 653",
       "post-dose mefloquine measurements; whole-blood matrix",
       "quantified by HPLC (LOQ 2 ng/mL, LOD 0.5 ng/mL). Baseline",

@@ -22,15 +22,15 @@ Agerso_2004_desmopressin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "desmopressin", units = "ng", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "desmopressin", units = "ng", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance, BSA-normalised to 1.73 m^2.",
         "Agerso 2004 derived CRCL from a 24-h urine collection using",
         "(Cr_urine x UV / dt) / Cr_serum x 1.73 / BSA, where BSA is from",
@@ -38,10 +38,10 @@ Agerso_2004_desmopressin <- function() {
         "mL/min/1.73 m^2; reference value 60 mL/min/1.73 m^2 (population",
         "median)."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at study entry (single 24-h collection at baseline).",
         "Linear effect on both CL_r and CL_nr expressed as fractional",
         "change per mL/min from the population median of 60 mL/min/1.73",
@@ -50,18 +50,18 @@ Agerso_2004_desmopressin <- function() {
         "factor would become non-positive. Simulation outside the",
         "observed range (10-144 mL/min/1.73 m^2) should be capped."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22L,
-    n_studies      = 1L,
-    age_range      = "49-68 years",
-    weight_range   = "BMI 23-32 kg/m^2; height 152-184 cm",
+    species = "human",
+    n_subjects = 22L,
+    n_studies = 1L,
+    age_range = "49-68 years",
+    weight_range = "BMI 23-32 kg/m^2; height 152-184 cm",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Single-centre cohort stratified by renal function:",
       "group 1 normal (n=6, CrCL ~103 mL/min),",
       "group 2 mild impairment (n=5, ~72 mL/min),",
@@ -69,9 +69,9 @@ Agerso_2004_desmopressin <- function() {
       "group 4 severe impairment (n=6, ~16 mL/min).",
       "None of the subjects were on dialysis."
     ),
-    dose_range     = "Single 2 ug IV bolus (4 ug/mL, 0.5 mL over 1 min)",
-    regions        = "Germany (single centre)",
-    notes          = paste(
+    dose_range = "Single 2 ug IV bolus (4 ug/mL, 0.5 mL over 1 min)",
+    regions = "Germany (single centre)",
+    notes = paste(
       "Pharmacokinetic analysis excluded 2 of 24 enrolled subjects whose",
       "plasma concentration-time profiles showed an absorption phase",
       "incompatible with IV administration (extravascular dosing",

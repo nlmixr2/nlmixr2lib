@@ -15,51 +15,51 @@ Wright_2013_allopurinol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE),
     central_oxy = list(analyte = "oxypurinol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass computed via the Janmahasatian 2005 formula from total body weight, height and sex",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass computed via the Janmahasatian 2005 formula from total body weight, height and sex",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Reference FFM = 70 kg per the Anderson & Holford 2008 allometric convention (Wright 2013 Methods, 'Covariate model'). Allometric exponent 0.75 on CL_allo, Q_allo, CL_oxy and 1.0 on V1_allo, V2_allo, V_oxy. Range 35 to 99 kg with median 70 kg across the pooled 104 subjects (Wright 2013 Table 1).",
-      source_name        = "FFM"
+      notes = "Time-fixed at baseline. Reference FFM = 70 kg per the Anderson & Holford 2008 allometric convention (Wright 2013 Methods, 'Covariate model'). Allometric exponent 0.75 on CL_allo, Q_allo, CL_oxy and 1.0 on V1_allo, V2_allo, V_oxy. Range 35 to 99 kg with median 70 kg across the pooled 104 subjects (Wright 2013 Table 1).",
+      source_name = "FFM"
     ),
     CRCL = list(
-      description        = "Creatinine clearance standardised to 70 kg body weight (Cockcroft-Gault formula with Anderson-Holford allometric normalisation), NOT BSA-normalised to 1.73 m^2",
-      units              = "L/h per 70 kg",
-      type               = "continuous",
+      description = "Creatinine clearance standardised to 70 kg body weight (Cockcroft-Gault formula with Anderson-Holford allometric normalisation), NOT BSA-normalised to 1.73 m^2",
+      units = "L/h per 70 kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Reference CLcr_STD = 6 L/h per 70 kg (equivalent to 100 mL/min per 70 kg body weight), Wright 2013 Methods 'Covariate model' equation for RF. Range 1.0 to 8.5 L/h (median 4.3 L/h) across the pooled dataset (Wright 2013 Table 1). The renal component of oxypurinol clearance is proportional to CRCL / 6. Wright's CLcr is scaled per 70 kg body weight rather than to 1.73 m^2 body surface area, in keeping with the Anderson-Holford PK-scaling convention.",
-      source_name        = "CLcr"
+      notes = "Time-fixed baseline. Reference CLcr_STD = 6 L/h per 70 kg (equivalent to 100 mL/min per 70 kg body weight), Wright 2013 Methods 'Covariate model' equation for RF. Range 1.0 to 8.5 L/h (median 4.3 L/h) across the pooled dataset (Wright 2013 Table 1). The renal component of oxypurinol clearance is proportional to CRCL / 6. Wright's CLcr is scaled per 70 kg body weight rather than to 1.73 m^2 body surface area, in keeping with the Anderson-Holford PK-scaling convention.",
+      source_name = "CLcr"
     ),
     CONMED_DIURETIC = list(
-      description        = "Concomitant diuretic therapy indicator (any diuretic class)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant diuretic therapy indicator (any diuretic class)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant diuretic use)",
-      notes              = "Time-fixed at baseline. Coded 1 for subjects on any diuretic class (loop, thiazide, thiazide-like, or potassium-sparing). Wright 2013 Table 1 reports 29 of 104 pooled subjects (28 percent) on diuretics. Applied as a multiplicative 0.61 factor on the RENAL component of oxypurinol clearance only (Wright 2013 page 6 final-model equation for CL_oxy), corresponding to a 39 percent reduction in renal CL_oxy in diuretic users.",
-      source_name        = "Diuretic"
+      notes = "Time-fixed at baseline. Coded 1 for subjects on any diuretic class (loop, thiazide, thiazide-like, or potassium-sparing). Wright 2013 Table 1 reports 29 of 104 pooled subjects (28 percent) on diuretics. Applied as a multiplicative 0.61 factor on the RENAL component of oxypurinol clearance only (Wright 2013 page 6 final-model equation for CL_oxy), corresponding to a 39 percent reduction in renal CL_oxy in diuretic users.",
+      source_name = "Diuretic"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 104,
-    n_studies      = 5,
-    age_range      = "adult",
-    weight_range   = "49 - 171 kg (total body weight; Wright 2013 Table 1)",
-    ffm_range      = "35 - 99 kg (fat-free mass; Wright 2013 Table 1)",
-    sex_ratio      = "93 male : 11 female (Wright 2013 Table 1)",
-    disease_state  = "Chronic gout in 92 patients from three Christchurch (New Zealand) rheumatology cohorts led by author LKS, plus 12 healthy volunteers from two digitally-extracted historic intravenous-allopurinol studies (Appelbaum et al. and Tittel & Breithaupt).",
-    dose_range     = "Oral allopurinol 100 to 600 mg once daily in the Christchurch cohorts; digitally-extracted intravenous-allopurinol single-dose schedules in the two historic cohorts. All concentrations reported as umol/L (Wright 2013 ESM 1).",
-    regions        = "New Zealand (Christchurch); historic IV cohorts contribute pharmacokinetic profiles digitally extracted from published figures (Appelbaum, Tittel-Breithaupt).",
-    notes          = "Pooled patient-level data from five studies. Christchurch (n = 92 gout patients): dose-escalation study (n = 74, 442 obs), furosemide-interaction study (n = 10, 111 obs), vitamin-C interaction study (n = 16, 141 obs). Digitally-extracted intravenous cohorts (n = 12 healthy volunteers). Median CLcr 4.3 L/h (range 1.0 - 8.5); median FFM 70 kg (range 35 - 99). 29 of 104 subjects on concomitant diuretic therapy. 40 of 104 on ACE inhibitors, 43 on beta blockers, 18 on NSAIDs, 24 on urate-lowering therapy (Wright 2013 Table 1); of these concomitant categories only diuretic use was retained in the final model."
+    species = "human",
+    n_subjects = 104,
+    n_studies = 5,
+    age_range = "adult",
+    weight_range = "49 - 171 kg (total body weight; Wright 2013 Table 1)",
+    ffm_range = "35 - 99 kg (fat-free mass; Wright 2013 Table 1)",
+    sex_ratio = "93 male : 11 female (Wright 2013 Table 1)",
+    disease_state = "Chronic gout in 92 patients from three Christchurch (New Zealand) rheumatology cohorts led by author LKS, plus 12 healthy volunteers from two digitally-extracted historic intravenous-allopurinol studies (Appelbaum et al. and Tittel & Breithaupt).",
+    dose_range = "Oral allopurinol 100 to 600 mg once daily in the Christchurch cohorts; digitally-extracted intravenous-allopurinol single-dose schedules in the two historic cohorts. All concentrations reported as umol/L (Wright 2013 ESM 1).",
+    regions = "New Zealand (Christchurch); historic IV cohorts contribute pharmacokinetic profiles digitally extracted from published figures (Appelbaum, Tittel-Breithaupt).",
+    notes = "Pooled patient-level data from five studies. Christchurch (n = 92 gout patients): dose-escalation study (n = 74, 442 obs), furosemide-interaction study (n = 10, 111 obs), vitamin-C interaction study (n = 16, 141 obs). Digitally-extracted intravenous cohorts (n = 12 healthy volunteers). Median CLcr 4.3 L/h (range 1.0 - 8.5); median FFM 70 kg (range 35 - 99). 29 of 104 subjects on concomitant diuretic therapy. 40 of 104 on ACE inhibitors, 43 on beta blockers, 18 on NSAIDs, 24 on urate-lowering therapy (Wright 2013 Table 1); of these concomitant categories only diuretic use was retained in the final model."
   )
 
   ini({

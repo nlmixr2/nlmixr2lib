@@ -39,21 +39,21 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
   # inst/references/compartment-names.md.
 
   compartmentData <- list(
-    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = TRUE),
-    lung_ew     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lung_iw     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    lesion      = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum1     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum2     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum3     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum4     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum5     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
-    caseum6     = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
+    lung_ew = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lung_iw = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    lesion = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum1 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum2 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum3 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum4 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum5 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE),
+    caseum6 = list(analyte = "bedaquiline", units = "ug/mL", specimen = "tissue", verified = TRUE)
   )
 
   # The four covariates belong to the inherited Svensson 2016 plasma layer.
@@ -61,11 +61,11 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
   # ALB = 4.04, AGE = 32, RACE_BLACK = 0, which makes every factor below unity.
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying in the source model; supplied per observation)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying in the source model; supplied per observation)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric power on the plasma-layer clearances and volumes around a 70 kg reference:",
         "`cl = cl_typ * (WT/70)^e_wt_cl` (estimated exponent 0.181) and",
         "`vc = vc_typ * (WT/70)^e_wt_vc` (exponent fixed to 1.0). Inherited unchanged from",
@@ -75,14 +75,14 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
         "surface area are fixed reference-human quantities.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (time-varying in the source model)",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Serum albumin concentration (time-varying in the source model)",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect around the typical population steady-state value Ass = 4.04 g/dL:",
         "`cl = cl_typ * (ALB/4.04)^e_alb_cl` with estimated exponent 1.64, and an additional",
         "fixed-coefficient unbound-fraction adjustment `(4.04/ALB)^e_alb_vc` applied to the",
@@ -90,58 +90,58 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
         "Svensson 2016 Table 3.",
         sep = " "
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear deviation around the cohort median of 32 years applied to clearance:",
         "`cl = cl_typ * (1 + e_age_cl * (32 - AGE))` with estimated coefficient 0.00881 1/year.",
         "Inherited unchanged from Svensson 2016 Table 3.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     RACE_BLACK = list(
-      description        = "Black-race indicator (1 = Black, 0 = non-Black)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black-race indicator (1 = Black, 0 = non-Black)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; the reference category includes White, Asian, Hispanic and Other in the Svensson 2016 cohort).",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on clearance: `cl = cl_typ * (1 + e_race_black_cl * RACE_BLACK)`",
         "with estimated coefficient 0.84, i.e. about 84% higher clearance in Black patients.",
         "Inherited unchanged from Svensson 2016 Table 3.",
         sep = " "
       ),
-      source_name        = "RACE"
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 335L,
-    n_studies      = 2L,
-    age_range      = "18-68 years (Svensson 2016 Table 1)",
-    age_median     = "32 years (Svensson 2016 Table 1)",
-    weight_range   = "30-113 kg (Svensson 2016 Table 1)",
-    weight_median  = "55-57 kg (study-stage dependent; Svensson 2016 Table 1)",
+    species = "human",
+    n_subjects = 335L,
+    n_studies = 2L,
+    age_range = "18-68 years (Svensson 2016 Table 1)",
+    age_median = "32 years (Svensson 2016 Table 1)",
+    weight_range = "30-113 kg (Svensson 2016 Table 1)",
+    weight_median = "55-57 kg (study-stage dependent; Svensson 2016 Table 1)",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Adults with pulmonary multidrug-resistant, pre-extensively or extensively drug-resistant",
       "tuberculosis. The lung layer represents TB-infected lung containing both cellular",
       "(non-necrotising) lesions and caseous necrotic granulomas.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "The approved regimen simulated in Methods 2.4: oral bedaquiline 400 mg once daily for a",
       "2-week loading phase, then 200 mg three times weekly through week 24.",
       sep = " "
     ),
-    regions        = "Multicentre international (C208 and C209 phase II trials).",
-    notes          = paste(
+    regions = "Multicentre international (C208 and C209 phase II trials).",
+    notes = paste(
       "The plasma layer's population is that of Svensson 2016 (pooled C208 and C209). The lung",
       "layer has NO human data of any kind: Methods 2.1 states that human lung data were",
       "unavailable for validation, and the Discussion acknowledges that the lack of human lung",

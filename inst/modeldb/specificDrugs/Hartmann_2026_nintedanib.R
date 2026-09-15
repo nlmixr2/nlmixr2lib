@@ -45,17 +45,17 @@ Hartmann_2026_nintedanib <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "nintedanib", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "nintedanib", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "nintedanib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight. Allometric power scaling on apparent clearance and apparent volume of distribution.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Allometric power scaling on apparent clearance and apparent volume of distribution.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: InPedILD assigned the starting dose from body weight",
         "at the baseline visit and re-assigned it during treatment as body",
         "weight changed (Hartmann 2026 Table S1), and the control stream",
@@ -74,14 +74,14 @@ Hartmann_2026_nintedanib <- function() {
         "to less than 18 year group. Patients below 13.5 kg were excluded",
         "from the trial (Table S1 footnote)."
       ),
-      source_name        = "WTKG (time-varying); WTKGBL is the baseline value used only for stratification"
+      source_name = "WTKG (time-varying); WTKGBL is the baseline value used only for stratification"
     ),
     AGE = list(
-      description        = "Subject age. Scales the magnitude of the inter-occasion variability on relative bioavailability, with no effect at or above 18 years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age. Scales the magnitude of the inter-occasion variability on relative bioavailability, with no effect at or above 18 years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TIME-VARYING with an upper cut-off at 18 years, exactly as tested",
         "in Hartmann 2026 Table S2 footnote b, option 1 (continuous with",
         "cut-off at 18 years of age). The final control stream (Data S1)",
@@ -98,14 +98,14 @@ Hartmann_2026_nintedanib <- function() {
         "the 6 to less than 12 year group and 14.9 (SD 1.83) in the 12 to",
         "less than 18 year group (Hartmann 2026 Table S4)."
       ),
-      source_name        = "AGEY (time-varying age in years); AGEYBL is the baseline value used only for stratification"
+      source_name = "AGEY (time-varying age in years); AGEYBL is the baseline value used only for stratification"
     ),
     OCC = list(
-      description        = "Integer occasion index, 1 to 6, indexing the inter-occasion variability on relative bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion index, 1 to 6, indexing the inter-occasion variability on relative bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The final control stream (Data S1) assigns a separate eta per",
         "occasion for OCC 1 through 6",
         "(IF(OCC.EQ.1) IOVF=ETA(4)*TVETIOF through",
@@ -120,14 +120,14 @@ Hartmann_2026_nintedanib <- function() {
         "every indicator and leaves relative bioavailability with",
         "inter-individual variability only."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase. Exponential effect on relative bioavailability, centred at 206 U/L.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase. Exponential effect on relative bioavailability, centred at 206 U/L.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value. Effect on relative bioavailability:",
         "F1 = ... * exp(e_ldh_fdepot * (LDH - 206)), from the final control",
         "stream (Data S1) F1LDHBL = EXP(THETA(8)*(LDHBL - 206)).",
@@ -145,14 +145,14 @@ Hartmann_2026_nintedanib <- function() {
         "starting model rather than selected by the stepwise covariate",
         "search (Hartmann 2026 Table S2)."
       ),
-      source_name        = "LDHBL"
+      source_name = "LDHBL"
     ),
     RACE_WHITE = list(
-      description        = "White / Caucasian race indicator (1 = White, 0 = otherwise). The reference category of the three-level ethnicity effect on relative bioavailability.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White / Caucasian race indicator (1 = White, 0 = otherwise). The reference category of the three-level ethnicity effect on relative bioavailability.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (White) is the reference level itself; the multiplier on relative bioavailability is exactly 1 when RACE_WHITE = 1.",
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline. The final control stream (Data S1) encodes a",
         "three-level ethnicity effect on relative bioavailability:",
         "IF(RACEREG1.EQ.1) F1RACEREG = 1 (White);",
@@ -174,14 +174,14 @@ Hartmann_2026_nintedanib <- function() {
         "A missing-ethnicity subject was assigned to the Other group by the",
         "control stream branch, which tests only RACEREG1 and RACEREG3."
       ),
-      source_name        = "RACEREG1"
+      source_name = "RACEREG1"
     ),
     RACE_KOREAN = list(
-      description        = "Korean-heritage race indicator (1 = Korean, 0 = otherwise). Third level of the ethnicity effect on relative bioavailability.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Korean-heritage race indicator (1 = Korean, 0 = otherwise). Third level of the ethnicity effect on relative bioavailability.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White, or any non-Korean group; the White level is the multiplicative reference).",
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline. Effect on relative bioavailability:",
         "F1 = ... * (1 + e_korean_fdepot) when RACE_KOREAN = 1, from the",
         "final control stream (Data S1)",
@@ -196,14 +196,14 @@ Hartmann_2026_nintedanib <- function() {
         "parameterised multiplicatively (0.781) rather than as the",
         "fractional change used here (-0.144, i.e. a multiplier of 0.856)."
       ),
-      source_name        = "RACEREG3"
+      source_name = "RACEREG3"
     ),
     DIS_SSC_ILD = list(
-      description        = "Systemic-sclerosis-associated interstitial lung disease indicator (1 = SSc-ILD, 0 = fibrosing ILD of any other aetiology).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Systemic-sclerosis-associated interstitial lung disease indicator (1 = SSc-ILD, 0 = fibrosing ILD of any other aetiology).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-SSc-ILD; the most common group, 82% of the pediatric PK cohort).",
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline. Effect on relative bioavailability:",
         "F1 = ... * (1 + e_sscild_fdepot) when DIS_SSC_ILD = 1, from the",
         "final control stream (Data S1)",
@@ -220,14 +220,14 @@ Hartmann_2026_nintedanib <- function() {
         "and Table S4, so a patient can carry both an ILD diagnosis",
         "category and DIS_SSC_ILD = 1."
       ),
-      source_name        = "SSCSUB4"
+      source_name = "SSCSUB4"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild (Child-Pugh class A) hepatic impairment indicator (1 = Child-Pugh A, 0 = no hepatic impairment). Multiplicative effect on relative bioavailability.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild (Child-Pugh class A) hepatic impairment indicator (1 = Child-Pugh A, 0 = no hepatic impairment). Multiplicative effect on relative bioavailability.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hepatic impairment; every patient in the model-development data set).",
-      notes              = paste(
+      notes = paste(
         "NOT a fitted covariate. No patient contributing to the pediatric",
         "popPK model had hepatic impairment (Hartmann 2026 Discussion:",
         "none of the patients included in the development of the popPK",
@@ -249,28 +249,32 @@ Hartmann_2026_nintedanib <- function() {
         "Child-Pugh B or C, so there is no Child-Pugh B or C coefficient",
         "to encode."
       ),
-      source_name        = "Child-Pugh class A (simulation scenario flag; no source data column)"
+      source_name = "Child-Pugh class A (simulation scenario flag; no source data column)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 2L,
     n_observations = "446 nintedanib plasma concentrations",
-    age_range      = "6 to less than 18 years (trial eligibility); cohort mean 13.2 years (SD 3.08)",
-    age_median     = "mean 13.2 years (SD 3.08); no median reported",
-    weight_range   = "13.5 kg lower eligibility bound; cohort mean 42.9 kg (SD 17.8)",
-    weight_median  = "mean 42.9 kg (SD 17.8); no median reported",
+    age_range = "6 to less than 18 years (trial eligibility); cohort mean 13.2 years (SD 3.08)",
+    age_median = "mean 13.2 years (SD 3.08); no median reported",
+    weight_range = "13.5 kg lower eligibility bound; cohort mean 42.9 kg (SD 17.8)",
+    weight_median = "mean 42.9 kg (SD 17.8); no median reported",
     sex_female_pct = 54.5,
     race_ethnicity = c(Caucasian = 77, Black = 9.1, AmericanIndianAlaskaNative = 6.8, OtherAsian = 4.5, Missing = 2.3),
-    disease_state  = "Clinically significant fibrosing interstitial lung disease of mixed aetiology: pediatric autoimmune ILD 32%, surfactant protein deficiency 30%, other fibrosing ILD 23%, toxic/radiation/drug-induced pneumonitis 9.1%, chronic hypersensitivity pneumonia 4.5%, post-HSCT fibrosis 2.3%. Systemic sclerosis-associated ILD in 18%.",
-    dose_range     = "Oral nintedanib twice daily, dosed by body-weight bin: 50 mg BID for 13.5 to less than 23.0 kg, 75 mg BID for 23.0 to less than 33.5 kg, 100 mg BID for 33.5 to less than 57.5 kg and 150 mg BID at 57.5 kg and above (Hartmann 2026 Table S1). Dose reduction by one step, interruption, re-escalation and discontinuation were permitted.",
-    regions        = "Multinational; the InPedILD trial and the InPedILD-ON open-label extension",
+    disease_state = "Clinically significant fibrosing interstitial lung disease of mixed aetiology: pediatric autoimmune ILD 32%, surfactant protein deficiency 30%, other fibrosing ILD 23%, toxic/radiation/drug-induced pneumonitis 9.1%, chronic hypersensitivity pneumonia 4.5%, post-HSCT fibrosis 2.3%. Systemic sclerosis-associated ILD in 18%.",
+    dose_range = "Oral nintedanib twice daily, dosed by body-weight bin: 50 mg BID for 13.5 to less than 23.0 kg, 75 mg BID for 23.0 to less than 33.5 kg, 100 mg BID for 33.5 to less than 57.5 kg and 150 mg BID at 57.5 kg and above (Hartmann 2026 Table S1). Dose reduction by one step, interruption, re-escalation and discontinuation were permitted.",
+    regions = "Multinational; the InPedILD trial and the InPedILD-ON open-label extension",
     age_group_breakdown = c(`6_to_lt12_years_n` = 14, `12_to_lt18_years_n` = 30),
-    formulation_breakdown = c(`25mg_soft_capsule_pct` = 32, `100mg_soft_capsule_pct` = 55, `150mg_soft_capsule_pct` = 14),
+    formulation_breakdown = c(
+      `25mg_soft_capsule_pct` = 32,
+      `100mg_soft_capsule_pct` = 55,
+      `150mg_soft_capsule_pct` = 14
+    ),
     hepatic_function = "No patient contributing to the popPK model had hepatic impairment.",
-    notes          = paste0(
+    notes = paste0(
       "Pediatric popPK analysis set: 44 of the 53 patients enrolled in ",
       "InPedILD (phase 3, randomised 2:1 nintedanib versus placebo over ",
       "24 weeks) and its open-label extension InPedILD-ON (to the interim ",

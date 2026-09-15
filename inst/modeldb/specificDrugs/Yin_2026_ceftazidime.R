@@ -10,7 +10,7 @@ Yin_2026_ceftazidime <- function() {
     sep = " "
   )
   vignette <- "Yin_2026_ceftazidime"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -25,11 +25,11 @@ Yin_2026_ceftazidime <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Entered a priori (not by stepwise selection) as allometric scaling",
         "on both CL and V referenced to 70 kg, per Yin 2026 equations 1 and",
         "2 and Methods 'PopPK modeling': 'Clearance (CL) and volume of",
@@ -40,14 +40,14 @@ Yin_2026_ceftazidime <- function() {
         "few days of birth (median postnatal age 1 day) so body weight does",
         "not change materially over the sampling window."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "WEEKS, not the register-default months: Yin 2026 writes equation 1",
         "in weeks and its fixed constants (TM50 = 47.7 weeks, Hill = 3.4)",
         "are only meaningful on the week scale. See the PAGE entry in",
@@ -62,7 +62,7 @@ Yin_2026_ceftazidime <- function() {
         "time-fixed in practice over this study's few-day sampling window.",
         "The simulation subgroups were PMA 32-35, 35-38 and 38-42 weeks."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
@@ -75,9 +75,9 @@ Yin_2026_ceftazidime <- function() {
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Collected (Yin 2026 Methods 'Study design and population') and",
         "entered the stepwise screen (forward P < 0.05, backward P < 0.01)",
         "but not retained. Cohort median 39.4 weeks (range 32.6-41.3;",
@@ -87,9 +87,9 @@ Yin_2026_ceftazidime <- function() {
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "days in this paper (canonical PNA is months)",
-      type        = "continuous",
-      notes       = paste(
+      units = "days in this paper (canonical PNA is months)",
+      type = "continuous",
+      notes = paste(
         "Collected and screened but not retained. Cohort median 1 day",
         "(range 1-4 days; Table 1) -- the cohort spans too narrow a",
         "postnatal-age range for a PNA effect to be identifiable. Li et al.",
@@ -100,9 +100,9 @@ Yin_2026_ceftazidime <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Collected and screened but not retained. Cohort median 56.7 umol/L",
         "(range 23.7-88.0; Table 1). The only covariate with missing data",
         "(2 of 72 neonates, 2.8%); missing values were mean-imputed from the",
@@ -115,17 +115,17 @@ Yin_2026_ceftazidime <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 72L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 72L,
+    n_studies = 1L,
     n_observations = 140L,
-    age_range      = "Postmenstrual age 32.7-41.9 weeks; postnatal age 1-4 days (inclusion required postnatal age <= 28 days)",
-    age_median     = "Postmenstrual age 39.7 weeks; postnatal age 1 day",
-    weight_range   = "1.8-4.2 kg",
-    weight_median  = "3.2 kg",
+    age_range = "Postmenstrual age 32.7-41.9 weeks; postnatal age 1-4 days (inclusion required postnatal age <= 28 days)",
+    age_median = "Postmenstrual age 39.7 weeks; postnatal age 1 day",
+    weight_range = "1.8-4.2 kg",
+    weight_median = "3.2 kg",
     sex_female_pct = 40.3,
     race_ethnicity = c(Chinese = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Neonates with confirmed or suspected bacterial infection requiring",
       "intravenous ceftazidime, with available intravenous access.",
       "14 of 72 (19.4%) were preterm births. Exclusions: known",
@@ -138,19 +138,19 @@ Yin_2026_ceftazidime <- function() {
       "is represented in the model only through the fixed Rhodin PMA",
       "maturation sigmoid; measured creatinine was screened and dropped."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Vasoactive agents 13/72 (18.1%), ampicillin 13/72 (18.1%), diuretics",
       "3/72 (4.2%), prenatal steroid exposure 4/72 (5.6%), hydrocortisone",
       "2/72 (2.8%), meropenem 1/72 (1.4%) (Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Therapeutic ceftazidime as standard neonatal care. The paper does not",
       "tabulate the administered study regimens; the simulated regimens were",
       "25, 50, 75 and 100 mg/kg given every 6, 8 or 12 h as 30-minute",
       "intravenous infusions (Methods 'Model-based simulation')."
     ),
-    regions        = "China (single centre: Xiamen Maternity and Child Health Care Hospital, Xiamen)",
-    notes          = paste(
+    regions = "China (single centre: Xiamen Maternity and Child Health Care Hospital, Xiamen)",
+    notes = paste(
       "Prospective, single-centre, open-label study run 2022-2024. Baseline",
       "demographics per Yin 2026 Table 1 (medians with ranges). 140",
       "capillary whole-blood samples (median 2 per patient, range 1-4) were",

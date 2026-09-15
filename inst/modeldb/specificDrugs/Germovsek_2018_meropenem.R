@@ -9,70 +9,70 @@ Germovsek_2018_meropenem <- function() {
   # NOT been checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
-    csf     = list(analyte = "meropenem", units = "mg", specimen = "CSF", verified = FALSE)
+    csf = list(analyte = "meropenem", units = "mg", specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Allometric scaling on CL (fixed exponent 0.632), Vc (fixed exponent 1), CL_CSF (allometric exponent 0.75) and Vcsf (linear) with reference 70 kg per Germovsek 2018 Methods 'PK modelling'.",
-      source_name        = "WT"
+      notes = "Time-varying. Allometric scaling on CL (fixed exponent 0.632), Vc (fixed exponent 1), CL_CSF (allometric exponent 0.75) and Vcsf (linear) with reference 70 kg per Germovsek 2018 Methods 'PK modelling'.",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age + postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age + postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the fixed Rhodin-style GFR-maturation Hill function on CL (Tmat50 = 47.7 weeks PMA, Hill = 3.4) per Germovsek 2018 Methods reference 27 (Rhodin et al. 2009).",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the fixed Rhodin-style GFR-maturation Hill function on CL (Tmat50 = 47.7 weeks PMA, Hill = 3.4) per Germovsek 2018 Methods reference 27 (Rhodin et al. 2009).",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Patient measured serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Patient measured serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used together with CREAT_REF in the renal-function factor (CREAT_REF / CREAT)^0.40 on CL. Germovsek 2018 Table 2 reports the exponent with sign convention theta_creatinine = -0.40 applied to (CREAT / CREAT_REF); the encoding here uses the algebraically identical (CREAT_REF / CREAT)^0.40 to match the nlmixr2lib convention used in Hennig 2013 / Llanos-Paez 2020.",
-      source_name        = "SCR"
+      notes = "Time-varying. Used together with CREAT_REF in the renal-function factor (CREAT_REF / CREAT)^0.40 on CL. Germovsek 2018 Table 2 reports the exponent with sign convention theta_creatinine = -0.40 applied to (CREAT / CREAT_REF); the encoding here uses the algebraically identical (CREAT_REF / CREAT)^0.40 to match the nlmixr2lib convention used in Hennig 2013 / Llanos-Paez 2020.",
+      source_name = "SCR"
     ),
     CREAT_REF = list(
-      description        = "Postmenstrual-age-expected normal-mean serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Postmenstrual-age-expected normal-mean serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Externally-computed reference SCR for the individual (denoted standardised SCR in Germovsek 2018; Methods reference 28). For the typical infant in the study (PMA 37.4 weeks, raw SCR 32 umol/L) the standardised SCR was reported as 60 umol/L (Discussion). Users must compute CREAT_REF from the chosen PMA-stratified reference table before passing to the model; for normal renal function set CREAT_REF = CREAT so the renal-function factor evaluates to 1.",
-      source_name        = "SCR_standardised"
+      notes = "Externally-computed reference SCR for the individual (denoted standardised SCR in Germovsek 2018; Methods reference 28). For the typical infant in the study (PMA 37.4 weeks, raw SCR 32 umol/L) the standardised SCR was reported as 60 umol/L (Discussion). Users must compute CREAT_REF from the chosen PMA-stratified reference table before passing to the model; for normal renal function set CREAT_REF = CREAT so the renal-function factor evaluates to 1.",
+      source_name = "SCR_standardised"
     ),
     CSF_TPRO = list(
-      description        = "Cerebrospinal-fluid total protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Cerebrospinal-fluid total protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying CSF total protein measured contemporaneously with the CSF PK sample. Reference value 1.2 g/L (typical infant; Germovsek 2018 Discussion). Drives an additive deviation on the logit-scale CSF uptake parameter (theta_CSFproteins = -0.17; Table 2). Missing values were imputed to the median during model fitting (Germovsek 2018 Methods 'PK modelling').",
-      source_name        = "CSF_protein"
+      notes = "Time-varying CSF total protein measured contemporaneously with the CSF PK sample. Reference value 1.2 g/L (typical infant; Germovsek 2018 Discussion). Drives an additive deviation on the logit-scale CSF uptake parameter (theta_CSFproteins = -0.17; Table 2). Missing values were imputed to the median during model fitting (Germovsek 2018 Methods 'PK modelling').",
+      source_name = "CSF_protein"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 167L,
-    n_studies      = 2L,
-    age_range      = "PNA 1-90 days; PMA 22.6-51.3 weeks (gestational + postnatal)",
-    age_median     = "PNA 13 days; PMA 37.4 weeks",
-    weight_range   = "0.48-6.32 kg",
-    weight_median  = "2.12 kg",
+    species = "human",
+    n_subjects = 167L,
+    n_studies = 2L,
+    age_range = "PNA 1-90 days; PMA 22.6-51.3 weeks (gestational + postnatal)",
+    age_median = "PNA 13 days; PMA 37.4 weeks",
+    weight_range = "0.48-6.32 kg",
+    weight_median = "2.12 kg",
     sex_female_pct = 46.7,
     race_ethnicity = "Not reported (multicentre European neonatal ICU cohort)",
-    disease_state  = "Neonates and young infants (<=90 days) with suspected or confirmed late-onset sepsis (NeoMero-1, n = 123 including 5 transferred to NeoMero-2) or bacterial meningitis (NeoMero-2, n = 49 including the 5 transferred). Exclusion criteria: renal failure, severe congenital malformations, causative pathogen resistant to meropenem, known intolerance or contraindications.",
-    dose_range     = "Meropenem 20 mg/kg q12h for LOS in <32 weeks GA and <2 weeks PNA, 20 mg/kg q8h for LOS in all others, 40 mg/kg q8h or q12h for meningitis. 30-minute IV infusion in all subjects.",
+    disease_state = "Neonates and young infants (<=90 days) with suspected or confirmed late-onset sepsis (NeoMero-1, n = 123 including 5 transferred to NeoMero-2) or bacterial meningitis (NeoMero-2, n = 49 including the 5 transferred). Exclusion criteria: renal failure, severe congenital malformations, causative pathogen resistant to meropenem, known intolerance or contraindications.",
+    dose_range = "Meropenem 20 mg/kg q12h for LOS in <32 weeks GA and <2 weeks PNA, 20 mg/kg q8h for LOS in all others, 40 mg/kg q8h or q12h for meningitis. 30-minute IV infusion in all subjects.",
     gestational_age_range = "22.6-41.9 weeks GA at birth (median 33.3 weeks)",
     postmenstrual_age_range = "22.6-51.3 weeks PMA (median 37.4 weeks)",
     samples_plasma = "401 plasma samples (median 2.4 per patient; 109 patients contributed 3 optimally timed samples, 44 patients contributed a single trough)",
-    samples_csf    = "78 CSF samples from 56 patients (median 0.47 per patient; collected opportunistically at lumbar puncture, median 5.27 h post-dose)",
-    regions        = "Europe (multicentre: UK, Italy, Estonia, France, plus sites listed in NeoMero Consortium members)",
-    notes          = "Demographics from Germovsek 2018 Table 1. Five infants switched from NeoMero-1 to NeoMero-2 on later meningitis diagnosis. Eleven peak plasma samples below 10 mg/L were excluded as suspected data-entry errors and one biologically implausible CSF protein concentration (102 g/L) was excluded. Median raw SCR 32 umol/L (range 3.54-197.4); median CSF protein 1.2 g/L; median CSF lactate 1.8 mmol/L."
+    samples_csf = "78 CSF samples from 56 patients (median 0.47 per patient; collected opportunistically at lumbar puncture, median 5.27 h post-dose)",
+    regions = "Europe (multicentre: UK, Italy, Estonia, France, plus sites listed in NeoMero Consortium members)",
+    notes = "Demographics from Germovsek 2018 Table 1. Five infants switched from NeoMero-1 to NeoMero-2 on later meningitis diagnosis. Eleven peak plasma samples below 10 mg/L were excluded as suspected data-entry errors and one biologically implausible CSF protein concentration (102 g/L) was excluded. Median raw SCR 32 umol/L (range 3.54-197.4); median CSF protein 1.2 g/L; median CSF lactate 1.8 mmol/L."
   )
 
   ini({

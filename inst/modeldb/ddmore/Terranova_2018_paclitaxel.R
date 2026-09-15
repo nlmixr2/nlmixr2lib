@@ -13,15 +13,15 @@ Terranova_2018_paclitaxel <- function() {
   paper_specific_compartments <- c("bodyZ", "bodyEn", "tumor1", "tumor2", "tumor3", "tumor4")
 
   units <- list(
-    time          = "day",
-    dosing        = "amu",
+    time = "day",
+    dosing = "amu",
     concentration = "amu/avu",
-    bodyWeight    = "g",
-    tumorWeight   = "g",
-    notes         = "Paclitaxel dosing and concentration units are not declared by the bundle; amu = arbitrary mass units, avu = arbitrary volume units. Vc, K10, IC50, k2, and the AMT column in Simulated_DEB_TGI_data.csv (3e+07 per dose) all share an implicit unit set carried verbatim from DDMODEL00000274. Body weight and tumor weight are in grams as confirmed by the bundle's Output_simulated_*.pdf axis labels (mouse body weight ~22 g; tumor weight ~0.2-0.5 g)."
+    bodyWeight = "g",
+    tumorWeight = "g",
+    notes = "Paclitaxel dosing and concentration units are not declared by the bundle; amu = arbitrary mass units, avu = arbitrary volume units. Vc, K10, IC50, k2, and the AMT column in Simulated_DEB_TGI_data.csv (3e+07 per dose) all share an implicit unit set carried verbatim from DDMODEL00000274. Body weight and tumor weight are in grams as confirmed by the bundle's Output_simulated_*.pdf axis labels (mouse body weight ~22 g; tumor weight ~0.2-0.5 g)."
   )
 
-  ddmore_id    <- "DDMODEL00000274"
+  ddmore_id <- "DDMODEL00000274"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -29,29 +29,29 @@ Terranova_2018_paclitaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "paclitaxel", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "paclitaxel", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "paclitaxel", units = NA_character_, specimen = "plasma", verified = FALSE),
-    bodyZ       = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
-    bodyEn      = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
-    tumor1      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
-    tumor2      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
-    tumor3      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
-    tumor4      = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE)
+    bodyZ = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bodyEn = list(analyte = "not applicable", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tumor1 = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor2 = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor3 = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE),
+    tumor4 = list(analyte = "not applicable", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 2L,
-    n_studies      = 1L,
-    species        = "mouse (xenograft tumor model)",
-    age_range      = NA_character_,
-    weight_range   = "approximately 21 g at study start (W_initial = 21.2 g per the .ctl)",
+    n_subjects = 2L,
+    n_studies = 1L,
+    species = "mouse (xenograft tumor model)",
+    age_range = NA_character_,
+    weight_range = "approximately 21 g at study start (W_initial = 21.2 g per the .ctl)",
     sex_female_pct = NA_real_,
-    disease_state  = "Preclinical xenograft-mouse oncology efficacy / cachexia model. Terranova 2018 develops the Dynamic Energy Budget (DEB) framework as a generalisation of the Simeoni 2004 TGI model that simultaneously predicts tumor growth and host body-weight loss (cachexia). The framework was fit across multiple anticancer agents in xenograft mice; the DDMODEL00000274 bundle implements the paclitaxel scenario only ('Among the drugs considered in the paper, only PACLITAXEL has been used' -- Model_Accomodations.txt).",
-    dose_range     = "Paclitaxel intravenous bolus AMT = 3e+07 (source units; consistent with K10/K12/K21 in 1/day and V1 = 813.1) at days 8, 12, 16, 20, 24 in the bundle's Simulated_DEB_TGI_data.csv (treated subject ID = 1; control subject ID = 2 receives no doses).",
-    regions        = NA_character_,
-    notes          = "DDMORE bundle 274 ships only a single Simulated_DEB_TGI_data.csv with two virtual subjects (one treated, one control) and a Simulated_*.pdf rendering of the typical-value trajectory; no Output_real_*.lst (real-data fit listing) is shipped, and the .ctl is configured for $SIM ONLYSIM with $OMEGA 0 FIX and $SIGMA 1 FIX for both DVID arms. The .ctl $THETA values are therefore the simulation-truth (publication-derived) point estimates rather than re-fitted final estimates; see the Errata section of the validation vignette for the full bundle-versus-publication caveat list. The Terranova 2018 publication (J Theor Biol 450:1-14) was paywalled and not available on disk at extraction time, so the simulation-truth values were not cross-checked against published tables."
+    disease_state = "Preclinical xenograft-mouse oncology efficacy / cachexia model. Terranova 2018 develops the Dynamic Energy Budget (DEB) framework as a generalisation of the Simeoni 2004 TGI model that simultaneously predicts tumor growth and host body-weight loss (cachexia). The framework was fit across multiple anticancer agents in xenograft mice; the DDMODEL00000274 bundle implements the paclitaxel scenario only ('Among the drugs considered in the paper, only PACLITAXEL has been used' -- Model_Accomodations.txt).",
+    dose_range = "Paclitaxel intravenous bolus AMT = 3e+07 (source units; consistent with K10/K12/K21 in 1/day and V1 = 813.1) at days 8, 12, 16, 20, 24 in the bundle's Simulated_DEB_TGI_data.csv (treated subject ID = 1; control subject ID = 2 receives no doses).",
+    regions = NA_character_,
+    notes = "DDMORE bundle 274 ships only a single Simulated_DEB_TGI_data.csv with two virtual subjects (one treated, one control) and a Simulated_*.pdf rendering of the typical-value trajectory; no Output_real_*.lst (real-data fit listing) is shipped, and the .ctl is configured for $SIM ONLYSIM with $OMEGA 0 FIX and $SIGMA 1 FIX for both DVID arms. The .ctl $THETA values are therefore the simulation-truth (publication-derived) point estimates rather than re-fitted final estimates; see the Errata section of the validation vignette for the full bundle-versus-publication caveat list. The Terranova 2018 publication (J Theor Biol 450:1-14) was paywalled and not available on disk at extraction time, so the simulation-truth values were not cross-checked against published tables."
   )
 
   ini({

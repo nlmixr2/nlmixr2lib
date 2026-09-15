@@ -1,52 +1,52 @@
 Overbeek_2025_cobicistat <- function() {
   description <- "Well-stirred liver model for oral cobicistat (CYP3A pharmacokinetic booster) pooling healthy volunteers, postpartum women with HIV, patients with rheumatoid arthritis and patients with solid tumours, with Erlang-type absorption through three transit compartments, a mechanistic hepatic-extraction central/liver disposition driven by unbound intrinsic clearance per litre of liver, a priori allometric scaling to 70 kg, and a higher intrinsic clearance in the PROACTIVE (olaparib-boosting) cohort (Overbeek 2025)"
-  reference   <- "Overbeek JK, van Erp NP, Burger DM, den Broeder AA, Koolen SLW, Huitema ADR, ter Heine R. Population Pharmacokinetics of Cobicistat and its Effect on the Pharmacokinetics of the Anticancer Drug Olaparib. Clin Pharmacokinet. 2025;64(3):425-435. doi:10.1007/s40262-025-01480-w"
-  vignette    <- "Overbeek_2025_cobicistat_olaparib_boosting"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Overbeek JK, van Erp NP, Burger DM, den Broeder AA, Koolen SLW, Huitema ADR, ter Heine R. Population Pharmacokinetics of Cobicistat and its Effect on the Pharmacokinetics of the Anticancer Drug Olaparib. Clin Pharmacokinet. 2025;64(3):425-435. doi:10.1007/s40262-025-01480-w"
+  vignette <- "Overbeek_2025_cobicistat_olaparib_boosting"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters in three distinct ways. (1) A priori allometric scaling to a standardised total body weight of 70 kg with exponents 0.75 for flow (hepatic plasma flow), 1 for volume (Vc) and -0.25 for the absorption rate constant ktr (Overbeek 2025 Methods 2.3, final paragraph before Eq 5). (2) The liver volume that scales intrinsic clearance, VL = 0.10 * TBW^0.59 (Eq 5), which is a function of the raw weight in kg and is deliberately NOT re-normalised to 70 kg. (3) Because CLint = theta_CLint * VL (Eq 6), the weight dependence of clearance is carried entirely by VL and no separate allometric exponent is applied to CLint. Cohort median 74 kg, range 52-124 kg (Table 1).",
-      source_name        = "WEIGHT"
+      notes = "Enters in three distinct ways. (1) A priori allometric scaling to a standardised total body weight of 70 kg with exponents 0.75 for flow (hepatic plasma flow), 1 for volume (Vc) and -0.25 for the absorption rate constant ktr (Overbeek 2025 Methods 2.3, final paragraph before Eq 5). (2) The liver volume that scales intrinsic clearance, VL = 0.10 * TBW^0.59 (Eq 5), which is a function of the raw weight in kg and is deliberately NOT re-normalised to 70 kg. (3) Because CLint = theta_CLint * VL (Eq 6), the weight dependence of clearance is carried entirely by VL and no separate allometric exponent is applied to CLint. Cohort median 74 kg, range 52-124 kg (Table 1).",
+      source_name = "WEIGHT"
     ),
     STUDY_PROACTIVE = list(
-      description        = "PROACTIVE study (olaparib-boosting cohort) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "PROACTIVE study (olaparib-boosting cohort) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the pooled DATE-4, PANNA and PRACTICAL cohorts)",
-      notes              = "1 = subject enrolled in the PROACTIVE trial (NCT05078671; patients with solid tumours receiving cobicistat 150 mg twice daily to boost olaparib); 0 = subject enrolled in DATE-4, PANNA or PRACTICAL (all cobicistat 150 mg once daily). Multiplicative power-form effect on cobicistat intrinsic clearance per Overbeek 2025 Eq 7 (P = P0 * theta^STUDY), the only one of the four candidate study covariates retained in the final model (Results 3.1). The paper attributes the 1.21-fold higher intrinsic clearance to selection of a cohort with relatively high CYP3A activity rather than to olaparib itself, and the indicator is confounded with both the twice-daily regimen and the solid-tumour population, so it should be read as a cohort effect and not as an olaparib drug-drug interaction (Discussion, paragraphs 3 and 4). The NONMEM data item is named OLAP in the control stream (Online Resource Material 1, $INPUT), which is why Table 2 labels the coefficient CLint-olaparib.",
-      source_name        = "OLAP"
+      notes = "1 = subject enrolled in the PROACTIVE trial (NCT05078671; patients with solid tumours receiving cobicistat 150 mg twice daily to boost olaparib); 0 = subject enrolled in DATE-4, PANNA or PRACTICAL (all cobicistat 150 mg once daily). Multiplicative power-form effect on cobicistat intrinsic clearance per Overbeek 2025 Eq 7 (P = P0 * theta^STUDY), the only one of the four candidate study covariates retained in the final model (Results 3.1). The paper attributes the 1.21-fold higher intrinsic clearance to selection of a cohort with relatively high CYP3A activity rather than to olaparib itself, and the indicator is confounded with both the twice-daily regimen and the solid-tumour population, so it should be read as a cohort effect and not as an olaparib drug-drug interaction (Discussion, paragraphs 3 and 4). The NONMEM data item is named OLAP in the control stream (Online Resource Material 1, $INPUT), which is why Table 2 labels the coefficient CLint-olaparib.",
+      source_name = "OLAP"
     )
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "cobicistat", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "cobicistat", units = "mg", specimen = "administration site", verified = TRUE),
     transit1 = list(analyte = "cobicistat", units = "mg", specimen = "administration site", verified = TRUE),
     transit2 = list(analyte = "cobicistat", units = "mg", specimen = "administration site", verified = TRUE),
     transit3 = list(analyte = "cobicistat", units = "mg", specimen = "administration site", verified = TRUE),
-    liver    = list(analyte = "cobicistat", units = "mg", specimen = "tissue", verified = TRUE),
-    central  = list(analyte = "cobicistat", units = "mg", specimen = "plasma", verified = TRUE)
+    liver = list(analyte = "cobicistat", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "cobicistat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 4L,
     n_observations = 683L,
-    age_range      = "21-78 years (median 51.5)",
-    age_median     = "51.5 years",
-    weight_range   = "52-124 kg (median 74)",
-    weight_median  = "74 kg",
+    age_range = "21-78 years (median 51.5)",
+    age_median = "51.5 years",
+    weight_range = "52-124 kg (median 74)",
+    weight_median = "74 kg",
     sex_female_pct = 63.6,
-    disease_state  = "Pooled healthy volunteers (DATE-4, n = 16), postpartum women living with HIV (PANNA, n = 12), patients with rheumatoid arthritis (PRACTICAL, n = 26) and patients with solid tumours (PROACTIVE, n = 12)",
-    dose_range     = "Cobicistat 150 mg orally once daily (DATE-4, PANNA, PRACTICAL) or 150 mg twice daily (PROACTIVE), all at steady state after at least 7 days of treatment",
-    regions        = "The Netherlands (Radboud university medical center and collaborating sites)",
-    co_medication  = "Cobicistat was co-administered as a booster with atazanavir (DATE-4), elvitegravir (PANNA), tofacitinib (PRACTICAL) or olaparib (PROACTIVE)",
-    notes          = "Demographics from Overbeek 2025 Table 1. Sex is reported as 24 of 66 male (36%), so 63.6% female. All studies used dense PK sampling over one 12 h or 24 h dosing interval at steady state. Only the postpartum (non-pregnant) PANNA occasion was included; the third-trimester data were excluded because cobicistat PK was markedly different in pregnancy (Methods 2.1). 14 of 683 samples (2.1%) were below the 0.03 mg/L limit of quantification and were retained using the 'All data' (M1) method."
+    disease_state = "Pooled healthy volunteers (DATE-4, n = 16), postpartum women living with HIV (PANNA, n = 12), patients with rheumatoid arthritis (PRACTICAL, n = 26) and patients with solid tumours (PROACTIVE, n = 12)",
+    dose_range = "Cobicistat 150 mg orally once daily (DATE-4, PANNA, PRACTICAL) or 150 mg twice daily (PROACTIVE), all at steady state after at least 7 days of treatment",
+    regions = "The Netherlands (Radboud university medical center and collaborating sites)",
+    co_medication = "Cobicistat was co-administered as a booster with atazanavir (DATE-4), elvitegravir (PANNA), tofacitinib (PRACTICAL) or olaparib (PROACTIVE)",
+    notes = "Demographics from Overbeek 2025 Table 1. Sex is reported as 24 of 66 male (36%), so 63.6% female. All studies used dense PK sampling over one 12 h or 24 h dosing interval at steady state. Only the postpartum (non-pregnant) PANNA occasion was included; the third-trimester data were excluded because cobicistat PK was markedly different in pregnancy (Methods 2.1). 14 of 683 samples (2.1%) were below the 0.03 mg/L limit of quantification and were retained using the 'All data' (M1) method."
   )
 
   ini({

@@ -31,7 +31,7 @@ Marianski_2026_ceftriaxone <- function() {
     sep = " "
   )
   vignette <- "Marianski_2026_ceftriaxone"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: ceftriaxone was quantified in WHOLE BLOOD collected by
   # volumetric absorptive microsampling (VAMS, 20 uL/sample) using a validated
@@ -42,17 +42,17 @@ Marianski_2026_ceftriaxone <- function() {
   # and deviations before comparing this model against a plasma-based model or
   # against a plasma-referenced susceptibility breakpoint.
   compartmentData <- list(
-    central     = list(analyte = "ceftriaxone", units = "mg", specimen = "whole blood", verified = TRUE),
+    central = list(analyte = "ceftriaxone", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters clearance and central volume as the allometric ratio",
         "(WT / 27.4) raised to a FIXED exponent: 0.75 on CL and 1 on V1.",
         "Table 1's 'Model parameterized as:' block prints both exponents",
@@ -73,14 +73,14 @@ Marianski_2026_ceftriaxone <- function() {
         "printed. See the vignette Assumptions and deviations.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalized, by the CKiD U25 equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalized, by the CKiD U25 equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "BSA-normalized paediatric eGFR in mL/min/1.73 m^2. Marianski 2026",
         "Methods names the estimating equation: 'Chronic Kidney Disease in",
         "Children Under 25 eGFR or U25', i.e. the CKiD U25 serum-creatinine",
@@ -105,23 +105,23 @@ Marianski_2026_ceftriaxone <- function() {
         "carries no information about renal replacement therapy or ECMO.",
         sep = " "
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
-    age_range      = "2 months to 17 years (Results). No median or mean age is reported.",
-    weight_range   = "NOT REPORTED. The abstract gives no cohort weight distribution; the only weight in the paper is the 27.4 kg allometric normalisation constant in Table 1, which the authors do not identify as a median, mean or standard.",
-    disease_state  = "Critically ill children under 18 years with multiple organ dysfunction syndrome (MODS), defined as two or more organ failures, prescribed ceftriaxone as standard of care in the pediatric intensive care unit. Patients receiving extracorporeal support (e.g. ECMO, renal replacement therapy) were EXCLUDED at enrollment, so the model carries no information about those settings.",
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_range = "2 months to 17 years (Results). No median or mean age is reported.",
+    weight_range = "NOT REPORTED. The abstract gives no cohort weight distribution; the only weight in the paper is the 27.4 kg allometric normalisation constant in Table 1, which the authors do not identify as a median, mean or standard.",
+    disease_state = "Critically ill children under 18 years with multiple organ dysfunction syndrome (MODS), defined as two or more organ failures, prescribed ceftriaxone as standard of care in the pediatric intensive care unit. Patients receiving extracorporeal support (e.g. ECMO, renal replacement therapy) were EXCLUDED at enrollment, so the model carries no information about those settings.",
     renal_function = "Estimated GFR by the CKiD U25 equation ranged from 25 to 225 mL/min/1.73 m^2 with a median of 100 (Results). The range spans moderate renal impairment through frank hyperfiltration / augmented renal clearance, and the Conclusion identifies residual variability after accounting for renal function as the study's central finding.",
-    dose_range     = "NOT REPORTED. Methods states only that patients were 'prescribed CRO' as standard of care and that first-24-hour exposures were computed 'from exact dosing and covariate histories'; no dose, frequency or infusion duration is given anywhere in the abstract.",
-    regions        = "United States (multi-center; the PALISI network, with author affiliations at Children's Hospital of Philadelphia, Nationwide Children's Hospital and Midwestern University)",
+    dose_range = "NOT REPORTED. Methods states only that patients were 'prescribed CRO' as standard of care and that first-24-hour exposures were computed 'from exact dosing and covariate histories'; no dose, frequency or infusion duration is given anywhere in the abstract.",
+    regions = "United States (multi-center; the PALISI network, with author affiliations at Children's Hospital of Philadelphia, Nationwide Children's Hospital and Midwestern University)",
     protein_binding = "Not fitted. This model outputs WHOLE-BLOOD ceftriaxone as Cc. The fT>MIC analysis converted those concentrations to free concentrations using a literature-based free fraction of 10% (i.e. 90% protein binding), taken from the literature and not estimated here (Methods; Figure 2 caption, '90% protein binding was assumed for all subjects'). Multiply Cc by 0.10 to obtain the free concentration the paper's fT>MIC targets are evaluated against. NOTE the approximation the authors made: a protein-binding fraction is a PLASMA property, and applying it directly to a whole-blood concentration assumes whole-blood and plasma ceftriaxone are equivalent. The same group published a whole-blood-to-plasma translation for VAMS antibiotic assays (Ther Drug Monit 2026, PMC13366314), but this abstract does not cite it and does not state that any translation was applied before modelling.",
-    sampling       = "Up to 15 PK samples per patient collected over 3 days by volumetric absorptive microsampling (VAMS), 20 uL per sample, quantified in whole blood by a validated LC-MS/MS assay. The total number of concentrations is not reported; Figure 1 shows roughly 250-300 points. Concentrations in Figure 1 span about 0 to 400 mg/L.",
-    notes          = "CONFERENCE ABSTRACT (IDWeek 2025 poster P-1254), not a peer-reviewed full paper. It is nonetheless completely encodable: Table 1 publishes all four structural estimates, all four interindividual variances (as BOTH log-scale SD and %CV, which pins the variance convention with no ambiguity), the residual-error coefficient, and the four covariate equations in full. Fitted in Monolix 2024R1 by SAEM ('Stoch. Approx.' heads the uncertainty columns of Table 1). One- and two-compartment models were tested and the two-compartment model retained; covariates were selected on the corrected Bayesian Information Criterion, reduction in between-subject variability, and physiological relevance. As of the extraction date no peer-reviewed full publication of this ceftriaxone model exists: a EuropePMC search on the funding grant (R01HD103755) returns this abstract plus the cefepime arm of the same PALISI/VAMS study (Antimicrob Agents Chemother 2026, PMC13321836), a different drug. Treat the covariate model as provisional in the way any conference abstract's is -- the cefepime companion of this same study retained a different renal covariate form. No supplementary material exists (EuropePMC hasSuppl = N) and none is cited."
+    sampling = "Up to 15 PK samples per patient collected over 3 days by volumetric absorptive microsampling (VAMS), 20 uL per sample, quantified in whole blood by a validated LC-MS/MS assay. The total number of concentrations is not reported; Figure 1 shows roughly 250-300 points. Concentrations in Figure 1 span about 0 to 400 mg/L.",
+    notes = "CONFERENCE ABSTRACT (IDWeek 2025 poster P-1254), not a peer-reviewed full paper. It is nonetheless completely encodable: Table 1 publishes all four structural estimates, all four interindividual variances (as BOTH log-scale SD and %CV, which pins the variance convention with no ambiguity), the residual-error coefficient, and the four covariate equations in full. Fitted in Monolix 2024R1 by SAEM ('Stoch. Approx.' heads the uncertainty columns of Table 1). One- and two-compartment models were tested and the two-compartment model retained; covariates were selected on the corrected Bayesian Information Criterion, reduction in between-subject variability, and physiological relevance. As of the extraction date no peer-reviewed full publication of this ceftriaxone model exists: a EuropePMC search on the funding grant (R01HD103755) returns this abstract plus the cefepime arm of the same PALISI/VAMS study (Antimicrob Agents Chemother 2026, PMC13321836), a different drug. Treat the covariate model as provisional in the way any conference abstract's is -- the cefepime companion of this same study retained a different renal covariate form. No supplementary material exists (EuropePMC hasSuppl = N) and none is cited."
   )
 
   ini({

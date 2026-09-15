@@ -19,14 +19,14 @@ Lee_2025_levofloxacin <- function() {
     sep = " "
   )
   vignette <- "Lee_2025_levofloxacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
     # Plasma levofloxacin was the measured analyte (Methods 4.3 "Drug Assay":
     # LC-MS/MS on plasma, calibration range 0.05-50 mg/L).
-    central     = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = TRUE),
     # V2 is described only as "volume of distribution for the first peripheral
     # compartment" (Table 2 footnote); the source names no biological matrix
     # for it, so the specimen assignment is conventional, not source-verified.
@@ -35,15 +35,15 @@ Lee_2025_levofloxacin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated with the Cockcroft-Gault equation,",
         "reported as raw mL/min and NOT normalised to 1.73 m^2 body surface",
         "area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on CL:",
         "CL = theta1 * (CRCL / 105.71)^theta2 with theta2 = 0.901 per",
         "Lee 2025 Table 2. The reference 105.71 mL/min is the cohort",
@@ -57,14 +57,14 @@ Lee_2025_levofloxacin <- function() {
         "Carlo simulations (Methods 4.5) extrapolate it to 10-170",
         "mL/min."
       ),
-      source_name        = "CrCl"
+      source_name = "CrCl"
     ),
     LBM = list(
-      description        = "Lean body mass derived from sex, total body weight, and height by the James equation.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass derived from sex, total body weight, and height by the James equation.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on the peripheral volume:",
         "V2 = theta3 * (LBM / 47.91)^theta4 with theta4 = 1.75 per",
         "Lee 2025 Table 2. The reference 47.91 kg is the cohort median",
@@ -77,33 +77,33 @@ Lee_2025_levofloxacin <- function() {
         "mass (Anderson) were also screened but not retained",
         "(Methods 4.4)."
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
-    age_range      = "29.0 to 44.0 years",
-    age_median     = "35.5 years",
-    weight_range   = "47.3 to 77.2 kg (total body weight)",
-    weight_median  = "68.0 kg (total body weight)",
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    age_range = "29.0 to 44.0 years",
+    age_median = "35.5 years",
+    weight_range = "47.3 to 77.2 kg (total body weight)",
+    weight_median = "68.0 kg (total body weight)",
     sex_female_pct = 100 * 8 / 12,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adult volunteers aged 19-55 years with no clinically",
       "significant medical history, screened to exclude hepatic or renal",
       "disease. Serum protein, albumin, creatinine, and cystatin C were",
       "all within the normal range (Results 2.1). No adverse events",
       "occurred."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 500 mg dose of levofloxacin dissolved in 100 mL normal",
       "saline and given as a 1-hour intravenous infusion by infusion pump",
       "(Methods 4.2). No multiple-dose data were collected."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Immediately before the start of the infusion (0 min) and at 61 min,",
       "75 min, 90 min, 4 h, 8 h, and 24 h after the start of the infusion.",
       "84 plasma samples were analysed (Results 2.2)."
@@ -114,8 +114,8 @@ Lee_2025_levofloxacin <- function() {
       "median 95.8 (83.1-120) (Table 1). No subject had impaired or",
       "augmented renal clearance."
     ),
-    regions        = "Republic of Korea (Anyang; Hallym University Sacred Heart Hospital Clinical Trial Center).",
-    notes          = paste(
+    regions = "Republic of Korea (Anyang; Hallym University Sacred Heart Hospital Clinical Trial Center).",
+    notes = paste(
       "Baseline demographics from Lee 2025 Table 1 and Results 2.1.",
       "The study ran August-September 2024 (IRB 2024-05-015, protocol",
       "LVF-001). The final model was fit in NONMEM 7.5 with FOCE-I",

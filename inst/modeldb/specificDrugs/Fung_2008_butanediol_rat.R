@@ -38,18 +38,29 @@ Fung_2008_butanediol_rat <- function() {
   )
   vignette <- "Fung_2008_butanediol_rat"
   paper_specific_compartments <- c(
-    "central_ald", "peripheral1_ald",
-    "central_ghb", "peripheral1_ghb",
-    "central_etoh", "peripheral1_etoh"
+    "central_ald",
+    "peripheral1_ald",
+    "central_ghb",
+    "peripheral1_ghb",
+    "central_etoh",
+    "peripheral1_etoh"
   )
   paper_specific_etas <- c(
-    "etalkm_ghb", "etalvc_ghb",
-    "etalvmax_etoh", "etalkm_etoh", "etalvc_etoh",
-    "etalki_bd_ald", "etalki_bd_ghb", "etalki_bd_etoh", "etalki_ghb_bd"
+    "etalkm_ghb",
+    "etalvc_ghb",
+    "etalvmax_etoh",
+    "etalkm_etoh",
+    "etalvc_etoh",
+    "etalki_bd_ald",
+    "etalki_bd_ghb",
+    "etalki_bd_etoh",
+    "etalki_ghb_bd"
   )
   paper_specific_residual_sds <- c(
-    "propSd_ghb", "addSd_ghb",
-    "propSd_etoh", "addSd_etoh"
+    "propSd_ghb",
+    "addSd_ghb",
+    "propSd_etoh",
+    "addSd_etoh"
   )
 
   units <- list(time = "min", dosing = "mmol", concentration = "mmol/L")
@@ -59,40 +70,40 @@ Fung_2008_butanediol_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot            = list(analyte = "BD", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_ald      = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1_ald  = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_ghb      = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
-    peripheral1_ghb  = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
-    central_etoh     = list(analyte = "ETOH", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "BD", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "BD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_ald = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_ald = list(analyte = "ALD", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_ghb = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_ghb = list(analyte = "GHB", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_etoh = list(analyte = "ETOH", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1_etoh = list(analyte = "ETOH", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (male Sprague-Dawley)",
-    n_subjects     = 42L,
-    n_studies      = 13L,
-    age_range      = "adult (exact age not reported)",
-    weight_range   = "~ 300 g (uniform within Harlan-supplied cohort)",
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 42L,
+    n_studies = 13L,
+    age_range = "adult (exact age not reported)",
+    weight_range = "~ 300 g (uniform within Harlan-supplied cohort)",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Sprague-Dawley rats (Harlan, Indianapolis, IN) of",
       "about 300 g body weight. Jugular vein cannulated for blood",
       "withdrawal and femoral vein cannulated for IV dosing."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Thirteen studies (Table I): 11 IV studies covering BD 1.58 or",
       "6.34 mmol/kg, GHB 1.58, 1.79, or 6.34 mmol/kg, and ETOH 6.34 or",
       "12.7 mmol/kg in mono- and pairwise co-administration; plus 2 oral",
       "BD studies (1.58 or 6.34 mmol/kg by gastric gavage). Each IV dose",
       "was a 5-min constant-rate infusion. Groups of 3 or 4 rats per study."
     ),
-    regions        = "USA (University at Buffalo)",
-    notes          = paste(
+    regions = "USA (University at Buffalo)",
+    notes = paste(
       "Animal protocols reviewed and approved by the University at",
       "Buffalo Institutional Animal Care and Use Committee. Plasma",
       "samples assayed for BD and GHB by LCMS (LOQ 60 uM) and for",

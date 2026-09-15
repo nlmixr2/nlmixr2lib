@@ -23,68 +23,68 @@ Brekkan_2018_pegfilgrastim <- function() {
   # covariatesDataExcluded rather than covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-constant covariate tested in the FREM analysis. Forest plots (Brekkan 2018 Figs 8-9) show small effects on Vc/F and R1; not retained in the final structural model. Reference value not tabulated in the paper.",
-      source_name        = "WT"
+      notes = "Time-constant covariate tested in the FREM analysis. Forest plots (Brekkan 2018 Figs 8-9) show small effects on Vc/F and R1; not retained in the final structural model. Reference value not tabulated in the paper.",
+      source_name = "WT"
     ),
     LBM = list(
-      description        = "Lean body mass (Janmahasatian et al.)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (Janmahasatian et al.)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Brekkan 2018 uses the alias 'LBW' (lean body weight); canonical column in nlmixr2lib is LBM. Computed via the Janmahasatian formula (Brekkan 2018 Methods cites Janmahasatian et al. 2005). Tested via FREM as a time-constant covariate; second most influential covariate after sex per the Discussion but still explains less than 2% of derived-metric variability. Reference value not tabulated.",
-      source_name        = "LBW"
+      notes = "Brekkan 2018 uses the alias 'LBW' (lean body weight); canonical column in nlmixr2lib is LBM. Computed via the Janmahasatian formula (Brekkan 2018 Methods cites Janmahasatian et al. 2005). Tested via FREM as a time-constant covariate; second most influential covariate after sex per the Discussion but still explains less than 2% of derived-metric variability. Reference value not tabulated.",
+      source_name = "LBW"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-constant covariate tested in the FREM analysis (Brekkan 2018 Methods). Not retained in the final structural model.",
-      source_name        = "BMI"
+      notes = "Time-constant covariate tested in the FREM analysis (Brekkan 2018 Methods). Not retained in the final structural model.",
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-constant covariate tested in the FREM analysis. Not retained.",
-      source_name        = "AGE"
+      notes = "Time-constant covariate tested in the FREM analysis. Not retained.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Brekkan 2018 reports 43% female (Results, Data). Tested via FREM as a time-constant covariate; most influential covariate by FREM forest plots but still explains a small fraction of overall variability.",
-      source_name        = "SEX"
+      notes = "Brekkan 2018 reports 43% female (Results, Data). Tested via FREM as a time-constant covariate; most influential covariate by FREM forest plots but still explains a small fraction of overall variability.",
+      source_name = "SEX"
     ),
     RACE_WHITE = list(
-      description        = "Race indicator (1 = White / Caucasian, 0 = other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator (1 = White / Caucasian, 0 = other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Caucasian)",
-      notes              = "Brekkan 2018 reports 86% Caucasian (Results, Data). Tested via FREM as a time-constant covariate; effect modest in forest plots.",
-      source_name        = "RACE"
+      notes = "Brekkan 2018 reports 86% Caucasian (Results, Data). Tested via FREM as a time-constant covariate; effect modest in forest plots.",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 174L,
-    n_studies      = 1L,
-    n_occasions    = 445L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 174L,
+    n_studies = 1L,
+    n_occasions = 445L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = 43,
     race_ethnicity = c(Caucasian = 86, Other = 14),
-    disease_state  = "Healthy adult volunteers, drug-naive (no measurable baseline PG, no anti-PEG or anti-drug antibody positivity).",
-    dose_range     = "Single 6 mg subcutaneous pegfilgrastim per period in a three-way crossover comparing one biosimilar candidate (BIOS_PG) and two reference Neulasta(R) products (US_PG and EU_PG), separated by at least 5 weeks washout. Median delivered doses by syringe batch: BIOS_PG 6.6 and 6.7 mg (two batches), US_PG 6.3 mg, EU_PG 6.2 mg (Brekkan 2018 Results, Data).",
-    regions        = "USA",
-    notes          = "Study PG-01-003 (Dr. Reddy's Laboratories). 192 enrolled; 174 included after excluding 15 subjects with measurable baseline PG and ADA-positive occasions (Brekkan 2018 Results, Data). 445 dosing occasions analysed. The paper does not tabulate age or weight ranges; baseline demographics are referenced via Fig 1 and prose only."
+    disease_state = "Healthy adult volunteers, drug-naive (no measurable baseline PG, no anti-PEG or anti-drug antibody positivity).",
+    dose_range = "Single 6 mg subcutaneous pegfilgrastim per period in a three-way crossover comparing one biosimilar candidate (BIOS_PG) and two reference Neulasta(R) products (US_PG and EU_PG), separated by at least 5 weeks washout. Median delivered doses by syringe batch: BIOS_PG 6.6 and 6.7 mg (two batches), US_PG 6.3 mg, EU_PG 6.2 mg (Brekkan 2018 Results, Data).",
+    regions = "USA",
+    notes = "Study PG-01-003 (Dr. Reddy's Laboratories). 192 enrolled; 174 included after excluding 15 subjects with measurable baseline PG and ADA-positive occasions (Brekkan 2018 Results, Data). 445 dosing occasions analysed. The paper does not tabulate age or weight ranges; baseline demographics are referenced via Fig 1 and prose only."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -92,13 +92,13 @@ Brekkan_2018_pegfilgrastim <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
+    circ = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   ini({

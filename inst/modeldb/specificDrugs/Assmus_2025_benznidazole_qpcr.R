@@ -38,31 +38,31 @@ Assmus_2025_benznidazole_qpcr <- function() {
   # Lallemand_2023_benzylpenicillin_horse.R; not a biological compartment.
   paper_specific_compartments <- c("auc_central")
 
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling applied a priori on CL/F (exponent 0.75) and V/F (exponent 1.0), standardized to the 65 kg cohort median (Assmus 2025 Methods, Population pharmacokinetic analysis (i)). Enrolment was restricted to 50-80 kg.",
-      source_name        = "WT"
+      notes = "Allometric scaling applied a priori on CL/F (exponent 0.75) and V/F (exponent 1.0), standardized to the 65 kg cohort median (Assmus 2025 Methods, Population pharmacokinetic analysis (i)). Enrolment was restricted to 50-80 kg.",
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) is the register-canonical reference, but Assmus 2025 reports typical values for a FEMALE subject; the male effect is applied via (1 - SEXF) to preserve the published structural estimates verbatim.",
-      notes              = "Retained on relative oral bioavailability F only: men had 12.9% lower F than women (Assmus 2025 Table 2). PK-layer covariate; sex was not a predictor in the exposure-response layer.",
-      source_name        = "SEX"
+      notes = "Retained on relative oral bioavailability F only: men had 12.9% lower F than women (Assmus 2025 Table 2). PK-layer covariate; sex was not a predictor in the exposure-response layer.",
+      source_name = "SEX"
     ),
     CONMED_FOSRAVUCONAZOLE = list(
-      description        = "Concomitant fosravuconazole (E1224) administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant fosravuconazole (E1224) administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (benznidazole monotherapy)",
-      notes              = paste(
+      notes = paste(
         "PK-layer covariate: +17.7% on CL/F (Assmus 2025 Table 2).",
         "Assmus 2025 also adjusted the exposure-response subgroup",
         "analysis for combination therapy and found no significant",
@@ -70,14 +70,14 @@ Assmus_2025_benznidazole_qpcr <- function() {
         "response model), so no PD-layer coefficient is reported and",
         "none is encoded here."
       ),
-      source_name        = "E1224"
+      source_name = "E1224"
     ),
     CT_TCRUZI_BASE = list(
-      description        = "Baseline Trypanosoma cruzi qPCR cycle threshold (Ct)",
-      units              = "(cycles)",
-      type               = "continuous",
+      description = "Baseline Trypanosoma cruzi qPCR cycle threshold (Ct)",
+      units = "(cycles)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mean cycle threshold of nine measurements (three blood samples",
         "assayed in triplicate) at the screening visit, before dosing.",
         "The scale is INVERSE to parasite burden: a higher Ct means",
@@ -89,7 +89,7 @@ Assmus_2025_benznidazole_qpcr <- function() {
         "Ct) had a higher probability of post-treatment qPCR positivity",
         "(Assmus 2025 Results, Exposure-parasitological response model)."
       ),
-      source_name        = "Ct"
+      source_name = "Ct"
     )
   )
 
@@ -101,74 +101,82 @@ Assmus_2025_benznidazole_qpcr <- function() {
   # are either post-hoc NCA summaries or trial-design quantities.
   covariatesDataExcluded <- list(
     CMAX_BZN = list(
-      description        = "Individual peak benznidazole concentration in dried blood spots",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Individual peak benznidazole concentration in dried blood spots",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Alternative univariate predictor (Assmus 2025 Table 3: OR 0.640 [0.581, 0.706], p < 0.001 including placebo; OR 0.966 [0.863, 1.073], p = 0.529 excluding placebo). Derivable from the PK layer by simulation but not encoded as a state; see the validation vignette.",
-      source_name        = "CMAX"
+      notes = "Alternative univariate predictor (Assmus 2025 Table 3: OR 0.640 [0.581, 0.706], p < 0.001 including placebo; OR 0.966 [0.863, 1.073], p = 0.529 excluding placebo). Derivable from the PK layer by simulation but not encoded as a state; see the validation vignette.",
+      source_name = "CMAX"
     ),
     T_ABOVE_TARGET = list(
-      description        = "Time with benznidazole above a putative target concentration",
-      units              = "days",
-      type               = "continuous",
+      description = "Time with benznidazole above a putative target concentration",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Alternative univariate predictor evaluated at 3 mg/L and 6 mg/L in plasma (2.5 and 5 mg/L in DBS) and at the in vitro IC90,DBS of 7.61 mg/L (29.3 uM). Assmus 2025 Table 3 carries the two plasma thresholds: at 3 mg/L, OR 0.883 [0.851, 0.915], p < 0.001 including placebo and OR 0.983 [0.954, 1.008], p = 0.217 excluding placebo; at 6 mg/L, OR 0.946 [0.920, 0.973], p < 0.001 including placebo and OR 0.991 [0.967, 1.011], p = 0.408 excluding placebo. Per S5 Fig, parameter estimates and goodness of fit were highly sensitive to the threshold, and the in vivo target remains unknown.",
-      source_name        = "T>target"
+      notes = "Alternative univariate predictor evaluated at 3 mg/L and 6 mg/L in plasma (2.5 and 5 mg/L in DBS) and at the in vitro IC90,DBS of 7.61 mg/L (29.3 uM). Assmus 2025 Table 3 carries the two plasma thresholds: at 3 mg/L, OR 0.883 [0.851, 0.915], p < 0.001 including placebo and OR 0.983 [0.954, 1.008], p = 0.217 excluding placebo; at 6 mg/L, OR 0.946 [0.920, 0.973], p < 0.001 including placebo and OR 0.991 [0.967, 1.011], p = 0.408 excluding placebo. Per S5 Fig, parameter estimates and goodness of fit were highly sensitive to the threshold, and the in vivo target remains unknown.",
+      source_name = "T>target"
     ),
     DUR_BZN_WEEKS = list(
-      description        = "Weeks of benznidazole treatment (a week counts if at least one dose was taken)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Weeks of benznidazole treatment (a week counts if at least one dose was taken)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Trial-design duration metric, not a PK quantity. Assmus 2025 Table 3: OR 0.449 [0.366, 0.550], p < 0.001 including placebo; OR 0.854 [0.709, 1.009], p = 0.077 excluding placebo. Of all metrics screened, duration showed the strongest residual trend after placebo exclusion, prompting the paper's conclusion that time, not only exposure, may drive response.",
-      source_name        = "weeks"
+      notes = "Trial-design duration metric, not a PK quantity. Assmus 2025 Table 3: OR 0.449 [0.366, 0.550], p < 0.001 including placebo; OR 0.854 [0.709, 1.009], p = 0.077 excluding placebo. Of all metrics screened, duration showed the strongest residual trend after placebo exclusion, prompting the paper's conclusion that time, not only exposure, may drive response.",
+      source_name = "weeks"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "benznidazole", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     auc_central = list(
-      analyte = "benznidazole", units = "mg*h/L",
-      specimen = "not applicable", verified = TRUE
+      analyte = "benznidazole",
+      units = "mg*h/L",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 201L,
-    n_studies      = 1L,
-    age_range      = "18-50 years",
-    age_median     = "33 years",
-    weight_range   = "50-80 kg",
-    weight_median  = "64.5 kg",
+    species = "human",
+    n_subjects = 201L,
+    n_studies = 1L,
+    age_range = "18-50 years",
+    age_median = "33 years",
+    weight_range = "50-80 kg",
+    weight_median = "64.5 kg",
     sex_female_pct = 70.1,
     race_ethnicity = "All participants were Bolivian.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (18-50 years, 50-80 kg) with chronic indeterminate Chagas",
       "disease, confirmed by serological testing and a positive",
       "qualitative PCR result. Subjects with signs or symptoms of the",
       "chronic cardiac or digestive form were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Six active oral benznidazole arms plus placebo: 150 mg twice",
       "daily for 8, 4 or 2 weeks; 150 mg once daily for 4 weeks alone or",
       "with fosravuconazole; and 300 mg once weekly (split into two",
       "doses) for 8 weeks with fosravuconazole."
     ),
-    regions        = "Bolivia (Cochabamba, Tarija and Sucre).",
-    endpoint       = paste(
+    regions = "Bolivia (Cochabamba, Tarija and Sucre).",
+    endpoint = paste(
       "qPCR positivity: the per-patient proportion of T. cruzi",
       "qPCR-positive blood samples collected after the end of treatment",
       "(EOT, the assigned treatment duration plus a two-week grace",
@@ -178,7 +186,7 @@ Assmus_2025_benznidazole_qpcr <- function() {
       "positive if at least one of three 5 mL blood samples, each",
       "assayed in triplicate, tested positive."
     ),
-    notes          = paste(
+    notes = paste(
       "The PD layer was fitted in R 4.2.2 with glmmTMB using a beta",
       "binomial distribution parameterised per Morris 1997; the",
       "estimated overdispersion coefficient was not reported. The PK",

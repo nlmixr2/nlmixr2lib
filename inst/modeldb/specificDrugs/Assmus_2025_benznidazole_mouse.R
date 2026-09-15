@@ -26,8 +26,8 @@ Assmus_2025_benznidazole_mouse <- function() {
   )
   vignette <- "Assmus_2025_benznidazole_mouse"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -38,11 +38,11 @@ Assmus_2025_benznidazole_mouse <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline weight at the start of dosing. Reference weight 0.0194 kg",
         "(19.4 g), the median weight of the 52 satellite PK mice (Results,",
         "'Pharmacokinetics of benznidazole'); the S1 Code $PK block writes",
@@ -54,14 +54,14 @@ Assmus_2025_benznidazole_mouse <- function() {
         "efficacy cohort.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_BZN_MGKG = list(
-      description        = "Administered benznidazole dose per administration, in mg per kg body weight",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Administered benznidazole dose per administration, in mg per kg body weight",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried on every record (not only dose rows) so the power",
         "covariate function on KA can be evaluated at observation times.",
         "Enters as (DOSE_BZN_MGKG / 30)^e_dose_ka with the reference set to",
@@ -71,15 +71,15 @@ Assmus_2025_benznidazole_mouse <- function() {
         "100 mg/kg per administration in the efficacy studies.",
         sep = " "
       ),
-      source_name        = "DOSE_PER_KG"
+      source_name = "DOSE_PER_KG"
     )
   )
 
   compartmentData <- list(
-    depot        = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central      = list(analyte = "benznidazole", units = "mg", specimen = "plasma", verified = TRUE),
-    auc_total    = list(analyte = "benznidazole", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    t_above_mic  = list(analyte = "benznidazole", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "benznidazole", units = "mg", specimen = "plasma", verified = TRUE),
+    auc_total = list(analyte = "benznidazole", units = NA_character_, specimen = "not applicable", verified = TRUE),
+    t_above_mic = list(analyte = "benznidazole", units = NA_character_, specimen = "not applicable", verified = TRUE)
   )
 
   # Bookkeeping accumulators for the two PK/PD indices the exposure-
@@ -88,14 +88,14 @@ Assmus_2025_benznidazole_mouse <- function() {
   paper_specific_compartments <- c("auc_total", "t_above_mic")
 
   population <- list(
-    species        = "mouse (BALB/c, female)",
-    n_subjects     = 52L,
-    n_studies      = 1L,
-    age_range      = "7-8 weeks old at infection (efficacy cohort)",
-    weight_range   = "18.1-21.6 g (satellite PK cohort)",
-    weight_median  = "19.4 g (satellite PK cohort); 25 g (efficacy cohort)",
+    species = "mouse (BALB/c, female)",
+    n_subjects = 52L,
+    n_studies = 1L,
+    age_range = "7-8 weeks old at infection (efficacy cohort)",
+    weight_range = "18.1-21.6 g (satellite PK cohort)",
+    weight_median = "19.4 g (satellite PK cohort); 25 g (efficacy cohort)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Population PK was estimated in 52 UNINFECTED female BALB/c satellite",
       "mice. The exposure-response layer was fitted in a separate cohort of",
       "118 female BALB/c mice with chronic-stage Trypanosoma cruzi CL Brener",
@@ -104,7 +104,7 @@ Assmus_2025_benznidazole_mouse <- function() {
       "at the start of dosing.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Satellite PK: single oral gavage doses of 10 mg/kg (n = 16),",
       "30 mg/kg (n = 18) and 100 mg/kg (n = 18). Efficacy studies:",
       "10, 20, 30, 50 and 100 mg/kg per administration, once daily",
@@ -112,8 +112,8 @@ Assmus_2025_benznidazole_mouse <- function() {
       "(10 regimens, Table 1).",
       sep = " "
     ),
-    regions        = "Not applicable (preclinical; London School of Hygiene and Tropical Medicine efficacy studies, Monash University bioanalysis)",
-    notes          = paste(
+    regions = "Not applicable (preclinical; London School of Hygiene and Tropical Medicine efficacy studies, Monash University bioanalysis)",
+    notes = paste(
       "PK sampling was sparse (1-3 samples per mouse) at 0.25, 0.5, 1, 2, 4,",
       "4.5, 6, 8, 10, 12, 14, 16 and 24 h post-dose; 110 samples collected,",
       "2 outliers excluded, data censored beyond 8 h (10 mg/kg) and 12 h",

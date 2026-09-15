@@ -15,10 +15,10 @@ Harrold_2020_filgrastim <- function() {
   )
   vignette <- "Harrold_2020_filgrastim_ars"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L",
-    notes         = "Filgrastim dose in nmol to compartment 'depot' (1 ug = 1e-6/18800 mol = 53.2 pmol for filgrastim; molecular weight 18.8 kDa). Radiation dose in Gy delivered as a bolus to compartment 'depot_kpd'. Filgrastim concentration Cc reported in nM. ANC reported in cells/uL (= 10^9 cells/L when divided by 1000)."
+    notes = "Filgrastim dose in nmol to compartment 'depot' (1 ug = 1e-6/18800 mol = 53.2 pmol for filgrastim; molecular weight 18.8 kDa). Radiation dose in Gy delivered as a bolus to compartment 'depot_kpd'. Filgrastim concentration Cc reported in nM. ANC reported in cells/uL (= 10^9 cells/L when divided by 1000)."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -26,41 +26,41 @@ Harrold_2020_filgrastim <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "filgrastim", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "filgrastim", units = "nmol", specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "neutrophils", units = "nmol", specimen = "whole blood", verified = FALSE),
-    depot_kpd  = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
-    effect     = list(analyte = "G-CSF receptor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
-    cumhaz_os  = list(analyte = "overall survival", units = "nmol", specimen = "not applicable", verified = FALSE)
+    circ = list(analyte = "neutrophils", units = "nmol", specimen = "whole blood", verified = FALSE),
+    depot_kpd = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    effect = list(analyte = "G-CSF receptor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cumhaz_os = list(analyte = "overall survival", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric size descriptor scaling filgrastim volume of distribution (exponent 0.943) and clearance (exponent 0.641) with the reference weight 70 kg. For pediatric simulations Harrold 2020 Methods 1.3 (Eq. 3) derives WT from age via Luscombe 2011 (APLS / 'Weight = 3*age + 7') for ages 1-16 years; for adult simulations the paper uses a Normal(mean = 70, SD = 15) distribution truncated to 45-125 kg (Methods 1.3).",
-      source_name        = "WT"
+      notes = "Allometric size descriptor scaling filgrastim volume of distribution (exponent 0.943) and clearance (exponent 0.641) with the reference weight 70 kg. For pediatric simulations Harrold 2020 Methods 1.3 (Eq. 3) derives WT from age via Luscombe 2011 (APLS / 'Weight = 3*age + 7') for ages 1-16 years; for adult simulations the paper uses a Normal(mean = 70, SD = 15) distribution truncated to 45-125 kg (Methods 1.3).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000L,
-    n_studies      = 1L,
-    age_range      = "1-16 years (pediatric subgroups 1-<6, 6-<12, 12-<16) plus adults; adult cohort defined by weight only (45-125 kg)",
-    weight_range   = "45-125 kg (adults); 10-25, 25-43, and 43-55 kg for the three pediatric subgroups per Table S1",
+    species = "human",
+    n_subjects = 1000L,
+    n_studies = 1L,
+    age_range = "1-16 years (pediatric subgroups 1-<6, 6-<12, 12-<16) plus adults; adult cohort defined by weight only (45-125 kg)",
+    weight_range = "45-125 kg (adults); 10-25, 25-43, and 43-55 kg for the three pediatric subgroups per Table S1",
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Adult and pediatric humans at risk of hematopoietic syndrome of acute radiation syndrome (HS-ARS) after acute whole-body ionising-radiation exposure. The model is a simulation framework: human ANC data after radiation are unavailable, so radiation / overall-survival parameters are scaled from a published rhesus-macaque NHP study (Harrold 2015) and calibrated against the historical human LD50 mortality curve of Scott & Dillehay 1990.",
-    dose_range     = "Filgrastim subcutaneous 5, 7.5, 10, or 15 ug/kg once daily for 1-5 weeks, starting 1-21 days after radiation. Base scenario: 5 ug/kg q.d. for 28 days starting 1 day after radiation. Radiation dose 3-10.2 Gy delivered as a single bolus at dose rates 0.01-1000 Gy/h (base scenario 3.07 Gy at 1 Gy/h, the human LD50).",
-    regions        = NA_character_,
-    notes          = "1000 virtual subjects per arm in the base scenario (Methods 1.3). The granulopoiesis sub-model (Melhem 2018) was informed by healthy adult volunteers (75-750 ug or 5 ug/kg), adult chemotherapy patients (5 ug/kg), and pediatric chemotherapy patients (5, 10, or 15 ug/kg); the radiation / OS sub-model (Harrold 2015) was informed by rhesus-macaque NHPs receiving 10 ug/kg filgrastim after a lethal acute irradiation. Demographics (sex, race) are not reported in Harrold 2020 because the model is a simulation framework rather than a re-analysis of patient-level data."
+    disease_state = "Adult and pediatric humans at risk of hematopoietic syndrome of acute radiation syndrome (HS-ARS) after acute whole-body ionising-radiation exposure. The model is a simulation framework: human ANC data after radiation are unavailable, so radiation / overall-survival parameters are scaled from a published rhesus-macaque NHP study (Harrold 2015) and calibrated against the historical human LD50 mortality curve of Scott & Dillehay 1990.",
+    dose_range = "Filgrastim subcutaneous 5, 7.5, 10, or 15 ug/kg once daily for 1-5 weeks, starting 1-21 days after radiation. Base scenario: 5 ug/kg q.d. for 28 days starting 1 day after radiation. Radiation dose 3-10.2 Gy delivered as a single bolus at dose rates 0.01-1000 Gy/h (base scenario 3.07 Gy at 1 Gy/h, the human LD50).",
+    regions = NA_character_,
+    notes = "1000 virtual subjects per arm in the base scenario (Methods 1.3). The granulopoiesis sub-model (Melhem 2018) was informed by healthy adult volunteers (75-750 ug or 5 ug/kg), adult chemotherapy patients (5 ug/kg), and pediatric chemotherapy patients (5, 10, or 15 ug/kg); the radiation / OS sub-model (Harrold 2015) was informed by rhesus-macaque NHPs receiving 10 ug/kg filgrastim after a lethal acute irradiation. Demographics (sex, race) are not reported in Harrold 2020 because the model is a simulation framework rather than a re-analysis of patient-level data."
   )
 
   ini({

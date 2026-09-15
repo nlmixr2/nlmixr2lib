@@ -37,36 +37,41 @@ Fauchet_2013_zidovudine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "zidovudine", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "zidovudine", units = "mg", specimen = "plasma", verified = FALSE),
-    central_gluc = list(analyte = "3'-azido-3'-deoxy-5'-glucuronylthymidine", units = "mg", specimen = "plasma", verified = FALSE)
+    depot = list(analyte = "zidovudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "zidovudine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(
+      analyte = "3'-azido-3'-deoxy-5'-glucuronylthymidine",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Estimated power-allometric exponents on CL_p/F (e_wt_cl = 0.858, 95% CI 0.67-1.10) and on V/F (e_wt_vc = 0.534, 95% CI 0.22-0.81) centered on the cohort median 32.2 kg (Table 3). The paper tested the canonical fixed allometric exponents (0.75 on CL and 1.0 on V) and reports those did not improve the fit. Source column is BW (kg); rename to canonical WT before passing the dataset to rxSolve.",
-      source_name        = "BW"
+      notes = "Estimated power-allometric exponents on CL_p/F (e_wt_cl = 0.858, 95% CI 0.67-1.10) and on V/F (e_wt_vc = 0.534, 95% CI 0.22-0.81) centered on the cohort median 32.2 kg (Table 3). The paper tested the canonical fixed allometric exponents (0.75 on CL and 1.0 on V) and reports those did not improve the fit. Source column is BW (kg); rename to canonical WT before passing the dataset to rxSolve.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 247L,
-    n_studies      = 1L,
-    age_range      = "0.5 to 18 years",
-    age_median     = "10.6 years",
-    weight_range   = "6.1 to 84 kg",
-    weight_median  = "32.2 kg",
+    species = "human",
+    n_subjects = 247L,
+    n_studies = 1L,
+    age_range = "0.5 to 18 years",
+    age_median = "10.6 years",
+    weight_range = "6.1 to 84 kg",
+    weight_median = "32.2 kg",
     sex_female_pct = 52,
     race_ethnicity = NA_character_,
-    disease_state  = "HIV-1 infection on combination antiretroviral therapy. ZDV was administered as oral syrup (33.7%) or tablet (66.3%) twice daily (94.4%) or three times daily (5.6%) for therapy with or without concomitant nucleoside reverse-transcriptase inhibitors (3TC 51%, ddI 10%, ABC 11%), protease inhibitors (LPV 39%, RTO 41%, NFV 13%), and non-nucleoside reverse-transcriptase inhibitors (NVP 18%, EFV 11%).",
-    dose_range     = "Oral zidovudine, BID (94.4%) or TID (5.6%). Per-dose range 18-300 mg. Total daily dose median 600 mg (range 36-600).",
-    regions        = "Greater Paris, France (retrospective therapeutic-drug-monitoring cohort 1998-2012)",
-    notes          = "Demographics from Table 2 and Results 'Demographic data' paragraph. The cohort comprised 119 boys (48%) and 128 girls (52%). 782 plasma ZDV and 554 plasma G-ZDV concentrations were analysed (mean 3.6 samples per child, range 1-19). 46 ZDV (5.9%) and 13 G-ZDV (2.3%) samples were below the limit of quantification (LOQ = 0.05 mg/L for both); BQL values were replaced by LOQ/2 in the final dataset (Methods 'Population pharmacokinetic analysis' paragraph and Results 'Population pharmacokinetics' paragraph 2). The authors used this model to compare WHO and FDA dose recommendations and proposed revised doses for the 20-40 kg weight bands (Tables 1 and 4)."
+    disease_state = "HIV-1 infection on combination antiretroviral therapy. ZDV was administered as oral syrup (33.7%) or tablet (66.3%) twice daily (94.4%) or three times daily (5.6%) for therapy with or without concomitant nucleoside reverse-transcriptase inhibitors (3TC 51%, ddI 10%, ABC 11%), protease inhibitors (LPV 39%, RTO 41%, NFV 13%), and non-nucleoside reverse-transcriptase inhibitors (NVP 18%, EFV 11%).",
+    dose_range = "Oral zidovudine, BID (94.4%) or TID (5.6%). Per-dose range 18-300 mg. Total daily dose median 600 mg (range 36-600).",
+    regions = "Greater Paris, France (retrospective therapeutic-drug-monitoring cohort 1998-2012)",
+    notes = "Demographics from Table 2 and Results 'Demographic data' paragraph. The cohort comprised 119 boys (48%) and 128 girls (52%). 782 plasma ZDV and 554 plasma G-ZDV concentrations were analysed (mean 3.6 samples per child, range 1-19). 46 ZDV (5.9%) and 13 G-ZDV (2.3%) samples were below the limit of quantification (LOQ = 0.05 mg/L for both); BQL values were replaced by LOQ/2 in the final dataset (Methods 'Population pharmacokinetic analysis' paragraph and Results 'Population pharmacokinetics' paragraph 2). The authors used this model to compare WHO and FDA dose recommendations and proposed revised doses for the 20-40 kg weight bands (Tables 1 and 4)."
   )
 
   ini({

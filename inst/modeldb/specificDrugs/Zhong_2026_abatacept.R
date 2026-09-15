@@ -8,91 +8,91 @@ Zhong_2026_abatacept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 67.9 kg (Zhong 2026 Figure 1 caption: reference patient weighs 67.9 kg). Power effect on CL (exp 0.876), VC (exp 0.712), VP (exp 0.839), and on logit-F (slope -0.506; F1 piece transferred from previous internal JIA PPK model whose Gandhi 2021 published reference is 68 kg, ~0.1 kg discrepancy with Zhong 2026 structural reference flagged in vignette Errata).",
-      source_name        = "BWT"
+      notes = "Reference 67.9 kg (Zhong 2026 Figure 1 caption: reference patient weighs 67.9 kg). Power effect on CL (exp 0.876), VC (exp 0.712), VP (exp 0.839), and on logit-F (slope -0.506; F1 piece transferred from previous internal JIA PPK model whose Gandhi 2021 published reference is 68 kg, ~0.1 kg discrepancy with Zhong 2026 structural reference flagged in vignette Errata).",
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 49 years for F1 covariate effect (Zhong 2026 does not state the AGE reference; the F1 sub-model and its parameters are fixed to a previous internal JIA PPK model whose Gandhi 2021 published reference is 49 years, used here for consistency). Not retained on CL, VC, or VP in the final model. Slope effect on logit-F (slope 0.487).",
-      source_name        = "AGE"
+      notes = "Reference 49 years for F1 covariate effect (Zhong 2026 does not state the AGE reference; the F1 sub-model and its parameters are fixed to a previous internal JIA PPK model whose Gandhi 2021 published reference is 49 years, used here for consistency). Not retained on CL, VC, or VP in the final model. Slope effect on logit-F (slope 0.487).",
+      source_name = "AGE"
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 20 U/L (Zhong 2026 Figure 1 caption: 'baseline AST level of 20 U/L'). Power effect on CL (exp -0.115); not clinically relevant per Zhong 2026 Discussion ('baseline AST and cGFR did not influence abatacept CL').",
-      source_name        = "AST"
+      notes = "Reference 20 U/L (Zhong 2026 Figure 1 caption: 'baseline AST level of 20 U/L'). Power effect on CL (exp -0.115); not clinically relevant per Zhong 2026 Discussion ('baseline AST and cGFR did not influence abatacept CL').",
+      source_name = "AST"
     ),
     CRCL = list(
-      description        = "Calculated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Calculated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 103 mL/min/1.73 m^2 (Zhong 2026 Figure 1 caption: 'cGFR of 103 mL/min/1.73 m^2'). Zhong 2026 uses 'cGFR' (calculated GFR, BSA-normalized via the Schwartz equation per the supplement); mapped to the canonical CRCL (which accepts either MDRD/CKD-EPI eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.279); not clinically relevant per Zhong 2026 Discussion.",
-      source_name        = "cGFR"
+      notes = "Reference 103 mL/min/1.73 m^2 (Zhong 2026 Figure 1 caption: 'cGFR of 103 mL/min/1.73 m^2'). Zhong 2026 uses 'cGFR' (calculated GFR, BSA-normalized via the Schwartz equation per the supplement); mapped to the canonical CRCL (which accepts either MDRD/CKD-EPI eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.279); not clinically relevant per Zhong 2026 Discussion.",
+      source_name = "cGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; reference subject is male per Zhong 2026 Figure 1 caption 'The reference individual is male')",
-      notes              = "Zhong 2026 supplement Methods: 'the reference for the categorical covariates was the mode in the PPK dataset, except for sex where male was used as the reference'. SEXF = 1 for female, 0 for male; the Table 2 'Exponent of sex effect in female' coefficients (-0.0572 on CL, -0.0967 on VC) are applied as `exp(SEXF * coef)` so females have ~5.6% lower CL and ~9.2% lower VC than males. Sign matches Li 2019 (sex on CL: -0.0722; same direction) but reversed from Gandhi 2021 (sex on CL: +0.0674; sign-flipped because the Gandhi 2021 dataset added pJIA data which shifted the female-vs-male CL contrast). The female-on-CL effect is not clinically relevant per Zhong 2026 (within 80%-125% reference range).",
-      source_name        = "SEX"
+      notes = "Zhong 2026 supplement Methods: 'the reference for the categorical covariates was the mode in the PPK dataset, except for sex where male was used as the reference'. SEXF = 1 for female, 0 for male; the Table 2 'Exponent of sex effect in female' coefficients (-0.0572 on CL, -0.0967 on VC) are applied as `exp(SEXF * coef)` so females have ~5.6% lower CL and ~9.2% lower VC than males. Sign matches Li 2019 (sex on CL: -0.0722; same direction) but reversed from Gandhi 2021 (sex on CL: +0.0674; sign-flipped because the Gandhi 2021 dataset added pJIA data which shifted the female-vs-male CL contrast). The female-on-CL effect is not clinically relevant per Zhong 2026 (within 80%-125% reference range).",
+      source_name = "SEX"
     ),
     DIS_PJIA = list(
-      description        = "Polyarticular juvenile idiopathic arthritis disease-state indicator, 1 = pJIA, 0 = adult RA or HM (or other non-pJIA)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Polyarticular juvenile idiopathic arthritis disease-state indicator, 1 = pJIA, 0 = adult RA or HM (or other non-pJIA)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-pJIA; the reference complement here is the union of adult RA and HM patients pooled with pJIA in Zhong 2026)",
-      notes              = "Zhong 2026 codes a JIA-vs-non-JIA disease indicator (JIA = 1 if pJIA, 0 otherwise). Both JIA studies in the analysis (IM101033, IM101301) are polyarticular JIA per Supplementary Table S1, so JIA = pJIA in this dataset. The covariate enters the bioavailability model only (additive on the logit scale: `logit_F = logit_F_TV + 3.08 * DIS_PJIA + ...`); pJIA patients have substantially higher SC bioavailability than the non-pJIA reference (logit_F shifts from 1.21 at the reference to ~4.29 in pJIA, i.e. F_abs ~ 0.77 -> ~0.987). The F1 sub-model and all F1-covariate effects are fixed in Zhong 2026 to the final estimates from a previously developed internal abatacept JIA PPK model (Methods text). Values are identical to Gandhi 2021 Table 2 for F1, weight-on-F1, age-on-F1, JIA-on-F1, and IIV on F1, suggesting the internal model is the published Gandhi 2021 model or a closely related variant.",
-      source_name        = "JIA"
+      notes = "Zhong 2026 codes a JIA-vs-non-JIA disease indicator (JIA = 1 if pJIA, 0 otherwise). Both JIA studies in the analysis (IM101033, IM101301) are polyarticular JIA per Supplementary Table S1, so JIA = pJIA in this dataset. The covariate enters the bioavailability model only (additive on the logit scale: `logit_F = logit_F_TV + 3.08 * DIS_PJIA + ...`); pJIA patients have substantially higher SC bioavailability than the non-pJIA reference (logit_F shifts from 1.21 at the reference to ~4.29 in pJIA, i.e. F_abs ~ 0.77 -> ~0.987). The F1 sub-model and all F1-covariate effects are fixed in Zhong 2026 to the final estimates from a previously developed internal abatacept JIA PPK model (Methods text). Values are identical to Gandhi 2021 Table 2 for F1, weight-on-F1, age-on-F1, JIA-on-F1, and IIV on F1, suggesting the internal model is the published Gandhi 2021 model or a closely related variant.",
+      source_name = "JIA"
     ),
     HSCT_URD_7OF8 = list(
-      description        = "Hematopoietic stem cell transplant from a 7-of-8 HLA-matched unrelated donor (single-allele mismatch); 1 = yes, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hematopoietic stem cell transplant from a 7-of-8 HLA-matched unrelated donor (single-allele mismatch); 1 = yes, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not in the 7-of-8-matched HSCT cohort; the reference complement is the union of RA, pJIA, and 8-of-8-matched HSCT patients)",
-      notes              = "Zhong 2026 Table 2 / Figure 1: 'Cohort 7/8' from the ABA2 trial (Study IM101311), encoding patients receiving HSCT from a single-allele-mismatched URD. Exponential coefficient -0.326 on CL: HSCT_URD_7OF8 = 1 patients have ~28% lower CL than the reference complement (clinically relevant per Zhong 2026 Discussion). No effect on VC, VP, or KA. The 7-of-8 cohort represents a higher GvHD-risk population because of the single-allele HLA mismatch; the underlying disease biology of the CL effect is not characterized.",
-      source_name        = "COHORT7"
+      notes = "Zhong 2026 Table 2 / Figure 1: 'Cohort 7/8' from the ABA2 trial (Study IM101311), encoding patients receiving HSCT from a single-allele-mismatched URD. Exponential coefficient -0.326 on CL: HSCT_URD_7OF8 = 1 patients have ~28% lower CL than the reference complement (clinically relevant per Zhong 2026 Discussion). No effect on VC, VP, or KA. The 7-of-8 cohort represents a higher GvHD-risk population because of the single-allele HLA mismatch; the underlying disease biology of the CL effect is not characterized.",
+      source_name = "COHORT7"
     ),
     HSCT_URD_8OF8 = list(
-      description        = "Hematopoietic stem cell transplant from an 8-of-8 HLA-matched unrelated donor (full match); 1 = yes, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hematopoietic stem cell transplant from an 8-of-8 HLA-matched unrelated donor (full match); 1 = yes, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not in the 8-of-8-matched HSCT cohort; the reference complement is the union of RA, pJIA, and 7-of-8-matched HSCT patients)",
-      notes              = "Zhong 2026 Table 2 / Figure 1: 'Cohort 8/8' from the ABA2 trial (Study IM101311), encoding patients receiving HSCT from a fully-HLA-matched URD. Exponential coefficient -0.0934 on CL and +0.257 on VC: HSCT_URD_8OF8 = 1 patients have ~9% lower CL and ~29% higher VC than the reference complement. The CL effect is not clinically relevant; the VC effect is potentially clinically relevant per Zhong 2026 Discussion. No effect on VP or KA.",
-      source_name        = "COHORT8"
+      notes = "Zhong 2026 Table 2 / Figure 1: 'Cohort 8/8' from the ABA2 trial (Study IM101311), encoding patients receiving HSCT from a fully-HLA-matched URD. Exponential coefficient -0.0934 on CL and +0.257 on VC: HSCT_URD_8OF8 = 1 patients have ~9% lower CL and ~29% higher VC than the reference complement. The CL effect is not clinically relevant; the VC effect is potentially clinically relevant per Zhong 2026 Discussion. No effect on VP or KA.",
+      source_name = "COHORT8"
     )
   )
 
   population <- list(
-    n_subjects     = 904L,
+    n_subjects = 904L,
     n_observations = 6355L,
-    n_studies      = 9L,
-    age_range      = "2-84 years (overall pooled cohort: minimum 2 years, maximum 84 years per Zhong 2026 Table 1)",
-    weight_range   = "12-187 kg (overall pooled cohort per Zhong 2026 Table 1)",
+    n_studies = 9L,
+    age_range = "2-84 years (overall pooled cohort: minimum 2 years, maximum 84 years per Zhong 2026 Table 1)",
+    weight_range = "12-187 kg (overall pooled cohort per Zhong 2026 Table 1)",
     sex_female_pct = 68.6,
     race_ethnicity = "White 83.5%, Black 5.53%, Hispanic/Latin 4.09%, Asian/Pacific Islander 1.88%, Other 4.98% (Zhong 2026 Table 1).",
-    disease_state  = "Pooled adult rheumatoid arthritis (n = 386, 42.7%), polyarticular juvenile idiopathic arthritis (pJIA; n = 403, 44.6%, ages 2-17 years), and hematologic malignancies (HM; n = 115, 12.7%, ages 6-76 years receiving HLA-matched URD HSCT in the ABA2 trial).",
-    dose_range     = "IV abatacept 0.5-10 mg/kg Q4W (RA + pJIA studies including IM101033) and weight-tiered 500-1000 mg flat-dose IV (RA studies IM101029, IM101031, IM101102); IV 10 mg/kg on Days -1, 5, 14, 28 (HM ABA2 / IM101311); SC abatacept weight-tiered 50/87.5/125 mg QW (pJIA IM101301). Pediatric aGvHD recommended regimen (this paper's deliverable): 15 mg/kg loading dose on Day -1 followed by 12 mg/kg on Days 5, 14, 28 for patients aged 2 to <6 years.",
-    regions        = "Multi-regional (9 pooled phase 2/3 studies).",
+    disease_state = "Pooled adult rheumatoid arthritis (n = 386, 42.7%), polyarticular juvenile idiopathic arthritis (pJIA; n = 403, 44.6%, ages 2-17 years), and hematologic malignancies (HM; n = 115, 12.7%, ages 6-76 years receiving HLA-matched URD HSCT in the ABA2 trial).",
+    dose_range = "IV abatacept 0.5-10 mg/kg Q4W (RA + pJIA studies including IM101033) and weight-tiered 500-1000 mg flat-dose IV (RA studies IM101029, IM101031, IM101102); IV 10 mg/kg on Days -1, 5, 14, 28 (HM ABA2 / IM101311); SC abatacept weight-tiered 50/87.5/125 mg QW (pJIA IM101301). Pediatric aGvHD recommended regimen (this paper's deliverable): 15 mg/kg loading dose on Day -1 followed by 12 mg/kg on Days 5, 14, 28 for patients aged 2 to <6 years.",
+    regions = "Multi-regional (9 pooled phase 2/3 studies).",
     reference_subject = "Male, 67.9 kg, baseline AST 20 U/L, calculated GFR 103 mL/min/1.73 m^2, not in HSCT cohort 7/8 or 8/8 (Zhong 2026 Figure 1 caption). The F1 sub-model uses an additional reference of 49-year-old, non-pJIA (DIS_PJIA = 0), inherited from the previously developed internal JIA PPK model whose published equivalent Gandhi 2021 used WT_ref = 68 kg and AGE_ref = 49 years. The 0.1 kg discrepancy between Zhong 2026 structural-reference WT (67.9 kg) and Gandhi 2021 F1-reference WT (68 kg) is documented in the vignette Errata; the impact on F1 predictions is < 0.1% across the model's covariate range.",
-    notes          = "Below-LLOQ samples accounted for 2.9% of all collected samples and were excluded from the analysis. The HM cohort is decomposed into HSCT_URD_7OF8 (n = 41) and HSCT_URD_8OF8 (n = 74) per Figure 1 stratification, encoded as two orthogonal binary indicators with the RA + pJIA pool as the reference complement. Zhong 2026 was the first comprehensive PPK characterization of both IV and SC abatacept in pooled RA + pJIA + HSCT-aGvHD data and supported the FDA approval of abatacept for prevention of acute GvHD in pediatric patients aged 2 to < 6 years (15 mg/kg loading dose Day -1 followed by 12 mg/kg on Days 5, 14, 28)."
+    notes = "Below-LLOQ samples accounted for 2.9% of all collected samples and were excluded from the analysis. The HM cohort is decomposed into HSCT_URD_7OF8 (n = 41) and HSCT_URD_8OF8 (n = 74) per Figure 1 stratification, encoded as two orthogonal binary indicators with the RA + pJIA pool as the reference complement. Zhong 2026 was the first comprehensive PPK characterization of both IV and SC abatacept in pooled RA + pJIA + HSCT-aGvHD data and supported the FDA approval of abatacept for prevention of acute GvHD in pediatric patients aged 2 to < 6 years (15 mg/kg loading dose Day -1 followed by 12 mg/kg on Days 5, 14, 28)."
   )
 
   ini({

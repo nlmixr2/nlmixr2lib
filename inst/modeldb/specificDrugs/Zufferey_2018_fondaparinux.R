@@ -10,8 +10,8 @@ Zufferey_2018_fondaparinux <- function() {
   )
   vignette <- "Zufferey_2018_fondaparinux"
   units <- list(
-    time          = "h",
-    dosing        = "mg (per-subject daily dose carried as the DOSE covariate; no rxode2 dose events)",
+    time = "h",
+    dosing = "mg (per-subject daily dose carried as the DOSE covariate; no rxode2 dose events)",
     concentration = "probability (the model output `sur` is the survival probability for avoiding a major bleeding event; AUCinf is reported in mg*h/L as a derived internal quantity)"
   )
 
@@ -25,53 +25,53 @@ Zufferey_2018_fondaparinux <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject daily fondaparinux dose (mg/day). Time-fixed within a regimen; in the pooled cohort POP-A-RIX subjects received 2.5 mg once daily and PROPICE subjects received 1.5 mg once daily.",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Per-subject daily fondaparinux dose (mg/day). Time-fixed within a regimen; in the pooled cohort POP-A-RIX subjects received 2.5 mg once daily and PROPICE subjects received 1.5 mg once daily.",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Carried as a per-record data column (use case (b) of the canonical DOSE entry). Used inside model() as AUCinf = DOSE / cl to reproduce the paper's procedure 'For each subject, AUCinf of fondaparinux was calculated by dividing the daily dose by the predicted clearance' (page 5).",
-      source_name        = "DOSE"
+      notes = "Carried as a per-record data column (use case (b) of the canonical DOSE entry). Used inside model() as AUCinf = DOSE / cl to reproduce the paper's procedure 'For each subject, AUCinf of fondaparinux was calculated by dividing the daily dose by the predicted clearance' (page 5).",
+      source_name = "DOSE"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance computed with lean body weight as the body-size descriptor (CrCl_LBW); raw mL/min, NOT BSA-normalised.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance computed with lean body weight as the body-size descriptor (CrCl_LBW); raw mL/min, NOT BSA-normalised.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column `CrCl_LBW`. Reference value 60 mL/min in the paper's clearance equation CL = 0.34 * (CrCl_LBW/60)^0.485 * exp(b) (page 5). Raw Cockcroft-Gault scale, following the `CLCR` raw-CrCl precedent (Delattre 2010 amikacin); the canonical CRCL register entry documents that BSA-normalised vs raw is paper-dependent and must be recorded in per-model notes. The pooled cohort range is 15-264 mL/min (Table 1).",
-      source_name        = "CrCl_LBW"
+      notes = "Source column `CrCl_LBW`. Reference value 60 mL/min in the paper's clearance equation CL = 0.34 * (CrCl_LBW/60)^0.485 * exp(b) (page 5). Raw Cockcroft-Gault scale, following the `CLCR` raw-CrCl precedent (Delattre 2010 amikacin); the canonical CRCL register entry documents that BSA-normalised vs raw is paper-dependent and must be recorded in per-model notes. The pooled cohort range is 15-264 mL/min (Table 1).",
+      source_name = "CrCl_LBW"
     ),
     LBM = list(
-      description        = "Lean body mass (kg), computed in the paper by the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-65).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (kg), computed in the paper by the Janmahasatian et al. formula (Clin Pharmacokinet 2005;44:1051-65).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column `LBW` (lean body weight); same biological quantity as the canonical `LBM`. Reference value 44 kg in the hazard centring `LBM/44`, equal to the pooled-cohort mean (Table 1). Pooled-cohort range 26-93 kg.",
-      source_name        = "LBW"
+      notes = "Source column `LBW` (lean body weight); same biological quantity as the canonical `LBM`. Reference value 44 kg in the hazard centring `LBM/44`, equal to the pooled-cohort mean (Table 1). Pooled-cohort range 26-93 kg.",
+      source_name = "LBW"
     ),
     SEXF = list(
-      description        = "Biological sex (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source column `SEX` is encoded 1 = male, 0 = female; the canonical SEXF inverts the values. The hazard coefficient `e_sexf_bleed` is applied as `e_sexf_bleed * (1 - SEXF)` inside model() to preserve the paper's reported positive value (1.62) corresponding to a higher bleeding hazard in males; reference category is 0 (male) per the canonical convention. Pooled-cohort female fraction 74% (Table 1).",
-      source_name        = "SEX"
+      notes = "Source column `SEX` is encoded 1 = male, 0 = female; the canonical SEXF inverts the values. The hazard coefficient `e_sexf_bleed` is applied as `e_sexf_bleed * (1 - SEXF)` inside model() to preserve the paper's reported positive value (1.62) corresponding to a higher bleeding hazard in males; reference category is 0 (male) per the canonical convention. Pooled-cohort female fraction 74% (Table 1).",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1393L,
-    n_studies      = 2L,
-    age_range      = "24-101 years (mean 76)",
-    age_median     = "76 years",
-    weight_range   = "35-172 kg (mean 68)",
-    weight_median  = "68 kg",
+    species = "human",
+    n_subjects = 1393L,
+    n_studies = 2L,
+    age_range = "24-101 years (mean 76)",
+    age_median = "76 years",
+    weight_range = "35-172 kg (mean 68)",
+    weight_median = "68 kg",
     sex_female_pct = 74,
     race_ethnicity = NULL,
-    disease_state  = "Adults undergoing major orthopaedic surgery (primary or revision hip arthroplasty, primary or revision knee arthroplasty, or hip fracture surgery) receiving fondaparinux thromboprophylaxis. The pooled cohort combines POP-A-RIX (n = 957 with CrCl > 30 mL/min; 2.5 mg fondaparinux once daily) and PROPICE (n = 436 with moderate renal impairment, CrCl 20-50 mL/min; 1.5 mg fondaparinux once daily).",
-    dose_range     = "1.5 mg or 2.5 mg subcutaneously once daily, first dose at least 6 h postoperatively; recommended thromboprophylaxis duration 5 weeks",
-    regions        = "France (two multicentre prospective open-label cohorts)",
-    notes          = "64 adjudicated major-bleeding events (4.6% of pooled cohort; 5.2% by day 11). LBM mean 44 kg (range 26-93). Cockcroft-Gault CrCl with lean body weight (CrCl_LBW) mean 41 mL/min (range 10-173). Surgical mix in pooled cohort: 38% hip arthroplasty, 27% knee arthroplasty, 35% hip fracture. See Tables 1-2 of the source for full baseline demographics and event tallies. Source: Zufferey et al. 2018 (POP-A-RIX NCT01063543; PROPICE NCT00555438)."
+    disease_state = "Adults undergoing major orthopaedic surgery (primary or revision hip arthroplasty, primary or revision knee arthroplasty, or hip fracture surgery) receiving fondaparinux thromboprophylaxis. The pooled cohort combines POP-A-RIX (n = 957 with CrCl > 30 mL/min; 2.5 mg fondaparinux once daily) and PROPICE (n = 436 with moderate renal impairment, CrCl 20-50 mL/min; 1.5 mg fondaparinux once daily).",
+    dose_range = "1.5 mg or 2.5 mg subcutaneously once daily, first dose at least 6 h postoperatively; recommended thromboprophylaxis duration 5 weeks",
+    regions = "France (two multicentre prospective open-label cohorts)",
+    notes = "64 adjudicated major-bleeding events (4.6% of pooled cohort; 5.2% by day 11). LBM mean 44 kg (range 26-93). Cockcroft-Gault CrCl with lean body weight (CrCl_LBW) mean 41 mL/min (range 10-173). Surgical mix in pooled cohort: 38% hip arthroplasty, 27% knee arthroplasty, 35% hip fracture. See Tables 1-2 of the source for full baseline demographics and event tallies. Source: Zufferey et al. 2018 (POP-A-RIX NCT01063543; PROPICE NCT00555438)."
   )
 
   ini({

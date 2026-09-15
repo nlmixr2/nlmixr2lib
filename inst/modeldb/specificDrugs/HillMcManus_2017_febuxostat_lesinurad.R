@@ -13,48 +13,48 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_febx       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
-    central_febx     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_febx = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
+    central_febx = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_febx = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_lesn       = list(analyte = "lesinurad", units = "mg", specimen = "administration site", verified = FALSE),
-    central_lesn     = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_lesn = list(analyte = "lesinurad", units = "mg", specimen = "administration site", verified = FALSE),
+    central_lesn = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_lesn = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
-    xanthine         = list(analyte = "hypoxanthine", units = "mg", specimen = "plasma", verified = FALSE),
-    urate            = list(analyte = "urate", units = "mg", specimen = "plasma", verified = FALSE),
-    xanthine_urine   = list(analyte = "hypoxanthine", units = "mg", specimen = "urine", verified = FALSE),
-    urate_urine      = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
+    xanthine = list(analyte = "hypoxanthine", units = "mg", specimen = "plasma", verified = FALSE),
+    urate = list(analyte = "urate", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine_urine = list(analyte = "hypoxanthine", units = "mg", specimen = "urine", verified = FALSE),
+    urate_urine = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Additive modifier of febuxostat CL/F (b_WT = 0.155 (dL/h) per kg, no reference subtraction) and power modifier of lesinurad Vc/F (reference 70 kg).",
-      source_name        = "WT"
+      notes = "Time-fixed. Additive modifier of febuxostat CL/F (b_WT = 0.155 (dL/h) per kg, no reference subtraction) and power modifier of lesinurad Vc/F (reference 70 kg).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault, actual body weight)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault, actual body weight)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per simulation. Additive modifier of febuxostat CL/F (b_CrCl = 0.142 (dL/h) per mL/min), power modifier of lesinurad CL/F (reference 87 mL/min), and power modifier of lesinurad direct-Emax E_Dmax (reference 87 mL/min). Hill-McManus 2017 applied a 15 mL/min downward shift to Cockcroft-Gault estimates and excluded values < 30 mL/min when matching the CRYSTAL cohort (Results p. 147).",
-      source_name        = "CrCl"
+      notes = "Time-fixed per simulation. Additive modifier of febuxostat CL/F (b_CrCl = 0.142 (dL/h) per mL/min), power modifier of lesinurad CL/F (reference 87 mL/min), and power modifier of lesinurad direct-Emax E_Dmax (reference 87 mL/min). Hill-McManus 2017 applied a 15 mL/min downward shift to Cockcroft-Gault estimates and excluded values < 30 mL/min when matching the CRYSTAL cohort (Results p. 147).",
+      source_name = "CrCl"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 154,
-    n_studies      = NA_integer_,
-    age_range      = "healthy adults (TMX-99-001, ref 24); gout-patient simulation parameterised from CRYSTAL trial (study 304, ref 25)",
-    weight_range   = "simulation cohort modelled from CRYSTAL (log-normal); reference 70 kg (lesinurad Vc) and 99 kg (representative-male 15-dL daily urine assumption, p. 147)",
+    species = "human",
+    n_subjects = 154,
+    n_studies = NA_integer_,
+    age_range = "healthy adults (TMX-99-001, ref 24); gout-patient simulation parameterised from CRYSTAL trial (study 304, ref 25)",
+    weight_range = "simulation cohort modelled from CRYSTAL (log-normal); reference 70 kg (lesinurad Vc) and 99 kg (representative-male 15-dL daily urine assumption, p. 147)",
     sex_female_pct = 5,
-    disease_state  = "Gout patients with hyperuricaemia (CRYSTAL trial-representative simulation); two phenotypes considered -- renal under-excreters and overproducers of uric acid",
-    dose_range     = "Febuxostat 80 mg PO QD; lesinurad 200 mg or 400 mg PO QD; combinations as in CRYSTAL",
-    regions        = NA_character_,
-    notes          = "PK parameter values were reproduced by Hill-McManus 2017 Table 2 from upstream publications (febuxostat: Khosravan 2006, ref 22; lesinurad: FDA review, ref 23). The 154 healthy volunteers (TMX-99-001 dose escalation; ref 24) supplied weighted-average CLX and CLUA estimates used as literature-fixed PD system parameters. Gout-patient simulation (Methods 'Gout patient simulation model') uses CRYSTAL-trial baselines (pretreatment sUA log-normal mean 8.83 mg/dL, SD 1.53; 95 percent male) with phenotype-specific scaling of system parameters (Table 3): under-excreter scales CLUA by theta4 / BUA, overproducer scales BX by BUA / theta4. These phenotype scalings are applied at simulation time and are demonstrated in the validation vignette."
+    disease_state = "Gout patients with hyperuricaemia (CRYSTAL trial-representative simulation); two phenotypes considered -- renal under-excreters and overproducers of uric acid",
+    dose_range = "Febuxostat 80 mg PO QD; lesinurad 200 mg or 400 mg PO QD; combinations as in CRYSTAL",
+    regions = NA_character_,
+    notes = "PK parameter values were reproduced by Hill-McManus 2017 Table 2 from upstream publications (febuxostat: Khosravan 2006, ref 22; lesinurad: FDA review, ref 23). The 154 healthy volunteers (TMX-99-001 dose escalation; ref 24) supplied weighted-average CLX and CLUA estimates used as literature-fixed PD system parameters. Gout-patient simulation (Methods 'Gout patient simulation model') uses CRYSTAL-trial baselines (pretreatment sUA log-normal mean 8.83 mg/dL, SD 1.53; 95 percent male) with phenotype-specific scaling of system parameters (Table 3): under-excreter scales CLUA by theta4 / BUA, overproducer scales BX by BUA / theta4. These phenotype scalings are applied at simulation time and are demonstrated in the validation vignette."
   )
 
   ini({

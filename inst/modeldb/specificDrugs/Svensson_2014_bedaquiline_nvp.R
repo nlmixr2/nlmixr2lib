@@ -19,48 +19,48 @@ Svensson_2014_bedaquiline_nvp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2     = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2 = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m2 = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used for allometric scaling around 70 kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used for allometric scaling around 70 kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2) around a 70 kg reference adult. Svensson 2014 Materials and Methods 'Nonlinear mixed-effects modeling' states 'Allometric scaling of disposition parameters with body weight as the size descriptor and fixed coefficients (0.75 for clearance [CL] and 1 for volume of distribution) was applied.' Reference weight of 70 kg is confirmed by Supplementary Table S1b footnote b: 'Disposition parameters for a typical individual of 70 kg, allometric scaling with body weight and fixed coefficients 0.75 for CL and 1 for V applied.'",
-      source_name        = "WT"
+      notes = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2) around a 70 kg reference adult. Svensson 2014 Materials and Methods 'Nonlinear mixed-effects modeling' states 'Allometric scaling of disposition parameters with body weight as the size descriptor and fixed coefficients (0.75 for clearance [CL] and 1 for volume of distribution) was applied.' Reference weight of 70 kg is confirmed by Supplementary Table S1b footnote b: 'Disposition parameters for a typical individual of 70 kg, allometric scaling with body weight and fixed coefficients 0.75 for CL and 1 for V applied.'",
+      source_name = "WT"
     ),
     CONMED_NVP = list(
-      description        = "Concomitant nevirapine (NVP) co-administration at steady state with full CYP3A4 induction (1 = on twice-daily 200 mg NVP at steady state, 0 = not on NVP or pre-induction lag).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant nevirapine (NVP) co-administration at steady state with full CYP3A4 induction (1 = on twice-daily 200 mg NVP at steady state, 0 = not on NVP or pre-induction lag).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on NVP or pre-induction window)",
-      notes              = "Subject- and time-varying indicator of concomitant NVP co-administration at full induction. Study C117 (n = 16 HIV-1-positive ART-naive adult volunteers) was a single-sequence study with two 400 mg bedaquiline doses; NVP at standard doses (200 mg once daily for 2 weeks, followed by 200 mg twice daily) was started before the second bedaquiline dose, and participants received at least 4 weeks of the twice-daily NVP dosing before the second bedaquiline dose was administered. Svensson 2014 Materials and Methods state 'the impacts of NVP (induction) were assumed to start after 2 weeks of twice-daily administration.' Multiplicative factor on apparent CL during co-administration: cl_bdq_eff = cl_bdq_base * e_nvp_cl ^ CONMED_NVP with e_nvp_cl = 0.915 (RSE 5.9%) for bedaquiline (BDQ CL falls to 91.5% of the no-NVP value) and cl_m2_eff = cl_m2_base * e_nvp_cl_m2 ^ CONMED_NVP with e_nvp_cl_m2 = 1.05 (RSE 10.3%) for M2 (M2 CL rises to 105% of the no-NVP value). Svensson 2014 Supplementary Table S1b 'EFF NVP on BDQ CL = 0.915' and 'EFF NVP on M2 CL = 1.05'. For simulation, set CONMED_NVP = 1 on observation rows >= 2 weeks after the start of NVP 200 mg twice-daily dosing and 0 otherwise.",
-      source_name        = "NVP"
+      notes = "Subject- and time-varying indicator of concomitant NVP co-administration at full induction. Study C117 (n = 16 HIV-1-positive ART-naive adult volunteers) was a single-sequence study with two 400 mg bedaquiline doses; NVP at standard doses (200 mg once daily for 2 weeks, followed by 200 mg twice daily) was started before the second bedaquiline dose, and participants received at least 4 weeks of the twice-daily NVP dosing before the second bedaquiline dose was administered. Svensson 2014 Materials and Methods state 'the impacts of NVP (induction) were assumed to start after 2 weeks of twice-daily administration.' Multiplicative factor on apparent CL during co-administration: cl_bdq_eff = cl_bdq_base * e_nvp_cl ^ CONMED_NVP with e_nvp_cl = 0.915 (RSE 5.9%) for bedaquiline (BDQ CL falls to 91.5% of the no-NVP value) and cl_m2_eff = cl_m2_base * e_nvp_cl_m2 ^ CONMED_NVP with e_nvp_cl_m2 = 1.05 (RSE 10.3%) for M2 (M2 CL rises to 105% of the no-NVP value). Svensson 2014 Supplementary Table S1b 'EFF NVP on BDQ CL = 0.915' and 'EFF NVP on M2 CL = 1.05'. For simulation, set CONMED_NVP = 1 on observation rows >= 2 weeks after the start of NVP 200 mg twice-daily dosing and 0 otherwise.",
+      source_name = "NVP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "22-51 years",
-    age_median     = "30 years",
-    weight_range   = "48-71 kg",
-    weight_median  = "55 kg",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "22-51 years",
+    age_median = "30 years",
+    weight_range = "48-71 kg",
+    weight_median = "55 kg",
     sex_female_pct = 37.5,
     race_ethnicity = c(Black = 50.0, White = 0.0, `Mixed race` = 50.0),
-    disease_state  = "HIV-1-infected ART-naive adult volunteers (18-65 years; BMI 18-30 kg/m^2) with a medical indication to start ART with NVP plus two NRTIs. Documented HIV-1 infection but no history of ART. Women of childbearing potential, individuals with active AIDS-defining illnesses or TB, and individuals with a history of substance abuse were excluded. Subjects previously enrolled in trials involving bedaquiline were ineligible.",
-    dose_range     = "Two single 400 mg oral doses of bedaquiline given several weeks apart in a single-sequence design; NVP at standard doses (200 mg once daily for 2 weeks, then 200 mg twice daily) was started before the second bedaquiline dose with at least 4 weeks of twice-daily NVP prior to the second bedaquiline dose. PK samples were collected pre-dose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each bedaquiline dose (17 samples per dose per analyte).",
-    regions        = "Not stated in the publication beyond study sponsor (Tibotec / Janssen) and ClinicalTrials.gov registration NCT00910806.",
-    study_id       = "C117 (NVP DDI; NCT00910806).",
-    notes          = "Baseline demographics from Svensson 2014 Table 1. 528 BDQ + 528 M2 PK samples available; 1 BDQ and 33 M2 samples were below limit of quantification (LLOQ 1.00 ng/mL) and were omitted from modelling. Bedaquiline and M2 concentrations were determined by LC-MS/MS validated to FDA guidelines."
+    disease_state = "HIV-1-infected ART-naive adult volunteers (18-65 years; BMI 18-30 kg/m^2) with a medical indication to start ART with NVP plus two NRTIs. Documented HIV-1 infection but no history of ART. Women of childbearing potential, individuals with active AIDS-defining illnesses or TB, and individuals with a history of substance abuse were excluded. Subjects previously enrolled in trials involving bedaquiline were ineligible.",
+    dose_range = "Two single 400 mg oral doses of bedaquiline given several weeks apart in a single-sequence design; NVP at standard doses (200 mg once daily for 2 weeks, then 200 mg twice daily) was started before the second bedaquiline dose with at least 4 weeks of twice-daily NVP prior to the second bedaquiline dose. PK samples were collected pre-dose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each bedaquiline dose (17 samples per dose per analyte).",
+    regions = "Not stated in the publication beyond study sponsor (Tibotec / Janssen) and ClinicalTrials.gov registration NCT00910806.",
+    study_id = "C117 (NVP DDI; NCT00910806).",
+    notes = "Baseline demographics from Svensson 2014 Table 1. 528 BDQ + 528 M2 PK samples available; 1 BDQ and 33 M2 samples were below limit of quantification (LLOQ 1.00 ng/mL) and were omitted from modelling. Bedaquiline and M2 concentrations were determined by LC-MS/MS validated to FDA guidelines."
   )
 
   ini({

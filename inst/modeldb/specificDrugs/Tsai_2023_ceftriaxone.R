@@ -9,53 +9,53 @@ Tsai_2023_ceftriaxone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "unbound ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
-    complex     = list(analyte = "bound ceftriaxone", units = "mg", specimen = "serum", verified = FALSE),
+    central = list(analyte = "unbound ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "bound ceftriaxone", units = "mg", specimen = "serum", verified = FALSE),
     peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     TBILI = list(
-      description        = "Total serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the source analysis. The only covariate retained in the final model (Tsai 2023 Results, 'Population pharmacokinetic model and model diagnostics': serum bilirubin was 'the only covariate retained in the final model'). Enters as an inverse-power effect on the interdialytic clearance arm, CL = CLnHD * (14.1 / bili)^0.5 (Tsai 2023 Results equation 'When dialysis is off', reproduced verbatim as 'CL=CL_nHD*(14.1/Bili)**0.5' in the Table S2 Pmetrics model file). Clearance and bilirubin followed an inverse-power relationship with r^2 = 0.74 (Figure 2); with the single highest-bilirubin subject (72 umol/L) removed, r^2 = 0.70. Cohort median 10 umol/L (IQR 6-14); 7 of 16 subjects had bilirubin > 10 umol/L, all acute (2 cholecystitis, 5 severe infection). Must be strictly positive: the covariate enters as a denominator, so TBILI = 0 is undefined. The 14.1 umol/L reference value is hard-coded in the Table S2 model file and the paper does not state its derivation (it is not the cohort median of 10 umol/L); it is carried here exactly as printed.",
-      source_name        = "Bili"
+      notes = "Time-fixed per subject in the source analysis. The only covariate retained in the final model (Tsai 2023 Results, 'Population pharmacokinetic model and model diagnostics': serum bilirubin was 'the only covariate retained in the final model'). Enters as an inverse-power effect on the interdialytic clearance arm, CL = CLnHD * (14.1 / bili)^0.5 (Tsai 2023 Results equation 'When dialysis is off', reproduced verbatim as 'CL=CL_nHD*(14.1/Bili)**0.5' in the Table S2 Pmetrics model file). Clearance and bilirubin followed an inverse-power relationship with r^2 = 0.74 (Figure 2); with the single highest-bilirubin subject (72 umol/L) removed, r^2 = 0.70. Cohort median 10 umol/L (IQR 6-14); 7 of 16 subjects had bilirubin > 10 umol/L, all acute (2 cholecystitis, 5 severe infection). Must be strictly positive: the covariate enters as a denominator, so TBILI = 0 is undefined. The 14.1 umol/L reference value is hard-coded in the Table S2 model file and the paper does not state its derivation (it is not the cohort median of 10 umol/L); it is carried here exactly as printed.",
+      source_name = "Bili"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the source analysis. Not a covariate on any structural PK parameter; instead it sets the albumin-binding capacity of the central compartment through the Table S2 secondary variable Bmax1 = Alb * Vc * 16.7 (mg). The 16.7 mg ceftriaxone per g albumin constant encodes 2 binding sites per albumin molecule: 2 * 554.58 (ceftriaxone g/mol) / 66437 (albumin g/mol) * 1000 mg/g = 16.7, consistent with the paper's complex-binding definition (Methods: 'N is the number of ceftriaxone-binding sites per albumin molecule'). Cohort median 36 g/L (IQR 33-39); only one subject had albumin < 30 g/L (at 28 g/L), which the Discussion cites as the reason serum albumin had limited independent influence on the PK model.",
-      source_name        = "Alb"
+      notes = "Time-fixed per subject in the source analysis. Not a covariate on any structural PK parameter; instead it sets the albumin-binding capacity of the central compartment through the Table S2 secondary variable Bmax1 = Alb * Vc * 16.7 (mg). The 16.7 mg ceftriaxone per g albumin constant encodes 2 binding sites per albumin molecule: 2 * 554.58 (ceftriaxone g/mol) / 66437 (albumin g/mol) * 1000 mg/g = 16.7, consistent with the paper's complex-binding definition (Methods: 'N is the number of ceftriaxone-binding sites per albumin molecule'). Cohort median 36 g/L (IQR 33-39); only one subject had albumin < 30 g/L (at 28 g/L), which the Discussion cites as the reason serum albumin had limited independent influence on the PK model.",
+      source_name = "Alb"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Hemodialysis-active indicator (1 while an intermittent high-flux hemodialysis session is running, 0 in the interdialytic interval)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hemodialysis-active indicator (1 while an intermittent high-flux hemodialysis session is running, 0 in the interdialytic interval)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no dialysis session running)",
-      notes              = "Time-varying within subject. Implemented in the source as the Pmetrics conditional 'IF (HDx.EQ.1) CL = CL_HD' (Table S2 secondary variables), i.e. the dialytic clearance REPLACES the interdialytic clearance arm for the duration of the session rather than being added to it. This is the opposite composition rule from the additive dialysis-arm precedents (Veinstein 2013 gentamicin, Eyler 2014 ertapenem, Jacobs 2016 colistin); it is encoded here as the paper wrote it. Because CL_HD replaces CL entirely, the bilirubin covariate does not act during a dialysis session. Ceftriaxone clearance was > 10-fold higher during dialysis (8.76 vs 0.83 L/h), which the authors attribute to the high-flux membranes used (FX80 / FX100 / FX120, Fresenius); prior studies using low-flux dialyzers reported no dialytic enhancement. Doses in this study were given post-dialysis (within 5 min of the end of the session), so RRT_HEMODIAL_ACTIVE = 0 at the dosing times of the observed data; it is set to 1 only to reproduce the paper's counterfactual 'administered during dialysis' simulation.",
-      source_name        = "HDx"
+      notes = "Time-varying within subject. Implemented in the source as the Pmetrics conditional 'IF (HDx.EQ.1) CL = CL_HD' (Table S2 secondary variables), i.e. the dialytic clearance REPLACES the interdialytic clearance arm for the duration of the session rather than being added to it. This is the opposite composition rule from the additive dialysis-arm precedents (Veinstein 2013 gentamicin, Eyler 2014 ertapenem, Jacobs 2016 colistin); it is encoded here as the paper wrote it. Because CL_HD replaces CL entirely, the bilirubin covariate does not act during a dialysis session. Ceftriaxone clearance was > 10-fold higher during dialysis (8.76 vs 0.83 L/h), which the authors attribute to the high-flux membranes used (FX80 / FX100 / FX120, Fresenius); prior studies using low-flux dialyzers reported no dialytic enhancement. Doses in this study were given post-dialysis (within 5 min of the end of the session), so RRT_HEMODIAL_ACTIVE = 0 at the dosing times of the observed data; it is set to 1 only to reproduce the paper's counterfactual 'administered during dialysis' simulation.",
+      source_name = "HDx"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 16L,
-    n_studies        = 1L,
-    n_samples        = 122L,
-    age_median       = "57 years (IQR 51-64); full range not reported",
-    weight_median    = "71 kg (IQR 59-83); full range not reported",
-    sex_female_pct   = 81.25,
-    race_ethnicity   = "100% Indigenous Australian (an explicit inclusion criterion, identified by electronic health record). The Discussion notes that inter-ethnic PK differences are considered unlikely for ceftriaxone, so the authors regard the estimates as transferable to other ethnic origins.",
-    disease_state    = "Adults with end-stage renal disease established on three-times-weekly intermittent hemodialysis, treated with ceftriaxone for an active infection. Sources of infection: respiratory 11, urinary 1, bacteremia 1, skin and soft tissue 1, intra-abdominal 1. Baseline laboratory values (median, IQR): albumin 36 g/L (33-39), urea 15.1 mmol/L (12.2-19.2), total bilirubin 10 umol/L (6-14), ALP 216 U/L (171-338), GGT 74 U/L (42-133), ALT 23 U/L (13-29). Seven subjects had bilirubin > 10 umol/L, all of acute cause.",
-    renal_function   = "Anuric / end-stage renal disease requiring intermittent hemodialysis three times weekly. Exact renal function was not quantifiable because serum creatinine depended on time since the last dialysis session (stated study limitation). Dialyzers were high-flux: FX80 in 3 subjects (19%), FX100 in 10 (63%), FX120 in 3 (19%) (Fresenius Medical Care).",
-    dose_range       = "2 g ceftriaxone (Ceftriaxone-AFT) dissolved in 10 mL water-for-injection, slowly injected into the fistula or central venous cannula within 5 min after the conclusion of each dialysis session, three times weekly.",
-    regions          = "Australia (renal dialysis unit of a remote Northern Territory primary referral centre, Alice Springs Hospital)",
-    protein_binding  = "Measured directly rather than assumed: median unbound fraction 0.29 (IQR 0.20-0.40), substantially higher than the 0.04-0.17 reported for healthy individuals. Median pre-dialysis unbound trough was 18.2 mg/L (IQR 9.7-25.9) over a 2-day interval and 8.8 mg/L (IQR 7.1-17.7) over a 3-day interval; unbound concentrations fell by a median 70% (IQR 64-74%) across each dialysis session.",
-    notes            = "Prospective population PK study. Plasma sampled over two dosing intervals: immediately before and after dialysis, then 5, 15, 60 and 1440 min after the dose, then at 2880 min (or immediately before the next dialysis session for a 48 h interval), and immediately before the next session for a 72 h interval. Total and unbound ceftriaxone assayed by validated UPLC-MS/MS (Table S1); unbound fraction isolated by ultracentrifugation at 37 C with Centrifree devices. One sample was below LLOQ (drawn before any ceftriaxone was given) and was carried into the analysis as 0.0 mg/L. Exclusion criterion: pregnancy."
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    n_samples = 122L,
+    age_median = "57 years (IQR 51-64); full range not reported",
+    weight_median = "71 kg (IQR 59-83); full range not reported",
+    sex_female_pct = 81.25,
+    race_ethnicity = "100% Indigenous Australian (an explicit inclusion criterion, identified by electronic health record). The Discussion notes that inter-ethnic PK differences are considered unlikely for ceftriaxone, so the authors regard the estimates as transferable to other ethnic origins.",
+    disease_state = "Adults with end-stage renal disease established on three-times-weekly intermittent hemodialysis, treated with ceftriaxone for an active infection. Sources of infection: respiratory 11, urinary 1, bacteremia 1, skin and soft tissue 1, intra-abdominal 1. Baseline laboratory values (median, IQR): albumin 36 g/L (33-39), urea 15.1 mmol/L (12.2-19.2), total bilirubin 10 umol/L (6-14), ALP 216 U/L (171-338), GGT 74 U/L (42-133), ALT 23 U/L (13-29). Seven subjects had bilirubin > 10 umol/L, all of acute cause.",
+    renal_function = "Anuric / end-stage renal disease requiring intermittent hemodialysis three times weekly. Exact renal function was not quantifiable because serum creatinine depended on time since the last dialysis session (stated study limitation). Dialyzers were high-flux: FX80 in 3 subjects (19%), FX100 in 10 (63%), FX120 in 3 (19%) (Fresenius Medical Care).",
+    dose_range = "2 g ceftriaxone (Ceftriaxone-AFT) dissolved in 10 mL water-for-injection, slowly injected into the fistula or central venous cannula within 5 min after the conclusion of each dialysis session, three times weekly.",
+    regions = "Australia (renal dialysis unit of a remote Northern Territory primary referral centre, Alice Springs Hospital)",
+    protein_binding = "Measured directly rather than assumed: median unbound fraction 0.29 (IQR 0.20-0.40), substantially higher than the 0.04-0.17 reported for healthy individuals. Median pre-dialysis unbound trough was 18.2 mg/L (IQR 9.7-25.9) over a 2-day interval and 8.8 mg/L (IQR 7.1-17.7) over a 3-day interval; unbound concentrations fell by a median 70% (IQR 64-74%) across each dialysis session.",
+    notes = "Prospective population PK study. Plasma sampled over two dosing intervals: immediately before and after dialysis, then 5, 15, 60 and 1440 min after the dose, then at 2880 min (or immediately before the next dialysis session for a 48 h interval), and immediately before the next session for a 72 h interval. Total and unbound ceftriaxone assayed by validated UPLC-MS/MS (Table S1); unbound fraction isolated by ultracentrifugation at 37 C with Centrifree devices. One sample was below LLOQ (drawn before any ceftriaxone was given) and was carried into the analysis as 0.0 mg/L. Exclusion criterion: pregnancy."
   )
 
   ini({

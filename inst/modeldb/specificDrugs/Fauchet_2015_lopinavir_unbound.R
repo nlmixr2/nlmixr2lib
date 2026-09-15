@@ -8,72 +8,72 @@ Fauchet_2015_lopinavir_unbound <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir unbound", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir unbound", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir unbound", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Human serum albumin plasma concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Human serum albumin plasma concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the linear-binding contribution to total LPV in the protein-binding equation (Fauchet 2015 Table 2 / Appendix). The paper labels the column 'HSA' (human serum albumin); same analyte as the canonical ALB / serum albumin (now an ALB source alias). Time-fixed within an LPV sampling visit; median 32 g/L (range 16-48 g/L) in pregnant women (paper Results). Converted to umol/L inside model() using molecular weight 66500 g/mol.",
-      source_name        = "HSA"
+      notes = "Drives the linear-binding contribution to total LPV in the protein-binding equation (Fauchet 2015 Table 2 / Appendix). The paper labels the column 'HSA' (human serum albumin); same analyte as the canonical ALB / serum albumin (now an ALB source alias). Time-fixed within an LPV sampling visit; median 32 g/L (range 16-48 g/L) in pregnant women (paper Results). Converted to umol/L inside model() using molecular weight 66500 g/mol.",
+      source_name = "HSA"
     ),
     AAG = list(
-      description        = "Alpha-1 acid glycoprotein plasma concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Alpha-1 acid glycoprotein plasma concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the saturable single-site AAG contribution to total LPV in the protein-binding equation (Fauchet 2015 Table 2 / Appendix); N_AAG fixed to 1. Time-fixed within an LPV sampling visit; median 0.55 g/L (range 0.20-1.20 g/L) in pregnant women (paper Results). Converted to umol/L inside model() using molecular weight 40000 g/mol.",
-      source_name        = "AAG"
+      notes = "Drives the saturable single-site AAG contribution to total LPV in the protein-binding equation (Fauchet 2015 Table 2 / Appendix); N_AAG fixed to 1. Time-fixed within an LPV sampling visit; median 0.55 g/L (range 0.20-1.20 g/L) in pregnant women (paper Results). Converted to umol/L inside model() using molecular weight 40000 g/mol.",
+      source_name = "AAG"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the covariate screen but did not significantly improve the unbound model (Fauchet 2015 Results, 'Unbound model' subsection: 'covariates were tested, but body weight, age, and gestational age had no significant effect').",
-      source_name        = "WT"
+      notes = "Tested in the covariate screen but did not significantly improve the unbound model (Fauchet 2015 Results, 'Unbound model' subsection: 'covariates were tested, but body weight, age, and gestational age had no significant effect').",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Maternal age",
-      units              = "years",
-      type               = "continuous",
+      description = "Maternal age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the covariate screen but not retained (Fauchet 2015 Results, 'Unbound model' subsection).",
-      source_name        = "AGE"
+      notes = "Tested in the covariate screen but not retained (Fauchet 2015 Results, 'Unbound model' subsection).",
+      source_name = "AGE"
     ),
     GA = list(
-      description        = "Gestational age at sampling",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at sampling",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested in the covariate screen (paper Methods equation 3) but did not significantly improve the unbound model (Fauchet 2015 Results, 'Unbound model' subsection). Time-varying within a pregnancy when sampled at multiple gestational ages; this canonical (gestational age at birth) is reused for gestational-age-at-sampling here because the column has the same units and orientation; per-model notes carry the distinction.",
-      source_name        = "GA"
+      notes = "Tested in the covariate screen (paper Methods equation 3) but did not significantly improve the unbound model (Fauchet 2015 Results, 'Unbound model' subsection). Time-varying within a pregnancy when sampled at multiple gestational ages; this canonical (gestational age at birth) is reused for gestational-age-at-sampling here because the column has the same units and orientation; per-model notes carry the distinction.",
+      source_name = "GA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 208L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 208L,
+    n_studies = 2L,
     n_observations = 400L,
-    age_range      = "18.3-44.3 years",
-    age_median     = "31.2 years",
-    weight_range   = "45-122 kg",
-    weight_median  = "76 kg",
+    age_range = "18.3-44.3 years",
+    age_median = "31.2 years",
+    weight_range = "45-122 kg",
+    weight_median = "76 kg",
     sex_female_pct = 100,
     race_ethnicity = "not reported in the source paper",
-    disease_state  = "HIV-1 infection; pregnant, nonpregnant, and in-labour women treated for HIV infection or for prevention of mother-to-child transmission",
-    ga_range       = "9-41 weeks (sampled gestational age across pregnant cohorts)",
-    dose_range     = "LPV/r 400/100 mg twice daily oral (one subject 600 mg LPV BID)",
-    regions        = "France",
-    notes          = "Pooled cohort across the ANRS 135 PRIMEVA randomised trial (n=103: 69 LPV/r monotherapy, 34 LPV/r + zidovudine/lamivudine triple therapy) and the Hospital Cochin (Paris) therapeutic drug monitoring cohort (n=105: 81 pregnant, 24 nonpregnant). Total + unbound LPV pairs were measured in 79 samples of the 400 maternal samples used here; unbound model parameters were estimated against the full total-LPV set with the unbound observations linking total to free via the HSA + AAG binding equation. Cohort demographics from Table 1."
+    disease_state = "HIV-1 infection; pregnant, nonpregnant, and in-labour women treated for HIV infection or for prevention of mother-to-child transmission",
+    ga_range = "9-41 weeks (sampled gestational age across pregnant cohorts)",
+    dose_range = "LPV/r 400/100 mg twice daily oral (one subject 600 mg LPV BID)",
+    regions = "France",
+    notes = "Pooled cohort across the ANRS 135 PRIMEVA randomised trial (n=103: 69 LPV/r monotherapy, 34 LPV/r + zidovudine/lamivudine triple therapy) and the Hospital Cochin (Paris) therapeutic drug monitoring cohort (n=105: 81 pregnant, 24 nonpregnant). Total + unbound LPV pairs were measured in 79 samples of the 400 maternal samples used here; unbound model parameters were estimated against the full total-LPV set with the unbound observations linking total to free via the HSA + AAG binding equation. Cohort demographics from Table 1."
   )
 
   ini({

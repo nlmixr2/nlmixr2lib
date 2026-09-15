@@ -8,96 +8,96 @@ Gupta_2016_lenvatinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lenvatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lenvatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lenvatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lenvatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lenvatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "lenvatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; reported in kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; reported in kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric exponent 0.75 on CL/F, Q1/F, and Q2/F; linear allometry (exponent 1) on V1/F, V2/F, and V3/F per Gupta 2016 Table 2. Reference body weight 75 kg (Table 1 baseline median).",
-      source_name        = "WGT"
+      notes = "Allometric exponent 0.75 on CL/F, Q1/F, and Q2/F; linear allometry (exponent 1) on V1/F, V2/F, and V3/F per Gupta 2016 Table 2. Reference body weight 75 kg (Table 1 baseline median).",
+      source_name = "WGT"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (baseline or time-varying; the source paper uses the last available value if multiple assessments exist).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration (baseline or time-varying; the source paper uses the last available value if multiple assessments exist).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as alb_low <- (ALB < 30) per Gupta 2016 Table 2 footnote: ALB indicator = 0 if ALB >= 30 g/L, 1 if ALB < 30 g/L. Multiplicative power-form effect on CL/F: 0.837^alb_low (-16.3 percent when alb_low = 1).",
-      source_name        = "ALB"
+      notes = "Binarized inline as alb_low <- (ALB < 30) per Gupta 2016 Table 2 footnote: ALB indicator = 0 if ALB >= 30 g/L, 1 if ALB < 30 g/L. Multiplicative power-form effect on CL/F: 0.837^alb_low (-16.3 percent when alb_low = 1).",
+      source_name = "ALB"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Binarized inline as alp_high <- (ALP > 120) per Gupta 2016 Table 2 footnote: ALP indicator = 0 if ALP/ULN <= 1, 1 if ALP/ULN > 1. Multiplicative power-form effect on CL/F: 0.883^alp_high (-11.7 percent when alp_high = 1). The 120 U/L ULN used here is a representative adult cutoff; downstream users should supply ALP_HIGH directly or adjust the inline threshold to match their site's ULN.",
-      source_name        = "ALP"
+      notes = "Binarized inline as alp_high <- (ALP > 120) per Gupta 2016 Table 2 footnote: ALP indicator = 0 if ALP/ULN <= 1, 1 if ALP/ULN > 1. Multiplicative power-form effect on CL/F: 0.883^alp_high (-11.7 percent when alp_high = 1). The 120 U/L ULN used here is a representative adult cutoff; downstream users should supply ALP_HIGH directly or adjust the inline threshold to match their site's ULN.",
+      source_name = "ALP"
     ),
     CONMED_CYP3A4_IND = list(
-      description        = "Concomitant CYP3A4 inducer coadministration indicator (1 = any CYP3A4 inducer during the study; 0 = no concomitant CYP3A4 inducer).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inducer coadministration indicator (1 = any CYP3A4 inducer during the study; 0 = no concomitant CYP3A4 inducer).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inducer).",
-      notes              = "Multiplicative power-form effect on CL/F: 1.30^CONMED_CYP3A4_IND (+30 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log; 19 of 779 subjects (2.4 percent) were positive. Renamed from canonical CYP3A4_IND to CONMED_CYP3A4_IND on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "INDU"
+      notes = "Multiplicative power-form effect on CL/F: 1.30^CONMED_CYP3A4_IND (+30 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inducer reported in the per-subject medication log; 19 of 779 subjects (2.4 percent) were positive. Renamed from canonical CYP3A4_IND to CONMED_CYP3A4_IND on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "INDU"
     ),
     CONMED_CYP3A4_INH = list(
-      description        = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = any CYP3A4 inhibitor during the study; 0 = no concomitant CYP3A4 inhibitor).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant CYP3A4 inhibitor coadministration indicator (1 = any CYP3A4 inhibitor during the study; 0 = no concomitant CYP3A4 inhibitor).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CYP3A4 inhibitor).",
-      notes              = "Multiplicative power-form effect on CL/F: 0.922^CONMED_CYP3A4_INH (-7.8 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inhibitor reported in the per-subject medication log; 49 of 779 subjects (6.3 percent) were positive. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
-      source_name        = "INHIB"
+      notes = "Multiplicative power-form effect on CL/F: 0.922^CONMED_CYP3A4_INH (-7.8 percent when 1). The Gupta dataset pools any concomitant CYP3A4 inhibitor reported in the per-subject medication log; 49 of 779 subjects (6.3 percent) were positive. Renamed from canonical CYP3A4_INH to CONMED_CYP3A4_INH on 2026-06-19 per the canonical-register standardization audit.",
+      source_name = "INHIB"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-subject cohort indicator (1 = healthy subject from a phase 1 clinical pharmacology study; 0 = cancer patient from a phase 1, 2, or 3 study).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-subject cohort indicator (1 = healthy subject from a phase 1 clinical pharmacology study; 0 = cancer patient from a phase 1, 2, or 3 study).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cancer patient; reference cohort is the pooled solid-tumor / thyroid-cancer cohort across phase 1-3 studies).",
-      notes              = "Multiplicative power-form effect on CL/F: 1.15^DIS_HEALTHY (+15 percent when 1). Reflects the systematic CL/F difference between phase 1 clinical pharmacology subjects and the cancer-patient pool.",
-      source_name        = "TM"
+      notes = "Multiplicative power-form effect on CL/F: 1.15^DIS_HEALTHY (+15 percent when 1). Reflects the systematic CL/F difference between phase 1 clinical pharmacology subjects and the cancer-patient pool.",
+      source_name = "TM"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule vs tablet formulation indicator (1 = capsule; 0 = tablet).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule vs tablet formulation indicator (1 = capsule; 0 = tablet).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet; F fixed at 1 for the tablet reference arm in Gupta 2016).",
-      notes              = "Multiplicative effect on bioavailability of both the first-order and the zero-order absorption routes: 0.896 (capsule) vs 1 (tablet) per Gupta 2016 Table 2. The 30.2 percent CV IIV on F1 (etalfcap) applies only to the capsule arm; tablet subjects have F = 1 with no eta contribution. Reference category in this model is tablet rather than the solution comparator used for itraconazole capsules in Hennig 2006/2007.",
-      source_name        = "FORM"
+      notes = "Multiplicative effect on bioavailability of both the first-order and the zero-order absorption routes: 0.896 (capsule) vs 1 (tablet) per Gupta 2016 Table 2. The 30.2 percent CV IIV on F1 (etalfcap) applies only to the capsule arm; tablet subjects have F = 1 with no eta contribution. Reference category in this model is tablet rather than the solution comparator used for itraconazole capsules in Hennig 2006/2007.",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 779,
-    n_studies      = 15,
-    age_range      = "18-89 years",
-    age_median     = "55 years",
-    weight_range   = "32.6-177.5 kg",
-    weight_median  = "75 kg",
+    species = "human",
+    n_subjects = 779,
+    n_studies = 15,
+    age_range = "18-89 years",
+    age_median = "55 years",
+    weight_range = "32.6-177.5 kg",
+    weight_median = "75 kg",
     sex_female_pct = 44.0,
     race_ethnicity = c(
-      White            = 70.2,
-      Japanese         = 11.7,
-      Black            = 9.4,
-      Other            = 6.3,
-      Hispanic         = 0.8,
-      Asian            = 0.6,
-      Native_Hawaiian  = 0.6,
-      American_Indian  = 0.4
+      White = 70.2,
+      Japanese = 11.7,
+      Black = 9.4,
+      Other = 6.3,
+      Hispanic = 0.8,
+      Asian = 0.6,
+      Native_Hawaiian = 0.6,
+      American_Indian = 0.4
     ),
-    disease_state  = "Pooled cohort: healthy adults (n = 196, 25.2 percent), differentiated thyroid cancer (DTC; n = 327, 42.0 percent), medullary thyroid cancer (MTC; n = 56, 7.2 percent), anaplastic thyroid cancer (ATC; n = 9, 1.2 percent), and other solid tumors (n = 191, 24.5 percent).",
-    dose_range     = "3.2-32 mg oral lenvatinib, mainly once daily, predominantly as tablets or capsules.",
-    regions        = "Multiregional (15 pooled studies including phase 3 SELECT trial in RR-DTC).",
+    disease_state = "Pooled cohort: healthy adults (n = 196, 25.2 percent), differentiated thyroid cancer (DTC; n = 327, 42.0 percent), medullary thyroid cancer (MTC; n = 56, 7.2 percent), anaplastic thyroid cancer (ATC; n = 9, 1.2 percent), and other solid tumors (n = 191, 24.5 percent).",
+    dose_range = "3.2-32 mg oral lenvatinib, mainly once daily, predominantly as tablets or capsules.",
+    regions = "Multiregional (15 pooled studies including phase 3 SELECT trial in RR-DTC).",
     n_observations = "10 265 plasma concentrations across 15 studies: 5 077 from phase 1 healthy-subject full profiles, 3 192 from phase 1 patient profiles plus sparse samples, 354 from phase 2 thyroid-cancer studies, and 1 642 from phase 3 SELECT (DTC).",
     ecog_distribution = "ECOG 0: 32.5 percent; ECOG 1: 26.7 percent; ECOG 2: 2.4 percent; ECOG 3: 0.1 percent; missing 38.3 percent.",
-    notes          = "Demographic counts and ranges reproduced from Gupta 2016 Table 1. Missing race subjects are encoded as 0 for every minority RACE_* indicator (treated as the White reference). 56.0 percent male (436/779) and 44.0 percent female (343/779)."
+    notes = "Demographic counts and ranges reproduced from Gupta 2016 Table 1. Missing race subjects are encoded as 0 for every minority RACE_* indicator (treated as the White reference). 56.0 percent male (436/779) and 44.0 percent female (343/779)."
   )
 
   ini({

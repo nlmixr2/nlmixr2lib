@@ -2,89 +2,94 @@ Ma_2020_sarilumab_das28crp <- function() {
   description <- "Indirect-response PK/PD model of sarilumab on the 28-joint disease activity score by C-reactive protein (DAS28-CRP) in adults with rheumatoid arthritis (Ma 2020). Sarilumab inhibits the DAS28-CRP production rate (kin) via a sigmoid emax function that includes a background DMARD placebo component (PLB). The PK driver is the two-compartment, parallel linear + Michaelis-Menten model of Xu 2019 evaluated at its typical covariate-reference values (adult female, 71 kg, ADA-negative, commercial drug product, ALBR = 0.78, CrCl = 100 mL/min/1.73 m^2, baseline CRP = 14.2 mg/L)."
   reference <- "Ma L, Xu C, Paccaly A, Kanamaluru V. Population Pharmacokinetic-Pharmacodynamic Relationships of Sarilumab Using Disease Activity Score 28-Joint C-Reactive Protein and Absolute Neutrophil Counts in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2020;59(11):1451-1466. doi:10.1007/s40262-020-00899-7. PMID: 32451909. PK backbone from Xu C, Su Y, Paccaly A, Kanamaluru V. Population Pharmacokinetics of Sarilumab in Patients with Rheumatoid Arthritis. Clin Pharmacokinet. 2019;58(11):1455-1467. doi:10.1007/s40262-019-00765-1."
   vignette <- "Ma_2020_sarilumab_das28crp"
-  units <- list(time = "day", dosing = "mg", concentration = "mg/L", response = "DAS28-CRP score (unitless, 0-10 scale)")
+  units <- list(
+    time = "day",
+    dosing = "mg",
+    concentration = "mg/L",
+    response = "DAS28-CRP score (unitless, 0-10 scale)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
-    das28       = list(analyte = "DAS28-CRP", units = "mg", specimen = "not applicable", verified = FALSE)
+    das28 = list(analyte = "DAS28-CRP", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on DAS28-CRP BASE normalized as WT/72.8 (Ma 2020 Table 3 reference weight = median of DAS28-CRP final dataset per paper narrative). The 71 kg reference used for the embedded Xu 2019 PK typical profile is internal to the model and is not exposed through this covariate.",
-      source_name        = "WT"
+      notes = "Power effect on DAS28-CRP BASE normalized as WT/72.8 (Ma 2020 Table 3 reference weight = median of DAS28-CRP final dataset per paper narrative). The 71 kg reference used for the embedded Xu 2019 PK typical profile is internal to the model and is not exposed through this covariate.",
+      source_name = "WT"
     ),
     CRP = list(
-      description        = "Baseline (pre-treatment) C-reactive protein measured by the routine clinical assay; time-fixed per subject",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline (pre-treatment) C-reactive protein measured by the routine clinical assay; time-fixed per subject",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on BASE and additive log-linear effect on the logit-transformed emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Source column 'CRP' (baseline CRP, standard assay) maps to the canonical general-scope CRP covariate; the baseline-only and standard-assay semantics are documented here in the covariateData entry rather than via a separate CRP canonical.",
-      source_name        = "CRP"
+      notes = "Power effect on BASE and additive log-linear effect on the logit-transformed emax (Ma 2020 Table 3); reference 15.7 mg/L is the median baseline CRP of the DAS28-CRP dataset per paper narrative. Source column 'CRP' (baseline CRP, standard assay) maps to the canonical general-scope CRP covariate; the baseline-only and standard-assay semantics are documented here in the covariateData entry rather than via a separate CRP canonical.",
+      source_name = "CRP"
     ),
     BLPHYVAS = list(
-      description        = "Baseline Physician's Global Assessment of Disease Activity (100-mm VAS)",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline Physician's Global Assessment of Disease Activity (100-mm VAS)",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on BASE (Ma 2020 Table 3); reference 66 is the median baseline PHYVAS of the DAS28-CRP dataset per paper narrative.",
-      source_name        = "BLPHYVAS"
+      notes = "Time-fixed per subject. Power effect on BASE (Ma 2020 Table 3); reference 66 is the median baseline PHYVAS of the DAS28-CRP dataset per paper narrative.",
+      source_name = "BLPHYVAS"
     ),
     BLHAQ = list(
-      description        = "Baseline Health Assessment Questionnaire Disability Index (0-3 score)",
-      units              = "unitless (0-3 composite)",
-      type               = "continuous",
+      description = "Baseline Health Assessment Questionnaire Disability Index (0-3 score)",
+      units = "unitless (0-3 composite)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power effect on BASE (Ma 2020 Table 3); reference 1.75 is the median baseline HAQ-DI of the DAS28-CRP dataset per paper narrative.",
-      source_name        = "BLHAQ"
+      notes = "Time-fixed per subject. Power effect on BASE (Ma 2020 Table 3); reference 1.75 is the median baseline HAQ-DI of the DAS28-CRP dataset per paper narrative.",
+      source_name = "BLHAQ"
     ),
     PRICORT = list(
-      description        = "Prior corticosteroid treatment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior corticosteroid treatment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior corticosteroid use)",
-      notes              = "Time-fixed per subject. Multiplicative effect on kout (Ma 2020 Table 3): Kout_i = kout * 1.26^PRICORT. Paper narrative confirms 0.0333 vs 0.0264 day^-1 for PRICORT = 1 vs 0.",
-      source_name        = "PRICORT"
+      notes = "Time-fixed per subject. Multiplicative effect on kout (Ma 2020 Table 3): Kout_i = kout * 1.26^PRICORT. Paper narrative confirms 0.0333 vs 0.0264 day^-1 for PRICORT = 1 vs 0.",
+      source_name = "PRICORT"
     )
   )
 
   population <- list(
-    n_subjects        = 2082L,
-    n_observations    = 17229L,
-    n_studies         = 3L,
-    age_range         = "adults; mean (SD) 51.6 (12.0) years",
-    weight_range      = "mean (SD) 74.6 (18.8) kg; median 72.8 kg (per narrative)",
-    sex_female_pct    = 82.1,
-    race_ethnicity    = c(Caucasian = 83.6, Other = 16.4),
-    disease_state     = "Moderate-to-severely-active rheumatoid arthritis in adults with inadequate response to methotrexate (MTX-IR, 26.1%) or to TNFalpha inhibitors (TNF-IR, 73.9%); all patients received background DMARD therapy (MTX 98.8%).",
-    dose_range        = "Sarilumab 100, 150, or 200 mg SC q2w, and 100 or 150 mg SC qw; placebo arm also modelled. Treatment durations 12, 24, and 52 weeks across studies.",
-    regions           = "Multi-regional (North America, EU, Latin America, and other regions represented in MOBILITY and TARGET phase II-III programs).",
+    n_subjects = 2082L,
+    n_observations = 17229L,
+    n_studies = 3L,
+    age_range = "adults; mean (SD) 51.6 (12.0) years",
+    weight_range = "mean (SD) 74.6 (18.8) kg; median 72.8 kg (per narrative)",
+    sex_female_pct = 82.1,
+    race_ethnicity = c(Caucasian = 83.6, Other = 16.4),
+    disease_state = "Moderate-to-severely-active rheumatoid arthritis in adults with inadequate response to methotrexate (MTX-IR, 26.1%) or to TNFalpha inhibitors (TNF-IR, 73.9%); all patients received background DMARD therapy (MTX 98.8%).",
+    dose_range = "Sarilumab 100, 150, or 200 mg SC q2w, and 100 or 150 mg SC qw; placebo arm also modelled. Treatment durations 12, 24, and 52 weeks across studies.",
+    regions = "Multi-regional (North America, EU, Latin America, and other regions represented in MOBILITY and TARGET phase II-III programs).",
     baseline_biomarkers = list(
       CRP_mean_sd_mg_L = "24.1 (25.1)",
-      CRP_median_mg_L  = 15.7,
+      CRP_median_mg_L = 15.7,
       BLIL6_mean_sd_pg_mL = "41.8 (67.2)",
-      BLPHYVAS_mean_sd   = "64.6 (16.8)",
-      BLPHYVAS_median    = 66,
-      BLHAQ_mean_sd      = "1.68 (0.640)",
-      BLHAQ_median       = 1.75
+      BLPHYVAS_mean_sd = "64.6 (16.8)",
+      BLPHYVAS_median = 66,
+      BLHAQ_mean_sd = "1.68 (0.640)",
+      BLHAQ_median = 1.75
     ),
     concomitant_treatment = list(
-      methotrexate_pct     = 98.8,
-      prior_biologic_pct   = 39.6,
+      methotrexate_pct = 98.8,
+      prior_biologic_pct = 39.6,
       prior_corticosteroid_pct = 64.6,
       baseline_ACCP_pos_pct = 16.5
     ),
-    notes             = "Baseline demographics from Ma 2020 Table 2 (DAS28-CRP final dataset, n=2082 across NCT01061736 Part A/B [MOBILITY phase II/III] and NCT01709578 [TARGET phase III]). Baseline mean DAS28-CRP was not reported in Table 2 for the DAS28-CRP dataset itself (the ANC dataset reported 6.03, consistent with the modelled BASE of 6.06 in Table 3). Sources pooled 17,229 DAS28-CRP observations through week 24."
+    notes = "Baseline demographics from Ma 2020 Table 2 (DAS28-CRP final dataset, n=2082 across NCT01061736 Part A/B [MOBILITY phase II/III] and NCT01709578 [TARGET phase III]). Baseline mean DAS28-CRP was not reported in Table 2 for the DAS28-CRP dataset itself (the ANC dataset reported 6.03, consistent with the modelled BASE of 6.06 in Table 3). Sources pooled 17,229 DAS28-CRP observations through week 24."
   )
 
   ini({
@@ -229,4 +234,3 @@ Ma_2020_sarilumab_das28crp <- function() {
     das28 ~ add(addSd_das28)
   })
 }
-

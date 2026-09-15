@@ -38,7 +38,7 @@ Izat_2025_zaleplon <- function() {
     sep = " "
   )
   vignette <- "Izat_2025_aldehyde_oxidase_substrates"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what the single ODE state holds, in what amount units, in
   # what biological matrix. Verified against Izat 2025 Table 1 (zaleplon
@@ -48,8 +48,10 @@ Izat_2025_zaleplon <- function() {
   # against observed plasma data.
   compartmentData <- list(
     central = list(
-      analyte = "zaleplon", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "zaleplon",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -67,7 +69,7 @@ Izat_2025_zaleplon <- function() {
         "ratio."
       ),
       units = "(binary)",
-      type  = "binary",
+      type = "binary",
       reference_category = "0 (male)",
       notes = paste(
         "Not an estimated covariate coefficient. The two clearances are",
@@ -97,7 +99,7 @@ Izat_2025_zaleplon <- function() {
         "inconsistent model, so neither is scaled."
       ),
       units = "kg",
-      type  = "continuous",
+      type = "continuous",
       notes = paste(
         "Implicit in the L/kg volume input; not carried. No body weight",
         "is printed anywhere in the paper or Appendix S1 -- Table S3",
@@ -109,16 +111,16 @@ Izat_2025_zaleplon <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "19-32 years",
-    weight_median  = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "19-32 years",
+    weight_median = "70 kg (assumed reference weight for the L/kg volume input; not reported)",
     sex_female_pct = 50,
-    disease_state  = "Healthy adult volunteers.",
-    dose_range     = "Single 5 mg intravenous infusion.",
-    route          = "intravenous",
-    studies        = paste(
+    disease_state = "Healthy adult volunteers.",
+    dose_range = "Single 5 mg intravenous infusion.",
+    route = "intravenous",
+    studies = paste(
       "Rosen AS, Fournie P, Darwish M, Danjou P, Troy SM. Zaleplon",
       "pharmacokinetics and absolute bioavailability. Biopharm Drug",
       "Dispos 1999;20(3):171-175, cited as reference 22 of Appendix S1",
@@ -129,7 +131,7 @@ Izat_2025_zaleplon <- function() {
       "The intravenous arm is the model-development dataset for the",
       "distribution parameters reproduced here."
     ),
-    notes          = paste(
+    notes = paste(
       "This is a PBPK analysis rather than a population-PK fit, so there",
       "is no pooled analysis dataset and no estimated variance",
       "components. The percent-CV figures in Table 1 and Appendix S1",

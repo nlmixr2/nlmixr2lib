@@ -26,41 +26,41 @@ Kim_2025_infliximab_fasanmade_pediatric <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The source equations are written on per-kilogram CL / V values with reference 42 kg, so the total-parameter exponent is 1 plus the published per-kg exponent. Kim 2025's control stream gives per-kg exponents of -0.34 (CL), -0.171 (Vc) and -0.414 (Vp), i.e. total-parameter exponents of 0.66, 0.829 and 0.586; Q is a constant per-kg value, giving a total-Q exponent of 1.0. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models.",
-      source_name        = "WGT"
+      notes = "The source equations are written on per-kilogram CL / V values with reference 42 kg, so the total-parameter exponent is 1 plus the published per-kg exponent. Kim 2025's control stream gives per-kg exponents of -0.34 (CL), -0.171 (Vc) and -0.414 (Vp), i.e. total-parameter exponents of 0.66, 0.829 and 0.586; Q is a constant per-kg value, giving a total-Q exponent of 1.0. Kim 2025 treated body weight as time-invariant (recorded at the last infliximab concentration measurement) and identified this as a probable contributor to the poor predictive performance of the paediatric models.",
+      source_name = "WGT"
     ),
     ALB = list(
-      description        = "Serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, normalized to a 3.8 g/dL reference: CL *= (ALB/3.8)^(-1.22). The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
-      source_name        = "ALB"
+      notes = "Power effect on CL, normalized to a 3.8 g/dL reference: CL *= (ALB/3.8)^(-1.22). The source control stream states the covariate is in g/dL; the canonical ALB column is in SI g/L, so model() converts inline (g/L * 0.1 = g/dL). Time-varying in the Kim 2025 validation dataset.",
+      source_name = "ALB"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112L,
-    n_studies      = 1L,
-    age_range      = "Paediatric; median age 13 years (Kim 2025 Table S1).",
-    weight_range   = "Not reported; median body weight 42 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
+    species = "human",
+    n_subjects = 112L,
+    n_studies = 1L,
+    age_range = "Paediatric; median age 13 years (Kim 2025 Table S1).",
+    weight_range = "Not reported; median body weight 42 kg (Kim 2025 Table S1), which is the reference weight used by the model.",
     sex_female_pct = 41,
     race_ethnicity = "Not specified.",
-    disease_state  = "Crohn's disease (n = 112).",
-    dose_range     = "Intravenous infliximab during both induction and maintenance phases.",
-    regions        = "Multi-regional paediatric Crohn's disease trial (REACH).",
-    notes          = paste(
+    disease_state = "Crohn's disease (n = 112).",
+    dose_range = "Intravenous infliximab during both induction and maintenance phases.",
+    regions = "Multi-regional paediatric Crohn's disease trial (REACH).",
+    notes = paste(
       "Development-population characteristics are as summarised by Kim 2025",
       "Table S1 for the Fasanmade_pediatric model: Crohn's disease (n = 112),",
       "paediatric patients, induction and maintenance phases, peak /",

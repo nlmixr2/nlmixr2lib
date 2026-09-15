@@ -43,16 +43,22 @@ Calderin_2025_pyrazinamide <- function() {
   # the sibling LASER-TBM model Abdelgawad_2024_linezolid.R.
   compartmentData <- list(
     depot = list(
-      analyte = "pyrazinamide", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "pyrazinamide",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "pyrazinamide", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "pyrazinamide",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     csf = list(
-      analyte = "pyrazinamide", units = "mg/L",
-      specimen = "CSF", verified = TRUE
+      analyte = "pyrazinamide",
+      units = "mg/L",
+      specimen = "CSF",
+      verified = TRUE
     )
   )
 

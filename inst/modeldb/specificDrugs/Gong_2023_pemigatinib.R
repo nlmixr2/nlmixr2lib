@@ -41,24 +41,24 @@ Gong_2023_pemigatinib <- function() {
     sep = " "
   )
   vignette <- "Gong_2023_pemigatinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "nM")
+  units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   # States hold pemigatinib amounts in mg (the dosing unit); the observation Cc
   # converts the central amount to nM via the Appendix S1 scaling
   # S2 = V2/1000000*487.5, i.e. pemigatinib MW 487.5 g/mol.
   compartmentData <- list(
-    depot       = list(analyte = "pemigatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "pemigatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "pemigatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pemigatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pemigatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline body weight. Cohort mean 75.7 kg (SD 19.7),",
         "median 73.9 kg, range 39.8-156 kg across 467 subjects (Gong 2023",
         "Table 1). Enters as a power function normalized to the cohort",
@@ -74,14 +74,14 @@ Gong_2023_pemigatinib <- function() {
         "as the control-stream `**THETA` form confirms. No weight effect",
         "was retained on CL/F or Q/F."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female) -- the reference (most common) level in Gong 2023",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. 219 of 467 subjects (46.9%) were men",
         "(Gong 2023 Table 1), so female is the more common level and is",
         "the reference category. The source column is SEXN, coded 1 = male",
@@ -93,14 +93,14 @@ Gong_2023_pemigatinib <- function() {
         "are reported in Gong 2023 Table 2 as 'Male sex on CL/F, %' (+26.2%)",
         "and 'Male sex on Ka, %' (-58.3%), confirming that SEXN = 1 is male."
       ),
-      source_name        = "SEXN"
+      source_name = "SEXN"
     ),
     CONMED_PPI = list(
-      description        = "Concomitant proton-pump inhibitor use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant proton-pump inhibitor use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant PPI use)",
-      notes              = paste(
+      notes = paste(
         "1 = patient on a concomitant proton-pump inhibitor, 0 = not.",
         "114 of 467 subjects (24.4%) were PPI users (Gong 2023 Table 1).",
         "Applied multiplicatively to ka as (1 + e_ppi_ka * CONMED_PPI) per",
@@ -109,14 +109,14 @@ Gong_2023_pemigatinib <- function() {
         "Mechanistically consistent with pemigatinib's pH-dependent",
         "solubility (poorly soluble at pH > 2; Gong 2023 Discussion)."
       ),
-      source_name        = "PPI"
+      source_name = "PPI"
     ),
     CONMED_H2RA = list(
-      description        = "Concomitant histamine-2 receptor antagonist use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant histamine-2 receptor antagonist use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant H2RA use)",
-      notes              = paste(
+      notes = paste(
         "1 = patient on a concomitant histamine-2 receptor antagonist",
         "(H2B in the source), 0 = not. 39 of 467 subjects (8.4%) were H2RA",
         "users (Gong 2023 Table 1). Applied multiplicatively to the",
@@ -128,14 +128,14 @@ Gong_2023_pemigatinib <- function() {
         "the H2RA result is confounded by sparse sampling and the small",
         "number of H2RA users."
       ),
-      source_name        = "H2B"
+      source_name = "H2B"
     ),
     CONMED_PHOSBINDER = list(
-      description        = "Concomitant phosphate-binding agent use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phosphate-binding agent use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phosphate-binder use)",
-      notes              = paste(
+      notes = paste(
         "1 = patient on a concomitant phosphate-binding agent, 0 = not.",
         "61 of 467 subjects (13.1%) were phosphate-binder users, all of",
         "them patients rather than healthy participants (Gong 2023",
@@ -148,16 +148,16 @@ Gong_2023_pemigatinib <- function() {
         "Gong 2023 Discussion states the 15.5% CL/F reduction is 'not",
         "readily explained' and is not clinically significant."
       ),
-      source_name        = "BINDER"
+      source_name = "BINDER"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and Vc/F in the stepwise covariate search but",
         "not retained in the final model (Gong 2023 Methods 'Population PK",
         "analysis'). Cohort mean 54.3 years (SD 14.5), median 56.0,",
@@ -166,9 +166,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     TUMTP_OTHER = list(
       description = "Tumor type / participant type indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Participant type (healthy participant; patient with CCA, other",
         "solid tumors, or MLN with FGFR1 rearrangement) was screened on",
         "CL/F and was significant at the forward-addition step, but was",
@@ -179,9 +179,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     CRCL = list(
       description = "Renal function (eGFR by MDRD), used for renal-impairment classification",
-      units       = "mL/min/1.73 m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      notes = paste(
         "Renal impairment classified by MDRD eGFR was screened on CL/F and",
         "was not significant (Gong 2023 Results). Renal clearance of",
         "pemigatinib is only 1-2% of total clearance (Discussion), so mild",
@@ -191,9 +191,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     HEPATIC_NCI = list(
       description = "Hepatic impairment category (NCI Organ Dysfunction Working Group)",
-      units       = "(category)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(category)",
+      type = "categorical",
+      notes = paste(
         "Screened on CL/F and not significant (Gong 2023 Results). Only 12",
         "patients had moderate hepatic impairment, which prevented",
         "comparison of CL/F in that group. Not in the final model."
@@ -201,9 +201,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     CONMED_CYP3A4_IND = list(
       description = "Concomitant CYP3A4 inducer use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F and not significant (Gong 2023 Results). Only 36",
         "subjects were on weak and 1 on a moderate CYP3A4 inducer",
         "(Table 1); the paper states there was insufficient data to support",
@@ -212,9 +212,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     CONMED_CYP3A4_INH = list(
       description = "Concomitant CYP3A4 inhibitor use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F and not significant (Gong 2023 Results). 98",
         "subjects were on weak and 14 on a moderate CYP3A4 inhibitor",
         "(Table 1). The paper retains the label recommendation to adjust",
@@ -225,9 +225,9 @@ Gong_2023_pemigatinib <- function() {
     ),
     FASTED = list(
       description = "Fasting status at the dose record",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on ka (Gong 2023 Methods) and not retained in the final",
         "model. Source column FASTFL / FOOD in the Appendix S1 $INPUT",
         "record."
@@ -236,33 +236,33 @@ Gong_2023_pemigatinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 467,
-    n_studies      = 7,
+    species = "human",
+    n_subjects = 467,
+    n_studies = 7,
     n_observations = 4552,
-    age_range      = "19-83 years",
-    age_median     = "56 years",
-    age_mean_sd    = "54.3 (14.5) years",
-    weight_range   = "39.8-156 kg",
-    weight_median  = "73.9 kg",
+    age_range = "19-83 years",
+    age_median = "56 years",
+    age_mean_sd = "54.3 (14.5) years",
+    weight_range = "39.8-156 kg",
+    weight_median = "73.9 kg",
     weight_mean_sd = "75.7 (19.7) kg",
     sex_female_pct = 53.1,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy participants (78; 16.7%) and patients with advanced",
       "malignancies: cholangiocarcinoma (163; 34.9%), myeloid/lymphoid",
       "neoplasms with FGFR1 rearrangement (34; 7.3%), and other cancers",
       "(192; 41.1%)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1-20 mg orally once daily; continuous once-daily and intermittent",
       "(2 weeks on / 1 week off, 21-day cycle) regimens. The approved and",
       "recommended dose is 13.5 mg once daily on the intermittent schedule."
     ),
-    studies        = paste(
+    studies = paste(
       "FIGHT-101 (NCT02393248), FIGHT-102 (NCT03235570), FIGHT-104,",
       "FIGHT-105, FIGHT-106, FIGHT-202, FIGHT-203 (Gong 2023 Table S1)."
     ),
-    regions        = "United States, Denmark, Japan",
+    regions = "United States, Denmark, Japan",
     renal_function = paste(
       "Unimpaired 250 (53.5%), mild 169 (36.2%), moderate 48 (10.3%);",
       "classified by MDRD eGFR."
@@ -271,11 +271,11 @@ Gong_2023_pemigatinib <- function() {
       "Unimpaired 339 (72.6%), mild 116 (24.8%), moderate 12 (2.6%);",
       "classified by the NCI Hepatic Dysfunction Working Group criteria."
     ),
-    co_medication  = paste(
+    co_medication = paste(
       "Phosphate binders 61 (13.1%), PPI 114 (24.4%), H2RA 39 (8.4%);",
       "89.3% received pemigatinib monotherapy."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics and covariate summary are Gong 2023 Table 1.",
       "This model is a refinement of an earlier pemigatinib popPK model",
       "built on FIGHT-101 (n = 157), FIGHT-102 (n = 25), and FIGHT-202",

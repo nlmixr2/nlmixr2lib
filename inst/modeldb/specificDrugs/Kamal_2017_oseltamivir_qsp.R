@@ -61,8 +61,8 @@ Kamal_2017_oseltamivir_qsp <- function() {
     c("susceptible", "exposed", "infected", "recovered")
 
   units <- list(
-    time          = "day",
-    dosing        = paste(
+    time = "day",
+    dosing = paste(
       "no dosing events (population-level transmission model); the",
       "oseltamivir regimen enters through the f_uptake and f_auchigh",
       "parameters, which the authors simulated for 75 mg and 150 mg",
@@ -77,19 +77,27 @@ Kamal_2017_oseltamivir_qsp <- function() {
   compartmentData <- list(
     susceptible = list(
       analyte = "susceptible individuals",
-      units = "individuals", specimen = "not applicable", verified = TRUE
+      units = "individuals",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     exposed = list(
       analyte = "exposed (latently infected, not yet infectious) individuals",
-      units = "individuals", specimen = "not applicable", verified = TRUE
+      units = "individuals",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     infected = list(
       analyte = "infected (infectious) individuals",
-      units = "individuals", specimen = "not applicable", verified = TRUE
+      units = "individuals",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     recovered = list(
       analyte = "recovered and immune individuals",
-      units = "individuals", specimen = "not applicable", verified = TRUE
+      units = "individuals",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -105,38 +113,38 @@ Kamal_2017_oseltamivir_qsp <- function() {
         "Oseltamivir dose per administration (twice daily for 5 days) in",
         "the simulated treatment arm"
       ),
-      units              = "mg",
-      type               = "continuous",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Not a model covariate. The dose acts only by selecting the",
         "value of f_auchigh: Kamal 2017 Table 1 gives f_auchigh = 0.326",
         "(SD 0.048) for 75 mg twice daily and 0.795 (SD 0.095) for",
         "150 mg twice daily, both for 5 days. Set f_auchigh (and its",
         "variance) to the value matching the regimen being simulated."
       ),
-      source_name        = "oseltamivir dosage regimen"
+      source_name = "oseltamivir dosage regimen"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 100000,
-    n_studies      = 2,
-    age_range      = "18-65 years (the simulated adult population)",
-    weight_median  = "70 kg",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 100000,
+    n_studies = 2,
+    age_range = "18-65 years (the simulated adult population)",
+    weight_median = "70 kg",
+    disease_state = paste(
       "A simulated closed population of 100 000 individuals susceptible",
       "to pandemic influenza, seeded with a single infected index case",
       "and followed for one influenza season (365 days)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "no treatment, oseltamivir 75 mg twice daily, or 150 mg twice",
       "daily, each for 5 days; antiviral uptake 25%, 50% or 80% of",
       "infected individuals"
     ),
-    regions        = "USA (health-economic and epidemic-validation data)",
-    notes          = paste(
+    regions = "USA (health-economic and epidemic-validation data)",
+    notes = paste(
       "This is a virtual population, not an observed cohort. The",
       "pharmacodynamic inputs (the viral shedding durations Tshed and the",
       "14 180 ng.h/mL oseltamivir carboxylate AUC breakpoint) were",

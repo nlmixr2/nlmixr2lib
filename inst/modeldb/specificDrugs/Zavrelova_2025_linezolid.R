@@ -12,20 +12,20 @@ Zavrelova_2025_linezolid <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Entered UNCENTRED on the log scale, exactly as printed in the source: Vd = 99.44 * exp(-0.013 * AGE) and CL = 46.93 * exp(-0.023 * AGE). Vd_pop and CL_pop are therefore the extrapolated age-0 intercepts, not values at a reference age. Cohort median 59 years (IQR 48-70, range 26-82; Table 1), at which Vd = 46.2 L and CL = 12.1 L/h as stated in Results 3.2.",
-      source_name        = "Age"
+      notes = "Entered UNCENTRED on the log scale, exactly as printed in the source: Vd = 99.44 * exp(-0.013 * AGE) and CL = 46.93 * exp(-0.023 * AGE). Vd_pop and CL_pop are therefore the extrapolated age-0 intercepts, not values at a reference age. Cohort median 59 years (IQR 48-70, range 26-82; Table 1), at which Vd = 46.2 L and CL = 12.1 L/h as stated in Results 3.2.",
+      source_name = "Age"
     ),
     DAY4 = list(
-      description        = "Day-4-of-therapy landmark indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Day-4-of-therapy landmark indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (day 1 of therapy)",
-      notes              = "Within-subject step indicator entered as a regressor (time-varying covariate) in Monolix: 0 for day-1 observations, 1 for day-4 observations. Gates the exp(-0.40) = 0.67 fold change in CL reported in Table 2, i.e. the 33% CL reduction between days 1 and 4 (Results 3.2, Discussion). The source samples only days 1 and 4 and states it could not localise when the change occurs (Discussion: 'the described reduction in CL probably occurs' by about day 2), so the cutoff is a sampling landmark, not a mechanistic threshold.",
-      source_name        = "4th day"
+      notes = "Within-subject step indicator entered as a regressor (time-varying covariate) in Monolix: 0 for day-1 observations, 1 for day-4 observations. Gates the exp(-0.40) = 0.67 fold change in CL reported in Table 2, i.e. the 33% CL reduction between days 1 and 4 (Results 3.2, Discussion). The source samples only days 1 and 4 and states it could not localise when the change occurs (Discussion: 'the described reduction in CL probably occurs' by about day 2), so the cutoff is a sampling landmark, not a mechanistic threshold.",
+      source_name = "4th day"
     )
   )
 
@@ -35,75 +35,101 @@ Zavrelova_2025_linezolid <- function() {
   # these names are deliberately absent from model() and from covariateData.
   covariatesDataExcluded <- list(
     WT = list(
-      description = "Body weight", units = "kg", type = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       notes = "Median 84 kg (IQR 74-91, range 60-122; Table 1). Not correlated with Vd (p = 0.425) or CL (p = 0.513) in the graphical screen, and adding it did not significantly decrease OFV (Discussion). The nomogram-validation sub-set (Figure S6) likewise showed no trend of serum level on body weight."
     ),
     HT = list(
-      description = "Body height", units = "cm", type = "continuous",
+      description = "Body height",
+      units = "cm",
+      type = "continuous",
       notes = "Median 176 cm (IQR 167-185, range 158-190; Table 1). Screened, not retained."
     ),
     BSA = list(
-      description = "Body surface area", units = "m^2", type = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       notes = "Median 2.02 m^2 (IQR 1.85-2.14, range 1.62-2.44; Table 1). Screened, not retained."
     ),
     CREAT = list(
-      description = "Serum creatinine", units = "umol/L", type = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Median 79 umol/L (IQR 56-123, range 36-459; Table 1). Correlation with linezolid CL was not significant (p = 0.162; Discussion)."
     ),
     CRCL = list(
-      description = "Estimated glomerular filtration rate (CKD-EPI)", units = "mL/s", type = "continuous",
+      description = "Estimated glomerular filtration rate (CKD-EPI)",
+      units = "mL/s",
+      type = "continuous",
       notes = "Median 1.53 mL/s (IQR 0.88-1.76, range 0.16-2.27; Table 1). Correlated with CL in the graphical screen but more weakly than age (p = 0.0099 vs p = 0.0000125); once age entered the model the eGFR-CL relationship disappeared, which the authors attribute to age being a component of the CKD-EPI formula (Discussion). Reported in mL/s, not the mL/min/1.73 m^2 more usual for this canonical."
     ),
     TBILI = list(
-      description = "Serum total bilirubin", units = "umol/L", type = "continuous",
+      description = "Serum total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Median 12 umol/L (IQR 9-16, range 2-112; Table 1). Screened, not retained."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "ukat/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "ukat/L",
+      type = "continuous",
       notes = "Median 0.40 ukat/L (IQR 0.31-0.55, range 0.11-2.02; Table 1). Screened, not retained."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "ukat/L", type = "continuous",
+      description = "Alanine aminotransferase",
+      units = "ukat/L",
+      type = "continuous",
       notes = "Median 0.50 ukat/L (IQR 0.34-1.02, range 0.13-1.78; Table 1). Screened, not retained."
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "ukat/L", type = "continuous",
+      description = "Alkaline phosphatase",
+      units = "ukat/L",
+      type = "continuous",
       notes = "Median 2.02 ukat/L (IQR 1.36-2.77, range 0.73-7.50; Table 1). Screened, not retained."
     ),
     GGT = list(
-      description = "Gamma-glutamyl transferase", units = "ukat/L", type = "continuous",
+      description = "Gamma-glutamyl transferase",
+      units = "ukat/L",
+      type = "continuous",
       notes = "Median 2.81 ukat/L (IQR 1.05-4.09, range 0.35-13.91; Table 1). Screened, not retained."
     ),
     INR_BASE = list(
-      description = "International normalized ratio", units = "(unitless)", type = "continuous",
+      description = "International normalized ratio",
+      units = "(unitless)",
+      type = "continuous",
       notes = "Median 1.15 (IQR 1.04-1.20, range 0.92-1.66; Table 1). Screened, not retained."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "5 of 22 patients female (22.7%; Table 1). Tested as a categorical covariate (Methods 2.3), not retained."
     ),
     NEUT = list(
-      description = "Absolute neutrophil count", units = "cells/mm^3", type = "continuous",
+      description = "Absolute neutrophil count",
+      units = "cells/mm^3",
+      type = "continuous",
       notes = "Tested as the binary covariate 'neutropenia', defined as an absolute neutrophil count < 500 cells/mm^3 (Methods 2.1, 2.3). Not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 22,
+    n_studies = 1,
     n_observations = 197,
-    age_range      = "26-82 years",
-    age_median     = "59 years",
-    weight_range   = "60-122 kg",
-    weight_median  = "84 kg",
+    age_range = "26-82 years",
+    age_median = "59 years",
+    weight_range = "60-122 kg",
+    weight_median = "84 kg",
     sex_female_pct = 22.7,
     race_ethnicity = "Single-centre Czech cohort; race/ethnicity not reported in the source.",
-    disease_state  = "Adult hematooncological patients (most frequently acute leukaemia, n = 14, and lymphoma, n = 3) treated in a haematology intensive care unit for suspected or proven Gram-positive sepsis; bloodstream infection documented in 12 of 22 (55%). Patients receiving renal replacement therapy were excluded.",
+    disease_state = "Adult hematooncological patients (most frequently acute leukaemia, n = 14, and lymphoma, n = 3) treated in a haematology intensive care unit for suspected or proven Gram-positive sepsis; bloodstream infection documented in 12 of 22 (55%). Patients receiving renal replacement therapy were excluded.",
     renal_function = "eGFR (CKD-EPI) median 1.53 mL/s (IQR 0.88-1.76, range 0.16-2.27); serum creatinine median 79 umol/L (range 36-459).",
-    dose_range     = "Intravenous linezolid; 19 of 22 patients received the off-label high dose of 600 mg every 8 h as a 4-h infusion, and 3 patients received 600 mg every 6 h as a 4-h infusion.",
-    regions        = "Czech Republic (University Hospital Hradec Kralove).",
-    notes          = "Retrospective cross-sectional therapeutic-drug-monitoring analysis, July 2023 to September 2024. Samples were drawn at 1, 2, 4, 6 and 8 h after the start of the first infusion (day 1) and again on day 4 (20 of 22 patients); 4-10 concentrations per patient, 9 on average. Seven trough levels were excluded because the next infusion had already started. Demographics in Table 1. A separate prospective validation sub-set of 40 patients dosed by the age-based nomogram (Table 4) is described in Results 3.4 but was not used to fit this model."
+    dose_range = "Intravenous linezolid; 19 of 22 patients received the off-label high dose of 600 mg every 8 h as a 4-h infusion, and 3 patients received 600 mg every 6 h as a 4-h infusion.",
+    regions = "Czech Republic (University Hospital Hradec Kralove).",
+    notes = "Retrospective cross-sectional therapeutic-drug-monitoring analysis, July 2023 to September 2024. Samples were drawn at 1, 2, 4, 6 and 8 h after the start of the first infusion (day 1) and again on day 4 (20 of 22 patients); 4-10 concentrations per patient, 9 on average. Seven trough levels were excluded because the next infusion had already started. Demographics in Table 1. A separate prospective validation sub-set of 40 patients dosed by the age-based nomogram (Table 4) is described in Results 3.4 but was not used to fit this model."
   )
 
   ini({

@@ -5,18 +5,18 @@ Marier_2014_dutogliptin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "dutogliptin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "dutogliptin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "dutogliptin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "dutogliptin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dutogliptin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance calculated with the Cockcroft-Gault formula; NOT BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance calculated with the Cockcroft-Gault formula; NOT BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Raw Cockcroft-Gault CrCL in mL/min (Marier 2014 Methods, 'Population PK Modeling'), not the",
         "BSA-normalized mL/min/1.73 m^2 form that this canonical column more commonly carries.",
         "Power effect on CL/F with reference 115.7 mL/min. Marier 2014 Results, 'Subject Demographics':",
@@ -25,53 +25,53 @@ Marier_2014_dutogliptin <- function() {
         "so CRCL values above 150 mL/min have no further effect on CL/F.",
         "Cohort mean 117.5 mL/min, median 111.0, range 25.4-329.3 (Table 1)."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect with reference 82.5 kg (the cohort median, Table 1) and exponent 1.0 on the",
         "apparent steady-state volume Vss/F (Table 2), applied here to Vc/F and Vp/F together so that",
         "the printed Table 2 equation Vss/F = 2041 * (WT/82.5)^1.0 is reproduced exactly.",
         "No weight effect on CL/F or Q/F was retained."
       ),
-      source_name        = "Body Weight"
+      source_name = "Body Weight"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian or Asian; the two groups share one typical Vss/F in Marier 2014)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on Vss/F. Marier 2014 Results p.302-303 reports Vss/F = 2041 L for Caucasian",
         "and Asian subjects, 2432 L for Black subjects and 1998 L for other races, so the reference",
         "category pools Caucasian and Asian rather than being Caucasian alone.",
         "Paired with RACE_OTHER; both = 0 selects the Caucasian/Asian reference.",
         "Cohort composition (Table 1): Caucasian 63.99%, Asian 12.66%, Black 3.74%, Other 19.61%."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     RACE_OTHER = list(
-      description        = "Race category 'Other' indicator (American Indian or Alaskan Native, Native Hawaiian or other Pacific Islander, American Hispanic, Mixed Race)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race category 'Other' indicator (American Indian or Alaskan Native, Native Hawaiian or other Pacific Islander, American Hispanic, Mixed Race)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian or Asian)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on Vss/F (1998 L vs the 2041 L Caucasian/Asian reference).",
         "The constituent groups are enumerated in Marier 2014 Methods, 'Population PK Modeling'.",
         "Paired with RACE_BLACK; both = 0 selects the Caucasian/Asian reference."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     FORM_TABLET = list(
-      description        = "Dutogliptin tartrate-salt tablet formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dutogliptin tartrate-salt tablet formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled uncoated free-base capsule and aqueous solution)",
-      notes              = paste(
+      notes = paste(
         "Per-dose covariate selecting the tablet first-order absorption rate constant",
         "(Ka = 0.558 1/h) instead of the pooled capsule / aqueous-solution reference (1.55 1/h),",
         "per Marier 2014 Table 2. Formulation acts on Ka only: Marier 2014 Results p.300 states that",
@@ -79,21 +79,21 @@ Marier_2014_dutogliptin <- function() {
         "The non-tablet comparator here is a solid capsule pooled with an aqueous solution, not a",
         "liquid alone. Paired with FORM_DUTOGLIPTIN_ECCAPSULE."
       ),
-      source_name        = "Formulation"
+      source_name = "Formulation"
     ),
     FORM_DUTOGLIPTIN_ECCAPSULE = list(
-      description        = "Enteric-coated dutogliptin capsule formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Enteric-coated dutogliptin capsule formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pooled uncoated free-base capsule and aqueous solution)",
-      notes              = paste(
+      notes = paste(
         "Per-dose covariate selecting the enteric-coated-capsule first-order absorption rate constant",
         "(Ka = 0.0204 1/h), per Marier 2014 Results p.302. Given in period 4 of the PROT103 crossover",
         "to 6 subjects only (Supplemental Table S1); the paper's bootstrap median for this Ka was",
         "16.3% above the point estimate because of that small n.",
         "Paired with FORM_TABLET; both = 0 selects the capsule / aqueous-solution reference."
       ),
-      source_name        = "Formulation"
+      source_name = "Formulation"
     )
   )
 
@@ -102,58 +102,58 @@ Marier_2014_dutogliptin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Evaluated as a power-function covariate on CL/F and Vc/F (Marier 2014 Results, 'Covariates Analysis'); not retained by forward selection at P = .01. Cohort mean 52.7 years, range 18-77 (Table 1); 52 subjects were older than 65 years."
+      units = "years",
+      type = "continuous",
+      notes = "Evaluated as a power-function covariate on CL/F and Vc/F (Marier 2014 Results, 'Covariates Analysis'); not retained by forward selection at P = .01. Cohort mean 52.7 years, range 18-77 (Table 1); 52 subjects were older than 65 years."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Correlated with CL/F (r = 0.22) in the exploratory screen but explicitly NOT carried into the formal covariate analysis: 'The effect of BMI on PK parameters of dutogliptin was not evaluated due to its strong correlation with body weight.' Cohort mean 31.1 kg/m^2 (Table 1)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Correlated with CL/F (r = 0.22) in the exploratory screen but explicitly NOT carried into the formal covariate analysis: 'The effect of BMI on PK parameters of dutogliptin was not evaluated due to its strong correlation with body weight.' Cohort mean 31.1 kg/m^2 (Table 1)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Evaluated on CL/F and Vc/F; 'PK parameters of dutogliptin were not influenced by sex'. Cohort 49.73% female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Evaluated on CL/F and Vc/F; 'PK parameters of dutogliptin were not influenced by sex'. Cohort 49.73% female (Table 1)."
     ),
     DIS_DIAB = list(
       description = "Type 2 diabetes mellitus disease-status indicator (1 = T2DM patient, 0 = healthy subject)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Disease status was evaluated as a covariate; 'No differences were observed between healthy subjects and patients with T2DM' (Abstract). 144 Phase I subjects were healthy except PROT107 (renal impairment) and PROT109 (T2DM); all 417 Phase II subjects had T2DM."
+      units = "(binary)",
+      type = "binary",
+      notes = "Disease status was evaluated as a covariate; 'No differences were observed between healthy subjects and patients with T2DM' (Abstract). 144 Phase I subjects were healthy except PROT107 (renal impairment) and PROT109 (T2DM); all 417 Phase II subjects had T2DM."
     ),
     CONMED_METFORMIN = list(
       description = "Concomitant metformin co-administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Evaluated on CL/F and Vc/F in the drug-drug-interaction screen (PROT109 crossover); 'The coadministration of metformin did not affect any PK parameters of dutogliptin'. Not retained."
+      units = "(binary)",
+      type = "binary",
+      notes = "Evaluated on CL/F and Vc/F in the drug-drug-interaction screen (PROT109 crossover); 'The coadministration of metformin did not affect any PK parameters of dutogliptin'. Not retained."
     ),
     FASTED_STRICT = list(
       description = "Fed / fasting status at the time of dosing",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Three fed/fasting conditions were tested on Ka, ALAG and Frel (administration with breakfast, breakfast/meal 1 hour after administration, meal 3-4 hours after administration); 'no formulation or fed/fasting effects were observed on ALAG and Frel parameters' and no fed/fasting effect on Ka was retained in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Three fed/fasting conditions were tested on Ka, ALAG and Frel (administration with breakfast, breakfast/meal 1 hour after administration, meal 3-4 hours after administration); 'no formulation or fed/fasting effects were observed on ALAG and Frel parameters' and no fed/fasting effect on Ka was retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 561,
-    n_studies      = 9,
-    age_range      = "18-77 years",
-    age_median     = "54 years",
-    weight_range   = "44.6-158.6 kg",
-    weight_median  = "82.5 kg",
+    species = "human",
+    n_subjects = 561,
+    n_studies = 9,
+    age_range = "18-77 years",
+    age_median = "54 years",
+    weight_range = "44.6-158.6 kg",
+    weight_median = "82.5 kg",
     sex_female_pct = 49.73,
     race_ethnicity = c(Caucasian = 63.99, Asian = 12.66, Black = 3.74, Other = 19.61),
-    disease_state  = "Healthy subjects and patients with type 2 diabetes mellitus; includes a dedicated renal-impairment study (PROT107, normal to severe impairment) and a metformin drug-drug-interaction study (PROT109).",
-    dose_range     = "50-500 mg orally, single and once-daily repeated doses",
+    disease_state = "Healthy subjects and patients with type 2 diabetes mellitus; includes a dedicated renal-impairment study (PROT107, normal to severe impairment) and a metformin drug-drug-interaction study (PROT109).",
+    dose_range = "50-500 mg orally, single and once-daily repeated doses",
     renal_function = "Creatinine clearance (Cockcroft-Gault) mean 117.5 mL/min, median 111.0, range 25.4-329.3 mL/min; truncated at 150 mL/min for the covariate analysis.",
-    co_medication  = "Phase II subjects were on stable metformin, or metformin plus a thiazolidinedione.",
-    formulations   = "Aqueous solution, free-base hard-shell capsule, enteric-coated capsule, and tartrate-salt tablet.",
-    notes          = "Demographics from Marier 2014 Table 1 (pooled Phase I and Phase II). 144 subjects contributed 2,933 measurable concentrations in 7 Phase I studies (PROT101, PROT102, PROT103, PROT104, PROT107, PROT109, PROT110; Supplemental Table S1); 417 subjects contributed 2,153 measurable concentrations in 2 Phase II studies (PROT201, PROT202; Supplemental Table S2). Assay LOQ 1 ng/mL. Model fitted with NONMEM VI."
+    co_medication = "Phase II subjects were on stable metformin, or metformin plus a thiazolidinedione.",
+    formulations = "Aqueous solution, free-base hard-shell capsule, enteric-coated capsule, and tartrate-salt tablet.",
+    notes = "Demographics from Marier 2014 Table 1 (pooled Phase I and Phase II). 144 subjects contributed 2,933 measurable concentrations in 7 Phase I studies (PROT101, PROT102, PROT103, PROT104, PROT107, PROT109, PROT110; Supplemental Table S1); 417 subjects contributed 2,153 measurable concentrations in 2 Phase II studies (PROT201, PROT202; Supplemental Table S2). Assay LOQ 1 ng/mL. Model fitted with NONMEM VI."
   )
 
   ini({

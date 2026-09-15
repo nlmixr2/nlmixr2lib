@@ -26,23 +26,23 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "darbepoetin alfa", units = "ug",   specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "darbepoetin alfa", units = "ug",   specimen = "serum",               verified = TRUE),
-    peripheral1 = list(analyte = "darbepoetin alfa", units = "ug",   specimen = "serum",               verified = TRUE),
-    precursor1  = list(analyte = "hemoglobin",       units = "g/dL", specimen = "not applicable",      verified = TRUE),
-    hb1         = list(analyte = "hemoglobin",       units = "g/dL", specimen = "whole blood",         verified = TRUE),
-    hb2         = list(analyte = "hemoglobin",       units = "g/dL", specimen = "whole blood",         verified = TRUE),
-    hb3         = list(analyte = "hemoglobin",       units = "g/dL", specimen = "whole blood",         verified = TRUE),
-    hb4         = list(analyte = "hemoglobin",       units = "g/dL", specimen = "whole blood",         verified = TRUE)
+    depot = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "darbepoetin alfa", units = "ug", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "darbepoetin alfa", units = "ug", specimen = "serum", verified = TRUE),
+    precursor1 = list(analyte = "hemoglobin", units = "g/dL", specimen = "not applicable", verified = TRUE),
+    hb1 = list(analyte = "hemoglobin", units = "g/dL", specimen = "whole blood", verified = TRUE),
+    hb2 = list(analyte = "hemoglobin", units = "g/dL", specimen = "whole blood", verified = TRUE),
+    hb3 = list(analyte = "hemoglobin", units = "g/dL", specimen = "whole blood", verified = TRUE),
+    hb4 = list(analyte = "hemoglobin", units = "g/dL", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only through the fixed PK layer, via the normalized power",
         "effects on clearance and central volume with an explicit reference",
         "weight of 70 kg printed in Agoram 2006 Equations 12 and 13",
@@ -51,14 +51,14 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
         "Model). PD development cohort mean 69.9 +/- 16.2 kg, range 39-136 kg",
         "(Table 2, combined 20010162 + 980290 + 980291)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     CONMED_PLATIN_GT2 = list(
-      description        = "More than two cycles of concomitant platinum-containing chemotherapy during the PK assessment window",
-      units              = "(binary)",
-      type               = "binary",
+      description = "More than two cycles of concomitant platinum-containing chemotherapy during the PK assessment window",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Enters only through the fixed PK layer (Agoram 2006 Equation 12,",
         "`X = 1 if PCNT > 2, else X = 0`), multiplying clearance by",
         "theta1 = 0.737. This is the SAME underlying platinum-cycle count",
@@ -67,14 +67,14 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
         "model must carry both indicator columns. Mutual-consistency",
         "constraint: CONMED_PLATIN_GT2 = 1 implies CONMED_PLATIN = 1."
       ),
-      source_name        = "PCNT (dichotomized at > 2)"
+      source_name = "PCNT (dichotomized at > 2)"
     ),
     CONMED_PLATIN = list(
-      description        = "Any concomitant platinum-containing chemotherapy during the assessment window",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any concomitant platinum-containing chemotherapy during the assessment window",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Agoram 2006 Equation 14 dichotomizes the platinum-cycle count PCNT",
         "as `X = 1 if PCNT > 0, else X = 0` and applies it to S50 as a",
         "multiplicative power term `(theta4)^X` with theta4 = 1.86, i.e. an",
@@ -86,7 +86,7 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
         "is retained here because the publication reports it as part of the",
         "full PkPd model (Table 4)."
       ),
-      source_name        = "PCNT (dichotomized at > 0)"
+      source_name = "PCNT (dichotomized at > 0)"
     )
   )
 
@@ -101,48 +101,48 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened graphically against the RBCLS and S50 etas; not retained in the full PkPd covariate model (Agoram 2006 Results). No estimate reported."
+      units = "years",
+      type = "continuous",
+      notes = "Screened graphically against the RBCLS and S50 etas; not retained in the full PkPd covariate model (Agoram 2006 Results). No estimate reported."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
     ),
     LDH = list(
       description = "Serum lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
     ),
     FERRITIN = list(
       description = "Serum ferritin",
-      units       = "ug/L",
-      type        = "continuous",
-      notes       = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
+      units = "ug/L",
+      type = "continuous",
+      notes = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened graphically against the RBCLS and S50 etas; not retained (Agoram 2006 Results). No estimate reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 573L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 573L,
+    n_studies = 3L,
     n_observations = 6356L,
-    age_range      = "20-91 years (combined PkPd data set; Agoram 2006 Table 2)",
-    age_median     = "Mean 60.1 years, SD 12.3 (median not tabulated)",
-    weight_range   = "39-136 kg (combined PkPd data set; Agoram 2006 Table 2)",
-    weight_median  = "Mean 69.9 kg, SD 16.2 (median not tabulated)",
+    age_range = "20-91 years (combined PkPd data set; Agoram 2006 Table 2)",
+    age_median = "Mean 60.1 years, SD 12.3 (median not tabulated)",
+    weight_range = "39-136 kg (combined PkPd data set; Agoram 2006 Table 2)",
+    weight_median = "Mean 69.9 kg, SD 16.2 (median not tabulated)",
     sex_female_pct = 70,
     race_ethnicity = "Screened as a PD covariate but not tabulated in Agoram 2006.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults (>= 18 years) with nonmyeloid malignancies receiving cyclic",
       "chemotherapy, with chemotherapy-induced anemia (hemoglobin >= 9.0 and",
       "<= 11.0 g/dL at entry). ECOG performance status 0-2 with adequate renal",
@@ -157,15 +157,15 @@ Agoram_2006_darbepoetin_alfa_cia_hemoglobin <- function() {
       "analysis because its hemoglobin entry criterion (<= 13.0 g/dL) differed",
       "substantially from the other studies."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.5 to 4.5 ug/kg SC QW, 3.0 to 9.0 ug/kg SC Q2W, 4.5 to 15 ug/kg SC",
       "Q3W and 9.0 to 18.0 ug/kg SC Q4W across studies 20010162, 980290 and",
       "980291; study 20010162 also contributed 6.75 ug/kg SC Q3W (Agoram 2006",
       "Table 1). The PD estimation data set spanned 0.5 ug/kg QW to 15 ug/kg",
       "Q3W."
     ),
-    regions        = "Three Amgen-sponsored clinical studies (20010162, 980290, 980291); geographic sites not stated in the publication.",
-    notes          = paste(
+    regions = "Three Amgen-sponsored clinical studies (20010162, 980290, 980291); geographic sites not stated in the publication.",
+    notes = paste(
       "PkPd model development data set: 573 patients and 6356 hemoglobin",
       "observations pooled from Amgen studies 20010162 (n = 84), 980290",
       "(n = 228) and 980291 (n = 261). Hemoglobin was measured weekly, before",

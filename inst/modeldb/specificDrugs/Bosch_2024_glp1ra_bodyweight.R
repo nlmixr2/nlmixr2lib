@@ -47,15 +47,22 @@ Bosch_2024_glp1ra_bodyweight <- function() {
   vignette <- "Bosch_2024_glp1ra_bodyweight"
 
   paper_specific_compartments <- c(
-    "fat", "prot", "carb", "decw", "bwecw",
-    "lipol_diet", "therm",
-    "depot_lira", "central_lira",
-    "depot_sema", "central_sema"
+    "fat",
+    "prot",
+    "carb",
+    "decw",
+    "bwecw",
+    "lipol_diet",
+    "therm",
+    "depot_lira",
+    "central_lira",
+    "depot_sema",
+    "central_sema"
   )
 
   units <- list(
-    time          = "d",
-    dosing        = "pmol",
+    time = "d",
+    dosing = "pmol",
     concentration = "pmol/L"
   )
 
@@ -64,93 +71,93 @@ Bosch_2024_glp1ra_bodyweight <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fat          = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
-    prot         = list(analyte = "protein", units = "pmol", specimen = "administration site", verified = FALSE),
-    carb         = list(analyte = "carbohydrates", units = "pmol", specimen = "administration site", verified = FALSE),
-    decw         = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
-    bwecw        = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
-    lipol_diet   = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
-    therm        = list(analyte = "energy", units = "pmol", specimen = "administration site", verified = FALSE),
-    depot_lira   = list(analyte = "liraglutide", units = "pmol", specimen = "administration site", verified = FALSE),
+    fat = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
+    prot = list(analyte = "protein", units = "pmol", specimen = "administration site", verified = FALSE),
+    carb = list(analyte = "carbohydrates", units = "pmol", specimen = "administration site", verified = FALSE),
+    decw = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
+    bwecw = list(analyte = "water", units = "pmol", specimen = "administration site", verified = FALSE),
+    lipol_diet = list(analyte = "triglycerides", units = "pmol", specimen = "administration site", verified = FALSE),
+    therm = list(analyte = "energy", units = "pmol", specimen = "administration site", verified = FALSE),
+    depot_lira = list(analyte = "liraglutide", units = "pmol", specimen = "administration site", verified = FALSE),
     central_lira = list(analyte = "liraglutide", units = "pmol", specimen = "plasma", verified = FALSE),
-    depot_sema   = list(analyte = "semaglutide", units = "pmol", specimen = "administration site", verified = FALSE),
+    depot_sema = list(analyte = "semaglutide", units = "pmol", specimen = "administration site", verified = FALSE),
     central_sema = list(analyte = "semaglutide", units = "pmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight at study entry; sets the steady-state energy balance and the allometric scaling of liraglutide and semaglutide PK.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight at study entry; sets the steady-state energy balance and the allometric scaling of liraglutide and semaglutide PK.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Bosch 2024 supplement S10 uses BW0 as the baseline body weight; passed unchanged here as WT. Sets the body fat / fat-free-mass / RMR initial conditions and the (WT/85)^0.774 semaglutide CL scaling and (WT/90)^0.703 / ^1.24 liraglutide CL / Vc scaling. Hall model time-varying BW state is tracked internally as BWkg.",
-      source_name        = "BW0"
+      notes = "Bosch 2024 supplement S10 uses BW0 as the baseline body weight; passed unchanged here as WT. Sets the body fat / fat-free-mass / RMR initial conditions and the (WT/85)^0.774 semaglutide CL scaling and (WT/90)^0.703 / ^1.24 liraglutide CL / Vc scaling. Hall model time-varying BW state is tracked internally as BWkg.",
+      source_name = "BW0"
     ),
     HT = list(
-      description        = "Baseline body height; enters the Mifflin resting metabolic rate equation as cm and the Jackson body-fat regression via BMI.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Baseline body height; enters the Mifflin resting metabolic rate equation as cm and the Jackson body-fat regression via BMI.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Bosch 2024 supplement S10 carries height in metres as HGHT; the model interconverts (cm = HT, m = HT/100). RMR (kcal/d) = 9.99 * BW0 + 6.25 * HT - 4.92 * AGE + s where s = +5 for males and -161 for females.",
-      source_name        = "HGHT (metres in source)"
+      notes = "Bosch 2024 supplement S10 carries height in metres as HGHT; the model interconverts (cm = HT, m = HT/100). RMR (kcal/d) = 9.99 * BW0 + 6.25 * HT - 4.92 * AGE + s where s = +5 for males and -161 for females.",
+      source_name = "HGHT (metres in source)"
     ),
     AGE = list(
-      description        = "Subject age at baseline; enters the Mifflin RMR equation and the Jackson body-fat regression.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline; enters the Mifflin RMR equation and the Jackson body-fat regression.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in both RMR (-4.92 * AGE) and Jackson body-fat regression (0.14 * AGE).",
-      source_name        = "AGE"
+      notes = "Used in both RMR (-4.92 * AGE) and Jackson body-fat regression (0.14 * AGE).",
+      source_name = "AGE"
     ),
     BMI = list(
-      description        = "Baseline body mass index; drives the Jackson initial body-fat fraction via log(BMI).",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index; drives the Jackson initial body-fat fraction via log(BMI).",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "F_init / BW0 (kg/kg) = 0.0014 * AGE + 0.3731 * log(BMI) - 1.0394 (men) or 0.0014 * AGE + 0.3996 * log(BMI) - 1.0201 (women), per Jackson 2002 Br J Nutr 89(2):277-285 as cited in supplement S10.",
-      source_name        = "BMI0"
+      notes = "F_init / BW0 (kg/kg) = 0.0014 * AGE + 0.3731 * log(BMI) - 1.0394 (men) or 0.0014 * AGE + 0.3996 * log(BMI) - 1.0201 (women), per Jackson 2002 Br J Nutr 89(2):277-285 as cited in supplement S10.",
+      source_name = "BMI0"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male; selects female vs male coefficients of the Jackson body-fat regression and the Mifflin RMR equation.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male; selects female vs male coefficients of the Jackson body-fat regression and the Mifflin RMR equation.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Bosch 2024 supplement S10 uses SEX = 0 for male, SEX = 1 for female, SEX = 99 for pooled-mean studies with a FRACFEM majority test; in nlmixr2lib the user passes a single 0/1 SEXF based on cohort majority for mean-data simulations and per-subject sex for individual-level simulations.",
-      source_name        = "SEX"
+      notes = "Bosch 2024 supplement S10 uses SEX = 0 for male, SEX = 1 for female, SEX = 99 for pooled-mean studies with a FRACFEM majority test; in nlmixr2lib the user passes a single 0/1 SEXF based on cohort majority for mean-data simulations and per-subject sex for individual-level simulations.",
+      source_name = "SEX"
     ),
     LSCI = list(
-      description        = "Lifestyle change intensity: amplitude of the inverse-Bateman lifestyle-change effect on energy intake (fractional peak reduction in EI from study participation, dietary restriction, or placebo behavioural intervention).",
-      units              = "fraction (0..1)",
-      type               = "continuous",
+      description = "Lifestyle change intensity: amplitude of the inverse-Bateman lifestyle-change effect on energy intake (fractional peak reduction in EI from study participation, dietary restriction, or placebo behavioural intervention).",
+      units = "fraction (0..1)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Bosch 2024 supplement S10 reports study-specific LSCI values estimated per study: 0 for Can 2014 placebo, 0.079 for Pi-Sunyer 2015 SCALE, 0.099 for Astrup 2009, 0.112 for le Roux 2017 SCALE, 0.224 for STEP 1, 0.117 for STEP 1 late (TIME >= 105 d), 0.149 for STEP 5 and STEP 8 placebo arms, 0.548 for STEP 3, and -0.0288 for Blundell 2017. The user supplies the appropriate LSCI for the study/arm being simulated; the model uses it directly without rescaling.",
-      source_name        = "LSCI"
+      notes = "Bosch 2024 supplement S10 reports study-specific LSCI values estimated per study: 0 for Can 2014 placebo, 0.079 for Pi-Sunyer 2015 SCALE, 0.099 for Astrup 2009, 0.112 for le Roux 2017 SCALE, 0.224 for STEP 1, 0.117 for STEP 1 late (TIME >= 105 d), 0.149 for STEP 5 and STEP 8 placebo arms, 0.548 for STEP 3, and -0.0288 for Blundell 2017. The user supplies the appropriate LSCI for the study/arm being simulated; the model uses it directly without rescaling.",
+      source_name = "LSCI"
     ),
     WM_IBT = list(
-      description        = "Weight management with intensive behavioural treatment indicator, 1 = subject is enrolled in an arm with weight management + intensive behavioural treatment (the activity effect is applied), 0 = otherwise (no activity effect).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Weight management with intensive behavioural treatment indicator, 1 = subject is enrolled in an arm with weight management + intensive behavioural treatment (the activity effect is applied), 0 = otherwise (no activity effect).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no WM-IBT intervention)",
-      notes              = "Bosch 2024 supplement S10 gates the activity effect with an IFLAG that is set to 1 only for the STEP studies where the protocol explicitly added weight management + intensive behavioural treatment in addition to the GLP-1R agonist. The activity effect describes a study-protocol-induced increase in exercise expenditure correlated with weight loss (Bosch 2024 Figure 2); under WM_IBT = 0 the model reduces to the Hall body composition + LSC + drug-effect base.",
-      source_name        = "IFLAG"
+      notes = "Bosch 2024 supplement S10 gates the activity effect with an IFLAG that is set to 1 only for the STEP studies where the protocol explicitly added weight management + intensive behavioural treatment in addition to the GLP-1R agonist. The activity effect describes a study-protocol-induced increase in exercise expenditure correlated with weight loss (Bosch 2024 Figure 2); under WM_IBT = 0 the model reduces to the Hall body composition + LSC + drug-effect base.",
+      source_name = "IFLAG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 14L,
-    age_range      = "18 to 75 years (pooled adult)",
-    weight_range   = "67 to 117 kg (study-mean baseline)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 14L,
+    age_range = "18 to 75 years (pooled adult)",
+    weight_range = "67 to 117 kg (study-mean baseline)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Non-diabetic obese, pre-diabetic obese, and type-2 diabetic",
       "obese adults; diet-restriction healthy adults from the Hall",
       "2009 validation studies are also incorporated for the body",
       "composition layer."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Liraglutide 0.6-3.0 mg SC once daily; semaglutide 0.5-2.4 mg",
       "SC once weekly (or oral semaglutide where reported). The",
       "model accepts dosing in pmol to the drug-specific depot",
@@ -159,8 +166,8 @@ Bosch_2024_glp1ra_bodyweight <- function() {
       "MW_sema = 4113.58 g/mol (e.g., 3.0 mg liraglutide = 3.0e6",
       "/ 3751.20 = 800 nmol = 800000 pmol)."
     ),
-    regions        = "Global (US, EU, Asia)",
-    notes          = paste(
+    regions = "Global (US, EU, Asia)",
+    notes = paste(
       "Mean-study-data analysis pooling 14 publications: Diaz 1992,",
       "Jebb 1993, Jebb 1996, Schrauwen 1997, Das 2017, Heilbronn",
       "2006, Guo 2018, Redman 2007, Racette 2011, Weiss 2015,",

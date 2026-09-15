@@ -12,21 +12,51 @@ Mody_2023_doxorubicin_dexrazoxane_jimt1 <- function() {
   vignette <- "Mody_2023_doxorubicin_dexrazoxane_breast_cancer"
 
   units <- list(
-    time          = "h",
-    dosing        = "uM (drug concentration applied to the culture medium at t = 0)",
+    time = "h",
+    dosing = "uM (drug concentration applied to the culture medium at t = 0)",
     concentration = "uM (medium drug concentration); % (cell viability, the PD readout)"
   )
 
   compartmentData <- list(
-    conc_dox                = list(analyte = "doxorubicin", units = "uM", specimen = "administration site", verified = TRUE),
-    conc_dexrazoxane        = list(analyte = "dexrazoxane", units = "uM", specimen = "administration site", verified = TRUE),
-    transit1_dox            = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit2_dox            = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit3_dox            = list(analyte = "doxorubicin cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit1_dexrazoxane    = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit2_dexrazoxane    = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    transit3_dexrazoxane    = list(analyte = "dexrazoxane cell-death signal", units = "1/h", specimen = "not applicable", verified = TRUE),
-    viability               = list(analyte = "cell viability", units = "%", specimen = "not applicable", verified = TRUE)
+    conc_dox = list(analyte = "doxorubicin", units = "uM", specimen = "administration site", verified = TRUE),
+    conc_dexrazoxane = list(analyte = "dexrazoxane", units = "uM", specimen = "administration site", verified = TRUE),
+    transit1_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit3_dox = list(
+      analyte = "doxorubicin cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit1_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit2_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    transit3_dexrazoxane = list(
+      analyte = "dexrazoxane cell-death signal",
+      units = "1/h",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    viability = list(analyte = "cell viability", units = "%", specimen = "not applicable", verified = TRUE)
   )
 
   # conc_dox / conc_dexrazoxane are the cell-culture-medium drug
@@ -39,14 +69,14 @@ Mody_2023_doxorubicin_dexrazoxane_jimt1 <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "in vitro (JIMT-1 human breast cancer cell line)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = "HER2-expressing, trastuzumab-resistant breast cancer. JIMT-1 cells seeded at 3 x 10^3 cells per well (100 uL) of a 96-well plate, incubated overnight, then exposed to DOX, DEX or their combination and assayed for viability with CCK-8 (absorbance 450 nm).",
-    dose_range     = "DOX 0.005-1 uM, DEX 6.25-200 uM, and 36 DOX x DEX combinations of those levels.",
-    cell_line      = "JIMT-1 (AddexBio, San Diego, CA); HER2-expressing, trastuzumab-resistant breast cancer.",
-    culture        = "DMEM with 10% sterile filtered fetal bovine serum, 1% sodium bicarbonate, 1% MEM non-essential amino acids and 1% penicillin/streptomycin; 37 C, humidified 5% CO2; passaged at confluency with 0.25% trypsin / 2.21 nM EDTA.",
-    notes          = "No between-well or between-experiment random effects were estimated; Table 2 reports point estimates with %RSE only. Experiments were run in at least triplicate against matched vehicle controls. The paper introduces an arbitrary 10% CV IIV on the PD parameters only at the clinical-simulation stage (see Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1)."
+    species = "in vitro (JIMT-1 human breast cancer cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = "HER2-expressing, trastuzumab-resistant breast cancer. JIMT-1 cells seeded at 3 x 10^3 cells per well (100 uL) of a 96-well plate, incubated overnight, then exposed to DOX, DEX or their combination and assayed for viability with CCK-8 (absorbance 450 nm).",
+    dose_range = "DOX 0.005-1 uM, DEX 6.25-200 uM, and 36 DOX x DEX combinations of those levels.",
+    cell_line = "JIMT-1 (AddexBio, San Diego, CA); HER2-expressing, trastuzumab-resistant breast cancer.",
+    culture = "DMEM with 10% sterile filtered fetal bovine serum, 1% sodium bicarbonate, 1% MEM non-essential amino acids and 1% penicillin/streptomycin; 37 C, humidified 5% CO2; passaged at confluency with 0.25% trypsin / 2.21 nM EDTA.",
+    notes = "No between-well or between-experiment random effects were estimated; Table 2 reports point estimates with %RSE only. Experiments were run in at least triplicate against matched vehicle controls. The paper introduces an arbitrary 10% CV IIV on the PD parameters only at the clinical-simulation stage (see Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1)."
   )
 
   ini({

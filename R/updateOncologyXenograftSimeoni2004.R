@@ -13,12 +13,15 @@
 #' readModelDb("oncology_xenograft_simeoni_2004") |>
 #'   updateOncologyXenograftSimeoni2004(ncmt = 5)
 #' @export
-updateOncologyXenograftSimeoni2004 <- function(object, ncmt,
-                                               damagedCmtName = "damaged_cells",
-                                               drugEffectName = "drugEffectCyclingCells",
-                                               undamagedCmtName = "cycling_cells",
-                                               tumorVolName = "tumor_vol",
-                                               transitRateName = "damageTransit") {
+updateOncologyXenograftSimeoni2004 <- function(
+  object,
+  ncmt,
+  damagedCmtName = "damaged_cells",
+  drugEffectName = "drugEffectCyclingCells",
+  undamagedCmtName = "cycling_cells",
+  tumorVolName = "tumor_vol",
+  transitRateName = "damageTransit"
+) {
   checkmate::assert_integerish(ncmt, lower = 1, upper = 100, any.missing = FALSE, len = 1, null.ok = FALSE)
   if (is.function(object)) {
     # Convert a function to something able to be queried
@@ -41,8 +44,10 @@ updateOncologyXenograftSimeoni2004 <- function(object, ncmt,
     sprintf(
       "d/dt(%s) <- %s*%s - %s*%s",
       newStates[1],
-      drugEffectName, undamagedCmtName,
-      transitRateName, newStates[1]
+      drugEffectName,
+      undamagedCmtName,
+      transitRateName,
+      newStates[1]
     )
   if (ncmt > 1) {
     damagedLines <-
@@ -50,8 +55,10 @@ updateOncologyXenograftSimeoni2004 <- function(object, ncmt,
         damagedLines,
         sprintf(
           "d/dt(%s) <- %s*(%s - %s)",
-          newStates[-1], transitRateName,
-          newStates[-length(newStates)], newStates[-1]
+          newStates[-1],
+          transitRateName,
+          newStates[-length(newStates)],
+          newStates[-1]
         )
       )
   }

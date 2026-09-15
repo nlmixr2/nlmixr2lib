@@ -13,8 +13,8 @@ Lindauer_2017_lacosamide_seizure <- function() {
   )
   vignette <- "Lindauer_2017_lacosamide"
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; the daily-AUC covariate is a per-subject dose-step-varying summary of exposure)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; the daily-AUC covariate is a per-subject dose-step-varying summary of exposure)",
     concentration = "probability (the model outputs `sur_1st` and `sur_2nd` are survival probabilities, not drug concentrations)"
   )
 
@@ -23,82 +23,92 @@ Lindauer_2017_lacosamide_seizure <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    cumhaz_1st = list(analyte = "Hazard of first seizure", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    cumhaz_2nd = list(analyte = "Hazard of second and subsequent seizures", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    cumhaz_1st = list(
+      analyte = "Hazard of first seizure",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    cumhaz_2nd = list(
+      analyte = "Hazard of second and subsequent seizures",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at enrolment (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at enrolment (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Enters the first-seizure log-hazard as e_age_1st * CONMED_LCM * (AGE - 41), i.e., the AGE effect is active only for patients on lacosamide (Lindauer 2017 Results Section 3.4: 'A significant effect of age was only identified for the LCM group ... indicating a treatment-age interaction'). Reference age 41 years is the cohort median (Lindauer 2017 Table 1).",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Enters the first-seizure log-hazard as e_age_1st * CONMED_LCM * (AGE - 41), i.e., the AGE effect is active only for patients on lacosamide (Lindauer 2017 Results Section 3.4: 'A significant effect of age was only identified for the LCM group ... indicating a treatment-age interaction'). Reference age 41 years is the cohort median (Lindauer 2017 Table 1).",
+      source_name = "AGE"
     ),
     NSP3M_LT2 = list(
-      description        = "Baseline seizure-severity indicator: 1 = the patient reported fewer than 2 seizures in the 3 months before the trial; 0 = otherwise. One of three binary indicators derived from the paper's categorical NSP3M variable (baseline seizure count in prior 3 months split into <2, 2-6, 7-50, >50 with 2-6 as reference).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline seizure-severity indicator: 1 = the patient reported fewer than 2 seizures in the 3 months before the trial; 0 = otherwise. One of three binary indicators derived from the paper's categorical NSP3M variable (baseline seizure count in prior 3 months split into <2, 2-6, 7-50, >50 with 2-6 as reference).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (2-6 seizures in the previous 3 months; the reference NSP3M category)",
-      notes              = "Time-fixed per subject. Members of the reference category (NSP3M = 2-6) have NSP3M_LT2 = NSP3M_7_50 = NSP3M_GT50 = 0. Distribution in SP0993 (Lindauer 2017 Table 1): 25.7% of patients had <2 seizures. Enters both first-seizure and subsequent-seizure log-hazards.",
-      source_name        = "NSP3M (categorical; the <2 bin)"
+      notes = "Time-fixed per subject. Members of the reference category (NSP3M = 2-6) have NSP3M_LT2 = NSP3M_7_50 = NSP3M_GT50 = 0. Distribution in SP0993 (Lindauer 2017 Table 1): 25.7% of patients had <2 seizures. Enters both first-seizure and subsequent-seizure log-hazards.",
+      source_name = "NSP3M (categorical; the <2 bin)"
     ),
     NSP3M_7_50 = list(
-      description        = "Baseline seizure-severity indicator: 1 = the patient reported 7 to 50 seizures in the 3 months before the trial; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline seizure-severity indicator: 1 = the patient reported 7 to 50 seizures in the 3 months before the trial; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (2-6 seizures in the previous 3 months; the reference NSP3M category)",
-      notes              = "Time-fixed per subject. Distribution in SP0993 (Lindauer 2017 Table 1): 18.1% of patients had 7-50 seizures. Enters both first-seizure and subsequent-seizure log-hazards.",
-      source_name        = "NSP3M (categorical; the 7-50 bin)"
+      notes = "Time-fixed per subject. Distribution in SP0993 (Lindauer 2017 Table 1): 18.1% of patients had 7-50 seizures. Enters both first-seizure and subsequent-seizure log-hazards.",
+      source_name = "NSP3M (categorical; the 7-50 bin)"
     ),
     NSP3M_GT50 = list(
-      description        = "Baseline seizure-severity indicator: 1 = the patient reported more than 50 seizures in the 3 months before the trial; 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline seizure-severity indicator: 1 = the patient reported more than 50 seizures in the 3 months before the trial; 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (2-6 seizures in the previous 3 months; the reference NSP3M category)",
-      notes              = "Time-fixed per subject. Distribution in SP0993 (Lindauer 2017 Table 1): 4.8% of patients had >50 seizures (median 2, range 0-450 across the whole cohort). Enters both first-seizure and subsequent-seizure log-hazards.",
-      source_name        = "NSP3M (categorical; the >50 bin)"
+      notes = "Time-fixed per subject. Distribution in SP0993 (Lindauer 2017 Table 1): 4.8% of patients had >50 seizures (median 2, range 0-450 across the whole cohort). Enters both first-seizure and subsequent-seizure log-hazards.",
+      source_name = "NSP3M (categorical; the >50 bin)"
     ),
     CONMED_LCM = list(
-      description        = "Treatment-arm indicator: 1 = subject assigned to the lacosamide (LCM) monotherapy arm; 0 = subject assigned to the carbamazepine controlled-release (CBZ-CR) monotherapy arm.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-arm indicator: 1 = subject assigned to the lacosamide (LCM) monotherapy arm; 0 = subject assigned to the carbamazepine controlled-release (CBZ-CR) monotherapy arm.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CBZ-CR arm)",
-      notes              = "Time-fixed per subject in the SP0993 parallel-group monotherapy design. Enters the first-seizure log-hazard as a multiplier on the AGE effect (age effect is active only for LCM per Lindauer 2017 Section 3.4). Also used inside the vignette to decide which AUC column (AUC_LCM vs AUC_CBZ) is non-zero for the subject.",
-      source_name        = "TYPE"
+      notes = "Time-fixed per subject in the SP0993 parallel-group monotherapy design. Enters the first-seizure log-hazard as a multiplier on the AGE effect (age effect is active only for LCM per Lindauer 2017 Section 3.4). Also used inside the vignette to decide which AUC column (AUC_LCM vs AUC_CBZ) is non-zero for the subject.",
+      source_name = "TYPE"
     ),
     AUC_LCM = list(
-      description        = "Daily area under the plasma concentration-time curve of lacosamide at steady state (mg*h/L). Set to 0 for subjects randomised to CBZ-CR (CONMED_LCM = 0).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Daily area under the plasma concentration-time curve of lacosamide at steady state (mg*h/L). Set to 0 for subjects randomised to CBZ-CR (CONMED_LCM = 0).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Dose-step-varying: as a patient escalates from LCM 100 -> 200 -> 400 -> 600 mg/day, the AUC increases in proportion (see Lindauer 2017 Section 2.3 -- individual AUC derived from empirical-Bayes clearance from a previously published lacosamide popPK model). Enters both first-seizure and subsequent-seizure log-hazards as a centred-deviation form e_auc_lcm_1st * (AUC_LCM - 104) (analogous for the 2nd-event sub-model). Reference 104 mg*h/L is the typical daily AUC at the first target dose level for LCM (200 mg/day; Lindauer 2017 Table 3 note c). The paper reports typical daily AUC roughly 208 mg*h/L at 400 mg/day and 312 mg*h/L at 600 mg/day; document any per-simulation profile in `covariateData[[AUC_LCM]]$notes`.",
-      source_name        = "AUC_LCM"
+      notes = "Dose-step-varying: as a patient escalates from LCM 100 -> 200 -> 400 -> 600 mg/day, the AUC increases in proportion (see Lindauer 2017 Section 2.3 -- individual AUC derived from empirical-Bayes clearance from a previously published lacosamide popPK model). Enters both first-seizure and subsequent-seizure log-hazards as a centred-deviation form e_auc_lcm_1st * (AUC_LCM - 104) (analogous for the 2nd-event sub-model). Reference 104 mg*h/L is the typical daily AUC at the first target dose level for LCM (200 mg/day; Lindauer 2017 Table 3 note c). The paper reports typical daily AUC roughly 208 mg*h/L at 400 mg/day and 312 mg*h/L at 600 mg/day; document any per-simulation profile in `covariateData[[AUC_LCM]]$notes`.",
+      source_name = "AUC_LCM"
     ),
     AUC_CBZ = list(
-      description        = "Daily area under the plasma concentration-time curve of carbamazepine at steady state (mg*h/L). Set to 0 for subjects randomised to LCM (CONMED_LCM = 1).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Daily area under the plasma concentration-time curve of carbamazepine at steady state (mg*h/L). Set to 0 for subjects randomised to LCM (CONMED_LCM = 1).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Dose-step-varying: as a patient escalates from CBZ-CR 200 -> 400 -> 800 -> 1200 mg/day, the AUC increases in proportion (see Lindauer 2017 Section 2.3 -- individual AUC derived from empirical-Bayes clearance from a previously published carbamazepine popPK model). Enters both first-seizure and subsequent-seizure log-hazards as a centred-deviation form e_auc_cbz_1st * (AUC_CBZ - 132). Reference 132 mg*h/L is the typical daily AUC at the first target dose level for CBZ-CR (400 mg/day for a 70-kg patient; Lindauer 2017 Section 3.4 first paragraph).",
-      source_name        = "AUC_CBZ"
+      notes = "Dose-step-varying: as a patient escalates from CBZ-CR 200 -> 400 -> 800 -> 1200 mg/day, the AUC increases in proportion (see Lindauer 2017 Section 2.3 -- individual AUC derived from empirical-Bayes clearance from a previously published carbamazepine popPK model). Enters both first-seizure and subsequent-seizure log-hazards as a centred-deviation form e_auc_cbz_1st * (AUC_CBZ - 132). Reference 132 mg*h/L is the typical daily AUC at the first target dose level for CBZ-CR (400 mg/day for a 70-kg patient; Lindauer 2017 Section 3.4 first paragraph).",
+      source_name = "AUC_CBZ"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 883L,
-    n_studies      = 1L,
-    age_range      = "16-87 years (median 40, IQR 26-55)",
-    weight_range   = "not reported in the on-disk trimmed paper text",
+    species = "human",
+    n_subjects = 883L,
+    n_studies = 1L,
+    age_range = "16-87 years (median 40, IQR 26-55)",
+    weight_range = "not reported in the on-disk trimmed paper text",
     sex_female_pct = 46.3,
     race_ethnicity = NULL,
-    disease_state  = "Adult patients (>=16 years) newly diagnosed with focal or generalized tonic-clonic seizures without signs of focal onset, provided they had no history or clinical or electroencephalographic findings suggestive of idiopathic generalized epilepsy (SP0993 inclusion criteria; ClinicalTrials.gov NCT01243177).",
-    dose_range     = "LCM target dose levels 200, 400, or 600 mg/day BID (randomisation starting dose 100 mg/day); CBZ-CR target dose levels 400, 800, or 1200 mg/day BID (randomisation starting dose 200 mg/day). Dose escalation to the next level was triggered by seizure occurrence during the 26-week evaluation period at the current dose.",
-    regions        = "multinational (SP0993)",
-    biomarkers     = "Repeated time-to-seizure (seizure defined as one seizure-event day, so multiple seizures on the same day count as a single event). About 55% of patients had no seizures during the trial; 15% had one seizure; about 30% had two or more (Lindauer 2017 Section 3.1). Baseline covariate NSP3M (seizure count in the previous 3 months) had median 2 and range 0-450.",
-    notes          = "Randomised 883 patients (LCM 443, CBZ-CR 440) analysed for seizures. Seizure model was originally developed on the historic N01061 dataset (comparing levetiracetam and CBZ-CR; NCT00150735) using the two-Weibull-sub-model approach of Abrantes et al. and re-estimated on SP0993 as described in Lindauer 2017 Section 2.2 'Modeling Strategy and Software'."
+    disease_state = "Adult patients (>=16 years) newly diagnosed with focal or generalized tonic-clonic seizures without signs of focal onset, provided they had no history or clinical or electroencephalographic findings suggestive of idiopathic generalized epilepsy (SP0993 inclusion criteria; ClinicalTrials.gov NCT01243177).",
+    dose_range = "LCM target dose levels 200, 400, or 600 mg/day BID (randomisation starting dose 100 mg/day); CBZ-CR target dose levels 400, 800, or 1200 mg/day BID (randomisation starting dose 200 mg/day). Dose escalation to the next level was triggered by seizure occurrence during the 26-week evaluation period at the current dose.",
+    regions = "multinational (SP0993)",
+    biomarkers = "Repeated time-to-seizure (seizure defined as one seizure-event day, so multiple seizures on the same day count as a single event). About 55% of patients had no seizures during the trial; 15% had one seizure; about 30% had two or more (Lindauer 2017 Section 3.1). Baseline covariate NSP3M (seizure count in the previous 3 months) had median 2 and range 0-450.",
+    notes = "Randomised 883 patients (LCM 443, CBZ-CR 440) analysed for seizures. Seizure model was originally developed on the historic N01061 dataset (comparing levetiracetam and CBZ-CR; NCT00150735) using the two-Weibull-sub-model approach of Abrantes et al. and re-estimated on SP0993 as described in Lindauer 2017 Section 2.2 'Modeling Strategy and Software'."
   )
 
   ini({

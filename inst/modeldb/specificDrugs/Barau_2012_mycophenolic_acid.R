@@ -15,46 +15,46 @@ Barau_2012_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age in years",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (study-specific approximation; in a long follow-up the age is updated occasion-to-occasion, but in this paper's modelling window subjects are anchored at study entry). Centred at the cohort median 8.65 years (Barau 2012 Results: 'when the age was 8.65 years'); used in the additive ka covariate equation ka_TV = 3.9 - 2.2 * (AGE / 8.65). The cohort age range is 1.1-15.2 years (model-building set) and 1.1-18.0 years overall.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject (study-specific approximation; in a long follow-up the age is updated occasion-to-occasion, but in this paper's modelling window subjects are anchored at study entry). Centred at the cohort median 8.65 years (Barau 2012 Results: 'when the age was 8.65 years'); used in the additive ka covariate equation ka_TV = 3.9 - 2.2 * (AGE / 8.65). The cohort age range is 1.1-15.2 years (model-building set) and 1.1-18.0 years overall.",
+      source_name = "AGE"
     ),
     POD = list(
-      description        = "Days post-transplantation",
-      units              = "days",
-      type               = "continuous",
+      description = "Days post-transplantation",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying within subject; integer- or fractional-day valued. Paper's covariate equation collapses POD to a binary 6-month indicator: V/F is multiplied by 2.3 when the observation falls in the immediate post-transplant period (POD <= 180 days, equivalent to <= 6 months) and by 1 otherwise. The dichotomization is derived inside model() (posttx_early <- POD <= 180), so users supply POD directly in their dataset. The 180-day cutoff is the standard pharmacology approximation to the paper's '6 months' threshold; the paper does not provide a NONMEM control stream so the exact day-count translation is not author-stated. Median time since transplantation in the cohort was 17.2 months (range 0.2-188.5 months, Barau 2012 Methods 'Patients and study design').",
-      source_name        = "POD"
+      notes = "Time-varying within subject; integer- or fractional-day valued. Paper's covariate equation collapses POD to a binary 6-month indicator: V/F is multiplied by 2.3 when the observation falls in the immediate post-transplant period (POD <= 180 days, equivalent to <= 6 months) and by 1 otherwise. The dichotomization is derived inside model() (posttx_early <- POD <= 180), so users supply POD directly in their dataset. The 180-day cutoff is the standard pharmacology approximation to the paper's '6 months' threshold; the paper does not provide a NONMEM control stream so the exact day-count translation is not author-stated. Median time since transplantation in the cohort was 17.2 months (range 0.2-188.5 months, Barau 2012 Methods 'Patients and study design').",
+      source_name = "POD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "1.1-15.2 years (model-building set; cohort overall 1.1-18.0 years across 28 patients)",
-    age_median     = "8.7 years (model-building set; cohort overall median 8.65 years)",
-    weight_range   = "9.3-49.2 kg (model-building set)",
-    weight_median  = "23.8 kg (model-building set)",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "1.1-15.2 years (model-building set; cohort overall 1.1-18.0 years across 28 patients)",
+    age_median = "8.7 years (model-building set; cohort overall median 8.65 years)",
+    weight_range = "9.3-49.2 kg (model-building set)",
+    weight_median = "23.8 kg (model-building set)",
     sex_female_pct = 50,
     race_ethnicity = "Not reported in source paper.",
-    disease_state  = "Paediatric liver transplant recipients (n = 28 in the full cohort; n = 16 used for model building and n = 12 for model validation). Indications for transplantation: biliary atresia (14), fulminant hepatitis (8), progressive familial intrahepatic cholestasis (3), and Alagille syndrome / cystic fibrosis / Wilson disease (1 each).",
-    dose_range     = "Oral mycophenolate mofetil (MMF) 186-594 mg/m^2 (= 6.1-22.2 mg/kg) twice daily; median starting dose 380 mg/m^2 (= 13.0 mg/kg) twice daily. MMF dose adjustments target MPA AUC(0,12 h) between 30 and 60 mg/L*h.",
-    regions        = "France (Hopitaux Universitaires Paris-Sud, Le Kremlin Bicetre / Chatenay-Malabry).",
-    co_medication  = "Tacrolimus (n = 23) or ciclosporin (n = 5); steroids (n = 14). Source paper found no MPA-exposure difference by calcineurin-inhibitor cotreatment (Discussion attributes the absence of a co-medication effect to negligible enterohepatic recirculation in the cohort after gall-bladder removal).",
-    pod_range      = "Time since transplantation 0.2-188.5 months (median 17.2 months); 7 of the 16 model-building patients were sampled at <= 6 months post-transplant and 9 at > 6 months (Barau 2012 Table 3).",
-    biochemistry   = "Cohort serum albumin median 31.7 g/L (range 17.2-35.0 g/L); ALAT median 93 IU/L; ASAT 64 IU/L; total bilirubin 20 umol/L; serum creatinine 37 umol/L; creatinine clearance 155 mL/min (Schwartz formula). Albumin is lower in the immediate post-transplant period (median 26.8 vs 33.0 g/L), associated with a higher unbound MPA fraction (median 2.8% vs 1.0%) and the 2.3-fold higher V/F. No biochemistry covariate is retained in the final model -- the post-transplant-period indicator captures the album/unbound-fraction effect parsimoniously.",
-    notes          = "Patients underwent intensive PK sampling (predose plus 0.5, 1, 2, 4, 6, 8 h post-dose) during a 12-h dosing interval. The 16 model-building patients contributed one occasion each; the 12 model-validation patients contributed 26 intensive sets used for Bayesian individual-AUC estimation in Adapt II. The paper notes high inter-individual variability on ka (308% CV) likely reflects irregular individual concentration vs. time profiles and the absence of regular enterohepatic secondary peaks in the liver-transplant cohort."
+    disease_state = "Paediatric liver transplant recipients (n = 28 in the full cohort; n = 16 used for model building and n = 12 for model validation). Indications for transplantation: biliary atresia (14), fulminant hepatitis (8), progressive familial intrahepatic cholestasis (3), and Alagille syndrome / cystic fibrosis / Wilson disease (1 each).",
+    dose_range = "Oral mycophenolate mofetil (MMF) 186-594 mg/m^2 (= 6.1-22.2 mg/kg) twice daily; median starting dose 380 mg/m^2 (= 13.0 mg/kg) twice daily. MMF dose adjustments target MPA AUC(0,12 h) between 30 and 60 mg/L*h.",
+    regions = "France (Hopitaux Universitaires Paris-Sud, Le Kremlin Bicetre / Chatenay-Malabry).",
+    co_medication = "Tacrolimus (n = 23) or ciclosporin (n = 5); steroids (n = 14). Source paper found no MPA-exposure difference by calcineurin-inhibitor cotreatment (Discussion attributes the absence of a co-medication effect to negligible enterohepatic recirculation in the cohort after gall-bladder removal).",
+    pod_range = "Time since transplantation 0.2-188.5 months (median 17.2 months); 7 of the 16 model-building patients were sampled at <= 6 months post-transplant and 9 at > 6 months (Barau 2012 Table 3).",
+    biochemistry = "Cohort serum albumin median 31.7 g/L (range 17.2-35.0 g/L); ALAT median 93 IU/L; ASAT 64 IU/L; total bilirubin 20 umol/L; serum creatinine 37 umol/L; creatinine clearance 155 mL/min (Schwartz formula). Albumin is lower in the immediate post-transplant period (median 26.8 vs 33.0 g/L), associated with a higher unbound MPA fraction (median 2.8% vs 1.0%) and the 2.3-fold higher V/F. No biochemistry covariate is retained in the final model -- the post-transplant-period indicator captures the album/unbound-fraction effect parsimoniously.",
+    notes = "Patients underwent intensive PK sampling (predose plus 0.5, 1, 2, 4, 6, 8 h post-dose) during a 12-h dosing interval. The 16 model-building patients contributed one occasion each; the 12 model-validation patients contributed 26 intensive sets used for Bayesian individual-AUC estimation in Adapt II. The paper notes high inter-individual variability on ka (308% CV) likely reflects irregular individual concentration vs. time profiles and the absence of regular enterohepatic secondary peaks in the liver-transplant cohort."
   )
 
   ini({

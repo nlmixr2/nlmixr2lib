@@ -8,28 +8,28 @@ Rambiritch_2016_glibenclamide <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "glibenclamide", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "glibenclamide", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "glibenclamide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "glibenclamide", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "glibenclamide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24,
-    n_studies      = 1,
-    age_range      = "39-73 years (mean 54, SD 9)",
-    age_median     = NULL,
-    weight_range   = "42.0-107.8 kg (mean 71.1, SD 14.1)",
-    weight_median  = NULL,
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
+    age_range = "39-73 years (mean 54, SD 9)",
+    age_median = NULL,
+    weight_range = "42.0-107.8 kg (mean 71.1, SD 14.1)",
+    weight_median = NULL,
     sex_female_pct = 91,
     race_ethnicity = "South African (race not stratified in source); cohort recruited at the University of KwaZulu-Natal / RK Khan Regional Hospital, Chatsworth, South Africa.",
-    disease_state  = "Poorly controlled type 2 diabetes mellitus (mean fasting blood glucose 15.4 mmol/L; mean HbA1c 13.9%); requiring oral antidiabetic therapy.",
-    dose_range     = "Glibenclamide 0, 2.5, 5, 10, and 20 mg orally once daily; dose levels escalated at 2-week intervals; sampling performed after steady state at each dose level.",
-    regions        = "South Africa (Durban / Chatsworth)",
+    disease_state = "Poorly controlled type 2 diabetes mellitus (mean fasting blood glucose 15.4 mmol/L; mean HbA1c 13.9%); requiring oral antidiabetic therapy.",
+    dose_range = "Glibenclamide 0, 2.5, 5, 10, and 20 mg orally once daily; dose levels escalated at 2-week intervals; sampling performed after steady state at each dose level.",
+    regions = "South Africa (Durban / Chatsworth)",
     sampling_design = "Per dose level (days 14, 28, 42, 56, and 70 for 0, 2.5, 5, 10, and 20 mg respectively): post-breakfast samples at 0, 30, 60, 90, 120 min; post-lunch samples at 240, 270, 300, 330, 360, and 420 min. 841 observation records from 24 individuals (22 with complete dose-escalation data; subjects 14, 16, 20, and 24 had partial profiles per Methods).",
-    notes          = "Baseline demographics in Table 1 of Rambiritch 2016. Twenty (20) of 24 enrolled subjects were female. Mean creatinine 64.1 umol/L (within normal range); cohort assumed to have normal renal function. No functional covariate effects (weight, age, sex, renal markers) entered the final model."
+    notes = "Baseline demographics in Table 1 of Rambiritch 2016. Twenty (20) of 24 enrolled subjects were female. Mean creatinine 64.1 umol/L (within normal range); cohort assumed to have normal renal function. No functional covariate effects (weight, age, sex, renal markers) entered the final model."
   )
 
   ini({

@@ -34,8 +34,8 @@ Riggs_2014_empagliflozin <- function() {
   )
   vignette <- "Riggs_2014_empagliflozin"
   units <- list(
-    time          = "h",
-    dosing        = "mg empagliflozin (oral, once daily)",
+    time = "h",
+    dosing = "mg empagliflozin (oral, once daily)",
     concentration = paste(
       "Cc in nmol/L (= nM; converted from mg/L via MW 450.9 g/mol as stated in",
       "Riggs 2014 Results); AUC in nmol*h/L; FPG in mmol/L; HbA1c in % (NGSP);",
@@ -47,20 +47,20 @@ Riggs_2014_empagliflozin <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "empagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "empagliflozin", units = "mg", specimen = "plasma", verified = TRUE),
-    glucose     = list(analyte = "glucose", units = "mmol/L", specimen = "plasma", verified = TRUE),
-    hba1c       = list(analyte = "HbA1c", units = "% (NGSP)", specimen = "blood cell", verified = TRUE)
+    glucose = list(analyte = "glucose", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    hba1c = list(analyte = "HbA1c", units = "% (NGSP)", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Imposed (not estimated) allometric effect on all four disposition",
         "parameters, normalised to a 70 kg reference: (WT/70)^0.75 on CL/F and",
         "Q/F, (WT/70)^1 on V2/F (vc) and V3/F (vp). Riggs 2014 Results states",
@@ -70,14 +70,14 @@ Riggs_2014_empagliflozin <- function() {
         "where all four rows are flagged FIXED. Cohort mean weight 85 kg",
         "(range 44 - 152) across the five studies."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_EMPA_MGD = list(
-      description        = "Patient's own once-daily empagliflozin dose at the current dosing record",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Patient's own once-daily empagliflozin dose at the current dosing record",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the dosing-interval exposure that feeds the STIM function:",
         "AUC [nmol*h/L] = DOSE_EMPA_MGD * 1e6 / MW_empa / cl with MW_empa =",
         "450.9 g/mol (Riggs 2014 Results). For a linear disposition model and",
@@ -89,41 +89,41 @@ Riggs_2014_empagliflozin <- function() {
         "per dose record, constant within an inter-dose interval, and keep",
         "consistent with the `amt` administered into `depot` (also in mg)."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     STUDY_EMPA_A = list(
-      description        = "Study A cohort indicator (EudraCT 2007-000654-32; phase I, 8 days, Germany)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study A cohort indicator (EudraCT 2007-000654-32; phase I, 8 days, Germany)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is not in study A)",
-      notes              = paste(
+      notes = paste(
         "Selects the study A typical baseline FPG (7.85 mmol/L, Table 2",
         "theta_1) and is the reference level for the UGE baseline, gamma_base,",
         "Umax, Ustim50 and C*50 parameters. Study A contributed no HbA1c to the",
         "E-R analysis (Table 1 footnote), so hba1c_base is not defined for this",
         "study. Exactly one of STUDY_EMPA_A..E must be 1."
       ),
-      source_name        = "Study A"
+      source_name = "Study A"
     ),
     STUDY_EMPA_B = list(
-      description        = "Study B cohort indicator (NCT00558571; phase I, 4 weeks, Germany)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study B cohort indicator (NCT00558571; phase I, 4 weeks, Germany)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is not in study B)",
-      notes              = paste(
+      notes = paste(
         "Selects the study B typical baseline FPG (8.50 mmol/L, Table 2",
         "theta_2) and baseline HbA1c (7.18 pct, theta_23), and scales the UGE",
         "baseline by theta_20 = 0.320. Shares the reference gamma_base, Umax,",
         "Ustim50 and C*50 with study A. Exactly one of STUDY_EMPA_A..E must be 1."
       ),
-      source_name        = "Study B"
+      source_name = "Study B"
     ),
     STUDY_EMPA_C = list(
-      description        = "Study C cohort indicator (NCT00885118; phase II, 4 weeks, Japan, Japanese patients only)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study C cohort indicator (NCT00885118; phase II, 4 weeks, Japan, Japanese patients only)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is not in study C)",
-      notes              = paste(
+      notes = paste(
         "The only study with its own value for every UGE / potency parameter:",
         "UGE baseline x theta_16 = 0.632, gamma_base x theta_17 = 1.16, Umax x",
         "theta_14 = 1.11, Ustim50 x theta_15 = 1.58 and C*50 x theta_19 = 0.169",
@@ -133,14 +133,14 @@ Riggs_2014_empagliflozin <- function() {
         "weight of the Japanese cohort (mean 67.9 kg). Exactly one of",
         "STUDY_EMPA_A..E must be 1."
       ),
-      source_name        = "Study C"
+      source_name = "Study C"
     ),
     STUDY_EMPA_D = list(
-      description        = "Study D cohort indicator (NCT00789035; phase IIb, 12 weeks, multinational, empagliflozin monotherapy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study D cohort indicator (NCT00789035; phase IIb, 12 weeks, multinational, empagliflozin monotherapy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is not in study D)",
-      notes              = paste(
+      notes = paste(
         "Selects baseline FPG 9.30 mmol/L (Table 2 theta_3) and baseline HbA1c",
         "7.85 pct (theta_24). Shares the reference C*50 with studies A and B",
         "(the pooled A + B + D estimate is the primary AUC50 = 626 nmol*h/L).",
@@ -148,31 +148,31 @@ Riggs_2014_empagliflozin <- function() {
         "identified for this study and fall back to the study A reference.",
         "Exactly one of STUDY_EMPA_A..E must be 1."
       ),
-      source_name        = "Study D"
+      source_name = "Study D"
     ),
     STUDY_EMPA_E = list(
-      description        = "Study E cohort indicator (NCT00749190; phase IIb, 12 weeks, multinational, on background metformin)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study E cohort indicator (NCT00749190; phase IIb, 12 weeks, multinational, on background metformin)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (subject is not in study E)",
-      notes              = paste(
+      notes = paste(
         "Selects baseline FPG 9.49 mmol/L (Table 2 theta_4), baseline HbA1c",
         "7.89 pct (theta_25) and scales C*50 by theta_21 = 1.93, giving the",
         "study E AUC50 of 1210 nmol*h/L (Table 2 'Calculated parameters').",
         "Study E contributed no UGE observations, so the UGE parameters fall",
         "back to the study A reference. Exactly one of STUDY_EMPA_A..E must be 1."
       ),
-      source_name        = "Study E"
+      source_name = "Study E"
     )
   )
 
   covariatesDataExcluded <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault estimated creatinine clearance (screened graphically, not retained)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault estimated creatinine clearance (screened graphically, not retained)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Riggs 2014 Results investigated renal function on the efficacy E-R",
         "graphically (Supplementary Figures S1 and S2) and reported 'no",
         "apparent influence of creatinine clearance ... on either FPG or HbA1c",
@@ -180,14 +180,14 @@ Riggs_2014_empagliflozin <- function() {
         "50 mL/min'. No coefficient is reported, so no term is carried.",
         "Cohort means 94 - 117 mL/min by study (Table 1)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     SEXF = list(
-      description        = "Sex (female indicator; screened on the tolerability E-R only, no effect retained)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (female indicator; screened on the tolerability E-R only, no effect retained)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Riggs 2014 Methods states 'Gender was also considered as a covariate'",
         "for the exposure-tolerability relationships, which were described by",
         "non-parametric GAM smooths rather than by a parametric model. Figure 6",
@@ -196,17 +196,17 @@ Riggs_2014_empagliflozin <- function() {
         "No parametric coefficient exists to carry. Cohort 574 male / 400",
         "female (Table 1)."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 974L,
-    n_subjects_efficacy  = 974L,
+    species = "human",
+    n_subjects = 974L,
+    n_subjects_efficacy = 974L,
     n_subjects_tolerability = 748L,
-    n_studies            = 5L,
-    studies              = paste(
+    n_studies = 5L,
+    studies = paste(
       "Study A (EudraCT 2007-000654-32; phase I, n = 48, 8 days, Germany);",
       "study B (NCT00558571; phase I, n = 78, 4 weeks, Germany); study C",
       "(NCT00885118; phase II, n = 100, 4 weeks, Japan); study D",
@@ -215,20 +215,20 @@ Riggs_2014_empagliflozin <- function() {
       "background metformin). Open-label metformin (study D) and open-label",
       "sitagliptin (study E) arms were excluded from the E-R analyses."
     ),
-    age_range            = "28 - 80 years (study means 56.7 - 58.4)",
-    weight_range         = "44 - 152 kg (study means 67.9 - 94.6; study C, the Japanese cohort, is the lightest)",
-    sex_female_pct       = 41.1,
-    race_ethnicity       = c(White = 77.1, Asian = 21.8, Black = 0.8, HawaiianPacific = 0.2),
-    disease_state        = paste(
+    age_range = "28 - 80 years (study means 56.7 - 58.4)",
+    weight_range = "44 - 152 kg (study means 67.9 - 94.6; study C, the Japanese cohort, is the lightest)",
+    sex_female_pct = 41.1,
+    race_ethnicity = c(White = 77.1, Asian = 21.8, Black = 0.8, HawaiianPacific = 0.2),
+    disease_state = paste(
       "Type 2 diabetes mellitus. Baseline FPG study means 8.3 - 9.7 mmol/L",
       "(overall range 2.8 - 21.0); baseline HbA1c study means 7.1 - 8.1 pct",
       "(overall range 5.6 - 10.4). Baseline serum creatinine 0.8 - 0.9 mg/dL",
       "and Cockcroft-Gault creatinine clearance 94 - 117 mL/min by study;",
       "fewer than 1.5 pct of patients had CLcr < 50 mL/min."
     ),
-    dose_range           = "1 - 100 mg empagliflozin orally once daily for up to 12 weeks (1, 2.5, 5, 10, 25, 50 and 100 mg arms across the five studies), plus placebo",
-    regions              = "Germany (studies A and B), Japan (study C), multinational (studies D and E)",
-    endpoints            = paste(
+    dose_range = "1 - 100 mg empagliflozin orally once daily for up to 12 weeks (1, 2.5, 5, 10, 25, 50 and 100 mg arms across the five studies), plus placebo",
+    regions = "Germany (studies A and B), Japan (study C), multinational (studies D and E)",
+    endpoints = paste(
       "24 h urinary glucose excretion (studies A, B, C only), fasting plasma",
       "glucose (all five studies) and HbA1c (studies B, C, D, E; study A HbA1c",
       "was not included in the E-R analyses per the Table 1 footnote).",
@@ -237,7 +237,7 @@ Riggs_2014_empagliflozin <- function() {
       "D and E by non-parametric GAM smoothing and produced no parametric",
       "exposure-response model."
     ),
-    notes                = paste(
+    notes = paste(
       "Baseline demographics are tabulated per study in Riggs 2014 Table 1.",
       "The percentages above are pooled across the five studies from the Table",
       "1 counts. Exposures were individual dosing-interval AUCs generated by",

@@ -33,11 +33,11 @@ Suyagh_2011_metronidazole <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying body weight (kg). Used as the allometric size",
         "descriptor on CL with the canonical 3/4-power exponent and",
         "reference 1.0 kg, and as the linear size descriptor on V",
@@ -46,10 +46,10 @@ Suyagh_2011_metronidazole <- function() {
         "0.7-2.0 kg (typical preterm range at the abstract's PMA range",
         "of 25-32 weeks) is used in the validation vignette."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = paste(
+      description = paste(
         "Postmenstrual age in months. Canonical units for PAGE are",
         "months (PAGE = GA_weeks / 4.35 + postnatal_months); the source",
         "paper expresses postmenstrual age in weeks (PMA_weeks). The",
@@ -57,10 +57,10 @@ Suyagh_2011_metronidazole <- function() {
         "that the paper's centring at 30 weeks (PAGE * 4.35 - 30) is",
         "preserved."
       ),
-      units              = "months",
-      type               = "continuous",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the linear PMA maturation term on CL.",
         "Abstract reports a half-life trajectory from approximately 40 h",
         "at 25 weeks' PMA (PAGE 5.747 months) to 19 h at 32 weeks' PMA",
@@ -68,33 +68,33 @@ Suyagh_2011_metronidazole <- function() {
         "weeks; the conversion factor 4.35 weeks per month matches the",
         "PAGE canonical (see inst/references/covariate-columns.md)."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
     n_observations = 203L,
-    age_range      = paste(
+    age_range = paste(
       "Postmenstrual age range approximately 25-32 weeks (PAGE",
       "approximately 5.7-7.4 months) per the abstract's half-life",
       "trajectory; the abstract does not tabulate exact PMA quantiles."
     ),
-    weight_range   = "Not enumerated in the abstract (preterm neonate cohort).",
-    disease_state  = paste(
+    weight_range = "Not enumerated in the abstract (preterm neonate cohort).",
+    disease_state = paste(
       "Preterm neonates receiving intravenous metronidazole for the",
       "treatment of or prophylaxis against necrotising enterocolitis."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous metronidazole; per-administration doses and",
       "dosing-interval distribution are not enumerated in the abstract.",
       "Conclusion section notes the paper suggests a weight-and-PMA-",
       "based dosing scheme for preterm neonates."
     ),
-    regions        = "United Kingdom (Royal Maternity Hospital, Belfast; single-centre).",
-    notes          = paste(
+    regions = "United Kingdom (Royal Maternity Hospital, Belfast; single-centre).",
+    notes = paste(
       "Sampling: 203 dried blood spots on filter paper, analysed by",
       "HPLC. Modelling: nonlinear mixed-effect modelling (specific",
       "NONMEM control stream not given in the abstract). The package",

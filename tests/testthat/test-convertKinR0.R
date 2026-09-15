@@ -1,5 +1,4 @@
 test_that("test the convertKinR0 function", {
-
   m <- addIndirect(stim = "in") |> convertKinR0()
 
   expect_true("uR0" %in% names(m$theta))
@@ -20,5 +19,4 @@ test_that("test the convertKinR0 function", {
     rxode2::model(-d / dt(R))
 
   expect_error(m |> convertKinR0())
-
 })

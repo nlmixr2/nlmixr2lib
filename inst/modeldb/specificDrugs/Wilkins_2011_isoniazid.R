@@ -33,38 +33,38 @@ Wilkins_2011_isoniazid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = paste(
+      description = paste(
         "Total body weight at study entry. Time-fixed per subject in the",
         "Wilkins 2011 cohort (a single baseline weight was recorded per",
         "patient and carried across the observation window)."
       ),
-      units              = "kg",
-      type               = "continuous",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling uses a 70 kg reference weight per Anderson",
         "& Holford 2008 (Wilkins 2011 Methods, equations 1 and 2):",
         "CL/F and Q/F scale with (WT/70)^0.75; Vc/F and Vp/F scale",
         "with (WT/70)^1. The studied cohort weight range is 33.7-68.0",
         "kg (Table 1 'Combined' column)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = paste(
+      description = paste(
         "1 = female, 0 = male. Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Linear multiplicative effect on apparent central volume of",
         "distribution: Vc/F = Vc_typ * (1 + e_sexf_vc * SEXF) with",
         "e_sexf_vc = -0.103 (Wilkins 2011 Table 2 row 'Linear effect",
@@ -73,17 +73,17 @@ Wilkins_2011_isoniazid <- function() {
         "patients of the same body weight. Female proportion in the",
         "studied cohort is 43.4 % (102 / 235; Table 1)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     HIV_POS = list(
-      description        = paste(
+      description = paste(
         "1 = HIV-1 antibody positive at study entry, 0 = HIV-negative.",
         "Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HIV-negative)",
-      notes              = paste(
+      notes = paste(
         "Linear multiplicative effect on apparent oral clearance:",
         "CL/F = CL_typ * (1 + e_hiv_pos_cl * HIV_POS) with",
         "e_hiv_pos_cl = -0.174 (Wilkins 2011 Table 2 row 'Linear",
@@ -95,10 +95,10 @@ Wilkins_2011_isoniazid <- function() {
         "testing; the paper does not describe how their HIV_POS",
         "value was imputed for the NONMEM fit."
       ),
-      source_name        = "HIV"
+      source_name = "HIV"
     ),
     MIX_FAST_ELIM = list(
-      description        = paste(
+      description = paste(
         "Per-subject latent mixture-model class indicator for the",
         "isoniazid eliminator phenotype: 1 = subject classified to the",
         "fast eliminator subpopulation (typical CL/F = 21.6 L/h at 70",
@@ -108,10 +108,10 @@ Wilkins_2011_isoniazid <- function() {
         "2 row 'Proportion of fast eliminators in population (P_fast)'",
         "= 0.132, RSE 23.2 %)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (slow eliminator subpopulation, majority class at 86.8 %)",
-      notes              = paste(
+      notes = paste(
         "Not a measured clinical covariate -- the mixture assignment",
         "is the per-subject posterior latent-class index from the",
         "NONMEM mixture model on apparent clearance described in",
@@ -131,24 +131,24 @@ Wilkins_2011_isoniazid <- function() {
         "9.70 L/h at MIX_FAST_ELIM = 0 and 21.6 L/h at MIX_FAST_ELIM",
         "= 1 (both at the 70 kg reference weight)."
       ),
-      source_name        = "$MIX class assignment"
+      source_name = "$MIX class assignment"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 235L,
-    n_studies       = 2L,
-    n_observations  = 2352L,
-    age_range       = "20-60 years; median 36 (Table 1 'Combined' column)",
-    weight_range    = "33.7-68.0 kg; median 48.0 (Table 1 'Combined' column)",
-    sex_female_pct  = 43.4,
-    race_ethnicity  = c(
-      Coloured  = 81.7,
-      Black     = 17.4,
+    species = "human",
+    n_subjects = 235L,
+    n_studies = 2L,
+    n_observations = 2352L,
+    age_range = "20-60 years; median 36 (Table 1 'Combined' column)",
+    weight_range = "33.7-68.0 kg; median 48.0 (Table 1 'Combined' column)",
+    sex_female_pct = 43.4,
+    race_ethnicity = c(
+      Coloured = 81.7,
+      Black = 17.4,
       Caucasian = 0.9
     ),
-    disease_state   = paste(
+    disease_state = paste(
       "Hospitalised pulmonary tuberculosis patients enrolled at two",
       "South African treatment centres -- the DP Marais SANTA Centre",
       "(DPM) near Cape Town (n = 91) and Brewelskloof Hospital (BKH)",
@@ -159,7 +159,7 @@ Wilkins_2011_isoniazid <- function() {
       "time. Males and non-pregnant females over the age of 18 years.",
       "HIV prevalence in the combined cohort was 15.2 %."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral isoniazid 100-450 mg daily. DPM: 100 mg (n = 1), 225 mg",
       "(n = 8), 240 mg (n = 29), 300 mg (n = 53), 400 mg (n = 2)",
       "given Monday-Friday for at least 2 weeks. BKH: 200 mg",
@@ -167,8 +167,8 @@ Wilkins_2011_isoniazid <- function() {
       "week at the end of the 2-month intensive phase. Per-dose range",
       "spans 3.98-9.59 mg/kg with median 5.88 mg/kg (Table 1)."
     ),
-    regions         = "South Africa (Western Cape)",
-    notes           = paste(
+    regions = "South Africa (Western Cape)",
+    notes = paste(
       "Isoniazid was always co-administered with rifampicin. The",
       "DPM cohort contributed 3 samples per profile twice weekly at",
       "random times 0-12 h post-dose; the BKH cohort contributed a",

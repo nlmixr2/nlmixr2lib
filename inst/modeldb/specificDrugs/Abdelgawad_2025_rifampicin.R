@@ -62,34 +62,44 @@ Abdelgawad_2025_rifampicin <- function() {
   # `Abdelgawad_2024_linezolid.R` (issue #482).
   compartmentData <- list(
     depot = list(
-      analyte = "rifampicin", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "rifampicin",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     liver = list(
-      analyte = "rifampicin", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "rifampicin",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     ),
     central = list(
-      analyte = "rifampicin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "rifampicin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "rifampicin", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "rifampicin",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     ),
     csf = list(
-      analyte = "rifampicin", units = "mg/L",
-      specimen = "CSF", verified = TRUE
+      analyte = "rifampicin",
+      units = "mg/L",
+      specimen = "CSF",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, computed from sex, total body weight and height by the Janmahasatian (2005) formula",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, computed from sex, total body weight and height by the Janmahasatian (2005) formula",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor for every disposition parameter, with",
         "exponents fixed a priori at 0.75 for the clearance terms and 1 for",
         "the volume terms (Methods, PK Modeling: 'Allometric scaling was",
@@ -125,14 +135,14 @@ Abdelgawad_2025_rifampicin <- function() {
         "or Janmahasatian-derived FFM column directly.",
         "Cohort range 30.3-59.4 kg at the day-3 visit (Table 1)."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     DOSE_HIGH = list(
-      description        = "1 = participant randomised to a high-dose rifampicin experimental arm (35 mg/kg orally, or 20 mg/kg intravenously for the first 3 days); 0 = participant in the control arm receiving the standard 10 mg/kg oral dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = participant randomised to a high-dose rifampicin experimental arm (35 mg/kg orally, or 20 mg/kg intravenously for the first 3 days); 0 = participant in the control arm receiving the standard 10 mg/kg oral dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (standard-dose control arm, 10 mg/kg orally by World Health Organization weight bands)",
-      notes              = paste(
+      notes = paste(
         "Together with DAY28 this selects one of the four typical values of",
         "CLint,max * fu that the authors estimated in place of an",
         "autoinduction model. Control stream $PK:",
@@ -160,14 +170,14 @@ Abdelgawad_2025_rifampicin <- function() {
         "observations from the uninduced state were unavailable (Discussion,",
         "limitations). Source column RIFHIGH."
       ),
-      source_name        = "RIFHIGH"
+      source_name = "RIFHIGH"
     ),
     DAY28 = list(
-      description        = "1 = the record belongs to the day-28 pharmacokinetic visit; 0 = the record belongs to the day-3 pharmacokinetic visit",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the record belongs to the day-28 pharmacokinetic visit; 0 = the record belongs to the day-3 pharmacokinetic visit",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (day-3 PK visit, the first sampling visit after study enrolment)",
-      notes              = paste(
+      notes = paste(
         "Within-subject landmark indicator gating the step change in",
         "CLint,max * fu between the two PK visits, which stands in for",
         "rifampicin autoinduction. The authors first tried the exponential",
@@ -190,14 +200,14 @@ Abdelgawad_2025_rifampicin <- function() {
         "Data assemblers derive DAY28 = as.integer(pk_visit_day >= 28).",
         "Source column PK_VISIT_2 (values 3 and 28)."
       ),
-      source_name        = "PK_VISIT_2"
+      source_name = "PK_VISIT_2"
     ),
     OCC = list(
-      description        = "Integer sampling-occasion index (1-5) used for the between-occasion random effects on prehepatic bioavailability, the absorption rate constant and the mean transit time",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer sampling-occasion index (1-5) used for the between-occasion random effects on prehepatic bioavailability, the absorption rate constant and the mean transit time",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Five occasions, matching the control stream $PK block's",
         "IF (OCC==1) ... IF (OCC==5) multiplexers over ETA(4)-ETA(8) for",
         "prehepatic bioavailability, ETA(9)-ETA(13) for ka and",
@@ -212,7 +222,7 @@ Abdelgawad_2025_rifampicin <- function() {
         "occasion index of each dosing interval; a single-occasion simulation",
         "may use OCC = 1 throughout. Source column OCC."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
@@ -221,75 +231,75 @@ Abdelgawad_2025_rifampicin <- function() {
   # declaring covariates that model() never references.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as the allometric body-size descriptor and rejected in favour of fat-free mass (dOFV 13.7 points, P < .001 for total body weight versus 33.1 points, P < .0001 for FFM; Results, PK Modeling). Still required upstream of the model as an input to the Janmahasatian FFM formula and to the height-imputation regression. Cohort median 59.5 kg, range 30-107.2 kg at the day-3 visit (Table 1); the control stream records the dataset median as TVWT = 60."
+      notes = "Tested as the allometric body-size descriptor and rejected in favour of fat-free mass (dOFV 13.7 points, P < .001 for total body weight versus 33.1 points, P < .0001 for FFM; Results, PK Modeling). Still required upstream of the model as an input to the Janmahasatian FFM formula and to the height-imputation regression. Cohort median 59.5 kg, range 30-107.2 kg at the day-3 visit (Table 1); the control stream records the dataset median as TVWT = 60."
     ),
     HT = list(
-      description        = "Body height at the PK visit.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at the PK visit.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not a model covariate; an input to the Janmahasatian FFM formula. Missing for 29 of 49 participants at day 3 and 19 of 34 at day 28 and imputed inside NONMEM from sex and weight (Table 1 footnote a; supplementary 'Imputation of missing covariates'). Reported in metres in the source (median 1.60 m, range 1.48-1.80); the canonical column is in cm."
+      notes = "Not a model covariate; an input to the Janmahasatian FFM formula. Missing for 29 of 49 participants at day 3 and 19 of 34 at day 28 and imputed inside NONMEM from sex and weight (Table 1 footnote a; supplementary 'Imputation of missing covariates'). Reported in metres in the source (median 1.60 m, range 1.48-1.80); the canonical column is in cm."
     ),
     SEXF = list(
-      description        = "1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Not a model covariate in its own right, but required upstream as the switch between the sex-specific Janmahasatian FFM formulas and between the sex-specific height-imputation regressions (control stream $PK: IF (SEXF.EQ.0) selects the male coefficients). 27 of 49 participants (55.1%) at the day-3 visit were male (Table 1)."
+      notes = "Not a model covariate in its own right, but required upstream as the switch between the sex-specific Janmahasatian FFM formulas and between the sex-specific height-imputation regressions (control stream $PK: IF (SEXF.EQ.0) selects the male coefficients). 27 of 49 participants (55.1%) at the day-3 visit were male (Table 1)."
     ),
     AGE = list(
-      description        = "Age at enrolment.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at enrolment.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Cohort median 39 years, range 25-78 at the day-3 visit (Table 1)."
+      notes = "Not retained. Cohort median 39 years, range 25-78 at the day-3 visit (Table 1)."
     ),
     CSF_TPRO = list(
-      description        = "Total protein concentration in lumbar cerebrospinal fluid.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total protein concentration in lumbar cerebrospinal fluid.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a marker of meningeal inflammation on the pseudo-partition coefficient and on the equilibration half-life; not retained. 'None of the covariates tested resulted in a statistically significant effect on the PPC or the equilibration half-life' (Results, PK Modeling), a null result the authors attribute to the small sample size and narrow range of CSF protein values (Discussion). The full screened list on those two parameters was CSF total protein, CSF albumin, CSF glucose, polymorphonuclear cells, lymphocytes and the Glasgow Coma Scale (Methods, PK Modeling); only CSF total protein is registered as a canonical column, so the other five are named here in prose rather than minted as canonical names for a screen that produced no retained effect. Cohort median 1.16 g/L, range 0.2-55 at the day-3 visit; missing for 17 participants at day 3 and 8 at day 28 (Table 1). The sibling LASER-TBM linezolid model Abdelgawad_2024_linezolid.R DID retain a CSF-protein effect on its PPC, so the null result here is drug-specific rather than a property of the cohort."
+      notes = "Screened as a marker of meningeal inflammation on the pseudo-partition coefficient and on the equilibration half-life; not retained. 'None of the covariates tested resulted in a statistically significant effect on the PPC or the equilibration half-life' (Results, PK Modeling), a null result the authors attribute to the small sample size and narrow range of CSF protein values (Discussion). The full screened list on those two parameters was CSF total protein, CSF albumin, CSF glucose, polymorphonuclear cells, lymphocytes and the Glasgow Coma Scale (Methods, PK Modeling); only CSF total protein is registered as a canonical column, so the other five are named here in prose rather than minted as canonical names for a screen that produced no retained effect. Cohort median 1.16 g/L, range 0.2-55 at the day-3 visit; missing for 17 participants at day 3 and 8 at day 28 (Table 1). The sibling LASER-TBM linezolid model Abdelgawad_2024_linezolid.R DID retain a CSF-protein effect on its PPC, so the null result here is drug-specific rather than a property of the cohort."
     ),
     CREAT = list(
-      description        = "Serum creatinine.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on the plasma PK parameters and not retained: 'We did not find a statistically significant difference in bioavailability for the FDC and the individual top-up tablets or for biomarkers such as creatinine, aspartate aminotransferase, and alanine aminotransferase' (Results, PK Modeling). Values are not tabulated in the paper."
+      notes = "Screened on the plasma PK parameters and not retained: 'We did not find a statistically significant difference in bioavailability for the FDC and the individual top-up tablets or for biomarkers such as creatinine, aspartate aminotransferase, and alanine aminotransferase' (Results, PK Modeling). Values are not tabulated in the paper."
     ),
     AST = list(
-      description        = "Aspartate aminotransferase.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on the plasma PK parameters and not retained (Results, PK Modeling). Values are not tabulated in the paper."
+      notes = "Screened on the plasma PK parameters and not retained (Results, PK Modeling). Values are not tabulated in the paper."
     ),
     ALT = list(
-      description        = "Alanine aminotransferase.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on the plasma PK parameters and not retained (Results, PK Modeling). Values are not tabulated in the paper."
+      notes = "Screened on the plasma PK parameters and not retained (Results, PK Modeling). Values are not tabulated in the paper."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48L,
-    n_studies      = 1L,
-    age_range      = "25-78 years (median 39 at the day-3 visit; 25-57, median 39 at the day-28 visit)",
-    age_median     = "39 years",
-    weight_range   = "30-107.2 kg (median 59.5 at the day-3 visit; 37.4-105.1, median 61.7 at the day-28 visit)",
-    weight_median  = "59.5 kg",
-    ffm_range      = "30.3-59.4 kg (median 45.2 at the day-3 visit); the control stream normalises allometry to 46 kg",
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 1L,
+    age_range = "25-78 years (median 39 at the day-3 visit; 25-57, median 39 at the day-28 visit)",
+    age_median = "39 years",
+    weight_range = "30-107.2 kg (median 59.5 at the day-3 visit; 37.4-105.1, median 61.7 at the day-28 visit)",
+    weight_median = "59.5 kg",
+    ffm_range = "30.3-59.4 kg (median 45.2 at the day-3 visit); the control stream normalises allometry to 46 kg",
     sex_female_pct = 44.9,
     race_ethnicity = "Not reported; the cohort was enrolled at four public hospitals in South Africa",
-    disease_state  = paste(
+    disease_state = paste(
       "HIV-associated tuberculous meningitis (TBM). All participants were",
       "living with HIV: 14 of 49 (28.6%) had previously taken antiretroviral",
       "therapy, 20 (40.8%) were antiretroviral-naive and 15 (30.6%) were on",
@@ -297,7 +307,7 @@ Abdelgawad_2025_rifampicin <- function() {
       "albumin 387 mg/L and glucose 3.05 mmol/L at the day-3 visit. All",
       "participants received adjunctive corticosteroids."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Control arm: standard-of-care oral rifampicin 10 mg/kg once daily by",
       "World Health Organization weight bands, as fixed-dose-combination",
       "tablets with isoniazid 5 mg/kg, pyrazinamide 25 mg/kg and ethambutol",
@@ -308,8 +318,8 @@ Abdelgawad_2025_rifampicin <- function() {
       "intravenous 20 mg/kg given as a 1 h infusion; from day 3 onward all",
       "experimental-arm participants took oral 35 mg/kg once daily."
     ),
-    regions        = "South Africa (four hospitals)",
-    notes          = paste(
+    regions = "South Africa (four hospitals)",
+    notes = paste(
       "Pharmacokinetic substudy of LASER-TBM, a phase 2A trial of intensified",
       "antibiotic therapy in adults with HIV-associated TBM",
       "(ClinicalTrials.gov NCT03927313). Forty-nine participants underwent PK",

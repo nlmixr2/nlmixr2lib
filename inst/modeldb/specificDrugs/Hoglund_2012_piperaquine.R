@@ -34,22 +34,22 @@ Hoglund_2012_piperaquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with fixed exponents 0.75 on apparent clearances",
         "(CL/F, Q1/F, Q2/F) and 1.0 on apparent volumes (Vc/F, Vp1/F, Vp2/F).",
         "Hoglund 2012 Methods (page 4): 'Body weight was tried in the model as",
@@ -65,29 +65,29 @@ Hoglund_2012_piperaquine <- function() {
         "in the source data set.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 24L,
-    n_studies       = 1L,
-    n_pregnant      = 12L,
-    n_nonpregnant   = 12L,
-    age_range       = "16.0-43.0 years (all-cohort range, Table 1)",
-    age_median      = "21.0 years non-pregnant; 26.0 years pregnant (Table 1)",
-    weight_range    = "44.0-81.0 kg (all-cohort range, Table 1)",
-    weight_median   = "53.0 kg non-pregnant; 59.0 kg pregnant (Table 1)",
-    height_range    = "150-174 cm (all-cohort, Table 1)",
-    sex_female_pct  = 100,
-    ega_range       = "15.3-40.1 weeks among the pregnant cohort (Table 1)",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    n_pregnant = 12L,
+    n_nonpregnant = 12L,
+    age_range = "16.0-43.0 years (all-cohort range, Table 1)",
+    age_median = "21.0 years non-pregnant; 26.0 years pregnant (Table 1)",
+    weight_range = "44.0-81.0 kg (all-cohort range, Table 1)",
+    weight_median = "53.0 kg non-pregnant; 59.0 kg pregnant (Table 1)",
+    height_range = "150-174 cm (all-cohort, Table 1)",
+    sex_female_pct = 100,
+    ega_range = "15.3-40.1 weeks among the pregnant cohort (Table 1)",
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; symptomatic women,",
       "12 in their second or third trimester of pregnancy and 12",
       "non-pregnant controls."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Dihydroartemisinin-piperaquine fixed-dose combination (Duo Cotecxin,",
       "40 mg dihydroartemisinin + 320 mg piperaquine tetra-phosphate per",
       "tablet) once daily for three days, directly observed, taken with water",
@@ -95,8 +95,8 @@ Hoglund_2012_piperaquine <- function() {
       "20 mg piperaquine tetra-phosphate/kg, equivalent to ~10.5 mg",
       "piperaquine base/kg (Table 1)."
     ),
-    regions         = "Sudan (New Halfa Teaching Hospital, New Halfa)",
-    notes           = paste(
+    regions = "Sudan (New Halfa Teaching Hospital, New Halfa)",
+    notes = paste(
       "Demographics from Hoglund 2012 Table 1. Sample size n=24 (12+12)",
       "post-randomisation; 14 non-pregnant women were initially recruited",
       "but 2 withdrew consent. PK analysis used 564 post-dose plasma",

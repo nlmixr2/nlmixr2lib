@@ -37,8 +37,8 @@ Knebel_2013_atorvastatin <- function() {
   vignette <- "Knebel_2013_atorvastatin"
 
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = paste(
       "nmol/L (nM) for Cc (atorvastatin) and Cc_oatv",
       "(o-hydroxyatorvastatin); the analysis dataset converted dose and all",
@@ -53,34 +53,44 @@ Knebel_2013_atorvastatin <- function() {
   # Assembly and Data Analysis).
   compartmentData <- list(
     depot = list(
-      analyte = "atorvastatin", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "atorvastatin",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "atorvastatin", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "atorvastatin",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "atorvastatin", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "atorvastatin",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_oatv = list(
-      analyte = "o-hydroxyatorvastatin", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "o-hydroxyatorvastatin",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_oatv = list(
-      analyte = "o-hydroxyatorvastatin", units = "nmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "o-hydroxyatorvastatin",
+      units = "nmol",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Fixed allometric scaling against a 70 kg reference on all eight",
         "disposition parameters of both analytes, with exponents fixed to",
         "0.75 for CL/F, Q/F, CLm/fm and Qm/fm and to 1 for Vc/F, Vp/F,",
@@ -93,17 +103,17 @@ Knebel_2013_atorvastatin <- function() {
         "Weight is the only covariate retained in the final model besides",
         "Tanner Stage."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     TANNER_1 = list(
-      description        = paste(
+      description = paste(
         "Tanner Stage 1 (prepubertal) indicator: 1 = Tanner Stage 1,",
         "0 = Tanner Stage 2 or above."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Tanner Stage 2 or above)",
-      notes              = paste(
+      notes = paste(
         "Modifies relative bioavailability F1 multiplicatively:",
         "F1 = 1 for Tanner Stage 2 or above (fixed reference) and 0.752 for",
         "Tanner Stage 1 (Knebel 2013 Table 2, F1-Tanner Stage 1 = theta12 =",
@@ -120,7 +130,7 @@ Knebel_2013_atorvastatin <- function() {
         "formulations are bioequivalent in adults. The 95% CI includes the",
         "null value of 1, so the effect is not firmly established."
       ),
-      source_name        = "Tanner Stage"
+      source_name = "Tanner Stage"
     )
   )
 
@@ -137,9 +147,9 @@ Knebel_2013_atorvastatin <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age in years.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Pre-specified as a candidate predictor of CL/F (Knebel 2013",
         "Methods, Data Assembly and Data Analysis) but not retained in the",
         "final model and no point estimate reported. Cohort age ranged 6-17",
@@ -149,26 +159,26 @@ Knebel_2013_atorvastatin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 1L,
     n_observations = 310L,
-    age_range      = "6-17 years",
-    age_median     = "12 years",
-    weight_range   = "25-99.4 kg",
-    weight_median  = "47 kg",
-    disease_state  = paste(
+    age_range = "6-17 years",
+    age_median = "12 years",
+    weight_range = "25-99.4 kg",
+    weight_median = "47 kg",
+    disease_state = paste(
       "Genetically verified heterozygous familial hypercholesterolemia with",
       "baseline low-density lipoprotein cholesterol > 4 mmol/L."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Atorvastatin once daily by mouth for 8 weeks. Tanner Stage 1: 5 mg",
       "of a chewable tablet; Tanner Stage 2 or above: 10 mg of the marketed",
       "tablet. Doses were doubled at Week 4 in subjects who had not reached",
       "target LDL-C < 3.35 mmol/L."
     ),
-    maturation     = "15 Tanner Stage 1 and 24 Tanner Stage 2-or-above patients",
-    notes          = paste(
+    maturation = "15 Tanner Stage 1 and 24 Tanner Stage 2-or-above patients",
+    notes = paste(
       "Single open-label 8-week paediatric trial (Pfizer study A2581172).",
       "Sparse sampling: 8 blood samples per subject - one between 4 and 12 h",
       "postdose at each of Weeks 2 and 6, and predose plus 1 h and 2 h",

@@ -8,8 +8,8 @@ Laffont_2024_naloxone <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -20,16 +20,16 @@ Laffont_2024_naloxone <- function() {
   )
 
   population <- list(
-    n_subjects     = "TODO: not reported in main text; the IN naloxone population PK dataset comes from the pharmacodynamic study by Ellison et al. 2024 (ref 23). Detail is in Supplementary Table 2 (not on disk).",
-    n_studies      = 1,
-    age_range      = "Adult (healthy volunteers); detailed range in Supplementary Table 2 (not on disk).",
-    weight_median  = "TODO: not reported in main text",
+    n_subjects = "TODO: not reported in main text; the IN naloxone population PK dataset comes from the pharmacodynamic study by Ellison et al. 2024 (ref 23). Detail is in Supplementary Table 2 (not on disk).",
+    n_studies = 1,
+    age_range = "Adult (healthy volunteers); detailed range in Supplementary Table 2 (not on disk).",
+    weight_median = "TODO: not reported in main text",
     sex_female_pct = "TODO: not reported in main text",
     race_ethnicity = "TODO: not reported in main text",
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "Single 4 mg IN naloxone HCl (commercial 4 mg/0.1 mL nasal spray) in pharmacodynamic study",
-    regions        = "TODO: not reported in main text",
-    notes          = "IN naloxone PK data come from the pharmacodynamic study by Ellison et al. 2024 (ref 23) under hypercapnic-gas-mixture conditions. The paper notes that the hypercapnic-mask conditions did not affect IN naloxone absorption during the first 20 minutes post dose when compared with published data in healthy volunteers (refs 10, 23), so the population PK parameters in Table 2 were used as-is for opioid-overdose rescue simulations."
+    disease_state = "Healthy adult volunteers",
+    dose_range = "Single 4 mg IN naloxone HCl (commercial 4 mg/0.1 mL nasal spray) in pharmacodynamic study",
+    regions = "TODO: not reported in main text",
+    notes = "IN naloxone PK data come from the pharmacodynamic study by Ellison et al. 2024 (ref 23) under hypercapnic-gas-mixture conditions. The paper notes that the hypercapnic-mask conditions did not affect IN naloxone absorption during the first 20 minutes post dose when compared with published data in healthy volunteers (refs 10, 23), so the population PK parameters in Table 2 were used as-is for opioid-overdose rescue simulations."
   )
 
   ini({

@@ -12,63 +12,78 @@ Wang_2024_risperidone_consta <- function() {
 
   covariateData <- list(
     STUDY_CT_USA_102 = list(
-      description        = "1 = subject enrolled in trial CT-USA-102 (NCT02091388), the multiple-dose relative-bioavailability trial in which either Rykindo or Consta 25 mg was given every 2 weeks for five injections; 0 = subject enrolled in CT-USA-104 (NCT02186769), the single-dose relative-bioavailability trial",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject enrolled in trial CT-USA-102 (NCT02091388), the multiple-dose relative-bioavailability trial in which either Rykindo or Consta 25 mg was given every 2 weeks for five injections; 0 = subject enrolled in CT-USA-104 (NCT02186769), the single-dose relative-bioavailability trial",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the single-dose trial CT-USA-104; Consta was not studied in CT-1S01)",
-      notes              = "Time-fixed; set from the trial identifier. Switches the first-order absorption rate constant KA of the main release from 0.179 to 0.271 /day (Wang 2024 Table 2, Consta column, rows 'KA_CT-1S01 and CT-USA-104' -- footnote: KA_CT-USA-104 for Consta -- and 'KA_CT-USA-102'). This is the only covariate retained in the Consta model: Wang 2024 Results states 'The only covariate that is statistically significant is found in the studies on the primary absorption rate constant', and no sex effect on clearance was significant. The authors attribute the faster apparent absorption in the multiple-dose trial to its sparser PK sampling scheme rather than to a formulation difference (Wang 2024 Discussion). Because the model sets the elimination rate constant equal to KA (flip-flop kinetics), this indicator also shifts the apparent central volume V = CL/KA. Shared with the companion Rykindo model. Follows the auto-approved STUDY_<id> canonical family.",
-      source_name        = "study"
+      notes = "Time-fixed; set from the trial identifier. Switches the first-order absorption rate constant KA of the main release from 0.179 to 0.271 /day (Wang 2024 Table 2, Consta column, rows 'KA_CT-1S01 and CT-USA-104' -- footnote: KA_CT-USA-104 for Consta -- and 'KA_CT-USA-102'). This is the only covariate retained in the Consta model: Wang 2024 Results states 'The only covariate that is statistically significant is found in the studies on the primary absorption rate constant', and no sex effect on clearance was significant. The authors attribute the faster apparent absorption in the multiple-dose trial to its sparser PK sampling scheme rather than to a formulation difference (Wang 2024 Discussion). Because the model sets the elimination rate constant equal to KA (flip-flop kinetics), this indicator also shifts the apparent central volume V = CL/KA. Shared with the companion Rykindo model. Follows the auto-approved STUDY_<id> canonical family.",
+      source_name = "study"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. Wang 2024 Table 2 footnote states that the single Consta clearance estimate of 108.0 L/day applies to both males and females, and the Results section reports that no gender effect on clearance was statistically significant for Consta. A sex effect on clearance WAS retained for the companion Rykindo model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. Wang 2024 Table 2 footnote states that the single Consta clearance estimate of 108.0 L/day applies to both males and females, and the Results section reports that no gender effect on clearance was statistically significant for Consta. A sex effect on clearance WAS retained for the companion Rykindo model."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened as part of the demographic covariate analysis (Wang 2024 Methods, 'Population PK Model Development') but not retained in the final Consta model."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened as part of the demographic covariate analysis (Wang 2024 Methods, 'Population PK Model Development') but not retained in the final Consta model."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as part of the demographic covariate analysis (Wang 2024 Methods) but not retained in the final Consta model."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as part of the demographic covariate analysis (Wang 2024 Methods) but not retained in the final Consta model."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as part of the demographic covariate analysis (Wang 2024 Methods) but not retained in the final Consta model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as part of the demographic covariate analysis (Wang 2024 Methods) but not retained in the final Consta model."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2  = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)", units = "mg", specimen = "plasma", verified = TRUE)
+    depot = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    depot2 = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "risperidone active moiety (risperidone + 9-OH-risperidone)",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 2L,
     n_observations = "1766 plasma concentration records of risperidone and 9-OH-risperidone (Wang 2024 Results, 'Population PK model of Consta active moiety').",
-    age_range      = "medians 53.0 / 55.0 years and means 49.0 (SD 10.9) / 46.6 (9.6) years in CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
-    weight_range   = "medians 79.3 / 88.0 kg and means 81.5 (SD 20.1) / 89.7 (15.4) kg in CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
-    bmi_range      = "medians 25.35 / 29.2 kg/m^2 and means 26.5 (SD 5.8) / 29.3 (4.3) kg/m^2 (Wang 2024 Table 1)",
+    age_range = "medians 53.0 / 55.0 years and means 49.0 (SD 10.9) / 46.6 (9.6) years in CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
+    weight_range = "medians 79.3 / 88.0 kg and means 81.5 (SD 20.1) / 89.7 (15.4) kg in CT-USA-104 / CT-USA-102 (Wang 2024 Table 1)",
+    bmi_range = "medians 25.35 / 29.2 kg/m^2 and means 26.5 (SD 5.8) / 29.3 (4.3) kg/m^2 (Wang 2024 Table 1)",
     sex_female_pct = 26.1,
     race_ethnicity = "Not reported in Wang 2024. Race was screened as a covariate but no race effect was retained in the final model.",
-    disease_state  = "Stable adults with schizophrenia or schizoaffective disorder",
-    dose_range     = "25 and 50 mg single intramuscular gluteal injection (CT-USA-104); 25 mg every 2 weeks for five injections (CT-USA-102)",
-    regions        = "United States",
-    cyp2d6_status  = "Across the two Consta cohorts (Wang 2024 Table 1): 5 poor, 24 intermediate and 37 extensive metabolizers, 3 unknown. CYP2D6 genotype was not retained as a covariate because the active moiety (risperidone + 9-OH-risperidone) is insensitive to CYP2D6 status.",
-    notes          = "Pooled from the Consta arms of two phase 1 trials: CT-USA-104 (NCT02186769) and CT-USA-102 (NCT02091388). Wang 2024 Table 1 lists 15 + 54 = 69 enrolled subjects in the two Consta cohorts, while the Results text states that 66 subjects contributed the 1766 PK records; the difference is not explained in the paper. Age, weight, body mass index, sex and race were screened as covariates; only trial (on the main-release absorption rate constant) was retained."
+    disease_state = "Stable adults with schizophrenia or schizoaffective disorder",
+    dose_range = "25 and 50 mg single intramuscular gluteal injection (CT-USA-104); 25 mg every 2 weeks for five injections (CT-USA-102)",
+    regions = "United States",
+    cyp2d6_status = "Across the two Consta cohorts (Wang 2024 Table 1): 5 poor, 24 intermediate and 37 extensive metabolizers, 3 unknown. CYP2D6 genotype was not retained as a covariate because the active moiety (risperidone + 9-OH-risperidone) is insensitive to CYP2D6 status.",
+    notes = "Pooled from the Consta arms of two phase 1 trials: CT-USA-104 (NCT02186769) and CT-USA-102 (NCT02091388). Wang 2024 Table 1 lists 15 + 54 = 69 enrolled subjects in the two Consta cohorts, while the Results text states that 66 subjects contributed the 1766 PK records; the difference is not explained in the paper. Age, weight, body mass index, sex and race were screened as covariates; only trial (on the main-release absorption rate constant) was retained."
   )
 
   ini({

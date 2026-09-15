@@ -45,8 +45,8 @@ Fu_2022_atenolol_qsp <- function() {
   paper_specific_compartments <- c("hr", "edv", "tpr", "ctr")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg (per-kg atenolol oral dose; the PK typicals below are per-kg-normalized so amt in mg/kg with vc in L/kg yields amt/vc in mg/L; the model multiplies by 1000 to get Cc in ng/mL for comparison with the paper's EC50)",
+    time = "h",
+    dosing = "mg/kg (per-kg atenolol oral dose; the PK typicals below are per-kg-normalized so amt in mg/kg with vc in L/kg yields amt/vc in mg/L; the model multiplies by 1000 to get Cc in ng/mL for comparison with the paper's EC50)",
     concentration = "ng/mL (central-compartment atenolol; the paper's Emax and EC50 values are on the ng/mL scale)"
   )
 
@@ -55,48 +55,63 @@ Fu_2022_atenolol_qsp <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "atenolol", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "atenolol", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
-    hr          = list(analyte = "heart rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    edv         = list(analyte = "left-ventricular end-diastolic volume", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    tpr         = list(analyte = "total peripheral resistance", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    ctr         = list(analyte = "myocardial contractility", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    hr = list(analyte = "heart rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    edv = list(
+      analyte = "left-ventricular end-diastolic volume",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    tpr = list(
+      analyte = "total peripheral resistance",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    ctr = list(
+      analyte = "myocardial contractility",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     STUDY_FU2022_AZ = list(
-      description        = "Fu 2022 pooled-analysis study indicator: 1 = subject enrolled in Study 2 (AstraZeneca; Alderley Park, UK; 4 male beagle dogs, 14.2-14.6 kg, 17-22 months old; oral atenolol 0, 1, 3, 10 mg/kg; HR, dP/dtmax, and MAP measured; NO cardiac output measurement); 0 = Study 1 (Servier; France; 4 male beagle dogs, 10-15 kg; oral atenolol 0, 3, 10, 30 mg/kg; HR, dP/dtmax, CO, and MAP measured). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fu 2022 pooled-analysis study indicator: 1 = subject enrolled in Study 2 (AstraZeneca; Alderley Park, UK; 4 male beagle dogs, 14.2-14.6 kg, 17-22 months old; oral atenolol 0, 1, 3, 10 mg/kg; HR, dP/dtmax, and MAP measured; NO cardiac output measurement); 0 = Study 1 (Servier; France; 4 male beagle dogs, 10-15 kg; oral atenolol 0, 3, 10, 30 mg/kg; HR, dP/dtmax, CO, and MAP measured). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Selects the study-specific baseline values (BSL_HR, V0, BSL_CTRM) and the study-specific circadian amplitude and horizontal displacements for HR and CTR. TPR-related circadian parameters (Amp_TPR = per-study Amp; Hor_TPR = 6.33 h) and all remaining system-specific parameters (BSL_TPR, BSL_EDV, Kout, FB) are shared across the two studies (Fu 2022 Table 2 footnotes). Study 3 (GlaxoSmithKline, 0.3/1/3 mg/kg) is external validation only and is not encoded as a covariate level; for external-validation simulations, use STUDY_FU2022_AZ = 0 with the Study 1 typical values.",
-      source_name        = "SSID (in the NONMEM control stream; SSID = 1 -> Servier, SSID = 2 -> AstraZeneca, SSID = 3 -> GSK external validation)"
+      notes = "Selects the study-specific baseline values (BSL_HR, V0, BSL_CTRM) and the study-specific circadian amplitude and horizontal displacements for HR and CTR. TPR-related circadian parameters (Amp_TPR = per-study Amp; Hor_TPR = 6.33 h) and all remaining system-specific parameters (BSL_TPR, BSL_EDV, Kout, FB) are shared across the two studies (Fu 2022 Table 2 footnotes). Study 3 (GlaxoSmithKline, 0.3/1/3 mg/kg) is external validation only and is not encoded as a covariate level; for external-validation simulations, use STUDY_FU2022_AZ = 0 with the Study 1 typical values.",
+      source_name = "SSID (in the NONMEM control stream; SSID = 1 -> Servier, SSID = 2 -> AstraZeneca, SSID = 3 -> GSK external validation)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Body weight (documented in the supplement for each study cohort but NOT used as a covariate in the final Fu 2022 model). Screened only as a description of the animal cohort; the beagle-dog weight range is narrow (9-15 kg across the three studies) and no allometric scaling is applied.",
-      units              = "kg",
-      type               = "continuous",
-      notes              = "Documented-but-unused: recorded in Fu 2022 supplement Section A per-study animal descriptions; not referenced in model()."
+      description = "Body weight (documented in the supplement for each study cohort but NOT used as a covariate in the final Fu 2022 model). Screened only as a description of the animal cohort; the beagle-dog weight range is narrow (9-15 kg across the three studies) and no allometric scaling is applied.",
+      units = "kg",
+      type = "continuous",
+      notes = "Documented-but-unused: recorded in Fu 2022 supplement Section A per-study animal descriptions; not referenced in model()."
     )
   )
 
   population <- list(
-    species        = "beagle dog",
-    n_subjects     = 12L,
-    n_studies      = 3L,
-    age_range      = "17-72 months (Study 1: healthy naive adult; Study 2: 17-22 months; Study 3: 5-6 years)",
-    weight_range   = "9-15 kg (Study 1: 10-15 kg; Study 2: 14.2-14.6 kg; Study 3: 9-13 kg)",
+    species = "beagle dog",
+    n_subjects = 12L,
+    n_studies = 3L,
+    age_range = "17-72 months (Study 1: healthy naive adult; Study 2: 17-22 months; Study 3: 5-6 years)",
+    weight_range = "9-15 kg (Study 1: 10-15 kg; Study 2: 14.2-14.6 kg; Study 3: 9-13 kg)",
     sex_female_pct = 0,
     race_ethnicity = NA_character_,
-    disease_state  = "Conscious chronically-instrumented healthy beagle dogs (male). Multi-site consortium: Servier (France; Study 1), AstraZeneca (Alderley Park, UK; Study 2), GlaxoSmithKline (Marshall Farms, NY, USA; Study 3, external validation). Hemodynamic markers monitored by telemetry: aortic and left-atrial pressures, LV pressure via solid-state micromanometer, aortic blood flow via transit-time flowmeter (Study 1) or DSI PhysioTel implants (Studies 2 and 3).",
-    dose_range     = "Oral gavage; increasing atenolol doses with washout in between: 0/3/10/30 mg/kg (Study 1, vehicle = 0.5 percent methylcellulose); 0/1/3/10 mg/kg (Study 2, vehicle = water); 0/0.3/1/3 mg/kg (Study 3, vehicle = water). Studies 1 and 2 used for model development; Study 3 for external validation.",
-    regions        = "France (Servier), United Kingdom (AstraZeneca Alderley Park), USA (GlaxoSmithKline).",
-    notes          = "Data from three in vivo telemetry studies (Fu 2022 Table 1 and supplement Section A). Only HR, LV dP/dtmax, CO (Studies 1 and 3 only), and MAP time courses were used. Data from Studies 1 and 2 were simultaneously fit with NONMEM 7.4.3 (FOCE-INTER) via PsN 4.8.1. Model was initialised at 0 h and dosing began at 168 h in the fitting run so that the circadian rhythms were in oscillating steady state; for typical-user simulations the packaged model starts the CVS states at their baseline values with the circadian phase set so that t = 0 corresponds to the model's dosing time. Study 1 data used for external comparison of the developed model to CO-informative telemetry; the paper additionally fit a Model without CO data (with BSL_TPR fixed to 0.0743 mmHg*min/mL, IIV on BSL_TPR and CS_TPR removed, and Emax_TPR retained at zero) -- the packaged model corresponds to the primary Fu 2022 Table 2 final model with CO data."
+    disease_state = "Conscious chronically-instrumented healthy beagle dogs (male). Multi-site consortium: Servier (France; Study 1), AstraZeneca (Alderley Park, UK; Study 2), GlaxoSmithKline (Marshall Farms, NY, USA; Study 3, external validation). Hemodynamic markers monitored by telemetry: aortic and left-atrial pressures, LV pressure via solid-state micromanometer, aortic blood flow via transit-time flowmeter (Study 1) or DSI PhysioTel implants (Studies 2 and 3).",
+    dose_range = "Oral gavage; increasing atenolol doses with washout in between: 0/3/10/30 mg/kg (Study 1, vehicle = 0.5 percent methylcellulose); 0/1/3/10 mg/kg (Study 2, vehicle = water); 0/0.3/1/3 mg/kg (Study 3, vehicle = water). Studies 1 and 2 used for model development; Study 3 for external validation.",
+    regions = "France (Servier), United Kingdom (AstraZeneca Alderley Park), USA (GlaxoSmithKline).",
+    notes = "Data from three in vivo telemetry studies (Fu 2022 Table 1 and supplement Section A). Only HR, LV dP/dtmax, CO (Studies 1 and 3 only), and MAP time courses were used. Data from Studies 1 and 2 were simultaneously fit with NONMEM 7.4.3 (FOCE-INTER) via PsN 4.8.1. Model was initialised at 0 h and dosing began at 168 h in the fitting run so that the circadian rhythms were in oscillating steady state; for typical-user simulations the packaged model starts the CVS states at their baseline values with the circadian phase set so that t = 0 corresponds to the model's dosing time. Study 1 data used for external comparison of the developed model to CO-informative telemetry; the paper additionally fit a Model without CO data (with BSL_TPR fixed to 0.0743 mmHg*min/mL, IIV on BSL_TPR and CS_TPR removed, and Emax_TPR retained at zero) -- the packaged model corresponds to the primary Fu 2022 Table 2 final model with CO data."
   )
 
   ini({

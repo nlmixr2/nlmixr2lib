@@ -19,23 +19,23 @@ Lee_2025_piperacillin <- function() {
     sep = " "
   )
   vignette <- "Lee_2025_piperacillin_tazobactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Lee 2025 Section 4.2 (plasma samples
   # assayed by LC-MS/MS) and Section 2.2 (two-compartment structural model).
   compartmentData <- list(
-    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, adjusted to the individual's body surface area (the source paper's 'CE' / 'BSA adjusted eGFR CKD-EPI_CR')",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, adjusted to the individual's body surface area (the source paper's 'CE' / 'BSA adjusted eGFR CKD-EPI_CR')",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on CL: (CRCL / 108.25)^theta2 with theta2 = 1.16",
         "(Lee 2025 Table 2). The reference 108.25 mL/min is the cohort median",
         "(Table 1 reports 108 mL/min, range 86.2-136). NOT normalised to",
@@ -45,14 +45,14 @@ Lee_2025_piperacillin <- function() {
         "the OFV by 16.414 and inflated IIV on CL from 7.17% to 13.2%",
         "(Section 2.2, Table A1 backward step 1)."
       ),
-      source_name        = "CE (CKD-EPI_CR eGFR, BSA adjusted)"
+      source_name = "CE (CKD-EPI_CR eGFR, BSA adjusted)"
     ),
     LBM = list(
-      description        = "Lean body mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form effect on Q: (LBM / 50.08)^theta5 with theta5 = 2.50",
         "(Lee 2025 Table 2). The reference 50.08 kg is the cohort median",
         "(Table 1 reports 50.1 kg, range 36.6-65.9). The typical Q (theta4 =",
@@ -62,14 +62,14 @@ Lee_2025_piperacillin <- function() {
         "cautions that it needs external validation (Discussion). Lee 2025 does",
         "not report the formula used to compute LBM."
       ),
-      source_name        = "LBM"
+      source_name = "LBM"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential effect on the peripheral volume V2:",
         "V2 = theta6 * exp(theta7 * (WT - 61.7)) with theta7 = 0.0288 per kg",
         "(Lee 2025 Table 2). The centering constant 61.7 kg is the cohort median",
@@ -79,28 +79,28 @@ Lee_2025_piperacillin <- function() {
         "exponential form beat the power form by delta OFV = -0.619 at forward",
         "step 3 (Table A1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    age_range      = "26-50 years (inclusion criteria 19-55 years)",
-    age_median     = "36.0 years",
-    weight_range   = "45.8-88.5 kg",
-    weight_median  = "61.7 kg",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    age_range = "26-50 years (inclusion criteria 19-55 years)",
+    age_median = "36.0 years",
+    weight_range = "45.8-88.5 kg",
+    weight_median = "61.7 kg",
     sex_female_pct = 33.3,
     race_ethnicity = "Korean (all participants)",
-    disease_state  = "Healthy adults with no congenital or chronic health conditions; all baseline laboratory values within normal clinical ranges",
-    dose_range     = "Single 4 g piperacillin / 0.5 g tazobactam intravenous dose in 100 mL saline, infused over 30 min",
-    regions        = "Republic of Korea (Clinical Trial Center, Hallym University Sacred Heart Hospital, Anyang)",
+    disease_state = "Healthy adults with no congenital or chronic health conditions; all baseline laboratory values within normal clinical ranges",
+    dose_range = "Single 4 g piperacillin / 0.5 g tazobactam intravenous dose in 100 mL saline, infused over 30 min",
+    regions = "Republic of Korea (Clinical Trial Center, Hallym University Sacred Heart Hospital, Anyang)",
     renal_function = "Normal; CrCl (Cockcroft-Gault) 105 mL/min (76.2-146), BSA-adjusted CKD-EPI creatinine eGFR 108 mL/min (86.2-136)",
-    height_range   = "158-182 cm (median 168)",
-    lbm_range      = "36.6-65.9 kg (median 50.1)",
-    bsa_range      = "1.44-2.07 m^2 (median 1.71)",
-    notes          = paste(
+    height_range = "158-182 cm (median 168)",
+    lbm_range = "36.6-65.9 kg (median 50.1)",
+    bsa_range = "1.44-2.07 m^2 (median 1.71)",
+    notes = paste(
       "12 healthy Korean adults (8 male, 4 female) studied in January 2023;",
       "IRB 2022-08-006, trial registration KCT0009855. Rich sampling: pre-dose",
       "and 0.5, 0.75, 1, 2, 3 and 6 h after the start of the infusion, giving 84",

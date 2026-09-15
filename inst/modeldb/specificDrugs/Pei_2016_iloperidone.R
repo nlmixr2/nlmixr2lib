@@ -55,19 +55,19 @@ Pei_2016_iloperidone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "iloperidone", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "iloperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "iloperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "iloperidone", units = "mg", specimen = "plasma", verified = FALSE),
     central_p88 = list(analyte = "P-88 (M1)", units = "mg", specimen = "plasma", verified = FALSE),
     central_p95 = list(analyte = "P-95 (M2)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2D6_STAR10_HET = list(
-      description        = "CYP2D6*10 (rs1065852) heterozygote indicator (C/T genotype)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6*10 (rs1065852) heterozygote indicator (C/T genotype)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C wild-type at rs1065852; paired with CYP2D6_STAR10_HOM)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is CYP2D6*10 C/T heterozygote at rs1065852, 0 otherwise.",
         "Paired with CYP2D6_STAR10_HOM to encode the three-level C/C / C/T / T/T",
         "genotype using two binary indicators on the CYP3A5_STAR1_HET /",
@@ -82,14 +82,14 @@ Pei_2016_iloperidone <- function() {
         "subject (germline genotype). Cohort distribution per Pei 2016 Table 1:",
         "C/C 11/70 (15.7%), C/T 42/70 (60.0%), T/T 17/70 (24.3%)."
       ),
-      source_name        = "CYP2D6*10 genotype (rs1065852); the C/T = 2 stratum in the paper's GENOTYPE = 1/2/3 encoding maps to CYP2D6_STAR10_HET = 1"
+      source_name = "CYP2D6*10 genotype (rs1065852); the C/T = 2 stratum in the paper's GENOTYPE = 1/2/3 encoding maps to CYP2D6_STAR10_HET = 1"
     ),
     CYP2D6_STAR10_HOM = list(
-      description        = "CYP2D6*10 (rs1065852) homozygous-mutant indicator (T/T genotype)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6*10 (rs1065852) homozygous-mutant indicator (T/T genotype)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C wild-type at rs1065852; paired with CYP2D6_STAR10_HET)",
-      notes              = paste(
+      notes = paste(
         "1 = subject is CYP2D6*10 T/T homozygote at rs1065852, 0 otherwise.",
         "Paired with CYP2D6_STAR10_HET; both indicators = 0 indicates the C/C",
         "wild-type reference. Used by both metabolite-formation rate constants",
@@ -102,24 +102,24 @@ Pei_2016_iloperidone <- function() {
         "genotype). Cohort distribution per Pei 2016 Table 1: C/C 11/70",
         "(15.7%), C/T 42/70 (60.0%), T/T 17/70 (24.3%)."
       ),
-      source_name        = "CYP2D6*10 genotype (rs1065852); the T/T = 3 stratum in the paper's GENOTYPE = 1/2/3 encoding maps to CYP2D6_STAR10_HOM = 1"
+      source_name = "CYP2D6*10 genotype (rs1065852); the T/T = 3 stratum in the paper's GENOTYPE = 1/2/3 encoding maps to CYP2D6_STAR10_HOM = 1"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 70L,
-    n_observations      = 804L,
-    n_studies           = 1L,
-    age_range           = "18-65 years (mean 34 +/- 12; Pei 2016 Table 1)",
-    weight_range        = "mean 62.2 +/- 10.5 kg (Pei 2016 Table 1)",
-    sex_female_pct      = 60.0,
-    race_ethnicity      = c(Asian = 100),
-    disease_state       = "Schizophrenia or schizoaffective disorder (DSM-IV); acute psychotic episode at enrolment.",
-    dose_range          = "Oral iloperidone 12-24 mg/day twice daily (12, 16, 20, or 24 mg/day) after individual dose titration on days 5-14 and fixed-dose maintenance on days 15-28; titration regimen 2 mg/day on day 1, 4 mg/day on day 2, 8 mg/day on day 3, 12 mg/day on day 4.",
-    regions             = "China (multi-center: 13 hospitals)",
+    species = "human",
+    n_subjects = 70L,
+    n_observations = 804L,
+    n_studies = 1L,
+    age_range = "18-65 years (mean 34 +/- 12; Pei 2016 Table 1)",
+    weight_range = "mean 62.2 +/- 10.5 kg (Pei 2016 Table 1)",
+    sex_female_pct = 60.0,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Schizophrenia or schizoaffective disorder (DSM-IV); acute psychotic episode at enrolment.",
+    dose_range = "Oral iloperidone 12-24 mg/day twice daily (12, 16, 20, or 24 mg/day) after individual dose titration on days 5-14 and fixed-dose maintenance on days 15-28; titration regimen 2 mg/day on day 1, 4 mg/day on day 2, 8 mg/day on day 3, 12 mg/day on day 4.",
+    regions = "China (multi-center: 13 hospitals)",
     cyp2d6_distribution = "CYP2D6*10 (rs1065852) genotype: C/C 11/70 (15.7%), C/T 42/70 (60.0%), T/T 17/70 (24.3%) per Pei 2016 Table 1. Allele frequencies for the *10 variant in Chinese populations are 48-70% per Introduction.",
-    notes               = paste(
+    notes = paste(
       "Sparse sampling. Four plasma samples per patient: C15-0 (predose on",
       "day 15, the first day of fixed-dose maintenance), C28-0 (predose on",
       "day 28), C28-4 (4 h post-AM-dose on day 28), and C28-12 (12 h",

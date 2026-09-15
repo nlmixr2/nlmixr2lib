@@ -29,17 +29,17 @@ ResendizGalvan_2025_cycloserine <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "cycloserine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "cycloserine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "cycloserine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Resendiz-Galvan 2025 Methods ('Model development and PK analysis'):",
         "FFM estimated from sex, height, and body weight per the paper's",
         "reference 25 (Janmahasatian et al. Clin Pharmacokinet",
@@ -54,14 +54,14 @@ ResendizGalvan_2025_cycloserine <- function() {
         "exponent-provenance note.",
         sep = " "
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort median 27 years (Table 1, IQR 21-35); adolescents and",
         "adults aged >= 15 years were eligible (Methods, 'Study",
         "population'). Age enters the model only through the",
@@ -71,14 +71,14 @@ ResendizGalvan_2025_cycloserine <- function() {
         "parameter.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Cohort median 0.7 (Table 1, IQR 0.6-0.9). Table 1 labels the units",
         "'mg/L', but the printed Cockcroft-Gault equation in Methods reads",
         "'72 . SCr (mg/dL)' and the arithmetic confirms mg/dL: the median",
@@ -90,14 +90,14 @@ ResendizGalvan_2025_cycloserine <- function() {
         "CLcr,56M / RF (see AGE).",
         sep = " "
       ),
-      source_name        = "SCr"
+      source_name = "SCr"
     ),
     OCC = list(
-      description        = "Dose-observation occasion: 1 = occasion following unobserved self-reported doses taken at home, 2 = occasion following a dose directly observed at the PK visit",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Dose-observation occasion: 1 = occasion following unobserved self-reported doses taken at home, 2 = occasion following a dose directly observed at the PK visit",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Resendiz-Galvan 2025 Methods: 'For between-occasion variability",
         "estimation, non-observed doses before the PK visits and pre-dose",
         "concentrations were considered as an independent occasion,",
@@ -113,36 +113,36 @@ ResendizGalvan_2025_cycloserine <- function() {
         "simulated exposures are reproduced.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 180L,
-    n_studies       = 1L,
-    n_observations  = 1281L,
-    age_range       = "Adolescents and adults >= 15 years; Table 1 median 27 years (IQR 21-35)",
-    weight_range    = "Table 1: median 55.5 kg (IQR 46.0-65.9)",
-    height_range    = "Table 1: median 1.59 m (IQR 1.53-1.69)",
-    ffm_range       = "Table 1: median 38.7 kg (IQR 32.3-47.1); model reference 38.6 kg",
-    creat_range     = "Table 1: median 0.7 mg/dL (IQR 0.6-0.9); Table 1 mislabels the unit as mg/L",
-    crcl_range      = "Table 1: median 108 mL/min (IQR 91.7-133.0), Cockcroft-Gault with actual weight and sex",
-    sex_female_pct  = 65.0,
-    n_hiv_positive  = 4L,
+    species = "human",
+    n_subjects = 180L,
+    n_studies = 1L,
+    n_observations = 1281L,
+    age_range = "Adolescents and adults >= 15 years; Table 1 median 27 years (IQR 21-35)",
+    weight_range = "Table 1: median 55.5 kg (IQR 46.0-65.9)",
+    height_range = "Table 1: median 1.59 m (IQR 1.53-1.69)",
+    ffm_range = "Table 1: median 38.7 kg (IQR 32.3-47.1); model reference 38.6 kg",
+    creat_range = "Table 1: median 0.7 mg/dL (IQR 0.6-0.9); Table 1 mislabels the unit as mg/L",
+    crcl_range = "Table 1: median 108 mL/min (IQR 91.7-133.0), Cockcroft-Gault with actual weight and sex",
+    sex_female_pct = 65.0,
+    n_hiv_positive = 4L,
     n_current_smokers = 8L,
-    renal_function  = paste(
+    renal_function = paste(
       "Largely normal; the size- and sex-neutral CLcr,56M used to build the",
       "renal-function ratio had a cohort median of 122 mL/min",
       "(Table 2 footnote b)."
     ),
-    disease_state   = paste(
+    disease_state = paste(
       "Treatment-naive multidrug-resistant pulmonary tuberculosis on",
       "individualised, susceptibility-guided longer MDR-TB regimens.",
       "Pre-treatment sputum-isolate cycloserine MICs (n = 171) had a median",
       "of 16 mg/L (range 1-64); 76.5% of isolates had MIC >= 16 mg/L."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral cycloserine (Lupin 250 mg and 500 mg capsules) started at 250 mg",
       "once daily and escalated as tolerated to a total daily dose of 500 or",
       "750 mg following Indian national weight-band guidance. Regimens",
@@ -150,15 +150,15 @@ ResendizGalvan_2025_cycloserine <- function() {
       "a.m./p.m., and 500 mg BID; at the first PK visit 85% of participants",
       "were on 250 mg BID and 9% on 250/500 mg a.m./p.m."
     ),
-    regions         = "India (single tertiary hospital, Mumbai)",
-    co_medication   = paste(
+    regions = "India (single tertiary hospital, Mumbai)",
+    co_medication = paste(
       "Individualised MDR-TB regimens: linezolid (91% of participants),",
       "moxifloxacin (90%), clofazimine (79%), pyrazinamide (42%),",
       "ethambutol (34%), para-aminosalicylic acid (25%), bedaquiline (28%),",
       "ethionamide (22%), kanamycin (20%). No drug-drug interaction with",
       "cycloserine was identified."
     ),
-    notes           = paste(
+    notes = paste(
       "Prospective observational cohort enrolled October 2017 - February",
       "2022 (MDR-TB MUKT / Indo-South Africa study teams). 1,281 cycloserine",
       "observations: 312 intensive (pre-dose, 1, 2, 4, 6, 8 h) and 969",

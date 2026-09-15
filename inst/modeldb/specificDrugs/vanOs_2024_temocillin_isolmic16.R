@@ -37,15 +37,21 @@ vanOs_2024_temocillin_isolmic16 <- function() {
     peripheral1 = list(analyte = "temocillin", units = "mg", specimen = "plasma", verified = TRUE),
     bact_susceptible = list(
       analyte = "Escherichia coli ISOL MIC16 (susceptible subpopulation)",
-      units = "cfu/mL", specimen = "not applicable", verified = TRUE
+      units = "cfu/mL",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     bact_less_susceptible = list(
       analyte = "Escherichia coli ISOL MIC16 (less susceptible subpopulation)",
-      units = "cfu/mL", specimen = "not applicable", verified = TRUE
+      units = "cfu/mL",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     bact_resistant = list(
       analyte = "Escherichia coli ISOL MIC16 (resistant subpopulation growing on agar with 32 mg/L temocillin)",
-      units = "cfu/mL", specimen = "not applicable", verified = TRUE
+      units = "cfu/mL",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -221,4 +227,3 @@ vanOs_2024_temocillin_isolmic16 <- function() {
     CFUres   ~ add(addSd_CFUres)
   })
 }
-

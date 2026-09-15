@@ -8,102 +8,102 @@ Wang_2024_sugemalimab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "sugemalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "sugemalimab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sugemalimab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL and on Vc. Reference 61 kg from Wang 2024 Table 3 footnote (typical lung cancer male patient).",
-      source_name        = "WT"
+      notes = "Power-form effect on baseline CL and on Vc. Reference 61 kg from Wang 2024 Table 3 footnote (typical lung cancer male patient).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL and on Vc. Reference 41.5 g/L from Wang 2024 Table 3 footnote (typical lung cancer male patient). Source paper reports albumin in g/L (SI convention).",
-      source_name        = "ALB"
+      notes = "Power-form effect on baseline CL and on Vc. Reference 41.5 g/L from Wang 2024 Table 3 footnote (typical lung cancer male patient). Source paper reports albumin in g/L (SI convention).",
+      source_name = "ALB"
     ),
     TUMSZ = list(
-      description        = "Baseline tumour burden (sum of longest target-lesion diameters by RECIST, investigator-assessed)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumour burden (sum of longest target-lesion diameters by RECIST, investigator-assessed)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on baseline CL only (no Vc effect retained). Reference 47 mm from Wang 2024 Table 3 footnote (typical lung cancer male patient). Source column TUMORB; Wang 2024 reports tumour burden in mm directly. 14.7% of subjects had missing tumour burden in the source dataset (Wang 2024 Table 2 footnote b); imputation handling not stated in the paper.",
-      source_name        = "TUMORB"
+      notes = "Power-form effect on baseline CL only (no Vc effect retained). Reference 47 mm from Wang 2024 Table 3 footnote (typical lung cancer male patient). Source column TUMORB; Wang 2024 reports tumour burden in mm directly. 14.7% of subjects had missing tumour burden in the source dataset (Wang 2024 Table 2 footnote b); imputation handling not stated in the paper.",
+      source_name = "TUMORB"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on baseline CL and on Vc; female reference value is lower for both parameters. Source paper Table 3 footnote: 'SEX: 0 for male, 1 for female', which matches canonical SEXF directly.",
-      source_name        = "SEX"
+      notes = "Exponential effect on baseline CL and on Vc; female reference value is lower for both parameters. Source paper Table 3 footnote: 'SEX: 0 for male, 1 for female', which matches canonical SEXF directly.",
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Anti-drug-antibody positivity status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug-antibody positivity status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Exponential effect on baseline CL only (no Vc effect retained). Source column ADA; Wang 2024 Table 3 footnote: 'ADA: 0 for negative, 1 for positive'. ADA-positive subjects had ~10.5% higher CL. ADA positivity rate in the source dataset was 8.8% (143 / 1628; Wang 2024 Table 2). Wang 2024 treats ADA as a time-fixed indicator (not time-varying) per the paper's Discussion: 'the ADA positivity rate of sugemalimab is low (8.7%), and therefore the time-dependent effect of ADA on PK was not considered'.",
-      source_name        = "ADA"
+      notes = "Exponential effect on baseline CL only (no Vc effect retained). Source column ADA; Wang 2024 Table 3 footnote: 'ADA: 0 for negative, 1 for positive'. ADA-positive subjects had ~10.5% higher CL. ADA positivity rate in the source dataset was 8.8% (143 / 1628; Wang 2024 Table 2). Wang 2024 treats ADA as a time-fixed indicator (not time-varying) per the paper's Discussion: 'the ADA positivity rate of sugemalimab is low (8.7%), and therefore the time-dependent effect of ADA on PK was not considered'.",
+      source_name = "ADA"
     ),
     TUMTP_LYMPH = list(
-      description        = "Lymphoma tumour-type indicator (heterogeneous lymphoma pool)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lymphoma tumour-type indicator (heterogeneous lymphoma pool)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-lymphoma tumour type — when paired with TUMTP_OTHER = TUMTP_GASTRIC = TUMTP_ESCC = 0, the reference is lung cancer / NSCLC)",
-      notes              = "Exponential effect on baseline CL and on Vc. Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical / relapsed-refractory Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single indicator (n = 164 in the pooled dataset). Source column TTYPE level 1.",
-      source_name        = "TTYPE1"
+      notes = "Exponential effect on baseline CL and on Vc. Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical / relapsed-refractory Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single indicator (n = 164 in the pooled dataset). Source column TTYPE level 1.",
+      source_name = "TTYPE1"
     ),
     TUMTP_OTHER = list(
-      description        = "'Other' tumour-type residual indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "'Other' tumour-type residual indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (one of the named groups: lung cancer reference, lymphoma, GCGEJ, ESCC)",
-      notes              = "Exponential effect on baseline CL and on Vc. Heterogeneous solid-tumour residual group spanning miscellaneous histologies not captured by the named groups (n = 174 in Wang 2024). Source column TTYPE level 3.",
-      source_name        = "TTYPE3"
+      notes = "Exponential effect on baseline CL and on Vc. Heterogeneous solid-tumour residual group spanning miscellaneous histologies not captured by the named groups (n = 174 in Wang 2024). Source column TTYPE level 3.",
+      source_name = "TTYPE3"
     ),
     TUMTP_GASTRIC = list(
-      description        = "Gastric / gastroesophageal-junction adenocarcinoma indicator (GCGEJ)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Gastric / gastroesophageal-junction adenocarcinoma indicator (GCGEJ)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-GCGEJ tumour type)",
-      notes              = "Exponential effect on baseline CL and on Vc. Wang 2024 GCGEJ group pools gastric adenocarcinoma (GC) and adenocarcinoma of the gastroesophageal junction (GEJ) into a single indicator (n = 275 in the pooled dataset; primarily from CS1001-303 / NCT03802591). Source column TTYPE level 4.",
-      source_name        = "TTYPE4"
+      notes = "Exponential effect on baseline CL and on Vc. Wang 2024 GCGEJ group pools gastric adenocarcinoma (GC) and adenocarcinoma of the gastroesophageal junction (GEJ) into a single indicator (n = 275 in the pooled dataset; primarily from CS1001-303 / NCT03802591). Source column TTYPE level 4.",
+      source_name = "TTYPE4"
     ),
     TUMTP_ESCC = list(
-      description        = "Oesophageal squamous cell carcinoma (ESCC) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oesophageal squamous cell carcinoma (ESCC) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-ESCC tumour type)",
-      notes              = "Exponential effect on baseline CL and on Vc. n = 401 in the pooled dataset (primarily from CS1001-304 / NCT04187352). Source column TTYPE level 5.",
-      source_name        = "TTYPE5"
+      notes = "Exponential effect on baseline CL and on Vc. n = 401 in the pooled dataset (primarily from CS1001-304 / NCT04187352). Source column TTYPE level 5.",
+      source_name = "TTYPE5"
     )
   )
 
   population <- list(
-    n_subjects     = 1628L,
-    n_studies      = 9L,
+    n_subjects = 1628L,
+    n_studies = 9L,
     n_observations = 11040L,
-    age_range      = "18-78 years",
-    age_median     = "60 years",
-    weight_range   = "36.0-141.0 kg",
-    weight_median  = "60 kg",
+    age_range = "18-78 years",
+    age_median = "60 years",
+    weight_range = "36.0-141.0 kg",
+    weight_median = "60 kg",
     sex_female_pct = 21.6,
     race_ethnicity = c(White = 2.15, Asian = 97.6, Other = 0.246),
-    disease_state  = "Adults with advanced solid tumours or lymphomas. Tumor-type mix in the pooled dataset (n = 1628): lung cancer 614 (37.7%; primarily NSCLC), ESCC 401 (24.6%), GCGEJ 275 (16.9%), 'Other' 174 (10.7%), lymphoma 164 (10.1%; mix of extranodal NK/T-cell lymphoma and classical Hodgkin lymphoma).",
-    dose_range     = "Sugemalimab 3-40 mg/kg or 1200 mg IV once every 3 weeks (Q3W); single Phase Ib/II combination cohort received 1800 mg Q4W. The vast majority of subjects received 1200 mg Q3W, reflecting the approved adult dose.",
-    regions        = "Pooled global trials, predominantly Asia (Asian race = 97.6%); 35 White and 4 'Other' subjects.",
-    ada_status     = "ADA-negative 1485 (91.2%); ADA-positive 143 (8.8%).",
-    ecog_status    = "ECOG performance status 0 in 414 (25.4%); ECOG >= 1 in 1213 (74.5%); missing in 1.",
-    tumour_burden  = "47 mm median (10-343 mm range); 239 (14.7%) subjects had missing tumour burden.",
-    notes          = "Baseline demographics per Wang 2024 Table 2. Pooled dataset spans nine Phase I-III sugemalimab trials (NCT03312842 phase Ia/Ib, NCT03744403 phase I, NCT03595657 phase II ENKTL, NCT03505996 phase II r/r-cHL, NCT04200404 phase Ib/II + regorafenib, NCT03728556 phase III stage-III NSCLC, NCT03789604 phase III stage-IV NSCLC, NCT03802591 phase III GCGEJ, NCT04187352 phase III ESCC). The model was fit using NONMEM 7.5 with FOCE-I; final-model parameter estimates and the simulation-target reference-patient definition are in Wang 2024 Table 3."
+    disease_state = "Adults with advanced solid tumours or lymphomas. Tumor-type mix in the pooled dataset (n = 1628): lung cancer 614 (37.7%; primarily NSCLC), ESCC 401 (24.6%), GCGEJ 275 (16.9%), 'Other' 174 (10.7%), lymphoma 164 (10.1%; mix of extranodal NK/T-cell lymphoma and classical Hodgkin lymphoma).",
+    dose_range = "Sugemalimab 3-40 mg/kg or 1200 mg IV once every 3 weeks (Q3W); single Phase Ib/II combination cohort received 1800 mg Q4W. The vast majority of subjects received 1200 mg Q3W, reflecting the approved adult dose.",
+    regions = "Pooled global trials, predominantly Asia (Asian race = 97.6%); 35 White and 4 'Other' subjects.",
+    ada_status = "ADA-negative 1485 (91.2%); ADA-positive 143 (8.8%).",
+    ecog_status = "ECOG performance status 0 in 414 (25.4%); ECOG >= 1 in 1213 (74.5%); missing in 1.",
+    tumour_burden = "47 mm median (10-343 mm range); 239 (14.7%) subjects had missing tumour burden.",
+    notes = "Baseline demographics per Wang 2024 Table 2. Pooled dataset spans nine Phase I-III sugemalimab trials (NCT03312842 phase Ia/Ib, NCT03744403 phase I, NCT03595657 phase II ENKTL, NCT03505996 phase II r/r-cHL, NCT04200404 phase Ib/II + regorafenib, NCT03728556 phase III stage-III NSCLC, NCT03789604 phase III stage-IV NSCLC, NCT03802591 phase III GCGEJ, NCT04187352 phase III ESCC). The model was fit using NONMEM 7.5 with FOCE-I; final-model parameter estimates and the simulation-target reference-patient definition are in Wang 2024 Table 3."
   )
 
   ini({

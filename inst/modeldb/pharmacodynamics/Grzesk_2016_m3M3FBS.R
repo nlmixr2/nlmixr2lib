@@ -31,8 +31,8 @@ Grzesk_2016_m3M3FBS <- function() {
   vignette <- "Grzesk_2016_m3M3FBS"
 
   units <- list(
-    time          = "(none -- static concentration-response with no time evolution)",
-    dosing        = "M (mol/L) applied to the perfusate; not a PK dose",
+    time = "(none -- static concentration-response with no time evolution)",
+    dosing = "M (mol/L) applied to the perfusate; not a PK dose",
     concentration = "mmHg (perfusion pressure observation)"
   )
 
@@ -46,17 +46,17 @@ Grzesk_2016_m3M3FBS <- function() {
         "3 = mastoparan-7 (heterotrimeric G-protein direct activator);",
         "4 = Bay K8644 (L-type voltage-gated calcium channel agonist)."
       ),
-      units              = "(categorical)",
-      type               = "categorical",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Selector covariate; out-of-range values cause every dispatch",
         "indicator to evaluate to 0 and the sigmoidal Emax expression",
         "to evaluate to 0 (no signal) rather than raise an error.",
         "Registered as the canonical AGONIST_CODE in",
         "inst/references/covariate-columns.md."
       ),
-      source_name        = "(Grzesk 2016 Table I row labels: PHE / AVP / mastoparan-7 / Bay K8644)"
+      source_name = "(Grzesk 2016 Table I row labels: PHE / AVP / mastoparan-7 / Bay K8644)"
     ),
     M3M3FBS_PRESENT = list(
       description = paste(
@@ -66,14 +66,14 @@ Grzesk_2016_m3M3FBS <- function() {
         "prior to the agonist CRC titration; 0 = control arm without",
         "m-3M3FBS pretreatment."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (control artery without m-3M3FBS pretreatment)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per artery / CRC. Registered as the canonical",
         "M3M3FBS_PRESENT in inst/references/covariate-columns.md."
       ),
-      source_name        = "(Grzesk 2016 Tables I and II: 'controls' vs '+m-3M3FBS' arms)"
+      source_name = "(Grzesk 2016 Tables I and II: 'controls' vs '+m-3M3FBS' arms)"
     ),
     CONC_AGONIST_M = list(
       description = paste(
@@ -83,26 +83,26 @@ Grzesk_2016_m3M3FBS <- function() {
         "AVP records, etc. CONC_AGONIST_M is the dose-response x-axis;",
         "the model has no PK and no time dynamics."
       ),
-      units              = "M (mol/L)",
-      type               = "continuous",
+      units = "M (mol/L)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the sigmoidal Emax expression",
         "effect = emax * CONC_AGONIST_M^hill / (ec50^hill + CONC_AGONIST_M^hill).",
         "CONC_AGONIST_M = 0 yields effect = 0 (no agonist contraction).",
         "Registered as the canonical CONC_AGONIST_M in",
         "inst/references/covariate-columns.md."
       ),
-      source_name        = "(Grzesk 2016 Table I 'EC50 [M/l]' column reports agonist concentrations in mol/L)"
+      source_name = "(Grzesk 2016 Table I 'EC50 [M/l]' column reports agonist concentrations in mol/L)"
     )
   )
 
   population <- list(
-    species         = "rat (male Wistar) -- ex vivo isolated, perfused tail artery",
-    n_subjects      = NA_integer_,
-    n_studies       = 1L,
-    weight_range    = "250-350 g",
-    disease_state   = paste(
+    species = "rat (male Wistar) -- ex vivo isolated, perfused tail artery",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    weight_range = "250-350 g",
+    disease_state = paste(
       "Healthy male Wistar rats; tail artery dissected, cannulated, and",
       "perfused in an isolated-organ bath at 37 C with oxygenated Krebs",
       "solution at 1 mL/min constant flow. Anaesthesia: intraperitoneal",
@@ -110,7 +110,7 @@ Grzesk_2016_m3M3FBS <- function() {
       "protocol was approved by the Local Ethics Committee of the",
       "University of Science and Technology (Krakow, Poland)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Concentration-response curves for four agonists",
       "(phenylephrine, arg-vasopressin, mastoparan-7, Bay K8644),",
       "in the absence and presence of m-3M3FBS 1e-5 M/L pretreatment.",
@@ -119,8 +119,8 @@ Grzesk_2016_m3M3FBS <- function() {
       "mastoparan-7 16 / +m-3M3FBS 16; Bay K8644 16 / +m-3M3FBS 16",
       "(Grzesk 2016 Table I)."
     ),
-    regions         = "Poland (Collegium Medicum, Nicolaus Copernicus University, Bydgoszcz)",
-    notes           = paste(
+    regions = "Poland (Collegium Medicum, Nicolaus Copernicus University, Bydgoszcz)",
+    notes = paste(
       "Ex-vivo isolated-organ-bath preparation; n in the source is the",
       "number of independent CRCs per condition, not the number of",
       "rats (each artery typically yields one CRC). The CRCs were",

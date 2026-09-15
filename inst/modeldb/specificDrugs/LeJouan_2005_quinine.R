@@ -36,17 +36,17 @@ LeJouan_2005_quinine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "quinine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "quinine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject at admission. Le Jouan 2005 enrolled 30",
         "Cameroonian children with mean (SD) body weight 13.6 (3.8) kg",
         "(Results, Patient characteristics). The paper reports a linear-",
@@ -65,21 +65,21 @@ LeJouan_2005_quinine <- function() {
         "range is not supported by the source data.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    age_range       = "0.55-6.7 years (Results, Patient characteristics)",
-    age_median      = "2.8 years (mean; SD 1.7)",
-    weight_range    = "approx. 8-23 kg (cohort mean 13.6 +/- 3.8 kg)",
-    weight_median   = "13.6 kg (cohort mean)",
-    sex_female_pct  = 100 * 13 / 30,
-    race_ethnicity  = c(Black = 100),
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "0.55-6.7 years (Results, Patient characteristics)",
+    age_median = "2.8 years (mean; SD 1.7)",
+    weight_range = "approx. 8-23 kg (cohort mean 13.6 +/- 3.8 kg)",
+    weight_median = "13.6 kg (cohort mean)",
+    sex_female_pct = 100 * 13 / 30,
+    race_ethnicity = c(Black = 100),
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; initial parasitaemia",
       "1404-176000 / uL (median 16500 / uL). Inclusion required age",
       "0.5-6 years, infrequent vomiting, first dose within 14 h of",
@@ -89,14 +89,14 @@ LeJouan_2005_quinine <- function() {
       "2x normal, recent antimalarials, and recent enzyme inducers or",
       "inhibitors."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Oral quinine base 8.3 mg/kg every 8 h for 5 days (15 doses) as",
       "a 2% formiate-salt syrup (Methods, Study design). Doses for the",
       "model must be supplied in quinine-base mg, matching the paper's",
       "salt-conversion convention."
     ),
-    regions         = "Cameroon (Pediatric Unit of Yaounde Central Hospital)",
-    notes           = paste(
+    regions = "Cameroon (Pediatric Unit of Yaounde Central Hospital)",
+    notes = paste(
       "Demographics from Results, Patient characteristics. Sex was 17",
       "boys and 13 girls. The follow-up rate was 100% and no",
       "quinine-attributable side effects were recorded. Sampling: 0, 1,",

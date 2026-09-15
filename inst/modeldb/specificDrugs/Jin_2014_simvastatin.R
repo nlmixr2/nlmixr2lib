@@ -17,12 +17,12 @@ Jin_2014_simvastatin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
-    depot2           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
-    depot3           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
-    central          = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
-    central_acid     = list(analyte = "simvastatin acid", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot1 = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot3 = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_acid = list(analyte = "simvastatin acid", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1_acid = list(analyte = "simvastatin acid", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
@@ -36,21 +36,21 @@ Jin_2014_simvastatin <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 133L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 133L,
+    n_studies = 4L,
     n_observations = "2,182 simvastatin and 2,130 simvastatin acid plasma concentrations (Table I).",
-    age_range      = "approx 22-30 years (mean +/- SD = 25.0 +/- 2.6)",
-    weight_range   = "approx 49-91 kg (mean +/- SD = 69.8 +/- 6.7)",
-    height_range   = "approx 160-185 cm (mean +/- SD = 174.8 +/- 5.4)",
-    bmi_range      = "approx 19-27 kg/m^2 (mean +/- SD = 22.8 +/- 1.7)",
+    age_range = "approx 22-30 years (mean +/- SD = 25.0 +/- 2.6)",
+    weight_range = "approx 49-91 kg (mean +/- SD = 69.8 +/- 6.7)",
+    height_range = "approx 160-185 cm (mean +/- SD = 174.8 +/- 5.4)",
+    bmi_range = "approx 19-27 kg/m^2 (mean +/- SD = 22.8 +/- 1.7)",
     sex_female_pct = 0,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adult Korean male volunteers across one PK crossover (Study I, 20 subjects, randomised 2-of-5 dose combinations from 10, 20, 30, 40, 80 mg simvastatin separated by 3-day washout) and three single-dose 60 mg bioequivalence studies (Studies II, III, IV, 30+30+53 = 113 subjects, 2x2 crossover with reference and test formulations, 7-day washout, reference Zocor only used for this analysis).",
-    dose_range     = "Single oral doses of 10, 20, 30, 40, 60, or 80 mg simvastatin (Zocor, Merck, NJ, USA) after overnight fast with 240 mL water; standard meals 4 and 9 h post-dose. The crossover study (Study I) used dense PK sampling at pre-dose and 10, 20, 30, 40, 50 min and 1, 1.25, 1.5, 1.75, 2, 3, 4, 6, 8, 10, 12, 24 h post-dose; the bioequivalence studies (II, III, IV) sampled at pre-dose and 15, 30, 45 min and 1, 1.5, 2, 3, 4, 6, 8, 10, 12 h post-dose.",
-    regions        = "Republic of Korea (Asan Medical Center Clinical Trial Center, Seoul).",
-    bloq_handling  = "Concentrations below the lower limit of quantification (LLOQ = 0.2 ng/mL simvastatin, 0.1 ng/mL simvastatin acid) were imputed at half the LLOQ for the first sub-LLOQ value in the disposition phase; subsequent sub-LLOQ values were removed.",
-    notes          = "Baseline demographics reproduced from Jin 2014 Table I (subject characteristics by study). No female subjects; all subjects of Korean ancestry. The final model carries no significant demographic covariates (Results, parent and metabolite sections)."
+    disease_state = "Healthy adult Korean male volunteers across one PK crossover (Study I, 20 subjects, randomised 2-of-5 dose combinations from 10, 20, 30, 40, 80 mg simvastatin separated by 3-day washout) and three single-dose 60 mg bioequivalence studies (Studies II, III, IV, 30+30+53 = 113 subjects, 2x2 crossover with reference and test formulations, 7-day washout, reference Zocor only used for this analysis).",
+    dose_range = "Single oral doses of 10, 20, 30, 40, 60, or 80 mg simvastatin (Zocor, Merck, NJ, USA) after overnight fast with 240 mL water; standard meals 4 and 9 h post-dose. The crossover study (Study I) used dense PK sampling at pre-dose and 10, 20, 30, 40, 50 min and 1, 1.25, 1.5, 1.75, 2, 3, 4, 6, 8, 10, 12, 24 h post-dose; the bioequivalence studies (II, III, IV) sampled at pre-dose and 15, 30, 45 min and 1, 1.5, 2, 3, 4, 6, 8, 10, 12 h post-dose.",
+    regions = "Republic of Korea (Asan Medical Center Clinical Trial Center, Seoul).",
+    bloq_handling = "Concentrations below the lower limit of quantification (LLOQ = 0.2 ng/mL simvastatin, 0.1 ng/mL simvastatin acid) were imputed at half the LLOQ for the first sub-LLOQ value in the disposition phase; subsequent sub-LLOQ values were removed.",
+    notes = "Baseline demographics reproduced from Jin 2014 Table I (subject characteristics by study). No female subjects; all subjects of Korean ancestry. The final model carries no significant demographic covariates (Results, parent and metabolite sections)."
   )
 
   ini({

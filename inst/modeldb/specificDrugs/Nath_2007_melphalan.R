@@ -1,6 +1,6 @@
 Nath_2007_melphalan <- function() {
   description <- "Two-compartment IV population PK model for melphalan in paediatric blood or marrow transplant recipients (Nath 2007). Structural CL is a linear additive function of body weight, prior-carboplatin therapy, and 99mTc-DTPA-tracer-measured GFR; central volume Vc is a linear additive function of body weight; intercompartmental rate constants k12 and k21 are estimated directly (not as Q/Vc and Q/Vp)."
-  reference   <- paste(
+  reference <- paste(
     "Nath CE, Shaw PJ, Montgomery K, Earl JW.",
     "Population pharmacokinetics of melphalan in paediatric blood or marrow",
     "transplant recipients.",
@@ -9,23 +9,23 @@ Nath_2007_melphalan <- function() {
     sep = " "
   )
   vignette <- "Nath_2007_melphalan"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "melphalan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (paediatric; baseline at the time of melphalan dose).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (paediatric; baseline at the time of melphalan dose).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (not allometric power) scaling on both CL and Vc per Table 4:",
         "CL = theta5 * WT + theta6 * CPT + theta7 * GFR;",
         "Vc = theta2 + theta8 * WT.",
@@ -33,19 +33,19 @@ Nath_2007_melphalan <- function() {
         "range 7.7-104 kg (Discussion). No reference weight is used because the",
         "WT scaling is linear (not divisive)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PRIOR_CARBOPLATIN = list(
-      description        = paste(
+      description = paste(
         "Binary indicator for prior carboplatin chemotherapy administered as",
         "part of the BMT conditioning block on each of the 5 days preceding",
         "the melphalan dose. Carboplatin dose was determined by the Calvert",
         "formula targeting AUC = 4 mg/mL/min using each child's GFR and BSA."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior carboplatin)",
-      notes              = paste(
+      notes = paste(
         "Additive linear effect on CL with coefficient theta6 = -3.17 L/h",
         "(Table 4). Prior-carboplatin recipients have melphalan CL reduced by",
         "3.17 L/h compared with carboplatin-naive recipients of the same body",
@@ -53,10 +53,10 @@ Nath_2007_melphalan <- function() {
         "the 5-day carboplatin pre-treatment block. Development cohort 17/39",
         "received prior carboplatin."
       ),
-      source_name        = "CPT"
+      source_name = "CPT"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Glomerular filtration rate measured directly by 99mTc-DTPA",
         "(99mTc-diethylenetriaminepentacetic acid) plasma-clearance tracer,",
         "BSA-normalised to mL/min/1.73 m^2. Gold-standard direct measurement",
@@ -64,10 +64,10 @@ Nath_2007_melphalan <- function() {
         "estimates are unreliable in paediatric oncology / BMT cohorts where",
         "muscle mass and serum-creatinine generation are highly variable."
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Additive linear effect on CL with coefficient theta7 = 0.0377 L/h per",
         "(mL/min/1.73 m^2) (Table 4); no centering / no reference value (the",
         "raw GFR multiplies the slope directly). Development cohort median 115",
@@ -77,46 +77,46 @@ Nath_2007_melphalan <- function() {
         "estimate OR tracer-measured GFR); the assay method (99mTc-DTPA) is",
         "documented here so future reviewers can trace the source."
       ),
-      source_name        = "GFR (99mTc-DTPA tracer plasma clearance)"
+      source_name = "GFR (99mTc-DTPA tracer plasma clearance)"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height. Screened during covariate model building; not retained in the final model.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Univariately reduced OFV by > 6.63 on CL, V, and k12 but was not retained after backward elimination once WT was in the model (Results 'Development of a covariate population pharmacokinetic model')."
+      units = "cm",
+      type = "continuous",
+      notes = "Univariately reduced OFV by > 6.63 on CL, V, and k12 but was not retained after backward elimination once WT was in the model (Results 'Development of a covariate population pharmacokinetic model')."
     ),
     BSA = list(
       description = "Body surface area. Screened during covariate model building; not retained.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Univariately reduced OFV by > 6.63 on CL but was not retained after backward elimination once WT was in the model."
+      units = "m^2",
+      type = "continuous",
+      notes = "Univariately reduced OFV by > 6.63 on CL but was not retained after backward elimination once WT was in the model."
     ),
     WT_ALLO = list(
       description = "Body weight raised to the 0.75 power (allometric size). Screened; not retained.",
-      units       = "kg^0.75",
-      type        = "continuous",
-      notes       = "WT^0.75 was tested as an alternative size descriptor on CL and V but the linear WT form gave the better fit and was retained."
+      units = "kg^0.75",
+      type = "continuous",
+      notes = "WT^0.75 was tested as an alternative size descriptor on CL and V but the linear WT form gave the better fit and was retained."
     ),
     AGE = list(
       description = "Age in years. Screened during covariate model building; not retained.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Univariately reduced OFV by > 6.63 on CL but was not retained after backward elimination once WT was in the model. Defines population scope (0.3-18 yrs) rather than entering as an effect."
+      units = "years",
+      type = "continuous",
+      notes = "Univariately reduced OFV by > 6.63 on CL but was not retained after backward elimination once WT was in the model. Defines population scope (0.3-18 yrs) rather than entering as an effect."
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male). Screened during covariate model building; not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Development cohort 28/11 male/female (28% female)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Development cohort 28/11 male/female (28% female)."
     ),
     PRIOR_TBI = list(
       description = "Binary indicator for prior total-body irradiation as part of BMT conditioning. Screened; not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Univariately reduced OFV by > 6.63 on CL but was not retained after",
         "backward elimination (Results 'Development of a covariate population",
         "pharmacokinetic model'). The Discussion notes that the previous",
@@ -126,37 +126,37 @@ Nath_2007_melphalan <- function() {
     ),
     PRIOR_BUSULFAN = list(
       description = "Binary indicator for prior busulphan as part of BMT conditioning. Screened; not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Not significant in the preliminary screening phase (did not reduce OFV by 6.63 on any PK parameter). Development cohort 7/39 received prior busulphan."
+      units = "(binary)",
+      type = "binary",
+      notes = "Not significant in the preliminary screening phase (did not reduce OFV by 6.63 on any PK parameter). Development cohort 7/39 received prior busulphan."
     ),
     DOSE_GROUP = list(
       description = "Mass-normalised dose group (mg/m^2). Screened; not retained.",
-      units       = "mg/m^2",
-      type        = "continuous",
-      notes       = "Tested as a covariate to assess dose-linearity. Not significant in the preliminary screening phase, supporting linear pharmacokinetics of melphalan over the 30-180 mg/m^2 range."
+      units = "mg/m^2",
+      type = "continuous",
+      notes = "Tested as a covariate to assess dose-linearity. Not significant in the preliminary screening phase, supporting linear pharmacokinetics of melphalan over the 30-180 mg/m^2 range."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 59L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 59L,
+    n_studies = 1L,
     n_subjects_development = 39L,
-    n_subjects_validation  = 20L,
-    n_observations         = 848L,
+    n_subjects_validation = 20L,
+    n_observations = 848L,
     n_observations_development = 571L,
-    n_observations_validation  = 277L,
-    age_range      = "0.3-18 years",
-    age_median     = "5.4 months (development cohort median; values reported in months in Table 1)",
-    weight_range   = "7.7-104 kg (overall study; Discussion)",
-    weight_median  = "18.8 kg (development cohort, IQR 13.5-28.1)",
-    height_median  = "110 cm (development cohort, IQR 92-137)",
-    bsa_median     = "0.76 m^2 (development cohort, IQR 0.60-1.0)",
-    crcl_median    = "115 mL/min/1.73 m^2 (development cohort, IQR 94-139; 99mTc-DTPA tracer GFR)",
+    n_observations_validation = 277L,
+    age_range = "0.3-18 years",
+    age_median = "5.4 months (development cohort median; values reported in months in Table 1)",
+    weight_range = "7.7-104 kg (overall study; Discussion)",
+    weight_median = "18.8 kg (development cohort, IQR 13.5-28.1)",
+    height_median = "110 cm (development cohort, IQR 92-137)",
+    bsa_median = "0.76 m^2 (development cohort, IQR 0.60-1.0)",
+    crcl_median = "115 mL/min/1.73 m^2 (development cohort, IQR 94-139; 99mTc-DTPA tracer GFR)",
     sex_female_pct = 28L,
     race_ethnicity = "Not reported (single-centre Australian cohort).",
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric autologous or allogeneic blood or marrow transplant",
       "recipients with malignant diseases. Diagnoses (development cohort):",
       "neuroblastoma (13), Acute lymphoblastic leukaemia (6), Acute myeloid",
@@ -165,7 +165,7 @@ Nath_2007_melphalan <- function() {
       "retinoblastoma (1), mediastinal large-cell lymphoma (1), and others",
       "(Table 1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single high dose 140 or 180 mg/m^2, or divided dose schedule (3 days",
       "of 70 mg/m^2 or 4 days of 30 mg/m^2). All doses administered as a",
       "15-min intravenous infusion with double maintenance fluids."
@@ -177,8 +177,8 @@ Nath_2007_melphalan <- function() {
       "Carboplatin shifts CL by an additive -3.17 L/h (Table 4); TBI and",
       "busulphan were screened and dropped."
     ),
-    regions        = "Australia (The Children's Hospital at Westmead, Sydney; 1994-2003).",
-    notes          = paste(
+    regions = "Australia (The Children's Hospital at Westmead, Sydney; 1994-2003).",
+    notes = paste(
       "Prospective single-centre paediatric BMT cohort. Sampling schedule:",
       "pre-infusion, then 0, 5, 10, 15, 20, 30, 40, 50 min and 1, 2, 3, 4,",
       "6, 12, 24 h after end of infusion; median 15 samples per subject in",

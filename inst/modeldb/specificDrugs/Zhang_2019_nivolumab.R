@@ -8,108 +8,108 @@ Zhang_2019_nivolumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, Q (with the CL exponent) and on Vc, Vp (with the Vc exponent). Reference 80 kg from Zhang 2019 Figure 1 caption (reference patient).",
-      source_name        = "BBWT"
+      notes = "Power scaling on CL, Q (with the CL exponent) and on Vc, Vp (with the Vc exponent). Reference 80 kg from Zhang 2019 Figure 1 caption (reference patient).",
+      source_name = "BBWT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Zhang 2019 Figure 1 caption). The renormalization formula (MDRD vs CKD-EPI) is not explicitly stated in Zhang 2019 but is inherited from the Bajaj 2017 base model that this analysis re-estimated.",
-      source_name        = "eGFR"
+      notes = "Power scaling on CL with reference 90 mL/min/1.73 m^2 (Zhang 2019 Figure 1 caption). The renormalization formula (MDRD vs CKD-EPI) is not explicitly stated in Zhang 2019 but is inherited from the Bajaj 2017 base model that this analysis re-estimated.",
+      source_name = "eGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Exponential effect on CL and on Vc; female reference value lower for both parameters. Source paper denotes the column SEX (1 = female, 0 = male per the Figure 1 caption naming the male reference patient).",
-      source_name        = "SEX"
+      notes = "Exponential effect on CL and on Vc; female reference value lower for both parameters. Source paper denotes the column SEX (1 = female, 0 = male per the Figure 1 caption naming the male reference patient).",
+      source_name = "SEX"
     ),
     ECOG_GE1 = list(
-      description        = "ECOG performance status > 0 indicator (binary collapse of the four-level scale)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ECOG performance status > 0 indicator (binary collapse of the four-level scale)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG PS 0; fully active)",
-      notes              = "Multiplicative effect on baseline CL (exp(0.181) = 1.198 fold higher CL when PS>0) and additive effect on the time-varying-CL cl_time_max parameter. Zhang 2019 uses the binary collapse PS=0 vs. PS>0 rather than the full ECOG scale.",
-      source_name        = "PS"
+      notes = "Multiplicative effect on baseline CL (exp(0.181) = 1.198 fold higher CL when PS>0) and additive effect on the time-varying-CL cl_time_max parameter. Zhang 2019 uses the binary collapse PS=0 vs. PS>0 rather than the full ECOG scale.",
+      source_name = "PS"
     ),
     RACE_BLACK = list(
-      description        = "Race indicator: African American",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: African American",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (white or other; the Zhang 2019 reference combines white and 'other' into one reference group)",
-      notes              = "Exponential effect on CL (CL_RAAA = 0.0374; not statistically significant in Zhang 2019, 95% CI -0.0308 to 0.111). Source column name RAAA, defined in the Zhang 2019 Table 2 footnote as 'African American race'. Renamed to canonical RACE_BLACK per covariate-columns.md.",
-      source_name        = "RAAA"
+      notes = "Exponential effect on CL (CL_RAAA = 0.0374; not statistically significant in Zhang 2019, 95% CI -0.0308 to 0.111). Source column name RAAA, defined in the Zhang 2019 Table 2 footnote as 'African American race'. Renamed to canonical RACE_BLACK per covariate-columns.md.",
+      source_name = "RAAA"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator: Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (white or other; same composite reference as RACE_BLACK)",
-      notes              = "Exponential effect on CL (CL_RAAS = -0.0354 = 3.5% lower CL than the reference group). Source column name RAAS, defined in the Zhang 2019 Table 2 footnote as 'Asian race'. Renamed to canonical RACE_ASIAN per covariate-columns.md.",
-      source_name        = "RAAS"
+      notes = "Exponential effect on CL (CL_RAAS = -0.0354 = 3.5% lower CL than the reference group). Source column name RAAS, defined in the Zhang 2019 Table 2 footnote as 'Asian race'. Renamed to canonical RACE_ASIAN per covariate-columns.md.",
+      source_name = "RAAS"
     ),
     CONMED_IPI_3Q3W = list(
-      description        = "Coadministration regimen: nivolumab + ipilimumab 3 mg/kg every 3 weeks (4-dose induction)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + ipilimumab 3 mg/kg every 3 weeks (4-dose induction)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-3Q3W regimen)",
-      notes              = "Exponential effect on baseline CL (exp(0.227) = 1.255 fold higher CL than monotherapy). Per Zhang 2019 Methods, the unmodeled ipilimumab schedules (1 mg/kg q3w x 4 induction; 1 mg/kg q12w) showed no statistically significant effect on CL and were collapsed into the reference group along with monotherapy.",
-      source_name        = "IPI3Q3W"
+      notes = "Exponential effect on baseline CL (exp(0.227) = 1.255 fold higher CL than monotherapy). Per Zhang 2019 Methods, the unmodeled ipilimumab schedules (1 mg/kg q3w x 4 induction; 1 mg/kg q12w) showed no statistically significant effect on CL and were collapsed into the reference group along with monotherapy.",
+      source_name = "IPI3Q3W"
     ),
     CONMED_IPI_1Q6W = list(
-      description        = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 6 weeks (continuous maintenance)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + ipilimumab 1 mg/kg every 6 weeks (continuous maintenance)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any non-1Q6W regimen)",
-      notes              = "Exponential effect on baseline CL (exp(0.159) = 1.172 fold higher CL than monotherapy).",
-      source_name        = "IPI1Q6W"
+      notes = "Exponential effect on baseline CL (exp(0.159) = 1.172 fold higher CL than monotherapy).",
+      source_name = "IPI1Q6W"
     ),
     CONMED_CHEMO = list(
-      description        = "Coadministration regimen: nivolumab + platinum-based chemotherapy",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Coadministration regimen: nivolumab + platinum-based chemotherapy",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no chemotherapy coadministration)",
-      notes              = "Exponential effect on baseline CL (exp(-0.104) = 0.901 fold, ~9.7% lower than monotherapy). Pooled across the four chemotherapy backbones (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, platinum doublet).",
-      source_name        = "CHEMO"
+      notes = "Exponential effect on baseline CL (exp(-0.104) = 0.901 fold, ~9.7% lower than monotherapy). Pooled across the four chemotherapy backbones (gemcitabine + cisplatin, pemetrexed + cisplatin, paclitaxel + carboplatin, platinum doublet).",
+      source_name = "CHEMO"
     ),
     CONMED_IPI_ANY = list(
-      description        = "Any-ipilimumab-coadministration indicator (regimen-agnostic)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Any-ipilimumab-coadministration indicator (regimen-agnostic)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ipilimumab coadministration)",
-      notes              = "Additive effect on the time-varying-CL cl_time_max parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with CONMED_IPI_3Q3W / CONMED_IPI_1Q6W because those act on baseline CL rather than on cl_time_max.",
-      source_name        = "IPICO"
+      notes = "Additive effect on the time-varying-CL cl_time_max parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with CONMED_IPI_3Q3W / CONMED_IPI_1Q6W because those act on baseline CL rather than on cl_time_max.",
+      source_name = "IPICO"
     )
   )
 
   population <- list(
-    n_subjects     = 6468L,
-    n_studies      = 25L,
+    n_subjects = 6468L,
+    n_studies = 25L,
     n_observations = 32835L,
-    age_range      = "Adults with advanced solid tumors (specific age summaries not tabulated in the published main text)",
-    weight_range   = "47.7-122.0 kg (5th-95th percentiles)",
-    weight_mean    = "77.6 kg (SD 18.8 kg)",
+    age_range = "Adults with advanced solid tumors (specific age summaries not tabulated in the published main text)",
+    weight_range = "47.7-122.0 kg (5th-95th percentiles)",
+    weight_mean = "77.6 kg (SD 18.8 kg)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Composite reference group is white/other; Asian (RAAS) and African American (RAAA) coded as separate non-reference indicators. Per-category percentages not tabulated in the published main text.",
-    disease_state  = "Advanced solid tumors: NSCLC 38.25%, melanoma 26.93%, RCC 19.25%, SCLC 6.03%, HCC 5.89%, CRC 3.65%.",
-    dose_range     = "Nivolumab 0.1-10 mg/kg or 240/480 mg flat IV every 2-4 weeks. Validated dosing regimens for VPC: 3 mg/kg or 240 mg q2w monotherapy; 3 mg/kg q2w + ipilimumab 1 mg/kg q6w; 3 mg/kg + ipilimumab 1 mg/kg q3w x 4 followed by 3 mg/kg q2w; 1 mg/kg + ipilimumab 3 mg/kg q3w x 4 followed by 3 mg/kg q2w.",
-    regions        = "Pooled global trials (7 phase I, 2 phase I/II, 6 phase II, 9 phase III, 1 phase IIIb/IV)",
+    disease_state = "Advanced solid tumors: NSCLC 38.25%, melanoma 26.93%, RCC 19.25%, SCLC 6.03%, HCC 5.89%, CRC 3.65%.",
+    dose_range = "Nivolumab 0.1-10 mg/kg or 240/480 mg flat IV every 2-4 weeks. Validated dosing regimens for VPC: 3 mg/kg or 240 mg q2w monotherapy; 3 mg/kg q2w + ipilimumab 1 mg/kg q6w; 3 mg/kg + ipilimumab 1 mg/kg q3w x 4 followed by 3 mg/kg q2w; 1 mg/kg + ipilimumab 3 mg/kg q3w x 4 followed by 3 mg/kg q2w.",
+    regions = "Pooled global trials (7 phase I, 2 phase I/II, 6 phase II, 9 phase III, 1 phase IIIb/IV)",
     coadministration = "Monotherapy 55.12%; ipilimumab 1 mg/kg q12w 0.56%; ipilimumab 1 mg/kg q6w 11.75%; ipilimumab 1 mg/kg q3w x 4 induction 15.06%; ipilimumab 3 mg/kg q3w x 4 induction 13.84%; chemotherapy 3.68%.",
     performance_status = "ECOG PS 0 47.02%; PS 1 51.27%; PS 2 1.62%; PS 3 0.02%; missing 0.08%.",
-    notes          = "Baseline demographics per Zhang 2019 Table 1. The PopPK model re-estimates the Bajaj 2017 nivolumab monotherapy base model (reference 7 in Zhang 2019) on a 6,468-subject pooled dataset that adds combination-therapy cohorts and several additional tumor types."
+    notes = "Baseline demographics per Zhang 2019 Table 1. The PopPK model re-estimates the Bajaj 2017 nivolumab monotherapy base model (reference 7 in Zhang 2019) on a 6,468-subject pooled dataset that adds combination-therapy cohorts and several additional tumor types."
   )
 
   ini({

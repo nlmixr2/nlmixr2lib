@@ -36,22 +36,22 @@ Tarning_2014_piperaquine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with fixed exponents 0.75 on apparent",
         "clearances (CL/F, Q1/F, Q2/F) and 1.0 on apparent volumes",
         "(Vc/F, Vp1/F, Vp2/F). Tarning 2014 Methods page 2053: 'Body",
@@ -67,14 +67,14 @@ Tarning_2014_piperaquine <- function() {
         "Assumptions and deviations. Treated as time-fixed at admission.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at admission",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at admission",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear effect on the first peripheral volume of distribution.",
         "Tarning 2014 Results page 2054: 'This covariate relationship",
         "resulted in a linear increase in the peripheral volume of",
@@ -87,14 +87,14 @@ Tarning_2014_piperaquine <- function() {
         "and deviations. Time-fixed at admission.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     OCC = list(
-      description        = "Dose-occasion counter (1 = first daily dose, 2 = second, 3 = third)",
-      units              = "(count)",
-      type               = "count",
+      description = "Dose-occasion counter (1 = first daily dose, 2 = second, 3 = third)",
+      units = "(count)",
+      type = "count",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear dose-occasion effect on relative bioavailability.",
         "Tarning 2014 Results page 2054 and Table 2 'Dose effect on F",
         "(%)': 'this could be simplified to a linear covariate",
@@ -110,29 +110,29 @@ Tarning_2014_piperaquine <- function() {
         "dose-administration time.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 30L,
-    n_studies       = 1L,
-    n_fasting       = 15L,
-    n_fed           = 15L,
-    age_range       = "18-55 years (Table 1; fasting 18-55, fed 19-45)",
-    age_median      = "38 years fasting; 28 years fed (Table 1)",
-    weight_range    = "39-73 kg (Table 1; fasting 39-62, fed 45-73)",
-    weight_median   = "50 kg fasting; 53 kg fed (Table 1)",
-    sex_female_pct  = 13.3,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    n_fasting = 15L,
+    n_fed = 15L,
+    age_range = "18-55 years (Table 1; fasting 18-55, fed 19-45)",
+    age_median = "38 years fasting; 28 years fed (Table 1)",
+    weight_range = "39-73 kg (Table 1; fasting 39-62, fed 45-73)",
+    weight_median = "50 kg fasting; 53 kg fed (Table 1)",
+    sex_female_pct = 13.3,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria in Thai adults",
       "presenting at the Shoklo Malaria Research Unit, Mae Sot, Thailand.",
       "Inclusion: microscopy-confirmed asexual P. falciparum or mixed",
       "infection, no signs of severe malaria, hematocrit >= 30%, ages",
       "16-65 years (Methods page 2053)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Dihydroartemisinin-piperaquine fixed-dose combination (DuoCotecxin;",
       "40 mg dihydroartemisinin + 320 mg piperaquine phosphate per",
       "tablet), once daily for 3 days, weight-based dosing to achieve a",
@@ -140,13 +140,13 @@ Tarning_2014_piperaquine <- function() {
       "2053). Median delivered dose was 17.2 mg/kg/day (fasting) and",
       "17.5 mg/kg/day (fed) per Table 1."
     ),
-    regions         = "Thailand (Shoklo Malaria Research Unit, Mae Sot)",
-    food_arms       = paste(
+    regions = "Thailand (Shoklo Malaria Research Unit, Mae Sot)",
+    food_arms = paste(
       "15 fasting and 15 fed (chocolate milk 200 mL = 6.4 g fat per",
       "dose). Concomitant food was tested as a covariate but was not",
       "retained in the final model (Results page 2054)."
     ),
-    notes           = paste(
+    notes = paste(
       "Demographics from Tarning 2014 Table 1. PK analysis used 985",
       "post-dose piperaquine samples (1,016 collected, 91 BLQ below",
       "1.2 ng/mL omitted; 82.6% of BLQ samples were in the long terminal",

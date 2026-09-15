@@ -43,8 +43,8 @@ Sandra_2024_siRNA_hbsag_mouse_mbma <- function() {
   vignette <- "Sandra_2024_siRNA_hbsag_mouse_mbma"
 
   units <- list(
-    time          = "day",
-    dosing        = "ng",
+    time = "day",
+    dosing = "ng",
     concentration = "fraction/fraction"
   )
 
@@ -73,136 +73,136 @@ Sandra_2024_siRNA_hbsag_mouse_mbma <- function() {
     # TRT_CAFEDRINE_THEODRENALINE.
     # ------------------------------------------------------------------
     TRT_OLX703A = list(
-      description        = "Study-arm indicator that the administered siRNA is OLX703A (GalNAc-conjugated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is OLX703A (GalNAc-conjugated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. GalNAc class, so it selects kel = exp(lkel_galnac). Sandra 2024 Table 1 (Olix business report 2022, ref 41; 9 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 2581 ng, RSE 37.09%). Exactly one TRT_* indicator is 1 per arm.",
-      source_name        = "OLX703A (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. GalNAc class, so it selects kel = exp(lkel_galnac). Sandra 2024 Table 1 (Olix business report 2022, ref 41; 9 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 2581 ng, RSE 37.09%). Exactly one TRT_* indicator is 1 per arm.",
+      source_name = "OLX703A (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_AB729 = list(
-      description        = "Study-arm indicator that the administered siRNA is AB-729 (imdusiran; GalNAc-conjugated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is AB-729 (imdusiran; GalNAc-conjugated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. GalNAc class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 2.547), because more than one dose level was available. Sandra 2024 Table 1 (Thi et al. 2022 ref 37, 1 and 3 mg/kg SC; Amy C.H. Lee 2018 ref 40, 1/3/9 mg/kg SC and 3 mg/kg SC) and Table 3 (ID50 = 4435 ng, RSE 30.50%).",
-      source_name        = "AB-729 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. GalNAc class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 2.547), because more than one dose level was available. Sandra 2024 Table 1 (Thi et al. 2022 ref 37, 1 and 3 mg/kg SC; Amy C.H. Lee 2018 ref 40, 1/3/9 mg/kg SC and 3 mg/kg SC) and Table 3 (ID50 = 4435 ng, RSE 30.50%).",
+      source_name = "AB-729 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_ALG125755 = list(
-      description        = "Study-arm indicator that the administered siRNA is ALG-125755 (GalNAc-conjugated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is ALG-125755 (GalNAc-conjugated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. GalNAc class. Sandra 2024 Table 1 (Hong et al. 2022, ref 38; 5 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 6287 ng, RSE 16.52%).",
-      source_name        = "ALG-125755 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. GalNAc class. Sandra 2024 Table 1 (Hong et al. 2022, ref 38; 5 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 6287 ng, RSE 16.52%).",
+      source_name = "ALG-125755 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_ALG125819 = list(
-      description        = "Study-arm indicator that the administered siRNA is ALG-125819 (GalNAc-conjugated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is ALG-125819 (GalNAc-conjugated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. GalNAc class. Sandra 2024 Table 1 (Hong et al. 2022, ref 38; 5 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 7426 ng, RSE 15.60%).",
-      source_name        = "ALG-125819 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. GalNAc class. Sandra 2024 Table 1 (Hong et al. 2022, ref 38; 5 mg/kg SC, AAV-HBV mouse) and Table 3 (ID50 = 7426 ng, RSE 15.60%).",
+      source_name = "ALG-125819 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_VIR2218 = list(
-      description        = "Study-arm indicator that the administered siRNA is VIR-2218 (elebsiran; GalNAc-conjugated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is VIR-2218 (elebsiran; GalNAc-conjugated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. GalNAc class; the least potent siRNA in the analysis. Sandra 2024 Table 1 (Noack et al. 2022, ref 39; 3 mg/kg SC, AAV-HBV C57BL/6 mouse) and Table 3 (ID50 = 7451 ng, RSE 28.69%). Sandra 2024 Discussion notes that the derived biophase half-life of 21.06 days agrees with the 21.4 days Boianelli et al. (ref 43) estimated for the structurally very similar ALN-HBV02.",
-      source_name        = "VIR-2218 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. GalNAc class; the least potent siRNA in the analysis. Sandra 2024 Table 1 (Noack et al. 2022, ref 39; 3 mg/kg SC, AAV-HBV C57BL/6 mouse) and Table 3 (ID50 = 7451 ng, RSE 28.69%). Sandra 2024 Discussion notes that the derived biophase half-life of 21.06 days agrees with the 21.4 days Boianelli et al. (ref 43) estimated for the structurally very similar ALN-HBV02.",
+      source_name = "VIR-2218 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_ARB1740 = list(
-      description        = "Study-arm indicator that the administered siRNA is ARB-1740 (lipid-nanoparticle formulated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is ARB-1740 (lipid-nanoparticle formulated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. LNP class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 2.03), because four dose levels were available. Sandra 2024 Table 1 (Thi et al. 2019, ref 36; 0.03/0.1/0.3/1 mg/kg IV, AAV-HBV C57BL/6 mouse) and Table 3 (ID50 = 72.01 ng, RSE 41.37%). Sandra 2024 Results/Discussion identify this study as the single driver of the retained between-study variability on kdeg (kdeg about twofold larger than in the other studies).",
-      source_name        = "ARB-1740 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. LNP class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 2.03), because four dose levels were available. Sandra 2024 Table 1 (Thi et al. 2019, ref 36; 0.03/0.1/0.3/1 mg/kg IV, AAV-HBV C57BL/6 mouse) and Table 3 (ID50 = 72.01 ng, RSE 41.37%). Sandra 2024 Results/Discussion identify this study as the single driver of the retained between-study variability on kdeg (kdeg about twofold larger than in the other studies).",
+      source_name = "ARB-1740 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_ARB1467 = list(
-      description        = "Study-arm indicator that the administered siRNA is ARB-1467 (lipid-nanoparticle formulated).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is ARB-1467 (lipid-nanoparticle formulated).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. LNP class. Sandra 2024 Table 1 (Amy C.H. Lee 2018, ref 40; 0.3 and 3 mg/kg IV, AAV-HBV mouse) and Table 3 (ID50 = 124.0 ng, RSE 53.57%).",
-      source_name        = "ARB-1467 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. LNP class. Sandra 2024 Table 1 (Amy C.H. Lee 2018, ref 40; 0.3 and 3 mg/kg IV, AAV-HBV mouse) and Table 3 (ID50 = 124.0 ng, RSE 53.57%).",
+      source_name = "ARB-1467 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_ARC520 = list(
-      description        = "Study-arm indicator that the administered siRNA is ARC-520 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is ARC-520 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Trubetskoy et al. 2017, ref 35; 8 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 44.01 ng, RSE 34.59%). Sandra 2024 Discussion records that clinical development of ARC-520 was discontinued for toxicity attributed to the NAG-MLP excipient ARC-EX1, which this model does not represent.",
-      source_name        = "ARC-520 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Trubetskoy et al. 2017, ref 35; 8 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 44.01 ng, RSE 34.59%). Sandra 2024 Discussion records that clinical development of ARC-520 was discontinued for toxicity attributed to the NAG-MLP excipient ARC-EX1, which this model does not represent.",
+      source_name = "ARC-520 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_SIHBV74 = list(
-      description        = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-74 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-74 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Wooddell et al. 2013 ref 34, 0.25 and 6 mg/kg IV; Sebastyen et al. 2015 ref 33, 3 and 6 mg/kg IV; HDI NOD-SCID mouse) and Table 3 (ID50 = 48.97 ng, RSE 26.37%).",
-      source_name        = "NAG-MLP chol-siHBV-74 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Wooddell et al. 2013 ref 34, 0.25 and 6 mg/kg IV; Sebastyen et al. 2015 ref 33, 3 and 6 mg/kg IV; HDI NOD-SCID mouse) and Table 3 (ID50 = 48.97 ng, RSE 26.37%).",
+      source_name = "NAG-MLP chol-siHBV-74 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_SIHBV75 = list(
-      description        = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-75 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-75 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Wooddell et al. 2013, ref 34; 0.25 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 166.9 ng, RSE 37.15%).",
-      source_name        = "NAG-MLP chol-siHBV-75 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class. Sandra 2024 Table 1 (Wooddell et al. 2013, ref 34; 0.25 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 166.9 ng, RSE 37.15%).",
+      source_name = "NAG-MLP chol-siHBV-75 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_SIHBV76 = list(
-      description        = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-76 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-76 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class; the least potent of the cholesterol-conjugated siRNAs. Sandra 2024 Table 1 (Wooddell et al. 2013, ref 34; 0.25 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 275.4 ng, RSE 33.97%).",
-      source_name        = "NAG-MLP chol-siHBV-76 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class; the least potent of the cholesterol-conjugated siRNAs. Sandra 2024 Table 1 (Wooddell et al. 2013, ref 34; 0.25 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 275.4 ng, RSE 33.97%).",
+      source_name = "NAG-MLP chol-siHBV-76 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_SIHBV77 = list(
-      description        = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-77 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is NAG-MLP chol-siHBV-77 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 1.313), because more than one dose level was available. Sandra 2024 Table 1 (Wooddell et al. 2013 ref 34, 0.25 and 6 mg/kg IV; Sebastyen et al. 2015 ref 33, 3 and 6 mg/kg IV; HDI NOD-SCID mouse) and Table 3 (ID50 = 274.0 ng, RSE 32.58%).",
-      source_name        = "NAG-MLP chol-siHBV-77 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class. One of the three siRNAs for which the Hill exponent was ESTIMATED rather than fixed to 1 (gamma = 1.313), because more than one dose level was available. Sandra 2024 Table 1 (Wooddell et al. 2013 ref 34, 0.25 and 6 mg/kg IV; Sebastyen et al. 2015 ref 33, 3 and 6 mg/kg IV; HDI NOD-SCID mouse) and Table 3 (ID50 = 274.0 ng, RSE 32.58%).",
+      source_name = "NAG-MLP chol-siHBV-77 (Sandra 2024 Tables 1 and 3)"
     ),
     TRT_SIHBV74_77 = list(
-      description        = "Study-arm indicator that the administered siRNA is the fixed combination NAG-MLP chol-siHBV-74 + 77 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study-arm indicator that the administered siRNA is the fixed combination NAG-MLP chol-siHBV-74 + 77 (cholesterol-conjugated, co-administered with the GalNAc-conjugated melittin-like peptide NAG-MLP).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (a different siRNA was administered on this arm)",
-      notes              = "MBMA study-arm-level treatment indicator. chol class; the most potent entity in the analysis. Sandra 2024 treats the 74 + 77 co-formulation as a single entity with its own ID50 rather than as a combination of two separately-parameterised siRNAs, so it gets its own indicator and must NOT be encoded by setting both TRT_SIHBV74 and TRT_SIHBV77 to 1. Sandra 2024 Table 1 (Sebastyen et al. 2015, ref 33; 3 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 41.46 ng, RSE 34.05%).",
-      source_name        = "NAG-MLP chol-siHBV-74 + 77 (Sandra 2024 Tables 1 and 3)"
+      notes = "MBMA study-arm-level treatment indicator. chol class; the most potent entity in the analysis. Sandra 2024 treats the 74 + 77 co-formulation as a single entity with its own ID50 rather than as a combination of two separately-parameterised siRNAs, so it gets its own indicator and must NOT be encoded by setting both TRT_SIHBV74 and TRT_SIHBV77 to 1. Sandra 2024 Table 1 (Sebastyen et al. 2015, ref 33; 3 and 6 mg/kg IV, HDI NOD-SCID mouse) and Table 3 (ID50 = 41.46 ng, RSE 34.05%).",
+      source_name = "NAG-MLP chol-siHBV-74 + 77 (Sandra 2024 Tables 1 and 3)"
     )
   )
 
   compartmentData <- list(
     depot_kpd = list(
-      analyte  = "short interfering RNA (siRNA)",
-      units    = "ng",
+      analyte = "short interfering RNA (siRNA)",
+      units = "ng",
       specimen = "administration site",
       verified = TRUE
     ),
     effect = list(
-      analyte  = "hepatitis B surface antigen (HBsAg), baseline- and placebo-corrected ratio",
-      units    = "fraction",
+      analyte = "hepatitis B surface antigen (HBsAg), baseline- and placebo-corrected ratio",
+      units = "fraction",
       specimen = "not applicable",
       verified = TRUE
     )
   )
 
   population <- list(
-    species       = "mouse (HBV-infected: hydrodynamic-injection NOD-SCID and AAV-HBV C57BL/6)",
-    n_subjects    = 147L,
-    n_studies     = 9L,
+    species = "mouse (HBV-infected: hydrodynamic-injection NOD-SCID and AAV-HBV C57BL/6)",
+    n_subjects = 147L,
+    n_studies = 9L,
     disease_state = "HBV-infected mice: hydrodynamic injection (HDI) of pHBV1.3 plasmid (10-13.5 ug, NOD-SCID, 21 days post-infection) or adeno-associated viral vector AAV-HBV (AAV2/8 or AAV8, 1e11 vg, mostly C57BL/6, 28 days post-infection)",
-    age_range     = "6-8 weeks where reported (Sandra 2024 Table 1; not available for the AAV-HBV studies)",
+    age_range = "6-8 weeks where reported (Sandra 2024 Table 1; not available for the AAV-HBV studies)",
     weight_median = "20 g where reported; a mean total bodyweight of 20 g was ASSUMED where the study did not report one, in order to convert mg/kg doses to the absolute ng doses this model consumes (Sandra 2024 'Data extraction and curation')",
-    sex           = "female (HDI studies where reported), male (Thi et al. 2019), not reported for most AAV-HBV studies",
-    dose_range    = "0.03-9 mg/kg as published (Sandra 2024 Table 1); IV for the chol- and LNP-siRNAs, SC for the GalNAc-siRNAs. Converted to absolute ng amounts for this model, which spans roughly 600 ng to 180,000 ng at a 20 g bodyweight.",
-    notes         = paste(
+    sex = "female (HDI studies where reported), male (Thi et al. 2019), not reported for most AAV-HBV studies",
+    dose_range = "0.03-9 mg/kg as published (Sandra 2024 Table 1); IV for the chol- and LNP-siRNAs, SC for the GalNAc-siRNAs. Converted to absolute ng amounts for this model, which spans roughly 600 ng to 180,000 ng at a 20 g bodyweight.",
+    notes = paste(
       "MBMA at the study-arm level: each modelled observation is the",
       "baseline- and placebo-corrected MEAN HBsAg of one published treatment",
       "arm at one timepoint (237 such observations from 25 active treatment",

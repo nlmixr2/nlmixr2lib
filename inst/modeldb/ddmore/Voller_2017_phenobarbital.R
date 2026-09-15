@@ -10,52 +10,52 @@ Voller_2017_phenobarbital <- function() {
     sep = " "
   )
   vignette <- "Voller_2017_phenobarbital"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000256"
+  ddmore_id <- "DDMODEL00000256"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "phenobarbital", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "phenobarbital", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "phenobarbital", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives a linear-deviation effect on V relative to a 2.70 kg",
         "newborn reference: VWEIGHT = 1 + 0.309 * (WT - 2.70).",
         "Distinct from WT_BIRTH (birth weight, time-fixed).",
         "Source data column WEIGHT carries the same kg unit; no conversion required."
       ),
-      source_name        = "WEIGHT"
+      source_name = "WEIGHT"
     ),
     WT_BIRTH = list(
-      description        = "Birth weight (time-fixed per subject)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight (time-fixed per subject)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at birth. Drives a linear-deviation effect on CL relative to a",
         "2.59 kg newborn reference: CLBW = 1 + 0.369 * (WT_BIRTH - 2.59).",
         "Distinct from WT (current body weight, time-varying).",
         "Source data column BWEIGHT carries the same kg unit; no conversion required."
       ),
-      source_name        = "BWEIGHT"
+      source_name = "BWEIGHT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives a linear-deviation effect on CL relative to a 4.50-day",
         "postnatal-age reference: CLAGE = 1 + 0.0533 * (PNA_days - 4.50).",
         "The canonical PNA is in months (per inst/references/covariate-columns.md);",
@@ -68,19 +68,19 @@ Voller_2017_phenobarbital <- function() {
         "the linear-deviation form does not divide by PNA, so PNA = 0 is mathematically",
         "well-defined but may sit below the model's calibration range."
       ),
-      source_name        = "AGE (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
+      source_name = "AGE (days; multiply by 1/30.4375 to obtain canonical PNA in months)"
     )
   )
 
   population <- list(
-    n_subjects     = 53,
-    n_studies      = 1,
-    age_range      = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not on disk). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
-    weight_range   = "Birth weight (BWEIGHT) range not extractable from the DDMORE bundle. The bundle's simulated dataset includes subjects from 0.8 kg (extreme preterm) to 4.2 kg (term).",
+    n_subjects = 53,
+    n_studies = 1,
+    age_range = "Preterm and term newborns; postnatal age (PNA) range not extractable from the DDMORE bundle (Voller 2017 PDF not on disk). The bundle's simulated dataset spans PNA 0-58 days across 5 representative subjects.",
+    weight_range = "Birth weight (BWEIGHT) range not extractable from the DDMORE bundle. The bundle's simulated dataset includes subjects from 0.8 kg (extreme preterm) to 4.2 kg (term).",
     sex_female_pct = "Not extractable from DDMORE bundle.",
     race_ethnicity = "Not extractable from DDMORE bundle.",
-    disease_state  = "Preterm and term newborns receiving phenobarbital (typical clinical indication: prevention or treatment of neonatal seizures). The DDMORE bundle does not specify the indication or NICU setting.",
-    dose_range     = paste(
+    disease_state = "Preterm and term newborns receiving phenobarbital (typical clinical indication: prevention or treatment of neonatal seizures). The DDMORE bundle does not specify the indication or NICU setting.",
+    dose_range = paste(
       "Phenobarbital given as an IV loading dose (typically a short infusion to the",
       "central compartment) followed by oral maintenance doses to the gastrointestinal",
       "depot. Doses in the bundle's simulated dataset range from approximately 4-17 mg",
@@ -88,8 +88,8 @@ Voller_2017_phenobarbital <- function() {
       "followed by 3-5 mg/kg/day oral maintenance, but per-subject mg/kg dosing is not",
       "extractable from the bundle without the publication."
     ),
-    regions        = "Not extractable from DDMORE bundle.",
-    notes          = paste(
+    regions = "Not extractable from DDMORE bundle.",
+    notes = paste(
       "Population description is reconstructed from the .mod / .lst $PROBLEM line",
       "('Phenobarbital PK in newborns'), the 53-subject / 229-observation totals from",
       "the .lst data-summary block, and the simulated event-table demographics. The",

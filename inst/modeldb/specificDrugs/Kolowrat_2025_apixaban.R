@@ -42,17 +42,17 @@ Kolowrat_2025_apixaban <- function() {
   # and Results 3.2 (one-compartment model with first-order absorption of
   # oral apixaban tablets, no lag time).
   compartmentData <- list(
-    depot   = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters CL/F as the median-centered power term (AGE / 77)^-1.52 per ",
         "the Kolowrat 2025 Table 2 note 'CL/F_i = 1.5 x (Age/77)^beta_age x ",
         "e^(beta_amio x 1_{CAT=1}) x e^(IIV_CL/F_i)', which instantiates the ",
@@ -76,14 +76,14 @@ Kolowrat_2025_apixaban <- function() {
         "and extrapolating it downward inflates clearance steeply (at age ",
         "40 the multiplier is 2.6-fold the value at 77)."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CONMED_AMIO = list(
-      description        = "Concomitant amiodarone therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant amiodarone therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant amiodarone)",
-      notes              = paste0(
+      notes = paste0(
         "1 = subject is receiving a stable dose of amiodarone 200 mg taken ",
         "for at least 30 days prior to admission, 0 = apixaban alone. ",
         "Cohort prevalence 51/106 (48.1%) (Table 1). Entered as a binary ",
@@ -110,7 +110,7 @@ Kolowrat_2025_apixaban <- function() {
         "patients and were deliberately NOT modelled 'given the number of ",
         "individuals per category' (Results 3.1, 3.2)."
       ),
-      source_name        = "concomitant amiodarone"
+      source_name = "concomitant amiodarone"
     )
   )
 
@@ -123,9 +123,9 @@ Kolowrat_2025_apixaban <- function() {
   covariatesDataExcluded <- list(
     CRCL = list(
       description = "Renal function (CKD-EPI 2021 eGFR and Cockcroft-Gault creatinine clearance)",
-      units       = "mL/min/1.73 m^2 (eGFR) and mL/min (Cockcroft-Gault)",
-      type        = "continuous",
-      notes       = paste0(
+      units = "mL/min/1.73 m^2 (eGFR) and mL/min (Cockcroft-Gault)",
+      type = "continuous",
+      notes = paste0(
         "TWO renal-function columns were constructed and screened, and ",
         "neither was retained; they are documented under one register entry ",
         "because both are members of this canonical. (1) Estimated ",
@@ -157,9 +157,9 @@ Kolowrat_2025_apixaban <- function() {
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Actual reported body weight was collected (median 86.4 kg, IQR ",
         "62.4-93.3 apixaban alone; 83.4 kg, IQR 65.8-96.7 plus amiodarone; ",
         "Table 1) and used to derive ideal and adjusted body weight for the ",
@@ -173,9 +173,9 @@ Kolowrat_2025_apixaban <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste0(
         "Named in the Introduction as one of the three prespecified ",
         "secondary-objective covariates ('potential covariates such as age, ",
         "renal function, and body mass index'). Not retained, and unlike ",
@@ -188,19 +188,23 @@ Kolowrat_2025_apixaban <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 106L,
-    n_studies        = 1L,
-    n_observations   = 360L,
-    age_median       = "77 years (overall cohort median, the centering value for the CL/F age term)",
-    age_range        = "IQR 71-86 years apixaban alone (median 79); IQR 64-83 years apixaban plus amiodarone (median 74). Full range not reported.",
-    weight_median    = "86.4 kg apixaban alone; 83.4 kg apixaban plus amiodarone",
-    weight_range     = "IQR 62.4-93.3 kg apixaban alone; IQR 65.8-96.7 kg apixaban plus amiodarone. Weight >= 120 kg excluded by design.",
-    sex_female_pct   = 48.1,
-    race_ethnicity   = c(
-      White = 58.5, Black = 28.3, Hispanic = 2.8, Asian = 3.8, Other = 0.9
+    species = "human",
+    n_subjects = 106L,
+    n_studies = 1L,
+    n_observations = 360L,
+    age_median = "77 years (overall cohort median, the centering value for the CL/F age term)",
+    age_range = "IQR 71-86 years apixaban alone (median 79); IQR 64-83 years apixaban plus amiodarone (median 74). Full range not reported.",
+    weight_median = "86.4 kg apixaban alone; 83.4 kg apixaban plus amiodarone",
+    weight_range = "IQR 62.4-93.3 kg apixaban alone; IQR 65.8-96.7 kg apixaban plus amiodarone. Weight >= 120 kg excluded by design.",
+    sex_female_pct = 48.1,
+    race_ethnicity = c(
+      White = 58.5,
+      Black = 28.3,
+      Hispanic = 2.8,
+      Asian = 3.8,
+      Other = 0.9
     ),
-    disease_state    = paste0(
+    disease_state = paste0(
       "Hospitalized adults (age >= 18 years) with a history of nonvalvular ",
       "atrial fibrillation on a stable dose of apixaban 2.5 mg or 5 mg ",
       "twice daily, either alone (n = 55) or with a stable dose of ",
@@ -218,7 +222,7 @@ Kolowrat_2025_apixaban <- function() {
       "inhibitor 12.7% / 13.7% in the two groups); they were not modelled ",
       "because of the small number of individuals per category."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral apixaban 2.5 mg or 5 mg twice daily (every 12 h) at steady ",
       "state per the drug label. All patients were assumed to be at steady ",
       "state with apixaban and amiodarone at the time of the first modelled ",
@@ -230,10 +234,10 @@ Kolowrat_2025_apixaban <- function() {
       "lower limit of quantification 5 ng/mL; 7 of 360 samples were below ",
       "it and were censored."
     ),
-    regions          = "United States (single-centre retrospective observational study, Thomas Jefferson University Hospital, Philadelphia, Pennsylvania; IRB iRISID-2023-2228, approved 6 December 2024)",
-    co_medication    = "Concomitant amiodarone 200 mg in 51/106 (48.1%); mild / moderate CYP3A4 or P-gp perpetrators other than amiodarone in 31/106 (29.2%)",
-    renal_function   = "Median eGFR 48 mL/min/1.73 m^2 (CKD-EPI 2021) and median Cockcroft-Gault creatinine clearance about 38 mL/min in both groups; a renally impaired cohort",
-    notes            = paste0(
+    regions = "United States (single-centre retrospective observational study, Thomas Jefferson University Hospital, Philadelphia, Pennsylvania; IRB iRISID-2023-2228, approved 6 December 2024)",
+    co_medication = "Concomitant amiodarone 200 mg in 51/106 (48.1%); mild / moderate CYP3A4 or P-gp perpetrators other than amiodarone in 31/106 (29.2%)",
+    renal_function = "Median eGFR 48 mL/min/1.73 m^2 (CKD-EPI 2021) and median Cockcroft-Gault creatinine clearance about 38 mL/min in both groups; a renally impaired cohort",
+    notes = paste0(
       "Baseline demographics in Table 1; base- and final-model parameter ",
       "estimates in Table 2; simulated exposure metrics in Table 3 and ",
       "Figure 2. Patients were screened from electronic medical records ",

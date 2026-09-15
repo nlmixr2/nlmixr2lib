@@ -39,15 +39,15 @@ Leegwater_2025_sulfamethoxazole <- function() {
     sep = " "
   )
   vignette <- "Leegwater_2025_cotrimoxazole"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the CKD-EPI equation and reported BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the CKD-EPI equation and reported BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters both apparent clearances as a power function normalized to",
         "68 mL/min/1.73 m^2 (Table 3 footnote a; control stream",
         "'(EGFR/68)**THETA(11)' for the parent and '(EGFR/68)**THETA(10)'",
@@ -65,14 +65,14 @@ Leegwater_2025_sulfamethoxazole <- function() {
         "branches; any positive placeholder works for CRRT subjects.",
         sep = " "
       ),
-      source_name        = "EGFR"
+      source_name = "EGFR"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy during cotrimoxazole treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy during cotrimoxazole treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CRRT)",
-      notes              = paste(
+      notes = paste(
         "1 = concomitant CRRT, 0 = no CRRT. Called 'rel' in the NONMEM",
         "control stream and 'CRRT' in Table 3. Subject-level and time-fixed:",
         "patients treated with intermittent hemodialysis or ECMO were",
@@ -89,25 +89,25 @@ Leegwater_2025_sulfamethoxazole <- function() {
         "multiplying on top of it.",
         sep = " "
       ),
-      source_name        = "rel"
+      source_name = "rel"
     )
   )
 
   compartmentData <- list(
-    depot         = list(analyte = "sulfamethoxazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central       = list(analyte = "sulfamethoxazole", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "sulfamethoxazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sulfamethoxazole", units = "mg", specimen = "plasma", verified = TRUE),
     central_nasmx = list(analyte = "N-acetyl sulfamethoxazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 168,
-    n_studies      = 1,
-    age_mean       = "58.2 years (SD 15.2); median 58 years",
-    weight_mean    = "76.7 kg (SD 16.2)",
+    species = "human",
+    n_subjects = 168,
+    n_studies = 1,
+    age_mean = "58.2 years (SD 15.2); median 58 years",
+    weight_mean = "76.7 kg (SD 16.2)",
     sex_female_pct = 35.7,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) treated with therapeutic doses of",
       "oral or intravenous cotrimoxazole, sampled as part of routine",
       "therapeutic drug monitoring. Indications include Pneumocystis",
@@ -124,16 +124,16 @@ Leegwater_2025_sulfamethoxazole <- function() {
       "excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Routine care rather than protocol-assigned. Daily cotrimoxazole",
       "starting doses: <= 960 mg 6.0%, 1,920-2,400 mg 16.1%, 2,880 mg 8.9%,",
       "3,840-4,800 mg 20.8%, 5,760 mg 48.2%. 44.6% started oral, 55.4%",
       "intravenous.",
       sep = " "
     ),
-    regions        = "The Netherlands (Leiden University Medical Center n = 16, Erasmus MC n = 116, University Medical Center Groningen n = 36).",
+    regions = "The Netherlands (Leiden University Medical Center n = 16, Erasmus MC n = 116, University Medical Center Groningen n = 36).",
     n_observations = "348 paired sulfamethoxazole and N-acetyl sulfamethoxazole plasma concentrations from 168 patients, peaks and troughs. Sulfamethoxazole ranged 2-380 mg/L and N-acetyl sulfamethoxazole 2-173.4 mg/L.",
-    notes          = paste(
+    notes = paste(
       "Retrospective multicenter observational cohort, January 2016 to",
       "December 2021 (Methods, 'Study design' and 'Participants and data",
       "collection'); demographics from Table 1, left-hand column. The",

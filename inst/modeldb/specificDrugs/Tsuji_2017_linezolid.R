@@ -27,8 +27,10 @@ Tsuji_2017_linezolid <- function() {
   )
   vignette <- "Tsuji_2017_linezolid"
   units <- list(
-    time = "h", dosing = "mg",
-    concentration = "mg/L", platelet = "cells/uL"
+    time = "h",
+    dosing = "mg",
+    concentration = "mg/L",
+    platelet = "cells/uL"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -36,53 +38,53 @@ Tsuji_2017_linezolid <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
-    circ        = list(analyte = "platelet", units = "mg", specimen = "whole blood", verified = FALSE)
+    precursor1 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ = list(analyte = "platelet", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling on CL/Q (exponent 0.75) and VC/VP (exponent 1)",
         "with reference 70 kg per Tsuji 2017 Methods Equation 3. Also used",
         "to standardise the Cockcroft-Gault CrCl to 70 kg before the renal",
         "function ratio RF = (CrCl x (70/WT)^0.75) / 100."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear fractional-change effect on non-renal CL centred at the",
         "cohort median 69 years per Tsuji 2017 Methods Equation 4:",
         "FAGE_CL = 1 + KAGECL * (AGE - 69), with KAGECL = -0.021/year",
         "(roughly -2% CL per year above 69). FAGE on Q, VC and VP are",
         "held at 1."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance by the Cockcroft-Gault formula (raw mL/min,",
         "NOT BSA-normalized)."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Carried as the raw Cockcroft-Gault value in mL/min, not the canonical",
         "BSA-normalized mL/min/1.73 m^2 form (the same deviation documented",
         "in Jonckheere_2019_cefepime.R and Delattre_2010_amikacin.R). Inside",
@@ -95,19 +97,19 @@ Tsuji_2017_linezolid <- function() {
         "a CRCL value that yields RF_paper = 0.5 (i.e., CRCL = 50 * (WT/70)^0.75",
         "for those four pediatric IDs)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     MIX_PDI = list(
-      description        = paste(
+      description = paste(
         "Latent mixture-model indicator: 1 = subject classified to the",
         "PDI (inhibition of platelet synthesis) sub-population, 0 = subject",
         "classified to the PDS (stimulation of platelet elimination)",
         "sub-population."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "PDS = 0",
-      notes              = paste(
+      notes = paste(
         "Not a measured patient covariate; this is the per-subject mixture",
         "assignment of the published model. Population probability of MIX_PDI = 1",
         "is the estimated mixture fraction FPOP_inhibit = 0.969 (Tsuji 2017",
@@ -120,36 +122,36 @@ Tsuji_2017_linezolid <- function() {
         "the binary numerically maps onto the paper's mixture indicator;",
         "the dominant class is the non-reference category by intent."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 81L,
-    n_studies      = 2L,
-    age_range      = "1-85 years (2.5-97.5% interval; median 69)",
-    weight_range   = "21.0-99.5 kg (2.5-97.5% interval; median 53.2)",
+    species = "human",
+    n_subjects = 81L,
+    n_studies = 2L,
+    age_range = "1-85 years (2.5-97.5% interval; median 69)",
+    weight_range = "21.0-99.5 kg (2.5-97.5% interval; median 53.2)",
     sex_female_pct = 37.0,
     race_ethnicity = "Japanese (single-country cohort)",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adult and pediatric patients (n = 81) with gram-positive",
       "cocci (GPC) or methicillin-resistant Staphylococcus aureus (MRSA)",
       "infections, including sepsis (n = 26), wound / skin / soft-tissue",
       "infection (n = 25), pneumonia (n = 14), abscess (n = 8),",
       "osteomyelitis (n = 6) and undetermined (n = 2)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Linezolid 10 mg/kg three times daily (pediatric) or 300 mg once",
       "daily to 600 mg twice daily (adult), administered orally as",
       "Zyvox film-coated tablets and/or by 1-2 h intravenous infusion;",
       "of 81 patients 54 received only IV, 13 only PO, and 14 both."
     ),
-    regions        = paste(
+    regions = paste(
       "Two centres in Japan: Sasebo Chuo Hospital (Nagasaki) and",
       "Toyama University Hospital (Toyama). November 2008 - August 2015."
     ),
-    notes          = paste(
+    notes = paste(
       "Demographics from Tsuji 2017 Table 1. Renal function spans CrCl 5.6-188.4",
       "mL/min (median 59.6), with the four youngest pediatric patients (1, 5,",
       "8 and 13 years) assigned RF = 0.5 by the authors. Concentrations were",

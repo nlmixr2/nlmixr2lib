@@ -25,17 +25,17 @@ Antignac_2007_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     POD = list(
-      description        = "Days elapsed since kidney transplantation (post-operative day)",
-      units              = "days",
-      type               = "continuous",
+      description = "Days elapsed since kidney transplantation (post-operative day)",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject. Day 1 corresponds to the day",
         "of transplantation per Antignac 2007 Methods 'Patients and",
         "data collection' (item 3). Enters CL through a Hill-type",
@@ -47,17 +47,17 @@ Antignac_2007_tacrolimus <- function() {
         "Use POD >= 0 to avoid 0^gamma_cl evaluation; the paper's",
         "POD = 1 anchor sidesteps the issue in practice."
       ),
-      source_name        = "POD"
+      source_name = "POD"
     ),
     PRED_DOSE = list(
-      description        = paste(
+      description = paste(
         "Concomitant oral prednisone daily dose. Used in a",
         "threshold-form (> 25 mg/day) binary indicator on CL."
       ),
-      units              = "mg/day",
-      type               = "continuous",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Antignac 2007 Methods records prednisone as",
         "'PRD (mg)' in the daily dose register (item 4); the daily",
         "reading is the standard transplant-immunosuppressant",
@@ -70,22 +70,22 @@ Antignac_2007_tacrolimus <- function() {
         "PRED_DOSE column, following the canonical-register pattern",
         "established in TerHeine_2018_everolimus.R."
       ),
-      source_name        = "PRD"
+      source_name = "PRD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 83L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 83L,
+    n_studies = 1L,
     n_observations = 1589L,
-    age_range      = "16 - 67 years",
-    age_median     = "46 years",
-    weight_range   = "29 - 100 kg",
-    weight_median  = "69 kg",
+    age_range = "16 - 67 years",
+    age_median = "46 years",
+    weight_range = "29 - 100 kg",
+    weight_median = "69 kg",
     sex_female_pct = 34.9,
     race_ethnicity = NULL,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult kidney transplant recipients on a triple",
       "immunosuppressive regimen (tacrolimus + mycophenolate mofetil",
       "+ corticosteroids). Surgery between January 2003 and",
@@ -93,7 +93,7 @@ Antignac_2007_tacrolimus <- function() {
       "Hospital, Paris); 14 grafts from living donors, 69 from",
       "deceased (brain-death) donors."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Initial tacrolimus dose ~0.015 mg/kg twice daily.",
       "Subsequent oral doses titrated by TDM (target trough 5 - 10",
       "ng/mL during the first 3 months posttransplant). Table 2:",
@@ -105,10 +105,10 @@ Antignac_2007_tacrolimus <- function() {
       "treatment initiation; the remaining 58 patients received",
       "oral only."
     ),
-    regions        = "France",
-    pod_range      = "1 - 158 days (Table 1)",
+    regions = "France",
+    pod_range = "1 - 158 days (Table 1)",
     pred_dose_range = "0 - 30 mg/day (Table 1; mean 22, SD 4)",
-    notes          = paste(
+    notes = paste(
       "Routine therapeutic drug monitoring (TDM) data, mostly trough",
       "samples (predose). Mean 19.1 +/- 4.7 samples per subject",
       "(range 1 - 33). Whole-blood tacrolimus measured by",

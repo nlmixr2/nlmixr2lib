@@ -46,11 +46,11 @@ Kutumova_2024_albuminNanoparticles_mouse_pbpk <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales cardiac output allometrically (Q = QC * QCC * BW^0.75), all",
         "organ and plasma volumes linearly (V = BW * VC), and the biliary and",
         "urinary excretion clearances allometrically. Kutumova 2024 section 3.3",
@@ -58,78 +58,78 @@ Kutumova_2024_albuminNanoparticles_mouse_pbpk <- function() {
         "LPS-induced weight loss was deliberately NOT modelled, so WT is",
         "time-invariant in this model."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     STUDY_LPS30M = list(
-      description        = "1 = ANP administered 30 min after intraperitoneal LPS (exp 2); 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = ANP administered 30 min after intraperitoneal LPS (exp 2); 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LPS-naive control cohort, exp 1)",
-      notes              = paste(
+      notes = paste(
         "Selects the LPS-30-min column of Kutumova 2024 Table 1 for every",
         "organ's permeability (PAC) and distribution (P) coefficient."
       ),
-      source_name        = "LPS 30 min"
+      source_name = "LPS 30 min"
     ),
     STUDY_LPS6H = list(
-      description        = "1 = ANP administered 6 h after intraperitoneal LPS (exp 3); 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = ANP administered 6 h after intraperitoneal LPS (exp 3); 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LPS-naive control cohort, exp 1)",
-      notes              = paste(
+      notes = paste(
         "Selects the LPS-6-h column of Kutumova 2024 Table 1. This is the",
         "cohort with peak pulmonary ANP accumulation."
       ),
-      source_name        = "LPS 6 h"
+      source_name = "LPS 6 h"
     ),
     STUDY_LPS24H = list(
-      description        = "1 = ANP administered 24 h after intraperitoneal LPS (exp 4); 0 otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = ANP administered 24 h after intraperitoneal LPS (exp 4); 0 otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (LPS-naive control cohort, exp 1)",
-      notes              = paste(
+      notes = paste(
         "Selects the LPS-24-h column of Kutumova 2024 Table 1. Exactly one of",
         "STUDY_LPS30M / STUDY_LPS6H / STUDY_LPS24H may be 1; all three zero",
         "gives the control cohort."
       ),
-      source_name        = "LPS 24 h"
+      source_name = "LPS 24 h"
     )
   )
 
   compartmentData <- list(
-    venous     = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    arterial   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    vp_lung    = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    is_lung    = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
-    int_lung   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
-    vp_spleen  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    is_spleen  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    arterial = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    vp_lung = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    is_lung = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
+    int_lung = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
+    vp_spleen = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    is_spleen = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
     int_spleen = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
-    vp_liver   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    is_liver   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
-    int_liver  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
-    vp_kidney  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    is_kidney  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_liver = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    is_liver = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
+    int_liver = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
+    vp_kidney = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    is_kidney = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
     int_kidney = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
-    vp_other   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
-    is_other   = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
-    int_other  = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
-    urine      = list(analyte = "albumin nanoparticles", units = "mg", specimen = "urine", verified = TRUE),
-    bile       = list(analyte = "albumin nanoparticles", units = "mg", specimen = "bile", verified = TRUE)
+    vp_other = list(analyte = "albumin nanoparticles", units = "mg", specimen = "plasma", verified = TRUE),
+    is_other = list(analyte = "albumin nanoparticles", units = "mg", specimen = "tissue", verified = TRUE),
+    int_other = list(analyte = "albumin nanoparticles", units = "mg", specimen = "endosome", verified = TRUE),
+    urine = list(analyte = "albumin nanoparticles", units = "mg", specimen = "urine", verified = TRUE),
+    bile = list(analyte = "albumin nanoparticles", units = "mg", specimen = "bile", verified = TRUE)
   )
 
   population <- list(
-    species        = "mouse (BALB/c, male, 6-8 weeks old)",
-    n_subjects     = 60,
-    n_studies      = 1,
-    age_range      = "6-8 weeks",
-    weight_median  = "0.024 kg",
+    species = "mouse (BALB/c, male, 6-8 weeks old)",
+    n_subjects = 60,
+    n_studies = 1,
+    age_range = "6-8 weeks",
+    weight_median = "0.024 kg",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Non-lethal lipopolysaccharide-induced acute lung injury (LPS 6 mg/kg",
       "intraperitoneally, 200 uL per mouse) and LPS-naive controls."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single intravenous ANP dose, 0.5 mg/mouse (about 20.8 mg/kg) in 100 uL",
       "per the experimental protocol (section 2.4); the model-calibration",
       "section 3.3 states PDOSEiv = 208 mg/kg (5 mg / 0.024 kg). See the",
@@ -137,8 +137,8 @@ Kutumova_2024_albuminNanoparticles_mouse_pbpk <- function() {
       "is internal to the paper and the parameter set (in particular the fitted",
       "scale factor k) is coherent only with the value the authors simulated."
     ),
-    regions        = "Russia (N.N. Blokhin National Medical Research Center of Oncology, Moscow)",
-    notes          = paste(
+    regions = "Russia (N.N. Blokhin National Medical Research Center of Oncology, Moscow)",
+    notes = paste(
       "n = 3 mice per biodistribution time point per ANP-administration time",
       "point; 60 mice total (section 2.4). ANP given intravenously at 0.5, 6,",
       "or 24 h after LPS, or without LPS (control). Organs (lungs, liver,",

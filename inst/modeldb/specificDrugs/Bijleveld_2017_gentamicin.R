@@ -9,31 +9,31 @@ Bijleveld_2017_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Bijleveld_2017_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at start of treatment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at start of treatment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Median 1.85 kg, range 0.76-4.67 kg in the source cohort (Table 1). Allometric scaling uses a 70 kg adult reference: fixed exponent 0.75 on CL and Q, fixed exponent 1 on Vc and Vp.",
-      source_name        = "BW"
+      notes = "Median 1.85 kg, range 0.76-4.67 kg in the source cohort (Table 1). Allometric scaling uses a 70 kg adult reference: fixed exponent 0.75 on CL and Q, fixed exponent 1 on Vc and Vp.",
+      source_name = "BW"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. The Bijleveld 2017 paper reports PMA in DAYS as the sum",
         "of gestational age (weeks * 7) and postnatal age (days); reference PMA",
         "in the paper's CL power equation is 225 days (median of the cohort).",
@@ -42,33 +42,33 @@ Bijleveld_2017_gentamicin <- function() {
         "(PMA_days / 225)^theta_clpma. Reference of 225 days corresponds to",
         "approximately 7.39 months."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 65L,
-    n_studies       = 1L,
-    n_observations  = 136L,
-    ga_range        = "25-42 weeks (mean 32)",
-    pna_range       = "0-31 days (median 1)",
-    weight_range    = "0.76-4.67 kg at start of treatment (median 1.85)",
+    species = "human",
+    n_subjects = 65L,
+    n_studies = 1L,
+    n_observations = 136L,
+    ga_range = "25-42 weeks (mean 32)",
+    pna_range = "0-31 days (median 1)",
+    weight_range = "0.76-4.67 kg at start of treatment (median 1.85)",
     birth_weight_range = "0.43-4.67 kg (mean 1.85)",
-    sex_female_pct  = 43,
-    disease_state   = paste(
+    sex_female_pct = 43,
+    disease_state = paste(
       "(Pre)term neonates with suspected or proven Gram-negative sepsis",
       "treated in a neonatal intensive care unit. 75% born prematurely",
       "(GA < 37 weeks); 8% mortality during the observation window."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "4 mg/kg every 48 h (GA <= 32 wk, PNA < 4 wk), 4 mg/kg every 24 h",
       "(GA > 32 wk, PNA < 4 wk), or 5 mg/kg every 24 h (PNA > 4 wk),",
       "administered as a 30-min intravenous infusion."
     ),
     creatinine_summary = "Serum creatinine 26-112 umol/L (median 55.5).",
-    regions         = "Single centre (Academic Medical Center NICU, Amsterdam, the Netherlands). Data collected October 2012 to January 2013.",
-    notes           = paste(
+    regions = "Single centre (Academic Medical Center NICU, Amsterdam, the Netherlands). Data collected October 2012 to January 2013.",
+    notes = paste(
       "Baseline demographics from Bijleveld 2017 Table 1. Three previously",
       "published gentamicin neonatal popPK models (Nielsen 2009, Fuchs 2014,",
       "De Cock 2014) were found to overpredict this cohort, motivating the new",

@@ -21,60 +21,60 @@ Choi_2025_denosumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL/F, VC/F and VP/F as a normalised power term (WT/64)^theta (Choi 2025 Table 3 and",
         "Eq 14). The reference value of 64 kg is the pooled-cohort median printed inside the Table 3",
         "covariate-model expressions; the paper's Table 2 reports a pooled median of 66.3 kg, so 64 kg",
         "is the model's own centering constant and not a re-derived median."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (postmenopausal women with osteoporosis, the Phase III SB16-3001 cohort)",
-      notes              = paste(
+      notes = paste(
         "1 = healthy male volunteer (Phase I SB16-1001), 0 = postmenopausal patient with osteoporosis",
         "(Phase III SB16-3001). Choi 2025 report a separate typical value per cohort for ka, R0 and Q/F",
         "(Table 3); this model takes the patient level as the reference so the covariate matches the",
         "DIS_HEALTHY canonical (reference = patient) and the clinically relevant target population."
       ),
-      source_name        = "study population (HV vs PMO)"
+      source_name = "study population (HV vs PMO)"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian; the CL/F reference level in Choi 2025 Table 3)",
-      notes              = paste(
+      notes = paste(
         "Choi 2025 pooled the two studies into Asian / Black / Caucasian only (Table 2), so RACE_BLACK",
         "and RACE_ASIAN together partition the cohort with Caucasian as the reference. All 46 Black",
         "subjects came from the Phase I healthy-volunteer study."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian; the CL/F reference level in Choi 2025 Table 3)",
-      notes              = paste(
+      notes = paste(
         "See RACE_BLACK. RACE_BLACK and RACE_ASIAN are mutually exclusive in this cohort; setting both",
         "to 0 gives the Caucasian reference (84.78% of the pooled population)."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     TRT_SB16 = list(
-      description        = "SB16 biosimilar treatment-arm indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SB16 biosimilar treatment-arm indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (reference denosumab, EU- and US-sourced pooled)",
-      notes              = paste(
+      notes = paste(
         "1 = SB16 (proposed denosumab biosimilar), 0 = reference denosumab. Choi 2025 found treatment",
         "group was NOT a statistically significant covariate and excluded it from the covariate-selected",
         "model, but deliberately re-introduced it on CL/F for the comparative biosimilarity simulation",
@@ -82,50 +82,60 @@ Choi_2025_denosumab <- function() {
         "a 0.18% difference; leaving this covariate at its reference level 0 reproduces the",
         "covariate-selected final model exactly."
       ),
-      source_name        = "treatment group (SB16 vs DEN)"
+      source_name = "treatment group (SB16 vs DEN)"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "denosumab", units = "nmol",
-      specimen = "administration site", verified = TRUE
+      analyte = "denosumab",
+      units = "nmol",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "denosumab", units = "nmol",
-      specimen = "serum", verified = TRUE
+      analyte = "denosumab",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "denosumab", units = "nmol",
-      specimen = "serum", verified = TRUE
+      analyte = "denosumab",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
     ),
     total_target = list(
-      analyte = "RANKL", units = "nmol/L",
-      specimen = "serum", verified = TRUE
+      analyte = "RANKL",
+      units = "nmol/L",
+      specimen = "serum",
+      verified = TRUE
     ),
     BMD_LS = list(
-      analyte = "lumbar spine (L1-L4) areal bone mineral density", units = "g/cm^2",
-      specimen = "not applicable", verified = TRUE
+      analyte = "lumbar spine (L1-L4) areal bone mineral density",
+      units = "g/cm^2",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 624L,
-    n_studies      = 2L,
-    age_range      = "28-81 years",
-    age_median     = "63 years",
-    weight_range   = "47.0-94.7 kg",
-    weight_median  = "66.3 kg",
+    species = "human",
+    n_subjects = 624L,
+    n_studies = 2L,
+    age_range = "28-81 years",
+    age_median = "63 years",
+    weight_range = "47.0-94.7 kg",
+    weight_median = "66.3 kg",
     sex_female_pct = 73.08,
     race_ethnicity = c(Caucasian = 84.78, Asian = 7.69, Black = 7.37),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy male volunteers (Phase I SB16-1001, n = 168) and postmenopausal women with",
       "osteoporosis (Phase III SB16-3001, n = 456)"
     ),
-    dose_range     = "60 mg subcutaneously; single dose (Phase I) or at months 0, 6 and 12 (Phase III)",
-    regions        = "Republic of Korea, Czech Republic, Poland, Lithuania, Denmark",
-    notes          = paste(
+    dose_range = "60 mg subcutaneously; single dose (Phase I) or at months 0, 6 and 12 (Phase III)",
+    regions = "Republic of Korea, Czech Republic, Poland, Lithuania, Denmark",
+    notes = paste(
       "Demographics from Choi 2025 Table 2 (pooled N = 624 randomised). The PK dataset comprised 6,583",
       "serum denosumab concentrations from 615 subjects; the PD dataset comprised 1,716 lumbar-spine BMD",
       "measurements from the 456 Phase III patients. Assay LLOQ was 20 ng/mL; 1,129 of 4,262 post-dose",

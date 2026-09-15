@@ -14,28 +14,28 @@ Jeong_2023_rabeprazole <- function() {
   vignette <- "Jeong_2023_rabeprazole"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot       = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "rabeprazole", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "rabeprazole", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "rabeprazole", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "rabeprazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator; 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator; 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed. Supplementary Information S7 prints the retained relationship as",
         "Tlag = tvTlag * (1 + dTlagdGender * (if female = 1 and male = 0)) * exp(eta_Tlag),",
         "so the sex term is LINEAR in (1 + 0.73 * SEXF) and NOT an exponential",
@@ -48,14 +48,14 @@ Jeong_2023_rabeprazole <- function() {
         "enteric-coated tablet at its small-intestinal absorption window (Discussion).",
         sep = " "
       ),
-      source_name        = "Gender (Jeong 2023 Table 5 'dTlagdGender'; Supplementary Information S7)"
+      source_name = "Gender (Jeong 2023 Table 5 'dTlagdGender'; Supplementary Information S7)"
     ),
     BSA = list(
-      description        = "Body surface area computed by the Mosteller formula, sqrt(height (cm) * body weight (kg) / 3600)",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area computed by the Mosteller formula, sqrt(height (cm) * body weight (kg) / 3600)",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Supplementary Information S7 prints",
         "Ka3 = tvKa3 * (BSA / median BSA)^dKa3dBSA * exp(eta_Ka3), i.e. a power model centred",
         "on the median BSA of the observed population, which Table S1 gives as 1.75 m^2",
@@ -70,31 +70,31 @@ Jeong_2023_rabeprazole <- function() {
         "weight 66.66 kg give sqrt(167.83 * 66.66 / 3600) = 1.76 m^2, matching Table S1.",
         sep = " "
       ),
-      source_name        = "BSA (Jeong 2023 Table 5 'dKa3dBSA'; Table S1; Supplementary Information S1 and S7)"
+      source_name = "BSA (Jeong 2023 Table 5 'dKa3dBSA'; Table S1; Supplementary Information S1 and S7)"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
-      description        = "Body mass index at baseline",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on Vc/F and CLc/F (Table 4 models 17 and 18; dOFV -3.11 and -3.08). Both",
         "met the forward-selection threshold of 3.84 only marginally and neither survived",
         "backward elimination at p < 0.01, so BMI was not retained. Cohort mean (SD)",
         "23.54 (2.93) kg/m^2, range 18.20-29.50 (Table S1).",
         sep = " "
       ),
-      source_name        = "BMI (Jeong 2023 Table 4; Table S1)"
+      source_name = "BMI (Jeong 2023 Table 4; Table S1)"
     ),
     GGT = list(
-      description        = "Serum gamma-glutamyl transpeptidase activity at baseline",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum gamma-glutamyl transpeptidase activity at baseline",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on Vc/F and CLc/F (Table 4 models 15 and 16; dOFV +0.74 and -0.18) and not",
         "retained. GGT differed significantly between the sexes (24.13 vs 13.71 U/L,",
         "p = 1.73e-3; Table S2), but the Discussion concludes that liver-function indicators",
@@ -102,14 +102,14 @@ Jeong_2023_rabeprazole <- function() {
         "pharmacokinetics. Cohort mean (SD) 19.27 (11.80) U/L, range 6.00-62.00 (Table S1).",
         sep = " "
       ),
-      source_name        = "GTP (Jeong 2023 Table 4; Table S1)"
+      source_name = "GTP (Jeong 2023 Table 4; Table S1)"
     ),
     CRCL = list(
-      description        = "Creatinine clearance by the Cockcroft-Gault equation, not body-surface-area normalised",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance by the Cockcroft-Gault equation, not body-surface-area normalised",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened on Ka1, Ka2 and Ka3 (Table 4 models 19, 20 and 21; dOFV +2.27, +1.46 and",
         "-0.51) and not retained. Supplementary Information S1 gives the derivation as",
         "((140 - age) * body weight (kg) / serum creatinine (mg/dL) * 72), i.e. raw",
@@ -119,28 +119,28 @@ Jeong_2023_rabeprazole <- function() {
         "rabeprazole pharmacokinetics are unchanged even in severe renal failure.",
         sep = " "
       ),
-      source_name        = "CrCL (Jeong 2023 Table 4; Table S1; Supplementary Information S1)"
+      source_name = "CrCL (Jeong 2023 Table 4; Table S1; Supplementary Information S1)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = "20-49 years (mean (SD) 32.31 (8.40); median 31.00)",
-    age_median     = "31 years",
-    weight_range   = "45.60-94.10 kg (mean (SD) 66.66 (11.98); median 66.00; men 74.05 (9.90), women 58.21 (7.90))",
-    weight_median  = "66 kg",
-    height_range   = "150.50-183.90 cm (mean (SD) 167.83 (8.59); median 168.10)",
-    bmi_range      = "18.20-29.50 kg/m^2 (mean (SD) 23.54 (2.93))",
-    bsa_range      = "1.41-2.16 m^2 (mean (SD) 1.76 (0.19); median 1.75; men 1.89 (0.15), women 1.61 (0.12))",
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = "20-49 years (mean (SD) 32.31 (8.40); median 31.00)",
+    age_median = "31 years",
+    weight_range = "45.60-94.10 kg (mean (SD) 66.66 (11.98); median 66.00; men 74.05 (9.90), women 58.21 (7.90))",
+    weight_median = "66 kg",
+    height_range = "150.50-183.90 cm (mean (SD) 167.83 (8.59); median 168.10)",
+    bmi_range = "18.20-29.50 kg/m^2 (mean (SD) 23.54 (2.93))",
+    bsa_range = "1.41-2.16 m^2 (mean (SD) 1.76 (0.19); median 1.75; men 1.89 (0.15), women 1.61 (0.12))",
     sex_female_pct = 46.7,
     race_ethnicity = "Korean",
-    disease_state  = "Healthy adult volunteers",
-    dose_range     = "Single oral 10 mg rabeprazole enteric-coated tablet",
-    regions        = "Republic of Korea (single centre; Ministry of Food and Drug Safety approval MB22-002)",
+    disease_state = "Healthy adult volunteers",
+    dose_range = "Single oral 10 mg rabeprazole enteric-coated tablet",
+    regions = "Republic of Korea (single centre; Ministry of Food and Drug Safety approval MB22-002)",
     renal_function = "Normal; creatinine clearance mean (SD) 123.70 (24.25) mL/min, MDRD eGFR 106.89 (18.25) mL/min/1.73 m^2 (Table S1)",
-    notes          = paste(
+    notes = paste(
       "Randomised, single-dose, open-label, two-way crossover bioequivalence study with a",
       "7-day washout (Supplementary Information S3). All 45 subjects fasted for more than",
       "10 h and took the tablet with 150 mL of water. Plasma sampling at 0, 1, 2, 2.5, 3,",

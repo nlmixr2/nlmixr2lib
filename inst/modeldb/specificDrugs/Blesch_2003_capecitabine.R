@@ -19,10 +19,10 @@ Blesch_2003_capecitabine <- function() {
     "patients with extensive sampling from a Phase I bioequivalence study."
   )
   reference <- "Blesch KS, Gieschke R, Tsukamoto Y, Reigner BG, Burger HU, Steimer JL. Clinical pharmacokinetic/pharmacodynamic and physiologically based pharmacokinetic modeling in new drug development: the capecitabine experience. Invest New Drugs. 2003;21(2):195-223. doi:10.1023/A:1023525513696. PMID: 12889740."
-  vignette  <- "Blesch_2003_capecitabine"
-  units     <- list(
-    time          = "h",
-    dosing        = "mg",
+  vignette <- "Blesch_2003_capecitabine"
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -31,50 +31,50 @@ Blesch_2003_capecitabine <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "capecitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "capecitabine", units = "mg", specimen = "administration site", verified = FALSE),
     central_dfur = list(analyte = "5'-DFUR", units = "mg", specimen = "plasma", verified = FALSE),
-    central_5fu  = list(analyte = "5-FU", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5fu = list(analyte = "5-FU", units = "mg", specimen = "plasma", verified = FALSE),
     central_fbal = list(analyte = "FBAL", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALP = list(
-      description        = "Baseline serum alkaline phosphatase activity, multiplicative power covariate on apparent 5-FU clearance CL2/F. The source paper does not state the reference value used for centering; this model file uses 100 U/L as a clinically reasonable median for an advanced-colorectal-cancer cohort, applied as (ALP / 100)^e_alp_cl_5fu. Document the chosen reference in vignette Errata; effect coefficient -0.169 is paper-derived (Table 1).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alkaline phosphatase activity, multiplicative power covariate on apparent 5-FU clearance CL2/F. The source paper does not state the reference value used for centering; this model file uses 100 U/L as a clinically reasonable median for an advanced-colorectal-cancer cohort, applied as (ALP / 100)^e_alp_cl_5fu. Document the chosen reference in vignette Errata; effect coefficient -0.169 is paper-derived (Table 1).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper reports the effect as multiplicative power: a doubling of baseline ALP (ALP x 2) is associated with a 11% decrease in CL2 and a 12% increase in 5-FU AUC (Table 2). The reference (centering) value is NOT stated in Blesch 2003; the underlying Phase III dataset's median ALP is presumably in references [10] and [11]. The 100 U/L default chosen here is a non-paper provenance value (see vignette Errata).",
-      source_name        = "ALP"
+      notes = "Source paper reports the effect as multiplicative power: a doubling of baseline ALP (ALP x 2) is associated with a 11% decrease in CL2 and a 12% increase in 5-FU AUC (Table 2). The reference (centering) value is NOT stated in Blesch 2003; the underlying Phase III dataset's median ALP is presumably in references [10] and [11]. The 100 U/L default chosen here is a non-paper provenance value (see vignette Errata).",
+      source_name = "ALP"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance, multiplicative power covariate on apparent FBAL clearance CL3/F and apparent FBAL volume V3/F. The paper does not state the assay (Cockcroft-Gault is the era-typical default) or the reference value; this model file uses 80 mL/min/1.73 m^2 as a clinically reasonable median for the advanced-cancer cohort.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline creatinine clearance, multiplicative power covariate on apparent FBAL clearance CL3/F and apparent FBAL volume V3/F. The paper does not state the assay (Cockcroft-Gault is the era-typical default) or the reference value; this model file uses 80 mL/min/1.73 m^2 as a clinically reasonable median for the advanced-cancer cohort.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source paper uses 'CLCR' as the column name with no explicit unit or assay statement (Cockcroft-Gault, raw mL/min is the era-typical assumption). Effect coefficients +0.615 on CL3 and +0.394 on V3 are paper-derived (Table 1); the 80 mL/min/1.73 m^2 reference is a non-paper provenance value (see vignette Errata). A 50% reduction in CLCR (CLCR x 0.5) gives 35% decrease CL3, 24% decrease V3, 53% increase FBAL AUC, 41% increase FBAL Cmax (Table 2).",
-      source_name        = "CLCR"
+      notes = "Source paper uses 'CLCR' as the column name with no explicit unit or assay statement (Cockcroft-Gault, raw mL/min is the era-typical assumption). Effect coefficients +0.615 on CL3 and +0.394 on V3 are paper-derived (Table 1); the 80 mL/min/1.73 m^2 reference is a non-paper provenance value (see vignette Errata). A 50% reduction in CLCR (CLCR x 0.5) gives 35% decrease CL3, 24% decrease V3, 53% increase FBAL AUC, 41% increase FBAL Cmax (Table 2).",
+      source_name = "CLCR"
     ),
     BSA = list(
-      description        = "Body surface area, multiplicative power covariate on apparent FBAL volume V3/F. The source paper does not state the BSA computation formula (DuBois or Mosteller per era convention) nor the reference value; this model file uses 1.73 m^2 as the standard adult anchor.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area, multiplicative power covariate on apparent FBAL volume V3/F. The source paper does not state the BSA computation formula (DuBois or Mosteller per era convention) nor the reference value; this model file uses 1.73 m^2 as the standard adult anchor.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Effect coefficient +0.812 on V3 is paper-derived (Table 1); the 1.73 m^2 reference is a non-paper provenance value (see vignette Errata). BSA x 1.3 (a 30% increase) gives 24% increase V3, 19% decrease FBAL Cmax (Table 2). BSA underlies the dosing (1250 mg/m^2 BID in Phase III) but only enters the PK structure as a power covariate on V3.",
-      source_name        = "BSA"
+      notes = "Effect coefficient +0.812 on V3 is paper-derived (Table 1); the 1.73 m^2 reference is a non-paper provenance value (see vignette Errata). BSA x 1.3 (a 30% increase) gives 24% increase V3, 19% decrease FBAL Cmax (Table 2). BSA underlies the dosing (1250 mg/m^2 BID in Phase III) but only enters the PK structure as a power covariate on V3.",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species            = "human",
-    n_subjects         = 505L,
-    n_subjects_phase1  = 24L,
-    n_subjects_phase3  = 481L,
-    n_studies          = 3L,
-    age_range          = "Adults with advanced or metastatic solid tumours; specific age range not tabulated in the review.",
-    disease_state      = "Advanced or metastatic colorectal cancer (Phase III studies, 481 patients) plus advanced cancer (Phase I bioequivalence study, 24 patients with extensive sampling).",
-    dose_range         = "Phase III: oral capecitabine 1250 mg/m^2 twice daily in 3-week treatment cycles (2 weeks on, 1 week off). Sparsely-sampled PK on the first day of cycles 2 and 4. Phase I bioequivalence: full-profile densely sampled data carried forward to stabilise the structural model.",
-    regions            = "Phase III in advanced / metastatic colorectal cancer (multi-national); Phase I bioequivalence per Reigner et al. 1998.",
-    notes              = "Patient-level demographics (gender, race, body weight, BSA, CLCR, ALP, ALT, AST, total bilirubin, albumin, liver-metastasis status, Karnofsky performance status) were screened as candidate covariates; only ALP, CLCR, and BSA met the inclusion criteria (p < 0.05 univariate; >10% individuals outside 0.8-1.25 reference range; backwards-deletion p < 0.001). The dataset combined sparse Phase III samples with the extensively-sampled Phase I bioequivalence cohort to anchor the structural model. NONMEM objective function value: 2844.378. Source: Blesch et al. 2003 Table 1 (citing Phase II in metastatic breast cancer per Reigner 1999 [20] for the structural model and Phase III colorectal per Hoff 2001 [10] and Van Cutsem 2001 [11] for the Phase III data; numeric demographic distributions live in those source publications, not in the Blesch 2003 review itself)."
+    species = "human",
+    n_subjects = 505L,
+    n_subjects_phase1 = 24L,
+    n_subjects_phase3 = 481L,
+    n_studies = 3L,
+    age_range = "Adults with advanced or metastatic solid tumours; specific age range not tabulated in the review.",
+    disease_state = "Advanced or metastatic colorectal cancer (Phase III studies, 481 patients) plus advanced cancer (Phase I bioequivalence study, 24 patients with extensive sampling).",
+    dose_range = "Phase III: oral capecitabine 1250 mg/m^2 twice daily in 3-week treatment cycles (2 weeks on, 1 week off). Sparsely-sampled PK on the first day of cycles 2 and 4. Phase I bioequivalence: full-profile densely sampled data carried forward to stabilise the structural model.",
+    regions = "Phase III in advanced / metastatic colorectal cancer (multi-national); Phase I bioequivalence per Reigner et al. 1998.",
+    notes = "Patient-level demographics (gender, race, body weight, BSA, CLCR, ALP, ALT, AST, total bilirubin, albumin, liver-metastasis status, Karnofsky performance status) were screened as candidate covariates; only ALP, CLCR, and BSA met the inclusion criteria (p < 0.05 univariate; >10% individuals outside 0.8-1.25 reference range; backwards-deletion p < 0.001). The dataset combined sparse Phase III samples with the extensively-sampled Phase I bioequivalence cohort to anchor the structural model. NONMEM objective function value: 2844.378. Source: Blesch et al. 2003 Table 1 (citing Phase II in metastatic breast cancer per Reigner 1999 [20] for the structural model and Phase III colorectal per Hoff 2001 [10] and Van Cutsem 2001 [11] for the Phase III data; numeric demographic distributions live in those source publications, not in the Blesch 2003 review itself)."
   )
 
   ini({

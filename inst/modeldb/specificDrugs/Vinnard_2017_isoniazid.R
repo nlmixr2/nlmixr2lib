@@ -16,43 +16,43 @@ Vinnard_2017_isoniazid <- function() {
   # dilution LC-ESI-MS/MS (Methods 'Serum isoniazid concentrations'), so the
   # sampled matrix is serum rather than plasma.
   compartmentData <- list(
-    depot       = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "isoniazid", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "isoniazid", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "isoniazid", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     NAT2_SLOW = list(
-      description        = "NAT2 slow-acetylator phenotype indicator (1 = slow acetylator, 0 = intermediate or rapid). Paired with NAT2_RAPID to encode the three-level NAT2 phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NAT2 slow-acetylator phenotype indicator (1 = slow acetylator, 0 = intermediate or rapid). Paired with NAT2_RAPID to encode the three-level NAT2 phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (slow acetylator) is the REFERENCE level of the source paper's CL/F covariate model; the typical value lcl is the slow-acetylator clearance.",
-      notes              = "Vinnard 2017 Methods 'NAT-2 genotype': whole-exome sequencing; individuals carrying any combination of NAT2 *4, *11, *12, *13 were classified rapid acetylators, those carrying two of *5, *6, *7, *14 slow acetylators, and those carrying one allele from each group intermediate acetylators. Cohort distribution at visit 1 (Table 1, journal page 805): 13 rapid (32.5%), 18 intermediate (45%), 7 slow (17.5%), 2 ambiguous (5%); 38 of 40 participants had a non-ambiguous genotype. Unlike Horita 2018 (which pooled intermediate with rapid), this paper estimated a separate proportional CL/F shift for each of the intermediate and rapid phenotypes against the slow reference, so NAT2_SLOW and NAT2_RAPID are BOTH required and the joint state (0, 0) denotes an intermediate acetylator. The two ambiguous-genotype participants were not assigned a phenotype by the paper; see population$notes.",
-      source_name        = "NAT2"
+      notes = "Vinnard 2017 Methods 'NAT-2 genotype': whole-exome sequencing; individuals carrying any combination of NAT2 *4, *11, *12, *13 were classified rapid acetylators, those carrying two of *5, *6, *7, *14 slow acetylators, and those carrying one allele from each group intermediate acetylators. Cohort distribution at visit 1 (Table 1, journal page 805): 13 rapid (32.5%), 18 intermediate (45%), 7 slow (17.5%), 2 ambiguous (5%); 38 of 40 participants had a non-ambiguous genotype. Unlike Horita 2018 (which pooled intermediate with rapid), this paper estimated a separate proportional CL/F shift for each of the intermediate and rapid phenotypes against the slow reference, so NAT2_SLOW and NAT2_RAPID are BOTH required and the joint state (0, 0) denotes an intermediate acetylator. The two ambiguous-genotype participants were not assigned a phenotype by the paper; see population$notes.",
+      source_name = "NAT2"
     ),
     NAT2_RAPID = list(
-      description        = "NAT2 rapid (fast) acetylator phenotype indicator (1 = rapid acetylator, 0 = intermediate or slow). Paired with NAT2_SLOW to encode the three-level NAT2 phenotype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NAT2 rapid (fast) acetylator phenotype indicator (1 = rapid acetylator, 0 = intermediate or slow). Paired with NAT2_SLOW to encode the three-level NAT2 phenotype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0; the joint state NAT2_SLOW = 0 and NAT2_RAPID = 0 denotes an intermediate acetylator, and NAT2_SLOW = 1 is the reference level of the source paper's CL/F covariate model.",
-      notes              = "Same phenotyping source as NAT2_SLOW (Vinnard 2017 Methods 'NAT-2 genotype'). Carries the source paper's Theta(Rapid NAT2) = 1.65 proportional increase in CL/F relative to the slow-acetylator reference (Table 2, journal page 808).",
-      source_name        = "NAT2"
+      notes = "Same phenotyping source as NAT2_SLOW (Vinnard 2017 Methods 'NAT-2 genotype'). Carries the source paper's Theta(Rapid NAT2) = 1.65 proportional increase in CL/F relative to the slow-acetylator reference (Table 2, journal page 808).",
+      source_name = "NAT2"
     ),
     CD8_CD38DR_PCT = list(
-      description        = "Percentage of circulating CD8+ T cells co-expressing CD38 and HLA-DR (%CD38+DR+CD8+), the systemic immune-activation marker retained on apparent oral clearance in the final model.",
-      units              = "% of CD8+ T cells",
-      type               = "continuous",
+      description = "Percentage of circulating CD8+ T cells co-expressing CD38 and HLA-DR (%CD38+DR+CD8+), the systemic immune-activation marker retained on apparent oral clearance in the final model.",
+      units = "% of CD8+ T cells",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Vinnard 2017 Methods 'Immune activation markers': cryopreserved PBMCs stained for CD3, CD8, CD4, CD38 and HLA-DR and acquired on an LSR II flow cytometer. Enters CL/F as a power term normalised to 36.9%, the visit-1 cohort median (Table 1, journal page 805; IQR 27.7-45.7, n = 38); the visit-2 median was 24.8% (IQR 21.9-35.9, n = 23) and the individual values plotted in Figure 2B (journal page 808) span roughly 11% to 64%. The paper prints no covariate equation, so the median-normalised power form was recovered from the published anchors; see the vignette source-trace and Assumptions sections for the four independent checks that identify it.",
-      source_name        = "%CD38+DR+CD8+"
+      notes = "Vinnard 2017 Methods 'Immune activation markers': cryopreserved PBMCs stained for CD3, CD8, CD4, CD38 and HLA-DR and acquired on an LSR II flow cytometer. Enters CL/F as a power term normalised to 36.9%, the visit-1 cohort median (Table 1, journal page 805; IQR 27.7-45.7, n = 38); the visit-2 median was 24.8% (IQR 21.9-35.9, n = 23) and the individual values plotted in Figure 2B (journal page 808) span roughly 11% to 64%. The paper prints no covariate equation, so the median-normalised power form was recovered from the published anchors; see the vignette source-trace and Assumptions sections for the four independent checks that identify it.",
+      source_name = "%CD38+DR+CD8+"
     ),
     OCC = list(
-      description        = "Integer-valued pharmacokinetic study-visit occasion used to multiplex the inter-occasion-variability etas on apparent oral clearance.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued pharmacokinetic study-visit occasion used to multiplex the inter-occasion-variability etas on apparent oral clearance.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Two occasions in the Vinnard 2017 cohort (Methods 'Data collection'): OCC = 1 is the first PK visit, 5 to 28 days after starting anti-TB therapy and before ART initiation; OCC = 2 is the second PK visit, a median of 33 days after ART initiation. Decomposed inside model() into the binary indicators oc1 and oc2 that select the two IOV etas on log CL/F. Records with OCC outside {1, 2} receive zero IOV contribution.",
-      source_name        = "OCC"
+      notes = "Two occasions in the Vinnard 2017 cohort (Methods 'Data collection'): OCC = 1 is the first PK visit, 5 to 28 days after starting anti-TB therapy and before ART initiation; OCC = 2 is the second PK visit, a median of 33 days after ART initiation. Decomposed inside model() into the binary indicators oc1 and oc2 that select the two IOV etas on log CL/F. Records with OCC outside {1, 2} receive zero IOV contribution.",
+      source_name = "OCC"
     )
   )
 
@@ -68,59 +68,59 @@ Vinnard_2017_isoniazid <- function() {
   covariatesDataExcluded <- list(
     CRCL_BASE = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on CL/F, V/F, V2/F and Q/F and not retained. Median 102.1 mL/min (IQR 92.5-114.1) at visit 1 and 102.8 (97.8-123.0) at visit 2 (Table 1, journal page 805). Enrolment excluded creatinine clearance below 50 mL/min. The Discussion notes that changes in creatinine clearance between visits were not measured, which the authors list as a limitation."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on CL/F, V/F, V2/F and Q/F and not retained. Median 102.1 mL/min (IQR 92.5-114.1) at visit 1 and 102.8 (97.8-123.0) at visit 2 (Table 1, journal page 805). Enrolment excluded creatinine clearance below 50 mL/min. The Discussion notes that changes in creatinine clearance between visits were not measured, which the authors list as a limitation."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL/F, V/F, V2/F and Q/F and not retained. 18 of 40 (45%) women at visit 1 and 12 of 24 (50%) at visit 2 (Table 1, journal page 805)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL/F, V/F, V2/F and Q/F and not retained. 18 of 40 (45%) women at visit 1 and 12 of 24 (50%) at visit 2 (Table 1, journal page 805)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on CL/F, V/F, V2/F and Q/F and not retained; no allometric scaling appears in the final model. Median 55.0 kg (IQR 49.3-59.3) at visit 1 and 56.6 kg (52.5-61.8) at visit 2 (Table 1, journal page 805). Weight nonetheless set each participant's WHO weight-band isoniazid dose."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on CL/F, V/F, V2/F and Q/F and not retained; no allometric scaling appears in the final model. Median 55.0 kg (IQR 49.3-59.3) at visit 1 and 56.6 kg (52.5-61.8) at visit 2 (Table 1, journal page 805). Weight nonetheless set each participant's WHO weight-band isoniazid dose."
     ),
     CD4_ABS = list(
       description = "Absolute CD4+ T-lymphocyte count",
-      units       = "cells/uL",
-      type        = "continuous",
-      notes       = "Screened on CL/F as an immunologic covariate and not retained. Median 238 cells/uL (IQR 105-339, n = 40) at visit 1, rising to 308 (212-400, n = 22) at visit 2 (Table 1, journal page 805). The Discussion draws the contrast explicitly: 'CD4+ T cell counts did not exert a significant covariate effect on isoniazid clearance, suggesting that immune activation rather than immune suppression drives the variability in NAT-2 activity.'"
+      units = "cells/uL",
+      type = "continuous",
+      notes = "Screened on CL/F as an immunologic covariate and not retained. Median 238 cells/uL (IQR 105-339, n = 40) at visit 1, rising to 308 (212-400, n = 22) at visit 2 (Table 1, journal page 805). The Discussion draws the contrast explicitly: 'CD4+ T cell counts did not exert a significant covariate effect on isoniazid clearance, suggesting that immune activation rather than immune suppression drives the variability in NAT-2 activity.'"
     ),
     IL6 = list(
       description = "Plasma interleukin-6 concentration",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = "Screened on CL/F as a secondary systemic-inflammation marker and not retained. Median 14.3 pg/mL (IQR 6.6-26.7, n = 39) at visit 1 and 6.7 (3.1-14.2, n = 24) at visit 2 (Table 1, journal page 805)."
+      units = "pg/mL",
+      type = "continuous",
+      notes = "Screened on CL/F as a secondary systemic-inflammation marker and not retained. Median 14.3 pg/mL (IQR 6.6-26.7, n = 39) at visit 1 and 6.7 (3.1-14.2, n = 24) at visit 2 (Table 1, journal page 805)."
     ),
     CRP = list(
       description = "Plasma C-reactive protein concentration",
-      units       = "ug/mL",
-      type        = "continuous",
-      notes       = "Screened on CL/F as a secondary systemic-inflammation marker and not retained. Median 10.0 ug/mL (IQR 4.0-19.2, n = 36) at visit 1 and 5.6 (2.1-16.5, n = 23) at visit 2 (Table 1, journal page 805)."
+      units = "ug/mL",
+      type = "continuous",
+      notes = "Screened on CL/F as a secondary systemic-inflammation marker and not retained. Median 10.0 ug/mL (IQR 4.0-19.2, n = 36) at visit 1 and 5.6 (2.1-16.5, n = 23) at visit 2 (Table 1, journal page 805)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "21 years and older (enrolment criterion)",
-    age_median     = "32 years (IQR 27-43) at visit 1; 32 years (IQR 28-43) at visit 2",
-    weight_range   = "Not tabulated as a range; median 55.0 kg (IQR 49.3-59.3) at visit 1 and 56.6 kg (IQR 52.5-61.8) at visit 2",
-    weight_median  = "55.0 kg",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "21 years and older (enrolment criterion)",
+    age_median = "32 years (IQR 27-43) at visit 1; 32 years (IQR 28-43) at visit 2",
+    weight_range = "Not tabulated as a range; median 55.0 kg (IQR 49.3-59.3) at visit 1 and 56.6 kg (IQR 52.5-61.8) at visit 2",
+    weight_median = "55.0 kg",
     sex_female_pct = 45,
     race_ethnicity = "Citizens of Botswana (sub-Saharan African); detailed ancestry not reported.",
-    disease_state  = "ART-naive HIV-infected adults newly diagnosed with pulmonary TB and established on a standard WHO first-line antitubercular regimen under directly observed therapy.",
-    dose_range     = "Oral isoniazid once daily as part of a first-line fixed-dose combination, dosed by WHO weight band (Methods 'Study population'). The paper does not tabulate the administered isoniazid doses; the slow-acetylator individual CL/F and AUC0-inf pairs in Figure 3 (journal page 809) imply 300 mg for that subgroup (see the vignette Assumptions section).",
-    regions        = "Botswana (Gaborone; 22 public clinics and Princess Marina Hospital).",
+    disease_state = "ART-naive HIV-infected adults newly diagnosed with pulmonary TB and established on a standard WHO first-line antitubercular regimen under directly observed therapy.",
+    dose_range = "Oral isoniazid once daily as part of a first-line fixed-dose combination, dosed by WHO weight band (Methods 'Study population'). The paper does not tabulate the administered isoniazid doses; the slow-acetylator individual CL/F and AUC0-inf pairs in Figure 3 (journal page 809) imply 300 mg for that subgroup (see the vignette Assumptions section).",
+    regions = "Botswana (Gaborone; 22 public clinics and Princess Marina Hospital).",
     renal_function = "Creatinine clearance below 50 mL/min was an exclusion criterion; median CrCl 102.1 mL/min (IQR 92.5-114.1) at visit 1.",
     hepatic_function = "Alanine or aspartate transaminase above 3 times the upper limit of normal was an exclusion criterion.",
-    co_medication  = "First-line antitubercular fixed-dose combination therapy at both visits; tenofovir/emtricitabine/efavirenz ART in all participants by visit 2.",
-    notes          = "Prospective observational two-visit design. 61 patients were screened and 40 enrolled and sampled at visit 1 (median 20 days, range 7-65, after starting anti-TB therapy, ART-naive); 24 returned for visit 2 (median 74 days, range 33-118, of anti-TB therapy and a median 33 days, range 5-44, of ART). Serum sampled at 0, 0.3, 0.9, 2.2, 4.5 and 8 h post-dose by optimal-design sampling; LLOQ 0.16 mg/L. Baseline demographics are Table 1 (journal page 805) and the final parameter estimates Table 2 (journal page 808). NAT2 genotype was non-ambiguous in 38 of 40 participants (7 slow, 18 intermediate, 13 rapid); the paper does not state how the 2 ambiguous-genotype participants were handled in the covariate model. Eta shrinkage in the final model was 10.0% for CL/F, 12.8% for V/F and 43.0% for the absorption lag time (Results paragraph 4). Estimation used FOCE in Phoenix NLME 1.3."
+    co_medication = "First-line antitubercular fixed-dose combination therapy at both visits; tenofovir/emtricitabine/efavirenz ART in all participants by visit 2.",
+    notes = "Prospective observational two-visit design. 61 patients were screened and 40 enrolled and sampled at visit 1 (median 20 days, range 7-65, after starting anti-TB therapy, ART-naive); 24 returned for visit 2 (median 74 days, range 33-118, of anti-TB therapy and a median 33 days, range 5-44, of ART). Serum sampled at 0, 0.3, 0.9, 2.2, 4.5 and 8 h post-dose by optimal-design sampling; LLOQ 0.16 mg/L. Baseline demographics are Table 1 (journal page 805) and the final parameter estimates Table 2 (journal page 808). NAT2 genotype was non-ambiguous in 38 of 40 participants (7 slow, 18 intermediate, 13 rapid); the paper does not state how the 2 ambiguous-genotype participants were handled in the covariate model. Eta shrinkage in the final model was 10.0% for CL/F, 12.8% for V/F and 43.0% for the absorption lag time (Results paragraph 4). Estimation used FOCE in Phoenix NLME 1.3."
   )
 
   ini({

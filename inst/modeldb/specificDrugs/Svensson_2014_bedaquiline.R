@@ -16,61 +16,61 @@ Svensson_2014_bedaquiline <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used for allometric scaling around 70 kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used for allometric scaling around 70 kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed body weight. Allometric power on apparent clearances (CL/F, Q1/F, Q2/F, CLM2/(F*fm), Q_M2/(F*fm)) at exponent 0.75 and on apparent volumes (V/F, VP1/F, VP2/F, V_M2/(F*fm), VP_M2/(F*fm)) at exponent 1 around a reference 70 kg adult (Svensson 2014 Methods 'Model development': 'Allometric scaling was applied to CL and V using body weight and fixed coefficients of 0.75 and 1, respectively.').",
-      source_name        = "WT"
+      notes = "Time-fixed body weight. Allometric power on apparent clearances (CL/F, Q1/F, Q2/F, CLM2/(F*fm), Q_M2/(F*fm)) at exponent 0.75 and on apparent volumes (V/F, VP1/F, VP2/F, V_M2/(F*fm), VP_M2/(F*fm)) at exponent 1 around a reference 70 kg adult (Svensson 2014 Methods 'Model development': 'Allometric scaling was applied to CL and V using body weight and fixed coefficients of 0.75 and 1, respectively.').",
+      source_name = "WT"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant rifampicin co-administration at full CYP3A4 induction (1 = on daily 600 mg rifampicin for at least 3 days; 0 = not on rifampicin or pre-induction lag).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin co-administration at full CYP3A4 induction (1 = on daily 600 mg rifampicin for at least 3 days; 0 = not on rifampicin or pre-induction lag).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on rifampicin or first <3 days of co-administration)",
-      notes              = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with rifampicin co-administration. Svensson 2014 found that parameterising the bedaquiline and M2 apparent clearances as switching instantaneously to their induced values after 3 days of rifamycin administration provided the best objective-function fit ('Parameterizing the CLs to change after 3 days of rifamycin administration provided the best fit based on objective function value, and the magnitude of the estimated interaction effect remained similar over the evaluated range of timepoints for onset.'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 4.78^CONMED_RIF (Svensson 2014 Table 2 'Factor change BDQ/M2 CL with RIF = 4.78'). For simulation, set CONMED_RIF = 1 on observation rows that fall >= 3 days after the start of rifampicin co-administration and 0 otherwise. The same indicator drives the multiplicative effect on M2 CL because a separate factor for M2 did not improve the fit.",
-      source_name        = "RIF"
+      notes = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with rifampicin co-administration. Svensson 2014 found that parameterising the bedaquiline and M2 apparent clearances as switching instantaneously to their induced values after 3 days of rifamycin administration provided the best objective-function fit ('Parameterizing the CLs to change after 3 days of rifamycin administration provided the best fit based on objective function value, and the magnitude of the estimated interaction effect remained similar over the evaluated range of timepoints for onset.'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 4.78^CONMED_RIF (Svensson 2014 Table 2 'Factor change BDQ/M2 CL with RIF = 4.78'). For simulation, set CONMED_RIF = 1 on observation rows that fall >= 3 days after the start of rifampicin co-administration and 0 otherwise. The same indicator drives the multiplicative effect on M2 CL because a separate factor for M2 did not improve the fit.",
+      source_name = "RIF"
     ),
     CONMED_RPT = list(
-      description        = "Concomitant rifapentine co-administration at full CYP3A4 induction (1 = on daily 600 mg rifapentine for at least 3 days; 0 = not on rifapentine or pre-induction lag).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifapentine co-administration at full CYP3A4 induction (1 = on daily 600 mg rifapentine for at least 3 days; 0 = not on rifapentine or pre-induction lag).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on rifapentine or first <3 days of co-administration)",
-      notes              = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with rifapentine co-administration. Same 3-day-lag-then-instantaneous-switch parameterisation as CONMED_RIF (Svensson 2014 Methods 'Model development'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 3.96^CONMED_RPT (Svensson 2014 Table 2 'Factor change BDQ/M2 CL with RPT = 3.96'). The same indicator drives the multiplicative effect on M2 CL because a separate factor for M2 did not improve the fit.",
-      source_name        = "RPT"
+      notes = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with rifapentine co-administration. Same 3-day-lag-then-instantaneous-switch parameterisation as CONMED_RIF (Svensson 2014 Methods 'Model development'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 3.96^CONMED_RPT (Svensson 2014 Table 2 'Factor change BDQ/M2 CL with RPT = 3.96'). The same indicator drives the multiplicative effect on M2 CL because a separate factor for M2 did not improve the fit.",
+      source_name = "RPT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "19-55 years (study cohort) per Svensson 2014 Table 1",
-    age_median     = "35.5 years (overall); 38 years (rifampicin arm), 34 years (rifapentine arm)",
-    weight_range   = "57.3-122 kg (overall) per Svensson 2014 Table 1",
-    weight_median  = "81.8 kg (overall); 80.5 kg (rifampicin arm), 83.3 kg (rifapentine arm)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "19-55 years (study cohort) per Svensson 2014 Table 1",
+    age_median = "35.5 years (overall); 38 years (rifampicin arm), 34 years (rifapentine arm)",
+    weight_range = "57.3-122 kg (overall) per Svensson 2014 Table 1",
+    weight_median = "81.8 kg (overall); 80.5 kg (rifampicin arm), 83.3 kg (rifapentine arm)",
     sex_female_pct = 12.5,
     race_ethnicity = c(
-      White                          = 87.5,
-      `Black or African American`    = 6.2,
+      White = 87.5,
+      `Black or African American` = 6.2,
       `American Indian or Alaska Native` = 3.1,
-      Asian                          = 3.1
+      Asian = 3.1
     ),
-    disease_state  = "Healthy adult volunteers in a Phase I two-arm open-label, two-period single-sequence drug-drug-interaction study (TMC207-CL002) assessing the effect of multiple-dose rifampicin (Arm 1, n = 13 completers) or rifapentine (Arm 2, n = 16 completers) at 600 mg daily on bedaquiline pharmacokinetics.",
-    dose_range     = "Single 400 mg oral dose of bedaquiline on Day 1 (period 1, alone) and again on Day 29 (period 2, after 9 days of rifamycin pre-treatment with rifamycin co-administration continuing through the 14-day PK sampling). Bedaquiline given as one tablet with PK sampling at 0, 1, 2, 3, 4, 5, 6, 8, 12, 24 h, then every 24 h until 336 h (14 days) after each dose, plus a sample on Day 20 before rifamycin start.",
-    regions        = "Single Phase I site; geographic detail not stated in publication.",
-    studies        = "Combined fit of TMC207-CL002 (32 healthy volunteers, two arms, 1419 bedaquiline + 1419 M2 observations across two single 400 mg doses each) with historical bedaquiline DDI data from a similarly designed efavirenz interaction study in a comparable population (1083 bedaquiline + 1055 M2 observations after a single 400 mg dose alone or with efavirenz).",
-    notes          = "Baseline demographics from Svensson 2014 Table 1. Three premature discontinuations all in the rifampicin arm (two failure-to-comply, one adverse event with unlikely drug relation). Bedaquiline and M2 concentrations were analysed in molar units in the original NONMEM fit (molecular weights 555.50 g/mol for bedaquiline and 541.47 g/mol for M2); the apparent parameters in Table 2 are mass-balance-equivalent to mg/L apparent disposition because volumes and clearances were estimated against ratios of molar concentrations. The bundled paper figures plot concentrations in nmol/L; multiply mg/L by 1000/MW to convert (BDQ: x1.800 nmol/L per mg/L; M2: x1.847 nmol/L per mg/L)."
+    disease_state = "Healthy adult volunteers in a Phase I two-arm open-label, two-period single-sequence drug-drug-interaction study (TMC207-CL002) assessing the effect of multiple-dose rifampicin (Arm 1, n = 13 completers) or rifapentine (Arm 2, n = 16 completers) at 600 mg daily on bedaquiline pharmacokinetics.",
+    dose_range = "Single 400 mg oral dose of bedaquiline on Day 1 (period 1, alone) and again on Day 29 (period 2, after 9 days of rifamycin pre-treatment with rifamycin co-administration continuing through the 14-day PK sampling). Bedaquiline given as one tablet with PK sampling at 0, 1, 2, 3, 4, 5, 6, 8, 12, 24 h, then every 24 h until 336 h (14 days) after each dose, plus a sample on Day 20 before rifamycin start.",
+    regions = "Single Phase I site; geographic detail not stated in publication.",
+    studies = "Combined fit of TMC207-CL002 (32 healthy volunteers, two arms, 1419 bedaquiline + 1419 M2 observations across two single 400 mg doses each) with historical bedaquiline DDI data from a similarly designed efavirenz interaction study in a comparable population (1083 bedaquiline + 1055 M2 observations after a single 400 mg dose alone or with efavirenz).",
+    notes = "Baseline demographics from Svensson 2014 Table 1. Three premature discontinuations all in the rifampicin arm (two failure-to-comply, one adverse event with unlikely drug relation). Bedaquiline and M2 concentrations were analysed in molar units in the original NONMEM fit (molecular weights 555.50 g/mol for bedaquiline and 541.47 g/mol for M2); the apparent parameters in Table 2 are mass-balance-equivalent to mg/L apparent disposition because volumes and clearances were estimated against ratios of molar concentrations. The bundled paper figures plot concentrations in nmol/L; multiply mg/L by 1000/MW to convert (BDQ: x1.800 nmol/L per mg/L; M2: x1.847 nmol/L per mg/L)."
   )
 
   ini({

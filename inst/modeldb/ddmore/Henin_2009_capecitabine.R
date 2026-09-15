@@ -13,10 +13,10 @@ Henin_2009_capecitabine <- function() {
   ddmore_id <- "DDMODEL00000214"
   replicate_of <- NULL
   units <- list(
-    time     = "week",
-    dosing   = "mg",
+    time = "week",
+    dosing = "mg",
     exposure = "K-PD effective rate K * central (mg/week)",
-    outcome  = "HFS grade (0, 1, 2)"
+    outcome = "HFS grade (0, 1, 2)"
     # units$concentration intentionally omitted: this is a categorical-likelihood
     # K-PD model with no observed plasma concentration. checkModelConventions()
     # reports an info-level note about the missing key; see the vignette's
@@ -32,11 +32,11 @@ Henin_2009_capecitabine <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline creatinine clearance (Cockcroft-Gault), not BSA-normalized",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (Cockcroft-Gault), not BSA-normalized",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column 'CLCR' (Cockcroft-Gault) maps to the canonical CRCL.",
         "Henin 2009 reports raw Cockcroft-Gault in mL/min (NOT 1.73 m^2-normalized);",
         "value used as-is. Time-fixed at baseline (BCLCR = CLCR at TIME=0",
@@ -44,19 +44,19 @@ Henin_2009_capecitabine <- function() {
         "shipped simulated dataset). Reference value 75.5 mL/min (median",
         "Cockcroft-Gault CrCl in the model-development cohort)."
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    n_subjects     = 595,
-    n_studies      = 2,
-    age_range      = "Adult cancer patients",
-    weight_range   = "Adult cancer patients",
-    disease_state  = "Patients with metastatic colorectal cancer or advanced/metastatic breast cancer receiving capecitabine in two phase III trials",
-    dose_range     = "Capecitabine 1250 mg/m^2 BID for 14 days followed by a 7-day rest (3-week cycles); typical doses 4000-4300 mg/day for adults of ~1.6-1.7 m^2 BSA",
-    regions        = "International phase III trials",
-    notes          = paste(
+    n_subjects = 595,
+    n_studies = 2,
+    age_range = "Adult cancer patients",
+    weight_range = "Adult cancer patients",
+    disease_state = "Patients with metastatic colorectal cancer or advanced/metastatic breast cancer receiving capecitabine in two phase III trials",
+    dose_range = "Capecitabine 1250 mg/m^2 BID for 14 days followed by a 7-day rest (3-week cycles); typical doses 4000-4300 mg/day for adults of ~1.6-1.7 m^2 BSA",
+    regions = "International phase III trials",
+    notes = paste(
       "Demographics summarized from the DDMORE Foundation Model Repository",
       "bundle (DDMODEL00000214) and the linked publication abstract; the",
       "publication PDF is not on disk for this extraction. NOBS = 18,445",

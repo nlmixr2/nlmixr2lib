@@ -38,9 +38,12 @@
   # package's CI log on a *successful* run, which buries anything worth
   # reading. Nothing here is diagnosed from the message stream -- a violation
   # is reported by the assertion, which names the model itself.
-  do.call(rbind, lapply(nms, function(nm) {
-    suppressMessages(suppressWarnings(nlmixr2lib:::.checkOneModel(nm, verbose = FALSE)))
-  }))
+  do.call(
+    rbind,
+    lapply(nms, function(nm) {
+      suppressMessages(suppressWarnings(nlmixr2lib:::.checkOneModel(nm, verbose = FALSE)))
+    })
+  )
 }
 
 # Stand-in for .checkOneModel() used to test the no-argument iteration in
@@ -53,8 +56,12 @@
 .conventionStubCheckOneModel <- function(model, verbose) {
   .conventionStubAcc$seen <- c(.conventionStubAcc$seen, model)
   data.frame(
-    model = model, category = "stub", severity = "info",
-    name = "n", message = "m", suggestion = "s",
+    model = model,
+    category = "stub",
+    severity = "info",
+    name = "n",
+    message = "m",
+    suggestion = "s",
     stringsAsFactors = FALSE
   )
 }

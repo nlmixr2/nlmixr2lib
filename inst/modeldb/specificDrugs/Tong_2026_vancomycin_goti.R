@@ -28,17 +28,17 @@ Tong_2026_vancomycin_goti <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI < 40 kg/m2 cohort: median 79.0 kg (range 20.4-173.8).",
         "Enters twice in the supplement control stream: as the numerator of the internal",
         "Cockcroft-Gault creatinine-clearance calculation (CRCLi = (140 - AGE) * WT * 0.85^SEXF /",
@@ -47,27 +47,27 @@ Tong_2026_vancomycin_goti <- function() {
         "with no (WT/70) factor), which Table S1 confirms as 'V2 = 38.4'.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI < 40 kg/m2 cohort: median 65.8 years (range 18.0 to 90+; ages above",
         "90 are aggregated for de-identification). Used only inside the internal Cockcroft-Gault",
         "creatinine-clearance calculation.",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI < 40 kg/m2 cohort: 39961 male / 55030 female treatment courses",
         "(57.9% female). The supplement control stream uses the OPPOSITE polarity, SEX with 1 = male,",
         "written as 0.85**(1-SEX) in the Cockcroft-Gault term so that females receive the 0.85 factor.",
@@ -77,14 +77,14 @@ Tong_2026_vancomycin_goti <- function() {
         "SEX = 1 as male.",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tong 2026 Table 1, BMI < 40 kg/m2 cohort: median 0.90 mg/dL (range 0.05-25.3). The",
         "supplement control stream assigns CRcalc = CR and uses it directly as the denominator of the",
         "Cockcroft-Gault equation with the 72 constant, which fixes the unit as mg/dL. NOTE: unlike",
@@ -94,14 +94,14 @@ Tong_2026_vancomycin_goti <- function() {
         "the only truncation present is the 150 mL/min cap on the resulting creatinine clearance.",
         sep = " "
       ),
-      source_name        = "CR"
+      source_name = "CR"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis treatment-status indicator (1 = on intermittent hemodialysis, 0 = not)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis treatment-status indicator (1 = on intermittent hemodialysis, 0 = not)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no intermittent hemodialysis)",
-      notes              = paste(
+      notes = paste(
         "Enters the supplement control stream as the exponent DIAL in TVCL = ... * TH_DIAL_CL**DIAL",
         "and TVV = ... * TH_DIAL_V**DIAL, carrying the Goti 2018 dialysis factors 0.7 on CL and 0.5",
         "on Vc. IDENTICALLY ZERO throughout the Tong 2026 study population: the Methods state",
@@ -110,32 +110,32 @@ Tong_2026_vancomycin_goti <- function() {
         "model is applied outside the Tong 2026 cohort.",
         sep = " "
       ),
-      source_name        = "DIAL"
+      source_name = "DIAL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 87586L,
-    n_studies      = 19L,
-    age_range      = "18.0 to 90+ years",
-    age_median     = "65.8 years",
-    weight_range   = "20.4-173.8 kg",
-    weight_median  = "79.0 kg",
+    species = "human",
+    n_subjects = 87586L,
+    n_studies = 19L,
+    age_range = "18.0 to 90+ years",
+    age_median = "65.8 years",
+    weight_range = "20.4-173.8 kg",
+    weight_median = "79.0 kg",
     sex_female_pct = 57.9,
     race_ethnicity = "Not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "Hospitalized adults (>= 18 years) with BMI < 40 kg/m2 receiving intravenous vancomycin under",
       "routine model-informed precision dosing; at least two doses and at least one measured",
       "concentration required. Patients undergoing haemodialysis at any point during treatment were",
       "excluded, as were patients dosed with a model other than their site's default.",
       sep = " "
     ),
-    dose_range     = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
-    regions        = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
+    dose_range = "Intravenous vancomycin per routine clinical practice; initial doses selected a priori, subsequent doses adapted by MAP Bayesian posterior estimates",
+    regions = "United States (19 hospital systems, patients beginning treatment August 2022 to December 2024)",
     renal_function = "Serum creatinine median 0.90 mg/dL (range 0.05-25.3); haemodialysis patients excluded",
     n_concentrations = 192013L,
-    notes          = paste(
+    notes = paste(
       "APPLICATION population from Tong 2026 Table 1 (BMI < 40 kg/m2 cohort: 87586 patients, 94991",
       "treatment courses, 192013 samples), i.e. the cohort this model was USED to dose as the",
       "pre-intervention default -- NOT the cohort it was estimated from. The DEVELOPMENT population",

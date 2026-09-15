@@ -35,17 +35,17 @@ Schouwenburg_2025_clavulanicAcid <- function() {
   # depot, and all reported concentrations are plasma clavulanic acid
   # (Results: "403 clavulanic acid plasma concentrations").
   compartmentData <- list(
-    depot   = list(analyte = "clavulanic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "clavulanic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "clavulanic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Current (not birth) body weight of the neonate or infant.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Current (not birth) body weight of the neonate or infant.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column BW ('current bodyweight'). Enters both clearance and",
         "central volume as an allometric power term normalized to 3.9 kg,",
         "the pooled dataset median (Schouwenburg 2025 Table 2 equations and",
@@ -62,14 +62,14 @@ Schouwenburg_2025_clavulanicAcid <- function() {
         "recorded weight during therapy. Observed range 0.55-9.0 kg",
         "(Table 1), so simulations outside that range are extrapolation."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     PNA = list(
-      description        = "Postnatal (chronological) age since birth.",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal (chronological) age since birth.",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Schouwenburg 2025 reports postnatal age in DAYS (the Table 2",
         "clearance equation uses (PNA / 55.5) with PNA in days; the",
         "55.5-day reference is the pooled dataset median per the Table 2",
@@ -102,7 +102,7 @@ Schouwenburg_2025_clavulanicAcid <- function() {
         "days (RAIN, median 2.9 days), and the authors capped their own oral",
         "simulations at PNA 10 days 'to prevent extrapolation of oral data'."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     )
   )
 
@@ -115,11 +115,11 @@ Schouwenburg_2025_clavulanicAcid <- function() {
   # model().
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Tested on clearance as a categorical covariate (Methods:",
         "'Categorical variables were modeled using a proportional model')",
         "via stepwise forward inclusion (P < 0.05) and backward elimination",
@@ -127,14 +127,14 @@ Schouwenburg_2025_clavulanicAcid <- function() {
         "(Table 1). No point estimate is published, so no effect is",
         "encoded."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     GA = list(
-      description        = "Gestational age at birth. Time-fixed per subject.",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Gestational age at birth. Time-fixed per subject.",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance and not retained; only postnatal age survived",
         "(Results: 'PNA was found to best describe maturation of CLclav",
         "(P < 0.05; -14.0 difference in objective function value (dOFV))').",
@@ -147,14 +147,14 @@ Schouwenburg_2025_clavulanicAcid <- function() {
         "companion Keij_2023_amoxicillin model, where GA WAS retained on",
         "clearance with a steep exponent of 2.37."
       ),
-      source_name        = "GA"
+      source_name = "GA"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age plus postnatal age).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age plus postnatal age).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Tested on clearance as a continuous covariate and not retained;",
         "postnatal age entered alone described maturation of clavulanic",
         "acid clearance better (Results: 'PNA was found to best describe",
@@ -162,37 +162,37 @@ Schouwenburg_2025_clavulanicAcid <- function() {
         "24.9-92.1 (Table 1). No point estimate is published, so no effect",
         "is encoded."
       ),
-      source_name        = "PMA"
+      source_name = "PMA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 89,
-    n_studies      = 4,
+    species = "human",
+    n_subjects = 89,
+    n_studies = 4,
     n_observations = 403,
-    age_range      = "postnatal age 0-365 days (pooled median 54.5 days)",
-    ga_range       = "gestational age 23.0-41.7 weeks (pooled median 37.4 weeks)",
-    pma_range      = "postmenstrual age 24.9-92.1 weeks (pooled median 45.1 weeks)",
-    weight_range   = "0.55-9.0 kg",
-    weight_median  = "3.9 kg",
+    age_range = "postnatal age 0-365 days (pooled median 54.5 days)",
+    ga_range = "gestational age 23.0-41.7 weeks (pooled median 37.4 weeks)",
+    pma_range = "postmenstrual age 24.9-92.1 weeks (pooled median 45.1 weeks)",
+    weight_range = "0.55-9.0 kg",
+    weight_median = "3.9 kg",
     sex_female_pct = 32.2,
-    disease_state  = paste(
+    disease_state = paste(
       "preterm and term neonates and infants treated for probable,",
       "suspected or confirmed bacterial infection; includes critically ill",
       "children in paediatric and cardiac intensive care"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "clavulanic acid 1.4-80 mg per administration (median 22 mg);",
       "2.3-10.8 mg/kg/day (median 5.2); median 5 mg/kg/dose (range 1.0-12.8)"
     ),
-    routes         = paste(
+    routes = paste(
       "oral (42 subjects, 82 concentrations) and intravenous (47 subjects,",
       "321 concentrations); 6 of the 42 oral subjects switched from",
       "intravenous to oral during sampling"
     ),
-    regions        = "The Netherlands (RAIN), Belgium (Ghent: De Cock and Dhont), USA (Durham/Staph Trio)",
-    notes          = paste(
+    regions = "The Netherlands (RAIN), Belgium (Ghent: De Cock and Dhont), USA (Durham/Staph Trio)",
+    notes = paste(
       "Pooled analysis of four datasets (Schouwenburg 2025 Table 1):",
       "(1) RAIN (Reduction of intravenous Antibiotics In Neonates,",
       "The Netherlands), n = 42, oral and intravenous, PMA >= 35 weeks,",

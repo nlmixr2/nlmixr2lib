@@ -2,7 +2,14 @@ Friberg_2012_voriconazole <- function() {
   description <- "Integrated population pharmacokinetic model for voriconazole in children, adolescents, and adults (Friberg 2012). Two-compartment with first-order oral absorption and mixed linear plus nonlinear (Michaelis-Menten with time-dependent Vmax) elimination; allometric scaling on all clearance terms (exponent 0.75) and on volumes (exponent 1.0) with 70 kg reference; population-specific Vmax,inh, Q, ka, and Alag for children, adolescents, and adults; CYP2C19 heterozygous extensive or poor metabolizer adults have fully blocked nonlinear clearance (Vmax,inh = 100%)."
   reference <- "Friberg LE, Ravva P, Karlsson MO, Liu P. Integrated population pharmacokinetic analysis of voriconazole in children, adolescents, and adults. Antimicrobial Agents and Chemotherapy. 2012;56(6):3032-3042. doi:10.1128/AAC.05761-11"
   vignette <- "Friberg_2012_voriconazole"
-  paper_specific_etas <- c("etalkm_vmax1", "etalvmax1_ped", "etalgtf1_other", "etalgtf1_adult", "etalka_nonadult", "eta_re_nonadult")
+  paper_specific_etas <- c(
+    "etalkm_vmax1",
+    "etalvmax1_ped",
+    "etalgtf1_other",
+    "etalgtf1_adult",
+    "etalka_nonadult",
+    "eta_re_nonadult"
+  )
   paper_specific_residual_sds <- c("expSdStdy1", "expSdStdy2", "expSdStdy34", "expSdStdy5Iv", "expSdStdy5Oral")
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
@@ -10,77 +17,77 @@ Friberg_2012_voriconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on all clearance terms (CL, Q, Vmax,1) with exponent 0.75 and on the central and peripheral volumes (V2, V3) with exponent 1.0; reference weight 70 kg adult. Methods 'Structural-model description' and Table 3 footnote c.",
-      source_name        = "WT"
+      notes = "Allometric scaling on all clearance terms (CL, Q, Vmax,1) with exponent 0.75 and on the central and peripheral volumes (V2, V3) with exponent 1.0; reference weight 70 kg adult. Methods 'Structural-model description' and Table 3 footnote c.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to derive a logit-scale shift on Vmax,inh for subjects under 12 years old (the AGE < 12 covariate of Table 3). The age 12 cutoff also matches the pediatric / adolescent population boundary used by the paper. Adult (study 5) status is derived from STUDY_VORI rather than AGE because the paper uses study membership rather than an age boundary for adult-only effects.",
-      source_name        = "AGE"
+      notes = "Used to derive a logit-scale shift on Vmax,inh for subjects under 12 years old (the AGE < 12 covariate of Table 3). The age 12 cutoff also matches the pediatric / adolescent population boundary used by the paper. Adult (study 5) status is derived from STUDY_VORI rather than AGE because the paper uses study membership rather than an age boundary for adult-only effects.",
+      source_name = "AGE"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer indicator (paper-era 'HEM' heterozygous extensive metabolizer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer indicator (paper-era 'HEM' heterozygous extensive metabolizer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 EM or UM)",
-      notes              = "1 = subject is a CYP2C19 heterozygous extensive metabolizer in the paper's nomenclature (modern intermediate metabolizer). The paper grouped HEM with PM because PM exposures in children and adolescents were not outliers relative to other subjects in studies 2-4. In adults (STUDY_VORI == 5) the combined HEM-or-PM indicator forces Vmax,inh to 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); HEM maps to CYP2C19_IM = 1. Four children in study 3 and two adolescents in study 4 with missing CYP2C19 data were assumed to be EM (CYP2C19_IM = CYP2C19_PM = 0) per Table 2 footnote d.",
-      source_name        = "CYP2C19 status (HEM level)"
+      notes = "1 = subject is a CYP2C19 heterozygous extensive metabolizer in the paper's nomenclature (modern intermediate metabolizer). The paper grouped HEM with PM because PM exposures in children and adolescents were not outliers relative to other subjects in studies 2-4. In adults (STUDY_VORI == 5) the combined HEM-or-PM indicator forces Vmax,inh to 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); HEM maps to CYP2C19_IM = 1. Four children in study 3 and two adolescents in study 4 with missing CYP2C19 data were assumed to be EM (CYP2C19_IM = CYP2C19_PM = 0) per Table 2 footnote d.",
+      source_name = "CYP2C19 status (HEM level)"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 EM, UM, or IM)",
-      notes              = "1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles). Combined with CYP2C19_IM in adults (STUDY_VORI == 5) to force Vmax,inh = 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); PM maps to CYP2C19_PM = 1.",
-      source_name        = "CYP2C19 status (PM level)"
+      notes = "1 = subject is a CYP2C19 poor metabolizer (two loss-of-function alleles). Combined with CYP2C19_IM in adults (STUDY_VORI == 5) to force Vmax,inh = 100% (fully blocked nonlinear clearance). Source 'CYP2C19 status' column with categories UM / EM / HEM / PM (Table 2); PM maps to CYP2C19_PM = 1.",
+      source_name = "CYP2C19 status (PM level)"
     ),
     STUDY_VORI = list(
-      description        = "Friberg 2012 voriconazole study indicator (integer 1-5)",
-      units              = "(integer 1-5)",
-      type               = "categorical",
+      description = "Friberg 2012 voriconazole study indicator (integer 1-5)",
+      units = "(integer 1-5)",
+      type = "categorical",
       reference_category = "5 (healthy adult study)",
-      notes              = "Subject-level integer identifying which of the five pooled PK studies a subject belongs to: 1 / 2 / 3 = immunocompromised children (2 to <12 y), 4 = immunocompromised adolescents (12 to <17 y), 5 = healthy adults (22-55 y). Drives (i) the Study 1 pediatric typical-value modifier on Km and Vmax,1 (-0.382), (ii) the population-specific ka and Alag, (iii) the non-adult uplift on Q (+0.637), (iv) the F1 IIV magnitude (paper estimates separate omegas for adult vs non-adult), (v) the residual-error magnitude per study (with studies 3 and 4 sharing one magnitude), and (vi) the CL IIV scaling multiplier in non-adult studies (1 + 1.70). Each subject is assigned exactly one study; the value is fixed per subject. Population strata (child / adolescent / adult) are aligned with study membership (no crossovers between populations). Renamed from canonical STDY_VORI to STUDY_VORI on 2026-06-19 per the canonical-register standardization audit (typo correction: STDY was a missing-vowel abbreviation of STUDY).",
-      source_name        = "Study"
+      notes = "Subject-level integer identifying which of the five pooled PK studies a subject belongs to: 1 / 2 / 3 = immunocompromised children (2 to <12 y), 4 = immunocompromised adolescents (12 to <17 y), 5 = healthy adults (22-55 y). Drives (i) the Study 1 pediatric typical-value modifier on Km and Vmax,1 (-0.382), (ii) the population-specific ka and Alag, (iii) the non-adult uplift on Q (+0.637), (iv) the F1 IIV magnitude (paper estimates separate omegas for adult vs non-adult), (v) the residual-error magnitude per study (with studies 3 and 4 sharing one magnitude), and (vi) the CL IIV scaling multiplier in non-adult studies (1 + 1.70). Each subject is assigned exactly one study; the value is fixed per subject. Population strata (child / adolescent / adult) are aligned with study membership (no crossovers between populations). Renamed from canonical STDY_VORI to STUDY_VORI on 2026-06-19 per the canonical-register standardization audit (typo correction: STDY was a missing-vowel abbreviation of STUDY).",
+      source_name = "Study"
     ),
     ORAL_VORI = list(
-      description        = "Friberg 2012 voriconazole observation-during-oral-dose-phase indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Friberg 2012 voriconazole observation-during-oral-dose-phase indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (observation during IV phase or no dosing yet)",
-      notes              = "1 = observation collected when the most recent administered dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator. Used only in adults (STUDY_VORI == 5) to switch the residual-error magnitude between IV-only (sigma_iv = 0.0912) and oral (sqrt(sigma_iv^2 + sigma_oral_extra^2) = sqrt(0.0912^2 + 0.132^2) = 0.160). Crossover studies (e.g. study 3 IV-then-oral) have ORAL_VORI = 0 on records during the IV period and ORAL_VORI = 1 on records during the oral period for the same subject; in studies that combine both arms the indicator is set per record from the most recent dose's route.",
-      source_name        = "Route (IV vs PO/POS)"
+      notes = "1 = observation collected when the most recent administered dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator. Used only in adults (STUDY_VORI == 5) to switch the residual-error magnitude between IV-only (sigma_iv = 0.0912) and oral (sqrt(sigma_iv^2 + sigma_oral_extra^2) = sqrt(0.0912^2 + 0.132^2) = 0.160). Crossover studies (e.g. study 3 IV-then-oral) have ORAL_VORI = 0 on records during the IV period and ORAL_VORI = 1 on records during the oral period for the same subject; in studies that combine both arms the indicator is set per record from the most recent dose's route.",
+      source_name = "Route (IV vs PO/POS)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 173L,
-    n_studies      = 5L,
-    age_range      = "2-55 years",
-    age_median     = "Children 5 y (range 2-11); Adolescents 13 y (range 12-16); Adults 34 y (range 22-55) (Table 2)",
-    weight_range   = "10.8-97.0 kg",
-    weight_median  = "Children 20.1 kg (range 10.8-54.9); Adolescents 57.1 kg (range 30.4-92.2); Adults 76.0 kg (range 49.0-97.0) (Table 2)",
+    species = "human",
+    n_subjects = 173L,
+    n_studies = 5L,
+    age_range = "2-55 years",
+    age_median = "Children 5 y (range 2-11); Adolescents 13 y (range 12-16); Adults 34 y (range 22-55) (Table 2)",
+    weight_range = "10.8-97.0 kg",
+    weight_median = "Children 20.1 kg (range 10.8-54.9); Adolescents 57.1 kg (range 30.4-92.2); Adults 76.0 kg (range 49.0-97.0) (Table 2)",
     sex_female_pct = 41.6,
     race_ethnicity = c(Caucasian = 71.7, Black = 12.1, Asian = 3.5, Other = 13.3),
-    cyp2c19_pct    = c(UM = 2.3, EM = 56.6, HEM_or_IM = 38.7, PM = 2.9),
-    disease_state  = "Immunocompromised pediatric (studies 1-3) and adolescent (study 4) patients (mostly hospitalized transplant recipients with concomitant medications); healthy adult volunteers under tight control (study 5). Voriconazole was administered for treatment / prophylaxis of invasive fungal infections in the immunocompromised cohorts; healthy adults received voriconazole under a controlled PK protocol.",
-    dose_range     = "Children 3-8 mg/kg IV q12h and 4-6 mg/kg or 200 mg oral suspension (POS) q12h; adolescents 6 mg/kg IV q12h on day 1, 4 mg/kg IV q12h thereafter, and 300 mg oral tablet q12h; adults 6 mg/kg IV q12h on day 1, 4 mg/kg IV q12h thereafter, and 200 mg oral tablet q12h. Maximum IV infusion rate ~3 mg/kg/h. Oral doses given at least 1 h before or after a meal. Table 1.",
-    regions        = "Multinational pediatric and adolescent studies; the adult study was conducted in healthy volunteers (region not specified in the paper).",
-    notes          = "Pooled data from 5 PK studies. Study 1: 12 children Jul-Dec 2000. Study 2: 24 children Jun 2003-Jun 2004. Study 3: 40 children Dec 2008-Oct 2009. Study 4: 26 adolescents Jun 2008-Dec 2009. Study 5: 35 healthy adults Apr 2009-Jul 2009. Total 3336 voriconazole plasma concentrations (children 2022, adolescents 554, adults 760). Two outlier records with absolute CWRES > 6 were excluded from the final dataset (Methods 'Population pharmacokinetic modeling')."
+    cyp2c19_pct = c(UM = 2.3, EM = 56.6, HEM_or_IM = 38.7, PM = 2.9),
+    disease_state = "Immunocompromised pediatric (studies 1-3) and adolescent (study 4) patients (mostly hospitalized transplant recipients with concomitant medications); healthy adult volunteers under tight control (study 5). Voriconazole was administered for treatment / prophylaxis of invasive fungal infections in the immunocompromised cohorts; healthy adults received voriconazole under a controlled PK protocol.",
+    dose_range = "Children 3-8 mg/kg IV q12h and 4-6 mg/kg or 200 mg oral suspension (POS) q12h; adolescents 6 mg/kg IV q12h on day 1, 4 mg/kg IV q12h thereafter, and 300 mg oral tablet q12h; adults 6 mg/kg IV q12h on day 1, 4 mg/kg IV q12h thereafter, and 200 mg oral tablet q12h. Maximum IV infusion rate ~3 mg/kg/h. Oral doses given at least 1 h before or after a meal. Table 1.",
+    regions = "Multinational pediatric and adolescent studies; the adult study was conducted in healthy volunteers (region not specified in the paper).",
+    notes = "Pooled data from 5 PK studies. Study 1: 12 children Jul-Dec 2000. Study 2: 24 children Jun 2003-Jun 2004. Study 3: 40 children Dec 2008-Oct 2009. Study 4: 26 adolescents Jun 2008-Dec 2009. Study 5: 35 healthy adults Apr 2009-Jul 2009. Total 3336 voriconazole plasma concentrations (children 2022, adolescents 554, adults 760). Two outlier records with absolute CWRES > 6 were excluded from the final dataset (Methods 'Population pharmacokinetic modeling')."
   )
 
   ini({

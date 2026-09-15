@@ -28,23 +28,23 @@ Dong_2019_imipenem <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
   # not on disk.
   compartmentData <- list(
-    central     = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imipenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 18 kg, close to the cohort mean of 18.65 +/- 6.90 kg",
         "(Zhang 2025 Table 1); the review does not say how the reference",
         "was chosen. Enters CL and Q with the theory-based allometric",
@@ -53,14 +53,14 @@ Dong_2019_imipenem <- function() {
         "CL = 8.6 * (BW/18)^0.75 * (age/4.69)^0.265 * (CLcr/214)^0.509,",
         "V1 = 7.2 * (BW/18), V2 = 6.51 * (BW/18), Q = 0.996 * (BW/18)^0.75."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference 4.69 years, close to but not equal to the cohort mean of",
         "4.86 +/- 2.33 years (Zhang 2025 Table 1); the review prints 4.69",
         "inside the Table 3 formula and does not reconcile it with Table 1,",
@@ -71,17 +71,17 @@ Dong_2019_imipenem <- function() {
         "its Discussion reads age here as a surrogate for renal and",
         "body-composition maturation over and above weight."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance estimated by the Schwartz equation, which",
         "returns a BSA-normalised value in mL/min/1.73 m^2"
       ),
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Zhang 2025 Table 3 names the covariate 'CLcr Schwartz' -- the",
         "paediatric height-and-creatinine bedside equation, which is",
         "BSA-normalised. Reference 214 mL/min/1.73 m^2, a markedly",
@@ -94,29 +94,29 @@ Dong_2019_imipenem <- function() {
         "Schwartz-estimated paediatric CrCL -- precedent: Jung 2024",
         "vancomycin, MedellinGaribay 2015 gentamicin."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 56L,
-    n_studies        = 1L,
-    age_mean         = "4.86 +/- 2.33 years (mean +/- SD)",
-    weight_mean      = "18.65 +/- 6.90 kg (mean +/- SD)",
-    sex_female_pct   = 46.4,
-    race_ethnicity   = NULL,
-    disease_state    = "Children with haematological malignancies receiving imipenem-cilastatin",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 56L,
+    n_studies = 1L,
+    age_mean = "4.86 +/- 2.33 years (mean +/- SD)",
+    weight_mean = "18.65 +/- 6.90 kg (mean +/- SD)",
+    sex_female_pct = 46.4,
+    race_ethnicity = NULL,
+    disease_state = "Children with haematological malignancies receiving imipenem-cilastatin",
+    dose_range = paste(
       "15-25 mg/kg imipenem intravenously every 6 h (Zhang 2025",
       "Supplementary Table S1). The infusion duration is not reported by",
       "the review, but the sampling schedule implies an infusion: samples",
       "were taken 3-5 min and 0.5-1 h after the END of infusion, and",
       "2-6 h after the START of infusion."
     ),
-    regions          = "China",
+    regions = "China",
     n_concentrations = 136L,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 6); 56 patients, 136",
       "plasma samples, sex split 30 male / 26 female. Imipenem assayed by",
       "HPLC-UV (Zhang 2025 Supplementary Table S1). Covariates were",

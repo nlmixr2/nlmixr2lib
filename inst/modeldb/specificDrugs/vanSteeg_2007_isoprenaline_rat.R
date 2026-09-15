@@ -40,27 +40,27 @@ vanSteeg_2007_isoprenaline_rat <- function() {
   covariateData <- list()
 
   compartmentData <- list(
-    central     = list(analyte = "isoprenaline", units = "ng", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "isoprenaline", units = "ng", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "isoprenaline", units = "ng", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Wistar-Kyoto, WKY; male)",
-    n_subjects     = 45L,
-    n_studies      = 1L,
-    age_range      = "not reported; acclimatised at least 5 days, instrumented 7 days before the experiment",
-    weight_range   = "294 g +/- 49 (mean +/- SD across the 39 WKY rats of this study)",
+    species = "rat (Wistar-Kyoto, WKY; male)",
+    n_subjects = 45L,
+    n_studies = 1L,
+    age_range = "not reported; acclimatised at least 5 days, instrumented 7 days before the experiment",
+    weight_range = "294 g +/- 49 (mean +/- SD across the 39 WKY rats of this study)",
     sex_female_pct = 0,
-    disease_state  = "normotensive (WKY) conscious rats; no disease model",
-    dose_range     = paste(
+    disease_state = "normotensive (WKY) conscious rats; no disease model",
+    dose_range = paste(
       "PK experiment: isoprenaline 25 ug/kg (n = 7) or 50 ug/kg (n = 7) as a 10-minute IV infusion.",
       "PD experiment: continuous IV infusions of 0.001, 0.01, 0.05, 0.1, 0.2, 0.5, 1 and 2.5 ug/kg/h",
       "(n = 6 rats, sequential rates), plus steady-state infusions of 5 ug/kg/h (n = 17) and",
       "10 ug/kg/h (n = 8) contributed from other experiments.",
       sep = " "
     ),
-    regions        = "The Netherlands (Leiden University)",
-    biomarkers     = paste(
+    regions = "The Netherlands (Leiden University)",
+    biomarkers = paste(
       "Heart rate captured continuously from a femoral-artery pressure signal (P10EZ-1 transducer,",
       "Spike 2 acquisition) and used directly as the PD endpoint.",
       "Plasma isoprenaline by reversed-phase HPLC with electrochemical detection after ion-paired",

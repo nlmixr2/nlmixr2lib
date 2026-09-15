@@ -33,13 +33,18 @@ odeStateNames <- function(path) {
       modelBlock <- node[[2]]
     }
   }
-  if (is.null(modelBlock)) return(character(0))
+  if (is.null(modelBlock)) {
+    return(character(0))
+  }
   states <- character(0)
   for (i in seq_along(modelBlock)) {
     st <- modelBlock[[i]]
-    isAssign <- is.call(st) && length(st) >= 3 &&
+    isAssign <- is.call(st) &&
+      length(st) >= 3 &&
       (identical(st[[1]], as.name("<-")) || identical(st[[1]], as.name("=")))
-    if (!isAssign) next
+    if (!isAssign) {
+      next
+    }
     target <- st[[2]]
     # `d/dt(x)` parses as `/`(d, dt(x))
     isDdt <- is.call(target) &&
@@ -60,7 +65,9 @@ duplicatedOdeStates <- function(path) {
 
 modelFiles <- function() {
   root <- system.file("modeldb", package = "nlmixr2lib")
-  if (!nzchar(root)) skip("nlmixr2lib modeldb directory not found")
+  if (!nzchar(root)) {
+    skip("nlmixr2lib modeldb directory not found")
+  }
   list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
 }
 
@@ -93,12 +100,20 @@ test_that("no model file declares the same d/dt state twice", {
 
   unexpected <- setdiff(names(offenders), knownDuplicateOdeModels)
   expect_equal(
-    unexpected, character(0),
+    unexpected,
+    character(0),
     info = paste0(
       "Model(s) declaring a duplicate d/dt state: ",
-      paste(vapply(unexpected, function(nm) {
-        paste0(nm, " (", paste(offenders[[nm]], collapse = ", "), ")")
-      }, character(1)), collapse = "; "),
+      paste(
+        vapply(
+          unexpected,
+          function(nm) {
+            paste0(nm, " (", paste(offenders[[nm]], collapse = ", "), ")")
+          },
+          character(1)
+        ),
+        collapse = "; "
+      ),
       ". A duplicated d/dt silently builds fewer ODE states than declared -- ",
       "rename the state (see inst/references/compartment-names.md) rather than ",
       "adding it to knownDuplicateOdeModels."
@@ -116,13 +131,15 @@ test_that("the duplicate-d/dt quarantine list contains no already-fixed model", 
   for (nm in knownDuplicateOdeModels) {
     expect_true(
       nm %in% names(byName),
-      info = paste0(nm, " is quarantined but no such model file exists; ",
-                    "remove it from knownDuplicateOdeModels.")
+      info = paste0(nm, " is quarantined but no such model file exists; ", "remove it from knownDuplicateOdeModels.")
     )
-    if (!nm %in% names(byName)) next
+    if (!nm %in% names(byName)) {
+      next
+    }
     dups <- duplicatedOdeStates(byName[[nm]])
     expect_gt(
-      length(dups), 0,
+      length(dups),
+      0,
       # nolint next: line_length_linter.
       label = paste0(nm, " no longer has a duplicate d/dt, so it must be removed from knownDuplicateOdeModels")
     )

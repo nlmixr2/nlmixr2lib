@@ -58,11 +58,11 @@ Mi_2024_aditoprim_pbpkpd <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Mi 2024 Table 2 fixes BW = 30 kg, and the Supplementary Material",
         "code sets `BW=30`. Every organ volume and blood flow is a fixed",
         "fraction of BW and both clearances are per-kg constants, so the",
@@ -71,35 +71,45 @@ Mi_2024_aditoprim_pbpkpd <- function() {
         "cultures. See Mi_2024_aditoprim_pbpk.R for the 25 kg / 30 kg",
         "discrepancy note."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
-    blood       = list(analyte = "aditoprim", units = "mg", specimen = "whole blood", verified = TRUE),
-    liver       = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle      = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    adipose     = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    other       = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
-    urine       = list(analyte = "aditoprim", units = "mg", specimen = "urine", verified = TRUE),
+    depot = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "aditoprim", units = "mg", specimen = "administration site", verified = TRUE),
+    blood = list(analyte = "aditoprim", units = "mg", specimen = "whole blood", verified = TRUE),
+    liver = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    adipose = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "aditoprim", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "aditoprim", units = "mg", specimen = "urine", verified = TRUE),
     metabolized = list(analyte = "aditoprim", units = "mg", specimen = "not applicable", verified = TRUE),
-    S           = list(analyte = "Streptococcus suis ATCC 49619 (susceptible subpopulation)", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    R           = list(analyte = "Streptococcus suis ATCC 49619 (resistant subpopulation)", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    S = list(
+      analyte = "Streptococcus suis ATCC 49619 (susceptible subpopulation)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    R = list(
+      analyte = "Streptococcus suis ATCC 49619 (resistant subpopulation)",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "pig (swine) + in vitro (Streptococcus suis ATCC 49619)",
-    n_subjects     = 92L,
-    n_studies      = 4L,
-    age_range      = "grower / finisher swine",
-    weight_range   = "model reference BW = 30 kg",
-    disease_state  = "healthy swine; Streptococcus suis infection is simulated, not observed in vivo",
-    dose_range     = "0, 2.5, 5, 10, 15, 20 and 25 mg/kg intramuscular once or twice daily were simulated; 5, 12.5, 15 and 20 mg/kg every 12 h for 3 consecutive days are shown in Figure 6",
-    regions        = "China",
-    notes          = paste(
+    species = "pig (swine) + in vitro (Streptococcus suis ATCC 49619)",
+    n_subjects = 92L,
+    n_studies = 4L,
+    age_range = "grower / finisher swine",
+    weight_range = "model reference BW = 30 kg",
+    disease_state = "healthy swine; Streptococcus suis infection is simulated, not observed in vivo",
+    dose_range = "0, 2.5, 5, 10, 15, 20 and 25 mg/kg intramuscular once or twice daily were simulated; 5, 12.5, 15 and 20 mg/kg every 12 h for 3 consecutive days are shown in Figure 6",
+    regions = "China",
+    notes = paste(
       "The PBPK layer carries the swine population of",
       "modellib('Mi_2024_aditoprim_pbpk') -- four previously published",
       "swine datasets (Mi 2024 Table 1) digitised with WebPlotDigitizer.",

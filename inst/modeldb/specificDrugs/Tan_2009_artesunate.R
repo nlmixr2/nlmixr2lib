@@ -18,10 +18,10 @@ Tan_2009_artesunate <- function() {
     "single- and multiple-dosing of oral artesunate in healthy subjects.",
     "Malaria Journal 2009;8:304. doi:10.1186/1475-2875-8-304"
   )
-  vignette  <- "Tan_2009_artesunate"
-  units     <- list(
-    time          = "h",
-    dosing        = "mg",
+  vignette <- "Tan_2009_artesunate"
+  units <- list(
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -30,33 +30,33 @@ Tan_2009_artesunate <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot                  = list(analyte = "artesunate", units = "mg", specimen = "administration site", verified = FALSE),
-    central                = list(analyte = "artesunate", units = "mg", specimen = "plasma", verified = FALSE),
-    central_dihydroart     = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artesunate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "artesunate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_dihydroart = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear-deviation effect on DHA apparent clearance, centred on the",
         "reference weight 61.5 kg (the combined-cohort median; Tan 2009",
         "Results p.7 / Table 1): cl_dihydroart_typ = exp(lcl_dihydroart) + e_wt_cl_dihydroart *",
         "(WT - 61.5), with e_wt_cl_dihydroart = 1.9 L/h per kg (Table 2).",
         "Time-fixed at baseline in the source analysis."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FED = list(
-      description        = "Fed-vs-fasted indicator at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted indicator at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "1 = subject received the AS dose 30 min after a high-fat /",
         "high-caloric test meal (food-effect study fed arm), 0 = fasted",
         "at dosing (the reference, used in the single-dose, drug-interaction,",
@@ -68,25 +68,25 @@ Tan_2009_artesunate <- function() {
         "indicator: a multi-period subject can carry FED = 0 in one period",
         "and FED = 1 in another."
       ),
-      source_name        = "FOOD"
+      source_name = "FOOD"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 91L,
-    n_studies       = 4L,
-    n_profiles      = 118L,
-    n_observations  = list(AS = 916L, DHA = 1352L),
-    age_range       = "19-40 years (combined median 23)",
-    weight_range    = "50.1-70 kg (combined median 61.5)",
-    weight_median   = "61.5 kg (population reference for the WT effect on DHA CL/F)",
-    sex_female_pct  = round(100 * (91 - 53) / 91, 1),
-    race_ethnicity  = "Korean",
-    disease_state   = "Healthy adult volunteers (no malaria)",
-    dose_range      = "2-5 mg/kg oral artesunate, single dose or once daily for 3 days, with or without high-fat meal, with or without co-administered pyronaridine in 3:1 ratio",
-    regions         = "Republic of Korea (Seoul National University Clinical Trial Center)",
-    notes           = paste(
+    species = "human",
+    n_subjects = 91L,
+    n_studies = 4L,
+    n_profiles = 118L,
+    n_observations = list(AS = 916L, DHA = 1352L),
+    age_range = "19-40 years (combined median 23)",
+    weight_range = "50.1-70 kg (combined median 61.5)",
+    weight_median = "61.5 kg (population reference for the WT effect on DHA CL/F)",
+    sex_female_pct = round(100 * (91 - 53) / 91, 1),
+    race_ethnicity = "Korean",
+    disease_state = "Healthy adult volunteers (no malaria)",
+    dose_range = "2-5 mg/kg oral artesunate, single dose or once daily for 3 days, with or without high-fat meal, with or without co-administered pyronaridine in 3:1 ratio",
+    regions = "Republic of Korea (Seoul National University Clinical Trial Center)",
+    notes = paste(
       "Demographics from Tan 2009 Table 1 (n=91 across the four Phase I",
       "sub-studies SP-C001-03: single-dose 28, drug-interaction with",
       "pyronaridine 19, food-effect 20, multiple-dose 24).",

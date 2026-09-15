@@ -19,8 +19,8 @@ Moffett_2017_antithrombin <- function() {
   )
   vignette <- "Moffett_2017_antithrombin"
   units <- list(
-    time          = "h",
-    dosing        = "units",
+    time = "h",
+    dosing = "units",
     concentration = "units/dL"
   )
 
@@ -33,24 +33,24 @@ Moffett_2017_antithrombin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying in paediatric infants over the analysis window.",
         "Used for theoretical-allometric scaling with reference 70 kg and",
         "fixed exponents 0.75 on CL and 1.00 on VD (Moffett 2017 Table 3).",
         "Cohort median 5.2 kg (IQR 3.4-14.8 kg)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_UFH_UH = list(
-      description        = "Concurrent continuous-infusion unfractionated heparin dose rate",
-      units              = "units/h",
-      type               = "continuous",
+      description = "Concurrent continuous-infusion unfractionated heparin dose rate",
+      units = "units/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Absolute infusion rate (NOT weight-normalized). Time-varying per",
         "observation as the UFH infusion is titrated. Cohort median",
         "absolute rate 173 units/h serves as the reference in the",
@@ -62,14 +62,14 @@ Moffett_2017_antithrombin <- function() {
         "(Moffett 2017 Results); the source column value is the absolute",
         "rate (= per-kg rate * body weight)."
       ),
-      source_name        = "UFH"
+      source_name = "UFH"
     ),
     AT_BL_UDL = list(
-      description        = "Per-subject baseline (predose) plasma antithrombin activity",
-      units              = "units/dL",
-      type               = "continuous",
+      description = "Per-subject baseline (predose) plasma antithrombin activity",
+      units = "units/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject: the single predose measurement before the",
         "first AT-concentrate dose. Cohort mean 59 +/- 17 units/dL",
         "(Moffett 2017 Table 2); reference 60 in the (AT_BL_UDL / 60)",
@@ -85,21 +85,21 @@ Moffett_2017_antithrombin <- function() {
         "relative to normal because the enrolled patients had consumptive",
         "AT depletion secondary to critical illness / concurrent UFH."
       ),
-      source_name        = "BASE"
+      source_name = "BASE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 184L,
-    n_studies      = 1L,
-    age_range      = "birth to <19 years",
-    age_median     = "0.35 years (IQR 0.07-3.9)",
-    weight_range   = "not reported by the paper (IQR 3.4-14.8 kg)",
-    weight_median  = "5.2 kg (IQR 3.4-14.8)",
+    species = "human",
+    n_subjects = 184L,
+    n_studies = 1L,
+    age_range = "birth to <19 years",
+    age_median = "0.35 years (IQR 0.07-3.9)",
+    weight_range = "not reported by the paper (IQR 3.4-14.8 kg)",
+    weight_median = "5.2 kg (IQR 3.4-14.8)",
     sex_female_pct = 53.3,
     race_ethnicity = "not reported by the paper",
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric inpatients receiving human (plasma-derived) antithrombin",
       "concentrate (Thrombate, Grifols) for consumptive antithrombin",
       "depletion secondary to critical illness or concurrent",
@@ -109,14 +109,14 @@ Moffett_2017_antithrombin <- function() {
       "Patients on mechanical circulatory support during AT administration",
       "or monitoring were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Median 2 doses per patient (IQR 1-4); mean 46.3 +/- 13.6 units/kg",
       "per dose infused over 15 minutes. Median 3 postdose AT activity",
       "levels per patient (IQR 2-7) at a median 20.8 h (IQR 12.4-32.1)",
       "after a dose; mean postdose AT activity 85.9 +/- 20.7 units/dL."
     ),
-    regions        = "single-centre, Texas Children's Hospital, Houston, TX, USA",
-    age_groups     = paste(
+    regions = "single-centre, Texas Children's Hospital, Houston, TX, USA",
+    age_groups = paste(
       "neonates (<=30 d, n=50), infants (31 d - 2 y, n=85),",
       "children (3-12 y, n=30), adolescents (13-18 y, n=19)."
     ),
@@ -127,7 +127,7 @@ Moffett_2017_antithrombin <- function() {
       "median 10.1% absolute prediction error (IQR 4.8-19.6) for the",
       "first postdose AT activity level."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Moffett 2017 Table 1; baseline",
       "laboratory values from Table 2. NONMEM v.7.2 (Icon) with",
       "PDx-Pop 5.1 using FOCE-I; bootstrap 1000 replications (Table 4).",

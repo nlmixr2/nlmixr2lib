@@ -23,8 +23,8 @@ Jia_2015_unfractionatedHeparin <- function() {
   )
   vignette <- "Jia_2015_unfractionatedHeparin"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -32,37 +32,37 @@ Jia_2015_unfractionatedHeparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "unfractionatedHeparin", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "unfractionatedHeparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "unfractionatedHeparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "18-74 years",
-    age_median     = "53.4 years (mean)",
-    weight_range   = "41-82 kg",
-    weight_median  = "66 kg (mean)",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "18-74 years",
+    age_median = "53.4 years (mean)",
+    weight_range = "41-82 kg",
+    weight_median = "66 kg (mean)",
     sex_female_pct = 59.4,
     race_ethnicity = "Chinese (single-center study at Beijing Anzhen Hospital, Capital Medical University)",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults undergoing cardiopulmonary bypass for cardiac surgery.",
       "Subjects with dysfunction of the kidney, liver, or blood coagulation",
       "were excluded prior to enrollment."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Initial intravenous bolus of UFH at 375 IU/kg (= 3 mg/kg) before CPB",
       "(mean first dose 24,805 IU; range 18,750-31,250). A second bolus of",
       "1 mg/kg (mean 8,516 IU; range 6,250-10,000) was added to the priming",
       "fluid. Additional irregular boluses were given during CPB as needed.",
       "Mean total UFH dose 34,023 IU (range 25,000-45,000)."
     ),
-    cpb_time       = "2.04 h mean (range 0.95-3.29 h)",
-    regions        = "China (Beijing)",
-    notes          = paste(
+    cpb_time = "2.04 h mean (range 0.95-3.29 h)",
+    regions = "China (Beijing)",
+    notes = paste(
       "Baseline demographics from Jia 2015 Table 1 (n = 41 enrolled; 32",
       "completed the protocol and contributed to the final model). The Table",
       "1 sex row lists 19 females and 13 males, which sums to 32 completers.",

@@ -31,7 +31,7 @@ Giacometti_2025_dalbavancin_nlme <- function() {
   # administered into the central compartment, which is the only compartment
   # that eliminates.
   compartmentData <- list(
-    central     = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "dalbavancin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
@@ -55,21 +55,21 @@ Giacometti_2025_dalbavancin_nlme <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Table 1: range 18-92 y, mean 64 +/- 16 y."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Table 1: range 18-92 y, mean 64 +/- 16 y."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Table 1: range 145-190 cm, mean 171 +/- 9 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Table 1: range 145-190 cm, mean 171 +/- 9 cm."
     ),
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B), so this model",
         "applies NO allometric scaling -- unlike the sibling dalbavancin model",
         "modellib('Baiardi_2025_dalbavancin'), which fixes allometric exponents of 0.75 on the",
@@ -78,15 +78,15 @@ Giacometti_2025_dalbavancin_nlme <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Methods 2.1: 145 males and 73 females of 218 patients (33.5% female). Source column 'sex'; the paper does not state its coding direction, which is immaterial here because the covariate is not used."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Methods 2.1: 145 males and 73 females of 218 patients (33.5% female). Source column 'sex'; the paper does not state its coding direction, which is immaterial here because the covariate is not used."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened on the NLME parameters and not retained (Methods 2.2, Appendix B). Reported in SI",
         "units: Table 1 gives 'Creatine conc. (umol/L)' range 19-411, mean 94 +/- 48 (the paper",
         "spells it 'creatine' in Table 1 and 'serum creatine concentration' in Methods 2.1;",
@@ -100,18 +100,18 @@ Giacometti_2025_dalbavancin_nlme <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 218L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 218L,
+    n_studies = 1L,
     n_observations = "669 dalbavancin plasma concentration measurements over 703 recorded administrations (Methods 2.1)",
-    age_range      = "18-92 years",
-    age_mean       = "64 +/- 16 years (Table 1)",
-    height_range   = "145-190 cm (mean 171 +/- 9 cm, Table 1)",
-    weight_range   = "40-140 kg",
-    weight_mean    = "77 +/- 16 kg (Table 1)",
+    age_range = "18-92 years",
+    age_mean = "64 +/- 16 years (Table 1)",
+    height_range = "145-190 cm (mean 171 +/- 9 cm, Table 1)",
+    weight_range = "40-140 kg",
+    weight_mean = "77 +/- 16 kg (Table 1)",
     sex_female_pct = 33.5,
     race_ethnicity = "Not reported; single-centre Italian cohort.",
-    disease_state  = paste(
+    disease_state = paste(
       "Adults receiving dalbavancin under therapeutic drug monitoring. Methods 2.1: dalbavancin is",
       "'a long-acting antibiotic used for the treatment of skin and soft tissue infections and as a",
       "second-line agent in patients with staphylococcal infections, such as bone and joint",
@@ -119,9 +119,9 @@ Giacometti_2025_dalbavancin_nlme <- function() {
       "tabulate the per-infection-type counts."
     ),
     renal_function = "Reported only as serum creatinine: range 19-411 umol/L, mean 94 +/- 48 umol/L (Table 1). No eGFR or creatinine clearance is derived, and no renal covariate is carried by the model.",
-    dose_range     = "350-1500 mg intravenously, 703 administrations across the 218 patients (Methods 2.1). The paper does not report the dosing intervals or the infusion duration; the NLME model was configured in Monolix as 'two-compartment distribution, infusion, no delay and linear elimination' (Methods 2.2).",
-    regions        = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
-    notes          = paste(
+    dose_range = "350-1500 mg intravenously, 703 administrations across the 218 patients (Methods 2.1). The paper does not report the dosing intervals or the infusion duration; the NLME model was configured in Monolix as 'two-compartment distribution, infusion, no delay and linear elimination' (Methods 2.2).",
+    regions = "Italy (IRCCS Azienda Ospedaliero-Universitaria di Bologna)",
+    notes = paste(
       "Retrospective single-centre therapeutic-drug-monitoring cohort, April 2021 to December 2024",
       "(Ethics Committee 897/2021/Oss/AOUBo). The reported estimates are the MEAN over the six folds",
       "of a 6-fold cross-validation, and the plus-or-minus figures in Table 4 are the standard",

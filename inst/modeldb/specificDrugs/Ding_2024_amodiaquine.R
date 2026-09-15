@@ -40,21 +40,21 @@ Ding_2024_amodiaquine <- function() {
   # "Concentration quantification": venous plasma amodiaquine and
   # desethylamodiaquine by LC/MS-MS) and Table 2.
   compartmentData <- list(
-    depot            = list(analyte = "amodiaquine",         units = "mg", specimen = "administration site", verified = TRUE),
-    transit1         = list(analyte = "amodiaquine",         units = "mg", specimen = "administration site", verified = TRUE),
-    transit2         = list(analyte = "amodiaquine",         units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "amodiaquine",         units = "mg", specimen = "plasma",              verified = TRUE),
-    central_deaq     = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma",              verified = TRUE),
-    peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Ding 2024 Methods ('Covariates model',",
         "Equations 2 and 3): 'body weight was added on all clearance and",
         "volume parameters using an allometric function with a fixed",
@@ -71,14 +71,14 @@ Ding_2024_amodiaquine <- function() {
         "likewise use 70 kg hypothetical patients.",
         sep = " "
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     EGA = list(
-      description        = "Maternal estimated gestational age at dosing",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Maternal estimated gestational age at dosing",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Estimated by fundal height (Ding 2024 Methods, 'Covariates",
         "model'). Enters relative oral bioavailability as the linear",
         "deviation form given in the Table 2 footnote:",
@@ -94,29 +94,29 @@ Ding_2024_amodiaquine <- function() {
         "enrolled).",
         sep = " "
       ),
-      source_name        = "GA"
+      source_name = "GA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 771L,
-    n_studies       = 1L,
-    n_observations  = "1071 amodiaquine and 1087 desethylamodiaquine plasma concentrations (Abstract, Results)",
-    age_range       = "22 (15-43) years, median (min-max) (Table 1)",
-    weight_range    = "55 (37-104) kg, median (min-max) (Table 1)",
-    height_range    = "158 (132-179) cm, median (min-max) (Table 1)",
-    ega_range       = "24 (13-36) weeks gestational age, median (min-max) (Table 1)",
-    trimester       = "581/771 (75.7%) in the second trimester, remainder in the third (Table 1)",
-    sex_female_pct  = 100,
-    pregnant_pct    = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 771L,
+    n_studies = 1L,
+    n_observations = "1071 amodiaquine and 1087 desethylamodiaquine plasma concentrations (Abstract, Results)",
+    age_range = "22 (15-43) years, median (min-max) (Table 1)",
+    weight_range = "55 (37-104) kg, median (min-max) (Table 1)",
+    height_range = "158 (132-179) cm, median (min-max) (Table 1)",
+    ega_range = "24 (13-36) weeks gestational age, median (min-max) (Table 1)",
+    trimester = "581/771 (75.7%) in the second trimester, remainder in the third (Table 1)",
+    sex_female_pct = 100,
+    pregnant_pct = 100,
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum mono-infection in pregnant",
       "women in the second or third trimester. Median parasitaemia at",
       "enrolment 560 (0-82,292) parasites/uL; median gametocytaemia 0",
       "(0-253) parasites/uL (Table 1)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Artesunate-amodiaquine (Sanofi-Aventis) 2 tablets once daily for 3",
       "consecutive days under direct observation. One tablet contains",
       "100 mg artesunate and 352.64 mg amodiaquine salt = 270 mg",
@@ -124,8 +124,8 @@ Ding_2024_amodiaquine <- function() {
       "(Methods, 'Drug regimen'). Median daily dose 12.8 (6.8-19.1) mg/kg",
       "of amodiaquine salt (Table 1)."
     ),
-    regions         = "Burkina Faso (2 sites), Ghana (3 sites), Malawi (1 site), Zambia (1 site)",
-    notes           = paste(
+    regions = "Burkina Faso (2 sites), Ghana (3 sites), Malawi (1 site), Zambia (1 site)",
+    notes = paste(
       "PREGACT trial (NCT00852423), a non-inferiority, multi-centre,",
       "randomised, open-label phase 3 trial of 4 artemisinin-based",
       "combination therapies conducted June 2010 to August 2013. Of 784",

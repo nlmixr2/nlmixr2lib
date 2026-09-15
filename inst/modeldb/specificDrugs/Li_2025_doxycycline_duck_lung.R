@@ -24,32 +24,32 @@ Li_2025_doxycycline_duck_lung <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    depot   = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    lung    = list(analyte = "doxycycline", units = "mg/kg", specimen = "tissue", verified = TRUE),
+    depot = list(analyte = "doxycycline", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    lung = list(analyte = "doxycycline", units = "mg/kg", specimen = "tissue", verified = TRUE),
     auc_dox = list(analyte = "doxycycline", units = "ug*h/g", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "duck (common shelduck, Tadorna tadorna), 7 days old",
-    n_subjects     = 360L,
-    n_studies      = 1L,
-    age_median     = "7 days at the start of the study",
-    weight_range   = "130-150 g",
+    species = "duck (common shelduck, Tadorna tadorna), 7 days old",
+    n_subjects = 360L,
+    n_studies = 1L,
+    age_median = "7 days at the start of the study",
+    weight_range = "130-150 g",
     sex_female_pct = NA_real_,
-    organism       = "Riemerella anatipestifer strain CVCC3857 (doxycycline MIC 1 ug/mL, florfenicol MIC 1 ug/mL; Li 2025 Results, 'MIC and MPC Of FF and DOX against RA')",
-    disease_state  = paste(
+    organism = "Riemerella anatipestifer strain CVCC3857 (doxycycline MIC 1 ug/mL, florfenicol MIC 1 ug/mL; Li 2025 Results, 'MIC and MPC Of FF and DOX against RA')",
+    disease_state = paste(
       "Experimental systemic Riemerella anatipestifer infection established by",
       "intraperitoneal injection of 10^9 CFU/mL; the target bacterial load was",
       "reached 12 h after inoculation and drug was given at that point"
     ),
-    dose_range     = "Doxycycline 1, 2.5, 5, 10 and 20 mg/kg as a single intramuscular injection into the thigh (five groups of 72 ducks)",
-    sampling       = paste(
+    dose_range = "Doxycycline 1, 2.5, 5, 10 and 20 mg/kg as a single intramuscular injection into the thigh (five groups of 72 ducks)",
+    sampling = paste(
       "Lung tissue at 0.5, 1, 2, 4, 6, 8, 12, 24 and 36 h after dosing;",
       "0.5 g homogenised per sample and assayed by HPLC-MS/MS. Lung LLOQ",
       "0.005 ug/g, calibration 0.005-5 ug/g (R^2 > 0.99), recovery 80.08-90.80%"
     ),
-    regions        = "China (Fuyang Normal University, Anhui; South China Agricultural University, Guangzhou)",
-    notes          = paste(
+    regions = "China (Fuyang Normal University, Anhui; South China Agricultural University, Guangzhou)",
+    notes = paste(
       "Apparent clearance rose monotonically with dose in lung (0.239 to",
       "0.552 L/h/kg from 1 to 20 mg/kg), as it did in plasma; the mean is",
       "packaged here and the per-dose values are reproduced in the vignette.",

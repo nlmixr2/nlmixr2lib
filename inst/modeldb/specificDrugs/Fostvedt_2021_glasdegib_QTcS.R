@@ -45,66 +45,66 @@ Fostvedt_2021_glasdegib_QTcS <- function() {
   # with the `le0` parameter (no paper_specific_etas declaration needed).
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; PD-only model fed by an external glasdegib plasma-concentration covariate)",
+    time = "h",
+    dosing = "(none; PD-only model fed by an external glasdegib plasma-concentration covariate)",
     concentration = "(observation QTcS is the QT interval corrected for heart rate using a population-specific correction factor beta estimated at 0.312 in this cohort, msec; driving covariate CP_GLASDEGIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
     CP_GLASDEGIB_NGML = list(
-      description        = "Instantaneous glasdegib plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Instantaneous glasdegib plasma concentration at the time of each PD observation, supplied as a time-varying covariate from observed plasma samples or an upstream PK source.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying per event row. Drives the linear concentration-QTcS expression QTcS = e0 + slope * (CP_GLASDEGIB_NGML / 1000).",
         "In Fostvedt 2021 this was the observed glasdegib plasma concentration around the time of the ECG collection (paired within +/-15 minutes of the PK sample; Methods 2.2 and 2.3). The source NM-TRAN column name in the model is CONC.",
         "The slope is reported on the microgram-per-mL scale (Table 3 'theta_2; msec/1000 ng/mL'); the canonical covariate is in ng/mL so the `/ 1000` rescaling lives inside model().",
         "Reference values observed: geometric-mean steady-state Cmax was 1137 ng/mL at 100 mg QD (therapeutic dose) and 2445 ng/mL at 200 mg QD (Fostvedt 2021 Methods 2.3 and Table 4).",
         "Set to 0 outside the drug-exposure window (the concentration-slope term then collapses to 0)."
       ),
-      source_name        = "CONC"
+      source_name = "CONC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age (years)",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by forward-selection (alpha = 0.05) / backward-elimination (alpha = 0.001) stepwise covariate procedure on the QTcF and QTcS model parameters and not retained (Fostvedt 2021 Methods 2.3 and Results 3.3)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by forward-selection (alpha = 0.05) / backward-elimination (alpha = 0.001) stepwise covariate procedure on the QTcF and QTcS model parameters and not retained (Fostvedt 2021 Methods 2.3 and Results 3.3)."
     ),
     SEXF = list(
       description = "Biological sex (1 = female)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (paper covariate 'sex') and not retained (Fostvedt 2021 Results 3.3). Of 70 patients in the pooled analysis, 28 (40%) were female (Fostvedt 2021 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (paper covariate 'sex') and not retained (Fostvedt 2021 Results 3.3). Of 70 patients in the pooled analysis, 28 (40%) were female (Fostvedt 2021 Table 1)."
     ),
     STUDY = list(
       description = "Source phase 1 study (hematologic malignancies B1371001 vs solid tumors B1371002)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened (paper covariate 'study (hematologic versus solid tumors)') and not retained (Fostvedt 2021 Results 3.3 and Discussion: 'no statistically significant differences were found based on the pre-specified backwards elimination significant criteria of 0.001'). Electrolyte imbalances and CYP3A4 inhibitor / inducer comedications were prohibited by protocol and therefore could not be tested as covariates (Fostvedt 2021 Methods 2.3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened (paper covariate 'study (hematologic versus solid tumors)') and not retained (Fostvedt 2021 Results 3.3 and Discussion: 'no statistically significant differences were found based on the pre-specified backwards elimination significant criteria of 0.001'). Electrolyte imbalances and CYP3A4 inhibitor / inducer comedications were prohibited by protocol and therefore could not be tested as covariates (Fostvedt 2021 Methods 2.3)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 70L,
-    n_studies        = 2L,
-    n_observations   = 747L,
-    age_range        = "25-89 years (Study B1371001 25-89, median 69; Study B1371002 27-76, median 61; pooled median 67)",
-    weight_range     = NA_character_,
-    sex_female_pct   = 40,
-    race_ethnicity   = c(White = 80, Asian = 6, Black = 6, Other = 9),
-    disease_state    = "Patients with advanced cancer pooled from two phase 1 dose-escalation trials: hematologic malignancies (Study B1371001, NCT00953758, n = 47) and solid tumor malignancies (Study B1371002, NCT01286467, n = 23). Eligibility excluded patients with screening QTcF > 470 msec.",
-    dose_range       = paste(
+    species = "human",
+    n_subjects = 70L,
+    n_studies = 2L,
+    n_observations = 747L,
+    age_range = "25-89 years (Study B1371001 25-89, median 69; Study B1371002 27-76, median 61; pooled median 67)",
+    weight_range = NA_character_,
+    sex_female_pct = 40,
+    race_ethnicity = c(White = 80, Asian = 6, Black = 6, Other = 9),
+    disease_state = "Patients with advanced cancer pooled from two phase 1 dose-escalation trials: hematologic malignancies (Study B1371001, NCT00953758, n = 47) and solid tumor malignancies (Study B1371002, NCT01286467, n = 23). Eligibility excluded patients with screening QTcF > 470 msec.",
+    dose_range = paste(
       "Glasdegib QD oral monotherapy across a wide dose range (Fostvedt 2021 Section 2.1).",
       "Study B1371001: 5, 10, 20, 40, 80, 120, 180, 270, 400, and 600 mg QD; single lead-in dose for single-dose PK characterisation, continuous once-daily dosing in 28-day cycles thereafter.",
       "Study B1371002: 80, 160, 320, and 640 mg QD. Maximum dose tested (640 mg QD) was more than 6-fold above the selected clinical dose of 100 mg QD."
     ),
-    regions          = NA_character_,
-    notes            = paste(
+    regions = NA_character_,
+    notes = paste(
       "Concentration-QTc analysis data set: 747 PK-ECG pairs collected within +/-15 minutes of paired PK draws, from 70 patients (Fostvedt 2021 Methods 2.2 and Table 1).",
       "Both studies were open-label, multicentre, phase 1 first-in-patient (B1371001) or solid-tumor phase 1 (B1371002) dose-escalation designs.",
       "QTcS is QT corrected for heart rate via the standard QTc = QT / (RR / 1000)^beta formula with beta estimated from the cohort by linear-mixed-effects regression of ln(QT) on ln(RR). Fostvedt 2021 Results 3.2 reports the QTcS correction factor beta = 0.312, which is very close to the Fridericia fixed beta = 1/3 = 0.333 (Fostvedt 2021 Results 3.2). Baseline QTcS mean (SD) = 419.1 (18.3) msec; on-treatment QTcS mean (SD) = 428.9 (24.4) msec (Fostvedt 2021 Table 2).",

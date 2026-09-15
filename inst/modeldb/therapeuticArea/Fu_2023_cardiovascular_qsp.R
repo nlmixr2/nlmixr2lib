@@ -25,8 +25,8 @@ Fu_2023_cardiovascular_qsp <- function() {
   paper_specific_compartments <- c("hr", "svt", "tpr")
 
   units <- list(
-    time          = "h",
-    dosing        = "amount unit (implicit V = 1 in the hypothetical-drug PK; the drug-effect Emax uses the central amount directly so any amount unit is valid provided EC50 is on the same scale)",
+    time = "h",
+    dosing = "amount unit (implicit V = 1 in the hypothetical-drug PK; the drug-effect Emax uses the central amount directly so any amount unit is valid provided EC50 is on the same scale)",
     concentration = "beats/min (HR), mL/beat (SV), mmHg*min/mL (TPR), mL/min (CO), mmHg (MAP), and hypothetical amount units for the drug (Cc)"
   )
 
@@ -36,30 +36,40 @@ Fu_2023_cardiovascular_qsp <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "hypothetical drug", units = NA_character_, specimen = "plasma", verified = FALSE),
-    hr      = list(analyte = "heart rate (HR)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    svt     = list(analyte = "stroke volume turnover (SVT)", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    tpr     = list(analyte = "total peripheral resistance (TPR)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    hr = list(analyte = "heart rate (HR)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    svt = list(
+      analyte = "stroke volume turnover (SVT)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    tpr = list(
+      analyte = "total peripheral resistance (TPR)",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Wistar-Kyoto, per Snelder 2013 J Pharmacokinet Pharmacodyn 40(3):357-373 and 2014 Br J Pharmacol 171(22):5076-5092, from which Fu 2023 inherits the CVS system parameters)",
-    n_subjects     = "3, 4, or 5 per SSE scenario (Fu 2023 Section 2.3.5; 100 simulated datasets per scenario)",
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "rat (Wistar-Kyoto, per Snelder 2013 J Pharmacokinet Pharmacodyn 40(3):357-373 and 2014 Br J Pharmacol 171(22):5076-5092, from which Fu 2023 inherits the CVS system parameters)",
+    n_subjects = "3, 4, or 5 per SSE scenario (Fu 2023 Section 2.3.5; 100 simulated datasets per scenario)",
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = "Healthy rat (baseline hemodynamics with pre-clinical iv-bolus drug perturbation; hypothetical drug with 4-h half-life applied at 0.1, 0.3, 1, 3, or 10 mg/kg iv bolus across the SSE scenarios of Fu 2023 Section 2.2)",
-    dose_range     = "0.1, 1, or 10 mg/kg iv bolus on days 1-3 (three ascending doses) or 0.1, 0.3, 1, 3, 10 mg/kg on days 1-5 (five ascending doses); the hypothetical drug is a placeholder for pre-clinical safety pharmacology compounds in general",
-    regions        = "Rat (Leiden Academic Centre for Drug Research and LAP&P Consultants BV, Netherlands; Snelder-cohort data)",
-    n_ode_states   = 4L,
+    disease_state = "Healthy rat (baseline hemodynamics with pre-clinical iv-bolus drug perturbation; hypothetical drug with 4-h half-life applied at 0.1, 0.3, 1, 3, or 10 mg/kg iv bolus across the SSE scenarios of Fu 2023 Section 2.2)",
+    dose_range = "0.1, 1, or 10 mg/kg iv bolus on days 1-3 (three ascending doses) or 0.1, 0.3, 1, 3, 10 mg/kg on days 1-5 (five ascending doses); the hypothetical drug is a placeholder for pre-clinical safety pharmacology compounds in general",
+    regions = "Rat (Leiden Academic Centre for Drug Research and LAP&P Consultants BV, Netherlands; Snelder-cohort data)",
+    n_ode_states = 4L,
     n_fixed_system_params = 12L,
-    n_fixed_iiv    = 3L,
-    n_drug_params  = 2L,
+    n_fixed_iiv = 3L,
+    n_drug_params = 2L,
     fixed_params_source = "All 12 system-specific parameters and 3 IIV variances are fixed to the Snelder-derived rat estimates transcribed in Fu 2023 Supplemental Materials S1 (NONMEM control stream, $THETA and $OMEGA blocks with the corresponding FIX flags). Fu 2023 states (Section 2.2): 'For all the scenarios focusing on identification of the MoA, drug-specific parameters (Emax and EC50), interindividual variability (IIV), and residual errors of each type of measurement were estimated; the system-specific parameters were fixed to the parameter values from the published CVS model [7].'",
-    notes          = "Fu 2023 is a simulation-and-re-estimation identifiability study, not a data-fit paper. The rat physiologic backbone (baselines, k_out rate constants, MAP feedback, circadian rhythms, HR-on-SV coupling) is inherited from Snelder et al. and held constant across all SSE scenarios. The drug-specific parameters (Emax, EC50) are the ones the paper evaluates for identifiability."
+    notes = "Fu 2023 is a simulation-and-re-estimation identifiability study, not a data-fit paper. The rat physiologic backbone (baselines, k_out rate constants, MAP feedback, circadian rhythms, HR-on-SV coupling) is inherited from Snelder et al. and held constant across all SSE scenarios. The drug-specific parameters (Emax, EC50) are the ones the paper evaluates for identifiability."
   )
 
   ini({

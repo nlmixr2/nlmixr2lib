@@ -3,71 +3,71 @@ Snelder_2020_ASP8232 <- function() {
   reference <- "Snelder N, Hoefman S, Garcia-Hernandez A, Onkels H, Larsson TE, Bergmann KR. Population pharmacokinetics and pharmacodynamics of a novel vascular adhesion protein-1 inhibitor using a multiple-target mediated drug disposition model. J Pharmacokinet Pharmacodyn. 2021;48(1):39-53. doi:10.1007/s10928-020-09717-w. PMID:32930923."
   vignette <- "Snelder_2020_ASP8232"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L",
-    dosing_notes  = "Amounts are carried internally in nmol so C = A / V yields nmol/L (equivalent to nM), directly comparable to KD, sVAP-1c, and mVAP-1 (all in nM per the paper). Convert an mg dose to nmol by multiplying by 1000/444, i.e. dividing by the ASP8232 free-base molecular weight of 444 g/mol (Snelder 2020 Main modeling assumption 6). Example: a 40 mg oral dose corresponds to 40 * 1000 / 444 = 90.09 nmol."
+    dosing_notes = "Amounts are carried internally in nmol so C = A / V yields nmol/L (equivalent to nM), directly comparable to KD, sVAP-1c, and mVAP-1 (all in nM per the paper). Convert an mg dose to nmol by multiplying by 1000/444, i.e. dividing by the ASP8232 free-base molecular weight of 444 g/mol (Snelder 2020 Main modeling assumption 6). Example: a 40 mg oral dose corresponds to 40 * 1000 / 444 = 90.09 nmol."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ASP8232", units = "nmol", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ASP8232", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate (CKD-EPI equation), BSA-normalised.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate (CKD-EPI equation), BSA-normalised.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (baseline value). CKD-EPI equation per Snelder 2020 Methods. Two structural covariate effects: (a) sigmoid Emax on CL with EC50 = 77 mL/min/1.73 m^2 and Hill exponent fixed at 10 (nearly a step function around EC50); (b) centred power on relative bioavailability F1 with reference 90 mL/min/1.73 m^2 (see Assumptions and deviations in the vignette; the paper reports the exponent -0.257 without stating the centring value, so a rounded normal-range value of 90 is used).",
-      source_name        = "eGFR (CKD-EPI, mL/min/1.73 m^2)"
+      notes = "Time-fixed per subject (baseline value). CKD-EPI equation per Snelder 2020 Methods. Two structural covariate effects: (a) sigmoid Emax on CL with EC50 = 77 mL/min/1.73 m^2 and Hill exponent fixed at 10 (nearly a step function around EC50); (b) centred power on relative bioavailability F1 with reference 90 mL/min/1.73 m^2 (see Assumptions and deviations in the vignette; the paper reports the exponent -0.257 without stating the centring value, so a rounded normal-range value of 90 is used).",
+      source_name = "eGFR (CKD-EPI, mL/min/1.73 m^2)"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = "Snelder 2020 Table 4 reports the covariate as a fractional female-vs-male increase of 0.125 on all VAP-1 concentrations (both sVAP-1 and every mVAP-1 pool). The paper's source column is 'Sex' with 68.9% male in the pooled cohort (Table 3); this file uses the canonical SEXF (female = 1) with the sign flipped as needed.",
-      source_name        = "Sex (Male / Female)"
+      notes = "Snelder 2020 Table 4 reports the covariate as a fractional female-vs-male increase of 0.125 on all VAP-1 concentrations (both sVAP-1 and every mVAP-1 pool). The paper's source column is 'Sex' with 68.9% male in the pooled cohort (Table 3); this file uses the canonical SEXF (female = 1) with the sign flipped as needed.",
+      source_name = "Sex (Male / Female)"
     ),
     STUDY_ASP8232_PHASE2 = list(
-      description        = "Phase-2 study cohort indicator (1 = VIDI or ALBUM; 0 = 8232-CL-0001 or 8232-CL-0002).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase-2 study cohort indicator (1 = VIDI or ALBUM; 0 = 8232-CL-0001 or 8232-CL-0002).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = phase 1 study",
-      notes              = "Selects the log-additive residual-error magnitude on ASP8232 total plasma concentration and on VAP-1 plasma activity between the phase 1 studies (reference) and the phase 2 studies. Snelder 2020 Table 4 estimates a single multiplicative 'Factor res error phase 2 studies' = 1.88 that scales BOTH the ASP8232-PK residual SD and the VAP-1-activity residual SD in the phase 2 subjects. The VAP-1-concentration residual is NOT affected because that assay was run only in the phase 2 studies (VIDI + ALBUM). Set once per subject from the trial identifier; time-fixed.",
-      source_name        = "Study (Phase 1 vs Phase 2)"
+      notes = "Selects the log-additive residual-error magnitude on ASP8232 total plasma concentration and on VAP-1 plasma activity between the phase 1 studies (reference) and the phase 2 studies. Snelder 2020 Table 4 estimates a single multiplicative 'Factor res error phase 2 studies' = 1.88 that scales BOTH the ASP8232-PK residual SD and the VAP-1-activity residual SD in the phase 2 subjects. The VAP-1-concentration residual is NOT affected because that assay was run only in the phase 2 studies (VIDI + ALBUM). Set once per subject from the trial identifier; time-fixed.",
+      source_name = "Study (Phase 1 vs Phase 2)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 363L,
-    n_studies        = 4L,
-    study_names      = c(
+    species = "human",
+    n_subjects = 363L,
+    n_studies = 4L,
+    study_names = c(
       "8232-CL-0001 (Phase 1 first-in-human single- and multiple-ascending-oral-dose in healthy volunteers; unpublished data)",
       "8232-CL-0002 / NCT02218099 (Phase 1 renal-impairment PK/PD in healthy volunteers, mild/moderate/severe renal impairment, and DKD)",
       "VIDI / 8232-CL-3001 / NCT02302079 (Phase 2 diabetic macular oedema; 40 mg PO QD, +/- 0.3 mg intravitreal ranibizumab)",
       "ALBUM / 8232-CL-0004 / NCT02358096 (Phase 2 diabetic kidney disease; 40 mg PO QD)"
     ),
-    age_range        = "adults (individual age ranges not tabulated in the pooled paper).",
-    weight_range     = "49.1 to 158 kg (pooled Table 2, N = 363; medians per study 73.6 - 91.7 kg).",
-    weight_median    = "83.6 kg (pooled Table 2 median).",
-    sex_female_pct   = 31.1,
-    sex_notes        = "68.9% male in the pooled cohort (Table 1 and Table 3). Per-study male fraction: 8232-CL-0001 80.4%, 8232-CL-0002 63.6%, VIDI 50.0%, ALBUM 77.5%.",
-    egfr_range       = "14.2 to 136 mL/min/1.73 m^2 (pooled Table 2, N = 363; healthy volunteers median 104, ALBUM median 44).",
-    egfr_reference   = "90 mL/min/1.73 m^2 (nominal 'normal renal function' assumed for the F1 power-model centering; the paper does not report the centering value explicitly).",
-    disease_state    = "Healthy volunteers plus adult patients with renal impairment, type 2 diabetes mellitus with CKD, diabetic kidney disease, and diabetic macular oedema.",
-    dose_range       = "0.1-100 mg single oral (8232-CL-0001); 0.2-200 mg QD PO with loading doses of 1-600 mg (8232-CL-0001 multiple-dose); 200 mg single oral or 150 mg QD PO with 250 mg loading (8232-CL-0002); 40 mg PO QD (VIDI, ALBUM). Higher single-dose cohorts of 300-1000 mg (24 subjects) and multiple-dose 800 mg (12 subjects) from 8232-CL-0001 were excluded during model development as outside the considered clinically relevant exposure range.",
-    regions          = "Multinational (VIDI + ALBUM were multi-centre; phase 1 study locations not specified in the pooled paper).",
-    data_records     = "3498 ASP8232 plasma concentration records; 5893 VAP-1 plasma activity records; 1714 VAP-1 plasma concentration records (Table 1). 1.8%, 2.3%, and 1.4% respectively identified as outliers (|CWRES| > 3) and excluded during model development.",
-    notes            = "See Snelder 2020 Tables 1-3 for the study-by-study demographic and baseline distributions. Study 8232-CL-0001 is unpublished (the paper reports demographics only). Molar-unit conversions in the model use the paper's assumed molecular weights of 444 g/mol for ASP8232 (free base) and 84,622 g/mol for the VAP-1 monomer (UniProt Q16853) with mVAP-1 vs sVAP-1 difference assumed negligible."
+    age_range = "adults (individual age ranges not tabulated in the pooled paper).",
+    weight_range = "49.1 to 158 kg (pooled Table 2, N = 363; medians per study 73.6 - 91.7 kg).",
+    weight_median = "83.6 kg (pooled Table 2 median).",
+    sex_female_pct = 31.1,
+    sex_notes = "68.9% male in the pooled cohort (Table 1 and Table 3). Per-study male fraction: 8232-CL-0001 80.4%, 8232-CL-0002 63.6%, VIDI 50.0%, ALBUM 77.5%.",
+    egfr_range = "14.2 to 136 mL/min/1.73 m^2 (pooled Table 2, N = 363; healthy volunteers median 104, ALBUM median 44).",
+    egfr_reference = "90 mL/min/1.73 m^2 (nominal 'normal renal function' assumed for the F1 power-model centering; the paper does not report the centering value explicitly).",
+    disease_state = "Healthy volunteers plus adult patients with renal impairment, type 2 diabetes mellitus with CKD, diabetic kidney disease, and diabetic macular oedema.",
+    dose_range = "0.1-100 mg single oral (8232-CL-0001); 0.2-200 mg QD PO with loading doses of 1-600 mg (8232-CL-0001 multiple-dose); 200 mg single oral or 150 mg QD PO with 250 mg loading (8232-CL-0002); 40 mg PO QD (VIDI, ALBUM). Higher single-dose cohorts of 300-1000 mg (24 subjects) and multiple-dose 800 mg (12 subjects) from 8232-CL-0001 were excluded during model development as outside the considered clinically relevant exposure range.",
+    regions = "Multinational (VIDI + ALBUM were multi-centre; phase 1 study locations not specified in the pooled paper).",
+    data_records = "3498 ASP8232 plasma concentration records; 5893 VAP-1 plasma activity records; 1714 VAP-1 plasma concentration records (Table 1). 1.8%, 2.3%, and 1.4% respectively identified as outliers (|CWRES| > 3) and excluded during model development.",
+    notes = "See Snelder 2020 Tables 1-3 for the study-by-study demographic and baseline distributions. Study 8232-CL-0001 is unpublished (the paper reports demographics only). Molar-unit conversions in the model use the paper's assumed molecular weights of 444 g/mol for ASP8232 (free base) and 84,622 g/mol for the VAP-1 monomer (UniProt Q16853) with mVAP-1 vs sVAP-1 difference assumed negligible."
   )
 
   ini({

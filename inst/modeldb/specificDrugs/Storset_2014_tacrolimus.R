@@ -8,70 +8,70 @@ Storset_2014_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Predicted fat-free mass (Janmahasatian 2005 formula from total body weight, height, and sex)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Predicted fat-free mass (Janmahasatian 2005 formula from total body weight, height, and sex)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on plasma CL/F, V1/F, Q/F, V2/F with reference 60 kg (Storset 2014 Methods Equation 2; Table 2 footnote: parameters reported at FFM 60 kg). Theory-based exponents fixed at 3/4 on clearances (CL/F, Q/F) and 1 on volumes (V1/F, V2/F). Cohort median 59 kg, range 35-80 kg (Storset 2014 Table 1 model-development column).",
-      source_name        = "FFM"
+      notes = "Power scaling on plasma CL/F, V1/F, Q/F, V2/F with reference 60 kg (Storset 2014 Methods Equation 2; Table 2 footnote: parameters reported at FFM 60 kg). Theory-based exponents fixed at 3/4 on clearances (CL/F, Q/F) and 1 on volumes (V1/F, V2/F). Cohort median 59 kg, range 35-80 kg (Storset 2014 Table 1 model-development column).",
+      source_name = "FFM"
     ),
     HCT = list(
-      description        = "Haematocrit -- packed red-blood-cell volume fraction",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit -- packed red-blood-cell volume fraction",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying (changes substantially in the first weeks post-transplant). Used inside the saturable RBC-binding equation Cwb = Cp * (1 + Bmax * (HCT/100) / (Cp + KD)) (Storset 2014 Methods Equation 3) to map plasma to whole-blood concentration. Bmax = 418 ug/L erythrocytes and KD = 3.8 ug/L plasma are fixed at literature values (Storset 2014 Methods, citing reference 35; Jusko 1995 Clin Pharmacol Ther). Cohort medians 33% Brisbane / 36% Oslo, range 24-45% (Storset 2014 Table 1).",
-      source_name        = "Haematocrit"
+      notes = "Time-varying (changes substantially in the first weeks post-transplant). Used inside the saturable RBC-binding equation Cwb = Cp * (1 + Bmax * (HCT/100) / (Cp + KD)) (Storset 2014 Methods Equation 3) to map plasma to whole-blood concentration. Bmax = 418 ug/L erythrocytes and KD = 3.8 ug/L plasma are fixed at literature values (Storset 2014 Methods, citing reference 35; Jusko 1995 Clin Pharmacol Ther). Cohort medians 33% Brisbane / 36% Oslo, range 24-45% (Storset 2014 Table 1).",
+      source_name = "Haematocrit"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 functional-expression indicator (rs776746 / CYP3A5*3 polymorphism)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 functional-expression indicator (rs776746 / CYP3A5*3 polymorphism)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 non-expresser)",
-      notes              = "1 = expresser (homozygous *1/*1 wild-type or heterozygous *1/*3 -- pooled because Storset 2014 had only n = 3 *1/*1 subjects); 0 = non-expresser (homozygous *3/*3). Time-fixed per subject. Effects: multiplicative on plasma CL/F (factor 1.30 for expressers; Storset 2014 Table 2) and on oral bioavailability F (factor 0.82 for expressers). Cohort distribution 3 / 53 / 205 (*1/*1, *1/*3, *3/*3 = 22.6% expressers; Storset 2014 Table 1 Hardy-Weinberg-equilibrium).",
-      source_name        = "CYP3A5 expresser"
+      notes = "1 = expresser (homozygous *1/*1 wild-type or heterozygous *1/*3 -- pooled because Storset 2014 had only n = 3 *1/*1 subjects); 0 = non-expresser (homozygous *3/*3). Time-fixed per subject. Effects: multiplicative on plasma CL/F (factor 1.30 for expressers; Storset 2014 Table 2) and on oral bioavailability F (factor 0.82 for expressers). Cohort distribution 3 / 53 / 205 (*1/*1, *1/*3, *3/*3 = 22.6% expressers; Storset 2014 Table 1 Hardy-Weinberg-equilibrium).",
+      source_name = "CYP3A5 expresser"
     ),
     PRED_DOSE = list(
-      description        = "Concomitant oral prednisolone daily dose",
-      units              = "mg/day",
-      type               = "continuous",
+      description = "Concomitant oral prednisolone daily dose",
+      units = "mg/day",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying with the post-transplant conmed_steroid taper (Storset 2014 Brisbane: 0.3 mg/kg ideal body weight per day initial, max 30 mg/day; Oslo: 20 mg/day initial, up to 80 mg/day in selected patients). Effect on F is a sigmoid-Emax fractional reduction (1 - Pred_max * PRED_DOSE / (Pred_50 + PRED_DOSE)) with Pred_max = 0.67 (95% CI 41%, 89%) and Pred_50 = 35 mg/day (95% CI 7, 50) -- Storset 2014 Table 2 and Methods Equations 4 + 6 with Hill = 1. Cohort medians 6.0 mg/day Brisbane / 0 mg/day Oslo (Storset 2014 Table 1).",
-      source_name        = "Prednisolone dose"
+      notes = "Time-varying with the post-transplant conmed_steroid taper (Storset 2014 Brisbane: 0.3 mg/kg ideal body weight per day initial, max 30 mg/day; Oslo: 20 mg/day initial, up to 80 mg/day in selected patients). Effect on F is a sigmoid-Emax fractional reduction (1 - Pred_max * PRED_DOSE / (Pred_50 + PRED_DOSE)) with Pred_max = 0.67 (95% CI 41%, 89%) and Pred_50 = 35 mg/day (95% CI 7, 50) -- Storset 2014 Table 2 and Methods Equations 4 + 6 with Hill = 1. Cohort medians 6.0 mg/day Brisbane / 0 mg/day Oslo (Storset 2014 Table 1).",
+      source_name = "Prednisolone dose"
     ),
     POSTTX_DAY1 = list(
-      description        = "First-24-hours-post-transplant indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-24-hours-post-transplant indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any observation outside the first 24 hours post-transplant)",
-      notes              = "Time-varying: 1 only on the first day post-transplant (typically the day of the transplant surgery / first oral tacrolimus dose), 0 thereafter. Multiplicative ~2.68-fold increase in oral bioavailability on day 1 (Storset 2014 Table 2; 95% CI 2.28, 3.09; OFV decrease 209), with subject-level IIV of 57% CV on the day-1 multiplier. Storset 2014 Discussion attributes the effect to candidate mechanisms (methylprednisolone-bolus inhibition of intestinal CYP3A / P-glycoprotein, surgery-related inflammation, anaesthesia / opioid effects on gut motility, reduced food intake) without a single mechanistic explanation.",
-      source_name        = "first day post-transplant"
+      notes = "Time-varying: 1 only on the first day post-transplant (typically the day of the transplant surgery / first oral tacrolimus dose), 0 thereafter. Multiplicative ~2.68-fold increase in oral bioavailability on day 1 (Storset 2014 Table 2; 95% CI 2.28, 3.09; OFV decrease 209), with subject-level IIV of 57% CV on the day-1 multiplier. Storset 2014 Discussion attributes the effect to candidate mechanisms (methylprednisolone-bolus inhibition of intestinal CYP3A / P-glycoprotein, surgery-related inflammation, anaesthesia / opioid effects on gut motility, reduced food intake) without a single mechanistic explanation.",
+      source_name = "first day post-transplant"
     )
   )
 
   population <- list(
-    n_subjects     = 242L,
-    n_studies      = 2L,
-    age_range      = "23-71 years",
-    age_median     = "48 years",
-    weight_range   = "51-121 kg total body weight; 35-80 kg fat-free mass",
-    weight_median  = "80 kg total body weight; 59 kg fat-free mass",
+    n_subjects = 242L,
+    n_studies = 2L,
+    age_range = "23-71 years",
+    age_median = "48 years",
+    weight_range = "51-121 kg total body weight; 35-80 kg fat-free mass",
+    weight_median = "80 kg total body weight; 59 kg fat-free mass",
     sex_female_pct = 31.8,
     race_ethnicity = "Not reported (Brisbane and Oslo cohorts; predominantly Caucasian inferred from CYP3A5 *3/*3 frequency 84.7%)",
-    disease_state  = "Adult kidney-transplant recipients receiving oral tacrolimus, mycophenolate mofetil, and tapering prednisolone immunosuppression after high-dose IV methylprednisolone + basiliximab induction",
-    dose_range     = "Tacrolimus oral starting dose 0.075 mg/kg twice daily (Brisbane) or 0.04 mg/kg twice daily (Oslo); subsequently adjusted to whole-blood trough targets 7-8 ug/L (Brisbane) or 3-7 ug/L (Oslo) over the first 3 months post-transplant; reported total daily doses median 8.4 mg (range 4.2-35.9 mg/day across both centres, Storset 2014 Table 1)",
-    regions        = "Australia (Princess Alexandra Hospital, Brisbane: 173 subjects, 1546 concentrations) and Norway (Oslo University Hospital Rikshospitalet: 69 subjects, 1554 concentrations); all model-development data",
+    disease_state = "Adult kidney-transplant recipients receiving oral tacrolimus, mycophenolate mofetil, and tapering prednisolone immunosuppression after high-dose IV methylprednisolone + basiliximab induction",
+    dose_range = "Tacrolimus oral starting dose 0.075 mg/kg twice daily (Brisbane) or 0.04 mg/kg twice daily (Oslo); subsequently adjusted to whole-blood trough targets 7-8 ug/L (Brisbane) or 3-7 ug/L (Oslo) over the first 3 months post-transplant; reported total daily doses median 8.4 mg (range 4.2-35.9 mg/day across both centres, Storset 2014 Table 1)",
+    regions = "Australia (Princess Alexandra Hospital, Brisbane: 173 subjects, 1546 concentrations) and Norway (Oslo University Hospital Rikshospitalet: 69 subjects, 1554 concentrations); all model-development data",
     cyp3a5_distribution = "*1/*1 = 1.2% (3/241), *1/*3 = 22.0% (53/241), *3/*3 = 84.7% (205/241); 22.6% expressers overall (Storset 2014 Table 1; one *2 subject excluded from genotype tally)",
     haematocrit_distribution = "Brisbane median 33% (range 25-43%); Oslo median 36% (range 24-45%) -- time-varying within subject across the first weeks post-transplant",
     sampling_design = "3100 whole-blood tacrolimus concentrations (median 11 per subject, range 4-52); 791 (26%) full PK profiles (>8 samples per occasion), 1277 (41%) limited profiles (4-5 samples per occasion), 1032 (33%) routine trough concentrations; sampling time median 20 days post-transplant, range 5-2591 days",
-    notes          = "Pooled analysis of two cohorts previously analysed independently (Bergmann 2014 Brisbane / Asberg-Storset 2014 Oslo). External evaluation cohort: 72 additional Oslo subjects with 837 trough samples in the first 3 weeks post-transplant. Brisbane assays: LC-MS/MS (LLOQ 0.5 ug/L). Oslo assays: chemiluminescent microparticle immunoassay (80%) / LC-MS/MS (11%) / microparticle enzyme immunoassay (9%); immunoassay values converted to LC-MS/MS equivalents via C_LC-MS/MS = 0.80 * C_immunoassay + 0.19 (Storset 2014 Equation 1). Baseline demographics from Storset 2014 Table 1."
+    notes = "Pooled analysis of two cohorts previously analysed independently (Bergmann 2014 Brisbane / Asberg-Storset 2014 Oslo). External evaluation cohort: 72 additional Oslo subjects with 837 trough samples in the first 3 weeks post-transplant. Brisbane assays: LC-MS/MS (LLOQ 0.5 ug/L). Oslo assays: chemiluminescent microparticle immunoassay (80%) / LC-MS/MS (11%) / microparticle enzyme immunoassay (9%); immunoassay values converted to LC-MS/MS equivalents via C_LC-MS/MS = 0.80 * C_immunoassay + 0.19 (Storset 2014 Equation 1). Baseline demographics from Storset 2014 Table 1."
   )
 
   ini({

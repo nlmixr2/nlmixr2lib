@@ -1,63 +1,63 @@
 Xu_2013_ranibizumab <- function() {
   description <- "One-compartment population PK model for total ranibizumab in serum following intravitreal injection in adults with neovascular age-related macular degeneration (Xu et al. 2013, IOVS). Vitreous humor acts as a slow-release depot with first-order absorption Ka into a systemic central compartment with first-order clearance CL/F; a small parallel fraction of each intravitreal dose reaches the central compartment via a rapid needle-track shunt bypassing the vitreous. Covariates: Cockcroft-Gault creatinine clearance on CL/F (power) and concomitant verteporfin PDT on Ka (multiplicative). Serum ranibizumab was measured; vitreous concentration is computed algebraically from vitreous amount over an assumed 4 mL vitreous humor volume for downstream simulation and is not observed. Data pooled from two Phase 1, two Phase 1/2, and one Phase 3 trial (MARINA / FOCUS)."
-  reference   <- "Xu L, Lu T, Tuomi L, Jumbe N, Lu J, Eppler S, Kuebler P, Damico-Beyer LA, Joshi A. Pharmacokinetics of ranibizumab in patients with neovascular age-related macular degeneration: a population approach. Invest Ophthalmol Vis Sci. 2013;54(3):1616-1624. doi:10.1167/iovs.12-10260."
-  vignette    <- "Xu_2013_ranibizumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
+  reference <- "Xu L, Lu T, Tuomi L, Jumbe N, Lu J, Eppler S, Kuebler P, Damico-Beyer LA, Joshi A. Pharmacokinetics of ranibizumab in patients with neovascular age-related macular degeneration: a population approach. Invest Ophthalmol Vis Sci. 2013;54(3):1616-1624. doi:10.1167/iovs.12-10260."
+  vignette <- "Xu_2013_ranibizumab"
+  units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
     vitreous = list(analyte = "ranibizumab", units = "mg", specimen = "vitreous", verified = FALSE),
-    central  = list(analyte = "ranibizumab", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "ranibizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (Cockcroft-Gault). Xu 2013 median = 65.22 mL/min in the analysis population (adults with neovascular AMD).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault). Xu 2013 median = 65.22 mL/min in the analysis population (adults with neovascular AMD).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline value). Reference value for the power model is 65.22 mL/min (Xu 2013 median). Cockcroft-Gault used (Xu 2013 Fig 1 legend); values NOT BSA-normalized, mirroring the raw-Cockcroft-Gault convention in Delattre_2010_amikacin.R.",
-      source_name        = "CrCL"
+      notes = "Time-fixed (baseline value). Reference value for the power model is 65.22 mL/min (Xu 2013 median). Cockcroft-Gault used (Xu 2013 Fig 1 legend); values NOT BSA-normalized, mirroring the raw-Cockcroft-Gault convention in Delattre_2010_amikacin.R.",
+      source_name = "CrCL"
     ),
     CONMED_VERTEPORFIN = list(
-      description        = "Concomitant verteporfin photodynamic therapy indicator. 1 = subject received one or more concomitant PDT procedures during the ranibizumab treatment window; 0 = no concomitant PDT. 42% of the analysis population received concomitant PDT (Xu 2013 Results).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant verteporfin photodynamic therapy indicator. 1 = subject received one or more concomitant PDT procedures during the ranibizumab treatment window; 0 = no concomitant PDT. 42% of the analysis population received concomitant PDT (Xu 2013 Results).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant verteporfin PDT)",
-      notes              = "Time-fixed baseline covariate in Xu 2013 (no time-varying covariates in the analysis). See CONMED_VERTEPORFIN entry in inst/references/covariate-columns.md for provenance.",
-      source_name        = "PDT"
+      notes = "Time-fixed baseline covariate in Xu 2013 (no time-varying covariates in the analysis). See CONMED_VERTEPORFIN entry in inst/references/covariate-columns.md for provenance.",
+      source_name = "PDT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline (years). Xu 2013 median = 78 years.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate on CL/F but not retained in the final model: 'Age was not statistically significantly correlated with CL/F after correction of CrCL, as the age effect was already reflected in CrCL' (Xu 2013 Results)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate on CL/F but not retained in the final model: 'Age was not statistically significantly correlated with CL/F after correction of CrCL, as the age effect was already reflected in CrCL' (Xu 2013 Results)."
     ),
     CNV_TYPE = list(
       description = "Choroidal neovascularization subtype: predominantly classic / minimally classic / occult.",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened per Fig 1 but not retained in the final model."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened per Fig 1 but not retained in the final model."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 229L,
-    n_studies      = 5L,
-    age_median     = "78 years",
-    weight_median  = "76 kg",
+    species = "human",
+    n_subjects = 229L,
+    n_studies = 5L,
+    age_median = "78 years",
+    weight_median = "76 kg",
     sex_female_pct = 56,
     race_ethnicity = c(Caucasian = 95),
-    disease_state  = "Neovascular (wet) age-related macular degeneration (AMD).",
-    dose_range     = "Single or repeated intravitreal (ITV) doses of 0.05-2.0 mg/eye. Phase 3 (MARINA) monthly 0.3 or 0.5 mg/eye for up to 24 months; FOCUS 0.5 mg/eye monthly with concomitant verteporfin PDT (administered 7 days before treatment); Phase 1/1-2 single-dose or intra-subject escalation q2w / q4w.",
-    regions        = "Multi-center clinical trials sponsored by Genentech.",
-    notes          = "Analysis included 696 evaluable ranibizumab serum concentration records from 229 subjects with at least one measurable serum concentration. Pooled from Rosenfeld 2006 MARINA (Phase 3), Heier 2006 FOCUS (Phase 1/2), Heier 2006 (Phase 1/2), Rosenfeld 2005 (Phase 1 intra-subject escalation), Rosenfeld 2005 (Phase 1 single-dose). See Xu 2013 Table 1 for study details and Table 2 for sample counts. 42% of subjects received concomitant PDT; 22% received local or systemic IOP-lowering medication. Median CrCL = 65.22 mL/min; 16% of CrCL values were imputed to the median."
+    disease_state = "Neovascular (wet) age-related macular degeneration (AMD).",
+    dose_range = "Single or repeated intravitreal (ITV) doses of 0.05-2.0 mg/eye. Phase 3 (MARINA) monthly 0.3 or 0.5 mg/eye for up to 24 months; FOCUS 0.5 mg/eye monthly with concomitant verteporfin PDT (administered 7 days before treatment); Phase 1/1-2 single-dose or intra-subject escalation q2w / q4w.",
+    regions = "Multi-center clinical trials sponsored by Genentech.",
+    notes = "Analysis included 696 evaluable ranibizumab serum concentration records from 229 subjects with at least one measurable serum concentration. Pooled from Rosenfeld 2006 MARINA (Phase 3), Heier 2006 FOCUS (Phase 1/2), Heier 2006 (Phase 1/2), Rosenfeld 2005 (Phase 1 intra-subject escalation), Rosenfeld 2005 (Phase 1 single-dose). See Xu 2013 Table 1 for study details and Table 2 for sample counts. 42% of subjects received concomitant PDT; 22% received local or systemic IOP-lowering medication. Median CrCL = 65.22 mL/min; 16% of CrCL values were imputed to the median."
   )
 
   ini({

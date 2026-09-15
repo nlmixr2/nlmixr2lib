@@ -39,7 +39,7 @@ Liu_2025_selpercatinib <- function() {
     sep = " "
   )
   vignette <- "Liu_2025_selpercatinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Liu 2025 Figure 1 (schematic view of
@@ -48,18 +48,18 @@ Liu_2025_selpercatinib <- function() {
   # absorption quantities 'Dur, duration of zero-order absorption' and
   # 'ka, first-order absorption rate constant'.
   compartmentData <- list(
-    depot       = list(analyte = "selpercatinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "selpercatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "selpercatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "selpercatinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "selpercatinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Population median 67.0 kg (range",
         "9.6-179; Liu 2025 Table 1 'Weight, kg', Total column), with the",
         "pediatric LIBRETTO-121 cohort at median 48.5 kg (range 9.6-97.7)",
@@ -77,14 +77,14 @@ Liu_2025_selpercatinib <- function() {
         "Table S2 shows weight was nonetheless the one covariate evaluated",
         "on all four disposition parameters (CL/F, Vc/F, Vp/F, Q/F)."
       ),
-      source_name        = "Weight at baseline"
+      source_name = "Weight at baseline"
     ),
     DOSE = list(
-      description        = "Administered selpercatinib dose per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered selpercatinib dose per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Register use case (b), time-varying: the current administered",
         "dose amount at the time of the record, in mg per administration",
         "(NOT per day). Liu 2025 Methods 'Population PK Analysis': 'The",
@@ -108,14 +108,14 @@ Liu_2025_selpercatinib <- function() {
         "here because the paper imposes none; keep DOSE within the",
         "20-240 mg range the model was fit to."
       ),
-      source_name        = "Selpercatinib dose"
+      source_name = "Selpercatinib dose"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = paste(
+      notes = paste(
         "Per-subject, time-fixed. Liu 2025 Table S2 footnote (a) defines",
         "the contrast as 'Differences between Asian (Japanese, Chinese,",
         "East-Asian) and non-Asian subjects', i.e. the pooled Asian group",
@@ -135,7 +135,7 @@ Liu_2025_selpercatinib <- function() {
         "the prevalence used in the vignette cohort is an assumption; see",
         "the vignette Errata."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     )
   )
 
@@ -151,9 +151,9 @@ Liu_2025_selpercatinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F (Table S2) and RETAINED by the automated",
         "stepwise covariate search, then removed during model refinement.",
         "Liu 2025 Results 'PK Analyses': 'The inclusion of an age effect",
@@ -176,51 +176,51 @@ Liu_2025_selpercatinib <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F, Vc/F, Vp/F and Q/F (Table S2); not retained.",
         "403/830 patients (48.6%) were female (Table 1)."
       )
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on CL/F (Table S2); not retained."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on CL/F (Table S2); not retained."
     ),
     ALT = list(
       description = "Baseline alanine transaminase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F as one of the three 'liver function tests' of",
         "Table S2 footnote (c); not retained."
       )
     ),
     AST = list(
       description = "Baseline aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F as one of the three 'liver function tests' of",
         "Table S2 footnote (c); not retained."
       )
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F as one of the three 'liver function tests' of",
         "Table S2 footnote (c); not retained."
       )
     ),
     CONMED_CYP3A4_INHIBITOR = list(
       description = "Concomitant CYP3A4 inhibitor use during the PK sampling period",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F and F as 'Concomitant medication' (Table S2);",
         "not retained. 274/830 patients (33.0%) used any CYP3A4 inhibitor,",
         "29 (3.5%) a strong one (Table S1). Use was confined to",
@@ -231,9 +231,9 @@ Liu_2025_selpercatinib <- function() {
     ),
     CONMED_CYP3A4_INDUCER = list(
       description = "Concomitant CYP3A4 inducer use during the PK sampling period",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F and F as 'Concomitant medication' (Table S2);",
         "not retained. Only 6/830 patients (0.4%) used any CYP3A4 inducer",
         "(Table S1), all in LIBRETTO-001."
@@ -241,9 +241,9 @@ Liu_2025_selpercatinib <- function() {
     ),
     CONMED_ANTACID = list(
       description = "Concomitant acid-reducing agent (proton pump inhibitor or H2 receptor antagonist) use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL/F and F as 'Concomitant medication' (Table S2);",
         "not retained. 367/830 patients (44.2%) used a PPI or an",
         "H2-blocker (Table S1); only 1 of the 27 LIBRETTO-121 patients did",
@@ -253,11 +253,11 @@ Liu_2025_selpercatinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 830,
+    species = "human",
+    n_subjects = 830,
     n_observations = 8024,
-    n_studies      = 2,
-    studies        = paste(
+    n_studies = 2,
+    studies = paste(
       "LIBRETTO-001 (NCT03157128), phase 1/2 in patients aged 12 years",
       "and older with advanced or metastatic solid tumors: 803 patients,",
       "7723 concentrations. LIBRETTO-121 (NCT03899792), phase 1/2 in",
@@ -266,16 +266,16 @@ Liu_2025_selpercatinib <- function() {
       "301 concentrations. Data cut-off 13 January 2023 for both.",
       sep = " "
     ),
-    age_range      = "2-92 years (median 58.0); LIBRETTO-121 median 14.0, range 2.0-20.0",
-    age_groups     = paste(
+    age_range = "2-92 years (median 58.0); LIBRETTO-121 median 14.0, range 2.0-20.0",
+    age_groups = paste(
       "6 patients (0.7%) under 12 years, 18 (2.2%) 12 to under 18 years,",
       "806 (97.1%) 18 years and older. The 6 patients under 12 years",
       "contributed only 59 concentrations, which the Discussion flags as",
       "the main limitation of the analysis.",
       sep = " "
     ),
-    weight_range   = "9.6-179 kg (median 67.0)",
-    bsa_range      = "0.446-2.79 m^2 (median 1.76), Mosteller formula; missing for 22/803 LIBRETTO-001 patients",
+    weight_range = "9.6-179 kg (median 67.0)",
+    bsa_range = "0.446-2.79 m^2 (median 1.76), Mosteller formula; missing for 22/803 LIBRETTO-001 patients",
     sex_female_pct = 48.6,
     race_ethnicity = paste(
       "Not tabulated in Liu 2025 Table 1. Race entered the covariate",
@@ -285,14 +285,14 @@ Liu_2025_selpercatinib <- function() {
       "analysis population nor any finer race breakdown is reported.",
       sep = " "
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "RET-altered advanced or metastatic solid tumors, including",
       "medullary thyroid cancer, RET fusion-positive thyroid cancer,",
       "RET fusion-positive non-small-cell lung cancer and primary central",
       "nervous system tumors.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral, continuous 28-day cycles. LIBRETTO-001: 20 mg once daily",
       "through 240 mg twice daily in phase 1 dose escalation, 160 mg twice",
       "daily in phase 2. LIBRETTO-121: body-surface-area-based dosing",
@@ -302,7 +302,7 @@ Liu_2025_selpercatinib <- function() {
       "at 160 mg twice daily.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Bioanalytical lower limit of quantification 1 ng/mL; 133 of the",
       "8157 collected concentrations were below it and were excluded from",
       "the analysis. Missing dosing times were imputed for 2 patients. No",

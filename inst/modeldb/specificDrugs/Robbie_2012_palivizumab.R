@@ -8,94 +8,94 @@ Robbie_2012_palivizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "palivizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "palivizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "palivizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "palivizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "palivizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying; used for allometric scaling on CL and Q (exponent 0.75) and on Vc and Vp (exponent 1.0) with reference weight 70 kg (Table 2).",
-      source_name        = "WT"
+      notes = "Time-varying; used for allometric scaling on CL and Q (exponent 0.75) and on Vc and Vp (exponent 1.0) with reference weight 70 kg (Table 2).",
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age = postnatal age (months) + gestational age (weeks) / 4.35, per Robbie 2012 equation (1).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age = postnatal age (months) + gestational age (weeks) / 4.35, per Robbie 2012 equation (1).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the clearance maturation function (Robbie 2012 eq. 1a / eq. 4). Reference is term birth (PAGE = 40/4.35 months = 9.195 months).",
-      source_name        = "PAGE"
+      notes = "Time-varying. Drives the clearance maturation function (Robbie 2012 eq. 1a / eq. 4). Reference is term birth (PAGE = 40/4.35 months = 9.195 months).",
+      source_name = "PAGE"
     ),
     RACE_BLACK = list(
-      description        = "Race indicator: 1 if Black / African American, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: 1 if Black / African American, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the paper's reference race).",
-      notes              = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column BLACK to canonical RACE_BLACK per covariate-columns.md.",
-      source_name        = "BLACK"
+      notes = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column BLACK to canonical RACE_BLACK per covariate-columns.md.",
+      source_name = "BLACK"
     ),
     RACE_HISPANIC = list(
-      description        = "Race indicator: 1 if Hispanic / Latino, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: 1 if Hispanic / Latino, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the paper's reference race).",
-      notes              = "Multiplicative effect on both CL and Vc; 95% CI included unity in the source analysis. Renamed from source column HISPANIC to canonical RACE_HISPANIC per covariate-columns.md.",
-      source_name        = "HISPANIC"
+      notes = "Multiplicative effect on both CL and Vc; 95% CI included unity in the source analysis. Renamed from source column HISPANIC to canonical RACE_HISPANIC per covariate-columns.md.",
+      source_name = "HISPANIC"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator: 1 if Asian, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: 1 if Asian, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the paper's reference race).",
-      notes              = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column ASIAN to canonical RACE_ASIAN per covariate-columns.md.",
-      source_name        = "ASIAN"
+      notes = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column ASIAN to canonical RACE_ASIAN per covariate-columns.md.",
+      source_name = "ASIAN"
     ),
     RACE_OTHER = list(
-      description        = "Race indicator: 1 if race = Other, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator: 1 if race = Other, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the paper's reference race).",
-      notes              = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column OTHER to canonical RACE_OTHER per covariate-columns.md.",
-      source_name        = "OTHER"
+      notes = "Multiplicative effect on CL; 95% CI included unity in the source analysis. Renamed from source column OTHER to canonical RACE_OTHER per covariate-columns.md.",
+      source_name = "OTHER"
     ),
     DIS_CLD_PREM = list(
-      description        = "Chronic lung disease of prematurity (bronchopulmonary dysplasia).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic lung disease of prematurity (bronchopulmonary dysplasia).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = no CLD of prematurity.",
-      notes              = "Multiplicative +20% effect on CL (Robbie 2012 Table 2). Renamed from source column CLD to canonical DIS_CLD_PREM per covariate-columns.md (canonical CLD_PREM was renamed to DIS_CLD_PREM on 2026-06-19 per the canonical-register standardization audit).",
-      source_name        = "CLD"
+      notes = "Multiplicative +20% effect on CL (Robbie 2012 Table 2). Renamed from source column CLD to canonical DIS_CLD_PREM per covariate-columns.md (canonical CLD_PREM was renamed to DIS_CLD_PREM on 2026-06-19 per the canonical-register standardization audit).",
+      source_name = "CLD"
     ),
     ADA_TITER = list(
-      description        = "Antidrug-antibody reciprocal-dilution titer at the matched PK sample time. American linear-titer convention: 0 = ADA negative.",
-      units              = "(reciprocal dilution; 0 = negative)",
-      type               = "continuous",
+      description = "Antidrug-antibody reciprocal-dilution titer at the matched PK sample time. American linear-titer convention: 0 = ADA negative.",
+      units = "(reciprocal dilution; 0 = negative)",
+      type = "continuous",
       reference_category = "0 (ADA negative).",
-      notes              = "Robbie 2012 modelled ADA titer as a step-function multiplicative effect on CL with four non-reference categories (10, 20, 40, >=80); only the >=80 category CI excluded unity. In the implementation we derive the category indicators inside model() from the continuous ADA_TITER column using comparison expressions, so users supply a single ADA_TITER column rather than four separate indicator columns. Renamed from source column ADA titer to canonical ADA_TITER per covariate-columns.md.",
-      source_name        = "ADA titer"
+      notes = "Robbie 2012 modelled ADA titer as a step-function multiplicative effect on CL with four non-reference categories (10, 20, 40, >=80); only the >=80 category CI excluded unity. In the implementation we derive the category indicators inside model() from the continuous ADA_TITER column using comparison expressions, so users supply a single ADA_TITER column rather than four separate indicator columns. Renamed from source column ADA titer to canonical ADA_TITER per covariate-columns.md.",
+      source_name = "ADA titer"
     )
   )
 
   population <- list(
-    n_subjects     = 1800,
-    n_studies      = 22,
-    n_adults       = 116,
-    n_pediatric    = 1684,
-    age_range      = "Pediatric PAGE 6.89 to 34.7 months; adult 19.3 to 58.9 years.",
-    age_median     = "Pediatric PAGE median 12.6 months; adult mean 32.8 years.",
-    weight_range   = "Pediatric 0.92 to 16.3 kg; adult 48.9 to 104.3 kg.",
-    weight_median  = "Pediatric median 5.64 kg; adult mean 72.5 kg.",
-    ga_range       = "Pediatric gestational age 22 to 41 weeks (median 30 weeks); 62% preterm, 38% term.",
+    n_subjects = 1800,
+    n_studies = 22,
+    n_adults = 116,
+    n_pediatric = 1684,
+    age_range = "Pediatric PAGE 6.89 to 34.7 months; adult 19.3 to 58.9 years.",
+    age_median = "Pediatric PAGE median 12.6 months; adult mean 32.8 years.",
+    weight_range = "Pediatric 0.92 to 16.3 kg; adult 48.9 to 104.3 kg.",
+    weight_median = "Pediatric median 5.64 kg; adult mean 72.5 kg.",
+    ga_range = "Pediatric gestational age 22 to 41 weeks (median 30 weeks); 62% preterm, 38% term.",
     sex_female_pct = "Pediatric 44.7% female (752 girls / 1,684); adult 65.5% female (76 / 116).",
     race_ethnicity = "Pediatric 54% White, 20% Black / African American, 18% Hispanic / Latino, 2% Asian, 6% Other.",
-    disease_state  = "Pediatric cohort at high risk of RSV lower respiratory tract disease (preterm, bronchopulmonary dysplasia / chronic lung disease of prematurity, congenital heart disease); 36% had chronic lung disease of prematurity. Adult cohort: 7 healthy-volunteer studies and 2 hematopoietic / solid-organ transplant studies.",
-    dose_range     = "3 to 30 mg/kg; label regimen 15 mg/kg IM monthly (up to 5 doses per RSV season).",
-    regions        = "North America and Europe (22 pooled MedImmune studies).",
-    notes          = "Counts are PK-analysis dataset (subjects with palivizumab serum concentrations); Table 1 reports 1,883 enrolled across the 22 studies. Adult cohort dosed by a mix of IM and IV routes across 9 studies (7 healthy-volunteer + 2 transplant); pediatric cohort dosed exclusively IM across 13 studies. 1,661 adult PK samples and 4,095 pediatric PK samples."
+    disease_state = "Pediatric cohort at high risk of RSV lower respiratory tract disease (preterm, bronchopulmonary dysplasia / chronic lung disease of prematurity, congenital heart disease); 36% had chronic lung disease of prematurity. Adult cohort: 7 healthy-volunteer studies and 2 hematopoietic / solid-organ transplant studies.",
+    dose_range = "3 to 30 mg/kg; label regimen 15 mg/kg IM monthly (up to 5 doses per RSV season).",
+    regions = "North America and Europe (22 pooled MedImmune studies).",
+    notes = "Counts are PK-analysis dataset (subjects with palivizumab serum concentrations); Table 1 reports 1,883 enrolled across the 22 studies. Adult cohort dosed by a mix of IM and IV routes across 9 studies (7 healthy-volunteer + 2 transplant); pediatric cohort dosed exclusively IM across 13 studies. 1,661 adult PK samples and 4,095 pediatric PK samples."
   )
 
   ini({

@@ -1,63 +1,63 @@
 Zhou_2016_warfarin_vk2 <- function() {
   description <- "Two-drug population PK/PD model for warfarin and intravenous vitamin K2 (menatetrenone) in Japanese adults with atrial fibrillation undergoing catheter ablation. Warfarin and vitamin K2 each have a 1-compartment PK with fixed volumes-of-distribution (Vd1 = 0.183 L/kg for warfarin from Sato 2006; Vd3 = 0.051 L/kg for vitamin K2 from the Eisai product information) and fixed warfarin elimination rate (k10 = 0.0129 1/h); only the vitamin K2 elimination rate (k30) and the indirect-response PD parameters (ks, kd, IC50, Emax, EC50) were estimated from 579 INR observations in 100 patients. Warfarin inhibits clotting-factor synthesis (Emax = 1 - Cc/(Cc + IC50)) while vitamin K2 stimulates it (1 + Emax_vk2 * Cc_vk2/(Cc_vk2 + EC50)); a binary renal-impairment indicator (CREAT >= 1.1 mg/dL in men or >= 0.8 mg/dL in women) reduces IC50 to 61.4% of normal. The model predicts thrombotest (TT, %); INR is recovered from TT via the Gogstad 1986 quadratic conversion (Equation 4)."
-  reference   <- "Zhou Z, Yano I, Odaka S, Morita Y, Shizuta S, Hayano M, Kimura T, Akaike A, Inui K-i, Matsubara K. Effect of vitamin K2 on the anticoagulant activity of warfarin during the perioperative period of catheter ablation: Population analysis of retrospective clinical data. J Pharm Health Care Sci. 2016;2:17. doi:10.1186/s40780-016-0053-8. Fixed warfarin PK from Sato 2006 Jpn J Ther Drug Monit 23:10-16; vitamin K2 Vd from Eisai product information. INR <-> TT conversion from Gogstad 1986 Thromb Haemost 56:178-182."
-  vignette    <- "Zhou_2016_warfarin_vk2"
+  reference <- "Zhou Z, Yano I, Odaka S, Morita Y, Shizuta S, Hayano M, Kimura T, Akaike A, Inui K-i, Matsubara K. Effect of vitamin K2 on the anticoagulant activity of warfarin during the perioperative period of catheter ablation: Population analysis of retrospective clinical data. J Pharm Health Care Sci. 2016;2:17. doi:10.1186/s40780-016-0053-8. Fixed warfarin PK from Sato 2006 Jpn J Ther Drug Monit 23:10-16; vitamin K2 Vd from Eisai product information. INR <-> TT conversion from Gogstad 1986 Thromb Haemost 56:178-182."
+  vignette <- "Zhou_2016_warfarin_vk2"
   paper_specific_compartments <- c("central_vk2")
 
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
     central_vk2 = list(analyte = "vitamin K2", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "clotting-factor synthesis", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "clotting-factor synthesis", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used to scale warfarin and vitamin K2 volumes-of-distribution and clearances. Median 63.8 kg, range 34.9-92.6 kg in Zhou 2016 Table 1.",
-      source_name        = "WT"
+      notes = "Used to scale warfarin and vitamin K2 volumes-of-distribution and clearances. Median 63.8 kg, range 34.9-92.6 kg in Zhou 2016 Table 1.",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration (baseline)",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration (baseline)",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used together with SEXF to derive the binary renal-impairment indicator (RF) inside model(): RF = 1 when CREAT >= 1.1 mg/dL in men (SEXF = 0) or CREAT >= 0.8 mg/dL in women (SEXF = 1), otherwise 0. See Zhou 2016 Methods (RF definition paragraph) and Equation 8. Cohort median 0.8 mg/dL, range 0.5-9.6 mg/dL (Zhou 2016 Table 1). 22 of 100 patients had RF = 1.",
-      source_name        = "Serum creatinine"
+      notes = "Used together with SEXF to derive the binary renal-impairment indicator (RF) inside model(): RF = 1 when CREAT >= 1.1 mg/dL in men (SEXF = 0) or CREAT >= 0.8 mg/dL in women (SEXF = 1), otherwise 0. See Zhou 2016 Methods (RF definition paragraph) and Equation 8. Cohort median 0.8 mg/dL, range 0.5-9.6 mg/dL (Zhou 2016 Table 1). 22 of 100 patients had RF = 1.",
+      source_name = "Serum creatinine"
     ),
     SEXF = list(
-      description        = "Biological sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Sets the sex-specific creatinine threshold for the binary renal-impairment indicator (>=1.1 mg/dL men, >=0.8 mg/dL women; Zhou 2016 Methods). Cohort distribution 70 men / 30 women (Zhou 2016 Table 1).",
-      source_name        = "Sex"
+      notes = "Sets the sex-specific creatinine threshold for the binary renal-impairment indicator (>=1.1 mg/dL men, >=0.8 mg/dL women; Zhou 2016 Methods). Cohort distribution 70 men / 30 women (Zhou 2016 Table 1).",
+      source_name = "Sex"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 100L,
-    n_observations  = 579L,
-    n_studies       = 1L,
-    age_range       = "31-80 years (median 64)",
-    weight_range    = "34.9-92.6 kg (median 63.8)",
-    sex_female_pct  = 30,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = "Adult Japanese patients with atrial fibrillation undergoing catheter ablation; on chronic warfarin anticoagulation withdrawn perioperatively and antagonized with intravenous vitamin K2.",
-    dose_range      = "Warfarin oral maintenance 1-7 mg/day (median 3); post-operative loading 1-9 mg (median 5). Intravenous vitamin K2 total 20-70 mg (median 40) preoperatively in 76 of 100 patients (20 mg in 19, 30 mg in 2, 40 mg in 35, 60 mg in 19, 70 mg in 1).",
-    regions         = "Japan (Kyoto University Hospital, January-December 2008).",
-    renal_function  = "22 of 100 patients had a serum creatinine above the in-hospital reference (>=1.1 mg/dL men or >=0.8 mg/dL women); 26 patients had eGFR 30-60 mL/min/1.73 m^2 and 2 had eGFR < 30 mL/min/1.73 m^2.",
+    species = "human",
+    n_subjects = 100L,
+    n_observations = 579L,
+    n_studies = 1L,
+    age_range = "31-80 years (median 64)",
+    weight_range = "34.9-92.6 kg (median 63.8)",
+    sex_female_pct = 30,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Adult Japanese patients with atrial fibrillation undergoing catheter ablation; on chronic warfarin anticoagulation withdrawn perioperatively and antagonized with intravenous vitamin K2.",
+    dose_range = "Warfarin oral maintenance 1-7 mg/day (median 3); post-operative loading 1-9 mg (median 5). Intravenous vitamin K2 total 20-70 mg (median 40) preoperatively in 76 of 100 patients (20 mg in 19, 30 mg in 2, 40 mg in 35, 60 mg in 19, 70 mg in 1).",
+    regions = "Japan (Kyoto University Hospital, January-December 2008).",
+    renal_function = "22 of 100 patients had a serum creatinine above the in-hospital reference (>=1.1 mg/dL men or >=0.8 mg/dL women); 26 patients had eGFR 30-60 mL/min/1.73 m^2 and 2 had eGFR < 30 mL/min/1.73 m^2.",
     hepatic_function = "4 of 100 patients had total bilirubin above the in-hospital reference; none were substantially elevated. 8 of 100 patients had serum albumin below the reference. Hepatic-impairment effects were not retained in the final model.",
-    notes           = "Retrospective single-center cohort. Cohort and dosing details from Zhou 2016 Table 1. INR values in the analysis window were 1.0-3.0 (inclusion criterion); initial INR median 1.76, range 1.03-2.64. Concomitant amiodarone (n=4) and bucolome (n=1) were tested as CYP2C9 inhibitors on warfarin k10 but did not reach significance (-2LLD = 7.61 < 7.88)."
+    notes = "Retrospective single-center cohort. Cohort and dosing details from Zhou 2016 Table 1. INR values in the analysis window were 1.0-3.0 (inclusion criterion); initial INR median 1.76, range 1.03-2.64. Concomitant amiodarone (n=4) and bucolome (n=1) were tested as CYP2C9 inhibitors on warfarin k10 but did not reach significance (-2LLD = 7.61 < 7.88)."
   )
 
   ini({

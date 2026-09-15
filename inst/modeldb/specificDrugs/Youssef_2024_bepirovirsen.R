@@ -38,7 +38,7 @@ Youssef_2024_bepirovirsen <- function() {
     sep = " "
   )
   vignette <- "Youssef_2024_bepirovirsen"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Youssef 2024 Fig. 1 ("Schematic of the
@@ -56,19 +56,19 @@ Youssef_2024_bepirovirsen <- function() {
   # of measured liver concentrations" -- so these remain empirical mammillary
   # compartments and no organ is named here.
   compartmentData <- list(
-    depot       = list(analyte = "bepirovirsen", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "bepirovirsen", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "bepirovirsen", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "bepirovirsen", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "bepirovirsen", units = "mg", specimen = "tissue", verified = TRUE),
     peripheral2 = list(analyte = "bepirovirsen", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed; one participant with a missing baseline",
         "weight was imputed with the population median (Youssef 2024",
         "Table 1 footnote a). Cohort median 70.2 kg, range 43.3-140.0 kg",
@@ -97,14 +97,14 @@ Youssef_2024_bepirovirsen <- function() {
         "weight effect (v1) and the theoretical 0.75 / 1 pair (v1.2) on",
         "MVOF."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_CHB = list(
-      description        = "Chronic hepatitis B virus infection indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic hepatitis B virus infection indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant; the complement group is the 21 healthy volunteers of phase 1 study 213725, 4.2 percent of the analysis population)",
-      notes              = paste(
+      notes = paste(
         "Per-subject, time-fixed. 96% of the analysis population had",
         "chronic HBV infection (Youssef 2024 Results 'Participants'); the",
         "healthy complement is study 213725 alone (N = 21 of 499,",
@@ -133,7 +133,7 @@ Youssef_2024_bepirovirsen <- function() {
         "participants (Table 4: AUCtau 98.3 vs 98.2 ug*h/mL, Cmax 8.4 vs",
         "8.4 ug/mL)."
       ),
-      source_name        = "Disease status (chronic HBV infection vs healthy)"
+      source_name = "Disease status (chronic HBV infection vs healthy)"
     )
   )
 
@@ -150,9 +150,9 @@ Youssef_2024_bepirovirsen <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Median 45.0 years, range 18-77 (Youssef 2024 Table 1); mean (SD)",
         "45.4 (11.6). Tested as a power model on CL/F and rejected at",
         "forward-selection step 3 (dMVOF -1.67, p = 0.196; Supplementary",
@@ -161,9 +161,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "271/499 (54.3%) Asian, 196 (39.3%) Caucasian, 31 (6.2%) Black,",
         "1 (0.2%) Native Indian or Alaska Native (Youssef 2024 Table 1).",
         "Tested as a proportional shift on CL/F and on V2/F and rejected",
@@ -178,9 +178,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     ALBUMIN = list(
       description = "Baseline serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Median 4.7 g/dL, range 3.8-5.5 (Youssef 2024 Table 1). Tested as",
         "a power model on CL/F and rejected at forward-selection step 3",
         "(dMVOF +4.76, p = 1; Supplementary Tables 3 and 4)."
@@ -188,9 +188,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     CONMED_NA_HBV = list(
       description = "Concomitant nucleos(t)ide analogue (NA) treatment indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "237/499 (47.5%) on stable NA therapy, 241 (48.3%) not, 21 (4.2%)",
         "not applicable (the healthy cohort) -- Youssef 2024 Table 1.",
         "Tested as a proportional shift on CL/F and on V2/F and rejected",
@@ -204,9 +204,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     HBSAG_BL_LOG10 = list(
       description = "Baseline hepatitis B surface antigen",
-      units       = "log10 IU/mL",
-      type        = "continuous",
-      notes       = paste(
+      units = "log10 IU/mL",
+      type = "continuous",
+      notes = paste(
         "Median 3.48 log10 IU/mL, range 1.64-5.72; missing for the 21",
         "healthy participants (Youssef 2024 Table 1). Entered the formal",
         "search DICHOTOMISED, not as the continuous value: Supplementary",
@@ -221,9 +221,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "318/499 (63.7%) male, hence 36.3% female (Youssef 2024 Table 1).",
         "Screened only graphically -- Methods 'Assessment of Covariate",
         "Effects' lists sex among the categorical covariates 'evaluated by",
@@ -234,9 +234,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     CREAT = list(
       description = "Baseline serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Median 0.8 mg/dL, range 0.3-1.3 (Youssef 2024 Table 1). Screened",
         "graphically by ETA-covariate linear regression and scatter plots",
         "(Methods) and not carried into the formal search."
@@ -244,9 +244,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     CRCL = list(
       description = "Baseline creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Median 120 mL/min, range 51.7-270 (Youssef 2024 Table 1);",
         "estimated GFR median 106 mL/min/1.73m2, range 64.1-220.",
         "Screened graphically and not carried into the formal search. The",
@@ -258,9 +258,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     BILI = list(
       description = "Baseline total bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Median 0.5 mg/dL, range 0.2-2.0 (Youssef 2024 Table 1, the",
         "unlabelled row following albumin). Screened graphically and not",
         "carried into the formal search."
@@ -268,9 +268,9 @@ Youssef_2024_bepirovirsen <- function() {
     ),
     ALT = list(
       description = "Baseline alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "U/L",
+      type = "continuous",
+      notes = paste(
         "Median 24 U/L, range 7-349 (Youssef 2024 Table 1, the unlabelled",
         "row preceding HBsAg). Screened graphically and not carried into",
         "the formal search."
@@ -279,19 +279,19 @@ Youssef_2024_bepirovirsen <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 479,
-    n_studies      = 3,
-    age_range      = "18-77 years",
-    age_median     = "45 years",
-    weight_range   = "43.3-140.0 kg",
-    weight_median  = "70.2 kg",
+    species = "human",
+    n_subjects = 479,
+    n_studies = 3,
+    age_range = "18-77 years",
+    age_median = "45 years",
+    weight_range = "43.3-140.0 kg",
+    weight_median = "70.2 kg",
     sex_female_pct = 36.3,
     race_ethnicity = c(Asian = 54.3, Caucasian = 39.3, Black = 6.2, NativeIndianOrAlaskaNative = 0.2),
-    disease_state  = "chronic hepatitis B virus infection (96%, both on and off stable nucleos(t)ide-analogue therapy) pooled with healthy volunteers (4%); participants with cirrhosis or liver failure, or with moderate-to-severe renal disease, were excluded",
-    dose_range     = "75-450 mg subcutaneous: single ascending dose, six doses over 3 weeks, or 150-300 mg weekly for up to 24 weeks",
-    regions        = "China Mainland, East Asia, Japan and Other (the four strata of Youssef 2024 Supplementary Table 7)",
-    notes          = paste(
+    disease_state = "chronic hepatitis B virus infection (96%, both on and off stable nucleos(t)ide-analogue therapy) pooled with healthy volunteers (4%); participants with cirrhosis or liver failure, or with moderate-to-severe renal disease, were excluded",
+    dose_range = "75-450 mg subcutaneous: single ascending dose, six doses over 3 weeks, or 150-300 mg weekly for up to 24 weeks",
+    regions = "China Mainland, East Asia, Japan and Other (the four strata of Youssef 2024 Supplementary Table 7)",
+    notes = paste(
       "Youssef 2024 Table 1 (demographics by study and overall).",
       "Three study cohorts: 213725 / NCT03020745 (phase 1, healthy,",
       "N = 21 analysed), 205695 / NCT02981602 (phase 2a, chronic HBV,",

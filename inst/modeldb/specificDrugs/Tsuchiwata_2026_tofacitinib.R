@@ -12,52 +12,52 @@ Tsuchiwata_2026_tofacitinib <- function() {
 
   covariateData <- list(
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline (time-fixed). Enters CL/F and V/F as separate power functions",
         "normalized to the reference value of 40 years (the approximate dataset",
         "median; Table 2 footnote b and the reference-patient definition in the",
         "Results). Cohort mean 41.8 years (SD 11.7); 64 years is the 95th",
         "percentile used for the Figure 2 covariate-impact assessment."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male (SEXF = 0)",
-      notes              = paste(
+      notes = paste(
         "Table 2 reports the effect as 'Sex: Female (vs. male)', so male is the",
         "reference category and the coefficient is the fractional change in CL/F",
         "for a female patient: CL/F is multiplied by (1 + e_sexf_cl * SEXF).",
         "The 95% CI of this effect contains the null value; it is retained",
         "because the paper reports a full (not reduced) covariate model."
       ),
-      source_name        = "Sex"
+      source_name = "Sex"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Asian (RACE_ASIAN = 0)",
-      notes              = paste(
+      notes = paste(
         "Table 2 reports the effect as 'Race: Asian (vs. non-Asian)', a fractional",
         "change applied as CL/F * (1 + e_race_asian_cl * RACE_ASIAN). The cohort is",
         "79.9% White, 19.7% Asian and 0.4% not reported (Table 1), so the non-Asian",
         "reference group is predominantly White."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     ),
     CRCL_BASE = list(
-      description        = "Baseline creatinine clearance (Cockcroft-Gault)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (Cockcroft-Gault)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed, and NOT body-surface-area normalized -- the paper's",
         "BCCL is a raw Cockcroft-Gault creatinine clearance in mL/min, which is why",
         "the canonical column is CRCL_BASE rather than the BSA-normalized CRCL.",
@@ -65,14 +65,14 @@ Tsuchiwata_2026_tofacitinib <- function() {
         "129 mL/min (SD 33.7); the lowest value in the analysis dataset was",
         "48.1 mL/min (Figure 2 footnote a)."
       ),
-      source_name        = "BCCL"
+      source_name = "BCCL"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed, standard (not high-sensitivity) assay. UNITS TRAP:",
         "this paper reports CRP in mg/dL, not the mg/L used by most other entries",
         "in the covariate register -- the reference value 0.851 mg/dL is 8.51 mg/L.",
@@ -80,30 +80,30 @@ Tsuchiwata_2026_tofacitinib <- function() {
         "1.41 mg/dL (SD 1.55; Table 1). The 95% CI of this effect contains the",
         "null value; it is retained because the paper reports a full covariate model."
       ),
-      source_name        = "BCRP"
+      source_name = "BCRP"
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline, time-fixed. Enters V/F only, as a power function normalized to",
         "78 kg (the dataset median). Body weight was pre-specified as a candidate",
         "predictor of CL/F as well, but was dropped from the final full model",
         "because it correlated with BCCL (r = 0.58) and its inclusion changed the",
         "objective function by only -0.066 (Results, Final full model)."
       ),
-      source_name        = "Body weight"
+      source_name = "Body weight"
     )
   )
 
   covariatesDataExcluded <- list(
     RACE_HISPANIC = list(
       description = "Hispanic / Latino ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Pre-specified as a candidate predictor of CL/F but not carried into the",
         "final full model because 97.8% of the dataset was non-Hispanic/Latino",
         "(Results, Final full model development). No coefficient is reported."
@@ -113,31 +113,35 @@ Tsuchiwata_2026_tofacitinib <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "tofacitinib", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tofacitinib",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "tofacitinib", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "tofacitinib",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 279,
-    n_studies      = 2,
+    species = "human",
+    n_subjects = 279,
+    n_studies = 2,
     n_observations = 1917,
-    age_mean       = "41.8 years (SD 11.7)",
-    weight_mean    = "78.1 kg (SD 17.4)",
-    weight_median  = "78 kg",
-    weight_range   = "54-107 kg (5th-95th percentiles)",
+    age_mean = "41.8 years (SD 11.7)",
+    weight_mean = "78.1 kg (SD 17.4)",
+    weight_median = "78 kg",
+    weight_range = "54-107 kg (5th-95th percentiles)",
     sex_female_pct = 20.4,
     race_ethnicity = c(White = 79.9, Asian = 19.7, NotAvailable = 0.4),
-    disease_state  = "active ankylosing spondylitis (modified New York criteria, BASDAI >= 4 and BASDAI back-pain score >= 4)",
-    dose_range     = "2, 5 or 10 mg orally twice daily",
+    disease_state = "active ankylosing spondylitis (modified New York criteria, BASDAI >= 4 and BASDAI back-pain score >= 4)",
+    dose_range = "2, 5 or 10 mg orally twice daily",
     renal_function = "baseline Cockcroft-Gault creatinine clearance mean 129 mL/min (SD 33.7); lowest observed 48.1 mL/min",
-    regions        = "not reported by region; pooled phase 2 (NCT01786668) and phase 3 (NCT03502616) studies",
-    notes          = paste(
+    regions = "not reported by region; pooled phase 2 (NCT01786668) and phase 3 (NCT03502616) studies",
+    notes = paste(
       "Baseline demographics from Table 1 of Tsuchiwata 2026. Phase 2 (N = 147;",
       "2 mg BID n = 50, 5 mg BID n = 49, 10 mg BID n = 48) and phase 3 (N = 132,",
       "all 5 mg BID). Sampling was sparse: week 4 (pre-dose, 0.5 h and 2 h",

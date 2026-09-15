@@ -9,47 +9,47 @@ Kim_2024_teicoplanin <- function() {
   # V1 (central), V2 (first peripheral) and V3 (second peripheral) as the
   # three distribution volumes of the plasma teicoplanin model.
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, de-normalized to the individual's body surface area (raw mL/min, NOT per 1.73 m^2)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate from the 2021 CKD-EPI creatinine equation, de-normalized to the individual's body surface area (raw mL/min, NOT per 1.73 m^2)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source symbol CE (Kim 2024 Table 2 footnote: 'estimated glomerular filtration rate calculated using the CKD-EPI equation based on creatinine levels, adjusted for body surface area'). Built in two steps per Kim 2024 Table 1 footnotes c and e: first the creatinine-only CKD-EPI equation gives eGFR in mL/min/1.73 m^2 (female: 142 * min(CR/0.7,1)^-0.241 * max(CR/0.7,1)^-1.200 * 0.9938^Age * 1.012; male: 142 * min(CR/0.9,1)^-0.302 * max(CR/0.9,1)^-1.200 * 0.9938^Age, with CR in mg/dL), then it is multiplied by BSA/1.73 m^2 to give an absolute filtration rate in mL/min. Stored under the canonical CRCL column, which pools creatinine-based and tracer-measured filtration estimates; this model uses the RAW, de-normalized mL/min variant following the precedent of Delattre_2010_amikacin.R, Georges_2009_ceftazidime.R and Chen_2023_nemonoxacin.R. Supplying a BSA-normalized value (mL/min/1.73 m^2) would misstate the covariate, because the 105.27 mL/min reference is on the de-normalized scale. Population values (Kim 2024 Table 1, 'Adjusted eGFR by CKD-EPICR for BSA'): mean 103 mL/min (CV 15.5%), median 105 (IQR 96.7-113). The paper explicitly tested and rejected Cockcroft-Gault CLCR, MDRD eGFR, and the combined creatinine-cystatin C CKD-EPI eGFR in favour of this covariate (Kim 2024 Section 4). Effect form: power scaling (CRCL / 105.27)^e_crcl_cl on CL.",
-      source_name        = "CE"
+      notes = "Source symbol CE (Kim 2024 Table 2 footnote: 'estimated glomerular filtration rate calculated using the CKD-EPI equation based on creatinine levels, adjusted for body surface area'). Built in two steps per Kim 2024 Table 1 footnotes c and e: first the creatinine-only CKD-EPI equation gives eGFR in mL/min/1.73 m^2 (female: 142 * min(CR/0.7,1)^-0.241 * max(CR/0.7,1)^-1.200 * 0.9938^Age * 1.012; male: 142 * min(CR/0.9,1)^-0.302 * max(CR/0.9,1)^-1.200 * 0.9938^Age, with CR in mg/dL), then it is multiplied by BSA/1.73 m^2 to give an absolute filtration rate in mL/min. Stored under the canonical CRCL column, which pools creatinine-based and tracer-measured filtration estimates; this model uses the RAW, de-normalized mL/min variant following the precedent of Delattre_2010_amikacin.R, Georges_2009_ceftazidime.R and Chen_2023_nemonoxacin.R. Supplying a BSA-normalized value (mL/min/1.73 m^2) would misstate the covariate, because the 105.27 mL/min reference is on the de-normalized scale. Population values (Kim 2024 Table 1, 'Adjusted eGFR by CKD-EPICR for BSA'): mean 103 mL/min (CV 15.5%), median 105 (IQR 96.7-113). The paper explicitly tested and rejected Cockcroft-Gault CLCR, MDRD eGFR, and the combined creatinine-cystatin C CKD-EPI eGFR in favour of this covariate (Kim 2024 Section 4). Effect form: power scaling (CRCL / 105.27)^e_crcl_cl on CL.",
+      source_name = "CE"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (time-fixed); single-dose study in healthy volunteers, so no within-subject weight change. Population values (Kim 2024 Table 1): mean 64.8 kg (CV 19.9%), median 67.9 (IQR 51.3-73.4). Effect form: power scaling (WT / 67.85)^e_wt_vp2 on the SECOND peripheral volume V3 only. Kim 2024 did NOT carry an allometric term on CL, Vc, Vp, Q or Q2 - the stepwise covariate search retained weight on V3 alone (dOFV 16.6 on removal; Section 3.2). The 67.85 kg reference is the cohort median weight (Table 1 reports 67.9 kg to three significant figures).",
-      source_name        = "WT"
+      notes = "Baseline (time-fixed); single-dose study in healthy volunteers, so no within-subject weight change. Population values (Kim 2024 Table 1): mean 64.8 kg (CV 19.9%), median 67.9 (IQR 51.3-73.4). Effect form: power scaling (WT / 67.85)^e_wt_vp2 on the SECOND peripheral volume V3 only. Kim 2024 did NOT carry an allometric term on CL, Vc, Vp, Q or Q2 - the stepwise covariate search retained weight on V3 alone (dOFV 16.6 on removal; Section 3.2). The 67.85 kg reference is the cohort median weight (Table 1 reports 67.9 kg to three significant figures).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
     n_observations = 96L,
-    age_range      = "19-55 years (protocol inclusion criterion)",
-    age_median     = "32.0 years (IQR 30.0-40.3)",
-    weight_median  = "67.9 kg (IQR 51.3-73.4)",
-    height_median  = "164 cm (IQR 158-169)",
-    bsa_median     = "1.77 m^2 (IQR 1.52-1.85)",
+    age_range = "19-55 years (protocol inclusion criterion)",
+    age_median = "32.0 years (IQR 30.0-40.3)",
+    weight_median = "67.9 kg (IQR 51.3-73.4)",
+    height_median = "164 cm (IQR 158-169)",
+    bsa_median = "1.77 m^2 (IQR 1.52-1.85)",
     sex_female_pct = 50,
     race_ethnicity = "Korean (single-centre study in the Republic of Korea); not tabulated by the source",
-    disease_state  = "Healthy adults with normal renal function; no congenital or chronic disease, screened by medical history, vital signs, physical examination, haematology, blood chemistry, urinalysis and infectious serology",
-    dose_range     = "200 mg teicoplanin in 100 mL normal saline as a single 30-minute intravenous infusion",
-    regions        = "Republic of Korea (Hallym University Sacred Heart Hospital, Anyang)",
+    disease_state = "Healthy adults with normal renal function; no congenital or chronic disease, screened by medical history, vital signs, physical examination, haematology, blood chemistry, urinalysis and infectious serology",
+    dose_range = "200 mg teicoplanin in 100 mL normal saline as a single 30-minute intravenous infusion",
+    regions = "Republic of Korea (Hallym University Sacred Heart Hospital, Anyang)",
     renal_function = "Normal: BSA-adjusted CKD-EPI creatinine eGFR median 105 mL/min (IQR 96.7-113); serum creatinine median 0.875 mg/dL; cystatin C median 0.760 mg/dL",
-    notes          = "Prospective single-dose study conducted July-September 2023 (IRB 2023-05-013). Eight samples per subject at 33, 36, 45 and 90 min and 4, 8, 48-120 and 168-240 h after the start of infusion; 96 plasma concentrations in total. Assay: HPLC-MS/MS (Shimadzu LC-40, Phenomenex Gemini C18, SCIEX 4500 QTRAP) with vancomycin internal standard and 1/x^2-weighted calibration. Estimation: NONMEM 7.5 FOCE-I; model evaluation by VPC (1000 replicates) and 2000-sample nonparametric bootstrap via PsN 5.3.1. Final model OFV -209.055 (one-compartment 305.997, two-compartment -65.658, three-compartment base -186.520). See Kim 2024 Table 1 for baseline demographics."
+    notes = "Prospective single-dose study conducted July-September 2023 (IRB 2023-05-013). Eight samples per subject at 33, 36, 45 and 90 min and 4, 8, 48-120 and 168-240 h after the start of infusion; 96 plasma concentrations in total. Assay: HPLC-MS/MS (Shimadzu LC-40, Phenomenex Gemini C18, SCIEX 4500 QTRAP) with vancomycin internal standard and 1/x^2-weighted calibration. Estimation: NONMEM 7.5 FOCE-I; model evaluation by VPC (1000 replicates) and 2000-sample nonparametric bootstrap via PsN 5.3.1. Final model OFV -209.055 (one-compartment 305.997, two-compartment -65.658, three-compartment base -186.520). See Kim 2024 Table 1 for baseline demographics."
   )
 
   ini({

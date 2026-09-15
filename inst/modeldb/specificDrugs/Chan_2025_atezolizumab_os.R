@@ -44,18 +44,18 @@ Chan_2025_atezolizumab_os <- function() {
   )
   vignette <- "Chan_2025_atezolizumab_sc_nsclc"
   units <- list(
-    time          = "n/a (semiparametric Cox regression; the baseline hazard and hence the time scale are left unspecified by the method)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
+    time = "n/a (semiparametric Cox regression; the baseline hazard and hence the time scale are left unspecified by the method)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_ATEZO data column)",
     concentration = "hr (relative hazard of death, unitless; also lhr, the linear predictor)"
   )
 
   covariateData <- list(
     AUC_ATEZO = list(
-      description        = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
-      units              = "ug*day/mL",
-      type               = "continuous",
+      description = "Model-predicted Cycle-1 atezolizumab AUC from day 0 to day 21",
+      units = "ug*day/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 1000, not centred: Chan 2025",
         "Table S10C labels the row 'AUC0-21d (1000 ug*day/mL)', so the",
         "coefficient 0.134 is the log-hazard-ratio per 1000 ug*day/mL.",
@@ -68,14 +68,14 @@ Chan_2025_atezolizumab_os <- function() {
         "mean 2907 ug*day/mL (geoCV 35.9 percent), median 2974, range",
         "666-6572."
       ),
-      source_name        = "AUC0-21d"
+      source_name = "AUC0-21d"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY per g/L and is not centred. Coefficient -0.082",
         "(95 percent CI -0.135 to -0.030, p < 0.01); higher albumin means",
         "a lower hazard of death, the well-established prognostic",
@@ -95,14 +95,14 @@ Chan_2025_atezolizumab_os <- function() {
         "'g/dL' label is an isolated typographical slip. See the vignette",
         "Errata."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     ),
     LDH = list(
-      description        = "Baseline serum lactate dehydrogenase",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum lactate dehydrogenase",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 100, not centred: Chan 2025",
         "Table S10C labels the row 'LDH (100 U/L)', so the coefficient",
         "0.124 is the log-hazard-ratio per 100 U/L (95 percent CI 0.040",
@@ -112,14 +112,14 @@ Chan_2025_atezolizumab_os <- function() {
         "merged into the exposure-response dataset. Retained for overall",
         "survival but not for progression-free survival."
       ),
-      source_name        = "LDH"
+      source_name = "LDH"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY and is SCALED BY 10, not centred: Chan 2025",
         "Table S10C labels the row 'CRP (10 mg/L)', so the coefficient",
         "0.081 is the log-hazard-ratio per 10 mg/L (95 percent CI 0.030",
@@ -128,14 +128,14 @@ Chan_2025_atezolizumab_os <- function() {
         "most of the efficacy endpoints'. It also appears in the",
         "companion SAE and AEG35 safety models. Reported in mg/L (SI)."
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     ),
     NLR = list(
-      description        = "Baseline neutrophil-to-lymphocyte ratio",
-      units              = "ratio (unitless)",
-      type               = "continuous",
+      description = "Baseline neutrophil-to-lymphocyte ratio",
+      units = "ratio (unitless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters LINEARLY per unit ratio and is not centred: Chan 2025",
         "Table S10C labels the row 'Neutrophil-to-Lymphocyte ratio' with",
         "no rescaling parenthetical, unlike the '(100 U/L)' and",
@@ -144,14 +144,14 @@ Chan_2025_atezolizumab_os <- function() {
         "higher hazard, consistent with the companion",
         "progression-free-survival model's 0.046."
       ),
-      source_name        = "Neutrophil-to-Lymphocyte ratio"
+      source_name = "Neutrophil-to-Lymphocyte ratio"
     ),
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (1 = mild, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (1 = mild, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; mutually exclusive with HEPIMP_MOD)",
-      notes              = paste(
+      notes = paste(
         "One of two non-reference levels of a three-level hepatic",
         "function factor (normal [reference], mild, moderate).",
         "Coefficient 0.934 (95 percent CI 0.341 to 1.527, p < 0.01), a",
@@ -161,14 +161,14 @@ Chan_2025_atezolizumab_os <- function() {
         "standard hepatic-impairment classification (reference 21 of the",
         "paper) for the categorisation."
       ),
-      source_name        = "Hepatic impairment-mild"
+      source_name = "Hepatic impairment-mild"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = moderate, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = moderate, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; mutually exclusive with HEPIMP_MILD)",
-      notes              = paste(
+      notes = paste(
         "The second non-reference level of the hepatic function factor.",
         "Coefficient 0.414 with a 95 percent CI of -1.597 to 2.426, i.e.",
         "wholly uninformative -- the moderate-impairment stratum is very",
@@ -179,17 +179,17 @@ Chan_2025_atezolizumab_os <- function() {
         "coefficient a downstream user reproduces. Interpret the point",
         "estimate with caution."
       ),
-      source_name        = "Hepatic impairment-moderate"
+      source_name = "Hepatic impairment-moderate"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246,
-    n_studies      = 1,
-    disease_state  = "locally advanced or metastatic non-small cell lung cancer",
-    dose_range     = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
-    notes          = paste(
+    species = "human",
+    n_subjects = 246,
+    n_studies = 1,
+    disease_state = "locally advanced or metastatic non-small cell lung cancer",
+    dose_range = "subcutaneous atezolizumab 1875 mg every 3 weeks in the thigh, as a ready-to-use co-formulation with recombinant human hyaluronidase PH20",
+    notes = paste(
       "Cohort 5 of the phase III (part 2) portion of IMscin001",
       "(NCT03735121). Exposure-response was assessed on the subcutaneous",
       "arm ONLY -- Chan 2025 Methods notes that intravenous",

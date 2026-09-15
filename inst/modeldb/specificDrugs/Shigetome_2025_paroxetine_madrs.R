@@ -15,59 +15,59 @@ Shigetome_2025_paroxetine_madrs <- function() {
   )
   vignette <- "Shigetome_2025_paroxetine"
   units <- list(
-    time          = "week (treatment duration since paroxetine initiation; the Emax model is a function of time, not of a concurrent concentration)",
-    dosing        = "not applicable (no dose events; cumulative paroxetine exposure enters through the AUC_PAROX covariate)",
+    time = "week (treatment duration since paroxetine initiation; the Emax model is a function of time, not of a concurrent concentration)",
+    dosing = "not applicable (no dose events; cumulative paroxetine exposure enters through the AUC_PAROX covariate)",
     concentration = "percent / patient (output madrsenh is the enhancement rate, the percentage reduction in MADRS score from baseline, NOT a drug concentration; the slash is only to satisfy checkModelConventions unit parsing)"
   )
 
   covariateData <- list(
     AUC_PAROX = list(
-      description        = "Cumulative area under the plasma paroxetine concentration-time curve from treatment initiation to the end of the first week of treatment (AUC 0-1 week)",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Cumulative area under the plasma paroxetine concentration-time curve from treatment initiation to the end of the first week of treatment (AUC 0-1 week)",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per patient. Not measured directly: predicted for each patient from the companion popPK model (Shigetome_2025_paroxetine) using that patient's dosing history over week 1, then carried into this model as a covariate. Enters Emax as the subtracted power term (AUC_PAROX / 2610.43)^e_auc_parox_emax with the normalizing constant 2610.43 ng*h/mL, which is the population value in this 50-patient cohort (observed means 2764.9 in the remission group and 2472.2 in the non-remission group, Table S5). Because the exponent is negative, the subtracted term shrinks as exposure rises, so Emax increases with first-week exposure. The term is steep: it reaches Emax = 0 near AUC_PAROX = 1541 ng*h/mL and is essentially saturated above the normalizing value, so simulations outside the observed 1642-5814 ng*h/mL range extrapolate badly. Among the eight paroxetine exposure indices screened (measured trough, popPK-predicted trough, Cmax, single-dose AUC, and cumulative AUC to weeks 1, 2, 4 and 6), only AUC 0-1 week was retained (Table S3).",
-      source_name        = "AUC_W1"
+      notes = "Time-fixed per patient. Not measured directly: predicted for each patient from the companion popPK model (Shigetome_2025_paroxetine) using that patient's dosing history over week 1, then carried into this model as a covariate. Enters Emax as the subtracted power term (AUC_PAROX / 2610.43)^e_auc_parox_emax with the normalizing constant 2610.43 ng*h/mL, which is the population value in this 50-patient cohort (observed means 2764.9 in the remission group and 2472.2 in the non-remission group, Table S5). Because the exponent is negative, the subtracted term shrinks as exposure rises, so Emax increases with first-week exposure. The term is steep: it reaches Emax = 0 near AUC_PAROX = 1541 ng*h/mL and is essentially saturated above the normalizing value, so simulations outside the observed 1642-5814 ng*h/mL range extrapolate badly. Among the eight paroxetine exposure indices screened (measured trough, popPK-predicted trough, Cmax, single-dose AUC, and cumulative AUC to weeks 1, 2, 4 and 6), only AUC 0-1 week was retained (Table S3).",
+      source_name = "AUC_W1"
     ),
     SCORE_MADRS = list(
-      description        = "Montgomery-Asberg Depression Rating Scale total score, ten items each rated 0-6 by a physician at interview",
-      units              = "(SCORE_MADRS units, 0-60 score)",
-      type               = "continuous",
+      description = "Montgomery-Asberg Depression Rating Scale total score, ten items each rated 0-6 by a physician at interview",
+      units = "(SCORE_MADRS units, 0-60 score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "This model uses the week-1 value (the MADRS score one week after starting paroxetine, mean 28.6, SD 11.3, range 4-56; Shigetome 2025 Table 2). Time-fixed once week 1 has passed. Enters ET50 as the added power term (SCORE_MADRS / 28.64)^e_score_madrs_et50 with the normalizing constant 28.64 (the cohort value), so a lower week-1 score shortens ET50 and brings the improvement forward. The baseline MADRS score is NOT this covariate: it defines the endpoint instead, since the enhancement rate is the percentage reduction from baseline. Baseline MADRS was screened on both Emax and ET50 and was not retained (Table S3).",
-      source_name        = "MADRS_W1"
+      notes = "This model uses the week-1 value (the MADRS score one week after starting paroxetine, mean 28.6, SD 11.3, range 4-56; Shigetome 2025 Table 2). Time-fixed once week 1 has passed. Enters ET50 as the added power term (SCORE_MADRS / 28.64)^e_score_madrs_et50 with the normalizing constant 28.64 (the cohort value), so a lower week-1 score shortens ET50 and brings the improvement forward. The baseline MADRS score is NOT this covariate: it defines the endpoint instead, since the enhancement rate is the percentage reduction from baseline. Baseline MADRS was screened on both Emax and ET50 and was not retained (Table S3).",
+      source_name = "MADRS_W1"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "20-70 years",
-    age_mean       = "46.6 years (SD 13.7)",
-    weight_range   = "40-85 kg",
-    weight_mean    = "56.3 kg (SD 10.4)",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "20-70 years",
+    age_mean = "46.6 years (SD 13.7)",
+    weight_range = "40-85 kg",
+    weight_mean = "56.3 kg (SD 10.4)",
     sex_female_pct = 62.0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "major depressive disorder (DSM-IV), antidepressant-naive at paroxetine initiation; baseline MADRS 39.6 (SD 9.7, range 12-53)",
-    dose_range     = "10-40 mg/day orally (mean 32.2 mg/day, SD 11.0); initial dose 10-20 mg/day then weekly increases of 10 mg/day to the maximum tolerated dose",
-    regions        = "Japan (Hirosaki University Hospital and Dokkyo Medical University School of Medicine)",
-    timepoints     = "MADRS assessed at baseline and 1, 2, 4 and 6 weeks after starting paroxetine; observed enhancement rates 25.9% (SD 30.3), 45.7% (SD 27.4), 57.5% (SD 28.3) and 64.2% (SD 30.6) at weeks 1, 2, 4 and 6",
-    notes          = "The 50 patients are the subset of the 179-patient PK cohort (Shigetome_2025_paroxetine) who had serial MADRS assessments and a pre-treatment Temperament and Character Inventory. Baseline demographics are Shigetome 2025 Table 2. Remission (MADRS < 10 at week 6) was reached by 26 of the 50. All seven TCI personality scales and daylight hours were screened on Emax and ET50 and none was retained (Table S3)."
+    disease_state = "major depressive disorder (DSM-IV), antidepressant-naive at paroxetine initiation; baseline MADRS 39.6 (SD 9.7, range 12-53)",
+    dose_range = "10-40 mg/day orally (mean 32.2 mg/day, SD 11.0); initial dose 10-20 mg/day then weekly increases of 10 mg/day to the maximum tolerated dose",
+    regions = "Japan (Hirosaki University Hospital and Dokkyo Medical University School of Medicine)",
+    timepoints = "MADRS assessed at baseline and 1, 2, 4 and 6 weeks after starting paroxetine; observed enhancement rates 25.9% (SD 30.3), 45.7% (SD 27.4), 57.5% (SD 28.3) and 64.2% (SD 30.6) at weeks 1, 2, 4 and 6",
+    notes = "The 50 patients are the subset of the 179-patient PK cohort (Shigetome_2025_paroxetine) who had serial MADRS assessments and a pre-treatment Temperament and Character Inventory. Baseline demographics are Shigetome 2025 Table 2. Remission (MADRS < 10 at week 6) was reached by 26 of the 50. All seven TCI personality scales and daylight hours were screened on Emax and ET50 and none was retained (Table S3)."
   )
 
   covariatesDataExcluded <- list(
     DAYLIGHT_H = list(
       description = "Cumulative daylight hours over the treatment period (mean 120.6 h, SD 43.4, range 54.3-173.2; Shigetome 2025 Table 2)",
-      units       = "h",
-      type        = "continuous",
-      notes       = "Screened on both Emax and ET50 and not retained (Shigetome 2025 Table S3: univariate dOFV 0.303 on Emax and -0.193 on ET50, neither reaching the p < 0.1 forward-selection threshold). No point estimate is reported, so no covariate effect can be encoded."
+      units = "h",
+      type = "continuous",
+      notes = "Screened on both Emax and ET50 and not retained (Shigetome 2025 Table S3: univariate dOFV 0.303 on Emax and -0.193 on ET50, neither reaching the p < 0.1 forward-selection threshold). No point estimate is reported, so no covariate effect can be encoded."
     ),
     SCORE_TCI = list(
       description = "Temperament and Character Inventory scores: novelty seeking, harm avoidance, reward dependence, persistence, self-directedness, cooperativeness and self-transcendence (Shigetome 2025 Table 2)",
-      units       = "(TCI subscale points)",
-      type        = "continuous",
-      notes       = "All seven subscales were screened on both Emax and ET50 and none was retained (Shigetome 2025 Table S3). The paper notes that week-1 MADRS is itself positively associated with harm avoidance and negatively with self-directedness, which it offers as the reason the personality effects reported in its earlier work do not appear here. Reward dependence was, separately, one of four features selected by the machine-learning arm of the paper; that analysis is a classifier, not part of this popPK/PD model."
+      units = "(TCI subscale points)",
+      type = "continuous",
+      notes = "All seven subscales were screened on both Emax and ET50 and none was retained (Shigetome 2025 Table S3). The paper notes that week-1 MADRS is itself positively associated with harm avoidance and negatively with self-directedness, which it offers as the reason the personality effects reported in its earlier work do not appear here. Reward dependence was, separately, one of four features selected by the machine-learning arm of the paper; that analysis is a classifier, not part of this popPK/PD model."
     )
   )
 

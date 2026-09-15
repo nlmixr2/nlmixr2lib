@@ -8,69 +8,69 @@ Wilbaux_2022_roblitinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "roblitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "roblitinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "roblitinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form scaling on V1/F, exponent 0.332 (Wilbaux 2022 Table 1). Reference weight 70 kg (rounded standard: the source paper does not report a centering value). Time-fixed per subject at baseline.",
-      source_name        = "WT"
+      notes = "Power-form scaling on V1/F, exponent 0.332 (Wilbaux 2022 Table 1). Reference weight 70 kg (rounded standard: the source paper does not report a centering value). Time-fixed per subject at baseline.",
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form scaling on Tk0 (duration of zero-order absorption), exponent -1.66 (Wilbaux 2022 Table 1). Reference BMI 25 kg/m^2 (rounded standard: the source paper does not report a centering value). Time-fixed per subject at baseline.",
-      source_name        = "BMI"
+      notes = "Power-form scaling on Tk0 (duration of zero-order absorption), exponent -1.66 (Wilbaux 2022 Table 1). Reference BMI 25 kg/m^2 (rounded standard: the source paper does not report a centering value). Time-fixed per subject at baseline.",
+      source_name = "BMI"
     ),
     DOSE = list(
-      description        = "Administered oral dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered oral dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record covariate carrying the administered oral dose in mg (per canonical DOSE use case (a): per-subject assigned dose level). Power-form scaling on Tk0, exponent 0.983 (Wilbaux 2022 Table 1). Reference dose 100 mg (rounded mid-range of the tested doses 50/80/120/150 mg: the source paper does not report a centering value). Distinct from the event-table amt column.",
-      source_name        = "DOSE"
+      notes = "Per-record covariate carrying the administered oral dose in mg (per canonical DOSE use case (a): per-subject assigned dose level). Power-form scaling on Tk0, exponent 0.983 (Wilbaux 2022 Table 1). Reference dose 100 mg (rounded mid-range of the tested doses 50/80/120/150 mg: the source paper does not report a centering value). Distinct from the event-table amt column.",
+      source_name = "DOSE"
     ),
     FED = list(
-      description        = "Fed vs fasted dosing indicator (1 = fed with light meal within 30 min of dosing, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed vs fasted dosing indicator (1 = fed with light meal within 30 min of dosing, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Wilbaux 2022 Methods, 'Data' section: 'food effect cohorts, where patients received FGF401 doses within 30 minutes following a light meal, were allowed to be opened in parallel in the dose escalation part.' Table 1 reports Tk0 = 0.811 h fasted and Tk0 = 1.58 h fed; encoded as fractional multiplier on Tk0: fed_d1 = 1 + e_fed_d1 * FED, with e_fed_d1 = 1.58/0.811 - 1 = 0.948.",
-      source_name        = "FED"
+      notes = "Wilbaux 2022 Methods, 'Data' section: 'food effect cohorts, where patients received FGF401 doses within 30 minutes following a light meal, were allowed to be opened in parallel in the dose escalation part.' Table 1 reports Tk0 = 0.811 h fasted and Tk0 = 1.58 h fed; encoded as fractional multiplier on Tk0: fed_d1 = 1 + e_fed_d1 * FED, with e_fed_d1 = 1.58/0.811 - 1 = 0.948.",
+      source_name = "FED"
     ),
     SEXF = list(
-      description        = "Biological sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Wilbaux 2022 Table 1 reports separate typical values for female subgroups: CL/F female = 15.1 L/h vs non-Asian male 19.7 L/h; V1/F female = 84.5 L vs non-Asian male 110 L. Encoded as fractional multipliers: e_sexf_cl = 15.1/19.7 - 1 = -0.234 (23.4% lower CL/F in females); e_sexf_v1 = 84.5/110 - 1 = -0.232 (23.2% lower V1/F in females).",
-      source_name        = "SEX"
+      notes = "Wilbaux 2022 Table 1 reports separate typical values for female subgroups: CL/F female = 15.1 L/h vs non-Asian male 19.7 L/h; V1/F female = 84.5 L vs non-Asian male 110 L. Encoded as fractional multipliers: e_sexf_cl = 15.1/19.7 - 1 = -0.234 (23.4% lower CL/F in females); e_sexf_v1 = 84.5/110 - 1 = -0.232 (23.2% lower V1/F in females).",
+      source_name = "SEX"
     ),
     RACE_ASIAN = list(
-      description        = "Race indicator (1 = Asian, 0 = non-Asian)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race indicator (1 = Asian, 0 = non-Asian)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian)",
-      notes              = "Wilbaux 2022 Table 1 reports separate typical values for Asian subgroups: CL/F Asian = 16.3 L/h vs non-Asian male 19.7 L/h; V1/F Asian = 84.5 L vs non-Asian male 110 L. Encoded as fractional multipliers: e_asian_cl = 16.3/19.7 - 1 = -0.173 (17.3% lower CL/F in Asians); e_asian_v1 = 84.5/110 - 1 = -0.232 (23.2% lower V1/F in Asians).",
-      source_name        = "RACE"
+      notes = "Wilbaux 2022 Table 1 reports separate typical values for Asian subgroups: CL/F Asian = 16.3 L/h vs non-Asian male 19.7 L/h; V1/F Asian = 84.5 L vs non-Asian male 110 L. Encoded as fractional multipliers: e_asian_cl = 16.3/19.7 - 1 = -0.173 (17.3% lower CL/F in Asians); e_asian_v1 = 84.5/110 - 1 = -0.232 (23.2% lower V1/F in Asians).",
+      source_name = "RACE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 160L,
-    n_studies      = 1L,
-    disease_state  = "Adults with hepatocellular carcinoma (n = 127) or other FGF19-FGFR4-expressing solid malignancies (n = 33); Phase I/II first-in-human study NCT02325739.",
-    dose_range     = "Dose escalation: 50, 80, 120, and 150 mg once daily fasted, and 80 and 120 mg once daily fed (light meal). Expansion part: 120 mg once daily fasted.",
-    regions        = "Multicenter international phase I/II study (ClinicalTrials.gov identifier NCT02325739).",
-    notes          = "PopPK model was developed on the totality of longitudinal FGF401 plasma-concentration data from all 160 patients across the dose-escalation and dose-expansion cohorts. Detailed baseline demographics (median weight, BMI, age, race distribution) are not tabulated in the extracted paper; the companion Wilbaux 2022 CPT-PSP 11:1122-1134 (doi:10.1002/psp4.12842) reports the detailed popPK development and the Chan 2022 J Exp Clin Cancer Res 41:189 reports the clinical FIH characteristics. Reference values used in this implementation for the continuous covariates are rounded standards (WT 70 kg, BMI 25 kg/m^2, DOSE 100 mg) because the source paper does not report the centering values used at fitting time; see vignette Assumptions and deviations."
+    species = "human",
+    n_subjects = 160L,
+    n_studies = 1L,
+    disease_state = "Adults with hepatocellular carcinoma (n = 127) or other FGF19-FGFR4-expressing solid malignancies (n = 33); Phase I/II first-in-human study NCT02325739.",
+    dose_range = "Dose escalation: 50, 80, 120, and 150 mg once daily fasted, and 80 and 120 mg once daily fed (light meal). Expansion part: 120 mg once daily fasted.",
+    regions = "Multicenter international phase I/II study (ClinicalTrials.gov identifier NCT02325739).",
+    notes = "PopPK model was developed on the totality of longitudinal FGF401 plasma-concentration data from all 160 patients across the dose-escalation and dose-expansion cohorts. Detailed baseline demographics (median weight, BMI, age, race distribution) are not tabulated in the extracted paper; the companion Wilbaux 2022 CPT-PSP 11:1122-1134 (doi:10.1002/psp4.12842) reports the detailed popPK development and the Chan 2022 J Exp Clin Cancer Res 41:189 reports the clinical FIH characteristics. Reference values used in this implementation for the continuous covariates are rounded standards (WT 70 kg, BMI 25 kg/m^2, DOSE 100 mg) because the source paper does not report the centering values used at fitting time; see vignette Assumptions and deviations."
   )
 
   ini({

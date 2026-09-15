@@ -51,27 +51,77 @@ Braniff_2025_lorlatinib_qsp <- function() {
   # biological matrix. The signaling species are normalised to their
   # untreated baseline (1 = fully active) and are therefore unitless.
   compartmentData <- list(
-    depot          = list(analyte = "lorlatinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1    = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = TRUE),
-    palk           = list(analyte = "phosphorylated ALK", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
-    ras            = list(analyte = "active RAS", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
-    perk           = list(analyte = "phosphorylated ERK", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
-    pakt           = list(analyte = "phosphorylated AKT", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
-    ps6            = list(analyte = "phosphorylated S6", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
-    cycling_cells  = list(analyte = "proliferating tumor cells (shell)", units = "cells", specimen = "tumor", verified = TRUE),
-    damaged_cells1 = list(analyte = "necrotic tumor cells (core entry)", units = "cells", specimen = "tumor", verified = TRUE),
-    damaged_cells2 = list(analyte = "necrotic tumor cells (clearance delay 1)", units = "cells", specimen = "tumor", verified = TRUE),
-    damaged_cells3 = list(analyte = "necrotic tumor cells (clearance delay 2)", units = "cells", specimen = "tumor", verified = TRUE),
-    damaged_cells4 = list(analyte = "necrotic tumor cells (clearance delay 3)", units = "cells", specimen = "tumor", verified = TRUE),
-    damaged_cells5 = list(analyte = "necrotic tumor cells (clearance delay 4)", units = "cells", specimen = "tumor", verified = TRUE)
+    depot = list(analyte = "lorlatinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "lorlatinib", units = "mg", specimen = "plasma", verified = TRUE),
+    palk = list(
+      analyte = "phosphorylated ALK",
+      units = "fraction of untreated baseline",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    ras = list(analyte = "active RAS", units = "fraction of untreated baseline", specimen = "tumor", verified = TRUE),
+    perk = list(
+      analyte = "phosphorylated ERK",
+      units = "fraction of untreated baseline",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    pakt = list(
+      analyte = "phosphorylated AKT",
+      units = "fraction of untreated baseline",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    ps6 = list(
+      analyte = "phosphorylated S6",
+      units = "fraction of untreated baseline",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    cycling_cells = list(
+      analyte = "proliferating tumor cells (shell)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    damaged_cells1 = list(
+      analyte = "necrotic tumor cells (core entry)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    damaged_cells2 = list(
+      analyte = "necrotic tumor cells (clearance delay 1)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    damaged_cells3 = list(
+      analyte = "necrotic tumor cells (clearance delay 2)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    damaged_cells4 = list(
+      analyte = "necrotic tumor cells (clearance delay 3)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    ),
+    damaged_cells5 = list(
+      analyte = "necrotic tumor cells (clearance delay 4)",
+      units = "cells",
+      specimen = "tumor",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 155L,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 155L,
+    n_studies = 1L,
+    disease_state = paste(
       "Adults with ALK-positive advanced non-small cell lung cancer",
       "(NSCLC) enrolled in the global phase 2 lorlatinib study of",
       "Solomon 2018 (NCT01970865). Braniff 2025 Methods 'Dataset used",
@@ -82,8 +132,8 @@ Braniff_2025_lorlatinib_qsp <- function() {
       "virtual populations shown in Braniff 2025 Figures 4 and 5 are",
       "sized at 155 virtual patients to match this observed cohort."
     ),
-    dose_range     = "Lorlatinib 100 mg orally once daily (the phase 2 dose of Solomon 2018).",
-    endpoints      = paste(
+    dose_range = "Lorlatinib 100 mg orally once daily (the phase 2 dose of Solomon 2018).",
+    endpoints = paste(
       "Three scored outputs are matched by the Vpop selection algorithm",
       "(Braniff 2025 Methods 'Parameter sampling strategy'): baseline",
       "SLD (log-transformed before fitting the scoring distribution),",
@@ -92,7 +142,7 @@ Braniff_2025_lorlatinib_qsp <- function() {
       "two-component Gaussian mixture was fit jointly to these three",
       "endpoints and used as the acceptance score."
     ),
-    notes          = paste(
+    notes = paste(
       "Braniff 2025 is a virtual-population METHODOLOGY paper: the",
       "mechanistic model below is the engine, and the paper's",
       "contribution is a Metropolis-Hastings plausible-patient step",

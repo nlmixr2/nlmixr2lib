@@ -29,11 +29,11 @@ Nagy_2017_obiltoxaximab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor. The reference weight is species-specific:",
         "3.165 kg for NZW rabbits and 2.88 kg for cynomolgus macaques",
         "(Nagy 2017 Results, 'Animal and human population pharmacokinetic modeling'),",
@@ -42,36 +42,36 @@ Nagy_2017_obiltoxaximab <- function() {
         "Studied ranges: rabbits 2.9-4.0 kg and macaques 2.7-7.3 kg prior to challenge",
         "(Methods, 'Animal pharmacokinetic studies'); humans 50-125 kg (Discussion)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SPECIES_RABBIT = list(
-      description        = "New Zealand White rabbit indicator, 1 = NZW rabbit, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "New Zealand White rabbit indicator, 1 = NZW rabbit, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (human, the reference species)",
-      notes              = paste(
+      notes = paste(
         "Selects the NZW rabbit column of Nagy 2017 Supplementary Table S1.",
         "Mutually exclusive with SPECIES_MACAQUE; both 0 selects the human parameter set."
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     SPECIES_MACAQUE = list(
-      description        = "Cynomolgus macaque indicator, 1 = cynomolgus macaque, 0 = otherwise",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cynomolgus macaque indicator, 1 = cynomolgus macaque, 0 = otherwise",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (human, the reference species)",
-      notes              = paste(
+      notes = paste(
         "Selects the cynomolgus macaque column of Nagy 2017 Supplementary Table S1.",
         "Mutually exclusive with SPECIES_RABBIT; both 0 selects the human parameter set."
       ),
-      source_name        = "SPECIES"
+      source_name = "SPECIES"
     ),
     DIS_ANTHRAX = list(
-      description        = "Active inhalational anthrax infection indicator, 1 = infected, 0 = healthy / unexposed",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active inhalational anthrax infection indicator, 1 = infected, 0 = healthy / unexposed",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy, unexposed)",
-      notes              = paste(
+      notes = paste(
         "Switches on the parallel Michaelis-Menten elimination arm approximating",
         "protective-antigen target-mediated drug disposition. Nagy 2017 Results:",
         "'TMDD in infected NZW rabbits and cynomolgus macaques was approximated via parallel",
@@ -84,44 +84,50 @@ Nagy_2017_obiltoxaximab <- function() {
         "In the animal studies infection was aerosol challenge with a target 200 LD50 of",
         "Bacillus anthracis (Ames strain) spores."
       ),
-      source_name        = "INFECTED"
+      source_name = "INFECTED"
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "obiltoxaximab", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "obiltoxaximab",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "obiltoxaximab", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "obiltoxaximab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "obiltoxaximab", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "obiltoxaximab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human + rabbit (New Zealand White) + cynomolgus macaque",
-    n_subjects     = 758L,
-    n_studies      = 10L,
-    weight_range   = "rabbits 2.9-4.0 kg; macaques 2.7-7.3 kg; humans 50-125 kg",
-    disease_state  = paste(
+    species = "human + rabbit (New Zealand White) + cynomolgus macaque",
+    n_subjects = 758L,
+    n_studies = 10L,
+    weight_range = "rabbits 2.9-4.0 kg; macaques 2.7-7.3 kg; humans 50-125 kg",
+    disease_state = paste(
       "Pooled healthy and Bacillus anthracis (Ames) aerosol-challenged NZW rabbits and",
       "cynomolgus macaques, plus healthy human volunteers. Healthy and infected animal data",
       "were fit simultaneously within each species to describe disease effects on PK.",
       "No human anthrax patients were studied -- infected-human exposure is a model projection",
       "(this is the core of the FDA Animal Rule dose-translation argument)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Rabbits: 3, 10, 30 mg/kg i.v. and 10 mg/kg i.m. (healthy); 1, 4, 8, 16 mg/kg i.v.",
       "(infected). Macaques: 3, 10, 30 mg/kg i.v. and 10 mg/kg i.m. (healthy);",
       "4, 8, 16, 32 mg/kg i.v. (infected). Humans: 120-360 mg and 4, 8, 16 mg/kg i.v.",
       "infused over 90 min."
     ),
-    notes          = paste(
+    notes = paste(
       "n_studies = 10 per Nagy 2017 Methods ('PK data from 10 studies (two studies in rabbits,",
       "five studies in macaques, and three studies in healthy humans) were used for population",
       "PK model fitting'). The combined data set consisted of 791, 929, and 2,830 observations",

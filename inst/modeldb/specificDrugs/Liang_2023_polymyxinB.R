@@ -15,79 +15,79 @@ Liang_2023_polymyxinB <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "polymyxinB", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ALB = list(
-      description        = "Serum albumin concentration. Power covariate on CL, normalized to the cohort median of 31.45 g/L (Table 1). Higher albumin gives lower total-drug clearance (exponent -0.95), consistent with the Discussion: 'the polymyxin B CL lowers as the level of ALB rises'.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration. Power covariate on CL, normalized to the cohort median of 31.45 g/L (Table 1). Higher albumin gives lower total-drug clearance (exponent -0.95), consistent with the Discussion: 'the polymyxin B CL lowers as the level of ALB rises'.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value in the source analysis. Cohort median 31.45 g/L, range 23.1 - 41.5 g/L (Table 1). The paper reports ALB in g/L (SI), which matches the canonical register units, so no unit conversion is applied inside model(). Retained in the final model (model 6, Table 2) with a -2LL drop > 6.63 and R^2_pop improved from 0.485 to 0.573.",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline value in the source analysis. Cohort median 31.45 g/L, range 23.1 - 41.5 g/L (Table 1). The paper reports ALB in g/L (SI), which matches the canonical register units, so no unit conversion is applied inside model(). Retained in the final model (model 6, Table 2) with a -2LL drop > 6.63 and R^2_pop improved from 0.485 to 0.573.",
+      source_name = "ALB"
     ),
     AGE = list(
-      description        = "Age. Power covariate on Vc, normalized to the cohort median of 68 years (Table 1). Older patients have a larger central volume (exponent +0.95).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age. Power covariate on Vc, normalized to the cohort median of 68 years (Table 1). Older patients have a larger central volume (exponent +0.95).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed. Cohort median 68 years, range 31 - 94 years (Table 1); the Monte Carlo simulations used the 5th percentile (34 y), median (68 y), and 95th percentile (93 y). Retained in the final model (model 6, Table 2); the Discussion notes this is the first report of age as a determinant of polymyxin B volume of distribution.",
-      source_name        = "age"
+      notes = "Time-fixed. Cohort median 68 years, range 31 - 94 years (Table 1); the Monte Carlo simulations used the 5th percentile (34 y), median (68 y), and 95th percentile (93 y). Retained in the final model (model 6, Table 2); the Discussion notes this is the first report of age as a determinant of polymyxin B volume of distribution.",
+      source_name = "age"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened against volume of distribution by linear regression but excluded: 'CCR and WT were excluded because CCR had a smaller correlation coefficient with CL (R^2 = 0.01) and WT with V (R^2 = 0.01)' (Results 3.2). Cohort median 60 kg, range 50 - 80 kg (Table 1). Also used internally to compute CCR via Cockcroft-Gault (Table 1 footnote b)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened against volume of distribution by linear regression but excluded: 'CCR and WT were excluded because CCR had a smaller correlation coefficient with CL (R^2 = 0.01) and WT with V (R^2 = 0.01)' (Results 3.2). Cohort median 60 kg, range 50 - 80 kg (Table 1). Also used internally to compute CCR via Cockcroft-Gault (Table 1 footnote b)."
     ),
     CRCL = list(
       description = "Creatinine clearance estimated by the Cockcroft-Gault equation",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened against CL by linear regression but excluded (R^2 = 0.01; Results 3.2). Cohort median 68.29 mL/min, range 34.05 - 192.59 mL/min (Table 1). Computed as CCR (mL/min) = [(140 - age) x WT(kg)] / (72 x Scr(umol/L) / 88.4), multiplied by 0.85 for women (Table 1 footnote b). Note the source reports plain Cockcroft-Gault mL/min, not the BSA-normalized mL/min/1.73 m^2 of the canonical CRCL register entry."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened against CL by linear regression but excluded (R^2 = 0.01; Results 3.2). Cohort median 68.29 mL/min, range 34.05 - 192.59 mL/min (Table 1). Computed as CCR (mL/min) = [(140 - age) x WT(kg)] / (72 x Scr(umol/L) / 88.4), multiplied by 0.85 for women (Table 1 footnote b). Note the source reports plain Cockcroft-Gault mL/min, not the BSA-normalized mL/min/1.73 m^2 of the canonical CRCL register entry."
     ),
     SCR = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Collected as a baseline demographic (median 75 umol/L, range 33 - 125; Table 1) and used only to derive CCR; not screened directly as a model covariate."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Collected as a baseline demographic (median 75 umol/L, range 33 - 125; Table 1) and used only to derive CCR; not screened directly as a model covariate."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Recorded in Table 1 (5 of 22 female, 22.7%) and used only in the Cockcroft-Gault CCR adjustment factor of 0.85 for women; not screened as a PK model covariate."
+      units = "(binary)",
+      type = "binary",
+      notes = "Recorded in Table 1 (5 of 22 female, 22.7%) and used only in the Cockcroft-Gault CCR adjustment factor of 0.85 for women; not screened as a PK model covariate."
     ),
     SCORE_APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score",
-      units       = "points",
-      type        = "continuous",
-      notes       = "Screened as a power covariate on Vc in model 5 of Table 2 -- V0*(APACHE-II/21.5)^(-0.95) -- with a correlation against Vc of R^2 = 0.17, the same as age. Not retained: model 5 gave -2LL 143.7 versus 139.9 for the age model (model 4), so age was carried into the final model 6. Cohort median 21.5 points, range 15 - 46 (Table 1). SCORE_APACHE_II is not a ratified entry in inst/references/covariate-columns.md; it is used here only as a documentation label in covariatesDataExcluded, following the Mori_2018_zoledronicAcid.R precedent for screened-but-unretained covariates. It is deliberately NOT mapped to the existing SAPS_II canonical, which is a different severity score with different scoring rules."
+      units = "points",
+      type = "continuous",
+      notes = "Screened as a power covariate on Vc in model 5 of Table 2 -- V0*(APACHE-II/21.5)^(-0.95) -- with a correlation against Vc of R^2 = 0.17, the same as age. Not retained: model 5 gave -2LL 143.7 versus 139.9 for the age model (model 4), so age was carried into the final model 6. Cohort median 21.5 points, range 15 - 46 (Table 1). SCORE_APACHE_II is not a ratified entry in inst/references/covariate-columns.md; it is used here only as a documentation label in covariatesDataExcluded, following the Mori_2018_zoledronicAcid.R precedent for screened-but-unretained covariates. It is deliberately NOT mapped to the existing SAPS_II canonical, which is a different severity score with different scoring rules."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 22,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 22,
+    n_studies = 1,
     n_observations = 64,
-    age_range      = "31-94 years",
-    age_median     = "68 years",
-    weight_range   = "50-80 kg",
-    weight_median  = "60 kg",
+    age_range = "31-94 years",
+    age_median = "68 years",
+    weight_range = "50-80 kg",
+    weight_median = "60 kg",
     sex_female_pct = 22.7,
-    disease_state  = "critically ill adults (>= 18 years) with multidrug-resistant gram-negative bacterial infection; 50.0% pulmonary infection, 45.5% pulmonary infection with sepsis/septicemia, 4.5% intracranial infection. Pathogens: Acinetobacter baumannii 50.0%, Pseudomonas aeruginosa 13.6%, Klebsiella pneumoniae 9.1%, co-infection with 2 or more organisms 27.3%",
+    disease_state = "critically ill adults (>= 18 years) with multidrug-resistant gram-negative bacterial infection; 50.0% pulmonary infection, 45.5% pulmonary infection with sepsis/septicemia, 4.5% intracranial infection. Pathogens: Acinetobacter baumannii 50.0%, Pseudomonas aeruginosa 13.6%, Klebsiella pneumoniae 9.1%, co-infection with 2 or more organisms 27.3%",
     renal_function = "baseline serum creatinine median 75 umol/L (33-125); baseline Cockcroft-Gault creatinine clearance median 68.29 mL/min (34.05-192.59)",
-    albumin        = "baseline serum albumin median 31.45 g/L (23.1-41.5)",
-    severity       = "APACHE-II score median 21.5 points (15-46)",
-    dose_range     = "intravenous infusion over 1-2 h; loading dose 100-150 mg, maintenance dose 50-75 mg q12h",
-    regions        = "China (single center, Guangzhou)",
-    notes          = "Baseline demographics from Table 1. Patients receiving continuous renal replacement therapy (n = 10) or extracorporeal membrane oxygenation (n = 2) at the time of blood collection were excluded, so the model must not be extrapolated to CRRT or ECMO patients (Discussion, study limitations). Sampling was at steady state, >= 48 h after the start of treatment: 24 trough samples (within 1 h before a dose), 23 peak samples (within 1 h after the end of infusion), and 17 samples 6-8 h after infusion. Total (not unbound) polymyxin B was measured as the sum of polymyxin B1, B2, and B1-Ile by LC-MS/MS."
+    albumin = "baseline serum albumin median 31.45 g/L (23.1-41.5)",
+    severity = "APACHE-II score median 21.5 points (15-46)",
+    dose_range = "intravenous infusion over 1-2 h; loading dose 100-150 mg, maintenance dose 50-75 mg q12h",
+    regions = "China (single center, Guangzhou)",
+    notes = "Baseline demographics from Table 1. Patients receiving continuous renal replacement therapy (n = 10) or extracorporeal membrane oxygenation (n = 2) at the time of blood collection were excluded, so the model must not be extrapolated to CRRT or ECMO patients (Discussion, study limitations). Sampling was at steady state, >= 48 h after the start of treatment: 24 trough samples (within 1 h before a dose), 23 peak samples (within 1 h after the end of infusion), and 17 samples 6-8 h after infusion. Total (not unbound) polymyxin B was measured as the sum of polymyxin B1, B2, and B1-Ile by LC-MS/MS."
   )
 
   ini({

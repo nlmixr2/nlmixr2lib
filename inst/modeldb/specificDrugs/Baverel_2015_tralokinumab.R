@@ -12,47 +12,47 @@ Baverel_2015_tralokinumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline; allometric power scaling on disposition parameters with reference weight 73 kg (pooled-cohort median; Baverel 2015 Equation 5). Exponents fixed at 0.75 for CL and Q and at 1 for Vc and Vp.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline; allometric power scaling on disposition parameters with reference weight 73 kg (pooled-cohort median; Baverel 2015 Equation 5). Exponents fixed at 0.75 for CL and Q and at 1 for Vc and Vp.",
+      source_name = "WT"
     ),
     ADOLESCENT = list(
-      description        = "Adolescent age-cohort indicator (1 = age 12-17 years; 0 = adult >= 18 years)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Adolescent age-cohort indicator (1 = age 12-17 years; 0 = adult >= 18 years)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = "Categorical effect retained on clearance only; corresponds to Baverel 2015 Equation 7 with adolescents having a 15% lower CL than adults (Table 3 row 'CL decrease, % (adolescent)' = 15%).",
-      source_name        = "ADOLESCENT"
+      notes = "Categorical effect retained on clearance only; corresponds to Baverel 2015 Equation 7 with adolescents having a 15% lower CL than adults (Table 3 row 'CL decrease, % (adolescent)' = 15%).",
+      source_name = "ADOLESCENT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 578L,
-    n_studies       = 8L,
-    n_observations  = 5504L,
-    age_range       = "12-75 years (adolescents 12-17; adults 18-75)",
-    weight_range    = "36-115 kg overall; adolescents 40-94 kg",
-    weight_median   = "73 kg overall (adolescents 60 kg)",
-    sex_female_pct  = 53.5,
-    race_ethnicity  = c(White = 69, Asian = 23, Black = 2, Other = 5),
-    disease_state   = "Adolescents and adults with asthma plus healthy volunteers; pooled across 5 phase I studies and 3 phase II studies",
-    dose_range      = "Single SC 300 mg in the adolescent study; pooled IV 0.1-30 mg/kg single dose and SC <= 600 mg multiple-dose Q2W or Q4W in adults",
-    regions         = "Multinational; the adolescent phase I study was conducted in Poland (NCT01592396)",
-    n_adolescents   = 20L,
+    species = "human",
+    n_subjects = 578L,
+    n_studies = 8L,
+    n_observations = 5504L,
+    age_range = "12-75 years (adolescents 12-17; adults 18-75)",
+    weight_range = "36-115 kg overall; adolescents 40-94 kg",
+    weight_median = "73 kg overall (adolescents 60 kg)",
+    sex_female_pct = 53.5,
+    race_ethnicity = c(White = 69, Asian = 23, Black = 2, Other = 5),
+    disease_state = "Adolescents and adults with asthma plus healthy volunteers; pooled across 5 phase I studies and 3 phase II studies",
+    dose_range = "Single SC 300 mg in the adolescent study; pooled IV 0.1-30 mg/kg single dose and SC <= 600 mg multiple-dose Q2W or Q4W in adults",
+    regions = "Multinational; the adolescent phase I study was conducted in Poland (NCT01592396)",
+    n_adolescents = 20L,
     n_pk_samples_adolescent = 202L,
-    notes           = "Demographics pooled across 8 studies (Baverel 2015 Table 1). Adolescent contribution is 20 subjects (3.5%) and 202 PK samples (3.7%) from NCT01592396; the remaining 558 subjects came from prior phase I (NCT01093040, NCT00638989, CAT-354-401, NCT00974675) and phase II (NCT00640016, NCT00873860, NCT01402986) studies in adults. Sex distribution computed from Table 1 row 'Male, n (%)': 269/578 male = 46.5% male, so 53.5% female. Japanese subtype contributed 64/578 (11.1%) but did not enter the final PK model as a covariate."
+    notes = "Demographics pooled across 8 studies (Baverel 2015 Table 1). Adolescent contribution is 20 subjects (3.5%) and 202 PK samples (3.7%) from NCT01592396; the remaining 558 subjects came from prior phase I (NCT01093040, NCT00638989, CAT-354-401, NCT00974675) and phase II (NCT00640016, NCT00873860, NCT01402986) studies in adults. Sex distribution computed from Table 1 row 'Male, n (%)': 269/578 male = 46.5% male, so 53.5% female. Japanese subtype contributed 64/578 (11.1%) but did not enter the final PK model as a covariate."
   )
 
   ini({

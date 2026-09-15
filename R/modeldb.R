@@ -29,26 +29,37 @@ utils::globalVariables(c("modeldb"))
 }
 
 .conventionErrorsAdd <- function(modelName, issues) {
-  if (is.null(.conventionErrorEnv$byModel)) .conventionErrorsReset()
+  if (is.null(.conventionErrorEnv$byModel)) {
+    .conventionErrorsReset()
+  }
   .conventionErrorEnv$byModel[[modelName]] <- issues
   invisible(NULL)
 }
 
 .conventionErrorsStopIfAny <- function() {
   byModel <- .conventionErrorEnv$byModel
-  if (is.null(byModel) || length(byModel) == 0) return(invisible(NULL))
+  if (is.null(byModel) || length(byModel) == 0) {
+    return(invisible(NULL))
+  }
   n <- sum(vapply(byModel, nrow, integer(1)))
-  detail <- vapply(names(byModel), function(nm) {
-    iss <- byModel[[nm]]
-    paste0("  ", nm, ": ",
-           paste(sprintf("%s (%s)", iss$name, iss$category), collapse = ", "))
-  }, character(1))
+  detail <- vapply(
+    names(byModel),
+    function(nm) {
+      iss <- byModel[[nm]]
+      paste0("  ", nm, ": ", paste(sprintf("%s (%s)", iss$name, iss$category), collapse = ", "))
+    },
+    character(1)
+  )
   stop(
     sprintf(
-      paste0("buildModelDb(): %d convention error(s) in %d model(s).\n%s\n",
-             "Run checkModelConventions(\"<model>\") for the full report and ",
-             "suggested fix."),
-      n, length(byModel), paste(detail, collapse = "\n")
+      paste0(
+        "buildModelDb(): %d convention error(s) in %d model(s).\n%s\n",
+        "Run checkModelConventions(\"<model>\") for the full report and ",
+        "suggested fix."
+      ),
+      n,
+      length(byModel),
+      paste(detail, collapse = "\n")
     ),
     call. = FALSE
   )
@@ -102,8 +113,7 @@ buildModelDb <- function() {
   savefile <- file.path(packageDirectory, "data/modeldb.rda")
   message("Saving the modeldb to ", savefile)
   save(modeldb, file = savefile, compress = "bzip2", version = 2, ascii = FALSE)
-  saveRDS(modeldb, file = file.path(packageDirectory, "inst/modeldb.rds"),
-          compress = "bzip2", version = 2)
+  saveRDS(modeldb, file = file.path(packageDirectory, "inst/modeldb.rds"), compress = "bzip2", version = 2)
   .modeldbCacheWrite(cachePath, list(globalSig = sig, entries = result$entries))
   .writePkgdownNavbar(modeldb, packageDirectory)
   message("Done saving the modeldb to ", savefile)
@@ -188,9 +198,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
   modelName <- as.character(parsedFile[[1]][[2]])
   packageStartupMessage("Loading ", modelName, " from ", fileName)
   if (modelName != tools::file_path_sans_ext(basename(file))) {
-    stop("Loading model failed due to filename/modelName mismatch: ", fileName,
-      call. = FALSE
-    ) # nocov
+    stop("Loading model failed due to filename/modelName mismatch: ", fileName, call. = FALSE) # nocov
   }
 
   # Parse the model to get the fixed effects and DV parameters
@@ -217,7 +225,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
     if (n_err + n_warn > 0) {
       message(sprintf(
         "  %s: %d convention error(s), %d warning(s) - run checkModelConventions(\"%s\") for details",
-        modelName, n_err, n_warn, modelName
+        modelName,
+        n_err,
+        n_warn,
+        modelName
       ))
     }
   }
@@ -283,28 +294,26 @@ addFileToModelDb <- function(dir, file, modeldb) {
     paramErr <- ""
   }
 
-
   if (!mod$props$linCmt && (length(mod$props$cmt) == 0)) {
     algebraic <- TRUE
   } else {
     algebraic <- FALSE
   }
 
-
   ret <-
     data.frame(
-      name        = modelName,
+      name = modelName,
       description = description,
-      parameters  = paste(modParamFixed, collapse = ","),
-      DV          = paste(paramErr, collapse = ","),
-      linCmt      = mod$props$linCmt,
-      algebraic   = algebraic,
-      dosing      = dosing,
-      depends     = depends,
-      vignette    = vignette,
-      label       = .parseModelLabel(fileName),
-      category    = .parseModelCategory(fileName),
-      filename    = fileName
+      parameters = paste(modParamFixed, collapse = ","),
+      DV = paste(paramErr, collapse = ","),
+      linCmt = mod$props$linCmt,
+      algebraic = algebraic,
+      dosing = dosing,
+      depends = depends,
+      vignette = vignette,
+      label = .parseModelLabel(fileName),
+      category = .parseModelCategory(fileName),
+      filename = fileName
     )
   modeldb <- rbind(modeldb, ret)
   if (any(duplicated(modeldb$name))) {
@@ -363,10 +372,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
   list(
     cacheVersion = 3L,
-    rVersion     = R.version.string,
-    nlmixr2      = safeVersion("nlmixr2"),
-    nlmixr2est   = safeVersion("nlmixr2est"),
-    rxode2       = safeVersion("rxode2"),
+    rVersion = R.version.string,
+    nlmixr2 = safeVersion("nlmixr2"),
+    nlmixr2est = safeVersion("nlmixr2est"),
+    rxode2 = safeVersion("rxode2"),
     modeldbRhash = unname(tools::md5sum(file.path(packageDirectory, "R/modeldb.R")))
   )
 }
@@ -417,12 +426,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
 .parseModelLabel <- function(filename) {
   base <- tools::file_path_sans_ext(basename(filename))
   parts <- strsplit(base, "_", fixed = TRUE)[[1]]
-  if (length(parts) >= 3 &&
+  if (
+    length(parts) >= 3 &&
       grepl("^[0-9]{4}[a-z]?$", parts[2]) &&
-      parts[1] != "NA" && parts[2] != "NA") {
+      parts[1] != "NA" &&
+      parts[2] != "NA"
+  ) {
     drug <- paste(parts[-(1:2)], collapse = " ")
-    drug <- paste0(toupper(substr(drug, 1, 1)),
-                   substr(drug, 2, nchar(drug)))
+    drug <- paste0(toupper(substr(drug, 1, 1)), substr(drug, 2, nchar(drug)))
     return(sprintf("%s (%s %s)", drug, parts[1], parts[2]))
   }
   if (length(parts) >= 3 && parts[1] == "NA" && parts[2] == "NA") {
@@ -439,8 +450,12 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # (e.g. "specificDrugs/Aguiar_2021_ustekinumab.R") or an absolute filesystem
 # path -- the prefix match is anchored on the canonical directory names.
 .parseModelCategory <- function(filename) {
-  if (grepl("(^|/)specificDrugs/", filename)) return("specificDrugs")
-  if (grepl("(^|/)ddmore/",        filename)) return("ddmore")
+  if (grepl("(^|/)specificDrugs/", filename)) {
+    return("specificDrugs")
+  }
+  if (grepl("(^|/)ddmore/", filename)) {
+    return("ddmore")
+  }
   "other"
 }
 
@@ -473,22 +488,26 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # only that region; the others still refresh.
 .writePkgdownNavbar <- function(modeldb, packageDirectory) {
   ymlPath <- file.path(packageDirectory, "_pkgdown.yml")
-  if (!file.exists(ymlPath)) return(invisible())
+  if (!file.exists(ymlPath)) {
+    return(invisible())
+  }
 
   with_vignette <- !is.na(modeldb$vignette)
   spec <- modeldb[with_vignette & modeldb$category == "specificDrugs", , drop = FALSE]
-  ddmo <- modeldb[with_vignette & modeldb$category == "ddmore",        , drop = FALSE]
+  ddmo <- modeldb[with_vignette & modeldb$category == "ddmore", , drop = FALSE]
 
   # Each replacement line is emitted at column 0 (no leading whitespace).
   # .replaceAutogen() prefixes whatever indentation the BEGIN signpost
   # carries, so a marker at any nesting level renders correctly.
   buildMenuLines <- function(rows) {
-    if (nrow(rows) == 0) return(character())
+    if (nrow(rows) == 0) {
+      return(character())
+    }
     ord <- order(rows$label)
     rows <- rows[ord, , drop = FALSE]
     unlist(lapply(seq_len(nrow(rows)), function(i) {
       c(
-        sprintf("- text: %s",            .yamlQuote(rows$label[[i]])),
+        sprintf("- text: %s", .yamlQuote(rows$label[[i]])),
         sprintf("  href: articles/%s.html", rows$vignette[[i]])
       )
     }))
@@ -538,16 +557,23 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   ymlLines <- readLines(ymlPath, encoding = "UTF-8", warn = FALSE)
   result <- .replaceAutogen(ymlLines, "specific_drugs", buildMenuLines(spec))
-  result <- .replaceAutogen(result,   "ddmore",         buildMenuLines(ddmo))
-  result <- .replaceAutogen(result,   "articles",       articlesLines)
+  result <- .replaceAutogen(result, "ddmore", buildMenuLines(ddmo))
+  result <- .replaceAutogen(result, "articles", articlesLines)
 
   if (!identical(result, ymlLines)) {
     writeLines(result, ymlPath, useBytes = FALSE, sep = "\n")
   }
-  message("Refreshing navbar in ", ymlPath,
-          " (specificDrugs=", nrow(spec),
-          ", ddmore=", nrow(ddmo),
-          ", internal-articles=", length(articleNames), ")")
+  message(
+    "Refreshing navbar in ",
+    ymlPath,
+    " (specificDrugs=",
+    nrow(spec),
+    ", ddmore=",
+    nrow(ddmo),
+    ", internal-articles=",
+    length(articleNames),
+    ")"
+  )
   invisible()
 }
 
@@ -562,12 +588,17 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # lines untouched and warns once per region.
 .replaceAutogen <- function(lines, name, replacement) {
   beginRx <- sprintf("^([[:space:]]*)#[[:space:]]*AUTOGEN:%s:BEGIN", name)
-  endRx   <- sprintf("^[[:space:]]*#[[:space:]]*AUTOGEN:%s:END",   name)
+  endRx <- sprintf("^[[:space:]]*#[[:space:]]*AUTOGEN:%s:END", name)
   bi <- grep(beginRx, lines)
-  ei <- grep(endRx,   lines)
+  ei <- grep(endRx, lines)
   if (length(bi) != 1L || length(ei) != 1L || ei <= bi) {
-    warning("AUTOGEN:", name, " signposts missing or malformed in _pkgdown.yml; ",
-            "leaving that region unchanged.", call. = FALSE)
+    warning(
+      "AUTOGEN:",
+      name,
+      " signposts missing or malformed in _pkgdown.yml; ",
+      "leaving that region unchanged.",
+      call. = FALSE
+    )
     return(lines)
   }
   indent <- sub(beginRx, "\\1", lines[bi])

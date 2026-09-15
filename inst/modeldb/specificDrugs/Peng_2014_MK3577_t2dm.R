@@ -38,8 +38,8 @@ Peng_2014_MK3577_t2dm <- function() {
   paper_specific_compartments <- c("glucose_peripheral", "glucagon")
 
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "MK-3577 is NOT dosed: supply CP_MK3577_NM (nM) as a time-varying",
       "covariate column. No glucagon, Sandostatin, or basal insulin",
       "infusions are required for the T2DM CTS use case (the phase IIa",
@@ -57,15 +57,15 @@ Peng_2014_MK3577_t2dm <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    glucose            = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
     glucose_peripheral = list(analyte = "Glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
-    insulin            = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    glucagon           = list(analyte = "Glucagon", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    insulin = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucagon = list(analyte = "Glucagon", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     CP_MK3577_NM = list(
-      description        = paste(
+      description = paste(
         "Instantaneous MK-3577 plasma concentration in nM supplied as a",
         "time-varying regressor that drives the Imax inhibition of glucagon",
         "stimulation on glucose production (IC50,MK = 13.9 nM) and the Emax",
@@ -73,10 +73,10 @@ Peng_2014_MK3577_t2dm <- function() {
         "for placebo subjects and for time points before any MK-3577 dose.",
         sep = " "
       ),
-      units              = "nM",
-      type               = "continuous",
+      units = "nM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Supplied externally because the on-disk Peng 2014 PDF does not",
         "report the MK-3577 absorption rate ka, apparent volume V/F, or",
         "molecular weight needed to derive a mg-dose-to-nM-plasma profile",
@@ -84,18 +84,18 @@ Peng_2014_MK3577_t2dm <- function() {
         "model and the shared vignette Assumptions and deviations section.",
         sep = " "
       ),
-      source_name        = "CMK"
+      source_name = "CMK"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 118L,
-    n_studies      = 1L,
-    age_range      = "phase IIa cohort 54 +/- 10 years (Table I)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 118L,
+    n_studies = 1L,
+    age_range = "phase IIa cohort 54 +/- 10 years (Table I)",
+    weight_range = NA_character_,
     sex_female_pct = 47,
-    disease_state  = paste(
+    disease_state = paste(
       "Type 2 diabetes mellitus (Peng 2014 Methods, Phase IIa Study in T2DM",
       "Patients). Baseline FPG 152 +/- 35 mg/dL; A1c 7.6 +/- 0.8 %; 2-h",
       "PMG 223 +/- 63 mg/dL (Table I). Inclusion criterion in lead-compound",
@@ -103,15 +103,15 @@ Peng_2014_MK3577_t2dm <- function() {
       ">= 140 and <= 240 mg/dL.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Phase IIa treatments: MK-3577 10 mg QD AM, 6 mg QD PM, 25 mg BID;",
       "metformin 1000 mg BID (active control); placebo. Prespecified interim",
       "analysis at N = 118 patients used the CTS output for adaptive dose",
       "adjustment (Tables V and VI).",
       sep = " "
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Baseline demographics from Peng 2014 Table I (Phase IIa cohort).",
       "The CTS used 82 patients per dose cohort and 1000 simulated trials.",
       "The actual baseline FPG was unavailable prior to the interim analysis",

@@ -24,36 +24,41 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
   vignette <- "Sharma_2023_nitrofurantoin"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   compartmentData <- list(
-    a_gut_lumen      = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
-    a_gut            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_liver          = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_hepatic        = list(analyte = "nitrofurantoin metabolites (lumped)", units = "mg", specimen = "tissue", verified = TRUE),
-    a_bile           = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile",                verified = TRUE),
-    a_feces          = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces",              verified = TRUE),
-    a_kidney         = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_filtrate       = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_urine_storage  = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE),
-    a_fat            = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_rest_of_body   = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue",              verified = TRUE),
-    a_plasma         = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma",              verified = TRUE),
-    a_urine          = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine",               verified = TRUE)
+    a_gut_lumen = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),
+    a_gut = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_hepatic = list(
+      analyte = "nitrofurantoin metabolites (lumped)",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    a_bile = list(analyte = "nitrofurantoin", units = "mg", specimen = "bile", verified = TRUE),
+    a_feces = list(analyte = "nitrofurantoin", units = "mg", specimen = "faeces", verified = TRUE),
+    a_kidney = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_filtrate = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_urine_storage = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE),
+    a_fat = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_rest_of_body = list(analyte = "nitrofurantoin", units = "mg", specimen = "tissue", verified = TRUE),
+    a_plasma = list(analyte = "nitrofurantoin", units = "mg", specimen = "plasma", verified = TRUE),
+    a_urine = list(analyte = "nitrofurantoin", units = "mg", specimen = "urine", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "NOT a covariate on a clearance term -- age drives the whole body. It enters the",
         "sex-specific 6th-order height and body-weight polynomials, and from those the",
         "Du Bois body surface area, cardiac output, and every organ volume and blood flow.",
@@ -67,14 +72,14 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
         "deposited Monte-Carlo input file draws a truncated normal (mean 35, SD 10, bounds",
         "25-40); see the vignette Errata."
       ),
-      source_name        = "age"
+      source_name = "age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Selects between two complete sets of physiology equations (height, body weight,",
         "liver / kidney / fat / plasma volume, cardiac output, liver / kidney / fat blood",
         "flow, fractional gut blood flow), not a single coefficient.",
@@ -90,14 +95,14 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
         "MALE branch, while the renal-insufficiency analysis (Figure 7) set sex = 2, which",
         "falls through the deposited ternary to the FEMALE branch. See the vignette Errata."
       ),
-      source_name        = "sex"
+      source_name = "sex"
     ),
     CRCL = list(
-      description        = "Absolute glomerular filtration rate (NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Absolute glomerular filtration rate (NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Absolute GFR in mL/min, converted to filtrate plasma flow in L/h inside model() by",
         "the factor 0.06. This is the model's only renal-function input and it drives",
         "glomerular filtration directly (it is not a scalar on a clearance parameter).",
@@ -113,27 +118,27 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
         "branch exactly without duplicating the body-surface-area polynomial outside the",
         "model."
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    age_range      = "25-40 years (simulated)",
-    age_median     = "35 years",
-    weight_range   = "Not an input -- body weight is PREDICTED from age and sex (about 63-68 kg female, 77-83 kg male over the simulated 25-40 year range)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = "25-40 years (simulated)",
+    age_median = "35 years",
+    weight_range = "Not an input -- body weight is PREDICTED from age and sex (about 63-68 kg female, 77-83 kg male over the simulated 25-40 year range)",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy adults for the plasma validation; renal insufficiency explored in silico as",
       "absolute GFR 70, 45 and 20 mL/min versus normal. No human data were used to fit any",
       "parameter -- the human model is a pure cross-species extrapolation from the rabbit",
       "(renal, metabolic) and rat (enterohepatic recirculation, gut absorption) fits."
     ),
-    dose_range     = "50, 100 and 200 mg single oral (Figure 6); 50 mg orally four times daily for five days (Figure 7)",
+    dose_range = "50, 100 and 200 mg single oral (Figure 6); 50 mg orally four times daily for five days (Figure 7)",
     renal_function = "Normal (age/BSA-predicted, about 120-150 mL/min) for the validation; 70, 45 and 20 mL/min for the renal-insufficiency scenarios",
-    notes          = paste(
+    notes = paste(
       "The human plasma comparison data are DIGITISED literature values, not an",
       "individual-level dataset: Sharma 2023 Methods 2.3 states human time-course plasma",
       "data after single oral doses of 50, 100 and 200 mg were extracted from its reference",

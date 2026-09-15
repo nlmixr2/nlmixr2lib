@@ -35,17 +35,17 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor on the renal clearance arm (fixed exponent 0.75) and on",
         "the central volume (fixed exponent 1), both normalised to a reference weight of 8 kg",
         "-- the cohort median (Butragueno-Laiseca 2025 Results, Patient population: median",
@@ -59,14 +59,14 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
         "surrogate for haemofilter size, because filter size was assigned by weight band",
         "(small 3-10 kg, medium 10-30 kg, large 30-60 kg; Results, Patient population)."
       ),
-      source_name        = "WGT"
+      source_name = "WGT"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "CKRT-active indicator (1 while continuous venovenous haemodiafiltration is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CKRT-active indicator (1 while continuous venovenous haemodiafiltration is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CKRT running)",
-      notes              = paste(
+      notes = paste(
         "Switches the model between its two mutually exclusive elimination arms. Renal",
         "clearance is gated OFF while CKRT is running -- Table 2 footnote a: 'CLR in patients",
         "with CKRT was estimated to be zero', restated in the Supplementary material",
@@ -80,14 +80,14 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
         "groups. The modality is continuous venovenous haemodiafiltration (Results, Patient",
         "population), hence CRRT rather than the intermittent-haemodialysis member."
       ),
-      source_name        = "CKRT"
+      source_name = "CKRT"
     ),
     FILT_SA_MED = list(
-      description        = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Medium haemofilter indicator (0.6 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (small 0.2 m2 filter, the reference category, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "One of the two non-reference levels of the three-level haemofilter-surface-area",
         "covariate on the CKRT clearance arm (Butragueno-Laiseca 2025 Table 2: CLKRT =",
         "theta_CLKRT * theta_FILT, with theta_FILT Small = 1 (reference), Medium = 3.58,",
@@ -99,28 +99,28 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
         "not be retained alongside filter size because of their strong mutual correlation",
         "(Results, Covariate selection; Figure S3)."
       ),
-      source_name        = "FILT (Med)"
+      source_name = "FILT (Med)"
     ),
     FILT_SA_LARGE = list(
-      description        = "Large haemofilter indicator (1.2 m2 membrane surface area)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Large haemofilter indicator (1.2 m2 membrane surface area)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (small 0.2 m2 filter, the reference category, or no CKRT)",
-      notes              = paste(
+      notes = paste(
         "The second non-reference level of the haemofilter-surface-area covariate on the CKRT",
         "clearance arm (Butragueno-Laiseca 2025 Table 2: theta_FILT Large = 5.04, RSE 14%,",
         "95% CI 3.80-6.26). Meaningful only when RRT_CRRT_ACTIVE = 1. Mutually exclusive with",
         "FILT_SA_MED; both indicators are 0 for the small (0.2 m2) reference filter. Only 2 of",
         "the 12 CKRT patients used a large filter (Table 1)."
       ),
-      source_name        = "FILT (Large)"
+      source_name = "FILT (Large)"
     ),
     BFR = list(
-      description        = "Blood flow rate through the CKRT extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Blood flow rate through the CKRT extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters ONLY the post-filter observation equation, not the clearance model: the",
         "Supplementary material (Pharmacokinetic analysis) gives Cpost = Cpre * (1 - CLKRT /",
         "phi_PlCorr), where phi_PlCorr is 'the corrected plasma flow that goes into the",
@@ -132,14 +132,14 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
         "(phi) remained constant during the study.' Meaningful only when RRT_CRRT_ACTIVE = 1;",
         "converted to L/h inside model()."
       ),
-      source_name        = "Blood flow"
+      source_name = "Blood flow"
     ),
     HCT = list(
-      description        = "Haematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Haematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Converts the extracorporeal blood flow to the plasma flow entering the haemofilter",
         "in the post-filter observation equation (plasma fraction of blood = 1 - HCT/100).",
         "Butragueno-Laiseca 2025 Results, Covariate selection state that no laboratory value",
@@ -151,66 +151,66 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
         "definition of BPR; the plasma-fraction reading 1 - HCT/100 is the interpretation",
         "encoded here."
       ),
-      source_name        = "Haematocrit"
+      source_name = "Haematocrit"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened and not retained (Butragueno-Laiseca 2025 Results, Covariate selection: 'No other patient characteristics or laboratory values ... significantly affected any of the PK parameters (P > 0.05)'; Supplementary material lists age among the >10 covariates evaluated). Median (range) 14 months (3 months-13 years) overall; 7 (3-60) months without and 20 (4-156) months with haemofilter (Table 1)."
+      units = "months",
+      type = "continuous",
+      notes = "Screened and not retained (Butragueno-Laiseca 2025 Results, Covariate selection: 'No other patient characteristics or laboratory values ... significantly affected any of the PK parameters (P > 0.05)'; Supplementary material lists age among the >10 covariates evaluated). Median (range) 14 months (3 months-13 years) overall; 7 (3-60) months without and 20 (4-156) months with haemofilter (Table 1)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened and not retained. Median (range) 65 (53-131) cm without and 82.5 (60-146.5) cm with haemofilter (Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened and not retained. Median (range) 65 (53-131) cm without and 82.5 (60-146.5) cm with haemofilter (Table 1)."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened and not retained. Median (range) 0.35 (0.24-1.18) m^2 without and 0.45 (0.29-1.32) m^2 with haemofilter (Table 1). Distinct from the retained haemofilter membrane surface area (FILT_SA_MED / FILT_SA_LARGE), which is a device property, not a body size."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened and not retained. Median (range) 0.35 (0.24-1.18) m^2 without and 0.45 (0.29-1.32) m^2 with haemofilter (Table 1). Distinct from the retained haemofilter membrane surface area (FILT_SA_MED / FILT_SA_LARGE), which is a device property, not a body size."
     ),
     CRCL = list(
       description = "Estimated glomerular filtration rate (bedside Schwartz equation)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened and not retained on any parameter, including CLKRT (Butragueno-Laiseca 2025 Results, Covariate selection and Discussion: 'renal function expressed as eGFR was not found to have an impact on CLKRT, consistent with the results of Aulin et al.'). Median (range) 112 (29-283) mL/min in the non-CKRT group; not reported for CKRT patients (Table 1). The Limitations attribute the null result to the small sample size and to 27% of patients lacking cystatin C measurements."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened and not retained on any parameter, including CLKRT (Butragueno-Laiseca 2025 Results, Covariate selection and Discussion: 'renal function expressed as eGFR was not found to have an impact on CLKRT, consistent with the results of Aulin et al.'). Median (range) 112 (29-283) mL/min in the non-CKRT group; not reported for CKRT patients (Table 1). The Limitations attribute the null result to the small sample size and to 27% of patients lacking cystatin C measurements."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained. Median (range) 0.32 (0.1-2.46) mg/dL in the non-CKRT group; not reported for CKRT patients (Table 1)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened and not retained. Median (range) 0.32 (0.1-2.46) mg/dL in the non-CKRT group; not reported for CKRT patients (Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained (Butragueno-Laiseca 2025 Discussion: 'albumin concentration did not show covariate effects in any of the model parameters despite the fact that teicoplanin is highly bound to that plasma protein'; the authors attribute this to the narrow albumin range, matching Aulin et al.). Median (range) 3.3 (2.1-4.2) g/dL without and 3.4 (2.5-4.2) g/dL with haemofilter (Table 1)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened and not retained (Butragueno-Laiseca 2025 Discussion: 'albumin concentration did not show covariate effects in any of the model parameters despite the fact that teicoplanin is highly bound to that plasma protein'; the authors attribute this to the narrow albumin range, matching Aulin et al.). Median (range) 3.3 (2.1-4.2) g/dL without and 3.4 (2.5-4.2) g/dL with haemofilter (Table 1)."
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened and not retained. Median (range) 9.7 (6.7-12.3) without and 9.8 (8.4-12.3) with haemofilter (Table 1). Distinct from the retained HCT, which enters the post-filter plasma-flow correction rather than a structural parameter."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened and not retained. Median (range) 9.7 (6.7-12.3) without and 9.8 (8.4-12.3) with haemofilter (Table 1). Distinct from the retained HCT, which enters the post-filter plasma-flow correction rather than a structural parameter."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 26L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 26L,
+    n_studies = 1L,
     n_observations = 173L,
-    age_range      = "3 months to 13 years",
-    age_median     = "14 months",
-    weight_range   = "4.3-44 kg",
-    weight_median  = "8 kg",
+    age_range = "3 months to 13 years",
+    age_median = "14 months",
+    weight_range = "4.3-44 kg",
+    weight_median = "8 kg",
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children admitted to a paediatric intensive care unit and treated",
       "with teicoplanin, 12 of them undergoing continuous kidney replacement therapy in",
       "continuous venovenous haemodiafiltration modality. Most were in the post-operative",
@@ -224,7 +224,7 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
       "(Supplementary material, Patient infections). No patient experienced",
       "nephrotoxicity or hepatotoxicity."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Standard paediatric regimen: three loading doses of 10 mg/kg every 12 h in all",
       "patients, followed 24 h later by a maintenance dose of 10 mg/kg every 24 h in",
       "patients without a haemofilter or 3.3 mg/kg every 24 h in patients undergoing CKRT.",
@@ -234,7 +234,7 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
       "samples were drawn simultaneously from the pre- and post-filter ports of the",
       "Prismaflex device. Median (range) 5.5 (4-13) samples per patient."
     ),
-    regions        = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
+    regions = "Hospital General Universitario Gregorio Maranon, Madrid, Spain (single centre).",
     renal_function = paste(
       "Non-CKRT group: eGFR (bedside Schwartz) median 112 mL/min, range 29-283 mL/min;",
       "serum creatinine median 0.32 mg/dL, range 0.1-2.46 mg/dL. CKRT group: eGFR and",
@@ -245,7 +245,7 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
       "Filter surface areas: small 0.2 m^2 (n = 7), medium 0.6 m^2 (n = 3), large 1.2 m^2",
       "(n = 2)."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Butragueno-Laiseca 2025 Table 1, reported separately for",
       "the 15 patients without and the 12 patients with a haemofilter; the group sizes sum",
       "to 27 rather than 26 because one patient started without CKRT and required CKRT",

@@ -8,49 +8,49 @@ Yoshida_2024_fazpilodemab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fazpilodemab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2 = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fazpilodemab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fazpilodemab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     ADA_POS = list(
-      description        = "Anti-drug antibody (ADA) positivity indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody (ADA) positivity indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Time-fixed per subject in the simulation framework. When ADA_POS = 1, an additional sigmoidal time-onset ADA-mediated clearance arm cl_ada activates (cl_ada(t) = cl_ada_max / (1 + exp(-k_ada * (t - t50_ada)))); when ADA_POS = 0 the arm is identically zero. Source column ADA in mrgsolve supplement S2.3.1 (zero default in [PARAM]).",
-      source_name        = "ADA"
+      notes = "Time-fixed per subject in the simulation framework. When ADA_POS = 1, an additional sigmoidal time-onset ADA-mediated clearance arm cl_ada activates (cl_ada(t) = cl_ada_max / (1 + exp(-k_ada * (t - t50_ada)))); when ADA_POS = 0 the arm is identically zero. Source column ADA in mrgsolve supplement S2.3.1 (zero default in [PARAM]).",
+      source_name = "ADA"
     ),
     PREV_AE_SCORE = list(
-      description        = "Previous-day gastrointestinal AE (GIAE) grade",
-      units              = "(ordinal score 0..2; 0 = no GIAE, 1 = grade 1, 2 = combined grade 2/3)",
-      type               = "count",
+      description = "Previous-day gastrointestinal AE (GIAE) grade",
+      units = "(ordinal score 0..2; 0 = no GIAE, 1 = grade 1, 2 = combined grade 2/3)",
+      type = "count",
       reference_category = "0 (no GIAE)",
-      notes              = paste(
+      notes = paste(
         "Time-varying (updated each day from the previous day's sampled grade). Used to condition the DTMM transition logits (B1, B2) and the discontinuation logit (B_dc) on the previous Markov state.",
         "Fazpilodemab pools grades 2 and 3 into a single category (PREV_AE_SCORE = 2) because of low event counts at grade 3 (Methods page 545).",
         "When constructing a simulation event table, set PREV_AE_SCORE = 0 at the first observation of every subject and update each subsequent observation to the previous observation's sampled grade -- matching the mrgsolve [TABLE] block carry-forward in supplement S2.3.1 (GR variable).",
         "Source column PDV in NONMEM control stream S2.2 (carried forward via IF (EVID.EQ.0.AND.TYPE.EQ.1) PDV=DV).",
         sep = " "
       ),
-      source_name        = "PDV"
+      source_name = "PDV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 153L,
-    n_studies      = 1L,
-    age_range      = "Adults (specific age range not reported in main text or available supplement)",
-    weight_range   = "Adults (specific weight range not reported in main text or available supplement)",
+    species = "human",
+    n_subjects = 153L,
+    n_studies = 1L,
+    age_range = "Adults (specific age range not reported in main text or available supplement)",
+    weight_range = "Adults (specific weight range not reported in main text or available supplement)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported in main text or available supplement",
-    disease_state  = "Type 2 diabetes mellitus (T2DM) or non-alcoholic fatty liver disease (NAFLD)",
-    dose_range     = "10-250 mg subcutaneous q1w, q2w, or q4w",
-    regions        = "Not reported in main text or available supplement",
-    notes          = paste(
+    disease_state = "Type 2 diabetes mellitus (T2DM) or non-alcoholic fatty liver disease (NAFLD)",
+    dose_range = "10-250 mg subcutaneous q1w, q2w, or q4w",
+    regions = "Not reported in main text or available supplement",
+    notes = paste(
       "Multiple ascending dose (MAD) study GC39547 (NCT03060538). 121 patients with T2DM or NAFLD received fazpilodemab and 32 patients received placebo (n = 153 total).",
       "Fazpilodemab was administered subcutaneously in the abdomen or thigh at 10-250 mg with intervals of q1w, q2w, or q4w.",
       "Detailed demographic breakdown (age / weight / sex / race) is not reported in the main text or in the available supplements; the available trimmed-markdown copies of Supplements 1 (figures) and 2 (model code) contain neither a Table 1 baseline-demographics summary nor an extended-text demographics paragraph.",

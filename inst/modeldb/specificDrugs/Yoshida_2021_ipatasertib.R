@@ -25,7 +25,8 @@ Yoshida_2021_ipatasertib <- function() {
     "metabolite in TWO SEPARATE NONMEM runs (Yoshida 2021 Discussion);",
     "this file collapses them into one rxode2 model with NO mechanistic",
     "fractional-conversion linkage, mirroring the paper's simulation",
-    "strategy. See vignette Assumptions and deviations.")
+    "strategy. See vignette Assumptions and deviations."
+  )
   reference <- "Yoshida K, Wilkins J, Winkler J, Wade JR, Kotani N, Wang N, Sane R, Chanu P. Population pharmacokinetics of ipatasertib and its metabolite in cancer patients. J Clin Pharmacol. 2021;61(12):1579-1591. doi:10.1002/jcph.1942"
   vignette <- "Yoshida_2021_ipatasertib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -35,58 +36,65 @@ Yoshida_2021_ipatasertib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "ipatasertib", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_m1       = list(analyte = "M1 (G-037720)", units = "mg", specimen = "administration site", verified = FALSE),
-    central_m1     = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ipatasertib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject baseline age in years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject baseline age in years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (AGE/64)^-0.382 on apparent ipatasertib CL/F; reference age 64 years per Yoshida 2021 Methods (median pooled-population age, Table 1). The age effect on M1 was tested in the full model but dropped from the final reduced model.",
-      source_name        = "BAGE"
+      notes = "Power scaling (AGE/64)^-0.382 on apparent ipatasertib CL/F; reference age 64 years per Yoshida 2021 Methods (median pooled-population age, Table 1). The age effect on M1 was tested in the full model but dropped from the final reduced model.",
+      source_name = "BAGE"
     ),
     WT = list(
-      description        = "Subject baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Subject baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (WT/75)^-0.617 on apparent ipatasertib F (Table 3 theta_FI,Weight); (WT/75)^0.870 on apparent M1 V3 (Table 4 theta_V3M1,Weight); (WT/75)^0.958 on apparent M1 Q3 (Table 4 theta_Q3M1,Weight). Reference weight 75 kg per Yoshida 2021 Methods (pooled-population median, Table 1). Body weight was tested as a covariate on all CL and V parameters in the full models for both parent and metabolite; only the listed effects were retained after backward elimination.",
-      source_name        = "BWT"
+      notes = "Power scaling (WT/75)^-0.617 on apparent ipatasertib F (Table 3 theta_FI,Weight); (WT/75)^0.870 on apparent M1 V3 (Table 4 theta_V3M1,Weight); (WT/75)^0.958 on apparent M1 Q3 (Table 4 theta_Q3M1,Weight). Reference weight 75 kg per Yoshida 2021 Methods (pooled-population median, Table 1). Body weight was tested as a covariate on all CL and V parameters in the full models for both parent and metabolite; only the listed effects were retained after backward elimination.",
+      source_name = "BWT"
     ),
     CONMED_ABI = list(
-      description        = "Abiraterone coadministration indicator (1 = subject received abiraterone 1000 mg once daily alongside ipatasertib, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Abiraterone coadministration indicator (1 = subject received abiraterone 1000 mg once daily alongside ipatasertib, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant abiraterone)",
-      notes              = "Linear-additive effect of -18.5% on apparent ipatasertib CL/F (Table 3 theta_CLI,Abi = -0.185); linear-additive effect of +61.5% on apparent M1 F applied only at the multiple-dose state (Table 4 theta_FM1,Abi = 0.615; the source NONMEM control stream enforced ABIRATER * SSFLAG as the indicator on this term). Of 342 subjects, 189 (55.3%) received abiraterone: all 183 from study GO27983, six from study JO29655, none from PAM4743g / GO29227 / PAM4983g.",
-      source_name        = "ABIRATER"
+      notes = "Linear-additive effect of -18.5% on apparent ipatasertib CL/F (Table 3 theta_CLI,Abi = -0.185); linear-additive effect of +61.5% on apparent M1 F applied only at the multiple-dose state (Table 4 theta_FM1,Abi = 0.615; the source NONMEM control stream enforced ABIRATER * SSFLAG as the indicator on this term). Of 342 subjects, 189 (55.3%) received abiraterone: all 183 from study GO27983, six from study JO29655, none from PAM4743g / GO29227 / PAM4983g.",
+      source_name = "ABIRATER"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 342L,
-    n_studies       = 5L,
-    age_range       = "26 to 88 years; median 64 years (geometric mean 62.6) per paper Table 1.",
-    weight_range    = "41.5 to 160 kg; median 75 kg (geometric mean 76.1) per paper Table 1 (2 missing values).",
-    sex_female_pct  = 33.3,
-    race_ethnicity  = c(White = 76.6, `Black or African American` = 3.22, Asian = 14.9, Multiple = 0.292, Other = 0.877, Unknown = 4.09),
-    disease_state   = "Adult patients with locally advanced or metastatic solid tumours (prostate 56.4%, breast 26.6%, other 17%) from five Phase 1 and 2 ipatasertib clinical studies.",
-    dose_range      = "Oral ipatasertib 25 to 800 mg once daily on days 1-21 of 28-day cycles (or continuously in the abiraterone-combination studies); 400 mg is the dose under Phase 3 investigation. The 200 mg cohort (n = 96) came predominantly from GO27983, the 400 mg cohort (n = 188) from GO27983 and GO29227.",
-    regions         = "Multinational (United States, Europe, and Japan). Studies: PAM4743g (NCT01090960), JO29655 (Japanese cohort), PAM4983g (NCT01362374 arm C), GO27983 (NCT01485861 A.MARTIN), GO29227 (NCT02162719 LOTUS).",
-    n_observations  = "3050 ipatasertib observations and 2050 M1 observations across the five studies.",
+    species = "human",
+    n_subjects = 342L,
+    n_studies = 5L,
+    age_range = "26 to 88 years; median 64 years (geometric mean 62.6) per paper Table 1.",
+    weight_range = "41.5 to 160 kg; median 75 kg (geometric mean 76.1) per paper Table 1 (2 missing values).",
+    sex_female_pct = 33.3,
+    race_ethnicity = c(
+      White = 76.6,
+      `Black or African American` = 3.22,
+      Asian = 14.9,
+      Multiple = 0.292,
+      Other = 0.877,
+      Unknown = 4.09
+    ),
+    disease_state = "Adult patients with locally advanced or metastatic solid tumours (prostate 56.4%, breast 26.6%, other 17%) from five Phase 1 and 2 ipatasertib clinical studies.",
+    dose_range = "Oral ipatasertib 25 to 800 mg once daily on days 1-21 of 28-day cycles (or continuously in the abiraterone-combination studies); 400 mg is the dose under Phase 3 investigation. The 200 mg cohort (n = 96) came predominantly from GO27983, the 400 mg cohort (n = 188) from GO27983 and GO29227.",
+    regions = "Multinational (United States, Europe, and Japan). Studies: PAM4743g (NCT01090960), JO29655 (Japanese cohort), PAM4983g (NCT01362374 arm C), GO27983 (NCT01485861 A.MARTIN), GO29227 (NCT02162719 LOTUS).",
+    n_observations = "3050 ipatasertib observations and 2050 M1 observations across the five studies.",
     hepatic_impairment = c(Normal = 78.7, Mild = 20.2, Moderate = 0.585, Missing = 0.585),
-    egfr_range      = "39.4 to 212 mL/min/1.73 m^2; median 92 (geometric mean 94.4).",
-    notes           = "Mild and moderate renal impairment, mild hepatic impairment, and race were tested but not identified as significant covariates in the final reduced models per Yoshida 2021 Discussion. Ipatasertib was fitted in NONMEM 7.4.3 with FOCE-I (run230 reported MINIMIZATION SUCCESSFUL; the standard 'however, problems occurred with the minimization' caveat appeared but the covariance step ran successfully). The M1 model was fitted in a separate NONMEM run; the on-disk control stream is in Supplementary Text S2 and the final estimates come from paper Table 4."
+    egfr_range = "39.4 to 212 mL/min/1.73 m^2; median 92 (geometric mean 94.4).",
+    notes = "Mild and moderate renal impairment, mild hepatic impairment, and race were tested but not identified as significant covariates in the final reduced models per Yoshida 2021 Discussion. Ipatasertib was fitted in NONMEM 7.4.3 with FOCE-I (run230 reported MINIMIZATION SUCCESSFUL; the standard 'however, problems occurred with the minimization' caveat appeared but the covariance step ran successfully). The M1 model was fitted in a separate NONMEM run; the on-disk control stream is in Supplementary Text S2 and the final estimates come from paper Table 4."
   )
 
   ini({

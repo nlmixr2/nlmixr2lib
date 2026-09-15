@@ -17,11 +17,11 @@ Qi_2019_vestronidaseAlfa <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final population PK model (Qi 2019 Results;",
         "neutralizing antibody status, ADA titer, other demographics and laboratory",
         "tests were screened in a full covariate model with backward deletion at",
@@ -33,31 +33,36 @@ Qi_2019_vestronidaseAlfa <- function() {
         "body weight; the cohort median of 24.8 kg is the value the paper used for its",
         "dosing-regimen simulations."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "vestronidase alfa", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "vestronidase alfa", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "vestronidase alfa", units = "mg", specimen = "serum", verified = TRUE),
-    auc_tau     = list(analyte = "vestronidase alfa AUC over a dosing interval", units = "mg*h/L", specimen = "not applicable", verified = TRUE)
+    auc_tau = list(
+      analyte = "vestronidase alfa AUC over a dosing interval",
+      units = "mg*h/L",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_studies      = 3L,
-    age_range      = "1.7-25.3 years",
-    age_median     = "10.1 years (mean 11.0, SD 7.7)",
-    weight_range   = "9.41-104.0 kg",
-    weight_median  = "24.8 kg (mean 37.7, SD 27.7)",
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 3L,
+    age_range = "1.7-25.3 years",
+    age_median = "10.1 years (mean 11.0, SD 7.7)",
+    weight_range = "9.41-104.0 kg",
+    weight_median = "24.8 kg (mean 37.7, SD 27.7)",
     sex_female_pct = 52,
     race_ethnicity = c(White = 61, Asian = 13, Black = 4, Other = 22),
-    disease_state  = "Mucopolysaccharidosis type VII (MPS VII, Sly syndrome), an ultra-rare lysosomal storage disorder caused by beta-glucuronidase deficiency.",
-    dose_range     = "Vestronidase alfa 1, 2, or 4 mg/kg by intravenous infusion every other week (QOW), infused over approximately 4 h with the first 2.5% of the total volume given over the first hour.",
-    regions        = "Multinational (three clinical trials: NCT01856218, NCT02418455, NCT02230566).",
-    sampling       = "15 subjects contributed intensively sampled PK profiles and 8 contributed sparse profiles (Qi 2019 Results). Urinary CS and DS were assayed at representative steady-state visits by LC-MS/MS and creatinine-corrected.",
-    notes          = paste(
+    disease_state = "Mucopolysaccharidosis type VII (MPS VII, Sly syndrome), an ultra-rare lysosomal storage disorder caused by beta-glucuronidase deficiency.",
+    dose_range = "Vestronidase alfa 1, 2, or 4 mg/kg by intravenous infusion every other week (QOW), infused over approximately 4 h with the first 2.5% of the total volume given over the first hour.",
+    regions = "Multinational (three clinical trials: NCT01856218, NCT02418455, NCT02230566).",
+    sampling = "15 subjects contributed intensively sampled PK profiles and 8 contributed sparse profiles (Qi 2019 Results). Urinary CS and DS were assayed at representative steady-state visits by LC-MS/MS and creatinine-corrected.",
+    notes = paste(
       "Demographics from Qi 2019 Table 1 (overall column across the three studies:",
       "study 1 phase I/II, n = 3, ages 5.5-25.1 y; study 2 phase II, n = 8, ages",
       "1.7-5.0 y; study 3 phase III, n = 12, ages 8.5-25.3 y). Race percentages are",

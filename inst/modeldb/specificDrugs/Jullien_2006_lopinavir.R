@@ -8,60 +8,60 @@ Jullien_2006_lopinavir <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying); reference 27 kg (cohort median per Jullien 2006 Table 1).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying); reference 27 kg (cohort median per Jullien 2006 Table 1).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F and V/F with reference 27 kg (the cohort median BW). Source column name was BW in the NONMEM dataset; canonical name WT is used here.",
-      source_name        = "BW"
+      notes = "Allometric scaling on CL/F and V/F with reference 27 kg (the cohort median BW). Source column name was BW in the NONMEM dataset; canonical name WT is used here.",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age in years (time-varying).",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years (time-varying).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a 12-year threshold to gate the sex effect on CL/F (the sex effect applies only when AGE > 12). The age-stratified effect was identified by Jullien 2006 (Results 'Population pharmacokinetics' paragraph 2 and final covariate submodel).",
-      source_name        = "AGE"
+      notes = "Used as a 12-year threshold to gate the sex effect on CL/F (the sex effect applies only when AGE > 12). The age-stratified effect was identified by Jullien 2006 (Results 'Population pharmacokinetics' paragraph 2 and final covariate submodel).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Jullien 2006 used the inverse coding S = 1 for boys / 0 for girls. The canonical SEXF column inverts the source values (SEXF = 1 - S). The published 39% increase in CL/F for boys older than 12 years is preserved by applying the effect as exp(e_sexf_cl * (1 - SEXF) * (AGE > 12)) inside model().",
-      source_name        = "SEX"
+      notes = "Jullien 2006 used the inverse coding S = 1 for boys / 0 for girls. The canonical SEXF column inverts the source values (SEXF = 1 - S). The published 39% increase in CL/F for boys older than 12 years is preserved by applying the effect as exp(e_sexf_cl * (1 - SEXF) * (AGE > 12)) inside model().",
+      source_name = "SEX"
     ),
     CONMED_NVP = list(
-      description        = "Concomitant nevirapine indicator: 1 = nevirapine coadministered with lopinavir, 0 = otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant nevirapine indicator: 1 = nevirapine coadministered with lopinavir, 0 = otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no nevirapine)",
-      notes              = "Nevirapine is an NNRTI and a CYP3A inducer; coadministration increased lopinavir CL/F by 34% in Jullien 2006 (Results 'Population pharmacokinetics' paragraph 2, final covariate submodel). Source column was the in-equation indicator N (1 if combined with nevirapine, 0 otherwise). This canonical entry is the nevirapine analog of the registered CONMED_EFV indicator.",
-      source_name        = "N"
+      notes = "Nevirapine is an NNRTI and a CYP3A inducer; coadministration increased lopinavir CL/F by 34% in Jullien 2006 (Results 'Population pharmacokinetics' paragraph 2, final covariate submodel). Source column was the in-equation indicator N (1 if combined with nevirapine, 0 otherwise). This canonical entry is the nevirapine analog of the registered CONMED_EFV indicator.",
+      source_name = "N"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 157L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 157L,
+    n_studies = 1L,
     n_observations = 541L,
-    age_range      = "3 days to 18 years",
-    age_median     = "10.2 years",
-    weight_range   = "2 to 73 kg",
-    weight_median  = "27.6 kg",
+    age_range = "3 days to 18 years",
+    age_median = "10.2 years",
+    weight_range = "2 to 73 kg",
+    weight_median = "27.6 kg",
     sex_female_pct = 42.7,
     race_ethnicity = "Mixed (paediatric HIV cohorts from Cochin-Saint-Vincent de Paul and Necker-Enfants Malades, Paris); paper does not stratify by race.",
-    disease_state  = "HIV-1 infection (or maternal-fetal transmission prophylaxis) on lopinavir/ritonavir-containing combination antiretroviral therapy.",
-    dose_range     = "Twice-daily oral lopinavir/ritonavir (mean dose 279 mg lopinavir, range 30-532 mg; 109 mg/kg/day mean, range 4.4-29.4 mg/kg per dose). Liquid formulation used in younger children; solid oral formulation used in older children.",
-    regions        = "France (Paris).",
-    notes          = "Retrospective therapeutic-drug-monitoring cohort. Concomitant ART: at least one nucleoside reverse-transcriptase inhibitor in 90% of samples, one protease inhibitor in 10%, one non-nucleoside reverse-transcriptase inhibitor in 23%. Nevirapine combined with lopinavir in 16% of samples; efavirenz in 8%; amprenavir in 4%. Baseline demographics from Jullien 2006 Table 1. Median 3 samples per patient (range 1-14)."
+    disease_state = "HIV-1 infection (or maternal-fetal transmission prophylaxis) on lopinavir/ritonavir-containing combination antiretroviral therapy.",
+    dose_range = "Twice-daily oral lopinavir/ritonavir (mean dose 279 mg lopinavir, range 30-532 mg; 109 mg/kg/day mean, range 4.4-29.4 mg/kg per dose). Liquid formulation used in younger children; solid oral formulation used in older children.",
+    regions = "France (Paris).",
+    notes = "Retrospective therapeutic-drug-monitoring cohort. Concomitant ART: at least one nucleoside reverse-transcriptase inhibitor in 90% of samples, one protease inhibitor in 10%, one non-nucleoside reverse-transcriptase inhibitor in 23%. Nevirapine combined with lopinavir in 16% of samples; efavirenz in 8%; amprenavir in 4%. Baseline demographics from Jullien 2006 Table 1. Median 3 samples per patient (range 1-14)."
   )
 
   ini({

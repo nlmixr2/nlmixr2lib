@@ -43,18 +43,23 @@ Sherwin_2012_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Sherwin_2012_mycophenolic_acid"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "mycophenolate mofetil (MMF)", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "mycophenolate mofetil (MMF)",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
     central_mpag = list(analyte = "7-O-MPA-glucuronide (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
-    gallbladder  = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "bile", verified = FALSE)
+    gallbladder = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "bile", verified = FALSE)
   )
 
   covariateData <- list()
@@ -62,9 +67,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened in the covariate analysis (Sherwin 2012 Results,",
         "Covariate analysis). Allometric-scaled bodyweight (reference",
         "70 kg, fixed exponents 0.75 / 1) significantly improved a",
@@ -77,9 +82,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and as a categorical",
         "covariate (child 2-12 / adolescent 12-21 / adult >21).",
         "Sherwin 2012 Results, Subjects and pharmacokinetics: 'there",
@@ -89,9 +94,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the covariate analysis (Sherwin 2012 Results,",
         "Covariate analysis). 'No covariate provided a significant",
         "improvement to the EHC model.' Not retained in the final",
@@ -101,9 +106,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     ),
     RACE_BLACK = list(
       description = "African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the covariate analysis (Sherwin 2012 Results,",
         "Covariate analysis; cohort distribution 58% African American /",
         "42% Caucasian per Table 1). Not retained in the final model."
@@ -111,9 +116,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     ),
     ETHNICITY_HISPANIC = list(
       description = "Hispanic ethnicity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened in the covariate analysis (Sherwin 2012 Results,",
         "Covariate analysis; cohort distribution 21% Hispanic /",
         "79% non-Hispanic per Table 1). Not retained in the final",
@@ -122,9 +127,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     ),
     DISEASE_DURATION = list(
       description = "Time since cSLE diagnosis",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the covariate analysis (Sherwin 2012 Results,",
         "Covariate analysis; cohort mean 3.3 +/- 3 years, range",
         "0.2-12.8 per Table 1). Not retained in the final model."
@@ -133,30 +138,30 @@ Sherwin_2012_mycophenolic_acid <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 19L,
-    n_studies       = 1L,
-    n_observations  = "186 MPA + 186 MPAG plasma concentrations (372 total)",
-    age_range       = "10.6-28.2 years (Sherwin 2012 Table 1; children 10-12 y n=2, adolescents 12-21 y n=14, adults >21 y n=3)",
-    age_mean        = "16.9 +/- 4 years (mean +/- SD)",
-    age_median      = "16.5 years",
-    weight_range    = "43.4-103 kg (Sherwin 2012 Table 1)",
-    weight_mean     = "66.6 +/- 15 kg (mean +/- SD)",
-    sex_female_pct  = 95.0,
-    race_ethnicity  = c(
+    species = "human",
+    n_subjects = 19L,
+    n_studies = 1L,
+    n_observations = "186 MPA + 186 MPAG plasma concentrations (372 total)",
+    age_range = "10.6-28.2 years (Sherwin 2012 Table 1; children 10-12 y n=2, adolescents 12-21 y n=14, adults >21 y n=3)",
+    age_mean = "16.9 +/- 4 years (mean +/- SD)",
+    age_median = "16.5 years",
+    weight_range = "43.4-103 kg (Sherwin 2012 Table 1)",
+    weight_mean = "66.6 +/- 15 kg (mean +/- SD)",
+    sex_female_pct = 95.0,
+    race_ethnicity = c(
       `African American` = 58.0,
-      Caucasian          = 42.0,
-      Hispanic           = 21.0,
-      `Non-Hispanic`     = 79.0
+      Caucasian = 42.0,
+      Hispanic = 21.0,
+      `Non-Hispanic` = 79.0
     ),
-    disease_state   = "Childhood-onset systemic lupus erythematosus (cSLE), all subjects meeting the American College of Rheumatology classification criteria for SLE prior to age 16 years.",
+    disease_state = "Childhood-onset systemic lupus erythematosus (cSLE), all subjects meeting the American College of Rheumatology classification criteria for SLE prior to age 16 years.",
     disease_duration = "Mean 3.3 +/- 3 years (range 0.2-12.8 years)",
     treatment_duration = "Mean MMF duration 1.5 +/- 1.3 years (range 0.14-6.4 years) at study entry; stable oral regimen for at least 3 weeks; therapy for at least 2 months.",
-    dose_range      = "MMF 1973 +/- 634 mg/day (mean +/- SD; range 1000-3000 mg/day), administered orally as Cellcept; typical prescribed regimen is 600 mg/m^2 BID. Sampling on a single fasting outpatient visit with standardized meals at 1 h and 4 h post-dose.",
+    dose_range = "MMF 1973 +/- 634 mg/day (mean +/- SD; range 1000-3000 mg/day), administered orally as Cellcept; typical prescribed regimen is 600 mg/m^2 BID. Sampling on a single fasting outpatient visit with standardized meals at 1 h and 4 h post-dose.",
     sampling_window = "Pre-dose (1 h prior to morning MMF dose), 20 min, 40 min, 1, 1.5, 2, 3, 4, 6, 9 h post-dose.",
-    co_medications  = "Oral prednisone n=18 (17.2 +/- 10.4 mg/day); high-dose i.v. methylprednisolone n=3; hydroxychloroquine n=17; NSAIDs n=11; antihypertensives n=8 (Sherwin 2012 Table 1).",
-    regions         = "USA; recruitment at Cincinnati Children's Hospital Medical Center (Ohio) and Children's Memorial Hospital (Chicago, Illinois).",
-    notes           = "Baseline serum chemistries assessed at study screening (visit 1) only, not at the PK sampling visit, and therefore were NOT included in the model: serum albumin 3.5 +/- 0.26 g/dL (n=17), AST 47 +/- 59 U/L (n=13), ALT 28 +/- 29 U/L (n=13), serum creatinine 0.69 +/- 0.17 mg/dL (n=17), urine protein:creatinine 0.33 +/- 0.34 (n=13). Renal function was a stable-renal-function inclusion criterion."
+    co_medications = "Oral prednisone n=18 (17.2 +/- 10.4 mg/day); high-dose i.v. methylprednisolone n=3; hydroxychloroquine n=17; NSAIDs n=11; antihypertensives n=8 (Sherwin 2012 Table 1).",
+    regions = "USA; recruitment at Cincinnati Children's Hospital Medical Center (Ohio) and Children's Memorial Hospital (Chicago, Illinois).",
+    notes = "Baseline serum chemistries assessed at study screening (visit 1) only, not at the PK sampling visit, and therefore were NOT included in the model: serum albumin 3.5 +/- 0.26 g/dL (n=17), AST 47 +/- 59 U/L (n=13), ALT 28 +/- 29 U/L (n=13), serum creatinine 0.69 +/- 0.17 mg/dL (n=17), urine protein:creatinine 0.33 +/- 0.34 (n=13). Renal function was a stable-renal-function inclusion criterion."
   )
 
   ini({

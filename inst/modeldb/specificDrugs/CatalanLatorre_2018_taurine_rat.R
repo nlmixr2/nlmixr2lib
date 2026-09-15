@@ -28,8 +28,8 @@ CatalanLatorre_2018_taurine_rat <- function() {
   )
   vignette <- "CatalanLatorre_2018_taurine_rat"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -38,18 +38,18 @@ CatalanLatorre_2018_taurine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "taurine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "taurine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "taurine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "taurine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "taurine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     MAL_NOURISH = list(
-      description        = "Protein-energy undernutrition status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Protein-energy undernutrition status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = protein-energy undernourished (UN) per the paper's",
         "dual-criterion definition: end-of-adaptation body weight below",
         "80% of the well-nourished mean AND serum albumin below 23 g/L",
@@ -61,18 +61,18 @@ CatalanLatorre_2018_taurine_rat <- function() {
         "(`vms`) by 9.4% in UN animals (Catalan-Latorre 2018 Table 3:",
         "FVms_DN = 0.906)."
       ),
-      source_name        = "NUT"
+      source_name = "NUT"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar)",
-    n_subjects     = 64L,
-    n_studies      = 1L,
-    age_range      = "8-9 weeks at study start",
-    weight_range   = "mean 235.5 (SD 7.9) g overall; well-nourished mean ~ 284.9 g; undernourished mean ~ 212.4 g at end of 23-25 d adaptation",
+    species = "rat (male Wistar)",
+    n_subjects = 64L,
+    n_studies = 1L,
+    age_range = "8-9 weeks at study start",
+    weight_range = "mean 235.5 (SD 7.9) g overall; well-nourished mean ~ 284.9 g; undernourished mean ~ 212.4 g at end of 23-25 d adaptation",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Wistar rats randomised to one of two diets for a",
       "23-25 d adaptation period: well-nourished (n = 32; standard 14%",
       "protein chow, 20 g per d, 251.9 kJ per d) or undernourished",
@@ -81,14 +81,14 @@ CatalanLatorre_2018_taurine_rat <- function() {
       "moderate-to-severe undernutrition per the dual weight + serum",
       "albumin criterion."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single dose IV bolus or oral gavage of taurine (Sigma-Aldrich,",
       "Welwyn Garden City) dissolved in saline. Twelve groups of",
       "4-6 animals each crossing two routes (IV / oral) x three doses",
       "(1, 10, 100 mg per animal) x two nutritional groups (WN / UN)."
     ),
-    regions        = "Spain (University of Valencia)",
-    notes          = paste(
+    regions = "Spain (University of Valencia)",
+    notes = paste(
       "Baseline taurine plasma concentration was not statistically",
       "different between groups: WN 50.97 (SD 14.54) mg/L vs UN 48.86",
       "(SD 22.11) mg/L (P > 0.05). Plasma taurine quantified by HPLC",

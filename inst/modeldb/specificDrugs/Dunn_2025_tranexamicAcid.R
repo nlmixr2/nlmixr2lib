@@ -1,47 +1,47 @@
 Dunn_2025_tranexamicAcid <- function() {
   description <- "Two-compartment population PK model for tranexamic acid (TXA) with parallel first-order intramuscular and first-order oral absorption (oral lag time) and first-order elimination, in pregnant individuals receiving IV, IM, or oral TXA for prevention or treatment of postpartum hemorrhage (Dunn 2025)."
-  reference   <- "Dunn A, Felfeli M, Seifert SM, Gilliot S, Ducloy-Bouthors A-S, Shakur-Still H, Geer A, Grassin-Delyle S, Luban NL, van den Anker JN, Gobburu JVS, Roberts I, Ahmadzia HK. Evaluating tranexamic acid dosing strategies for postpartum hemorrhage: a population pharmacokinetic approach in pregnant individuals. J Clin Pharmacol. 2025;65(10):1262-1272. doi:10.1002/jcph.70031"
-  vignette    <- "Dunn_2025_tranexamicAcid"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Dunn A, Felfeli M, Seifert SM, Gilliot S, Ducloy-Bouthors A-S, Shakur-Still H, Geer A, Grassin-Delyle S, Luban NL, van den Anker JN, Gobburu JVS, Roberts I, Ahmadzia HK. Evaluating tranexamic acid dosing strategies for postpartum hemorrhage: a population pharmacokinetic approach in pregnant individuals. J Clin Pharmacol. 2025;65(10):1262-1272. doi:10.1002/jcph.70031"
+  vignette <- "Dunn_2025_tranexamicAcid"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot_im    = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    depot_oral  = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_im = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_oral = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Actual maternal body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Actual maternal body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling with reference 80 kg (median pooled-cohort body weight, Dunn 2025 Table 1). Shared exponent 0.89 applied to CL and Q; shared exponent 0.44 applied to Vc and Vp (Dunn 2025 Results / Table 2). All pregnant participants; pregnancy status is a population-level fact (no PREG covariate effect estimated in the source).",
-      source_name        = "WT"
+      notes = "Allometric power scaling with reference 80 kg (median pooled-cohort body weight, Dunn 2025 Table 1). Shared exponent 0.89 applied to CL and Q; shared exponent 0.44 applied to Vc and Vp (Dunn 2025 Results / Table 2). All pregnant participants; pregnancy status is a population-level fact (no PREG covariate effect estimated in the source).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 221L,
-    n_studies       = 4L,
-    age_range       = "22-47 years (mean 33)",
-    age_median      = "33 years",
-    weight_range    = "47-156 kg (mean 81.7)",
-    weight_median   = "78 kg",
-    bmi_range       = "18.0-55.8 kg/m^2 (mean 31.0)",
-    bmi_median      = "30.0 kg/m^2",
-    sex_female_pct  = 100,
-    disease_state   = "Pregnant or immediately postpartum individuals undergoing or at risk of postpartum hemorrhage during caesarean delivery",
-    dose_range      = "IV: fixed 0.5 g (n=34), 1 g (n=97), 1.5 g (n=1), 2 g (n=3), or weight-based 5/10/15 mg/kg (n=10 each); IM: fixed 1 g (n=26); oral: fixed 4 g (n=30). Dunn 2025 Table 1.",
-    regions         = "Pooled across four trials: NCT03863964 (USA), NCT02797119 / TRACES (France), NCT04274335 / WOMAN-PharmacoTXA (multi-national), NCT03287336 (USA). Dunn 2025 Methods.",
-    n_observations  = 1303L,
-    notes           = "Pooled population PK dataset from four trials in pregnant participants receiving TXA at the time of caesarean delivery. Pregnancy status is fixed at 100% (all subjects pregnant); see Dunn 2025 Table 1 for the per-study demographic breakdown. Routes of administration carried in the dosing dataset via the rxode2 cmt column: 'central' for IV (bolus or infusion), 'depot_im' for IM, 'depot_oral' for oral. IM bioavailability was held at 1.0 because the typical estimate approached unity (Dunn 2025 Results, Structural PK Model)."
+    species = "human",
+    n_subjects = 221L,
+    n_studies = 4L,
+    age_range = "22-47 years (mean 33)",
+    age_median = "33 years",
+    weight_range = "47-156 kg (mean 81.7)",
+    weight_median = "78 kg",
+    bmi_range = "18.0-55.8 kg/m^2 (mean 31.0)",
+    bmi_median = "30.0 kg/m^2",
+    sex_female_pct = 100,
+    disease_state = "Pregnant or immediately postpartum individuals undergoing or at risk of postpartum hemorrhage during caesarean delivery",
+    dose_range = "IV: fixed 0.5 g (n=34), 1 g (n=97), 1.5 g (n=1), 2 g (n=3), or weight-based 5/10/15 mg/kg (n=10 each); IM: fixed 1 g (n=26); oral: fixed 4 g (n=30). Dunn 2025 Table 1.",
+    regions = "Pooled across four trials: NCT03863964 (USA), NCT02797119 / TRACES (France), NCT04274335 / WOMAN-PharmacoTXA (multi-national), NCT03287336 (USA). Dunn 2025 Methods.",
+    n_observations = 1303L,
+    notes = "Pooled population PK dataset from four trials in pregnant participants receiving TXA at the time of caesarean delivery. Pregnancy status is fixed at 100% (all subjects pregnant); see Dunn 2025 Table 1 for the per-study demographic breakdown. Routes of administration carried in the dosing dataset via the rxode2 cmt column: 'central' for IV (bolus or infusion), 'depot_im' for IM, 'depot_oral' for oral. IM bioavailability was held at 1.0 because the typical estimate approached unity (Dunn 2025 Results, Structural PK Model)."
   )
 
   ini({

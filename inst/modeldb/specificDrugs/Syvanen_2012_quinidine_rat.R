@@ -32,8 +32,8 @@ Syvanen_2012_quinidine_rat <- function() {
   paper_specific_etas <- c("etalqin", "etalvbr")
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -42,14 +42,14 @@ Syvanen_2012_quinidine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
-    brain_csf   = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
+    brain_csf = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_POSTSE_KAINATE = list(
-      description        = paste(
+      description = paste(
         "Indicator for chronic post-status-epilepticus (post-SE) state",
         "in the kainate-induced rat temporal-lobe-epilepsy paradigm:",
         "1 = rat previously subjected to chemoconvulsant SE by",
@@ -60,10 +60,10 @@ Syvanen_2012_quinidine_rat <- function() {
         "epilepsy window in which P-gp expression has been reported to",
         "peak; 0 = naive control or saline-injected sham control rat."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (naive control or saline-sham control rat)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in Syvanen 2012 (each rat is allocated",
         "to exactly one of {control, kainate-treated}). Source paper",
         "Materials and Methods 'Animals' (page 88) describes the",
@@ -73,10 +73,10 @@ Syvanen_2012_quinidine_rat <- function() {
         "plasma (0.678-fold), and V_Br / brain ECF (0.592-fold) per",
         "Table II."
       ),
-      source_name        = "KAINATE"
+      source_name = "KAINATE"
     ),
     CONMED_TARIQUIDAR = list(
-      description        = paste(
+      description = paste(
         "Indicator for tariquidar (XR9576) pre-administration:",
         "1 = rat received 15 mg/kg IP tariquidar in 5% glucose / saline",
         "vehicle 30 min before the quinidine intravenous infusion;",
@@ -84,10 +84,10 @@ Syvanen_2012_quinidine_rat <- function() {
         "same time point. Tariquidar is a selective third-generation",
         "P-glycoprotein inhibitor that blocks BBB P-gp efflux."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (vehicle co-administration; no tariquidar)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in Syvanen 2012. Source paper Materials",
         "and Methods 'Pharmacokinetic Study in Rats' (page 89)",
         "describes the tariquidar protocol; Table I lists per-arm rat",
@@ -100,19 +100,19 @@ Syvanen_2012_quinidine_rat <- function() {
         "40-fold higher than baseline (paper Results 'TQD Treatment',",
         "page 91)."
       ),
-      source_name        = "TARIQUIDAR"
+      source_name = "TARIQUIDAR"
     )
   )
 
   population <- list(
-    species        = "rat (male Sprague-Dawley, Harlan)",
-    n_subjects     = 64L,
-    n_studies      = 1L,
-    age_range      = "adult (not reported in days; rats arrived weighing 200-249 g and were housed >= 1 week before surgery)",
-    weight_range   = "200-249 g body weight on arrival; weight on the experimental day was tested as a covariate in the screen and not retained in the final model",
+    species = "rat (male Sprague-Dawley, Harlan)",
+    n_subjects = 64L,
+    n_studies = 1L,
+    age_range = "adult (not reported in days; rats arrived weighing 200-249 g and were housed >= 1 week before surgery)",
+    weight_range = "200-249 g body weight on arrival; weight on the experimental day was tested as a covariate in the screen and not retained in the final model",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Two arms: naive saline-control adult Sprague-Dawley rats with",
       "a hippocampal microdialysis probe and femoral artery / vein",
       "cannulae; and kainate-induced status epilepticus rats studied",
@@ -120,7 +120,7 @@ Syvanen_2012_quinidine_rat <- function() {
       "P-gp expression at the BBB and on intra-parenchymal cells is",
       "hypothesised to be upregulated)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Three IV quinidine infusion arms in the control cohort:",
       "12.5 ug/min over 4 h (3000 ug cumulative), 25 ug/min over 4 h",
       "(6000 ug cumulative), and 100 ug/min over 30 min (3000 ug",
@@ -129,8 +129,8 @@ Syvanen_2012_quinidine_rat <- function() {
       "30 min before quinidine; the other half received 5% glucose /",
       "saline vehicle."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "Of 74 rats initially enrolled, 10 were excluded for technical",
       "reasons (cannula clogging, microdialysis flow irregularities,",
       "death, or insufficient recovery after kainate) leaving 64",

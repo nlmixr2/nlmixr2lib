@@ -16,136 +16,136 @@ Schmid_2017_nintedanib <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "nintedanib", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "nintedanib", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_bibf   = list(analyte = "BIBF 1202", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "nintedanib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "nintedanib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_bibf = list(analyte = "BIBF 1202", units = "mg", specimen = "administration site", verified = FALSE),
     central_bibf = list(analyte = "BIBF 1202", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Age. Linear effect on nintedanib F1 (centered at 62 years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age. Linear effect on nintedanib F1 (centered at 62 years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Reference 62 years (cohort median, Schmid 2017 Table 2). Effect: F1 = ... * (1 + e_age_fdepot * (AGE - 62)) per Schmid 2017 Table 3 footer.",
-      source_name        = "AGE"
+      notes = "Time-fixed baseline. Reference 62 years (cohort median, Schmid 2017 Table 2). Effect: F1 = ... * (1 + e_age_fdepot * (AGE - 62)) per Schmid 2017 Table 3 footer.",
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight. Power allometric on nintedanib CL and power on BIBF 1202 F2.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight. Power allometric on nintedanib CL and power on BIBF 1202 F2.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Reference 71.5 kg (cohort median, Schmid 2017 Table 2). Parent CL: CL = theta_CL * (WT/71.5)^e_wt_cl with e_wt_cl = 0.619 estimated (Schmid 2017 Table 3). BIBF 1202 F2 (relative to F1): F2 = F1 * theta_F2F1 * (WT/71.5)^e_wt_fdepot_bibf with e_wt_fdepot_bibf = -0.848 estimated (Schmid 2017 Online Resource Table S5).",
-      source_name        = "WT"
+      notes = "Time-fixed baseline. Reference 71.5 kg (cohort median, Schmid 2017 Table 2). Parent CL: CL = theta_CL * (WT/71.5)^e_wt_cl with e_wt_cl = 0.619 estimated (Schmid 2017 Table 3). BIBF 1202 F2 (relative to F1): F2 = F1 * theta_F2F1 * (WT/71.5)^e_wt_fdepot_bibf with e_wt_fdepot_bibf = -0.848 estimated (Schmid 2017 Online Resource Table S5).",
+      source_name = "WT"
     ),
     SMOKE = list(
-      description        = "Current-smoker binary indicator. Multiplicative effect on nintedanib F1 only (no separate effect on BIBF 1202).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Current-smoker binary indicator. Multiplicative effect on nintedanib F1 only (no separate effect on BIBF 1202).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ex- or never-smoker; Schmid 2017 cohort: 86.5% of 1191 patients).",
-      notes              = "Time-fixed baseline. Effect: F1 = ... * (1 - 0.206)^SMOKE = ... * 0.794^SMOKE, so current smokers have 20.6% lower F1 than ex- or never-smokers (Schmid 2017 Table 3 row 'Current smoker' theta_Smok = 0.794, RSE 4.46%). Schmid 2017 Table 2 reports 'Ex-smoker' (688, 57.8%) and 'Non-smoker' (327, 27.5%) pooled into the SMOKE=0 reference; 'Current smoker' (176, 14.8%) is SMOKE=1.",
-      source_name        = "SMOK"
+      notes = "Time-fixed baseline. Effect: F1 = ... * (1 - 0.206)^SMOKE = ... * 0.794^SMOKE, so current smokers have 20.6% lower F1 than ex- or never-smokers (Schmid 2017 Table 3 row 'Current smoker' theta_Smok = 0.794, RSE 4.46%). Schmid 2017 Table 2 reports 'Ex-smoker' (688, 57.8%) and 'Non-smoker' (327, 27.5%) pooled into the SMOKE=0 reference; 'Current smoker' (176, 14.8%) is SMOKE=1.",
+      source_name = "SMOK"
     ),
     RACE_IND_CHI_TWN = list(
-      description        = "Indian/Chinese/Taiwanese composite race indicator (1 = Indian, Chinese, or Taiwanese; 0 = Caucasian, Black, Korean, or other Asian). Drives the Indian-Chinese-Taiwanese ethnic-origin effect on nintedanib F1.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indian/Chinese/Taiwanese composite race indicator (1 = Indian, Chinese, or Taiwanese; 0 = Caucasian, Black, Korean, or other Asian). Drives the Indian-Chinese-Taiwanese ethnic-origin effect on nintedanib F1.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, Black, Korean, or other Asian; the Schmid 2017 cohort assigns 'other Asian' (subjects of Asian heritage outside China / India / Korea / Taiwan, 3.9% of population) to the reference category alongside Caucasian (75.5%) and Black (0.8%)).",
-      notes              = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * theta_Ethnicity, where theta_Ethnicity = 1.33 if RACE_IND_CHI_TWN = 1, paired exclusively with the RACE_KOREAN = 1 alternative (0.781). Reference 1.00 (Schmid 2017 Table 3). Per the canonical-register entry, this composite is paper-specific to Schmid 2017 and pairs only with the Korean alternative; subjects who are both Indian and (per the operator-distinct RACE_INDIAN canonical) South Asian Indian have both RACE_IND_CHI_TWN = 1 and RACE_INDIAN = 1 -- there is no conflict because the two canonicals address different model-equation slots (RACE_IND_CHI_TWN drives nintedanib F1, RACE_INDIAN drives BIBF 1202 F2).",
-      source_name        = "ETHNIC (paper-specific composite of paper-categorical levels Indian / Chinese / Taiwanese)"
+      notes = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * theta_Ethnicity, where theta_Ethnicity = 1.33 if RACE_IND_CHI_TWN = 1, paired exclusively with the RACE_KOREAN = 1 alternative (0.781). Reference 1.00 (Schmid 2017 Table 3). Per the canonical-register entry, this composite is paper-specific to Schmid 2017 and pairs only with the Korean alternative; subjects who are both Indian and (per the operator-distinct RACE_INDIAN canonical) South Asian Indian have both RACE_IND_CHI_TWN = 1 and RACE_INDIAN = 1 -- there is no conflict because the two canonicals address different model-equation slots (RACE_IND_CHI_TWN drives nintedanib F1, RACE_INDIAN drives BIBF 1202 F2).",
+      source_name = "ETHNIC (paper-specific composite of paper-categorical levels Indian / Chinese / Taiwanese)"
     ),
     RACE_KOREAN = list(
-      description        = "Korean-heritage race indicator (1 = Korean, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Korean-heritage race indicator (1 = Korean, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, Black, Chinese, Taiwanese, Indian, or other Asian; the Schmid 2017 cohort reference group for the Korean F1 alternative).",
-      notes              = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * 0.781^RACE_KOREAN. Schmid 2017 Table 3 ethnic-origin row Korean theta_Ethnicity = 0.781 (RSE 6.53%). The 5.8% of cohort identified as Korean had ~22% lower F1 than the Caucasian / Black / other-Asian reference. Korean ethnicity is NOT included in the RACE_IND_CHI_TWN composite -- the two canonicals are mutually exclusive: a Korean subject has RACE_IND_CHI_TWN = 0 and RACE_KOREAN = 1. Korean ethnicity ALSO contributes to the RACE_ASIAN broader Asian indicator (= 1 for Korean subjects), which in turn drives the non-Indian-Asian F2 effect through the derived race-asian-non-indian flag inside model().",
-      source_name        = "ETHNIC == 'Korean'"
+      notes = "Time-fixed baseline. Effect on nintedanib F1: F1 = ... * 0.781^RACE_KOREAN. Schmid 2017 Table 3 ethnic-origin row Korean theta_Ethnicity = 0.781 (RSE 6.53%). The 5.8% of cohort identified as Korean had ~22% lower F1 than the Caucasian / Black / other-Asian reference. Korean ethnicity is NOT included in the RACE_IND_CHI_TWN composite -- the two canonicals are mutually exclusive: a Korean subject has RACE_IND_CHI_TWN = 0 and RACE_KOREAN = 1. Korean ethnicity ALSO contributes to the RACE_ASIAN broader Asian indicator (= 1 for Korean subjects), which in turn drives the non-Indian-Asian F2 effect through the derived race-asian-non-indian flag inside model().",
+      source_name = "ETHNIC == 'Korean'"
     ),
     RACE_INDIAN = list(
-      description        = "South Asian Indian race indicator (1 = Indian, 0 = otherwise). NOT 'American Indian' / Native American.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "South Asian Indian race indicator (1 = Indian, 0 = otherwise). NOT 'American Indian' / Native American.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian, Black, Chinese, Taiwanese, Korean, or other Asian; the Schmid 2017 cohort reference group for the BIBF 1202 F2 Indian-alone effect).",
-      notes              = "Time-fixed baseline. Effect on BIBF 1202 F2: F2 = ... * 1.90^RACE_INDIAN with the non-Indian-Asian alternative 1.20^(RACE_ASIAN AND NOT RACE_INDIAN). Schmid 2017 Online Resource Table S5 theta_Ethnicity for BIBF 1202: 1.90 (RSE 13.5%, Indian alone), 1.20 (RSE 4.83%, non-Indian Asian). The same Indian subjects also have RACE_IND_CHI_TWN = 1 (because the F1 effect groups Indian with Chinese and Taiwanese, a different composite). The two race canonicals do not conflict because they drive distinct model-equation slots (F1 vs F2).",
-      source_name        = "ETHNIC == 'Indian'"
+      notes = "Time-fixed baseline. Effect on BIBF 1202 F2: F2 = ... * 1.90^RACE_INDIAN with the non-Indian-Asian alternative 1.20^(RACE_ASIAN AND NOT RACE_INDIAN). Schmid 2017 Online Resource Table S5 theta_Ethnicity for BIBF 1202: 1.90 (RSE 13.5%, Indian alone), 1.20 (RSE 4.83%, non-Indian Asian). The same Indian subjects also have RACE_IND_CHI_TWN = 1 (because the F1 effect groups Indian with Chinese and Taiwanese, a different composite). The two race canonicals do not conflict because they drive distinct model-equation slots (F1 vs F2).",
+      source_name = "ETHNIC == 'Indian'"
     ),
     RACE_ASIAN = list(
-      description        = "Broad Asian race indicator (1 = Asian heritage of any subgroup -- Chinese, Korean, Taiwanese, Indian, or other Asian; 0 = non-Asian -- Caucasian or Black). Used in combination with RACE_INDIAN to derive the non-Indian-Asian flag for the BIBF 1202 F2 effect.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Broad Asian race indicator (1 = Asian heritage of any subgroup -- Chinese, Korean, Taiwanese, Indian, or other Asian; 0 = non-Asian -- Caucasian or Black). Used in combination with RACE_INDIAN to derive the non-Indian-Asian flag for the BIBF 1202 F2 effect.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Caucasian or Black; the Schmid 2017 cohort reference for BIBF 1202 F2).",
-      notes              = "Time-fixed baseline. RACE_ASIAN = 1 for any subject whose RACE_IND_CHI_TWN, RACE_KOREAN, or 'other Asian' bin = 1. Indian subjects also have RACE_ASIAN = 1. The derived flag race_asian_nonind = RACE_ASIAN * (1 - RACE_INDIAN) is computed inside model() and drives the BIBF 1202 F2 effect of 1.20 (RSE 4.83%) per Schmid 2017 Online Resource Table S5.",
-      source_name        = "ETHNIC %in% c('Chinese', 'Korean', 'Taiwanese', 'Indian', 'other Asian')"
+      notes = "Time-fixed baseline. RACE_ASIAN = 1 for any subject whose RACE_IND_CHI_TWN, RACE_KOREAN, or 'other Asian' bin = 1. Indian subjects also have RACE_ASIAN = 1. The derived flag race_asian_nonind = RACE_ASIAN * (1 - RACE_INDIAN) is computed inside model() and drives the BIBF 1202 F2 effect of 1.20 (RSE 4.83%) per Schmid 2017 Online Resource Table S5.",
+      source_name = "ETHNIC %in% c('Chinese', 'Korean', 'Taiwanese', 'Indian', 'other Asian')"
     ),
     ECOG_GE1 = list(
-      description        = "ECOG performance-status indicator (1 = ECOG >= 1, 0 = ECOG = 0). NSCLC patients only; IPF patients have no ECOG and are assigned ECOG_GE1 = 0 by convention (Schmid 2017 model treats IPF subjects as having the reference ECOG status). Effect on BIBF 1202 F2 only (no effect on nintedanib F1).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ECOG performance-status indicator (1 = ECOG >= 1, 0 = ECOG = 0). NSCLC patients only; IPF patients have no ECOG and are assigned ECOG_GE1 = 0 by convention (Schmid 2017 model treats IPF subjects as having the reference ECOG status). Effect on BIBF 1202 F2 only (no effect on nintedanib F1).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG = 0; ~22.6% of Schmid 2017 cohort).",
-      notes              = "Time-fixed baseline. Effect on BIBF 1202 F2: F2 = ... * 1.16^ECOG_GE1 per Schmid 2017 Online Resource Table S5 (theta_ECOG = 1.16, RSE 4.16%). IPF patients have ECOG missing (Schmid 2017 Table 2 'Missing (due to IPF indication)' 342, 28.7%); in the source model these are pooled with ECOG = 0 reference.",
-      source_name        = "ECOG (ECOG_GE1 = as.integer(ECOG >= 1); for IPF cohort with ECOG missing, ECOG_GE1 = 0).",
-      reference          = 0
+      notes = "Time-fixed baseline. Effect on BIBF 1202 F2: F2 = ... * 1.16^ECOG_GE1 per Schmid 2017 Online Resource Table S5 (theta_ECOG = 1.16, RSE 4.16%). IPF patients have ECOG missing (Schmid 2017 Table 2 'Missing (due to IPF indication)' 342, 28.7%); in the source model these are pooled with ECOG = 0 reference.",
+      source_name = "ECOG (ECOG_GE1 = as.integer(ECOG >= 1); for IPF cohort with ECOG missing, ECOG_GE1 = 0).",
+      reference = 0
     ),
     LDH = list(
-      description        = "Serum lactate dehydrogenase. Hockey-stick effect on BIBF 1202 F2 with estimated breakpoint at 688 U/L; flat above the breakpoint.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum lactate dehydrogenase. Hockey-stick effect on BIBF 1202 F2 with estimated breakpoint at 688 U/L; flat above the breakpoint.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline (Schmid 2017 used LDH at start of treatment). Effect on BIBF 1202 F2: F2 = ... * (1 - e_ldh_coef_fdepot_bibf * (e_ldh_bp_fdepot_bibf - LDH)) when LDH < e_ldh_bp_fdepot_bibf, else F2 = ... * 1. Schmid 2017 Online Resource Table S5 estimates: e_ldh_coef_fdepot_bibf = 0.000656 (RSE 22.1%) and e_ldh_bp_fdepot_bibf = 688 U/L (RSE 22.0%). Cohort median 238 U/L, 5th-95th 141-576 U/L (Schmid 2017 Table 2).",
-      source_name        = "LDH"
+      notes = "Time-fixed baseline (Schmid 2017 used LDH at start of treatment). Effect on BIBF 1202 F2: F2 = ... * (1 - e_ldh_coef_fdepot_bibf * (e_ldh_bp_fdepot_bibf - LDH)) when LDH < e_ldh_bp_fdepot_bibf, else F2 = ... * 1. Schmid 2017 Online Resource Table S5 estimates: e_ldh_coef_fdepot_bibf = 0.000656 (RSE 22.1%) and e_ldh_bp_fdepot_bibf = 688 U/L (RSE 22.0%). Cohort median 238 U/L, 5th-95th 141-576 U/L (Schmid 2017 Table 2).",
+      source_name = "LDH"
     ),
     TUMTP_NSCLC_NONADENO = list(
-      description        = "NSCLC non-adenocarcinoma histology indicator (1 = NSCLC with non-adenocarcinoma histology, 0 = NSCLC adenocarcinoma OR IPF OR NSCLC of unknown histology). Effect on BIBF 1202 ka2 only (no effect on parent nintedanib ka).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NSCLC non-adenocarcinoma histology indicator (1 = NSCLC with non-adenocarcinoma histology, 0 = NSCLC adenocarcinoma OR IPF OR NSCLC of unknown histology). Effect on BIBF 1202 ka2 only (no effect on parent nintedanib ka).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adenocarcinoma NSCLC, unknown-histology NSCLC, or IPF; pooled per Schmid 2017 Online Resource Table S5 reference).",
-      notes              = "Time-fixed baseline. Effect on BIBF 1202 ka2: ka2 = ... * 1.36^TUMTP_NSCLC_NONADENO per Schmid 2017 Online Resource Table S5 (theta_NSCLC_histology = 1.36, RSE 8.90%). Schmid 2017 Table 2: NSCLC non-adenocarcinoma 274 (23.0%); NSCLC adenocarcinoma 502 (42.1%); IPF or NSCLC unknown histology 415 (34.8%).",
-      source_name        = "NSCLC_histology == 'non-adenocarcinoma'"
+      notes = "Time-fixed baseline. Effect on BIBF 1202 ka2: ka2 = ... * 1.36^TUMTP_NSCLC_NONADENO per Schmid 2017 Online Resource Table S5 (theta_NSCLC_histology = 1.36, RSE 8.90%). Schmid 2017 Table 2: NSCLC non-adenocarcinoma 274 (23.0%); NSCLC adenocarcinoma 502 (42.1%); IPF or NSCLC unknown histology 415 (34.8%).",
+      source_name = "NSCLC_histology == 'non-adenocarcinoma'"
     ),
     STUDY_TOMORROW = list(
-      description        = "TOMORROW (NCT00514683; BI 1199.30; Richeldi 2011 NEJM) IPF phase II study indicator. Effect on nintedanib ka and on BIBF 1202 ka2 (paired with STUDY_NSCLC_NIN_PH2).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "TOMORROW (NCT00514683; BI 1199.30; Richeldi 2011 NEJM) IPF phase II study indicator. Effect on nintedanib ka and on BIBF 1202 ka2 (paired with STUDY_NSCLC_NIN_PH2).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-TOMORROW: NSCLC phase II, LUME-Lung 1, or LUME-Lung 2).",
-      notes              = "Time-fixed per subject. Combined with STUDY_NSCLC_NIN_PH2 to drive the ka phase-II trial-group effect (theta_Trial = 2.20 on nintedanib ka; theta_Trial = 0.756 on BIBF 1202 ka2 per Schmid 2017 Online Resource Table S5).",
-      source_name        = "STUDY == 'TOMORROW' (or per-subject study identifier resolving to the IPF phase II / TOMORROW trial)"
+      notes = "Time-fixed per subject. Combined with STUDY_NSCLC_NIN_PH2 to drive the ka phase-II trial-group effect (theta_Trial = 2.20 on nintedanib ka; theta_Trial = 0.756 on BIBF 1202 ka2 per Schmid 2017 Online Resource Table S5).",
+      source_name = "STUDY == 'TOMORROW' (or per-subject study identifier resolving to the IPF phase II / TOMORROW trial)"
     ),
     STUDY_NSCLC_NIN_PH2 = list(
-      description        = "Nintedanib phase II NSCLC study indicator (Reck 2011 Ann Oncol; BI 1199.4). Distinct effects on nintedanib F1 (with STUDY_LUMELUNG2) and on nintedanib ka / BIBF 1202 ka2 (with STUDY_TOMORROW).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Nintedanib phase II NSCLC study indicator (Reck 2011 Ann Oncol; BI 1199.4). Distinct effects on nintedanib F1 (with STUDY_LUMELUNG2) and on nintedanib ka / BIBF 1202 ka2 (with STUDY_TOMORROW).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-NSCLC-phase-II: TOMORROW, LUME-Lung 1, or LUME-Lung 2).",
-      notes              = "Time-fixed per subject. Combined with STUDY_LUMELUNG2 to drive the F1 trial-group effect (theta_Trial = 1.30 on F1 per Schmid 2017 Table 3). Combined with STUDY_TOMORROW to drive the ka phase-II trial-group effect (theta_Trial = 2.20 on nintedanib ka per Schmid 2017 Table 3; theta_Trial = 0.756 on BIBF 1202 ka2 per Schmid 2017 Online Resource Table S5).",
-      source_name        = "STUDY == 'NSCLC_PHASE2_NINTEDANIB' (Reck 2011 BI 1199.4 phase II)"
+      notes = "Time-fixed per subject. Combined with STUDY_LUMELUNG2 to drive the F1 trial-group effect (theta_Trial = 1.30 on F1 per Schmid 2017 Table 3). Combined with STUDY_TOMORROW to drive the ka phase-II trial-group effect (theta_Trial = 2.20 on nintedanib ka per Schmid 2017 Table 3; theta_Trial = 0.756 on BIBF 1202 ka2 per Schmid 2017 Online Resource Table S5).",
+      source_name = "STUDY == 'NSCLC_PHASE2_NINTEDANIB' (Reck 2011 BI 1199.4 phase II)"
     ),
     STUDY_LUMELUNG2 = list(
-      description        = "LUME-Lung 2 (NCT00806819; BI 1199.14; Hanna 2016 Lung Cancer) phase III NSCLC + pemetrexed study indicator. Combined with STUDY_NSCLC_NIN_PH2 to drive the F1 trial-group effect.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "LUME-Lung 2 (NCT00806819; BI 1199.14; Hanna 2016 Lung Cancer) phase III NSCLC + pemetrexed study indicator. Combined with STUDY_NSCLC_NIN_PH2 to drive the F1 trial-group effect.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-LUME-Lung-2).",
-      notes              = "Time-fixed per subject. Combined with STUDY_NSCLC_NIN_PH2 to drive the F1 trial-group effect (theta_Trial = 1.30 on F1 per Schmid 2017 Table 3). For the ka / ka2 trial-effect this study acts as part of the reference cohort (paired with LUME-Lung 1).",
-      source_name        = "STUDY == 'LUME-Lung_2'"
+      notes = "Time-fixed per subject. Combined with STUDY_NSCLC_NIN_PH2 to drive the F1 trial-group effect (theta_Trial = 1.30 on F1 per Schmid 2017 Table 3). For the ka / ka2 trial-effect this study acts as part of the reference cohort (paired with LUME-Lung 1).",
+      source_name = "STUDY == 'LUME-Lung_2'"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1191L,
-    n_studies      = 4L,
-    age_range      = "45-76 years (5th-95th percentile; median 62)",
-    age_median     = "62 years",
-    weight_range   = "50.0-100.0 kg (5th-95th percentile; median 71.5)",
-    weight_median  = "71.5 kg",
+    species = "human",
+    n_subjects = 1191L,
+    n_studies = 4L,
+    age_range = "45-76 years (5th-95th percentile; median 62)",
+    age_median = "62 years",
+    weight_range = "50.0-100.0 kg (5th-95th percentile; median 71.5)",
+    weight_median = "71.5 kg",
     sex_female_pct = 30.8,
     race_ethnicity = c(Caucasian = 75.5, Asian = 23.7, Black = 0.8),
     asian_breakdown = c(Chinese = 8.2, Korean = 5.8, Indian = 4.2, Taiwanese = 1.6, OtherAsian = 3.9),
-    disease_state  = "Advanced non-small cell lung cancer (NSCLC, 71.3%) or idiopathic pulmonary fibrosis (IPF, 28.7%). NSCLC histology: adenocarcinoma 42.1%, non-adenocarcinoma 23.0%, unknown 34.8% (pooled with IPF).",
-    dose_range     = "Oral nintedanib 50-250 mg, once- or twice-daily, in repeated treatment cycles continued until disease progression or intolerable toxicity.",
+    disease_state = "Advanced non-small cell lung cancer (NSCLC, 71.3%) or idiopathic pulmonary fibrosis (IPF, 28.7%). NSCLC histology: adenocarcinoma 42.1%, non-adenocarcinoma 23.0%, unknown 34.8% (pooled with IPF).",
+    dose_range = "Oral nintedanib 50-250 mg, once- or twice-daily, in repeated treatment cycles continued until disease progression or intolerable toxicity.",
     smoking_distribution = c(NonSmoker_pct = 27.5, ExSmoker_pct = 57.8, CurrentSmoker_pct = 14.8),
     ecog_distribution = c(ECOG_0_pct = 22.6, ECOG_1_pct = 47.2, ECOG_2_pct = 1.5, Missing_IPF_pct = 28.7),
-    notes          = "Pooled population PK analysis combining 4 trials: TOMORROW IPF phase II (Richeldi 2011, n = 342 IPF), Reck 2011 nintedanib NSCLC phase II (n = 73 NSCLC, monotherapy), LUME-Lung 1 (Reck 2014, n = 652 NSCLC + docetaxel 75 mg/m^2 q3w), LUME-Lung 2 (Hanna 2016, n = 347 NSCLC + pemetrexed 500 mg/m^2 q3w). Pharmacokinetic data: 5611 nintedanib and 5376 BIBF 1202 plasma concentrations (HPLC-MS/MS), reported in nM (1 nM nintedanib = 1.853 ng/mL; 1 nM BIBF 1202 = 1.903 ng/mL)."
+    notes = "Pooled population PK analysis combining 4 trials: TOMORROW IPF phase II (Richeldi 2011, n = 342 IPF), Reck 2011 nintedanib NSCLC phase II (n = 73 NSCLC, monotherapy), LUME-Lung 1 (Reck 2014, n = 652 NSCLC + docetaxel 75 mg/m^2 q3w), LUME-Lung 2 (Hanna 2016, n = 347 NSCLC + pemetrexed 500 mg/m^2 q3w). Pharmacokinetic data: 5611 nintedanib and 5376 BIBF 1202 plasma concentrations (HPLC-MS/MS), reported in nM (1 nM nintedanib = 1.853 ng/mL; 1 nM BIBF 1202 = 1.903 ng/mL)."
   )
 
   # Implementation notes (see vignette 'Assumptions and deviations' for the

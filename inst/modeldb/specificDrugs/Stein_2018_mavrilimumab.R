@@ -9,21 +9,21 @@ Stein_2018_mavrilimumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central      = list(analyte = "mavrilimumab", units = "nmol", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "mavrilimumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mavrilimumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mavrilimumab", units = "nmol", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "GM-CSF receptor", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human",
-    n_subjects    = NA_integer_,
-    n_studies     = 1,
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 1,
     disease_state = "Adults with rheumatoid arthritis (mavrilimumab phase 1 first-in-human study; Burmester 2011).",
-    dose_range    = "Stein and Peletier 2018 simulated a 10 mg/kg single IV bolus (467 nmol assuming 70 kg patient and 150 kDa antibody; Stein and Peletier 2018 page 672).",
-    regions       = NA_character_,
-    notes         = paste(
+    dose_range = "Stein and Peletier 2018 simulated a 10 mg/kg single IV bolus (467 nmol assuming 70 kg patient and 150 kDa antibody; Stein and Peletier 2018 page 672).",
+    regions = NA_character_,
+    notes = paste(
       "Typical-value fit reproduced from Stein and Peletier 2018 Table 1. Parameters were estimated by",
       "Stein and Peletier (using the two-compartment quasi-steady-state TMDD model in their Eq. 7) by",
       "fitting the mavrilimumab phase 1 PK profiles from Burmester GR et al. Ann Rheum Dis 2011;70:1542-1549.",

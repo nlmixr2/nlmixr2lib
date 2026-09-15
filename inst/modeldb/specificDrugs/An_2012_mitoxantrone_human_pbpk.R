@@ -40,22 +40,22 @@ An_2012_mitoxantrone_human_pbpk <- function() {
     sep = " "
   )
   vignette <- "An_2012_mitoxantrone_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    lung          = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    heart         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    spleen        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    brain         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    liver         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    kidney        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    is_remainder  = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    lung = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    heart = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    brain = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    liver = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    is_remainder = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
     int_remainder = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
-    central       = list(analyte = "mitoxantrone", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "mitoxantrone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -68,11 +68,11 @@ An_2012_mitoxantrone_human_pbpk <- function() {
   # checkModelConventions() unused-covariate check.
   covariatesDataExcluded <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "External dose-mass multiplier only (dose mg = 12 mg/m^2 *",
         "BSA). The An and Morris 2012 human PBPK simulation fixes",
         "Q_i and V_i at the 70-kg Davies and Morris 1993 (ref 25)",
@@ -81,18 +81,18 @@ An_2012_mitoxantrone_human_pbpk <- function() {
         "body sizes should adjust the physiological constants in",
         "their own simulation wrapper."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 2L,
-    age_range      = "adult (Larson 1987 J Clin Oncol acute non-lymphocytic leukemia; Peng 1982 J Chromatogr breast cancer)",
-    weight_range   = "Davies and Morris (1993) 70-kg reference subject for the physiology",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    age_range = "adult (Larson 1987 J Clin Oncol acute non-lymphocytic leukemia; Peng 1982 J Chromatogr breast cancer)",
+    weight_range = "Davies and Morris (1993) 70-kg reference subject for the physiology",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Adult cancer patients receiving 12 mg/m^2 IV mitoxantrone in two",
       "previously published clinical pharmacokinetic studies (Larson",
       "1987 J Clin Oncol 5:391-7 acute non-lymphocytic leukemia; Peng",
@@ -101,9 +101,9 @@ An_2012_mitoxantrone_human_pbpk <- function() {
       "concentration vs. time observations as the human validation",
       "target (Fig 6)."
     ),
-    dose_range     = "12 mg/m^2 single IV bolus mitoxantrone (typical clinical dose)",
-    regions        = NA_character_,
-    notes          = paste(
+    dose_range = "12 mg/m^2 single IV bolus mitoxantrone (typical clinical dose)",
+    regions = NA_character_,
+    notes = paste(
       "Pure forward simulation: no individual-level data were fit. The",
       "An and Morris 2012 paper reports comparisons of the model-",
       "predicted plasma concentration vs. mean digitised observations",

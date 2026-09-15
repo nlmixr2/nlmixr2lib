@@ -10,72 +10,72 @@ Chen_2024_adebrelimab <- function() {
   # "The lower limit of quantification (LLOQ) of the adebrelimab assay in
   # human serum was 0.4 ug/mL"), so the specimen is serum rather than plasma.
   compartmentData <- list(
-    central     = list(analyte = "adebrelimab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "adebrelimab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "adebrelimab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline (not time-varying) body weight. Power scaling (WT / 64)^exponent on CL (0.710), on Vc (0.577) and on Vp (1.80). Reference 64 kg is the population median body weight (Chen 2024 Table 1: 64.0 kg, range 38.1-97.0 kg) and is the value hard-coded in the Data S1 NONMEM control stream (CLBW / V1BW / V2BW blocks all divide by 64).",
-      source_name        = "BW"
+      notes = "Baseline (not time-varying) body weight. Power scaling (WT / 64)^exponent on CL (0.710), on Vc (0.577) and on Vp (1.80). Reference 64 kg is the population median body weight (Chen 2024 Table 1: 64.0 kg, range 38.1-97.0 kg) and is the value hard-coded in the Data S1 NONMEM control stream (CLBW / V1BW / V2BW blocks all divide by 64).",
+      source_name = "BW"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Baseline serum albumin in g/L, matching the ALB canonical SI unit -- no unit conversion is required for this model. Power scaling (ALB / 41.4)^-0.861 on CL. Reference 41.4 g/L is the total-population median (Chen 2024 Table 1) and is hard-coded in the Data S1 control stream (CLALB = (ALB/41.4)**THETA(9)). Chen 2024 Figure 1 quotes the 5th and 95th percentiles as 33.06 and 48.29 g/L.",
-      source_name        = "ALB"
+      notes = "Baseline serum albumin in g/L, matching the ALB canonical SI unit -- no unit conversion is required for this model. Power scaling (ALB / 41.4)^-0.861 on CL. Reference 41.4 g/L is the total-population median (Chen 2024 Table 1) and is hard-coded in the Data S1 control stream (CLALB = (ALB/41.4)**THETA(9)). Chen 2024 Figure 1 quotes the 5th and 95th percentiles as 33.06 and 48.29 g/L.",
+      source_name = "ALB"
     ),
     NEUT = list(
-      description        = "Baseline absolute neutrophil count",
-      units              = "cells/mm^3",
-      type               = "continuous",
+      description = "Baseline absolute neutrophil count",
+      units = "cells/mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (NEUT / 4150)^0.159 on CL. Chen 2024 reports neutrophil count in 10^9/L (Table 1 median 4.2 x 10^9/L; Figure 1 5th and 95th percentiles 2.381 and 7.781 x 10^9/L) and the Data S1 control stream normalises by 4.15 x 10^9/L. This model file carries the covariate in the NEUT canonical unit of cells/mm^3, so the reference is written as 4150 cells/mm^3 (= 4.15 x 10^9/L, since 1 L = 10^6 mm^3). The effect enters only as the ratio (NEUT / reference), so the exponent is numerically identical under either unit provided the data column and the reference share a unit.",
-      source_name        = "NEUT"
+      notes = "Power scaling (NEUT / 4150)^0.159 on CL. Chen 2024 reports neutrophil count in 10^9/L (Table 1 median 4.2 x 10^9/L; Figure 1 5th and 95th percentiles 2.381 and 7.781 x 10^9/L) and the Data S1 control stream normalises by 4.15 x 10^9/L. This model file carries the covariate in the NEUT canonical unit of cells/mm^3, so the reference is written as 4150 cells/mm^3 (= 4.15 x 10^9/L, since 1 L = 10^6 mm^3). The effect enters only as the ratio (NEUT / reference), so the exponent is numerically identical under either unit provided the data column and the reference share a unit.",
+      source_name = "NEUT"
     ),
     TUM_SLD = list(
-      description        = "Baseline sum of the longest diameters of all target lesions (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline sum of the longest diameters of all target lesions (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (TUM_SLD / 90)^0.103 on CL. Reference 90 is hard-coded in the Data S1 control stream (CLSLD = (SLD/90)**THETA(12)); Chen 2024 Table 1 does not tabulate SLD, so the control stream is the only source for the normaliser. The unit is mm, established from Chen 2024 Figure 1, which labels the SLD 5th and 95th percentiles as 28.03 mm and 176.75 mm -- a reference of 90 mm sits between them as the population median. The effect enters only as the ratio (TUM_SLD / reference).",
-      source_name        = "SLD"
+      notes = "Power scaling (TUM_SLD / 90)^0.103 on CL. Reference 90 is hard-coded in the Data S1 control stream (CLSLD = (SLD/90)**THETA(12)); Chen 2024 Table 1 does not tabulate SLD, so the control stream is the only source for the normaliser. The unit is mm, established from Chen 2024 Figure 1, which labels the SLD 5th and 95th percentiles as 28.03 mm and 176.75 mm -- a reference of 90 mm sits between them as the population median. The effect enters only as the ratio (TUM_SLD / reference).",
+      source_name = "SLD"
     ),
     ADA_POS = list(
-      description        = "Treatment-emergent anti-drug antibody positivity, at the subject level",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Treatment-emergent anti-drug antibody positivity, at the subject level",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Subject-level (not time-varying) indicator: 1 for the whole treatment period if the patient experienced treatment-induced or treatment-boosted ADA positivity at any point, 0 otherwise (Chen 2024 Table 2 footnote a). Applied as the linear form (1 + 0.185 * ADA_POS) per Chen 2024 Equation 4 and the Data S1 control stream (IF(ADA.EQ.0) CLADA=1; IF(ADA.EQ.1) CLADA=(1+THETA(8))), so ADA-positive patients have 18.5% higher CL. 27.0% of the analysis population were ADA-positive (Chen 2024 Table 1).",
-      source_name        = "ADA"
+      notes = "Subject-level (not time-varying) indicator: 1 for the whole treatment period if the patient experienced treatment-induced or treatment-boosted ADA positivity at any point, 0 otherwise (Chen 2024 Table 2 footnote a). Applied as the linear form (1 + 0.185 * ADA_POS) per Chen 2024 Equation 4 and the Data S1 control stream (IF(ADA.EQ.0) CLADA=1; IF(ADA.EQ.1) CLADA=(1+THETA(8))), so ADA-positive patients have 18.5% higher CL. 27.0% of the analysis population were ADA-positive (Chen 2024 Table 1).",
+      source_name = "ADA"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 263L,
-    n_studies      = 2L,
-    age_range      = "18-73 years",
-    age_median     = "61 years",
-    weight_range   = "38.1-97.0 kg",
-    weight_median  = "64.0 kg",
+    species = "human",
+    n_subjects = 263L,
+    n_studies = 2L,
+    age_range = "18-73 years",
+    age_median = "61 years",
+    weight_range = "38.1-97.0 kg",
+    weight_median = "64.0 kg",
     sex_female_pct = 25.1,
     race_ethnicity = c(Asian_Chinese = 100),
-    disease_state  = "Extensive-stage small-cell lung cancer (222 patients from the phase III CAPSTONE-1 study, all receiving adebrelimab with carboplatin and etoposide) pooled with 41 patients with advanced solid tumours from the phase I dose-escalation/expansion study. 87.5% lung cancer; 100% metastatic; 96.2% clinical stage IV; 87.5% ECOG performance status 1.",
-    dose_range     = "3 mg/kg q3w (n = 3), 10 mg/kg q2w (n = 12), 10 mg/kg q3w (n = 13), and 20 mg/kg q3w (n = 235) as intravenous infusions",
-    regions        = "China",
+    disease_state = "Extensive-stage small-cell lung cancer (222 patients from the phase III CAPSTONE-1 study, all receiving adebrelimab with carboplatin and etoposide) pooled with 41 patients with advanced solid tumours from the phase I dose-escalation/expansion study. 87.5% lung cancer; 100% metastatic; 96.2% clinical stage IV; 87.5% ECOG performance status 1.",
+    dose_range = "3 mg/kg q3w (n = 3), 10 mg/kg q2w (n = 12), 10 mg/kg q3w (n = 13), and 20 mg/kg q3w (n = 235) as intravenous infusions",
+    regions = "China",
     ada_positive_pct = 27.0,
-    albumin_median   = "41.4 g/L (range 26.6-53.2)",
+    albumin_median = "41.4 g/L (range 26.6-53.2)",
     neutrophil_median = "4.2 x 10^9/L (range 1.7-11.4)",
     hepatic_impairment_pct = c(none = 84.0, mild = 15.2, moderate = 0.8, severe = 0),
-    renal_impairment_pct   = c(none = 51.0, mild = 39.5, moderate = 9.5, severe = 0),
-    notes          = "Baseline demographics from Chen 2024 Table 1 (total population column, N = 263). Studies: NCT03474289 (SHR-1316-I-101, phase I, advanced tumours) and NCT03711305 (SHR-1316-III-301, CAPSTONE-1, phase III, ES-SCLC). Reference patient for the structural parameters is the covariate median: 64 kg, albumin 41.4 g/L, neutrophils 4.15 x 10^9/L, SLD 90 mm, ADA-negative."
+    renal_impairment_pct = c(none = 51.0, mild = 39.5, moderate = 9.5, severe = 0),
+    notes = "Baseline demographics from Chen 2024 Table 1 (total population column, N = 263). Studies: NCT03474289 (SHR-1316-I-101, phase I, advanced tumours) and NCT03711305 (SHR-1316-III-301, CAPSTONE-1, phase III, ES-SCLC). Reference patient for the structural parameters is the covariate median: 64 kg, albumin 41.4 g/L, neutrophils 4.15 x 10^9/L, SLD 90 mm, ADA-negative."
   )
 
   ini({

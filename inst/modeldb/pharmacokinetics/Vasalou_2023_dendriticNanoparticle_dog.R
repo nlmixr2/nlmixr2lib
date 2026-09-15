@@ -13,30 +13,50 @@ Vasalou_2023_dendriticNanoparticle_dog <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    blood_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    liver_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen_np = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
-    blood     = list(analyte = "free API", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    liver     = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    spleen    = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
-    other     = list(analyte = "free API", units = NA_character_, specimen = "lymph", verified = FALSE)
+    blood_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    liver_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    spleen_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    other_np = list(
+      analyte = "nanoparticle-conjugated API",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    blood = list(analyte = "free API", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    liver = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other = list(analyte = "free API", units = NA_character_, specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "beagle dog (male)",
-    n_subjects     = 4,
-    n_studies      = 1,
-    age_range      = "not reported",
-    weight_range   = "10 kg (reference body weight, Tables 3 and 4)",
+    species = "beagle dog (male)",
+    n_subjects = 4,
+    n_studies = 1,
+    age_range = "not reported",
+    weight_range = "10 kg (reference body weight, Tables 3 and 4)",
     sex_female_pct = 0,
-    disease_state  = "Healthy male beagle dogs; no tumour implanted.",
-    dose_range     = "Single 12 mg/kg IV infusion of the nanoparticle over 30 minutes (target 24 mg/kg/h; formulation 13.2 mg/mL, dose volume 5 mL/kg). This dose level was considered the NOEL.",
-    regions        = "Single-centre preclinical, United Kingdom (Charles River Laboratories colony; CRL Edinburgh AWERB ethical review).",
-    notes          = "Two dogs were sampled pre-dose, at end of infusion and 1 h post dose; the other two pre-dose, at end of infusion and 1, 4, 8, 24, 48, 72 and 120 h post dose. Liver and spleen were each sampled at TWO time points -- 1 h (near Tmax) and 120 h (Tlast) -- making dog the most completely characterised species for tissues, which is why the paper's sensitivity analysis (Fig 8, and Figs S1-S3 of S1 File) uses the dog model. Observed values are tabulated in Table S7 of S1 File. The paper reports plasma total API captured accurately, released API in plasma underpredicted by 3-4-fold, and liver/spleen within about 2-fold.",
-    scope_note     = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Parameters were scaled prospectively from mouse (Eqs 22-25), NOT fitted to dog data. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
+    disease_state = "Healthy male beagle dogs; no tumour implanted.",
+    dose_range = "Single 12 mg/kg IV infusion of the nanoparticle over 30 minutes (target 24 mg/kg/h; formulation 13.2 mg/mL, dose volume 5 mL/kg). This dose level was considered the NOEL.",
+    regions = "Single-centre preclinical, United Kingdom (Charles River Laboratories colony; CRL Edinburgh AWERB ethical review).",
+    notes = "Two dogs were sampled pre-dose, at end of infusion and 1 h post dose; the other two pre-dose, at end of infusion and 1, 4, 8, 24, 48, 72 and 120 h post dose. Liver and spleen were each sampled at TWO time points -- 1 h (near Tmax) and 120 h (Tlast) -- making dog the most completely characterised species for tissues, which is why the paper's sensitivity analysis (Fig 8, and Figs S1-S3 of S1 File) uses the dog model. Observed values are tabulated in Table S7 of S1 File. The paper reports plasma total API captured accurately, released API in plasma underpredicted by 3-4-fold, and liver/spleen within about 2-fold.",
+    scope_note = "Mechanistic PBPK simulator intended for typical-value simulation: no inter-individual variability and no residual-error model are reported by the source paper. Parameters were scaled prospectively from mouse (Eqs 22-25), NOT fitted to dog data. Dosing, volumes and flows are all body-weight-normalised (mg/kg, L/kg, L/h/kg), so simulate a nominal 1 kg subject and read concentrations directly."
   )
 
   ini({

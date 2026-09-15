@@ -8,52 +8,52 @@ Conil_2007_ceftazidime <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source column SEX with men = 0, women = 1; orientation matches canonical SEXF directly, no transformation required. 38 male and 12 female subjects in the cohort (Conil 2007 Table 1).",
-      source_name        = "SEX"
+      notes = "Source column SEX with men = 0, women = 1; orientation matches canonical SEXF directly, no transformation required. 38 male and 12 female subjects in the cohort (Conil 2007 Table 1).",
+      source_name = "SEX"
     ),
     MECH_VENT = list(
-      description        = "Invasive mechanical-ventilation treatment-status indicator at study entry, 1 = on mechanical ventilation, 0 = not ventilated",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Invasive mechanical-ventilation treatment-status indicator at study entry, 1 = on mechanical ventilation, 0 = not ventilated",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no mechanical ventilation)",
-      notes              = "Source column VENT with values 0 (without) and 1 (with); orientation matches canonical MECH_VENT directly, no transformation required. Time-fixed at the subject level for the PK sampling window. 16 of 50 patients ventilated (Conil 2007 Table 1). Hypothesised mechanism: positive end-expiratory pressure (PEEP) reduces glomerular filtration rate and stimulates antidiuretic-hormone secretion, increasing extracellular fluid and the peripheral volume of distribution V2.",
-      source_name        = "VENT"
+      notes = "Source column VENT with values 0 (without) and 1 (with); orientation matches canonical MECH_VENT directly, no transformation required. Time-fixed at the subject level for the PK sampling window. 16 of 50 patients ventilated (Conil 2007 Table 1). Hypothesised mechanism: positive end-expiratory pressure (PEEP) reduces glomerular filtration rate and stimulates antidiuretic-hormone secretion, increasing extracellular fluid and the peripheral volume of distribution V2.",
+      source_name = "VENT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2); a correction factor of 0.85 is applied to women per Cockcroft-Gault convention (Conil 2007 Methods, Estimation of population parameters). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent Delattre_2010_amikacin). Cohort mean 105.3 +/- 39.3 mL/min, range 33-191 (Conil 2007 Table 1). Enters CL as an additive linear effect and V2 as a chained multiplicative fractional-change term.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Computed by the Cockcroft-Gault equation in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2); a correction factor of 0.85 is applied to women per Cockcroft-Gault convention (Conil 2007 Methods, Estimation of population parameters). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form; precedent Delattre_2010_amikacin). Cohort mean 105.3 +/- 39.3 mL/min, range 33-191 (Conil 2007 Table 1). Enters CL as an additive linear effect and V2 as a chained multiplicative fractional-change term.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "15-90 years",
-    age_median     = "52.3 years (mean +/- 20.7 SD)",
-    weight_range   = "50-108 kg",
-    weight_median  = "71.3 kg (mean +/- 13.5 SD)",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "15-90 years",
+    age_median = "52.3 years (mean +/- 20.7 SD)",
+    weight_range = "50-108 kg",
+    weight_median = "71.3 kg (mean +/- 13.5 SD)",
     sex_female_pct = 24,
     race_ethnicity = "Not reported (French university-hospital burn-ICU population, Toulouse)",
-    disease_state  = "Burn injury during the secondary phase; treated for local infection or sepsis with ceftazidime; mean burned surface area 23 +/- 13.5% of total body surface, UBS index 64.8 +/- 50.0, Baux index 75.6 +/- 22.4, Tobiasen index 7.0 +/- 1.8. Renal function in the normal range (serum creatinine 76.5 +/- 21.8 umol/L; creatinine clearance 105.3 +/- 39.3 mL/min).",
-    dose_range     = "Ceftazidime 6 g/24 h administered as either three 2 g doses every 8 h or six 1 g doses every 4 h; each dose given as a 20-minute IV infusion via electric syringe (Conil 2007 Methods, Subjects and sampling).",
-    regions        = "France (Burns Unit, University Hospital of Toulouse-Rangueil)",
-    mech_vent_pct  = 32,
-    notes          = "Single-center observational study over 4 years, 50 patients with 237 serum ceftazidime concentrations (mean 4.7 samples per patient). Concentrations measured by reversed-phase HPLC with UV detection at 260 nm; LLOQ 1 mg/L, calibration linear 1-100 mg/L with CV < 15%. Population PK by NONMEM with Visual-NM; one-compartment (ADVAN1 TRANS2) vs two-compartment (ADVAN3 TRANS4) models compared by likelihood ratio and AIC, two-compartment with proportional error retained as the final structural model (OFV 1749.280 for the basic two-compartment vs 1824.628 for one-compartment). Final covariate model OFV 1618.37 after retaining CRCL on CL and SEX + VENT + CRCL on V2; covariate retention threshold delta-OFV > 10.83 (p < 0.0001, chi-squared 1 df) on backward elimination."
+    disease_state = "Burn injury during the secondary phase; treated for local infection or sepsis with ceftazidime; mean burned surface area 23 +/- 13.5% of total body surface, UBS index 64.8 +/- 50.0, Baux index 75.6 +/- 22.4, Tobiasen index 7.0 +/- 1.8. Renal function in the normal range (serum creatinine 76.5 +/- 21.8 umol/L; creatinine clearance 105.3 +/- 39.3 mL/min).",
+    dose_range = "Ceftazidime 6 g/24 h administered as either three 2 g doses every 8 h or six 1 g doses every 4 h; each dose given as a 20-minute IV infusion via electric syringe (Conil 2007 Methods, Subjects and sampling).",
+    regions = "France (Burns Unit, University Hospital of Toulouse-Rangueil)",
+    mech_vent_pct = 32,
+    notes = "Single-center observational study over 4 years, 50 patients with 237 serum ceftazidime concentrations (mean 4.7 samples per patient). Concentrations measured by reversed-phase HPLC with UV detection at 260 nm; LLOQ 1 mg/L, calibration linear 1-100 mg/L with CV < 15%. Population PK by NONMEM with Visual-NM; one-compartment (ADVAN1 TRANS2) vs two-compartment (ADVAN3 TRANS4) models compared by likelihood ratio and AIC, two-compartment with proportional error retained as the final structural model (OFV 1749.280 for the basic two-compartment vs 1824.628 for one-compartment). Final covariate model OFV 1618.37 after retaining CRCL on CL and SEX + VENT + CRCL on V2; covariate retention threshold delta-OFV > 10.83 (p < 0.0001, chi-squared 1 df) on backward elimination."
   )
 
   ini({

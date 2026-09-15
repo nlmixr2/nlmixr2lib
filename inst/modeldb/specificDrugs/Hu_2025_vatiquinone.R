@@ -38,18 +38,18 @@ Hu_2025_vatiquinone <- function() {
   # biological matrix. verified = TRUE: checked against Hu 2025 Figure 5
   # (model schematic) and the Figure 2 VPC concentration axis (ng/mL).
   compartmentData <- list(
-    depot       = list(analyte = "vatiquinone", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "vatiquinone", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "vatiquinone", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "vatiquinone", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "vatiquinone", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Two separate power effects, both referenced to 65 kg, which Hu 2025",
         "Section 2.3 states explicitly ('the reference body weight value is",
         "set to 65 kg in the population') -- a rounded standard value, not the",
@@ -61,14 +61,14 @@ Hu_2025_vatiquinone <- function() {
         "(Supplementary Table S2), a 19-fold span driven by the pediatric",
         "Friedreich's-ataxia and mitochondrial-disease studies."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power effect on apparent clearance, exponent theta17 = -0.975 (Hu 2025",
         "Table 2), referenced to 21.6 kg/m^2, which Section 2.3 identifies as",
         "the population median and Supplementary Table S2 confirms as the",
@@ -79,14 +79,14 @@ Hu_2025_vatiquinone <- function() {
         "correlated in the cohort, so the two exponents are not independently",
         "interpretable as marginal effects. Cohort range 11.9-41.4 kg/m^2."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     DIS_FRDA = list(
-      description        = "Friedreich's ataxia disease indicator: 1 = patient with Friedreich's ataxia, 0 = healthy volunteer or patient with another mitochondrial disease.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Friedreich's ataxia disease indicator: 1 = patient with Friedreich's ataxia, 0 = healthy volunteer or patient with another mitochondrial disease.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Hu 2025 Section 2.3 defines the indicator",
         "as 'FAi is set to 1 for participants with FA and is set to 0 for",
         "healthy volunteers'. The pooled dataset also contains 54 patients",
@@ -100,14 +100,14 @@ Hu_2025_vatiquinone <- function() {
         "apparent clearance. Cohort composition 173/343 (50.4%) FA, 116",
         "(33.8%) healthy volunteers, 54 (15.7%) other mitochondrial disease."
       ),
-      source_name        = "FA"
+      source_name = "FA"
     ),
     FED = list(
-      description        = "Fed-vs-fasted dose-record indicator: 1 = dose taken with food, 0 = fasted",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted dose-record indicator: 1 = dose taken with food, 0 = fasted",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Used COMPLEMENTED in model(): the paper's own indicator is FST",
         "('FSTi is set to 1 in the fasted state', Hu 2025 Section 2.3), so",
         "the canonical column maps as FST = 1 - FED and the effect enters as",
@@ -122,14 +122,14 @@ Hu_2025_vatiquinone <- function() {
         "state, which is the usual orientation for this family and is the",
         "reason the fasted effect is carried on the complement."
       ),
-      source_name        = "FST"
+      source_name = "FST"
     ),
     FED_LIQUIDSUPP = list(
-      description        = "Liquid nutritional-supplement meal at dosing indicator: 1 = dose taken with a liquid nutritional supplement (PediaSure), 0 = any other prandial state.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Liquid nutritional-supplement meal at dosing indicator: 1 = dose taken with a liquid nutritional supplement (PediaSure), 0 = any other prandial state.",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Hu 2025 Section 2.3: 'LQDi assumes a value of 1 when a liquid",
         "PediaSure meal is ingested'. Multiplicative log-scale effect on",
         "relative bioavailability, theta12 = -2.671 (Table 2), i.e. exposure",
@@ -146,14 +146,14 @@ Hu_2025_vatiquinone <- function() {
         "of 343 participants contributed liquid-supplement records, all from",
         "the EPI743-12-001 three-way food-effect crossover."
       ),
-      source_name        = "LQD"
+      source_name = "LQD"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole (strong CYP3A4 inhibitor) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole (strong CYP3A4 inhibitor) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Hu 2025 Section 2.3: 'ITRi is set to 1 when there is a concomitant",
         "administration of itraconazole'. Multiplicative log-scale effect on",
         "apparent clearance, theta10 = -1.446 (Table 2): CL/F falls to",
@@ -163,14 +163,14 @@ Hu_2025_vatiquinone <- function() {
         "dose, medium-fat meals, Table 5). Time-varying by dose record in",
         "that crossover design."
       ),
-      source_name        = "ITR"
+      source_name = "ITR"
     ),
     CONMED_RIFAMPICIN = list(
-      description        = "Concomitant rifampicin (rifampin; strong CYP3A4 inducer) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin (rifampin; strong CYP3A4 inducer) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "Hu 2025 Section 2.3: 'RFMi equals 1 when rifampin is",
         "co-administered'. Multiplicative log-scale effect on apparent",
         "clearance, theta11 = 0.704 (Table 2): CL/F rises to exp(0.704) =",
@@ -180,7 +180,7 @@ Hu_2025_vatiquinone <- function() {
         "(EPI743-18-002), so the two indicators are mutually exclusive per",
         "dose record and both are 0 under vatiquinone monotherapy."
       ),
-      source_name        = "RFM"
+      source_name = "RFM"
     )
   )
 
@@ -196,70 +196,90 @@ Hu_2025_vatiquinone <- function() {
   # covariateData entry that model() never references is a convention warning.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Baseline age", units = "years", type = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       notes = "Median 20 years, range 1-67 (Supplementary Table S2). Screened on CL/F together with a pediatric maturation function; neither reached the forward-addition criterion."
     ),
     SEXF = list(
-      description = "Female sex indicator", units = "(binary)", type = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "178/343 (51.9%) female (Supplementary Table S1). Screened, not retained."
     ),
     RACE_BLACK = list(
-      description = "Black or African American race indicator", units = "(binary)", type = "binary",
+      description = "Black or African American race indicator",
+      units = "(binary)",
+      type = "binary",
       notes = "35/343 (10.2%); White 279 (81.3%), Asian 12 (3.5%), missing 17 (5.0%) (Supplementary Table S1). Screened, not retained."
     ),
     ALB = list(
-      description = "Baseline serum albumin", units = "g/L", type = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       notes = "Median 46 g/L, range 37-54 (Supplementary Table S2; reported there under a 'g/dL' column header whose values are unambiguously g/L). Screened as a hepatic marker, not retained."
     ),
     BILI = list(
-      description = "Baseline total bilirubin", units = "umol/L", type = "continuous",
+      description = "Baseline total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = "Median 6.84, range 2.00-25.7 (Supplementary Table S2; reported there under a 'mg/dL' column header whose values are unambiguously umol/L). Screened as a hepatic marker, not retained."
     ),
     AST = list(
-      description = "Baseline aspartate aminotransferase", units = "IU/L", type = "continuous",
+      description = "Baseline aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Median 20, range 9-89 (Supplementary Table S2). Screened, not retained."
     ),
     ALT = list(
-      description = "Baseline alanine aminotransferase", units = "IU/L", type = "continuous",
+      description = "Baseline alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Median 17, range 5-127 (Supplementary Table S2). Screened, not retained."
     ),
     ALP = list(
-      description = "Baseline alkaline phosphatase", units = "IU/L", type = "continuous",
+      description = "Baseline alkaline phosphatase",
+      units = "IU/L",
+      type = "continuous",
       notes = "Median 85, range 26-352 (Supplementary Table S2). Screened, not retained."
     ),
     CREAT = list(
-      description = "Baseline serum creatinine", units = "umol/L", type = "continuous",
+      description = "Baseline serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       notes = "Median 55, range 18-115 (Supplementary Table S2; reported there under a 'mg/dL' column header whose values are unambiguously umol/L). Screened as a renal marker, not retained."
     ),
     CRCL = list(
-      description = "Baseline creatinine clearance", units = "mL/min", type = "continuous",
+      description = "Baseline creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       notes = "Median 123, range 47-472 (Supplementary Table S2). Computed by Hu 2025 as (140-AGE)*WEIGHT*1.23/CREAT, multiplied by 0.85 for females (Supplementary Table S2 footnote). Screened as a renal marker, not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 343L,
-    n_studies      = 8L,
-    n_samples      = 4608L,
-    age_range      = "1-67 years (median 20); 144/343 (42.0%) pediatric (<18 years), including 29 participants under 7 years of age",
-    weight_range   = "6.30-119 kg (median 58.6)",
-    bmi_range      = "11.9-41.4 kg/m^2 (median 21.6)",
+    species = "human",
+    n_subjects = 343L,
+    n_studies = 8L,
+    n_samples = 4608L,
+    age_range = "1-67 years (median 20); 144/343 (42.0%) pediatric (<18 years), including 29 participants under 7 years of age",
+    weight_range = "6.30-119 kg (median 58.6)",
+    bmi_range = "11.9-41.4 kg/m^2 (median 21.6)",
     sex_female_pct = 51.9,
     race_ethnicity = "White 279 (81.3%), Black or African American 35 (10.2%), Asian 12 (3.5%), not reported 17 (5.0%); Hispanic or Latino ethnicity 76 (22.2%).",
-    disease_state  = paste(
+    disease_state = paste(
       "116 (33.8%) adult healthy volunteers, 173 (50.4%) patients with",
       "Friedreich's ataxia (adult and pediatric), and 54 (15.7%) pediatric",
       "patients with other mitochondrial diseases (epilepsy indication)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "120-1,400 mg (median 400 mg), given as single doses or three times",
       "daily. Capsule 284 (82.8%) and oral solution 59 (17.2%). Pediatric",
       "studies dosed 15 mg/kg below 13 kg body weight and 200 mg at or",
       "above 13 kg."
     ),
-    regions        = "Not reported in the article.",
-    notes          = paste(
+    regions = "Not reported in the article.",
+    notes = paste(
       "Pooled analysis of eight phase I/II/III studies (NONMEM 7.5):",
       "EPI743-12-001 (three-way food-effect crossover: fasted, liquid",
       "PediaSure, medium-fat meal), EPI743-18-002 (itraconazole /",

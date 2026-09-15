@@ -1,7 +1,7 @@
 Hosseini_2024_flt3lfc_cyno <- function() {
   description <- "QSP. Preclinical (cynomolgus monkey). Minimal PBPK model (Cao/Jusko two-tissue-group mPBPK) for FLT3L-Fc (RO7497987), a half-life-extended effectorless Fc fusion of human FLT3 ligand, with expansion-enhanced target-mediated drug disposition: drug binds one or two monomeric FLT3 receptors in plasma, and the double-bound (homodimer) complex drives sigmoidal expansion of the total FLT3 receptor pool, which in turn amplifies TMDD. Calibrated to single- and repeat-IV-dose PK in cynomolgus monkeys over 0.1-10 mg/kg (Hosseini 2024 Table S2, cyno column)."
-  reference   <- "Hosseini I, Fleisher B, Getz J, Decalf J, Kwong M, Ovacik M, Bainbridge TW, Moussion C, Rao GK, Gadkar K, Kamath AV, Ramanujan S. A Minimal PBPK/PD Model with Expansion-Enhanced Target-Mediated Drug Disposition to Support a First-in-Human Clinical Study Design for a FLT3L-Fc Molecule. Pharmaceutics. 2024 May 15;16(5):660. doi:10.3390/pharmaceutics16050660. PMCID PMC11125320. Structural equations from the Supplementary Materials 'Supplemental ODEs and Repeated Assignments' (SimBiology export); parameter values from Supplementary Table S2, 'Cyno Value' column."
-  vignette    <- "Hosseini_2024_flt3lfc"
+  reference <- "Hosseini I, Fleisher B, Getz J, Decalf J, Kwong M, Ovacik M, Bainbridge TW, Moussion C, Rao GK, Gadkar K, Kamath AV, Ramanujan S. A Minimal PBPK/PD Model with Expansion-Enhanced Target-Mediated Drug Disposition to Support a First-in-Human Clinical Study Design for a FLT3L-Fc Molecule. Pharmaceutics. 2024 May 15;16(5):660. doi:10.3390/pharmaceutics16050660. PMCID PMC11125320. Structural equations from the Supplementary Materials 'Supplemental ODEs and Repeated Assignments' (SimBiology export); parameter values from Supplementary Table S2, 'Cyno Value' column."
+  vignette <- "Hosseini_2024_flt3lfc"
 
   # FLT3L-Fc is given IV straight into `plasma`. Declared explicitly because
   # the registry's automatic detection only recognises `depot` / `central`.
@@ -18,25 +18,35 @@ Hosseini_2024_flt3lfc_cyno <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
   compartmentData <- list(
-    plasma     = list(analyte = "FLT3L-Fc", units = "ug", specimen = "plasma", verified = TRUE),
-    tight      = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
-    leaky      = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
-    lymph      = list(analyte = "FLT3L-Fc", units = "ug", specimen = "lymph", verified = TRUE),
-    target     = list(analyte = "free FLT3 receptor", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_sb = list(analyte = "single-bound FLT3L-Fc:FLT3 complex", units = "nM", specimen = "plasma", verified = TRUE),
-    complex_db = list(analyte = "double-bound FLT3:FLT3L-Fc:FLT3 homodimer complex", units = "nM", specimen = "plasma", verified = TRUE)
+    plasma = list(analyte = "FLT3L-Fc", units = "ug", specimen = "plasma", verified = TRUE),
+    tight = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
+    leaky = list(analyte = "FLT3L-Fc", units = "ug", specimen = "tissue", verified = TRUE),
+    lymph = list(analyte = "FLT3L-Fc", units = "ug", specimen = "lymph", verified = TRUE),
+    target = list(analyte = "free FLT3 receptor", units = "nM", specimen = "plasma", verified = TRUE),
+    complex_sb = list(
+      analyte = "single-bound FLT3L-Fc:FLT3 complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    ),
+    complex_db = list(
+      analyte = "double-bound FLT3:FLT3L-Fc:FLT3 homodimer complex",
+      units = "nM",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "cynomolgus monkey",
-    n_subjects    = 9,
-    n_studies     = 1,
-    weight_range  = "2.6 kg nominal body weight for the species (Hosseini 2024 Table S2)",
+    species = "cynomolgus monkey",
+    n_subjects = 9,
+    n_studies = 1,
+    weight_range = "2.6 kg nominal body weight for the species (Hosseini 2024 Table S2)",
     disease_state = "Healthy cynomolgus monkeys (Charles River Laboratories; IACUC protocols 20239581 and 5003546)",
-    dose_range    = "Single IV 0.1 mg/kg; repeat IV 1 or 10 mg/kg on days 0 and 21 (preclinical study 1, n = 3 per group)",
-    notes         = paste0(
+    dose_range = "Single IV 0.1 mg/kg; repeat IV 1 or 10 mg/kg on days 0 and 21 (preclinical study 1, n = 3 per group)",
+    notes = paste0(
       "Typical-value mechanistic (QSP) simulator: the paper calibrated the model ",
       "by particle-swarm optimisation in SimBiology/gQSPSim and reports point ",
       "estimates with no uncertainty, no inter-individual variability and no ",
@@ -47,8 +57,8 @@ Hosseini_2024_flt3lfc_cyno <- function() {
       "study 2 (repeat IV 1 or 3 mg/kg on days 0 and 21, n = 6) was held out as ",
       "an external validation set and was not used for calibration."
     ),
-    model_class   = "QSP / minimal PBPK with expansion-enhanced TMDD (7 states)",
-    n_states      = 7
+    model_class = "QSP / minimal PBPK with expansion-enhanced TMDD (7 states)",
+    n_states = 7
   )
 
   ini({

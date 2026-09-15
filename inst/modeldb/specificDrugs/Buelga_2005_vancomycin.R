@@ -13,39 +13,39 @@ Buelga_2005_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Buelga 2005 Table 1: mean 64.7 kg, SD 11.3 (index set n = 215). Source paper symbol TBW (total body weight); stored under the canonical WT column. Buelga 2005 final model (Table 4): V (L) = theta2 * TBW with theta2 = 0.98 L/kg -- a purely multiplicative effect on V with no centering and no allometric exponent.",
-      source_name        = "TBW"
+      notes = "Buelga 2005 Table 1: mean 64.7 kg, SD 11.3 (index set n = 215). Source paper symbol TBW (total body weight); stored under the canonical WT column. Buelga 2005 final model (Table 4): V (L) = theta2 * TBW with theta2 = 0.98 L/kg -- a purely multiplicative effect on V with no centering and no allometric exponent.",
+      source_name = "TBW"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Buelga 2005 Table 1: mean 89.4 mL/min, SD 39.2 (index set n = 215). Estimated by the Cockcroft-Gault equation (Cockcroft and Gault 1976; Buelga 2005 Methods 'Data acquisition' and final-model paragraph in Results). The Cockcroft-Gault, Jelliffe, Tsubaki, and Levey formulas were compared; Cockcroft-Gault was selected for the final model. Stored under the canonical CRCL column with units mL/min (raw Cockcroft-Gault), matching the Goti_2018_vancomycin.R, Moore_2016_vancomycin.R, and Delattre_2010_amikacin.R precedents in inst/references/covariate-columns.md. Buelga 2005 expresses the CL covariate equation with CLCR in L/h (Buelga 2005 abstract and final-model paragraph: 'CL (liters/h) = 1.08 * CLCR(Cockcroft and Gault) (liters/h)'); the packaged model stores the column in mL/min (canonical) and converts to L/h inside model() by multiplying by 60/1000.",
-      source_name        = "CLCR"
+      notes = "Buelga 2005 Table 1: mean 89.4 mL/min, SD 39.2 (index set n = 215). Estimated by the Cockcroft-Gault equation (Cockcroft and Gault 1976; Buelga 2005 Methods 'Data acquisition' and final-model paragraph in Results). The Cockcroft-Gault, Jelliffe, Tsubaki, and Levey formulas were compared; Cockcroft-Gault was selected for the final model. Stored under the canonical CRCL column with units mL/min (raw Cockcroft-Gault), matching the Goti_2018_vancomycin.R, Moore_2016_vancomycin.R, and Delattre_2010_amikacin.R precedents in inst/references/covariate-columns.md. Buelga 2005 expresses the CL covariate equation with CLCR in L/h (Buelga 2005 abstract and final-model paragraph: 'CL (liters/h) = 1.08 * CLCR(Cockcroft and Gault) (liters/h)'); the packaged model stores the column in mL/min (canonical) and converts to L/h inside model() by multiplying by 60/1000.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 215L,
-    n_studies        = 1L,
-    age_range        = ">=15 years (mean 51.5, SD 15.9)",
-    age_median       = "51.5 years (mean, SD 15.9)",
-    weight_range     = "mean 64.7 kg (SD 11.3)",
-    weight_median    = "64.7 kg (mean, SD 11.3)",
-    sex_female_pct   = 44.7,
-    race_ethnicity   = "Not reported (single-center cohort at University Hospital of Salamanca, Spain; population presumed predominantly Spanish/European)",
-    disease_state    = "Adult (>=15 years) inpatients with underlying hematological malignancy admitted to the Hematology Unit for suspected or documented gram-positive bacterial infection. Hematological diagnoses: AML 27.6%, NHL 30.8%, ALL 8.0%, CML 8.0%, CLL 4.2%, Hodgkin's 7.7%, MDS 4.5%, multiple myeloma 4.2%, other 4.9%. 15.7% had autologous bone marrow transplant; 43.7% had neutropenia (ANC < 500/mm^3); 45.1% had ECOG 0-2 and 12.9% had ECOG 3-4; 38.8% received concomitant amikacin and 21.0% concomitant amphotericin. ICU patients were excluded.",
-    dose_range       = "Intravenous vancomycin by intermittent infusion over 0.5-1 h. Daily dose 200-3,900 mg/day (mean 1,535 +/- 280); dosing interval 6-48 h. Doses individualized by physician via a hematology-specific nomogram considering age, weight, and renal function.",
-    regions          = "Spain (University Hospital of Salamanca)",
-    renal_function   = "Cockcroft-Gault CRCL mean 89.4 mL/min (SD 39.2); serum creatinine mean 0.9 mg/dL (SD 0.4).",
+    species = "human",
+    n_subjects = 215L,
+    n_studies = 1L,
+    age_range = ">=15 years (mean 51.5, SD 15.9)",
+    age_median = "51.5 years (mean, SD 15.9)",
+    weight_range = "mean 64.7 kg (SD 11.3)",
+    weight_median = "64.7 kg (mean, SD 11.3)",
+    sex_female_pct = 44.7,
+    race_ethnicity = "Not reported (single-center cohort at University Hospital of Salamanca, Spain; population presumed predominantly Spanish/European)",
+    disease_state = "Adult (>=15 years) inpatients with underlying hematological malignancy admitted to the Hematology Unit for suspected or documented gram-positive bacterial infection. Hematological diagnoses: AML 27.6%, NHL 30.8%, ALL 8.0%, CML 8.0%, CLL 4.2%, Hodgkin's 7.7%, MDS 4.5%, multiple myeloma 4.2%, other 4.9%. 15.7% had autologous bone marrow transplant; 43.7% had neutropenia (ANC < 500/mm^3); 45.1% had ECOG 0-2 and 12.9% had ECOG 3-4; 38.8% received concomitant amikacin and 21.0% concomitant amphotericin. ICU patients were excluded.",
+    dose_range = "Intravenous vancomycin by intermittent infusion over 0.5-1 h. Daily dose 200-3,900 mg/day (mean 1,535 +/- 280); dosing interval 6-48 h. Doses individualized by physician via a hematology-specific nomogram considering age, weight, and renal function.",
+    regions = "Spain (University Hospital of Salamanca)",
+    renal_function = "Cockcroft-Gault CRCL mean 89.4 mL/min (SD 39.2); serum creatinine mean 0.9 mg/dL (SD 0.4).",
     n_concentrations = 1004L,
-    notes            = "Demographics from Buelga 2005 Table 1 (index set; n=215 patients, 1004 vancomycin serum concentrations). Retrospective collection of therapeutic-drug-monitoring (TDM) data from 1989-1999. 274 patients (348 treatment courses) were initially available; 11 excluded for incomplete data and 6 for ICU stay during therapy. The 215 index-set patients include 119 male / 96 female. Additional 59-patient validation cohort (40 male / 19 female; 124 concentrations) used for external validation; the validation set had a higher proportion of AML (40.3% vs 27.6%) and females (32% vs 44.7%) than the index set. Vancomycin assayed by fluorescence polarization immunoassay (TDx, Abbott; LLOQ 0.6 mg/L; CV <5% over 7-75 mg/L). Modeling done in NONMEM V (double precision, level 1.1) with first-order conditional estimation. Sampling was 'one or more post-distribution samples after the first doses or at steady state'; peak samples drawn at least 2 h after end of infusion, justifying the one-compartment model. Buelga 2005 also developed AML-specific subpopulation models (AML-1 with TBW, SCR, age, sex covariates on CL; AML-2 with the same CL = theta*CLCR / V = theta*TBW structure but with a 10%-higher CL coefficient of 1.17). The AML-specific variants are documented in the vignette's Assumptions and deviations section but not packaged as separate models; only the general final model from Buelga 2005 Table 4 is implemented here."
+    notes = "Demographics from Buelga 2005 Table 1 (index set; n=215 patients, 1004 vancomycin serum concentrations). Retrospective collection of therapeutic-drug-monitoring (TDM) data from 1989-1999. 274 patients (348 treatment courses) were initially available; 11 excluded for incomplete data and 6 for ICU stay during therapy. The 215 index-set patients include 119 male / 96 female. Additional 59-patient validation cohort (40 male / 19 female; 124 concentrations) used for external validation; the validation set had a higher proportion of AML (40.3% vs 27.6%) and females (32% vs 44.7%) than the index set. Vancomycin assayed by fluorescence polarization immunoassay (TDx, Abbott; LLOQ 0.6 mg/L; CV <5% over 7-75 mg/L). Modeling done in NONMEM V (double precision, level 1.1) with first-order conditional estimation. Sampling was 'one or more post-distribution samples after the first doses or at steady state'; peak samples drawn at least 2 h after end of infusion, justifying the one-compartment model. Buelga 2005 also developed AML-specific subpopulation models (AML-1 with TBW, SCR, age, sex covariates on CL; AML-2 with the same CL = theta*CLCR / V = theta*TBW structure but with a 10%-higher CL coefficient of 1.17). The AML-specific variants are documented in the vignette's Assumptions and deviations section but not packaged as separate models; only the general final model from Buelga 2005 Table 4 is implemented here."
   )
 
   ini({

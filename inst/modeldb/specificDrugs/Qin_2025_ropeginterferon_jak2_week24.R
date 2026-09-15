@@ -31,18 +31,18 @@ Qin_2025_ropeginterferon_jak2_week24 <- function() {
   )
   vignette <- "Qin_2025_ropeginterferon"
   units <- list(
-    time          = "n/a (static week-24 landmark regression; no time dimension)",
-    dosing        = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
+    time = "n/a (static week-24 landmark regression; no time dimension)",
+    dosing = "n/a (no dose events; the dosing history enters only through the CAV exposure column)",
     concentration = "djak2v617f (change from baseline in JAK2 V617F allele burden at week 24, percentage points; negative = reduction)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average total serum ropeginterferon alfa-2b concentration over weeks 0 to 24.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average total serum ropeginterferon alfa-2b concentration over weeks 0 to 24.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "TOTAL (free plus target-bound) serum ropeg. Averaging window is",
         "weeks 0-24, from the FIRST DOSE to the landmark, not a",
         "steady-state dosing interval (Qin 2025 Methods 2.4.6.1).",
@@ -54,14 +54,14 @@ Qin_2025_ropeginterferon_jak2_week24 <- function() {
         "with study medians near 20 ng/mL (A19-201, slow titration) and",
         "37.5 ng/mL (A20-202, fast titration)."
       ),
-      source_name        = "Cavg,0-24W (average concentration of participants from 0 to 24 weeks)"
+      source_name = "Cavg,0-24W (average concentration of participants from 0 to 24 weeks)"
     ),
     WT = list(
-      description        = "Baseline body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the regression LINEARLY and UNCENTRED, as a plain",
         "additive term -0.435 * WT, not as an allometric or",
         "median-normalised covariate -- Equation (5) writes the covariate",
@@ -82,33 +82,33 @@ Qin_2025_ropeginterferon_jak2_week24 <- function() {
         "population PK model (which kept BMI on clearance) nor in the",
         "week-52 JAK2 companion model."
       ),
-      source_name        = "baseline body weight"
+      source_name = "baseline body weight"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Baseline body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion at p < 0.05 and not retained for this endpoint, even though it is the covariate retained on clearance in the companion population PK model. Body weight entered instead."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened by forward inclusion at p < 0.05 and not retained for this endpoint, even though it is the covariate retained on clearance in the companion population PK model. Body weight entered instead."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 74L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 74L,
+    n_studies = 2L,
     n_observations = "74 evaluable JAK2 V617F allele-burden change records, one per patient (Qin 2025 Results 3.3: 'For JAK2 V617F allele burden, 74 and 72 patients underwent measurements at Weeks 24 and 52, respectively')",
-    age_range      = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
-    weight_range   = "median 62.5 kg with first and third quartiles 56.05 and 72.08 kg in this analysis set, read from the Qin 2025 Figure 3C legend; the pooled study-level medians are 56.0 kg (A19-201) and 67.9 kg (A20-202) (Table 1)",
+    age_range = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
+    weight_range = "median 62.5 kg with first and third quartiles 56.05 and 72.08 kg in this analysis set, read from the Qin 2025 Figure 3C legend; the pooled study-level medians are 56.0 kg (A19-201) and 67.9 kg (A20-202) (Table 1)",
     sex_female_pct = 43.6,
     race_ethnicity = "Japanese (A19-201, n = 29) and Chinese (A20-202, n = 49)",
-    disease_state  = "polycythaemia vera. Baseline JAK2 V617F allele burden median 77.8%, range 0.0210-97.5 (A19-201) and median 61.2%, range 4.70-96.4 (A20-202) (Qin 2025 Table 1). All A20-202 patients and all but two A19-201 patients carried the mutation",
-    dose_range     = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
-    regions        = "Japan (A19-201) and China (A20-202)",
+    disease_state = "polycythaemia vera. Baseline JAK2 V617F allele burden median 77.8%, range 0.0210-97.5 (A19-201) and median 61.2%, range 4.70-96.4 (A20-202) (Qin 2025 Table 1). All A20-202 patients and all but two A19-201 patients carried the mutation",
+    dose_range = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
+    regions = "Japan (A19-201) and China (A20-202)",
     endpoint_definition = "Change from baseline in JAK2 V617F allele burden (percentage points) at week 24; the molecular response was the secondary efficacy endpoint of both phase II studies (Qin 2025 Methods 2.3)",
-    notes          = paste0(
+    notes = paste0(
       "Model selection was evidence-led. Qin 2025 Results 3.3 reports ",
       "the exploratory scatterplot (Figure S6) showed a significant ",
       "positive linear trend between exposure and allele-burden ",

@@ -41,33 +41,33 @@ Hietala_2010_artemether <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "Artemether (ARM)", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "Artemether (ARM)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "Dihydroartemisinin (DHA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (per-kg) weight normalisation of CL / Q / V parameters.",
         "Hietala 2010 reports all population PK parameters on a per-kg",
         "basis (Table 1: 'CL/F_ARM (liters/h/kg)', 'V_c/F_ARM (liters/kg)',",
         "etc.), so individual CL = lcl * WT, Vc = lvc * WT, etc. inside",
         "model(). Population mean WT 14 kg (range 8-30 kg, Results)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     OCC = list(
-      description        = "Integer-valued dose-occasion (dose number) indicator",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued dose-occasion (dose number) indicator",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Values 1..6 identify the dose-occasion of the six-dose Coartem",
         "regimen (doses at 0, 8, 24, 36, 48, and 60 hours). Used to",
         "encode the linear time-dependent increase in apparent oral",
@@ -80,25 +80,25 @@ Hietala_2010_artemether <- function() {
         "through to the immediately-following sampling occasion until",
         "the next dose increments it."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 50L,
-    n_studies       = 1L,
-    n_observations  = 797L,
-    age_range       = "1-10 years (mean 4; Results)",
-    weight_range    = "8-30 kg (mean 14; Results)",
-    sex_female_pct  = 62,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    n_observations = 797L,
+    age_range = "1-10 years (mean 4; Results)",
+    weight_range = "8-30 kg (mean 14; Results)",
+    sex_female_pct = 62,
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria with asexual",
       "parasite density 2,000-200,000 / microL at admission and either",
       "axillary temperature >= 37.5 degC or history of fever within 24 h",
       "(Methods)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet. Weight-based dosing: 5-14 kg -> 1 tablet/dose,",
       "15-24 kg -> 2 tablets/dose, 25-34 kg -> 3 tablets/dose. Six",
@@ -107,9 +107,9 @@ Hietala_2010_artemether <- function() {
       "other half with water (no milk effect on PK was retained for",
       "lumefantrine; ARM PK was not covariate-tested for milk)."
     ),
-    regions            = "Tanzania (Fukayosi Primary Health Care Centre, Bagamoyo District)",
+    regions = "Tanzania (Fukayosi Primary Health Care Centre, Bagamoyo District)",
     trial_registration = "ClinicalTrials.gov NCT00336375",
-    notes              = paste(
+    notes = paste(
       "Demographics from Hietala 2010 Results. 397 ARM and 400 DHA plasma",
       "concentrations from 50 patients were included in the PK model",
       "(plus 9 ARM, 21 DHA below limit-of-detection samples excluded; 12",

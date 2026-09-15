@@ -34,7 +34,7 @@ Lafaurie_2023_imipenem_neutropenia <- function() {
     sep = " "
   )
   vignette <- "Zhang_2025_imipenem_model_review"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = FALSE because the primary publication is
@@ -51,27 +51,27 @@ Lafaurie_2023_imipenem_neutropenia <- function() {
   covariateData <- list()
 
   population <- list(
-    species          = "human",
-    n_subjects       = 16L,
-    n_studies        = 1L,
-    age_median       = "37 years (range 18.3-78.3)",
-    weight_median    = "65.5 kg (range 48-101)",
-    sex_female_pct   = 56.3,
-    race_ethnicity   = NULL,
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_median = "37 years (range 18.3-78.3)",
+    weight_median = "65.5 kg (range 48-101)",
+    sex_female_pct = 56.3,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Neutropenic adult patients receiving imipenem-cilastatin, sampled",
       "during the neutropenic phase. The same patients were resampled",
       "after neutropenia recovery; see the companion model",
       "Lafaurie_2023_imipenem_recovery."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "1000 mg imipenem intravenously every 8 h, or 500 mg every 6 h",
       "(Zhang 2025 Supplementary Table S1). The infusion duration is not",
       "reported by the review."
     ),
-    regions          = "France",
+    regions = "France",
     n_concentrations = NA_integer_,
-    notes            = paste(
+    notes = paste(
       "Prospective study (Zhang 2025 Table 1, study 16); 16 patients and",
       "118 samples IN TOTAL across both phases, sex split 7 male / 9",
       "female. The review does not report how the 118 samples split",

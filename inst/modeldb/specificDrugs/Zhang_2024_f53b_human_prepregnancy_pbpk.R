@@ -41,31 +41,37 @@ Zhang_2024_f53b_human_prepregnancy_pbpk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c(
-    "kidney_blood", "ptc", "filtrate", "fat", "mammary", "rest", "feces"
+    "kidney_blood",
+    "ptc",
+    "filtrate",
+    "fat",
+    "mammary",
+    "rest",
+    "feces"
   )
 
   compartmentData <- list(
-    stomach      = list(analyte = "F-53B", units = "mg", specimen = "administration site",      verified = TRUE),
-    intestine    = list(analyte = "F-53B", units = "mg", specimen = "administration site",       verified = TRUE),
-    plasma       = list(analyte = "F-53B", units = "mg", specimen = "plasma",                verified = TRUE),
-    liver        = list(analyte = "F-53B", units = "mg", specimen = "tissue",                 verified = TRUE),
-    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    ptc          = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
-    filtrate     = list(analyte = "F-53B", units = "mg", specimen = "urine",      verified = TRUE),
-    fat          = list(analyte = "F-53B", units = "mg", specimen = "tissue",        verified = TRUE),
-    mammary      = list(analyte = "F-53B", units = "mg", specimen = "tissue",         verified = TRUE),
-    rest         = list(analyte = "F-53B", units = "mg", specimen = "tissue",          verified = TRUE),
-    urine        = list(analyte = "F-53B", units = "mg", specimen = "urine",                 verified = TRUE),
-    feces        = list(analyte = "F-53B", units = "mg", specimen = "faeces",                 verified = TRUE)
+    stomach = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    intestine = list(analyte = "F-53B", units = "mg", specimen = "administration site", verified = TRUE),
+    plasma = list(analyte = "F-53B", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_blood = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    ptc = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    filtrate = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    fat = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    mammary = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    rest = list(analyte = "F-53B", units = "mg", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "F-53B", units = "mg", specimen = "urine", verified = TRUE),
+    feces = list(analyte = "F-53B", units = "mg", specimen = "faeces", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Body weight of the non-pregnant adult woman. Zhang 2024 Table",
         "S4 gives 54 kg for the prepregnant human, which is the default",
         "carried in ini(). Every tissue volume and blood flow is a",
@@ -75,29 +81,29 @@ Zhang_2024_f53b_human_prepregnancy_pbpk <- function() {
         "a simulation that chains the two should carry the body-weight",
         "change across the handover explicitly."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 0L,
-    age_range      = "birth to 30 years (simulated pre-conception exposure window)",
-    weight_range   = "54 kg (Table S4, prepregnant human)",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 0L,
+    age_range = "birth to 30 years (simulated pre-conception exposure window)",
+    weight_range = "54 kg (Table S4, prepregnant human)",
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy non-pregnant adult woman. No clinical study underlies",
       "this sub-model; it is a forward simulation used to accumulate a",
       "pre-conception F-53B body burden from chronic dietary intake."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Chronic dietary intake. Published Chinese estimated daily",
       "intakes range from 0.067 to 1.87 ng/kg/day (Table S8); the paper",
       "simulates 0.122 ng/kg/day from birth to age 30 years."
     ),
-    regions        = "China (exposure scenario)",
-    notes          = paste(
+    regions = "China (exposure scenario)",
+    notes = paste(
       "Chemical-specific parameters come from the authors' published",
       "code (Model_Humans.R, PreGHumanPBPK) rather than the Supporting",
       "Information, which tabulates only the pregnant-mouse and",

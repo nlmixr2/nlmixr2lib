@@ -44,38 +44,38 @@ Willmann_2021_fxiLica <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "FXI-LICA", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "FXI-LICA", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
-    fxi         = list(analyte = "FXI activity", units = "mg", specimen = "blood cell", verified = FALSE),
-    effect      = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
+    fxi = list(analyte = "FXI activity", units = "mg", specimen = "blood cell", verified = FALSE),
+    effect = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(
-      description        = "Intermittent-hemodialysis treatment-status indicator (1 = subject with end-stage renal disease on hemodialysis, 0 = healthy volunteer)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis treatment-status indicator (1 = subject with end-stage renal disease on hemodialysis, 0 = healthy volunteer)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = "Willmann 2021 did NOT fit an ESRD covariate on the FXI-LICA main PK model (Table S3; only healthy-volunteer data from LICA-CS1 contributed to the FXI-LICA PK fit). For the FXI-LICA-in-ESRD simulations reported in Figures 3a and 4, the authors borrowed the IONIS-FXIRX-derived ESRD factors on CL, V3, and the effect-site driving concentration under the explicit assumption that the receptor-mediated hepatocyte uptake pathway is not altered in ESRD (Methods / Discussion). This model file exposes the borrowed factors (fixed at the IONIS-FXIRX values) so that the paper's ESRD-simulation scenario can be reproduced by activating RRT_HEMODIAL_STATUS = 1; leaving the covariate at 0 (default) reproduces the pure healthy-volunteer LICA-CS1 fit.",
-      source_name        = "ESRD"
+      notes = "Willmann 2021 did NOT fit an ESRD covariate on the FXI-LICA main PK model (Table S3; only healthy-volunteer data from LICA-CS1 contributed to the FXI-LICA PK fit). For the FXI-LICA-in-ESRD simulations reported in Figures 3a and 4, the authors borrowed the IONIS-FXIRX-derived ESRD factors on CL, V3, and the effect-site driving concentration under the explicit assumption that the receptor-mediated hepatocyte uptake pathway is not altered in ESRD (Methods / Discussion). This model file exposes the borrowed factors (fixed at the IONIS-FXIRX values) so that the paper's ESRD-simulation scenario can be reproduced by activating RRT_HEMODIAL_STATUS = 1; leaving the covariate at 0 (default) reproduces the pure healthy-volunteer LICA-CS1 fit.",
+      source_name = "ESRD"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 66L,
-    n_studies        = 1L,
-    age_range        = "mean 50.8 (SD 11.5) years",
-    weight_range     = "mean 77.5 (SD 13.2) kg",
-    sex_female_pct   = 34.8,
-    race_ethnicity   = "Not reported in the primary publication.",
-    disease_state    = "Healthy adult volunteers in the first-in-human LICA-CS1 phase I study (n = 66, 48 active drug + 18 placebo).",
-    dose_range       = "Single subcutaneous doses of 40, 60, 80, or 120 mg; multiple subcutaneous doses of 10, 20, or 30 mg once weekly for 6 doses; or 80 mg every 4 weeks for 4 doses (Willmann 2021 Table S1).",
-    regions          = "Phase I LICA-CS1 site(s); specific regions not summarised in Willmann 2021.",
-    renal_function   = "Healthy volunteers with normal renal function.",
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 1L,
+    age_range = "mean 50.8 (SD 11.5) years",
+    weight_range = "mean 77.5 (SD 13.2) kg",
+    sex_female_pct = 34.8,
+    race_ethnicity = "Not reported in the primary publication.",
+    disease_state = "Healthy adult volunteers in the first-in-human LICA-CS1 phase I study (n = 66, 48 active drug + 18 placebo).",
+    dose_range = "Single subcutaneous doses of 40, 60, 80, or 120 mg; multiple subcutaneous doses of 10, 20, or 30 mg once weekly for 6 doses; or 80 mg every 4 weeks for 4 doses (Willmann 2021 Table S1).",
+    regions = "Phase I LICA-CS1 site(s); specific regions not summarised in Willmann 2021.",
+    renal_function = "Healthy volunteers with normal renal function.",
     n_concentrations = 773L,
-    notes            = "Baseline demographics from Willmann 2021 Supplementary Information Table S1. Only active-drug subjects contribute to the FXI-LICA PK fit (48 active). Placebo subjects (18) contributed FXI-activity data to inform baseline and residual variability. The paper's Discussion notes limited FXI-LICA phase I data and that a full covariate analysis is deferred pending the phase IIb ESRD study."
+    notes = "Baseline demographics from Willmann 2021 Supplementary Information Table S1. Only active-drug subjects contribute to the FXI-LICA PK fit (48 active). Placebo subjects (18) contributed FXI-activity data to inform baseline and residual variability. The paper's Discussion notes limited FXI-LICA phase I data and that a full covariate analysis is deferred pending the phase IIb ESRD study."
   )
 
   ini({

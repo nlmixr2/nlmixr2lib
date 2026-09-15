@@ -1,51 +1,51 @@
 Flint_2017_s_ketamine <- function() {
   description <- "Joint two-compartment S-ketamine + one-compartment S-norketamine population PK model for continuous intravenous S-ketamine infusion during prolonged sedation in pediatric intensive care patients aged 0.02-12.5 years (Flint 2017). The parent S-ketamine has two-compartment disposition (CL = 112 L/h, V1 = 7.73 L, Q = 196 L/h, V2 = 545 L at 70 kg) and feeds the active metabolite S-norketamine, modelled as one apparent central compartment with Clsnk/Fm = 53.2 L/h and Vsnk/Fm = 1 L (fixed; Fm is not identifiable). Body weight is allometrically scaled with fixed exponents 0.75 for clearances and 1.0 for volumes referenced to 70 kg; time after the first S-ketamine dose acts as a linear positive multiplier on Clsnk (0.870 percent per hour), the only retained covariate at backward elimination."
-  reference   <- paste(
+  reference <- paste(
     "Flint RB, Brouwer CNM, Kranzlin ASC, Lie-A-Huen L, Bos AP,",
     "Mathot RAA. Pharmacokinetics of S-ketamine during prolonged",
     "sedation at the pediatric intensive care unit.",
     "Pediatr Anesth. 2017;27(11):1098-1107. doi:10.1111/pan.13239",
     sep = " "
   )
-  vignette    <- "Flint_2017_s_ketamine"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  vignette <- "Flint_2017_s_ketamine"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "S-ketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "S-ketamine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "S-ketamine", units = "mg", specimen = "plasma", verified = FALSE),
     central_snk = list(analyte = "S-norketamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at study entry (kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at study entry (kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling with reference weight 70 kg (Flint 2017 Methods Section 2.4): clearances scale as (WT/70)^0.75 and volumes scale as (WT/70)^1.0, with the exponents fixed at the canonical Holford allometric values (not estimated). The same allometric structure applies to both S-ketamine and S-norketamine apparent clearances and volumes.",
-      source_name        = "BW"
+      notes = "Allometric power scaling with reference weight 70 kg (Flint 2017 Methods Section 2.4): clearances scale as (WT/70)^0.75 and volumes scale as (WT/70)^1.0, with the exponents fixed at the canonical Holford allometric values (not estimated). The same allometric structure applies to both S-ketamine and S-norketamine apparent clearances and volumes.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 25L,
-    n_studies      = 1L,
-    age_range      = "0.02-12.5 years (median 0.42 years; 19/25 below 2 years)",
-    age_median     = "0.42 years",
-    weight_range   = "3.4-35 kg (median 7.0 kg)",
-    weight_median  = "7.0 kg",
+    species = "human",
+    n_subjects = 25L,
+    n_studies = 1L,
+    age_range = "0.02-12.5 years (median 0.42 years; 19/25 below 2 years)",
+    age_median = "0.42 years",
+    weight_range = "3.4-35 kg (median 7.0 kg)",
+    weight_median = "7.0 kg",
     sex_female_pct = 52.0,
-    disease_state  = "Mechanically ventilated children admitted to the pediatric intensive care unit (Emma Children's Hospital PICU) requiring prolonged sedation. Predominant indication was respiratory insufficiency from lower respiratory tract infection (21/25; predominantly bronchiolitis and pneumonia); other indications were encephalopathy, seizures, post-surgical recovery, and cognitive impairment (Flint 2017 Table 2).",
-    dose_range     = "Continuous intravenous infusion 0.3-3.6 mg/kg/h (neonates 0.1-1.8 mg/kg/h, infants 0.3-3.6 mg/kg/h) per the PICU sedation protocol; cumulative dose 12.2-250.1 mg/kg (median 66.1); duration of infusion 9.6-140.7 h (median 53.5). Loading dose 0.5-2 mg/kg IV push and bolus loading doses equal to one hour of the current infusion rate were administered when sedation depth was inadequate (COMFORT-B above 15) -- the model is therefore appropriate for continuous-infusion regimens with occasional intercurrent bolus loading.",
-    regions        = "Single-center study at Emma Children's Hospital, Academic Medical Center, Amsterdam, The Netherlands (August 2011 - May 2012).",
+    disease_state = "Mechanically ventilated children admitted to the pediatric intensive care unit (Emma Children's Hospital PICU) requiring prolonged sedation. Predominant indication was respiratory insufficiency from lower respiratory tract infection (21/25; predominantly bronchiolitis and pneumonia); other indications were encephalopathy, seizures, post-surgical recovery, and cognitive impairment (Flint 2017 Table 2).",
+    dose_range = "Continuous intravenous infusion 0.3-3.6 mg/kg/h (neonates 0.1-1.8 mg/kg/h, infants 0.3-3.6 mg/kg/h) per the PICU sedation protocol; cumulative dose 12.2-250.1 mg/kg (median 66.1); duration of infusion 9.6-140.7 h (median 53.5). Loading dose 0.5-2 mg/kg IV push and bolus loading doses equal to one hour of the current infusion rate were administered when sedation depth was inadequate (COMFORT-B above 15) -- the model is therefore appropriate for continuous-infusion regimens with occasional intercurrent bolus loading.",
+    regions = "Single-center study at Emma Children's Hospital, Academic Medical Center, Amsterdam, The Netherlands (August 2011 - May 2012).",
     n_observations = "86 plasma concentrations of S-ketamine and S-norketamine across 25 patients (one daily random-time sample during infusion plus two post-infusion samples at 1 h and 4 h after discontinuation). 4 of 86 S-ketamine and 2 of 86 S-norketamine samples were below quantification (LLOQ 20 ng/mL and 10 ng/mL respectively) and were excluded from the final fit after a sensitivity check showed M3-method inclusion did not change the parameter estimates.",
-    co_medication  = "All subjects received lorazepam as standard sedation co-medication (0.05-0.1 mg/kg q4h IV/oral plus 0.003-0.01 mg/kg/h IV). Other commonly used concomitant medications (Flint 2017 Table 2) were midazolam (16/25), chloral hydrate (14/25), rocuronium (14/25), propofol (14/25), and morphine (13/25). Concomitant medication was not retained as a covariate in the final model.",
-    notes          = "Median COMFORT-B target was 10-15 (adequate sedation) and Visual Analog Scale target was below 4 (adequate analgesia); infusion rate was titrated to these clinical endpoints rather than to a target plasma concentration. Demographics in Table 2; final parameter estimates in Table 3."
+    co_medication = "All subjects received lorazepam as standard sedation co-medication (0.05-0.1 mg/kg q4h IV/oral plus 0.003-0.01 mg/kg/h IV). Other commonly used concomitant medications (Flint 2017 Table 2) were midazolam (16/25), chloral hydrate (14/25), rocuronium (14/25), propofol (14/25), and morphine (13/25). Concomitant medication was not retained as a covariate in the final model.",
+    notes = "Median COMFORT-B target was 10-15 (adequate sedation) and Visual Analog Scale target was below 4 (adequate analgesia); infusion rate was titrated to these clinical endpoints rather than to a target plasma concentration. Demographics in Table 2; final parameter estimates in Table 3."
   )
 
   ini({

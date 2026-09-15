@@ -24,40 +24,40 @@ TerHeine_2014_tamoxifen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot         = list(analyte = "tamoxifen", units = "mg", specimen = "administration site", verified = FALSE),
-    central       = list(analyte = "tamoxifen", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tamoxifen", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tamoxifen", units = "mg", specimen = "plasma", verified = FALSE),
     central_endox = list(analyte = "endoxifen", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2D6 = list(
-      description        = "CYP2D6 individual metabolic-activity score (dextromethorphan-probe model-based individual CL value)",
-      units              = "ng/L",
-      type               = "continuous",
+      description = "CYP2D6 individual metabolic-activity score (dextromethorphan-probe model-based individual CL value)",
+      units = "ng/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant per-subject covariate. Centered on the population median 1560 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP2D6 / 1560)^e_cyp2d6_cl_endox` on the endoxifen-formation clearance. Source: a separate dextromethorphan-probe popPK study run on the same patients (DDMORE RDF: 'CYP2D6 and CYP3A4/5 phenotypes (dextromethorphan model-based individual CL values)').",
-      source_name        = "CYP2D6"
+      notes = "Time-invariant per-subject covariate. Centered on the population median 1560 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP2D6 / 1560)^e_cyp2d6_cl_endox` on the endoxifen-formation clearance. Source: a separate dextromethorphan-probe popPK study run on the same patients (DDMORE RDF: 'CYP2D6 and CYP3A4/5 phenotypes (dextromethorphan model-based individual CL values)').",
+      source_name = "CYP2D6"
     ),
     CYP3A4 = list(
-      description        = "CYP3A4 + CYP3A5 individual metabolic-activity score (dextromethorphan-probe model-based individual CL value)",
-      units              = "ng/L",
-      type               = "continuous",
+      description = "CYP3A4 + CYP3A5 individual metabolic-activity score (dextromethorphan-probe model-based individual CL value)",
+      units = "ng/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-invariant per-subject covariate. Centered on the population median 44.7 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP3A4 / 44.7)^e_cyp3a4_cl_endox` on the endoxifen-formation clearance. The probe (dextromethorphan N-demethylation) cannot separate CYP3A4 from CYP3A5, so the column carries the combined CYP3A4 + CYP3A5 activity. The DDMORE source-data column name is `CYP3A4`; the source publication describes the same column as `CYP3A4/5`.",
-      source_name        = "CYP3A4"
+      notes = "Time-invariant per-subject covariate. Centered on the population median 44.7 ng/L (.mdl GROUP_VARIABLES). Applied as `(CYP3A4 / 44.7)^e_cyp3a4_cl_endox` on the endoxifen-formation clearance. The probe (dextromethorphan N-demethylation) cannot separate CYP3A4 from CYP3A5, so the column carries the combined CYP3A4 + CYP3A5 activity. The DDMORE source-data column name is `CYP3A4`; the source publication describes the same column as `CYP3A4/5`.",
+      source_name = "CYP3A4"
     )
   )
 
   population <- list(
-    n_subjects     = 40,
-    n_studies      = 1,
-    age_range      = "TODO: full Ter Heine 2014 publication not on disk during extraction; the DDMORE bundle ships only the Table 2 of final estimates as a one-page PDF",
-    weight_range   = "TODO: see age_range note",
+    n_subjects = 40,
+    n_studies = 1,
+    age_range = "TODO: full Ter Heine 2014 publication not on disk during extraction; the DDMORE bundle ships only the Table 2 of final estimates as a one-page PDF",
+    weight_range = "TODO: see age_range note",
     sex_female_pct = 100,
-    disease_state  = "Hormone-receptor-positive breast cancer on chronic oral tamoxifen at steady state",
-    dose_range     = "20 mg PO QD at steady state (the dose used in the DDMORE-shipped simulated dataset; the source publication may include other regimens that were not captured because the full PDF was not on disk)",
-    regions        = "Netherlands (Erasmus MC), single-center",
-    notes          = "Demographics fields marked TODO because the source publication PDF was not on disk during the DDMORE extraction; only the Table 2 final-estimates summary was available. Cohort sex is encoded as 100% female because the indication (breast cancer on tamoxifen) was overwhelmingly female in the published cohort. n_subjects = 40 is the published Ter Heine 2014 cohort size; the DDMORE simulated dataset re-simulates 100 hypothetical subjects."
+    disease_state = "Hormone-receptor-positive breast cancer on chronic oral tamoxifen at steady state",
+    dose_range = "20 mg PO QD at steady state (the dose used in the DDMORE-shipped simulated dataset; the source publication may include other regimens that were not captured because the full PDF was not on disk)",
+    regions = "Netherlands (Erasmus MC), single-center",
+    notes = "Demographics fields marked TODO because the source publication PDF was not on disk during the DDMORE extraction; only the Table 2 final-estimates summary was available. Cohort sex is encoded as 100% female because the indication (breast cancer on tamoxifen) was overwhelmingly female in the published cohort. n_subjects = 40 is the published Ter Heine 2014 cohort size; the DDMORE simulated dataset re-simulates 100 hypothetical subjects."
   )
 
   ini({

@@ -2,42 +2,54 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
   description <- "Population PD exposure-response model relating fremanezumab average plasma concentration (Cav) to monthly moderate-to-severe headache days in adults with chronic migraine. Placebo time-course is a Hill (sigmoid) function in months and the drug effect is a power function of Cav centered on the population median Cav. Fitted to 5312 monthly observations from 1361 chronic-migraine patients pooled across the LBR-101-021 phase 2b and TV48125-CNS-30049 phase 3 studies (Fiedler-Kelly 2020)."
   reference <- "Fiedler-Kelly JB, Passarell J, Ludwig E, Levi M, Cohen-Barak O. Effect of Fremanezumab Monthly and Quarterly Doses on Efficacy Responses. Headache. 2020 Jul;60(7):1376-1391. doi:10.1111/head.13855. PMID: 32445498."
   vignette <- "FiedlerKelly_2020_fremanezumab_cm"
-  units <- list(time = "month", dosing = "n/a (PD-only model; no dose events)", concentration = "ug/mL", response = "moderate-to-severe headache days/month")
+  units <- list(
+    time = "month",
+    dosing = "n/a (PD-only model; no dose events)",
+    concentration = "ug/mL",
+    response = "moderate-to-severe headache days/month"
+  )
 
   covariateData <- list(
     CAV = list(
-      description        = "Average fremanezumab plasma concentration over the dosing interval used as the exposure metric in the exposure-response model",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Average fremanezumab plasma concentration over the dosing interval used as the exposure metric in the exposure-response model",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed within each 28-day dosing-interval aggregation. In Fiedler-Kelly 2020 the per-subject Cav values are derived from individual empirical-Bayes PK estimates from the previously-published Fiedler-Kelly 2019 population PK model (FiedlerKelly_2019_fremanezumab in this library). Set to 0 for placebo periods.",
-      source_name        = "CAV"
+      notes = "Time-fixed within each 28-day dosing-interval aggregation. In Fiedler-Kelly 2020 the per-subject Cav values are derived from individual empirical-Bayes PK estimates from the previously-published Fiedler-Kelly 2019 population PK model (FiedlerKelly_2019_fremanezumab in this library). Set to 0 for placebo periods.",
+      source_name = "CAV"
     ),
     ACUTE_MED_DAYS = list(
-      description        = "Baseline number of days/month of acute migraine medication use (triptans / ergot compounds)",
-      units              = "days/month",
-      type               = "continuous",
+      description = "Baseline number of days/month of acute migraine medication use (triptans / ergot compounds)",
+      units = "days/month",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject (counted during the 28-day run-in period prior to first dose). Enters as a piecewise-linear shift on baseline M/S headache days with breakpoint at 5 d/mo: contributes 0 for ACUTE_MED_DAYS <= 5 and slope_AM * (ACUTE_MED_DAYS - 5) for ACUTE_MED_DAYS > 5 (Fiedler-Kelly 2020 Results, Monthly Headache Days of at Least Moderate Severity in Patients With CM).",
-      source_name        = "Baseline days/month of acute medications"
+      notes = "Time-fixed per subject (counted during the 28-day run-in period prior to first dose). Enters as a piecewise-linear shift on baseline M/S headache days with breakpoint at 5 d/mo: contributes 0 for ACUTE_MED_DAYS <= 5 and slope_AM * (ACUTE_MED_DAYS - 5) for ACUTE_MED_DAYS > 5 (Fiedler-Kelly 2020 Results, Monthly Headache Days of at Least Moderate Severity in Patients With CM).",
+      source_name = "Baseline days/month of acute medications"
     )
   )
 
   population <- list(
-    n_subjects        = 1361L,
-    n_observations    = 5312L,
-    n_studies         = 2L,
-    age_range         = "18-71 years",
-    age_median        = "42 years",
-    weight_range      = "43.5-131.8 kg",
-    weight_median     = "70.80 kg",
-    sex_female_pct    = 87.2,
-    race_ethnicity    = c(White = 79.8, Black = 9.0, Asian = 9.0, AmIndAlaskaNative = 0.4, NativeHawaiianPacIsl = 0.2, Other = 1.5),
+    n_subjects = 1361L,
+    n_observations = 5312L,
+    n_studies = 2L,
+    age_range = "18-71 years",
+    age_median = "42 years",
+    weight_range = "43.5-131.8 kg",
+    weight_median = "70.80 kg",
+    sex_female_pct = 87.2,
+    race_ethnicity = c(
+      White = 79.8,
+      Black = 9.0,
+      Asian = 9.0,
+      AmIndAlaskaNative = 0.4,
+      NativeHawaiianPacIsl = 0.2,
+      Other = 1.5
+    ),
     ethnicity_hispanic_pct = 9.1,
-    disease_state     = "Adults with chronic migraine (headaches on at least 15 days/month with at least 8 migraine days/month per ICHD-3 criteria).",
-    dose_range        = "Fremanezumab 225 mg monthly with a 675 mg starting dose, 675 mg quarterly, 900 mg monthly (phase 2b only), or placebo SC for 3 months.",
-    regions           = "Multinational (LBR-101-021 phase 2b and TV48125-CNS-30049 phase 3 chronic-migraine studies).",
-    notes             = "Demographics from Supplementary Table S2 of Fiedler-Kelly 2020. Concomitant analgesic-medication use 10.5% and concomitant migraine-preventive medication use 24.2% across the pooled CM cohort. Observation unit is one 28-day month."
+    disease_state = "Adults with chronic migraine (headaches on at least 15 days/month with at least 8 migraine days/month per ICHD-3 criteria).",
+    dose_range = "Fremanezumab 225 mg monthly with a 675 mg starting dose, 675 mg quarterly, 900 mg monthly (phase 2b only), or placebo SC for 3 months.",
+    regions = "Multinational (LBR-101-021 phase 2b and TV48125-CNS-30049 phase 3 chronic-migraine studies).",
+    notes = "Demographics from Supplementary Table S2 of Fiedler-Kelly 2020. Concomitant analgesic-medication use 10.5% and concomitant migraine-preventive medication use 24.2% across the pooled CM cohort. Observation unit is one 28-day month."
   )
 
   ini({

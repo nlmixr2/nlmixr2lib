@@ -44,24 +44,24 @@ Kay_2022_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kay_2022_lumefantrine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at episode enrolment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at episode enrolment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with reference weight 15 kg (approximate",
         "cohort median per Table 2 footnote: '50-month-old",
         "HIV-uninfected child weighing 15 kg'). Volumes use exponent 1;",
@@ -70,14 +70,14 @@ Kay_2022_lumefantrine <- function() {
         "24 months, 0.9 for >24 to 60 months, 0.75 for >60 months.",
         "Cohort weight range 7.65-30.0 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at episode enrolment",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at episode enrolment",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives (a) the piecewise allometric exponent on apparent CL/F",
         "and Q/F (see WT covariate notes) and (b) the power-form age",
         "effect on relative bioavailability F: F = (age_months / 50)^",
@@ -88,14 +88,14 @@ Kay_2022_lumefantrine <- function() {
         "1; HIV-uninfected median 3.58 years, HIV-infected medians",
         "4.5-6.0 years across EFV / LPV/r / NVP arms)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz-based antiretroviral therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz-based antiretroviral therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child on an efavirenz-based ART regimen",
         "(daily oral EFV-containing combination ART, plus daily",
         "trimethoprim-sulfamethoxazole prophylaxis); 0 = HIV-uninfected",
@@ -112,14 +112,14 @@ Kay_2022_lumefantrine <- function() {
         "HIV-uninfected patients, respectively'). Mutually exclusive",
         "with CONMED_LPV and CONMED_NVP within the source cohort."
       ),
-      source_name        = "EFV"
+      source_name = "EFV"
     ),
     CONMED_LPV = list(
-      description        = "Concomitant lopinavir/ritonavir-based antiretroviral therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant lopinavir/ritonavir-based antiretroviral therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child on a lopinavir/ritonavir-based ART",
         "regimen (daily oral LPV/r-containing combination ART, plus",
         "daily trimethoprim-sulfamethoxazole prophylaxis); 0 =",
@@ -137,14 +137,14 @@ Kay_2022_lumefantrine <- function() {
         "patients, respectively'). Mutually exclusive with CONMED_EFV",
         "and CONMED_NVP within the source cohort."
       ),
-      source_name        = "LPV/r"
+      source_name = "LPV/r"
     ),
     CONMED_NVP = list(
-      description        = "Concomitant nevirapine-based antiretroviral therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant nevirapine-based antiretroviral therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "1 = HIV-infected child on a nevirapine-based ART regimen",
         "(daily oral NVP-containing combination ART, plus daily",
         "trimethoprim-sulfamethoxazole prophylaxis); 0 = HIV-uninfected",
@@ -163,23 +163,23 @@ Kay_2022_lumefantrine <- function() {
         "HIV-uninfected children' (Results). Mutually exclusive with",
         "CONMED_EFV and CONMED_LPV within the source cohort."
       ),
-      source_name        = "NVP"
+      source_name = "NVP"
     )
   )
 
   population <- list(
-    species              = "human",
-    n_subjects           = 277L,
-    n_episodes           = 364L,
+    species = "human",
+    n_subjects = 277L,
+    n_episodes = 364L,
     n_uninfected_episodes = 186L,
-    n_efv_episodes       = 48L,
-    n_lpv_episodes       = 68L,
-    n_nvp_episodes       = 62L,
-    n_studies            = 1L,
-    age_range            = "0.16-8.58 years (HIV-uninfected median 3.58, EFV median 6.00, LPV/r median 4.50, NVP median 4.50; Table 1)",
-    weight_range         = "7.65-30.0 kg (HIV-uninfected median 14.1, EFV median 18.0, LPV/r median 15.4, NVP median 16.0; Table 1)",
-    sex_female_pct       = NA_real_,
-    disease_state        = paste(
+    n_efv_episodes = 48L,
+    n_lpv_episodes = 68L,
+    n_nvp_episodes = 62L,
+    n_studies = 1L,
+    age_range = "0.16-8.58 years (HIV-uninfected median 3.58, EFV median 6.00, LPV/r median 4.50, NVP median 4.50; Table 1)",
+    weight_range = "7.65-30.0 kg (HIV-uninfected median 14.1, EFV median 18.0, LPV/r median 15.4, NVP median 16.0; Table 1)",
+    sex_female_pct = NA_real_,
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria in high-transmission",
       "Tororo, Uganda. HIV-uninfected children and HIV-infected children",
       "on continuous efavirenz-, nevirapine-, or lopinavir/ritonavir-",
@@ -188,7 +188,7 @@ Kay_2022_lumefantrine <- function() {
       "children). Children allowed to re-enrol for repeat clinical",
       "episodes within and beyond the 42-day follow-up window."
     ),
-    dose_range           = paste(
+    dose_range = paste(
       "Coartem Dispersible (Novartis Pharma AG, Basel): 20 mg artemether",
       "+ 120 mg lumefantrine per tablet, weight-based dosing per WHO",
       "guidelines (1 tablet per dose for 5-14 kg, 2 tablets for 15-24",
@@ -196,8 +196,8 @@ Kay_2022_lumefantrine <- function() {
       "36, 48, and 60 hours, taken with milk or during breastfeeding to",
       "promote lumefantrine absorption."
     ),
-    regions              = "Uganda (Tororo, high malaria transmission setting, 2011-2014)",
-    notes                = paste(
+    regions = "Uganda (Tororo, high malaria transmission setting, 2011-2014)",
+    notes = paste(
       "Per-episode sex breakdown from Table 1: % male episodes were",
       "53.2% (HIV-uninfected), 33.3% (EFV), 35.3% (LPV/r), and 53.2%",
       "(NVP); aggregate sex_female_pct is therefore approximately",

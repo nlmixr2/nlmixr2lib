@@ -16,36 +16,36 @@ Castelli_2022_dextroamphetamine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "dextroamphetamine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "dextroamphetamine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "dextroamphetamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Castelli 2022 Methods: 'Body weight was predefined as a covariate on CL/F, V/F, and Ka' (full-covariate-modeling approach). Table 1 reports the weight-effect estimates 0.47 on CL/F, 0.53 on V/F, and -0.29 on Ka, interpreted here as power-law exponents of the form parameter_i = TVparameter * (WT_i / WT_ref)^exponent. The reference weight WT_ref is NOT stated in the poster; encoded here as 70 kg per the rounded-standard policy for an unreported adult-pediatric pooled reference (study-population median ~66 kg; adult median 73.2 kg, pediatric median 40.6 kg). See vignette Errata.",
-      source_name        = "WT"
+      notes = "Castelli 2022 Methods: 'Body weight was predefined as a covariate on CL/F, V/F, and Ka' (full-covariate-modeling approach). Table 1 reports the weight-effect estimates 0.47 on CL/F, 0.53 on V/F, and -0.29 on Ka, interpreted here as power-law exponents of the form parameter_i = TVparameter * (WT_i / WT_ref)^exponent. The reference weight WT_ref is NOT stated in the poster; encoded here as 70 kg per the rounded-standard policy for an unreported adult-pediatric pooled reference (study-population median ~66 kg; adult median 73.2 kg, pediatric median 40.6 kg). See vignette Errata.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 156L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 156L,
+    n_studies = 6L,
     n_observations = 6607L,
-    age_range      = "6-62 years (adults 18-62, children 6-12)",
-    age_median     = "adults 33 years; children 10 years",
-    weight_range   = "23.1-101 kg (adults 43.8-101, children 23.1-63.5)",
-    weight_median  = "adults 73.2 kg; children 40.6 kg",
+    age_range = "6-62 years (adults 18-62, children 6-12)",
+    age_median = "adults 33 years; children 10 years",
+    weight_range = "23.1-101 kg (adults 43.8-101, children 23.1-63.5)",
+    weight_median = "adults 73.2 kg; children 40.6 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Attention-deficit/hyperactivity disorder (ADHD); a pooled population of 122 adults (78%; median age 33 years, range 18-62) and 34 children (22%; median age 10 years, range 6-12) with ADHD across six PK studies of the dextroamphetamine transdermal system (d-ATS; Xelstrym). Sex distribution and race/ethnicity are not tabulated in the conference poster.",
-    dose_range     = "5 mg, 10 mg, 15 mg, and 20 mg d-ATS transdermal patches; the 5/10/15/20 mg doses were the levels evaluated in the pivotal pediatric study and were the reference dose levels for the exposure-matching extrapolation to adults reported in the poster. Patches were applied to the hip for 9 hours per day (standard d-ATS wear time per the FDA label) in the pivotal pediatric study; the poster does not state the wear time used in each contributing PK study.",
-    regions        = "Not stated in the poster.",
-    blq_handling   = "Below-limit-of-quantification (BLQ) concentrations in the elimination phase were excluded from parameter estimation; BLQ records in the absorption/distribution phase were retained.",
-    notes          = "Castelli 2022 Methods + Results: 156 subjects pooled from six PK studies of d-ATS, totalling 6607 amphetamine plasma concentration data points. NONMEM 7.4.3 with first-order conditional estimation. A full-covariate-modeling approach was taken with body weight pre-specified on CL/F, V/F, and Ka. Inter-occasion variability was estimated on D1 and bioavailability (F); the IOV magnitudes are NOT reported in the poster and are NOT encoded here (see vignette Errata). The residual-error model and magnitudes are NOT reported in the poster either."
+    disease_state = "Attention-deficit/hyperactivity disorder (ADHD); a pooled population of 122 adults (78%; median age 33 years, range 18-62) and 34 children (22%; median age 10 years, range 6-12) with ADHD across six PK studies of the dextroamphetamine transdermal system (d-ATS; Xelstrym). Sex distribution and race/ethnicity are not tabulated in the conference poster.",
+    dose_range = "5 mg, 10 mg, 15 mg, and 20 mg d-ATS transdermal patches; the 5/10/15/20 mg doses were the levels evaluated in the pivotal pediatric study and were the reference dose levels for the exposure-matching extrapolation to adults reported in the poster. Patches were applied to the hip for 9 hours per day (standard d-ATS wear time per the FDA label) in the pivotal pediatric study; the poster does not state the wear time used in each contributing PK study.",
+    regions = "Not stated in the poster.",
+    blq_handling = "Below-limit-of-quantification (BLQ) concentrations in the elimination phase were excluded from parameter estimation; BLQ records in the absorption/distribution phase were retained.",
+    notes = "Castelli 2022 Methods + Results: 156 subjects pooled from six PK studies of d-ATS, totalling 6607 amphetamine plasma concentration data points. NONMEM 7.4.3 with first-order conditional estimation. A full-covariate-modeling approach was taken with body weight pre-specified on CL/F, V/F, and Ka. Inter-occasion variability was estimated on D1 and bioavailability (F); the IOV magnitudes are NOT reported in the poster and are NOT encoded here (see vignette Errata). The residual-error model and magnitudes are NOT reported in the poster either."
   )
 
   ini({

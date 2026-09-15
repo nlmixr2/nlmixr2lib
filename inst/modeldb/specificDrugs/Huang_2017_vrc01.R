@@ -8,35 +8,35 @@ Huang_2017_vrc01 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "vrc01", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "vrc01", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "vrc01", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "vrc01", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vrc01", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Centered at 74.5 kg (median weight of IV groups in HVTN104). Exponential effect on CL and Vc; power-form (allometric) effect on Q and Vp.",
-      source_name        = "WT"
+      notes = "Time-fixed at baseline. Centered at 74.5 kg (median weight of IV groups in HVTN104). Exponential effect on CL and Vc; power-form (allometric) effect on Q and Vp.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 84L,
-    n_studies      = 1L,
-    age_range      = "18-50 years",
-    age_median     = "27 years",
-    weight_range   = "53-114 kg",
-    weight_median  = "72 kg overall; 74.5 kg in IV groups (used as the covariate-centering reference)",
+    n_subjects = 84L,
+    n_studies = 1L,
+    age_range = "18-50 years",
+    age_median = "27 years",
+    weight_range = "53-114 kg",
+    weight_median = "72 kg overall; 74.5 kg in IV groups (used as the covariate-centering reference)",
     sex_female_pct = 50,
     race_ethnicity = "Not reported in Huang 2017 Table 1",
-    disease_state  = "HIV-uninfected (low HIV-1 risk) healthy adults",
-    dose_range     = "10-40 mg/kg IV every 4 or 8 weeks; 5 mg/kg SC every 2 weeks (with a 40 mg/kg IV loading dose in Group 3)",
-    regions        = "United States (HVTN 104, NCT02165267)",
-    notes          = "Baseline demographics from Huang 2017 Table 1. The HVTN 104 phase 1 study enrolled 42 men and 42 women across five dosing groups; the popPK model was fit to 1117 VRC01 serum concentrations. External validation used VRC602 data."
+    disease_state = "HIV-uninfected (low HIV-1 risk) healthy adults",
+    dose_range = "10-40 mg/kg IV every 4 or 8 weeks; 5 mg/kg SC every 2 weeks (with a 40 mg/kg IV loading dose in Group 3)",
+    regions = "United States (HVTN 104, NCT02165267)",
+    notes = "Baseline demographics from Huang 2017 Table 1. The HVTN 104 phase 1 study enrolled 42 men and 42 women across five dosing groups; the popPK model was fit to 1117 VRC01 serum concentrations. External validation used VRC602 data."
   )
 
   ini({

@@ -46,43 +46,43 @@ Elhefnawy_2023_recurrent_ischemic_stroke <- function() {
   vignette <- "Elhefnawy_2023_recurrent_ischemic_stroke"
 
   units <- list(
-    time          = "year",
-    dosing        = "n/a (no dosing events; secondary-prevention therapy enters only through the binary CONMED_ANTIPLATELET covariate)",
+    time = "year",
+    dosing = "n/a (no dosing events; secondary-prevention therapy enters only through the binary CONMED_ANTIPLATELET covariate)",
     concentration = "n/a (the model outputs are a hazard in 1/year, a unitless cumulative hazard and a unitless recurrence-free survivor probability, not a drug concentration)"
   )
 
   covariateData <- list(
     DIS_HYPERLIP = list(
-      description        = "1 = the patient carried a hyperlipidemia (HPLD) diagnosis before the index ischemic stroke; 0 = no hyperlipidemia. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient carried a hyperlipidemia (HPLD) diagnosis before the index ischemic stroke; 0 = no hyperlipidemia. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hyperlipidemia before the index stroke)",
-      notes              = "Ascertained by physician diagnosis, the patient's electronic record, or medication history (Elhefnawy 2023 Methods, 'Collected variables'). Prevalence in the full 7,697-patient cohort is 2,028 / 7,697 = 26.34 percent (Results text; Table 1 gives 159 of 333 recurrent and 1,869 of 7,364 non-recurrent, which sum to the same 2,028). The strongest single predictor retained: HR = exp(0.799) = 2.22 (95 percent CI 1.81-2.72).",
-      source_name        = "HPLD"
+      notes = "Ascertained by physician diagnosis, the patient's electronic record, or medication history (Elhefnawy 2023 Methods, 'Collected variables'). Prevalence in the full 7,697-patient cohort is 2,028 / 7,697 = 26.34 percent (Results text; Table 1 gives 159 of 333 recurrent and 1,869 of 7,364 non-recurrent, which sum to the same 2,028). The strongest single predictor retained: HR = exp(0.799) = 2.22 (95 percent CI 1.81-2.72).",
+      source_name = "HPLD"
     ),
     DIS_IHD = list(
-      description        = "1 = the patient carried an ischemic heart disease (IHD) diagnosis before the index ischemic stroke; 0 = no IHD. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient carried an ischemic heart disease (IHD) diagnosis before the index ischemic stroke; 0 = no IHD. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no ischemic heart disease before the index stroke)",
-      notes              = "Ascertained the same way as the other comorbidity flags (Elhefnawy 2023 Methods, 'Collected variables'). Prevalence in the full cohort is 879 / 7,697 = 11.42 percent (Results text; Table 1 gives 77 + 802 = 879). HR = exp(0.745) = 2.10 (95 percent CI 1.64-2.69). Elhefnawy 2023 Discussion attributes the effect to shared atherosclerotic pathophysiology between IHD and ischemic stroke.",
-      source_name        = "IHD"
+      notes = "Ascertained the same way as the other comorbidity flags (Elhefnawy 2023 Methods, 'Collected variables'). Prevalence in the full cohort is 879 / 7,697 = 11.42 percent (Results text; Table 1 gives 77 + 802 = 879). HR = exp(0.745) = 2.10 (95 percent CI 1.64-2.69). Elhefnawy 2023 Discussion attributes the effect to shared atherosclerotic pathophysiology between IHD and ischemic stroke.",
+      source_name = "IHD"
     ),
     DIS_HYPERT = list(
-      description        = "1 = the patient carried a hypertension (HTN) diagnosis before the index ischemic stroke; 0 = no hypertension. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient carried a hypertension (HTN) diagnosis before the index ischemic stroke; 0 = no hypertension. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hypertension before the index stroke)",
-      notes              = "Ascertained the same way as the other comorbidity flags. Prevalence in the full cohort is 5,506 / 7,697 = 71.5 percent (Results text; Table 1 gives 288 + 5,218 = 5,506). HR = exp(0.711) = 2.03 (95 percent CI 1.52-2.71). Elhefnawy 2023 Table 1 also stratifies hypertension duration at 5 years, but duration was not retained in the final model -- only the presence / absence flag is used here.",
-      source_name        = "HTN"
+      notes = "Ascertained the same way as the other comorbidity flags. Prevalence in the full cohort is 5,506 / 7,697 = 71.5 percent (Results text; Table 1 gives 288 + 5,218 = 5,506). HR = exp(0.711) = 2.03 (95 percent CI 1.52-2.71). Elhefnawy 2023 Table 1 also stratifies hypertension duration at 5 years, but duration was not retained in the final model -- only the presence / absence flag is used here.",
+      source_name = "HTN"
     ),
     CONMED_ANTIPLATELET = list(
-      description        = "1 = the patient was prescribed an antiplatelet (APLT) at discharge from the index ischemic stroke admission, for secondary prevention; 0 = no antiplatelet prescribed. Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the patient was prescribed an antiplatelet (APLT) at discharge from the index ischemic stroke admission, for secondary prevention; 0 = no antiplatelet prescribed. Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no antiplatelet prescribed at discharge)",
-      notes              = "Elhefnawy 2023 Methods, 'Collected variables': the secondary-prevention medications were 'prescribed during discharge'. The paper does not enumerate which agents were pooled into the antiplatelet class, so the class composition is unknown here (contrast CONMED_DIURETIC, where each source paper's class membership is recorded). Prevalence in the full cohort is (285 + 6,613) / 7,697 = 89.6 percent (Table 1). This is the only protective term retained: HR = exp(-0.514) = 0.59 (the paper prints the CI in descending order as '0.79-0.44'), i.e. about a 40 percent reduction in the hazard of recurrence. Because the indicator is fixed at discharge, it encodes prescription rather than adherence, and the model carries no time-varying exposure term -- Elhefnawy 2023 Limitations flags incorporating time-varying secondary-prophylaxis effects as future work.",
-      source_name        = "APLT"
+      notes = "Elhefnawy 2023 Methods, 'Collected variables': the secondary-prevention medications were 'prescribed during discharge'. The paper does not enumerate which agents were pooled into the antiplatelet class, so the class composition is unknown here (contrast CONMED_DIURETIC, where each source paper's class membership is recorded). Prevalence in the full cohort is (285 + 6,613) / 7,697 = 89.6 percent (Table 1). This is the only protective term retained: HR = exp(-0.514) = 0.59 (the paper prints the CI in descending order as '0.79-0.44'), i.e. about a 40 percent reduction in the hazard of recurrence. Because the indicator is fixed at discharge, it encodes prescription rather than adherence, and the model carries no time-varying exposure term -- Elhefnawy 2023 Limitations flags incorporating time-varying secondary-prophylaxis effects as future work.",
+      source_name = "APLT"
     )
   )
 
@@ -109,82 +109,95 @@ Elhefnawy_2023_recurrent_ischemic_stroke <- function() {
   covariatesDataExcluded <- list(
     DIS_DIAB = list(
       description = "Diabetes mellitus before the index stroke (3,493 / 7,697 = 45.38 percent).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "The one covariate that reached the final elimination step and was still dropped. Strongly significant univariately (Suppl. Table 1_S, dOFV -21.75, p < 0.0001) and retained through forward inclusion (dOFV -3.96, p = 0.046, clearing the p < 0.05 forward threshold), but removing it in backward elimination cost only dOFV +3.88 (p = 0.048), short of the stricter p < 0.01 backward criterion, so it is absent from Table 3. Table 1 additionally stratifies diabetes duration into <1, 1-5, 6-10 and >10 years; no duration effect was retained either."
     ),
     DIS_HYPERURICEMIA = list(
       description = "Hyperuricemia (HU) before the index stroke (234 / 7,697 = 3.04 percent).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Univariately significant (Suppl. Table 1_S, dOFV -4.65, p = 0.031) and carried into forward inclusion, where it added almost nothing (dOFV -1.055, p = 0.304) and was not retained."
     ),
     DIS_AF = list(
       description = "Atrial fibrillation before the index stroke (about 3.4 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Not significant univariately (Suppl. Table 1_S, dOFV -0.44, p = 0.507) and never entered the stepwise procedure. Note the direction in Table 1 is opposite to the usual clinical expectation (1.2 percent of recurrent vs 3.57 percent of non-recurrent patients)."
     ),
     SEXF = list(
       description = "Female sex (4,289 / 7,697 = 55.72 percent).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened as 'Gender' in Suppl. Table 1_S and among the weakest candidates tested (dOFV -0.435, p = 0.509); not retained. Table 1 shows near-identical proportions in the recurrent (55.85 percent) and non-recurrent (55.71 percent) groups."
     ),
     FAMHX_STROKE = list(
       description = "Family history of stroke (FHOS).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.735, p = 0.09) and not carried forward. Prevalence is not reported in Table 1."
     ),
     NIHSS = list(
       description = "National Institutes of Health Stroke Scale severity of the index stroke, dichotomised by the paper into minor vs moderate/severe.",
-      units = "(score)", type = "continuous",
+      units = "(score)",
+      type = "continuous",
       notes = "Tabulated in Elhefnawy 2023 Table 1, defined in the Table 3 footnote, and screened univariately in Suppl. Table 1_S (dOFV -1.103, p = 0.293); no NIHSS term appears in the final model."
     ),
     CONMED_ANTIDIABETIC = list(
       description = "Antidiabetic (ADM) prescribed at discharge from the index stroke admission.",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Univariately significant (Suppl. Table 1_S, dOFV -5.39, p = 0.0202) and carried into forward inclusion, where it was the weakest candidate tested (dOFV -0.167, p = 0.682) and was not retained."
     ),
     CONMED_DIURETIC = list(
       description = "Diuretic (DIU) prescribed at discharge (5.9 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.87, p = 0.09); did not reach the p < 0.05 threshold for forward inclusion."
     ),
     CONMED_BETABLOCKER = list(
       description = "Beta-blocker (BB) prescribed at discharge (10.6 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.05, p = 0.152); not carried forward."
     ),
     CONMED_CCB = list(
       description = "Calcium-channel blocker (CCB) prescribed at discharge (20.8 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Screened univariately in Suppl. Table 1_S (dOFV -1.52, p = 0.217); not carried forward."
     ),
     CONMED_ACEI = list(
       description = "Angiotensin-converting-enzyme inhibitor (ACEI) prescribed at discharge (31.1 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "The weakest candidate in the whole screen (Suppl. Table 1_S, dOFV -0.03, p = 0.862); not carried forward."
     ),
     AGE = list(
       description = "Age at the index ischemic stroke (median 63.47 years).",
-      units = "year", type = "continuous",
+      units = "year",
+      type = "continuous",
       notes = "Named as a screened demographic covariate in Elhefnawy 2023 Methods ('Based on demographic data and concomitant diseases') and dichotomised at 60 years in Table 1, but it does not appear among the fifteen candidates tabulated in Suppl. Table 1_S, so no objective-function change is available for it. Not retained."
     ),
     SMOKER = list(
       description = "Current smoker at the index stroke (about 48 percent of the cohort).",
-      units = "(binary)", type = "binary",
+      units = "(binary)",
+      type = "binary",
       notes = "Reported in Elhefnawy 2023 Results and Table 1 with a sizeable unadjusted imbalance (60.66 percent of recurrent vs 48.17 percent of non-recurrent patients), but like AGE it is absent from the Suppl. Table 1_S screen, so no objective-function change is available for it. Not retained."
     )
   )
 
   population <- list(
-    n_subjects     = 7697L,
-    n_events       = 333L,
-    n_studies      = 1L,
-    age_range      = "adults aged over 18 years; median 63.47 years at the index stroke; 4,623 of 7,697 (60.1 percent) were 60 years or older",
+    n_subjects = 7697L,
+    n_events = 333L,
+    n_studies = 1L,
+    age_range = "adults aged over 18 years; median 63.47 years at the index stroke; 4,623 of 7,697 (60.1 percent) were 60 years or older",
     sex_female_pct = 55.72,
     race_ethnicity = "Multiethnic Malaysian registry cohort. Elhefnawy 2023 Table 1 reports Malay, Chinese, Indian and 'Others' strata separately for the recurrent (46.54 / 2.10 / 0.90 / 50.15 percent) and non-recurrent (20.08 / 2.79 / 1.08 / 76.05 percent) groups; ethnicity was screened but not retained in the final model.",
-    disease_state  = "Adults with a first (index) ischemic stroke diagnosed by WHO criteria and confirmed by brain CT or MRI. The endpoint is a subsequent ischemic stroke recorded by any participating hospital.",
-    dose_range     = "n/a (no drug exposure is modelled; secondary prevention enters only as the binary antiplatelet-at-discharge indicator)",
-    regions        = "Malaysia -- National Neurology Registry (NNEUR), a multicentre hospital-based registry covering 13 states; index strokes registered August 2009 to December 2016.",
-    notes          = paste(
+    disease_state = "Adults with a first (index) ischemic stroke diagnosed by WHO criteria and confirmed by brain CT or MRI. The endpoint is a subsequent ischemic stroke recorded by any participating hospital.",
+    dose_range = "n/a (no drug exposure is modelled; secondary prevention enters only as the binary antiplatelet-at-discharge indicator)",
+    regions = "Malaysia -- National Neurology Registry (NNEUR), a multicentre hospital-based registry covering 13 states; index strokes registered August 2009 to December 2016.",
+    notes = paste(
       "333 of 7,697 patients (4.32 percent) had at least one recurrent ischemic",
       "stroke within the maximum 7.37 years of follow-up; 108 of those 333 (31.43",
       "percent) recurred within the first 6 months and 36 patients went on to a",

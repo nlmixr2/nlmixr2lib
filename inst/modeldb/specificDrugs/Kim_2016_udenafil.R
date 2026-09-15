@@ -1,6 +1,6 @@
 Kim_2016_udenafil <- function() {
   description <- "Parent-metabolite population PK model for oral udenafil and its active metabolite DA-8164 in healthy subjects and patients with mild (Child-Pugh A) and moderate (Child-Pugh B) hepatic impairment (Kim 2016). Two-compartment udenafil with first-order absorption and an absorption lag time, two parallel parent-side clearances (CLp/F = non-metabolic apparent clearance, CLpm/F = apparent formation clearance to DA-8164) feeding a two-compartment metabolite. Central and peripheral apparent volumes are assumed equal for parent and metabolite (the fraction metabolised f_m and the metabolite volume of distribution are not separately identifiable from this dataset). Mass-balance is preserved by multiplying the formation flux into the metabolite central compartment by the molecular-weight ratio Rpm = MW(DA-8164) / MW(udenafil) = 405.4 / 516.66. Prothrombin time expressed as INR (PT) acts on CLpm/F via a power covariate normalised to the cohort median 1.13: CLpm/F = theta1 * (PT/1.13)^theta10 with theta10 = -1.65 (decrease in CLpm/F with increasing PT)."
-  reference   <- paste(
+  reference <- paste(
     "Kim A, Lee J, Shin D, Jung YJ, Bahng MY, Cho JY, Jang IJ.",
     "Population pharmacokinetic analysis to recommend the optimal dose",
     "of udenafil in patients with mild and moderate hepatic impairment.",
@@ -8,48 +8,48 @@ Kim_2016_udenafil <- function() {
     "doi:10.1111/bcp.12977.",
     sep = " "
   )
-  vignette    <- "Kim_2016_udenafil"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  vignette <- "Kim_2016_udenafil"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "udenafil", units = "mg", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1        = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
-    central_da8164     = list(analyte = "DA-8164", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "udenafil", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "udenafil", units = "mg", specimen = "plasma", verified = FALSE),
+    central_da8164 = list(analyte = "DA-8164", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_da8164 = list(analyte = "DA-8164", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     INR_BASE = list(
-      description        = "Pre-dose prothrombin time expressed as the international normalised ratio (INR). Continuous, dimensionless, measured once per subject before the single 100 mg oral udenafil dose. The Kim 2016 paper labels this column 'PT' throughout but its Methods (Covariate selection and model evaluation paragraph) explicitly state 'prothrombin time and were expressed as international normalized ratio (PT)'.",
-      units              = "(unitless ratio; INR has no units)",
-      type               = "continuous",
+      description = "Pre-dose prothrombin time expressed as the international normalised ratio (INR). Continuous, dimensionless, measured once per subject before the single 100 mg oral udenafil dose. The Kim 2016 paper labels this column 'PT' throughout but its Methods (Covariate selection and model evaluation paragraph) explicitly state 'prothrombin time and were expressed as international normalized ratio (PT)'.",
+      units = "(unitless ratio; INR has no units)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Single-dose, time-fixed per subject. Used as a covariate on the apparent formation clearance of udenafil to DA-8164 via a power function normalised to the cohort median 1.13 (Kim 2016 Eq. for CLpm/F = theta1 * (PT/1.13)^theta10). Cohort summary statistics: healthy 0.97 +/- 0.039, mild HI 1.13 +/- 0.13, moderate HI 1.33 +/- 0.094 (Kim 2016 Table 1, mean +/- SD). Kruskal-Wallis P < 0.05 among study groups.",
-      source_name        = "PT (prothrombin time expressed as INR; Kim 2016 Table 1 and Methods)"
+      notes = "Single-dose, time-fixed per subject. Used as a covariate on the apparent formation clearance of udenafil to DA-8164 via a power function normalised to the cohort median 1.13 (Kim 2016 Eq. for CLpm/F = theta1 * (PT/1.13)^theta10). Cohort summary statistics: healthy 0.97 +/- 0.039, mild HI 1.13 +/- 0.13, moderate HI 1.33 +/- 0.094 (Kim 2016 Table 1, mean +/- SD). Kruskal-Wallis P < 0.05 among study groups.",
+      source_name = "PT (prothrombin time expressed as INR; Kim 2016 Table 1 and Methods)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "41-61 years",
-    age_median     = "52.9 years (cohort mean)",
-    weight_range   = "approximately 57-77 kg (mean 66.9 kg, SD 6.18 kg)",
-    weight_median  = "66.9 kg (cohort mean)",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "41-61 years",
+    age_median = "52.9 years (cohort mean)",
+    weight_range = "approximately 57-77 kg (mean 66.9 kg, SD 6.18 kg)",
+    weight_median = "66.9 kg (cohort mean)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Three parallel age- and weight-matched groups (six subjects each): healthy adults, patients with mild hepatic impairment (Child-Pugh class A), and patients with moderate hepatic impairment (Child-Pugh class B). Two of the six moderate-HI subjects had clinical ascites; none of the healthy or mild-HI subjects did. Exclusion criteria included history of cardiovascular or cerebrovascular disease, creatinine clearance < 40 mL/min, and use of CYP3A4 / CYP2D6 inducers or inhibitors.",
-    dose_range     = "Single 100 mg oral dose of udenafil in the fasted state (>= 10 h fast).",
-    regions        = "South Korea (multicentre: Seoul National University Hospital; SMG-SNU Boramae Medical Center; Seoul National University Bundang Hospital; Asan Medical Center).",
+    disease_state = "Three parallel age- and weight-matched groups (six subjects each): healthy adults, patients with mild hepatic impairment (Child-Pugh class A), and patients with moderate hepatic impairment (Child-Pugh class B). Two of the six moderate-HI subjects had clinical ascites; none of the healthy or mild-HI subjects did. Exclusion criteria included history of cardiovascular or cerebrovascular disease, creatinine clearance < 40 mL/min, and use of CYP3A4 / CYP2D6 inducers or inhibitors.",
+    dose_range = "Single 100 mg oral dose of udenafil in the fasted state (>= 10 h fast).",
+    regions = "South Korea (multicentre: Seoul National University Hospital; SMG-SNU Boramae Medical Center; Seoul National University Bundang Hospital; Asan Medical Center).",
     n_observations = "Plasma samples at predose, 0.5, 1, 1.5, 2, 2.5, 3, 4, 6, 8, 12, 24, 32, 48, and 72 h post-dose; LLOQ 2 ng/mL with the validated range 2-2000 ng/mL.",
-    co_medication  = "No drugs known to affect udenafil PK (CYP3A4 / CYP2D6 inducers or inhibitors).",
-    notes          = paste(
+    co_medication = "No drugs known to affect udenafil PK (CYP3A4 / CYP2D6 inducers or inhibitors).",
+    notes = paste(
       "Demographics and clinical baseline labs from Kim 2016 Table 1.",
       "Albumin (g/dL): healthy 4.35 +/- 0.27, mild HI 3.95 +/- 0.34, moderate HI 3.37 +/- 0.29.",
       "Total bilirubin (mg/dL): healthy 0.867 +/- 0.44, mild HI 1.20 +/- 0.59, moderate HI 2.18 +/- 0.48.",

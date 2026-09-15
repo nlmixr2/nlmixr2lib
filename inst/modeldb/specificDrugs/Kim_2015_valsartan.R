@@ -8,43 +8,43 @@ Kim_2015_valsartan <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL, V1, Q, V2 with reference weight 70 kg. Source column WT in kg (Kim 2015 Eq. 1).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL, V1, Q, V2 with reference weight 70 kg. Source column WT in kg (Kim 2015 Eq. 1).",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR in raw mL/min (NOT BSA-normalized). Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 125.5 mL/min (Kim 2015 cohort mean; Table 1). Power-law effect on CL: (CRCL / 125.5)^e_crcl_cl.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR in raw mL/min (NOT BSA-normalized). Stored under canonical CRCL per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Reference value 125.5 mL/min (Kim 2015 cohort mean; Table 1). Power-law effect on CL: (CRCL / 125.5)^e_crcl_cl.",
+      source_name = "CLCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48,
-    n_studies      = 1,
-    age_range      = "20-45 years",
-    age_median     = "26.8 years (mean, SD 6)",
-    weight_range   = "53.5-85 kg",
-    weight_median  = "68.7 kg (mean, SD 7.7)",
+    species = "human",
+    n_subjects = 48,
+    n_studies = 1,
+    age_range = "20-45 years",
+    age_median = "26.8 years (mean, SD 6)",
+    weight_range = "53.5-85 kg",
+    weight_median = "68.7 kg (mean, SD 7.7)",
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "healthy volunteers",
-    dose_range     = "single oral dose (FDC tablet of amlodipine/valsartan; specific valsartan strength reported in upstream Kim 2013 source data, Clin Ther 35:934-940)",
-    regions        = "South Korea",
-    notes          = "Underlying concentration data taken from Kim et al. 2013 (Clin Ther 35:934-940, doi:10.1016/j.clinthera.2013.05.021), a fixed-dose-combination bioequivalence study of amlodipine and valsartan in healthy male Korean volunteers. Demographic distributions reported in Kim 2015 Table 1. The 2-compartment popPK model with zero-order absorption was newly developed for Kim 2015 from those data."
+    disease_state = "healthy volunteers",
+    dose_range = "single oral dose (FDC tablet of amlodipine/valsartan; specific valsartan strength reported in upstream Kim 2013 source data, Clin Ther 35:934-940)",
+    regions = "South Korea",
+    notes = "Underlying concentration data taken from Kim et al. 2013 (Clin Ther 35:934-940, doi:10.1016/j.clinthera.2013.05.021), a fixed-dose-combination bioequivalence study of amlodipine and valsartan in healthy male Korean volunteers. Demographic distributions reported in Kim 2015 Table 1. The 2-compartment popPK model with zero-order absorption was newly developed for Kim 2015 from those data."
   )
 
   ini({

@@ -10,28 +10,33 @@ Plachouras_2009_colistin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(
+      analyte = "colistin methanesulfonate (CMS)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
     central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 18L,
-    n_studies      = 1L,
-    age_range      = "40-83 years",
-    age_mean       = "63.6 years",
-    weight_range   = "65-110 kg (actual); 60-85 kg (ideal)",
+    species = "human",
+    n_subjects = 18L,
+    n_studies = 1L,
+    age_range = "40-83 years",
+    age_mean = "63.6 years",
+    weight_range = "65-110 kg (actual); 60-85 kg (ideal)",
     sex_female_pct = 33.3,
     race_ethnicity = "Not reported; single-center Greek cohort.",
-    disease_state  = "Critically ill adult ICU patients with probable or documented infections caused by multidrug-resistant Gram-negative bacteria (Acinetobacter baumannii, Pseudomonas aeruginosa, Enterobacteriaceae). Patients on continuous venovenous hemodiafiltration were excluded.",
-    dose_range     = "CMS 3 MU (~240 mg) q8h as 15-min IV infusion. Two patients with CrCl < 50 mL/min received the empirically reduced regimen of 2 MU q8h (~160 mg q8h).",
-    crcl_range     = "41-126 mL/min (Cockcroft-Gault); mean +- SD = 82.3 +- 24.35 mL/min on day 1.",
-    apache_ii      = "median 13 (range 5-20).",
-    regions        = "Single center: Attikon University General Hospital, Athens, Greece.",
-    notes          = "Demographics from Table 1 of Plachouras 2009 (n = 18 patients; 12 males, 6 females). The fraction of CMS metabolised to colistin (fm) is not identifiable from CMS / colistin plasma data alone, so colistin CL and V are reported as the apparent values CL/fm and V/fm; the model file carries them as cl_col and vc_col without the explicit fm rescaling."
+    disease_state = "Critically ill adult ICU patients with probable or documented infections caused by multidrug-resistant Gram-negative bacteria (Acinetobacter baumannii, Pseudomonas aeruginosa, Enterobacteriaceae). Patients on continuous venovenous hemodiafiltration were excluded.",
+    dose_range = "CMS 3 MU (~240 mg) q8h as 15-min IV infusion. Two patients with CrCl < 50 mL/min received the empirically reduced regimen of 2 MU q8h (~160 mg q8h).",
+    crcl_range = "41-126 mL/min (Cockcroft-Gault); mean +- SD = 82.3 +- 24.35 mL/min on day 1.",
+    apache_ii = "median 13 (range 5-20).",
+    regions = "Single center: Attikon University General Hospital, Athens, Greece.",
+    notes = "Demographics from Table 1 of Plachouras 2009 (n = 18 patients; 12 males, 6 females). The fraction of CMS metabolised to colistin (fm) is not identifiable from CMS / colistin plasma data alone, so colistin CL and V are reported as the apparent values CL/fm and V/fm; the model file carries them as cl_col and vc_col without the explicit fm rescaling."
   )
 
   ini({

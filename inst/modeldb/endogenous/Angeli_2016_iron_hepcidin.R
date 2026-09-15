@@ -1,10 +1,10 @@
 Angeli_2016_iron_hepcidin <- function() {
   description <- "Joint turnover model of serum iron and serum hepcidin during the menstrual cycle in healthy non-menopausal women; both molecules follow first-order turnover with a menses-induced increase in elimination (kloss) shared across iron and hepcidin and a delayed post-menses rebound in synthesis (krelI, krelH) starting on day 2 of the cycle, with serum iron multiplicatively modulating hepcidin synthesis around the iron baseline."
-  reference   <- "Angeli A, Laine F, Lavenu A, Ropert M, Lacut K, Gissot V, Sacher-Huvelin S, Jezequel C, Moignet A, Laviolle B, Comets E. Joint Model of Iron and Hepcidin During the Menstrual Cycle in Healthy Women. AAPS J. 2016 May;18(3):490-504. doi:10.1208/s12248-016-9875-4"
-  vignette    <- "Angeli_2016_iron_hepcidin"
-  units       <- list(
-    time          = "day",
-    dosing        = "(none -- endogenous joint turnover, no exogenous drug)",
+  reference <- "Angeli A, Laine F, Lavenu A, Ropert M, Lacut K, Gissot V, Sacher-Huvelin S, Jezequel C, Moignet A, Laviolle B, Comets E. Joint Model of Iron and Hepcidin During the Menstrual Cycle in Healthy Women. AAPS J. 2016 May;18(3):490-504. doi:10.1208/s12248-016-9875-4"
+  vignette <- "Angeli_2016_iron_hepcidin"
+  units <- list(
+    time = "day",
+    dosing = "(none -- endogenous joint turnover, no exogenous drug)",
     concentration = "umol/L (serum iron) and nmol/L (serum hepcidin)"
   )
 
@@ -14,82 +14,82 @@ Angeli_2016_iron_hepcidin <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     iron = list(analyte = "Serum Iron", units = NA_character_, specimen = "serum", verified = FALSE),
-    hep  = list(analyte = "Serum Hepcidin", units = NA_character_, specimen = "serum", verified = FALSE)
+    hep = list(analyte = "Serum Hepcidin", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_BIRTHCONTROL = list(
-      description        = "Oral hormonal contraceptive use; `1` = currently taking an oral contraceptive, `0` = not on hormonal contraception.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral hormonal contraceptive use; `1` = currently taking an oral contraceptive, `0` = not on hormonal contraception.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no oral contraceptive). Effect direction: women on contraception eliminate iron about 18% more slowly than women not on contraception (paper Discussion p. 499; Table V).",
-      notes              = "Time-fixed per subject in the Angeli 2016 HEPMEN study (61% of 90 women took daily oral contraceptives, Methods p. 491). Encoded with the opposite sign of the paper's reported `beta_NOCONTRA` because the canonical CONMED_BIRTHCONTROL indicator is the inverse of the paper's `NOCONTRA` covariate (1 means on contraception in the canonical encoding; 1 means NOT on contraception in the paper).",
-      source_name        = "NOCONTRA (inverted: CONMED_BIRTHCONTROL = 1 - NOCONTRA; canonical effect coefficient = -1 x paper's beta_NOCONTRA)"
+      notes = "Time-fixed per subject in the Angeli 2016 HEPMEN study (61% of 90 women took daily oral contraceptives, Methods p. 491). Encoded with the opposite sign of the paper's reported `beta_NOCONTRA` because the canonical CONMED_BIRTHCONTROL indicator is the inverse of the paper's `NOCONTRA` covariate (1 means on contraception in the canonical encoding; 1 means NOT on contraception in the paper).",
+      source_name = "NOCONTRA (inverted: CONMED_BIRTHCONTROL = 1 - NOCONTRA; canonical effect coefficient = -1 x paper's beta_NOCONTRA)"
     ),
     BMI = list(
-      description        = "Body mass index at the inclusion visit.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at the inclusion visit.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = "n/a -- enters as the power-law multiplier `(BMI / tBMI)^e_bmi_krel_iron` on the iron post-menses rebound parameter `krel_iron`, with `tBMI = 22` (a set value close to the population median 22.6 kg/m^2; Angeli 2016 Table I).",
-      notes              = "Time-fixed per subject (single inclusion-visit measurement). Range in the Angeli 2016 cohort: 10th-90th percentile 19.3-26.6 kg/m^2 (Table V); mean 22.6 (Table I).",
-      source_name        = "BMI"
+      notes = "Time-fixed per subject (single inclusion-visit measurement). Range in the Angeli 2016 cohort: 10th-90th percentile 19.3-26.6 kg/m^2 (Table V); mean 22.6 (Table I).",
+      source_name = "BMI"
     ),
     HGB = list(
-      description        = "Baseline (end-of-cycle visit) hemoglobin concentration.",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Baseline (end-of-cycle visit) hemoglobin concentration.",
+      units = "g/dL",
+      type = "continuous",
       reference_category = "n/a -- enters as the power-law multiplier `(HGB / tHGB)^e_hgb_krel_iron` on the iron post-menses rebound parameter `krel_iron`, with `tHGB = 13.5` (a set value close to the population median 13.48 g/dL; Angeli 2016 Table I).",
-      notes              = "Per-subject 'reference value' taken as the concentration at the last-cycle visit (Angeli 2016 Methods p. 492-493); analysed centrally at the Rennes hospital laboratory for assay consistency. Range: 10th-90th percentile 12.5-14.6 g/dL (Table V); mean 13.48 (Table I).",
-      source_name        = "Haemoglobin (baseline; last-visit value)"
+      notes = "Per-subject 'reference value' taken as the concentration at the last-cycle visit (Angeli 2016 Methods p. 492-493); analysed centrally at the Rennes hospital laboratory for assay consistency. Range: 10th-90th percentile 12.5-14.6 g/dL (Table V); mean 13.48 (Table I).",
+      source_name = "Haemoglobin (baseline; last-visit value)"
     ),
     SCORE_HIGHAM = list(
-      description        = "Higham's pictorial blood-loss assessment chart (PBAC) score; semi-quantitative measure of menstrual blood loss.",
-      units              = "(score; unitless)",
-      type               = "continuous",
+      description = "Higham's pictorial blood-loss assessment chart (PBAC) score; semi-quantitative measure of menstrual blood loss.",
+      units = "(score; unitless)",
+      type = "continuous",
       reference_category = "n/a -- enters as the power-law multiplier `(SCORE_HIGHAM / tHIGHAM)^e_higham_<param>` on hepcidin synthesis (`ksyn_hep`) and elimination (`kout_hep`) rate constants, with `tHIGHAM = 96.6` (a set value at the population mean / median; Angeli 2016 Table I).",
-      notes              = "Per-subject mean of the three most recent menstrual cycles' Higham scores (Angeli 2016 Methods p. 491). Higham score >= 100 is the clinical threshold for menorrhagia (Higham 1990 BJOG). Range: 10th-90th percentile 38.2-160.2 (Angeli 2016 Table V); mean 96.6 with SD 60.5 (Table I).",
-      source_name        = "HiS (Higham's score)"
+      notes = "Per-subject mean of the three most recent menstrual cycles' Higham scores (Angeli 2016 Methods p. 491). Higham score >= 100 is the clinical threshold for menorrhagia (Higham 1990 BJOG). Range: 10th-90th percentile 38.2-160.2 (Angeli 2016 Table V); mean 96.6 with SD 60.5 (Table I).",
+      source_name = "HiS (Higham's score)"
     ),
     FERRITIN_BL = list(
-      description        = "Baseline (end-of-cycle visit) serum ferritin concentration.",
-      units              = "ug/L",
-      type               = "continuous",
+      description = "Baseline (end-of-cycle visit) serum ferritin concentration.",
+      units = "ug/L",
+      type = "continuous",
       reference_category = "n/a -- enters as the power-law multiplier `(FERRITIN_BL / tFERRITIN)^e_ferritin_bl_<param>` on hepcidin elimination (`kout_hep`) and hepcidin post-menses rebound (`krel_hep`), with `tFERRITIN = 53` (a set value close to the population mean 53.14 ug/L; Angeli 2016 Table I).",
-      notes              = "Per-subject 'reference value' taken at the last-cycle visit. Range: 10th-90th percentile 18.6-97.4 ug/L (Angeli 2016 Table V); mean 53.14 with SD 44.3 (Table I).",
-      source_name        = "Ferritin (baseline; last-visit value)"
+      notes = "Per-subject 'reference value' taken at the last-cycle visit. Range: 10th-90th percentile 18.6-97.4 ug/L (Angeli 2016 Table V); mean 53.14 with SD 44.3 (Table I).",
+      source_name = "Ferritin (baseline; last-visit value)"
     ),
     HT = list(
-      description        = "Subject height at the inclusion visit.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Subject height at the inclusion visit.",
+      units = "cm",
+      type = "continuous",
       reference_category = "n/a -- enters as the power-law multiplier `(HT / tHT)^e_ht_krel_hep` on the hepcidin post-menses rebound parameter `krel_hep`, with `tHT = 165` (a set value close to the population median 165.4 cm; Angeli 2016 Table I). The very large exponent (32.7) reflects the narrow height range across the cohort (158-173 cm at the 10th-90th percentile).",
-      notes              = "Time-fixed per subject (single inclusion-visit measurement). Mean 165.4 cm with SD 6.1 (Table I).",
-      source_name        = "Height"
+      notes = "Time-fixed per subject (single inclusion-visit measurement). Mean 165.4 cm with SD 6.1 (Table I).",
+      source_name = "Height"
     ),
     DLOSS = list(
-      description        = "Per-subject length of the menstrual period in the cycle observed during the study.",
-      units              = "days",
-      type               = "continuous",
+      description = "Per-subject length of the menstrual period in the cycle observed during the study.",
+      units = "days",
+      type = "continuous",
       reference_category = "n/a -- the upper bound of the loss-phase indicator window; the increased elimination kloss adds to both `kout_iron` and `kout_hep` while `t < DLOSS`.",
-      notes              = "Fixed to the individual's observed menses length (Angeli 2016 Methods p. 494). Inclusion criterion required menses length between 3 and 5 days (Methods p. 491). For typical-value simulations a value of 4 days is reasonable.",
-      source_name        = "dloss"
+      notes = "Fixed to the individual's observed menses length (Angeli 2016 Methods p. 494). Inclusion criterion required menses length between 3 and 5 days (Methods p. 491). For typical-value simulations a value of 4 days is reasonable.",
+      source_name = "dloss"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 90,
-    n_studies      = 1,
-    age_range      = "19-44 years",
-    age_median     = "27.6 years (mean)",
-    weight_range   = "mean 61.8 kg (SD 9.2)",
-    weight_median  = "61.8 kg (mean reported)",
+    species = "human",
+    n_subjects = 90,
+    n_studies = 1,
+    age_range = "19-44 years",
+    age_median = "27.6 years (mean)",
+    weight_range = "mean 61.8 kg (SD 9.2)",
+    weight_median = "61.8 kg (mean reported)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported; French metropolitan cohort recruited at four university hospitals.",
-    disease_state  = "Healthy non-menopausal women with regular menstrual cycles and menses length 3-5 days; subjects with low baseline iron concentrations or low haemoglobin were excluded.",
-    dose_range     = "(none -- no exogenous drug administered)",
-    regions        = "France (Brest, Nantes, Rennes, Tours university hospitals)",
-    notes          = "Multicenter observational HEPMEN study (Methods p. 491). 514 paired iron + hepcidin measurements across six fasting morning blood samples per subject spaced over a single menstrual cycle. Sixty-one percent took daily oral contraceptives. Baseline demographics in Angeli 2016 Table I; baseline biological covariates measured at the last cycle visit (end-of-cycle) and used as per-subject reference values in the covariate model."
+    disease_state = "Healthy non-menopausal women with regular menstrual cycles and menses length 3-5 days; subjects with low baseline iron concentrations or low haemoglobin were excluded.",
+    dose_range = "(none -- no exogenous drug administered)",
+    regions = "France (Brest, Nantes, Rennes, Tours university hospitals)",
+    notes = "Multicenter observational HEPMEN study (Methods p. 491). 514 paired iron + hepcidin measurements across six fasting morning blood samples per subject spaced over a single menstrual cycle. Sixty-one percent took daily oral contraceptives. Baseline demographics in Angeli 2016 Table I; baseline biological covariates measured at the last cycle visit (end-of-cycle) and used as per-subject reference values in the covariate model."
   )
 
   ini({

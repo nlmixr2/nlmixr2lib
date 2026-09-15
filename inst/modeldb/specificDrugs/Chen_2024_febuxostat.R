@@ -12,19 +12,19 @@ Chen_2024_febuxostat <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters Vc/F and Vp/F through the paper's Eq. (2)",
         "log-linear (power) form log(P) = log(P_TV) + theta_COV * log(COV_i / COV_m),",
         "i.e. P = P_TV * (WT / WT_ref)^theta. The paper states that COV_m is the median",
@@ -34,14 +34,14 @@ Chen_2024_febuxostat <- function() {
         "therefore assumed to be 60 kg here; see the vignette Errata.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     FED_HIGHFAT = list(
-      description        = "Prandial state at dosing: 1 = single oral dose taken with a standardised high-fat high-calorie meal, 0 = fasted",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prandial state at dosing: 1 = single oral dose taken with a standardised high-fat high-calorie meal, 0 = fasted",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted; at least 10 h fast before dosing, first meal permitted 4 h post-dose)",
-      notes              = paste(
+      notes = paste(
         "The paper's covariate is named 'Food' (Methods: 'Food is 0 for the fasted state,",
         "and food equals 1 for the fed state'). The fed arm is the FDA-style high-fat",
         "high-calorie breakfast (800-1000 kcal; fried eggs in vegetable oil, 50 g fried",
@@ -52,45 +52,45 @@ Chen_2024_febuxostat <- function() {
         "log(P) = log(P_TV) + theta_COV * Food. Per-dose-record covariate.",
         sep = " "
       ),
-      source_name        = "Food"
+      source_name = "Food"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL/F and volume of distribution by stepwise covariate modelling (Methods, 'Population pharmacokinetic analysis') but not retained in the final model; no coefficient is reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL/F and volume of distribution by stepwise covariate modelling (Methods, 'Population pharmacokinetic analysis') but not retained in the final model; no coefficient is reported."
     ),
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on CL/F and volume of distribution by stepwise covariate modelling but not retained in the final model; no coefficient is reported."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on CL/F and volume of distribution by stepwise covariate modelling but not retained in the final model; no coefficient is reported."
     ),
     BMI = list(
       description = "Body mass index at baseline",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened on CL/F and volume of distribution by stepwise covariate modelling but not retained in the final model; no coefficient is reported."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened on CL/F and volume of distribution by stepwise covariate modelling but not retained in the final model; no coefficient is reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 128L,
-    n_studies      = 2L,
-    age_range      = "18-44 years",
-    age_median     = "26.0-29.0 years across the four study arms (Table 1)",
-    weight_range   = "45.4-79.0 kg",
-    weight_median  = "59.5-63.4 kg across the four study arms (Table 1)",
+    species = "human",
+    n_subjects = 128L,
+    n_studies = 2L,
+    age_range = "18-44 years",
+    age_median = "26.0-29.0 years across the four study arms (Table 1)",
+    weight_range = "45.4-79.0 kg",
+    weight_median = "59.5-63.4 kg across the four study arms (Table 1)",
     sex_female_pct = 36.7,
     race_ethnicity = "100% Chinese (Han-majority single-centre cohort; race was not modelled as a covariate)",
-    disease_state  = "Healthy adult volunteers (no hyperuricaemia or gout)",
-    dose_range     = "Single oral dose of 20 mg or 80 mg febuxostat tablet with 240 mL water, fasted or fed",
-    regions        = "China (Center of Clinical Pharmacology, Second Affiliated Hospital of Zhejiang University School of Medicine, Hangzhou)",
-    notes          = paste(
+    disease_state = "Healthy adult volunteers (no hyperuricaemia or gout)",
+    dose_range = "Single oral dose of 20 mg or 80 mg febuxostat tablet with 240 mL water, fasted or fed",
+    regions = "China (Center of Clinical Pharmacology, Second Affiliated Hospital of Zhejiang University School of Medicine, Hangzhou)",
+    notes = paste(
       "2455 plasma concentration records from 128 volunteers (81 male, 47 female) pooled",
       "from two open-label, single-dose, randomised, two-period crossover bioequivalence",
       "studies; only the reference-product periods were used in the popPK analysis.",

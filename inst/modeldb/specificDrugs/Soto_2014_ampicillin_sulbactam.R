@@ -20,26 +20,26 @@ Soto_2014_ampicillin_sulbactam <- function() {
     sep = " "
   )
   vignette <- "Soto_2014_ampicillin_sulbactam"
-  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central         = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
-    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used as an allometric scalar on peripheral volume V2 for both",
         "ampicillin and sulbactam (Soto 2014 final-model equation): V2_i(k) =",
         "theta_V2(k) * (WT / 51.2)^theta_BWT * exp(eta_V2_i(k)) with theta_BWT",
@@ -54,14 +54,14 @@ Soto_2014_ampicillin_sulbactam <- function() {
         "Time-fixed per subject (Soto 2014 Table 1 reports baseline weight",
         "only)."
       ),
-      source_name        = "BWT"
+      source_name = "BWT"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source paper uses raw (NOT BSA-normalized) creatinine clearance",
         "estimated by the Cockcroft and Gault equation (Soto 2014 Methods,",
         "Population pharmacokinetic analysis subsection and the cited",
@@ -75,21 +75,21 @@ Soto_2014_ampicillin_sulbactam <- function() {
         "CLcr < 30 mL/min were excluded by protocol. Time-fixed per subject",
         "in the analysis."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 47,
-    n_studies      = 1,
-    age_range      = "28-85 years (median 67)",
-    age_median     = "67 years",
-    weight_range   = "31.3-78.7 kg (median 51.2)",
-    weight_median  = "51.2 kg",
+    species = "human",
+    n_subjects = 47,
+    n_studies = 1,
+    age_range = "28-85 years (median 67)",
+    age_median = "67 years",
+    weight_range = "31.3-78.7 kg (median 51.2)",
+    weight_median = "51.2 kg",
     sex_female_pct = 45,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Moderate or severe community-acquired pneumonia (CAP) requiring",
       "in-hospital antimicrobial treatment. Renal function ranged from",
       "normal (CLcr >= 90 mL/min, 36% of cohort) to moderate impairment",
@@ -97,16 +97,16 @@ Soto_2014_ampicillin_sulbactam <- function() {
       "impairment (CLcr < 30 mL/min) were excluded by protocol",
       "(Soto 2014 Methods and Patient characteristics)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Ampicillin/sulbactam 3 g (2:1; ampicillin 2 g + sulbactam 1 g)",
       "administered as a 30-minute intravenous infusion every 6 hours",
       "for 3 to 14 days depending on clinical condition (Soto 2014",
       "Methods, Clinical studies and assay methods)."
     ),
-    regions        = "Japan (multicentre)",
-    crcl_range     = "34.6-176 mL/min (median 71; cohort excludes CLcr < 30)",
-    bmi_range      = "13.7-29.0 kg/m^2 (median 20.4)",
-    notes          = paste(
+    regions = "Japan (multicentre)",
+    crcl_range = "34.6-176 mL/min (median 71; cohort excludes CLcr < 30)",
+    bmi_range = "13.7-29.0 kg/m^2 (median 20.4)",
+    notes = paste(
       "47 Japanese inpatients with CAP from ClinicalTrials.gov NCT01189487",
       "(Soto 2014 Methods). 444 plasma samples (222 each for ampicillin",
       "and sulbactam) were available for the joint population PK fit.",

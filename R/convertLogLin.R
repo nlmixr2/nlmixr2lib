@@ -18,9 +18,7 @@ convertLogLin <- function(ui, ek = c("Ik", "Ek"), cc = c("Ce", "Cc")) {
   .ui <- rxode2::assertRxUi(ui)
   cc <- rxode2::assertExists(.ui, cc)
   ek <- rxode2::assertVariableExists(.ui, ek)
-  .modelLines <- .replaceMult(.ui$lstExpr,
-    v1 = ek, v2 = cc,
-    ret = paste0(ek, "*log(", cc, ")"))
+  .modelLines <- .replaceMult(.ui$lstExpr, v1 = ek, v2 = cc, ret = paste0(ek, "*log(", cc, ")"))
   .ui <- rxode2::rxUiDecompress(.ui)
   ## .ui$iniDf <- rbind(.theta,
   ##                    .thetaEk,

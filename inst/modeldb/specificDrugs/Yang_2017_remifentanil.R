@@ -10,8 +10,8 @@ Yang_2017_remifentanil <- function() {
   )
   vignette <- "Yang_2017_remifentanil"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
   # Dose units ug (i.e. mg/h continuous-infusion rates converted to ug/h
@@ -28,41 +28,41 @@ Yang_2017_remifentanil <- function() {
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) under the canonical SEXF convention",
-      notes              = "Yang 2017 encodes sex as a male-indicator (SEX = 0 for female, SEX = 1 for male) with female as the structural reference category (the published equation CL = 366 x 0.502^SEX yields CL = 366 L/h for SEX = 0 / female). To store under the canonical SEXF (1 = female, 0 = male) while preserving Yang's female-reference CL of 366 L/h, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)), so SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields the paper's male-vs-female log-coefficient log(0.502) (about -0.689). This mirrors the Bajaj 2017 nivolumab pattern. The published cohort had 10 male and 5 female patients (Table 1; 67% male).",
-      source_name        = "SEX"
+      notes = "Yang 2017 encodes sex as a male-indicator (SEX = 0 for female, SEX = 1 for male) with female as the structural reference category (the published equation CL = 366 x 0.502^SEX yields CL = 366 L/h for SEX = 0 / female). To store under the canonical SEXF (1 = female, 0 = male) while preserving Yang's female-reference CL of 366 L/h, the effect is applied in model() as exp(e_sex_cl * (1 - SEXF)), so SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields the paper's male-vs-female log-coefficient log(0.502) (about -0.689). This mirrors the Bajaj 2017 nivolumab pattern. The published cohort had 10 male and 5 female patients (Table 1; 67% male).",
+      source_name = "SEX"
     ),
     ECMO_PUMP_SPEED = list(
-      description        = "Extracorporeal-membrane-oxygenation centrifugal-pump rotational speed",
-      units              = "RPM",
-      type               = "continuous",
+      description = "Extracorporeal-membrane-oxygenation centrifugal-pump rotational speed",
+      units = "RPM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL: CL_i = CL * (ECMO_PUMP_SPEED / 2350)^2.04 per Yang 2017 Results (final-model equation). Reference 2350 RPM is the cohort median (Results: 'median ECMO pump speeds of 2350 RPM', IQR 2302-2532 RPM). Treated as time-fixed per subject in Yang 2017 -- the per-subject pump speed used was the prevailing speed during the PK sampling window. The reported pump-speed range explored in the simulation analyses (Methods, Simulations) was 1700-2900 RPM.",
-      source_name        = "ECMO pump speed"
+      notes = "Power effect on CL: CL_i = CL * (ECMO_PUMP_SPEED / 2350)^2.04 per Yang 2017 Results (final-model equation). Reference 2350 RPM is the cohort median (Results: 'median ECMO pump speeds of 2350 RPM', IQR 2302-2532 RPM). Treated as time-fixed per subject in Yang 2017 -- the per-subject pump speed used was the prevailing speed during the PK sampling window. The reported pump-speed range explored in the simulation analyses (Methods, Simulations) was 1700-2900 RPM.",
+      source_name = "ECMO pump speed"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 15L,
-    n_studies        = 1L,
-    age_range        = "19-78 years",
-    age_median       = "57 years (IQR 45-69)",
-    weight_range     = "40.8-94.0 kg",
-    weight_median    = "65.4 kg (IQR 54.5-70.0)",
-    sex_female_pct   = 33.3,
-    bmi_median       = "23.8 kg/m^2 (IQR 21.2-24.2)",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    age_range = "19-78 years",
+    age_median = "57 years (IQR 45-69)",
+    weight_range = "40.8-94.0 kg",
+    weight_median = "65.4 kg (IQR 54.5-70.0)",
+    sex_female_pct = 33.3,
+    bmi_median = "23.8 kg/m^2 (IQR 21.2-24.2)",
     total_protein_median = "4.7 g/dL (IQR 3.9-5.3)",
-    disease_state    = "Critically ill adults receiving venoarterial extracorporeal membrane oxygenation (VA-ECMO) in a cardiovascular intensive care unit. Indications for VA-ECMO included acute myocardial infarction (n = 5), non-ST-segment elevation MI (n = 4), STEMI (n = 1), ischemic cardiomyopathy (n = 1), pulmonary embolism (n = 1), coronary artery occlusive disease (n = 1), myocarditis (n = 1), atrial fibrillation with bronchiolitis (n = 1), and angina pectoris (n = 1) per Table 1.",
-    dose_range       = "Continuous intravenous remifentanil infusion at a median rate of 0.35 mg/h (IQR 0.25-0.35 mg/h; full per-patient range 0.14-1.0 mg/h per Table 1). No patient received a bolus injection during the study.",
-    ecmo_duration    = "Median 143 h on VA-ECMO (IQR 96-250; range 48-532 h)",
-    ecmo_pump_speed  = "Median 2350 RPM (IQR 2302-2532)",
-    crrt_pct         = 66.7,
-    regions          = "South Korea (Seoul; Severance Cardiovascular Hospital)",
-    notes            = "Single-center prospective cohort study at Severance Cardiovascular Hospital, Yonsei University, between January 2015 and December 2016 (ClinicalTrials.gov NCT02581280). 55 remifentanil plasma concentrations across 15 patients (at least 3 samples per patient). PK samples drawn from dwelling arterial lines at 8-12 h (T1), 24 h (T2), and 36-48 h (T3) of remifentanil infusion during VA-ECMO support; if remifentanil was discontinued during VA-ECMO, serial samples were collected immediately before discontinuation and at 5, 10, 15, 25, 30, and 40 min. Plasma quenched on ice with formic acid then stored at -80 C until assay. Concentrations measured by LC-MS/MS validated 0.05-500 ng/mL, LLOQ 0.05 ng/mL. ECMO circuit: Terumo Capiox SP centrifugal pump with PMEA-coated polymethylpentene Capiox EBS oxygenator and PVC tubing. Baseline demographics in Table 1. NONMEM 7.3 with FOCE INTER; bootstrap n = 5000."
+    disease_state = "Critically ill adults receiving venoarterial extracorporeal membrane oxygenation (VA-ECMO) in a cardiovascular intensive care unit. Indications for VA-ECMO included acute myocardial infarction (n = 5), non-ST-segment elevation MI (n = 4), STEMI (n = 1), ischemic cardiomyopathy (n = 1), pulmonary embolism (n = 1), coronary artery occlusive disease (n = 1), myocarditis (n = 1), atrial fibrillation with bronchiolitis (n = 1), and angina pectoris (n = 1) per Table 1.",
+    dose_range = "Continuous intravenous remifentanil infusion at a median rate of 0.35 mg/h (IQR 0.25-0.35 mg/h; full per-patient range 0.14-1.0 mg/h per Table 1). No patient received a bolus injection during the study.",
+    ecmo_duration = "Median 143 h on VA-ECMO (IQR 96-250; range 48-532 h)",
+    ecmo_pump_speed = "Median 2350 RPM (IQR 2302-2532)",
+    crrt_pct = 66.7,
+    regions = "South Korea (Seoul; Severance Cardiovascular Hospital)",
+    notes = "Single-center prospective cohort study at Severance Cardiovascular Hospital, Yonsei University, between January 2015 and December 2016 (ClinicalTrials.gov NCT02581280). 55 remifentanil plasma concentrations across 15 patients (at least 3 samples per patient). PK samples drawn from dwelling arterial lines at 8-12 h (T1), 24 h (T2), and 36-48 h (T3) of remifentanil infusion during VA-ECMO support; if remifentanil was discontinued during VA-ECMO, serial samples were collected immediately before discontinuation and at 5, 10, 15, 25, 30, and 40 min. Plasma quenched on ice with formic acid then stored at -80 C until assay. Concentrations measured by LC-MS/MS validated 0.05-500 ng/mL, LLOQ 0.05 ng/mL. ECMO circuit: Terumo Capiox SP centrifugal pump with PMEA-coated polymethylpentene Capiox EBS oxygenator and PVC tubing. Baseline demographics in Table 1. NONMEM 7.3 with FOCE INTER; bootstrap n = 5000."
   )
 
   ini({

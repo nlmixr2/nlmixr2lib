@@ -41,8 +41,8 @@ Kamal_2015_oseltamivir <- function() {
   paper_specific_compartments <- c("target_cells", "infected_cells", "virus")
 
   units <- list(
-    time          = "day",
-    dosing        = "mg per administered oseltamivir dose (per-record DOSE covariate; 0 during placebo and outside the 5-day b.i.d. treatment window)",
+    time = "day",
+    dosing = "mg per administered oseltamivir dose (per-record DOSE covariate; 0 during placebo and outside the 5-day b.i.d. treatment window)",
     concentration = "TCID50/mL of nasal wash (viral_load)"
   )
 
@@ -51,36 +51,46 @@ Kamal_2015_oseltamivir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    target_cells   = list(analyte = "uninfected respiratory epithelial cells", units = NA_character_, specimen = "tissue", verified = FALSE),
-    infected_cells = list(analyte = "infected respiratory epithelial cells", units = NA_character_, specimen = "tissue", verified = FALSE),
-    virus          = list(analyte = "free virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    target_cells = list(
+      analyte = "uninfected respiratory epithelial cells",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    infected_cells = list(
+      analyte = "infected respiratory epithelial cells",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    virus = list(analyte = "free virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-record administered oseltamivir dose level (mg) driving the inhibitory Hill function on viral production rate p. Set to 0 during placebo arms or outside the 5-day b.i.d. treatment window. The source paper does not include an oseltamivir PK ODE; dose enters the PD model directly (Equation 4).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-record administered oseltamivir dose level (mg) driving the inhibitory Hill function on viral production rate p. Set to 0 during placebo arms or outside the 5-day b.i.d. treatment window. The source paper does not include an oseltamivir PK ODE; dose enters the PD model directly (Equation 4).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate matching the canonical DOSE entry's use case (b): time-varying current administered dose feeding a derived exposure term without an explicit PK compartment. For simulation of the paper's Figure 4 dose-response curves, set DOSE = 75 (or 20, 100, 150, 200, etc.) during the 5-day treatment window and 0 elsewhere. In study PV15616 treatment started 28 h (= 1.167 day) after intranasal inoculation, giving a treatment window of t in [1.167, 6.167] day in absolute time after infection.",
-      source_name        = "Dose"
+      notes = "Time-varying covariate matching the canonical DOSE entry's use case (b): time-varying current administered dose feeding a derived exposure term without an explicit PK compartment. For simulation of the paper's Figure 4 dose-response curves, set DOSE = 75 (or 20, 100, 150, 200, etc.) during the 5-day treatment window and 0 elsewhere. In study PV15616 treatment started 28 h (= 1.167 day) after intranasal inoculation, giving a treatment window of t in [1.167, 6.167] day in absolute time after infection.",
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 208L,
-    n_studies      = 4L,
-    age_range      = "Adults (specific age range not tabulated in the source paper).",
-    age_median     = "Not reported in the source paper.",
-    weight_range   = "Not reported in the source paper.",
-    weight_median  = "Not reported in the source paper.",
+    species = "human",
+    n_subjects = 208L,
+    n_studies = 4L,
+    age_range = "Adults (specific age range not tabulated in the source paper).",
+    age_median = "Not reported in the source paper.",
+    weight_range = "Not reported in the source paper.",
+    weight_median = "Not reported in the source paper.",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Experimental human inoculation with influenza A virus (H1N1: A/Hong Kong/123/77 in study Baccam; A/Texas/36/91 in studies PV15616 and PV15615) or naturally-acquired influenza-virus infection (study WV15670). All subjects gave informed consent under each study's institutional-review-board approval.",
-    dose_range     = "Placebo (152 subjects across all four studies) and oral oseltamivir at 20, 100, or 200 mg b.i.d. or 200 mg q.d. for 5 days (56 subjects in PV15616). Simulation exercises in the paper also explored the 75 and 150 mg b.i.d. clinical doses.",
-    regions        = "Not reported in the source paper.",
-    notes          = "Pooled across four studies per Table 1 of Kamal 2015. Placebo data: 573 positive viral-titer time points across all four studies; oseltamivir treatment data: 298 positive viral-titer time points from PV15616 only (PV15616 was the sole dose-ranging study with the wide dose range and dense viral-titer sampling required for PD-parameter estimation). Viral titer was sampled in nasal washings as 50% tissue culture infective dose per mL (TCID50/mL) on MDCK cells and was assumed proportional to free-virus concentration at the site of infection."
+    disease_state = "Experimental human inoculation with influenza A virus (H1N1: A/Hong Kong/123/77 in study Baccam; A/Texas/36/91 in studies PV15616 and PV15615) or naturally-acquired influenza-virus infection (study WV15670). All subjects gave informed consent under each study's institutional-review-board approval.",
+    dose_range = "Placebo (152 subjects across all four studies) and oral oseltamivir at 20, 100, or 200 mg b.i.d. or 200 mg q.d. for 5 days (56 subjects in PV15616). Simulation exercises in the paper also explored the 75 and 150 mg b.i.d. clinical doses.",
+    regions = "Not reported in the source paper.",
+    notes = "Pooled across four studies per Table 1 of Kamal 2015. Placebo data: 573 positive viral-titer time points across all four studies; oseltamivir treatment data: 298 positive viral-titer time points from PV15616 only (PV15616 was the sole dose-ranging study with the wide dose range and dense viral-titer sampling required for PD-parameter estimation). Viral titer was sampled in nasal washings as 50% tissue culture infective dose per mL (TCID50/mL) on MDCK cells and was assumed proportional to free-virus concentration at the site of infection."
   )
 
   ini({

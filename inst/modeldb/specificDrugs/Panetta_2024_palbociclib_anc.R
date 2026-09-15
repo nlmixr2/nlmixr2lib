@@ -15,10 +15,10 @@ Panetta_2024_palbociclib_anc <- function() {
   )
   vignette <- "Panetta_2024_palbociclib"
   units <- list(
-    time          = "day",
-    dosing        = "mg/m^2",
+    time = "day",
+    dosing = "mg/m^2",
     concentration = "ng/mL",
-    anc           = "10^3/uL"
+    anc = "10^3/uL"
   )
   # Unit notes.
   # 1. TIME. Panetta 2024 reports the PK parameters per hour (Table 2) and the
@@ -36,48 +36,48 @@ Panetta_2024_palbociclib_anc <- function() {
   #    entry in ini() for the three checks that settle it.
 
   compartmentData <- list(
-    depot      = list(analyte = "palbociclib", units = "mg/m^2", specimen = "administration site", verified = TRUE),
-    central    = list(analyte = "palbociclib", units = "mg/m^2", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "palbociclib", units = "mg/m^2", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "palbociclib", units = "mg/m^2", specimen = "plasma", verified = TRUE),
     precursor1 = list(analyte = "neutrophils", units = "10^3/uL", specimen = "tissue", verified = TRUE),
     precursor2 = list(analyte = "neutrophils", units = "10^3/uL", specimen = "tissue", verified = TRUE),
     precursor3 = list(analyte = "neutrophils", units = "10^3/uL", specimen = "tissue", verified = TRUE),
     precursor4 = list(analyte = "neutrophils", units = "10^3/uL", specimen = "tissue", verified = TRUE),
-    circ       = list(analyte = "neutrophils", units = "10^3/uL", specimen = "whole blood", verified = TRUE)
+    circ = list(analyte = "neutrophils", units = "10^3/uL", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     AST = list(
-      description        = "Baseline serum aspartate aminotransferase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum aspartate aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F centred on the cohort median AST of 25 U/L (Table 1), the only covariate retained by the pharmacokinetic covariate analysis (Table 2, AST column; Table S1). See modellib('Panetta_2024_palbociclib') for the full covariate-screen description.",
-      source_name        = "AST"
+      notes = "Power effect on CL/F centred on the cohort median AST of 25 U/L (Table 1), the only covariate retained by the pharmacokinetic covariate analysis (Table 2, AST column; Table S1). See modellib('Panetta_2024_palbociclib') for the full covariate-screen description.",
+      source_name = "AST"
     ),
     OCC = list(
-      description        = "Treatment-course index used by the inter-occasion random effects.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Treatment-course index used by the inter-occasion random effects.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Panetta 2024 estimated the pharmacodynamic parameters on courses 1 and 2 (section 3.4), so OCC = 1 is course 1 and OCC = 2 is course 2. The paper reports inter-occasion variability on kin, k_bp and IC50 (Table 3A) but never prints an occasion column name; OCC is the nlmixr2lib canonical. The CL/F inter-occasion term of the PK layer is keyed to the same OCC here: in the PK analysis its occasions were the course 1 day 1 and course 1 day 21 sampling visits, roughly three weeks apart and therefore comparable in span to a treatment course. For a single-occasion simulation set OCC = 1 throughout.",
-      source_name        = NA_character_
+      notes = "Panetta 2024 estimated the pharmacodynamic parameters on courses 1 and 2 (section 3.4), so OCC = 1 is course 1 and OCC = 2 is course 2. The paper reports inter-occasion variability on kin, k_bp and IC50 (Table 3A) but never prints an occasion column name; OCC is the nlmixr2lib canonical. The CL/F inter-occasion term of the PK layer is keyed to the same OCC here: in the PK analysis its occasions were the course 1 day 1 and course 1 day 21 sampling visits, roughly three weeks apart and therefore comparable in span to a treatment course. For a single-occasion simulation set OCC = 1 throughout.",
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 31L,
-    n_studies      = 1L,
-    age_range      = "4.9-21.6 years (median 12.8)",
-    weight_range   = "23.8-110.4 kg (median 52.5)",
-    bsa_range      = "0.8-2.4 m^2 (median 1.5)",
+    species = "human",
+    n_subjects = 31L,
+    n_studies = 1L,
+    age_range = "4.9-21.6 years (median 12.8)",
+    weight_range = "23.8-110.4 kg (median 52.5)",
+    bsa_range = "0.8-2.4 m^2 (median 1.5)",
     sex_female_pct = 36,
     race_ethnicity = c(Caucasian = 58, Black = 12, Other = 30),
-    disease_state  = "Recurrent, progressive or refractory pediatric brain tumors. Stratum I (not heavily pretreated) versus stratum II (heavily pretreated); simulations at 75 mg/m^2 predicted grade 3 or greater neutropenia in 75% of stratum II versus 35% of stratum I patients (Figure S4).",
-    dose_range     = "Oral palbociclib 50, 75 or 95 mg/m^2 once daily for 21 days of each 28-day course.",
-    regions        = "United States (Pediatric Brain Tumor Consortium)",
-    observations   = "190 absolute neutrophil counts from 31 patients during course 1 and 99 during course 2; 54 further counts from six patients during courses 3 and 4 were held out to test prediction. Of the 33 patients in the PK analysis, 2 were excluded from the PD analysis because they had only a single pre-treatment ANC observation. A complete blood count with differential was drawn pre-therapy and then weekly, averaging 11 ANC observations per patient.",
-    notes              = "Estimated in Monolix 2023R1 by SAEM with the palbociclib pharmacokinetics fixed to each individual's post hoc estimates (section 2.4.2). Observed outcomes from the individual model estimates over courses 1 and 2: median (5th-95th percentile) time below 1.5, 1.0 and 0.5 x 10^3/uL was 15 (0, 35), 4 (0, 21) and 0 (0, 11) days per course, and the median nadir was 1.0 (0.4, 3.3) x 10^3/uL. Courses 3 and 4 were predicted without bias (median residual -6.1%, p = 0.22), i.e. the neutropenia was reversible and not cumulative."
+    disease_state = "Recurrent, progressive or refractory pediatric brain tumors. Stratum I (not heavily pretreated) versus stratum II (heavily pretreated); simulations at 75 mg/m^2 predicted grade 3 or greater neutropenia in 75% of stratum II versus 35% of stratum I patients (Figure S4).",
+    dose_range = "Oral palbociclib 50, 75 or 95 mg/m^2 once daily for 21 days of each 28-day course.",
+    regions = "United States (Pediatric Brain Tumor Consortium)",
+    observations = "190 absolute neutrophil counts from 31 patients during course 1 and 99 during course 2; 54 further counts from six patients during courses 3 and 4 were held out to test prediction. Of the 33 patients in the PK analysis, 2 were excluded from the PD analysis because they had only a single pre-treatment ANC observation. A complete blood count with differential was drawn pre-therapy and then weekly, averaging 11 ANC observations per patient.",
+    notes = "Estimated in Monolix 2023R1 by SAEM with the palbociclib pharmacokinetics fixed to each individual's post hoc estimates (section 2.4.2). Observed outcomes from the individual model estimates over courses 1 and 2: median (5th-95th percentile) time below 1.5, 1.0 and 0.5 x 10^3/uL was 15 (0, 35), 4 (0, 21) and 0 (0, 11) days per course, and the median nadir was 1.0 (0.4, 3.3) x 10^3/uL. Courses 3 and 4 were predicted without bias (median residual -6.1%, p = 0.22), i.e. the neutropenia was reversible and not cumulative."
   )
 
   ini({

@@ -5,17 +5,17 @@ Liang_2024_lenalidomide <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "lenalidomide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lenalidomide", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lenalidomide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     SNP_ABCB1_RS1045642_T_COUNT = list(
-      description        = "ABCB1 3435C>T (rs1045642) T-allele count",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "ABCB1 3435C>T (rs1045642) T-allele count",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "0 = CC homozygous wild type, 1 = CT heterozygous, 2 = TT homozygous variant.",
         "Time-fixed per subject (germline genotype), determined by first-generation DNA",
         "sequencing (Liang 2024 Methods, 'Measurements'); genotype detection rate was 100%",
@@ -32,14 +32,14 @@ Liang_2024_lenalidomide <- function() {
         "while TT is +95%), which is why the model carries two coefficients rather than one",
         "per-allele slope."
       ),
-      source_name        = "COVR_ABA (ABCB1 3435 C > T)"
+      source_name = "COVR_ABA (ABCB1 3435 C > T)"
     ),
     FED = list(
-      description        = "Fed-state indicator at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state indicator at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted medication)",
-      notes              = paste(
+      notes = paste(
         "1 = lenalidomide taken within 1 h after a meal ('postprandial medication'),",
         "0 = fasted medication. This is Liang 2024's 'diet' covariate, whose operational",
         "definition is given in the Results final-model equation gloss: 'CHFY represent[s]",
@@ -51,125 +51,125 @@ Liang_2024_lenalidomide <- function() {
         "rather than per dose record, but the covariate is encoded on the canonical",
         "per-dose-record FED column so that a mixed-habit subject can be simulated."
       ),
-      source_name        = "COVR_CHFY (diet)"
+      source_name = "COVR_CHFY (diet)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by forward inclusion / backward elimination; not retained (Liang 2024 Methods 'PPK model' and Results 'PPK model establishment'). Cohort 65.2 +/- 10.8 years, median 67.0 (34.0-85.0) (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by forward inclusion / backward elimination; not retained (Liang 2024 Methods 'PPK model' and Results 'PPK model establishment'). Cohort 65.2 +/- 10.8 years, median 67.0 (34.0-85.0) (Table 1)."
     ),
     SEXF = list(
       description = "Sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Cohort 24 women (47.1%) and 27 men (52.9%) (Liang 2024 Table 2)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Cohort 24 women (47.1%) and 27 men (52.9%) (Liang 2024 Table 2)."
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 166 +/- 8.48 cm, median 167 (150-181) (Liang 2024 Table 1)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 166 +/- 8.48 cm, median 167 (150-181) (Liang 2024 Table 1)."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 67.5 +/- 11.0 kg, median 70.0 (40.0-90.0) (Liang 2024 Table 1). Note that Connarn 2018 (Liang 2024 reference 24) did retain body weight for lenalidomide, so the null result here is a genuine disagreement with the prior literature that Liang 2024 discusses explicitly."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 67.5 +/- 11.0 kg, median 70.0 (40.0-90.0) (Liang 2024 Table 1). Note that Connarn 2018 (Liang 2024 reference 24) did retain body weight for lenalidomide, so the null result here is a genuine disagreement with the prior literature that Liang 2024 discusses explicitly."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 1.79 +/- 0.180 m^2, median 1.79 (1.35-2.17) (Liang 2024 Table 1). Guglieri-Lopez 2017 (Liang 2024 reference 23) retained BSA on V/F for lenalidomide; Liang 2024 did not reproduce it."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 1.79 +/- 0.180 m^2, median 1.79 (1.35-2.17) (Liang 2024 Table 1). Guglieri-Lopez 2017 (Liang 2024 reference 23) retained BSA on V/F for lenalidomide; Liang 2024 did not reproduce it."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 91.1 +/- 33.2 mL/min, median 87.4 (33.3-191) (Liang 2024 Table 1). This is the most consequential null result in the paper: lenalidomide is predominantly renally excreted and every prior lenalidomide popPK study cited by Liang 2024 (references 22-25) retained creatinine clearance on CL/F. Liang 2024 found NO covariate for CL/F at all and attributes this to its opportunistic sparse sampling and small sample size."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 91.1 +/- 33.2 mL/min, median 87.4 (33.3-191) (Liang 2024 Table 1). This is the most consequential null result in the paper: lenalidomide is predominantly renally excreted and every prior lenalidomide popPK study cited by Liang 2024 (references 22-25) retained creatinine clearance on CL/F. Liang 2024 found NO covariate for CL/F at all and attributes this to its opportunistic sparse sampling and small sample size."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 67.9 +/- 24.2 umol/L, median 63.0 (30.0-140) (Liang 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 67.9 +/- 24.2 umol/L, median 63.0 (30.0-140) (Liang 2024 Table 1)."
     ),
     CYSC = list(
       description = "Cystatin C",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 1.17 +/- 0.449 mg/L, median 1.07 (0.470-3.09) (Liang 2024 Table 1)."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 1.17 +/- 0.449 mg/L, median 1.07 (0.470-3.09) (Liang 2024 Table 1)."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 5.44 +/- 2.14 mmol/L, median 5.00 (2.50-13.6) (Liang 2024 Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 5.44 +/- 2.14 mmol/L, median 5.00 (2.50-13.6) (Liang 2024 Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 23.6 +/- 19.9 U/L, median 17.7 (4.80-98.5) (Liang 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 23.6 +/- 19.9 U/L, median 17.7 (4.80-98.5) (Liang 2024 Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 27.8 +/- 28.8 U/L, median 17.9 (4.50-155) (Liang 2024 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 27.8 +/- 28.8 U/L, median 17.9 (4.50-155) (Liang 2024 Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 11.1 +/- 5.62 umol/L, median 9.90 (4.60-31.2) (Liang 2024 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 11.1 +/- 5.62 umol/L, median 9.90 (4.60-31.2) (Liang 2024 Table 1)."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 62.9 +/- 11.2 g/L, median 60.1 (43.7-97.6) (Liang 2024 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 62.9 +/- 11.2 g/L, median 60.1 (43.7-97.6) (Liang 2024 Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 35.9 +/- 5.32 g/L, median 36.9 (23.4-47.8) (Liang 2024 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 35.9 +/- 5.32 g/L, median 36.9 (23.4-47.8) (Liang 2024 Table 1)."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Cohort 105 +/- 19.6 g/L, median 106 (57.0-153) (Liang 2024 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Cohort 105 +/- 19.6 g/L, median 106 (57.0-153) (Liang 2024 Table 1)."
     ),
     B2M = list(
       description = "Serum beta-2-microglobulin",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Liang 2024 Table 1 reports 2.14 +/- 0.183 mg/L with median 2.96 (1.07-10.8); the printed mean lies below the printed median and the SD is implausibly small for that range, so the Table 1 beta-2-microglobulin row appears to be mis-typeset. This does not affect the model, which does not use the covariate."
+      units = "mg/L",
+      type = "continuous",
+      notes = "Screened; not retained. Liang 2024 Table 1 reports 2.14 +/- 0.183 mg/L with median 2.96 (1.07-10.8); the printed mean lies below the printed median and the SD is implausibly small for that range, so the Table 1 beta-2-microglobulin row appears to be mis-typeset. This does not affect the model, which does not use the covariate."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 51,
-    n_observations   = 87,
-    n_studies        = 1,
-    age_range        = "34-85 years",
-    age_median       = "67 years",
-    weight_range     = "40-90 kg",
-    weight_median    = "70 kg",
-    sex_female_pct   = 47.1,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = "Hematologic malignancy: multiple myeloma 33 (64.7%), lymphoma 17 (33.3%), myelodysplastic syndrome 1 (2.0%)",
-    dose_range       = "10 mg or 25 mg orally once daily",
-    regions          = "China (Jinan, Shandong)",
-    co_medication    = "Lenalidomide-containing regimens: VRD (bortezomib-lenalidomide-dexamethasone) 27 (52.9%), RR (rituximab-lenalidomide) 12 (23.5%), other 12 (23.5%). Frequent concomitant drugs: aspirin 28 (54.9%), omeprazole 27 (52.9%), acyclovir 23 (45.1%), glutathione 16 (31.4%), tiopronin 14 (27.4%), mecobalamin 11 (21.6%), P-gp substrates 7 (13.7%), other renally excreted drugs 38 (74.5%)",
-    notes            = paste(
+    species = "human",
+    n_subjects = 51,
+    n_observations = 87,
+    n_studies = 1,
+    age_range = "34-85 years",
+    age_median = "67 years",
+    weight_range = "40-90 kg",
+    weight_median = "70 kg",
+    sex_female_pct = 47.1,
+    race_ethnicity = c(Asian = 100),
+    disease_state = "Hematologic malignancy: multiple myeloma 33 (64.7%), lymphoma 17 (33.3%), myelodysplastic syndrome 1 (2.0%)",
+    dose_range = "10 mg or 25 mg orally once daily",
+    regions = "China (Jinan, Shandong)",
+    co_medication = "Lenalidomide-containing regimens: VRD (bortezomib-lenalidomide-dexamethasone) 27 (52.9%), RR (rituximab-lenalidomide) 12 (23.5%), other 12 (23.5%). Frequent concomitant drugs: aspirin 28 (54.9%), omeprazole 27 (52.9%), acyclovir 23 (45.1%), glutathione 16 (31.4%), tiopronin 14 (27.4%), mecobalamin 11 (21.6%), P-gp substrates 7 (13.7%), other renally excreted drugs 38 (74.5%)",
+    notes = paste(
       "Prospective open-label opportunistic-sampling PPK study (ClinicalTrials.gov NCT06069024)",
       "at the First Affiliated Hospital of Shandong First Medical University, October 2021 to",
       "June 2023. All 51 patients were of Han ethnicity. Samples were drawn after at least five",

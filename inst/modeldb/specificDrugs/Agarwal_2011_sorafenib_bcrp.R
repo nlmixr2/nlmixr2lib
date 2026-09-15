@@ -40,38 +40,38 @@ Agarwal_2011_sorafenib_bcrp <- function() {
   vignette <- "Agarwal_2011_sorafenib_transporters"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
     concentration = "(observation papp_ba is the apparent B-to-A permeability of sorafenib in units of 1e-6 cm/s; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration applied to the donor/basolateral compartment in ng/mL)"
   )
 
   covariateData <- list(
     CP_SORAFENIB_NGML = list(
-      description        = "Sorafenib concentration applied to the donor (basolateral) compartment of the Transwell, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a donor-compartment buffer concentration rather than a plasma concentration, but the quantity and units are identical.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Sorafenib concentration applied to the donor (basolateral) compartment of the Transwell, supplied as a covariate. Reused canonical: in this in-vitro model the column carries a donor-compartment buffer concentration rather than a plasma concentration, but the quantity and units are identical.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Methods 'Calculation of Km value' states that B-to-A permeability was measured with a range of concentrations from 2 ng/mL to 30 ug/mL applied to the donor side; the Figure 5 x-axis spans 1 to 100000 ng/mL and the plotted observations run from about 2 to about 32000 ng/mL, consistent with the Methods range.",
         "CAUTION -- the Figure 5 CAPTION instead states the range as '0.001 nM to 80 nM' (about 0.0006 to 52 ng/mL). That contradicts both the Methods text and the figure's own x-axis, and is one of three demonstrable errors in that caption (see the model file's km comment). The Methods range is the one this file follows.",
         "The paper reports km in both mass and molar units (3.6 ng/mL = 5.5 nM), which implies a molecular weight of about 655 g/mol. That is NOT the sorafenib free base (464.8 g/mol) but is close to sorafenib tosylate (637.0 g/mol), the salt form the authors purchased (Methods 'Chemicals and Reagents'). The companion P-gp model's dual-unit report (15.9 ug/mL = 25 uM) implies 636 g/mol, corroborating that both conversions in this paper use the tosylate molecular weight. Users converting between mass and molar units should apply the same convention the authors did, or the potencies will be inconsistent with the printed values."
       ),
-      source_name        = "sorafenib concentration in the donor compartment (C)"
+      source_name = "sorafenib concentration in the donor compartment (C)"
     )
   )
 
   population <- list(
-    species          = "in vitro (MDCKII canine kidney epithelial cells stably transfected with murine Bcrp1)",
-    n_subjects       = NA_integer_,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- transfected cell line.",
-    dose_range       = "Donor-side sorafenib concentrations from 2 ng/mL to 30 ug/mL (Methods 'Calculation of Km value').",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (MDCKII canine kidney epithelial cells stably transfected with murine Bcrp1)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- transfected cell line.",
+    dose_range = "Donor-side sorafenib concentrations from 2 ng/mL to 30 ug/mL (Methods 'Calculation of Km value').",
+    regions = NA_character_,
+    notes = paste(
       "Polarised MDCKII monolayers stably expressing murine Bcrp1, grown on six-well Transwells at 2e5 cells/well until confluent, with the receiver compartment sampled at 0, 10, 20, 30, 45, 60 and 90 min (Methods 'Directional Flux Studies in MDCKII Cells'). n = 3 per concentration for the Figure 5 affinity experiment.",
       "Apparent permeability was computed as Papp = (dQ/dt) / (A * C0) with monolayer area A = 4.67 cm^2 (Methods Equation 1). That equation is a data-reduction step applied BEFORE the model is fitted, not part of the model, so it is not encoded here; the model takes the resulting permeability as its observation.",
       "Assay validity: the prototypical BCRP substrate prazosin accumulated to about 10% of wild-type levels in the Bcrp1 transfects, and the BCRP inhibitor Ko143 (200 nM) abolished the directionality of sorafenib transport entirely, confirming the efflux signal is BCRP-mediated (Results, Figures 2 and 3).",

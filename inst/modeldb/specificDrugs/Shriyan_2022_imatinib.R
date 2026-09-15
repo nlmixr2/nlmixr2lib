@@ -38,9 +38,9 @@ Shriyan_2022_imatinib <- function() {
   covariatesDataExcluded <- list(
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9 cells/L",
-      type        = "continuous",
-      notes       = paste0(
+      units = "10^9 cells/L",
+      type = "continuous",
+      notes = paste0(
         "Not retained in this model (Yang 2025 Table 1 lists this row's ",
         "covariates as 'None'). Recorded here because the shipped ",
         "Jiang_2023_imatinib.R Discussion cites Shriyan by name on exactly ",
@@ -55,16 +55,16 @@ Shriyan_2022_imatinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 49L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 49L,
+    n_studies = 1L,
     n_observations = "221 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "18 years and older",
-    disease_state  = "Indian adults with chronic myeloid leukemia (CML)",
-    dose_range     = "Oral imatinib 400-800 mg total daily dose",
-    regions        = "India",
-    bioanalytical  = "HPLC; limit of quantification not reported in Yang 2025 Table 1",
-    notes          = paste0(
+    age_range = "18 years and older",
+    disease_state = "Indian adults with chronic myeloid leukemia (CML)",
+    dose_range = "Oral imatinib 400-800 mg total daily dose",
+    regions = "India",
+    bioanalytical = "HPLC; limit of quantification not reported in Yang 2025 Table 1",
+    notes = paste0(
       "With standard allometric scaling applied by Yang 2025, this model ",
       "produced the SMALLEST bias of any of the 30 model variants they ",
       "evaluated: a median prediction error of 1.24% (Yang 2025 Abstract ",

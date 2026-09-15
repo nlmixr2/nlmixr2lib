@@ -13,49 +13,49 @@ Tremoulet_2014_ampicillin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (current; time-varying weight as measured at PK-sample visits)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (current; time-varying weight as measured at PK-sample visits)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used for linear weight scaling on CL and Vc with no exponent (per-kg parameterisation in Tremoulet 2014: V = theta1 * WTKG; CL = theta2 * WTKG * ...). Source column WTKG.",
-      source_name        = "WTKG"
+      notes = "Time-varying. Used for linear weight scaling on CL and Vc with no exponent (per-kg parameterisation in Tremoulet 2014: V = theta1 * WTKG; CL = theta2 * WTKG * ...). Source column WTKG.",
+      source_name = "WTKG"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (PMA = gestational age at birth + postnatal age)",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (PMA = gestational age at birth + postnatal age)",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Drives the PMA power factor (PAGE/37)^e_page_cl on CL. The canonical PAGE convention in covariate-columns.md is months; this model declares weeks to match the Tremoulet 2014 published equation directly (reference 37 weeks). Same units precedent as Germovsek_2018_meropenem. Source column PMA.",
-      source_name        = "PMA"
+      notes = "Time-varying. Drives the PMA power factor (PAGE/37)^e_page_cl on CL. The canonical PAGE convention in covariate-columns.md is months; this model declares weeks to match the Tremoulet 2014 published equation directly (reference 37 weeks). Same units precedent as Germovsek_2018_meropenem. Source column PMA.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Used in the renal-function power factor (0.6/CREAT)^e_creat_cl on CL with reference 0.6 mg/dL. Source column SCR.",
-      source_name        = "SCR"
+      notes = "Time-varying. Used in the renal-function power factor (0.6/CREAT)^e_creat_cl on CL with reference 0.6 mg/dL. Source column SCR.",
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 73L,
-    n_studies      = 1L,
-    age_range      = "Postnatal age 0-25 days (median 5); gestational age 24-41 weeks (median 36)",
-    age_median     = "PNA 5 days; GA 36 weeks",
-    weight_range   = "Body weight not tabulated in Tremoulet 2014 Table 1; cohort spans extremely premature (GA 24 weeks) to term (GA 41 weeks) neonates",
-    weight_median  = "Not tabulated",
+    species = "human",
+    n_subjects = 73L,
+    n_studies = 1L,
+    age_range = "Postnatal age 0-25 days (median 5); gestational age 24-41 weeks (median 36)",
+    age_median = "PNA 5 days; GA 36 weeks",
+    weight_range = "Body weight not tabulated in Tremoulet 2014 Table 1; cohort spans extremely premature (GA 24 weeks) to term (GA 41 weeks) neonates",
+    weight_median = "Not tabulated",
     sex_female_pct = 47.9,
     race_ethnicity = "Race: 77% White, 16% Black, 4% Other, 1% not reported. Ethnicity: 18% Hispanic/Latino, 77% non-Hispanic, 6% not reported (Tremoulet 2014 Table 1).",
-    disease_state  = "Hospitalised neonates receiving ampicillin per standard of care in the neonatal intensive care unit; indications included presumed/confirmed infection, sepsis, necrotizing enterocolitis, abdominal procedure, meconium ileus with peritonitis, and pneumonia.",
-    dose_range     = "Median 200 mg/kg/day (range 100-350); intervals 6, 8, or 12 h. Routes IV (one excluded subject received intramuscular). 11% q6h, 34% q8h, 55% q12h overall.",
+    disease_state = "Hospitalised neonates receiving ampicillin per standard of care in the neonatal intensive care unit; indications included presumed/confirmed infection, sepsis, necrotizing enterocolitis, abdominal procedure, meconium ileus with peritonitis, and pneumonia.",
+    dose_range = "Median 200 mg/kg/day (range 100-350); intervals 6, 8, or 12 h. Routes IV (one excluded subject received intramuscular). 11% q6h, 34% q8h, 55% q12h overall.",
     gestational_age_range = "24-41 weeks (median 36)",
     postnatal_age_range = "0-25 days (median 5)",
     postmenstrual_age_range = "Derived (PMA = GA + PNA/7); range spans approximately 24-45 weeks given the GA + PNA ranges above",
     samples_plasma = "142 plasma samples from 73 neonates (median 2.1 per subject; 17 (23%) of subjects contributed more than 2 samples)",
-    regions        = "United States (9 NICU centres; Pediatric Trials Network sites under POPS protocol NICHD-2011-POP01)",
-    notes          = "Demographics from Tremoulet 2014 Table 1. Original enrolment was 75 neonates; 2 excluded (one with a single below-quantitative-limit sample and PNA > 28 days; one with a suspected dose-history error) leaving 73 in the analysis. 14 of the 156 samples (9%) from the 73 retained subjects were excluded for assay or timing reasons. Median observed concentration 123 ug/mL (range 0.85-464). LLOQ 0.05 ug/mL; assay range 0.05-50 ug/mL by HPLC-MS/MS."
+    regions = "United States (9 NICU centres; Pediatric Trials Network sites under POPS protocol NICHD-2011-POP01)",
+    notes = "Demographics from Tremoulet 2014 Table 1. Original enrolment was 75 neonates; 2 excluded (one with a single below-quantitative-limit sample and PNA > 28 days; one with a suspected dose-history error) leaving 73 in the analysis. 14 of the 156 samples (9%) from the 73 retained subjects were excluded for assay or timing reasons. Median observed concentration 123 ug/mL (range 0.85-464). LLOQ 0.05 ug/mL; assay range 0.05-50 ug/mL by HPLC-MS/MS."
   )
 
   ini({

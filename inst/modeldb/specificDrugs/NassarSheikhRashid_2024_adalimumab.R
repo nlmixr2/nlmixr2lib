@@ -40,18 +40,18 @@ NassarSheikhRashid_2024_adalimumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot       = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "adalimumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalised to a 70 kg reference. Standard allometric scaling was applied to CL/F, V1/F, Q/F and",
         "V2/F with the exponents held at 0.75 (clearances) and 1 (volumes) rather than estimated",
         "(Nassar-Sheikh Rashid 2024 Section 3.3 'Standard allometric scaling was used ... with a reference",
@@ -63,14 +63,14 @@ NassarSheikhRashid_2024_adalimumab <- function() {
         "roughly twice the concentrations of the above-60 kg stratum.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug-antibody positivity during adalimumab treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug-antibody positivity during adalimumab treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative; the reference covariate value for the typical CL/F per Equation 1)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'ever detection of ADA (yes/no)' (Section 2.3), so the column is subject-level rather",
         "than sample-level. ADA were only assayed when the adalimumab concentration fell below 5 mg/L, using",
         "a drug-sensitive antigen-binding test; ADA were detected in 9 of 50 patients (18%, Table 1). The",
@@ -89,14 +89,14 @@ NassarSheikhRashid_2024_adalimumab <- function() {
         "4), because assay-to-assay differences in ADA detection may misstate the true effect size.",
         sep = " "
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     CONMED_MTX = list(
-      description        = "Concomitant methotrexate use",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant methotrexate use",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant methotrexate)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'use of methotrexate (yes/no)' (Section 2.3) and retained in the final model. 39 of 50",
         "patients (78%) were on methotrexate (Table 1). Methotrexate lowers apparent clearance by 28% (Table",
         "2 theta_MTX = 0.720), taking the typical 70 kg CL/F from 0.374 to 0.269 L/day - the paper quotes",
@@ -105,14 +105,14 @@ NassarSheikhRashid_2024_adalimumab <- function() {
         "indicator with no dose term.",
         sep = " "
       ),
-      source_name        = "MTX"
+      source_name = "MTX"
     ),
     CRP = list(
-      description        = "C-reactive protein, a marker of inflammatory disease activity",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein, a marker of inflammatory disease activity",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Standard (not high-sensitivity) assay. Time-varying: the paper applies last-observation-carried-",
         "forward to missing time-varying covariates and imputes the population median otherwise (Section",
         "2.5). Normalised to a 0.6 mg/L reference in the power form of Equation 2; the reference is the",
@@ -126,14 +126,14 @@ NassarSheikhRashid_2024_adalimumab <- function() {
         "inflammatory-disease adalimumab and IBD models registered elsewhere in the library (3-15 mg/L).",
         sep = " "
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     ),
     DIS_UVEITIS = list(
-      description        = "Active uveitis during adalimumab treatment",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active uveitis during adalimumab treatment",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no active uveitis during adalimumab treatment)",
-      notes              = paste(
+      notes = paste(
         "Screened as 'uveitis during treatment with adalimumab (yes/no)' (Section 2.3). Eight of 50 patients",
         "(16%) had active uveitis, three of whom also had active arthritis (Table 1). Patients with",
         "concomitant uveitis have 44% higher apparent clearance (Table 2 theta_UV = 1.44). This is the",
@@ -143,7 +143,7 @@ NassarSheikhRashid_2024_adalimumab <- function() {
         "preferentially sampled uveitis patients with low levels (Section 4).",
         sep = " "
       ),
-      source_name        = "UVEITIS"
+      source_name = "UVEITIS"
     )
   )
 
@@ -154,9 +154,9 @@ NassarSheikhRashid_2024_adalimumab <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as 'sex' (Section 2.3) and not retained. 36 of 50 patients (72%) were female (Table 1).",
         "Sex was a clearance covariate in the Ternant 2015 adult rheumatoid arthritis model that this paper",
         "evaluated, but it did not reach the OFV drop of 3.84 in the JIA data.",
@@ -166,9 +166,9 @@ NassarSheikhRashid_2024_adalimumab <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as an alternative size descriptor to body weight (Section 2.3) and not retained; body",
         "weight with standard allometric exponents was kept instead. No BSA summary is reported in Table 1.",
         sep = " "
@@ -177,9 +177,9 @@ NassarSheikhRashid_2024_adalimumab <- function() {
     ),
     CONMED_IMMUNOMOD = list(
       description = "Any concomitant immunosuppressive medication",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as 'use of concomitant immunosuppressive medication (yes/no)' (Section 2.3) and not",
         "retained; the methotrexate-specific indicator CONMED_MTX was retained instead. 45 of 50 patients",
         "(90%) were on some concomitant medication: methotrexate 78%, steroids 12%, azathioprine 6%,",
@@ -193,28 +193,28 @@ NassarSheikhRashid_2024_adalimumab <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 50,
+    n_studies = 1,
     n_observations = 78,
-    age_range      = "under 18 years by inclusion criterion; no minimum or maximum reported",
-    age_median     = "mean 11.8 years (SD 3.9)",
-    weight_range   = "not reported; IQR 29.4-59.8 kg",
-    weight_median  = "49 kg",
+    age_range = "under 18 years by inclusion criterion; no minimum or maximum reported",
+    age_median = "mean 11.8 years (SD 3.9)",
+    weight_range = "not reported; IQR 29.4-59.8 kg",
+    weight_median = "49 kg",
     sex_female_pct = 72,
     race_ethnicity = "not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "juvenile idiopathic arthritis; 68% with active joint inflammation and 16% with active uveitis at the",
       "time of drug measurement",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "subcutaneous adalimumab at the approved European JIA dose: 20 mg every other week for 10-30 kg and 40",
       "mg every other week above 30 kg. Most patients received 40 mg every other week.",
       sep = " "
     ),
-    regions        = "Netherlands (single centre: Emma Children's Hospital, Amsterdam UMC)",
-    notes          = paste(
+    regions = "Netherlands (single centre: Emma Children's Hospital, Amsterdam UMC)",
+    notes = paste(
       "Retrospective single-centre chart review of routine therapeutic drug monitoring, screened January",
       "2013 to August 2023 (Section 2.1). Baseline demographics are Table 1. Sampling was extremely sparse:",
       "78 concentrations from 50 patients, with 33 patients contributing only one sample, and samples were",

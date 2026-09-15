@@ -33,27 +33,41 @@ Qin_2025_ropeginterferon_hct <- function() {
   )
   vignette <- "Qin_2025_ropeginterferon"
   units <- list(
-    time          = "day (NOT hour: Qin 2025 Tables 2 and 3 label the rate constants h^-1, but the values are per day; Methods 2.4.1 gives kout and kdec 'in day-1'. See the vignette Errata)",
-    dosing        = "ug (micrograms of ropeginterferon alfa-2b, subcutaneous)",
+    time = "day (NOT hour: Qin 2025 Tables 2 and 3 label the rate constants h^-1, but the values are per day; Methods 2.4.1 gives kout and kdec 'in day-1'. See the vignette Errata)",
+    dosing = "ug (micrograms of ropeginterferon alfa-2b, subcutaneous)",
     concentration = "ug/L total serum ropeg (Cc), numerically identical to the ng/mL Qin 2025 reports; hematocrit (hct) is a unitless volume FRACTION, 0-1"
   )
 
-
   compartmentData <- list(
-    depot        = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "serum", verified = FALSE),
-    total_target = list(analyte = "ropeg target (total, free plus drug-bound binding capacity)", units = "ug/L (= ng/mL)", specimen = "serum", verified = FALSE),
-    transit1     = list(analyte = "hematocrit (unobserved transit pool preceding the measured compartment)", units = "unitless volume fraction (0-1)", specimen = "whole blood", verified = FALSE),
-    hct          = list(analyte = "hematocrit", units = "unitless volume fraction (0-1)", specimen = "whole blood", verified = FALSE)
+    depot = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ropeginterferon alfa-2b", units = "ug", specimen = "serum", verified = FALSE),
+    total_target = list(
+      analyte = "ropeg target (total, free plus drug-bound binding capacity)",
+      units = "ug/L (= ng/mL)",
+      specimen = "serum",
+      verified = FALSE
+    ),
+    transit1 = list(
+      analyte = "hematocrit (unobserved transit pool preceding the measured compartment)",
+      units = "unitless volume fraction (0-1)",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    hct = list(
+      analyte = "hematocrit",
+      units = "unitless volume fraction (0-1)",
+      specimen = "whole blood",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Baseline body mass index.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Baseline body mass index.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Acts on ropeg clearance in the inherited PK layer only; no",
         "covariate was retained on any hematocrit parameter (Qin 2025",
         "Table 3 carries no covariate row). Power form P_i = P_TV *",
@@ -61,14 +75,14 @@ Qin_2025_ropeginterferon_hct <- function() {
         "median 23.1 kg/m^2 (Table 1, Overall). The 78 PV patients of",
         "this analysis had median BMI 21.2 (A19-201) and 23.9 (A20-202)."
       ),
-      source_name        = "BMI (body mass index)"
+      source_name = "BMI (body mass index)"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator; 1 = healthy volunteer, 0 = patient with polycythaemia vera.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator; 1 = healthy volunteer, 0 = patient with polycythaemia vera.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with polycythaemia vera)",
-      notes              = paste(
+      notes = paste(
         "Inherited from the PK layer, where it gates the chronic decline",
         "of the target binding capacity (Qin 2025 Methods 2.4.1). SET IT",
         "TO 0 FOR EVERY SUBJECT IN THIS MODEL: the hematocrit analysis",
@@ -77,23 +91,23 @@ Qin_2025_ropeginterferon_hct <- function() {
         "retained only so the inherited PK layer is byte-for-byte the",
         "same as Qin_2025_ropeginterferon."
       ),
-      source_name        = "healthy-volunteer study flag; the source control stream name is not published"
+      source_name = "healthy-volunteer study flag; the source control stream name is not published"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 78L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 78L,
+    n_studies = 2L,
     n_observations = "hematocrit measured every 2 weeks in patients with PV (Qin 2025 Methods 2.3); the record count is not reported",
-    age_range      = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
-    weight_range   = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
+    age_range = "median 54.0 years, range 26.0-72.0 (A19-201) and median 56.0 years, range 29.0-70.0 (A20-202) (Qin 2025 Table 1)",
+    weight_range = "median 56.0 kg, range 43.6-76.5 (A19-201) and median 67.9 kg, range 44.0-91.0 (A20-202) (Qin 2025 Table 1)",
     sex_female_pct = 43.6,
     race_ethnicity = "Japanese (A19-201, n = 29) and Chinese (A20-202, n = 49)",
-    disease_state  = "polycythaemia vera. All A20-202 patients and all but two A19-201 patients carried JAK2 V617F; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline hematocrit median 0.459 (A19-201, range 0.356-0.539)",
-    dose_range     = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
-    regions        = "Japan (A19-201) and China (A20-202)",
-    notes          = paste0(
+    disease_state = "polycythaemia vera. All A20-202 patients and all but two A19-201 patients carried JAK2 V617F; A20-202 enrolled patients resistant to or intolerant of hydroxyurea. Baseline hematocrit median 0.459 (A19-201, range 0.356-0.539)",
+    dose_range = "A19-201 (slow titration): 100 ug every 2 weeks, or 50 ug on prior cytoreductive therapy, titrated in 50 ug steps to a 500 ug maximum. A20-202 (fast titration): 250 ug at week 0, 350 ug at week 2, 500 ug from week 4",
+    regions = "Japan (A19-201) and China (A20-202)",
+    notes = paste0(
       "Complete hematologic response, the primary phase II efficacy ",
       "endpoint, required hematocrit < 45% without phlebotomy in the ",
       "previous 3 months, together with WBC < 10 x 10^9/L and PLT <= ",

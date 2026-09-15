@@ -37,11 +37,11 @@ Honda_2005_carvedilol <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Honda 2005 Methods 'Subjects and Study Protocols': cohort body",
         "weight 47-86 kg (mean 64.7 kg). The 5-mg subgroup mean (SD) was",
         "57.9 (6.7) kg (n=9); the 10-mg subgroup was 69.1 (9.9) kg (n=14).",
@@ -51,13 +51,13 @@ Honda_2005_carvedilol <- function() {
         "underlying theta_1 and theta_2 are reported in per-kg units",
         "(L/h/kg and L/kg). Time-fixed at baseline in the published model."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     CYP2D6_PM = list(
-      description        = paste(
+      description = paste(
         "Honda 2005 post-hoc stratification indicator: 1 = subject carries",
         "at least one CYP2D6*10 allele; 0 = subject is CYP2D6*1/*1 or",
         "*1/*2 (the *10-non-carrier reference). NOT a structural-model",
@@ -68,10 +68,10 @@ Honda_2005_carvedilol <- function() {
         "estimates -- the NONMEM structural model itself does not include",
         "CYP2D6 as a covariate."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6*1/*1 or *1/*2)",
-      notes              = paste(
+      notes = paste(
         "CYP2D6 alleles determined by PCR-RFLP (*1, *10, *14) and",
         "allele-specific PCR (*2); long-PCR for *5 (Honda 2005 Methods",
         "'Genotyping of CYP2D6'). Cohort distribution: 5 *1/*1, 1 *1/*2,",
@@ -82,25 +82,25 @@ Honda_2005_carvedilol <- function() {
         "stratification effect can post-process the Bayes-estimate output",
         "rather than re-fit with CYP2D6 as a covariate."
       ),
-      source_name        = "(Honda 2005 reports per-subject CYP2D6 genotypes; no NONMEM column name)"
+      source_name = "(Honda 2005 reports per-subject CYP2D6 genotypes; no NONMEM column name)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_studies      = 1L,
-    age_range      = "22-44 years",
-    age_median     = "29.1 years (cohort mean)",
-    weight_range   = "47-86 kg",
-    weight_median  = "64.7 kg (cohort mean)",
+    species = "human",
+    n_subjects = 23L,
+    n_studies = 1L,
+    age_range = "22-44 years",
+    age_median = "29.1 years (cohort mean)",
+    weight_range = "47-86 kg",
+    weight_median = "64.7 kg (cohort mean)",
     sex_female_pct = round(4 / 23 * 100, 1),
     race_ethnicity = "Japanese (single-centre Toyama, Japan)",
-    disease_state  = "Healthy adult volunteers (all participants were physicians or pharmacists; no concomitant medications reported).",
-    dose_range     = "Single oral dose of racemic carvedilol (Artist tablet): 5 mg as two 2.5-mg tablets (n=9; 7 men, 2 women) or 10 mg as one 10-mg tablet (n=14; 12 men, 2 women). Doses were self-selected, taken with water at least 2 h before a meal, after an overnight fast.",
-    regions        = "Japan (Toyama Medical and Pharmaceutical University)",
+    disease_state = "Healthy adult volunteers (all participants were physicians or pharmacists; no concomitant medications reported).",
+    dose_range = "Single oral dose of racemic carvedilol (Artist tablet): 5 mg as two 2.5-mg tablets (n=9; 7 men, 2 women) or 10 mg as one 10-mg tablet (n=14; 12 men, 2 women). Doses were self-selected, taken with water at least 2 h before a meal, after an overnight fast.",
+    regions = "Japan (Toyama Medical and Pharmaceutical University)",
     n_observations = 46L,
-    notes          = paste(
+    notes = paste(
       "Sampling: 5 mL of whole blood at 2 h and 6 h post-dose (two-",
       "time-point sparse design). Both R- and S-carvedilol were assayed",
       "in every sample, so each subject contributes two R observations",

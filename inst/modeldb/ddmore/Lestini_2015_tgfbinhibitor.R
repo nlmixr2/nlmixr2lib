@@ -11,9 +11,14 @@ Lestini_2015_tgfbinhibitor <- function() {
     sep = " "
   )
   vignette <- "Lestini_2015_tgfbinhibitor"
-  units <- list(time = "h", dosing = "mg", concentration = "mg/L", response = "fraction (0-1) of maximal TGF-beta signalling inhibition")
+  units <- list(
+    time = "h",
+    dosing = "mg",
+    concentration = "mg/L",
+    response = "fraction (0-1) of maximal TGF-beta signalling inhibition"
+  )
 
-  ddmore_id    <- "DDMODEL00000192"
+  ddmore_id <- "DDMODEL00000192"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -21,19 +26,19 @@ Lestini_2015_tgfbinhibitor <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "E", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "E", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    disease_state  = "Simulated oncology cohort receiving a small-molecule TGF-beta inhibitor; the source publication is a simulation study and the bundle ships only a single-dose simulated dataset (Simulated_PKPD.txt).",
-    dose_range     = "80 mg single oral dose (DDMODEL00000192 scenario 4 simulated design).",
-    notes          = paste0(
+    n_subjects = 50L,
+    n_studies = 1L,
+    disease_state = "Simulated oncology cohort receiving a small-molecule TGF-beta inhibitor; the source publication is a simulation study and the bundle ships only a single-dose simulated dataset (Simulated_PKPD.txt).",
+    dose_range = "80 mg single oral dose (DDMODEL00000192 scenario 4 simulated design).",
+    notes = paste0(
       "DDMODEL00000192 is paired with the Lestini 2015 simulation study; ",
       "the bundle does not ship a real-data fit. Population-parameter ",
       "estimates come from the Monolix run reported in ",

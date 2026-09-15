@@ -3,8 +3,8 @@ Goulooze_2022_finerenone <- function() {
   reference <- "Goulooze SC, Snelder N, Seelmann A, Horvat-Broecker A, Brinker M, Joseph A, Garmann D, Lippert J, Eissing T. Finerenone Dose-Exposure-Serum Potassium Response Analysis of FIDELIO-DKD Phase III: The Role of Dosing, Titration, and Inclusion Criteria. Clin Pharmacokinet. 2022;61(3):451-462. doi:10.1007/s40262-021-01083-1. PK structural parameters are inherited from the FIDELIO-DKD popPK analysis (van den Berg JHE et al., Clin Pharmacol Drug Dev. 2022) and reduced here to the typical apparent CL = 28.0 L/h reported in Goulooze 2022 Fig 5 caption."
   vignette <- "Goulooze_2022_finerenone"
   units <- list(
-    time          = "h",
-    dosing        = "(oral finerenone, mg)",
+    time = "h",
+    dosing = "(oral finerenone, mg)",
     concentration = "mmol/L (serum potassium; the PD output molecule is potassium, not the dosed finerenone, so the dosing-vs-concentration unit-dimensional check is intentionally a non-applicable PD comparison and the dosing string is parenthesised to skip it)"
   )
 
@@ -13,65 +13,65 @@ Goulooze_2022_finerenone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot  = list(analyte = "finerenone", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "finerenone", units = NA_character_, specimen = "administration site", verified = FALSE),
     serum_k = list(analyte = "potassium", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline CKD-EPI estimated glomerular filtration rate, BSA-normalised to 1.73 m^2",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline CKD-EPI estimated glomerular filtration rate, BSA-normalised to 1.73 m^2",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Source column EGFR_EPI0. Enters as a power scaling on baseline serum K and on Emax, both referenced to 45 mL/min/1.73 m^2 (close to the FIDELIO-DKD median of 43.0).",
-      source_name        = "EGFR_EPI0"
+      notes = "Time-fixed (baseline). Source column EGFR_EPI0. Enters as a power scaling on baseline serum K and on Emax, both referenced to 45 mL/min/1.73 m^2 (close to the FIDELIO-DKD median of 43.0).",
+      source_name = "EGFR_EPI0"
     ),
     UACR = list(
-      description        = "Baseline urine albumin-to-creatinine ratio",
-      units              = "mg/g",
-      type               = "continuous",
+      description = "Baseline urine albumin-to-creatinine ratio",
+      units = "mg/g",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline). Source column UACR0. Enters as a centred linear effect on Emax and on the disease-progression slope TSLOPE, both centred at 800 mg/g (close to the FIDELIO-DKD median of 852 mg/g).",
-      source_name        = "UACR0"
+      notes = "Time-fixed (baseline). Source column UACR0. Enters as a centred linear effect on Emax and on the disease-progression slope TSLOPE, both centred at 800 mg/g (close to the FIDELIO-DKD median of 852 mg/g).",
+      source_name = "UACR0"
     ),
     SEXF = list(
-      description        = "Female-sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female-sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source paper codes SEX = 1 (male), 2 (female); canonical SEXF maps as SEXF = SEX - 1. Enters as a multiplicative effect on Emax (-14.3% in females) and on baseline K with the coefficient fixed at 0 (paper $THETA(15) = 0 FIX).",
-      source_name        = "(SEX - 1)"
+      notes = "Source paper codes SEX = 1 (male), 2 (female); canonical SEXF maps as SEXF = SEX - 1. Enters as a multiplicative effect on Emax (-14.3% in females) and on baseline K with the coefficient fixed at 0 (paper $THETA(15) = 0 FIX).",
+      source_name = "(SEX - 1)"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-ancestry race indicator (1 = Japanese, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-ancestry race indicator (1 = Japanese, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Source data column RACA = 3.2 codes Japanese ancestry (other races coded differently); canonical RACE_JAPANESE = (RACA == 3.2). Enters as a percent multiplicative shift on baseline K (-3.62% in Japanese subjects). The Japanese-specific residual-error multiplier (sigma^2 ratio 87.0%) reported in Goulooze 2022 Table 1 is documented in this entry but not reproduced in the typical-value Gaussian-residual approximation used here.",
-      source_name        = "(RACA == 3.2)"
+      notes = "Source data column RACA = 3.2 codes Japanese ancestry (other races coded differently); canonical RACE_JAPANESE = (RACA == 3.2). Enters as a percent multiplicative shift on baseline K (-3.62% in Japanese subjects). The Japanese-specific residual-error multiplier (sigma^2 ratio 87.0%) reported in Goulooze 2022 Table 1 is documented in this entry but not reproduced in the typical-value Gaussian-residual approximation used here.",
+      source_name = "(RACA == 3.2)"
     ),
     ON_TREATMENT = list(
-      description        = "Active-treatment arm indicator (1 = randomised to finerenone, 0 = randomised to placebo)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Active-treatment arm indicator (1 = randomised to finerenone, 0 = randomised to placebo)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo)",
-      notes              = "Per-subject time-fixed. Source paper uses TREA = 1 (10 mg starting dose), 2 (20 mg starting dose), 3 (placebo); canonical ON_TREATMENT = (TREA < 3). Switches the disease-progression slope TSLOPE between the placebo typical value (0.00412 / year) and the active-arm typical value (0.00161 / year). Goulooze 2022 supplement applies the active TSLOPE only when TAFD > 0; here ON_TREATMENT is the per-subject randomisation flag and is the canonical generic on-treatment indicator (parallels Lee 2011 Parkinson's disease-progression usage).",
-      source_name        = "(TREA < 3)"
+      notes = "Per-subject time-fixed. Source paper uses TREA = 1 (10 mg starting dose), 2 (20 mg starting dose), 3 (placebo); canonical ON_TREATMENT = (TREA < 3). Switches the disease-progression slope TSLOPE between the placebo typical value (0.00412 / year) and the active-arm typical value (0.00161 / year). Goulooze 2022 supplement applies the active TSLOPE only when TAFD > 0; here ON_TREATMENT is the per-subject randomisation flag and is the canonical generic on-treatment indicator (parallels Lee 2011 Parkinson's disease-progression usage).",
+      source_name = "(TREA < 3)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10070L,
-    n_studies      = 1L,
-    age_range      = "adult (FIDELIO-DKD patients with advanced CKD and type 2 diabetes mellitus)",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 10070L,
+    n_studies = 1L,
+    age_range = "adult (FIDELIO-DKD patients with advanced CKD and type 2 diabetes mellitus)",
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = c(Japanese = NA_real_, NonJapanese = NA_real_),
-    disease_state  = "Chronic kidney disease (CKD) with type 2 diabetes mellitus (T2DM); advanced CKD (eGFR 25 to < 75 mL/min/1.73 m^2 at run-in / screening) per FIDELIO-DKD inclusion criteria",
-    dose_range     = "Oral finerenone 10 mg or 20 mg once daily, titrated based on serum potassium and eGFR per FIDELIO-DKD protocol; average dose over follow-up 15.1 mg",
-    regions        = "Multi-regional Phase III (FIDELIO-DKD, NCT02540993)",
-    notes          = "PD analysis informed by 148,384 serum potassium observations (62,401 local-lab and 85,983 central-lab) from 10,070 subjects: 5,674 randomised FIDELIO-DKD participants (2,841 placebo, 2,833 active-treatment of which 2,622 started on 10 mg and 211 on 20 mg) plus 4,396 subjects who participated in run-in and screening but did not meet the serum-potassium inclusion criterion. Median (5th-95th percentile) baseline eGFR 43.0 (26.7-66.9) mL/min/1.73 m^2 and UACR 852 (140-3,366) mg/g (Goulooze 2022 Sect. 3.1). Median follow-up 2.6 years."
+    disease_state = "Chronic kidney disease (CKD) with type 2 diabetes mellitus (T2DM); advanced CKD (eGFR 25 to < 75 mL/min/1.73 m^2 at run-in / screening) per FIDELIO-DKD inclusion criteria",
+    dose_range = "Oral finerenone 10 mg or 20 mg once daily, titrated based on serum potassium and eGFR per FIDELIO-DKD protocol; average dose over follow-up 15.1 mg",
+    regions = "Multi-regional Phase III (FIDELIO-DKD, NCT02540993)",
+    notes = "PD analysis informed by 148,384 serum potassium observations (62,401 local-lab and 85,983 central-lab) from 10,070 subjects: 5,674 randomised FIDELIO-DKD participants (2,841 placebo, 2,833 active-treatment of which 2,622 started on 10 mg and 211 on 20 mg) plus 4,396 subjects who participated in run-in and screening but did not meet the serum-potassium inclusion criterion. Median (5th-95th percentile) baseline eGFR 43.0 (26.7-66.9) mL/min/1.73 m^2 and UACR 852 (140-3,366) mg/g (Goulooze 2022 Sect. 3.1). Median follow-up 2.6 years."
   )
 
   ini({

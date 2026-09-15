@@ -13,51 +13,51 @@ Pohl_2022_linzagolix <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL/F (exponent 0.75) and V2/F (exponent 1), both fixed to their allometric values rather than estimated, normalised to a 58 kg reference subject (Table 4 covariate-effect rows 'CL/F ~ (weight 58 kg)' and 'V2/F ~ (weight 58 kg)'; Supporting Information section 4.1). Q/F and V3/F carry no weight effect in the final model.",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL/F (exponent 0.75) and V2/F (exponent 1), both fixed to their allometric values rather than estimated, normalised to a 58 kg reference subject (Table 4 covariate-effect rows 'CL/F ~ (weight 58 kg)' and 'V2/F ~ (weight 58 kg)'; Supporting Information section 4.1). Q/F and V3/F carry no weight effect in the final model.",
+      source_name = "WT"
     ),
     RACE_WHITE = list(
-      description        = "Caucasian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Caucasian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (Caucasian; the typical-value reference in this model)",
-      notes              = "Source paper dichotomises race as Caucasian vs non-Caucasian (Table 3 'Percent Caucasian'). The Caucasian subgroup is the typical-value reference, so the effect is implemented on (1 - RACE_WHITE): non-Caucasian subjects have 8% higher CL/F (Table 4 'CL/F ~ non-Caucasian' = 1.08). Same reference-category orientation as Hu_2014_bapineuzumab.R.",
-      source_name        = "race group (Caucasian / non-Caucasian)"
+      notes = "Source paper dichotomises race as Caucasian vs non-Caucasian (Table 3 'Percent Caucasian'). The Caucasian subgroup is the typical-value reference, so the effect is implemented on (1 - RACE_WHITE): non-Caucasian subjects have 8% higher CL/F (Table 4 'CL/F ~ non-Caucasian' = 1.08). Same reference-category orientation as Hu_2014_bapineuzumab.R.",
+      source_name = "race group (Caucasian / non-Caucasian)"
     ),
     STUDY_EDELWEISS = list(
-      description        = "EDELWEISS phase 2b study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "EDELWEISS phase 2b study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the phase 1 studies KLH1101, 16-OBE2109-011, 17-OBE2109-008 and the phase 1 study KLH1204)",
-      notes              = "1 = observation from the EDELWEISS phase 2b dose-ranging study (NCT02778399), which contributed sparse PK; 0 = observation from any other pooled study, all of which contributed rich PK. Selects between the two proportional residual error magnitudes of Table 4 ('EDELWEISS data' vs 'All other studies'). Per-record study-fixed indicator.",
-      source_name        = "study"
+      notes = "1 = observation from the EDELWEISS phase 2b dose-ranging study (NCT02778399), which contributed sparse PK; 0 = observation from any other pooled study, all of which contributed rich PK. Selects between the two proportional residual error magnitudes of Table 4 ('EDELWEISS data' vs 'All other studies'). Per-record study-fixed indicator.",
+      source_name = "study"
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "linzagolix", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "linzagolix", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "linzagolix", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "linzagolix", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "linzagolix", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 756,
-    n_studies      = 5,
-    age_range      = "18-48 years",
-    age_median     = "32-40 years across the contributing studies (Table 3)",
-    weight_range   = "median 53.9-65.5 kg across the contributing studies (Table 3)",
-    weight_median  = "58 kg (model reference weight)",
+    species = "human",
+    n_subjects = 756,
+    n_studies = 5,
+    age_range = "18-48 years",
+    age_median = "32-40 years across the contributing studies (Table 3)",
+    weight_range = "median 53.9-65.5 kg across the contributing studies (Table 3)",
+    weight_median = "58 kg (model reference weight)",
     sex_female_pct = 100,
     race_ethnicity = "0-100% Caucasian by study (Table 3); pooled analysis deliberately retained both Caucasian and non-Caucasian subjects to reduce parameter uncertainty",
-    disease_state  = "endometriosis, or endometriosis with co-existing uterine fibroids, plus healthy pre- and postmenopausal volunteers (approximately 24% of subjects and 55% of observations were from healthy volunteers)",
-    dose_range     = "12.5-400 mg single dose; 25-200 mg once daily for 42 days to 24 weeks",
-    regions        = "Europe and Japan",
-    notes          = "4250 linzagolix concentration observations from 756 subjects pooled across five clinical trials (KLH1101 phase 1 SAD/MAD, EDELWEISS phase 2b, 16-OBE2109-011, 17-OBE2109-008, KLH1204). Subjects receiving placebo contributed no records to the population PK analysis set. About 5% of concentrations were below the quantitation limit and were dropped (Supporting Information section 1.1). Baseline demographics are in Table 3."
+    disease_state = "endometriosis, or endometriosis with co-existing uterine fibroids, plus healthy pre- and postmenopausal volunteers (approximately 24% of subjects and 55% of observations were from healthy volunteers)",
+    dose_range = "12.5-400 mg single dose; 25-200 mg once daily for 42 days to 24 weeks",
+    regions = "Europe and Japan",
+    notes = "4250 linzagolix concentration observations from 756 subjects pooled across five clinical trials (KLH1101 phase 1 SAD/MAD, EDELWEISS phase 2b, 16-OBE2109-011, 17-OBE2109-008, KLH1204). Subjects receiving placebo contributed no records to the population PK analysis set. About 5% of concentrations were below the quantitation limit and were dropped (Supporting Information section 1.1). Baseline demographics are in Table 3."
   )
 
   ini({

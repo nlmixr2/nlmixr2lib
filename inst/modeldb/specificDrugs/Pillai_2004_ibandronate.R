@@ -10,10 +10,10 @@ Pillai_2004_ibandronate <- function() {
   )
   vignette <- "Pillai_2004_ibandronate"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mmolCR",
-    outcome       = "uCTX (ug/mmolCR)"
+    outcome = "uCTX (ug/mmolCR)"
     # units$concentration intentionally documents the urinary CTX (uCTX)
     # biomarker output rather than a plasma drug concentration: this is a
     # K-PD model with no observed plasma drug concentration. The Cc
@@ -31,16 +31,16 @@ Pillai_2004_ibandronate <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central = list(analyte = "ibandronate", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "ibandronate", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "ibandronate", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CONMED_CAVITD = list(
-      description        = "Concomitant calcium + vitamin D supplementation indicator (1 = on daily oral calcium + vitamin D coadministration during the observation period, 0 = not on supplementation)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant calcium + vitamin D supplementation indicator (1 = on daily oral calcium + vitamin D coadministration during the observation period, 0 = not on supplementation)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no supplementation)",
-      notes              = paste(
+      notes = paste(
         "Per-subject baseline indicator. Drives the multiplicative covariate effect",
         "on KDE (the K-PD virtual-compartment elimination rate constant: 0.112 /day",
         "without supplements, 0.014 /day with supplements) AND gates the multiplicative",
@@ -51,22 +51,22 @@ Pillai_2004_ibandronate <- function() {
         "used daily oral calcium + vitamin D supplementation; study MF9853 did not.",
         "Source label: 'supplemental therapy' (Pillai 2004 narrative + Table 4 legend)."
       ),
-      source_name        = "supplemental therapy"
+      source_name = "supplemental therapy"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 174,
-    n_studies      = 3,
-    age_range      = "Postmenopausal women",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 174,
+    n_studies = 3,
+    age_range = "Postmenopausal women",
+    weight_range = NA_character_,
     sex_female_pct = 100,
     race_ethnicity = c(White = NA_real_, Asian_Japanese = NA_real_, Other = NA_real_),
-    disease_state  = "Postmenopausal osteoporosis (PMO) and postmenopausal osteopenia. Two cohorts of i.v. dose-finding data (study MF9853 in 50 Japanese women with osteopenia; Thiebaud et al. 1997 in 124 Caucasian women with osteoporosis) and one cohort of oral data (Delmas et al. 1996 in 676 Caucasian women with osteoporosis); validation data drawn from Adami 2002 (n=520), Recker 2000 (n=2860), and Ravn 1996 (n=180) post-hoc.",
-    dose_range     = "I.v. ibandronate 0.25, 0.5, 1, or 2 mg every 3 months (development studies MF9853 and Thiebaud 1997); oral ibandronate 2.5 mg once daily (development study Delmas 1996); validation regimens 0.25-5 mg oral daily and 0.5-2 mg i.v. q3mo.",
-    regions        = "Japan (MF9853); Europe (Thiebaud 1997, Delmas 1996, Adami 2002, Recker 2000, Ravn 1996).",
-    notes          = paste(
+    disease_state = "Postmenopausal osteoporosis (PMO) and postmenopausal osteopenia. Two cohorts of i.v. dose-finding data (study MF9853 in 50 Japanese women with osteopenia; Thiebaud et al. 1997 in 124 Caucasian women with osteoporosis) and one cohort of oral data (Delmas et al. 1996 in 676 Caucasian women with osteoporosis); validation data drawn from Adami 2002 (n=520), Recker 2000 (n=2860), and Ravn 1996 (n=180) post-hoc.",
+    dose_range = "I.v. ibandronate 0.25, 0.5, 1, or 2 mg every 3 months (development studies MF9853 and Thiebaud 1997); oral ibandronate 2.5 mg once daily (development study Delmas 1996); validation regimens 0.25-5 mg oral daily and 0.5-2 mg i.v. q3mo.",
+    regions = "Japan (MF9853); Europe (Thiebaud 1997, Delmas 1996, Adami 2002, Recker 2000, Ravn 1996).",
+    notes = paste(
       "Development pool of 174 women (50 + 124) for i.v. K-PD and 676 women for the",
       "extended K-PD with oral; demographics not tabulated by cohort in the paper.",
       "Race / ethnicity inferred from study geography (MF9853 = Japanese; Thiebaud /",

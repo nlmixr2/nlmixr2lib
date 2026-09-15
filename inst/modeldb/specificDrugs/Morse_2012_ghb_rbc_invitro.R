@@ -73,12 +73,16 @@ Morse_2012_ghb_rbc_invitro <- function() {
   # 'In Vitro Uptake' (p. 66) and eq. 1.
   compartmentData <- list(
     ghb = list(
-      analyte = "gamma-hydroxybutyrate", units = "mmol/L", specimen = "administration site",
+      analyte = "gamma-hydroxybutyrate",
+      units = "mmol/L",
+      specimen = "administration site",
       verified = TRUE
     ),
     rbc_ghb = list(
-      analyte = "gamma-hydroxybutyrate", units = "nmol/mg red-cell protein",
-      specimen = "blood cell", verified = TRUE
+      analyte = "gamma-hydroxybutyrate",
+      units = "nmol/mg red-cell protein",
+      specimen = "blood cell",
+      verified = TRUE
     )
   )
 

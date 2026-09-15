@@ -27,7 +27,7 @@ Yu_2025_methotrexate <- function() {
     sep = " "
   )
   vignette <- "Yu_2025_methotrexate"
-  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # Issue #482. Verified against Yu 2025 Methods "Population Pharmacokinetic
   # Model Development" (NONMEM ADVAN3 TRANS4, i.e. two-compartment IV) and the
@@ -36,50 +36,50 @@ Yu_2025_methotrexate <- function() {
   # paper is reported in umol/L (LLOQ 0.17 umol/L; steady-state targets 26-60
   # umol/L for low-risk and 52-100 umol/L for intermediate/high-risk patients).
   compartmentData <- list(
-    central     = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "methotrexate", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1 (Modeling Data column): median 5 years, range 0.65-14, mean 5.52. Used ONLY as the 1-year cutoff that selects between the two clearance strata of the two final-model equations on p. 8480 ('If age > 1 years old CL (L/h) = ...' / 'If age <= 1 years old CL (L/h) = ...'). It does not enter the model as a continuous term: the paper screened AGE continuously first and reports that the piecewise 1-year cutoff fit substantially better (dOFV -55.825 for the cutoff versus -12.535 for the continuous term; Discussion). The cutoff is the paper's stated novelty, motivated by immature hepatic and renal function below 1 year of age.",
-      source_name        = "age"
+      notes = "Yu 2025 Table 1 (Modeling Data column): median 5 years, range 0.65-14, mean 5.52. Used ONLY as the 1-year cutoff that selects between the two clearance strata of the two final-model equations on p. 8480 ('If age > 1 years old CL (L/h) = ...' / 'If age <= 1 years old CL (L/h) = ...'). It does not enter the model as a continuous term: the paper screened AGE continuously first and reports that the piecewise 1-year cutoff fit substantially better (dOFV -55.825 for the cutoff versus -12.535 for the continuous term; Discussion). The cutoff is the paper's stated novelty, motivated by immature hepatic and renal function below 1 year of age.",
+      source_name = "age"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate by the bedside Schwartz equation (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate by the bedside Schwartz equation (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Methods: 'The eGFR was calculated using the bedside Schwartz equation', i.e. 0.413 * height (cm) / Scr (mg/dL), reported normalized to 1.73 m^2. Table 1 (Modeling Data): median 160 mL/min/1.73 m^2, range 21.90-405.65, mean 162.40 -- a supranormal-skewed paediatric cohort, so the model carries little information about frank renal impairment even though the paper's own Monte Carlo simulations extrapolate down to 80 mL/min/1.73 m^2. The reference value 160 in the CL equations is the cohort median. Enters CL as (eGFR/160)^0.537, shared across both age strata; it was the single most influential covariate (dOFV -170.45). Stored under canonical CRCL, which explicitly admits the paediatric bedside-Schwartz variant (precedent Jung_2024_vancomycin.R); the estimating equation is documented here per the register's per-model requirement.",
-      source_name        = "eGFR"
+      notes = "Yu 2025 Methods: 'The eGFR was calculated using the bedside Schwartz equation', i.e. 0.413 * height (cm) / Scr (mg/dL), reported normalized to 1.73 m^2. Table 1 (Modeling Data): median 160 mL/min/1.73 m^2, range 21.90-405.65, mean 162.40 -- a supranormal-skewed paediatric cohort, so the model carries little information about frank renal impairment even though the paper's own Monte Carlo simulations extrapolate down to 80 mL/min/1.73 m^2. The reference value 160 in the CL equations is the cohort median. Enters CL as (eGFR/160)^0.537, shared across both age strata; it was the single most influential covariate (dOFV -170.45). Stored under canonical CRCL, which explicitly admits the paediatric bedside-Schwartz variant (precedent Jung_2024_vancomycin.R); the estimating equation is documented here per the register's per-model requirement.",
+      source_name = "eGFR"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1 (Modeling Data): median 19.50 kg, range 7-62.50, mean 22.43. The reference weight 20 kg in the CL equations is the cohort median rounded by the authors. Enters CL as (WT/20)^0.45, shared across both age strata. Note the exponent is estimated (0.45, RSE 11%), not fixed at the allometric 0.75, and that body SIZE enters clearance through weight but volume through body surface area -- the paper models the two size descriptors on different parameters rather than using one throughout.",
-      source_name        = "WT"
+      notes = "Yu 2025 Table 1 (Modeling Data): median 19.50 kg, range 7-62.50, mean 22.43. The reference weight 20 kg in the CL equations is the cohort median rounded by the authors. Enters CL as (WT/20)^0.45, shared across both age strata. Note the exponent is estimated (0.45, RSE 11%), not fixed at the allometric 0.75, and that body SIZE enters clearance through weight but volume through body surface area -- the paper models the two size descriptors on different parameters rather than using one throughout.",
+      source_name = "WT"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1 (Modeling Data): median 2.95 mmol/L, range 0.40-16.70, mean 3.15. The reference value 3 in the CL equations is the cohort median rounded by the authors. Enters CL as (BUN/3)^(-0.0823), shared across both age strata; the NEGATIVE exponent means a higher urea burden lowers methotrexate clearance. Retaining BUN alongside eGFR is one of the paper's two stated novelties: the authors checked for collinearity between the two renal markers and found effectively none (Spearman rho = -0.1192, variance inflation factor 1.007457), and argue BUN adds tubular / volume-status information that glomerular eGFR misses. The effect is the weakest term in the model (RSE 24%, bootstrap 95% CI -0.1553 to -0.0093, the only interval that approaches zero), so it moves clearance by only about 6% across the interquartile range of BUN.",
-      source_name        = "BUN"
+      notes = "Yu 2025 Table 1 (Modeling Data): median 2.95 mmol/L, range 0.40-16.70, mean 3.15. The reference value 3 in the CL equations is the cohort median rounded by the authors. Enters CL as (BUN/3)^(-0.0823), shared across both age strata; the NEGATIVE exponent means a higher urea burden lowers methotrexate clearance. Retaining BUN alongside eGFR is one of the paper's two stated novelties: the authors checked for collinearity between the two renal markers and found effectively none (Spearman rho = -0.1192, variance inflation factor 1.007457), and argue BUN adds tubular / volume-status information that glomerular eGFR misses. The effect is the weakest term in the model (RSE 24%, bootstrap 95% CI -0.1553 to -0.0093, the only interval that approaches zero), so it moves clearance by only about 6% across the interquartile range of BUN.",
+      source_name = "BUN"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Table 1 (Modeling Data): median 0.77 m^2, range 0.36-1.71. The reference value 0.77 in the V1 equation is the cohort median, and is also the BSA of the 5-year-old, 19 kg virtual child used for every Monte Carlo simulation in the paper. Enters the CENTRAL volume only, as (BSA/0.77)^1.10; the peripheral volume V2 and the intercompartmental clearance Q carry no covariates. BSA is separately the basis of the dose itself (3 g/m^2 for low-risk, 5 g/m^2 for intermediate/high-risk patients), so it acts on both sides of the exposure calculation.",
-      source_name        = "BSA"
+      notes = "Yu 2025 Table 1 (Modeling Data): median 0.77 m^2, range 0.36-1.71. The reference value 0.77 in the V1 equation is the cohort median, and is also the BSA of the 5-year-old, 19 kg virtual child used for every Monte Carlo simulation in the paper. Enters the CENTRAL volume only, as (BSA/0.77)^1.10; the peripheral volume V2 and the intercompartmental clearance Q carry no covariates. BSA is separately the basis of the dose itself (3 g/m^2 for low-risk, 5 g/m^2 for intermediate/high-risk patients), so it acts on both sides of the exposure calculation.",
+      source_name = "BSA"
     )
   )
 
@@ -87,58 +87,58 @@ Yu_2025_methotrexate <- function() {
   # point estimate was published for any of them, so none can be encoded.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator. Screened as a categorical covariate and rejected.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator. Screened as a categorical covariate and rejected.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Yu 2025 Methods 'Covariate Model' lists sex among the categorical variables evaluated; it does not appear in the final model of Table 2. Table 1 (Modeling Data): 105 male / 66 female. No point estimate published."
+      notes = "Yu 2025 Methods 'Covariate Model' lists sex among the categorical variables evaluated; it does not appear in the final model of Table 2. Table 1 (Modeling Data): 105 male / 66 female. No point estimate published."
     ),
     CREAT = list(
-      description        = "Serum creatinine. Screened as a renal-function covariate and rejected in favour of the derived eGFR.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine. Screened as a renal-function covariate and rejected in favour of the derived eGFR.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Methods lists Scr among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 0.29 mg/dL, range 0.07-2.09, mean 0.32. Serum creatinine is an input to the bedside-Schwartz CRCL that IS retained, but does not enter the model separately. No point estimate published."
+      notes = "Yu 2025 Methods lists Scr among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 0.29 mg/dL, range 0.07-2.09, mean 0.32. Serum creatinine is an input to the bedside-Schwartz CRCL that IS retained, but does not enter the model separately. No point estimate published."
     ),
     ALT = list(
-      description        = "Alanine aminotransferase. Screened as a hepatic-function covariate and rejected.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase. Screened as a hepatic-function covariate and rejected.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Methods lists ALT among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 29.50 U/L, range 3.30-1268.6. No point estimate published."
+      notes = "Yu 2025 Methods lists ALT among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 29.50 U/L, range 3.30-1268.6. No point estimate published."
     ),
     AST = list(
-      description        = "Aspartate aminotransferase. Screened as a hepatic-function covariate and rejected.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase. Screened as a hepatic-function covariate and rejected.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Yu 2025 Methods lists AST among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 36.30 U/L, range 10.20-1258. No point estimate published."
+      notes = "Yu 2025 Methods lists AST among the continuous variables evaluated; it does not appear in Table 2. Table 1 (Modeling Data): median 36.30 U/L, range 10.20-1258. No point estimate published."
     ),
     MTXNUM = list(
-      description        = "Number of prior high-dose methotrexate chemotherapy cycles. Screened as a categorical covariate and rejected.",
-      units              = "(count, treated as categorical by the source)",
-      type               = "categorical",
+      description = "Number of prior high-dose methotrexate chemotherapy cycles. Screened as a categorical covariate and rejected.",
+      units = "(count, treated as categorical by the source)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Yu 2025 Methods 'Covariate Model': 'The categorical variables were sex and the number of methotrexate chemotherapy cycles (MTXNUM)'. It does not appear in the final model of Table 2, and the paper never states how many levels MTXNUM took or how they were coded, so the column cannot be reconstructed even for a screening replication. No point estimate published."
+      notes = "Yu 2025 Methods 'Covariate Model': 'The categorical variables were sex and the number of methotrexate chemotherapy cycles (MTXNUM)'. It does not appear in the final model of Table 2, and the paper never states how many levels MTXNUM took or how they were coded, so the column cannot be reconstructed even for a screening replication. No point estimate published."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 214L,
-    n_studies        = 1L,
-    age_range        = "0.65-14 years",
-    age_median       = "5 years (mean 5.52) in the 171-patient model-building set; 6 years (mean 6.35, range 0.86-14) in the 43-patient external validation set",
-    weight_range     = "7-62.50 kg",
-    weight_median    = "19.50 kg (mean 22.43)",
-    sex_female_pct   = 38.6,
-    race_ethnicity   = "Not reported by the authors as a covariate. The Discussion describes the cohort as 'primarily Han Chinese children treated at our institution' and names this ethnic homogeneity as a limitation on external generalizability.",
-    disease_state    = "Children (age <= 18 years) with pathologically confirmed acute lymphoblastic leukaemia receiving high-dose methotrexate consolidation, risk-stratified into low-risk (LR) and intermediate/high-risk (I/HR) groups under the CCLG-ALL-2018 protocol (before October 2021) or the CCCG-ALL-2020 protocol (from October 2021). Inclusion required at least one plasma methotrexate concentration.",
-    dose_range       = "3 g/m^2 (low-risk) or 5 g/m^2 (intermediate/high-risk) as a 24-hour intravenous infusion, given as a loading-dose strategy: 10% of the total dose over 0.5 h followed by the remaining 90% over 23.5 h.",
-    regions          = "China: Anhui Provincial Children's Hospital, Hefei, Anhui Province. Single centre, May 2021 to November 2024.",
-    renal_function   = "Bedside-Schwartz eGFR median 160 mL/min/1.73 m^2 (range 21.90-405.65, mean 162.40) -- supranormal-skewed, as is usual in children. Serum creatinine median 0.29 mg/dL (range 0.07-2.09); blood urea nitrogen median 2.95 mmol/L (range 0.40-16.70).",
+    species = "human",
+    n_subjects = 214L,
+    n_studies = 1L,
+    age_range = "0.65-14 years",
+    age_median = "5 years (mean 5.52) in the 171-patient model-building set; 6 years (mean 6.35, range 0.86-14) in the 43-patient external validation set",
+    weight_range = "7-62.50 kg",
+    weight_median = "19.50 kg (mean 22.43)",
+    sex_female_pct = 38.6,
+    race_ethnicity = "Not reported by the authors as a covariate. The Discussion describes the cohort as 'primarily Han Chinese children treated at our institution' and names this ethnic homogeneity as a limitation on external generalizability.",
+    disease_state = "Children (age <= 18 years) with pathologically confirmed acute lymphoblastic leukaemia receiving high-dose methotrexate consolidation, risk-stratified into low-risk (LR) and intermediate/high-risk (I/HR) groups under the CCLG-ALL-2018 protocol (before October 2021) or the CCCG-ALL-2020 protocol (from October 2021). Inclusion required at least one plasma methotrexate concentration.",
+    dose_range = "3 g/m^2 (low-risk) or 5 g/m^2 (intermediate/high-risk) as a 24-hour intravenous infusion, given as a loading-dose strategy: 10% of the total dose over 0.5 h followed by the remaining 90% over 23.5 h.",
+    regions = "China: Anhui Provincial Children's Hospital, Hefei, Anhui Province. Single centre, May 2021 to November 2024.",
+    renal_function = "Bedside-Schwartz eGFR median 160 mL/min/1.73 m^2 (range 21.90-405.65, mean 162.40) -- supranormal-skewed, as is usual in children. Serum creatinine median 0.29 mg/dL (range 0.07-2.09); blood urea nitrogen median 2.95 mmol/L (range 0.40-16.70).",
     n_concentrations = 1672L,
-    notes            = "Baseline demographics from Yu 2025 Table 1. Of the 214 patients contributing 1,672 concentrations, 171 patients / 1,342 concentrations formed the model-building set and a randomly selected 20% (43 patients / 330 concentrations) formed the external validation set; the population fields above quote the model-building column except where stated. Retrospective, single-centre. Samples were assayed by enzyme-multiplied immunoassay (EMIT, Viva-ProE, Siemens) calibrated over 0.3-2600 umol/L, with an LLOQ of 0.17 umol/L; values below the LLOQ were excluded. Routine monitoring at 20-24 h, 44-48 h and 68-72 h after the start of infusion, continuing until methotrexate fell to <= 0.2 umol/L. Fit in NONMEM 7.4 with PsN 4.6.0 using FOCE-I. Internal evaluation by GOF plots, prediction-corrected VPC and a bootstrap (93.6% success rate, all estimates within 16% of the final model); external evaluation gave MPE -3.99%, MAPE 22.4%, F20 46.36% and F30 64.55%. The paper reports NO pharmacogenetic data (SLCO1B1, ABCC2, MTHFR), which the authors name as a limitation. The Monte Carlo dosing analysis (Tables 3-4, Figure 3) is a simulation from this same model, not a separate model."
+    notes = "Baseline demographics from Yu 2025 Table 1. Of the 214 patients contributing 1,672 concentrations, 171 patients / 1,342 concentrations formed the model-building set and a randomly selected 20% (43 patients / 330 concentrations) formed the external validation set; the population fields above quote the model-building column except where stated. Retrospective, single-centre. Samples were assayed by enzyme-multiplied immunoassay (EMIT, Viva-ProE, Siemens) calibrated over 0.3-2600 umol/L, with an LLOQ of 0.17 umol/L; values below the LLOQ were excluded. Routine monitoring at 20-24 h, 44-48 h and 68-72 h after the start of infusion, continuing until methotrexate fell to <= 0.2 umol/L. Fit in NONMEM 7.4 with PsN 4.6.0 using FOCE-I. Internal evaluation by GOF plots, prediction-corrected VPC and a bootstrap (93.6% success rate, all estimates within 16% of the final model); external evaluation gave MPE -3.99%, MAPE 22.4%, F20 46.36% and F30 64.55%. The paper reports NO pharmacogenetic data (SLCO1B1, ABCC2, MTHFR), which the authors name as a limitation. The Monte Carlo dosing analysis (Tables 3-4, Figure 3) is a simulation from this same model, not a separate model."
   )
 
   ini({

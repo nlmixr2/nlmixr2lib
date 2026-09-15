@@ -30,7 +30,7 @@ VanWart_2025_telavancin <- function() {
     sep = " "
   )
   vignette <- "VanWart_2025_telavancin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Plasma residual variability is stratified by study phase (Phases 1 and 4
   # pooled / Phase 2 / Phase 3), so the canonical propSd consumed by the error
@@ -39,12 +39,14 @@ VanWart_2025_telavancin <- function() {
   # antibacterial popPK paper with a phase-stratified sigma) and
   # vanIersel_2018_posaconazole.
   paper_specific_residual_sds <- c(
-    "propSdPhase14", "propSdPhase2", "propSdPhase3"
+    "propSdPhase14",
+    "propSdPhase2",
+    "propSdPhase3"
   )
 
   compartmentData <- list(
-    central     = list(analyte = "telavancin", units = "mg",   specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "telavancin", units = "mg",   specimen = "plasma", verified = TRUE),
+    central = list(analyte = "telavancin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "telavancin", units = "mg", specimen = "plasma", verified = TRUE),
     # The ELF biophase state holds a CONCENTRATION, not an amount: Table S4
     # reports only k13 and k30 with no ELF volume, and the resulting
     # steady-state ratio k13/k30 = 0.0695 reproduces the Table 3 median
@@ -55,23 +57,23 @@ VanWart_2025_telavancin <- function() {
     # ELF sub-model, which is required because Van Wart 2025 fitted the ELF
     # data sequentially with the plasma parameters fixed to the individual
     # post hoc values.
-    effect      = list(analyte = "telavancin", units = "mg/L", specimen = "epithelial lining fluid", verified = TRUE)
+    effect = list(analyte = "telavancin", units = "mg/L", specimen = "epithelial lining fluid", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1205,
-    n_studies      = 21,
+    species = "human",
+    n_subjects = 1205,
+    n_studies = 21,
     n_observations = 9088,
-    age_range      = "18-100 years",
-    age_mean       = "47.1 years (SD 18.4)",
-    weight_range   = "33.6-227 kg",
-    weight_mean    = "79.7 kg (SD 21.5)",
-    bmi_range      = "12.3-88.8 kg/m^2",
-    bmi_mean       = "27.3 kg/m^2 (SD 6.99)",
+    age_range = "18-100 years",
+    age_mean = "47.1 years (SD 18.4)",
+    weight_range = "33.6-227 kg",
+    weight_mean = "79.7 kg (SD 21.5)",
+    bmi_range = "12.3-88.8 kg/m^2",
+    bmi_mean = "27.3 kg/m^2 (SD 6.99)",
     sex_female_pct = 38.3,
     race_ethnicity = c(Caucasian = 76.1, Black = 13.1, Asian = 4.57, Other = 6.39),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled healthy subjects (33.9%) and patients with complicated skin and",
       "skin-structure infection (46.2%), hospital-acquired or",
       "ventilator-associated bacterial pneumonia (18.3%), or uncomplicated",
@@ -83,13 +85,13 @@ VanWart_2025_telavancin <- function() {
       "disease stage 5 on intermittent hemodialysis 0.66% (8 subjects);",
       "CLcr 83.7 mL/min/1.73 m^2 (SD 36.2), range 0-203"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "0.25-15 mg/kg intravenously over 0.5-2 h as single or once-daily",
       "multiple doses (Table S1); the approved regimen is 10 mg/kg q24h",
       "infused over 1 h"
     ),
-    regions        = "Not reported by region; includes a Phase 1 study in Japanese and Caucasian subjects",
-    notes          = paste(
+    regions = "Not reported by region; includes a Phase 1 study in Japanese and Caucasian subjects",
+    notes = paste(
       "Baseline demographics from Van Wart 2025 Table 1 (PK analysis",
       "population, N = 1,205). The ELF sub-model was informed by only the 20",
       "healthy subjects of Phase 1 study I6424-108a, each contributing a",
@@ -100,11 +102,11 @@ VanWart_2025_telavancin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power function on CL, Vc, CLd (= q) and Vp, normalized to the",
         "population mean of 79.7 kg (Table 1). Van Wart 2025 prints no",
         "covariate equations and states no normalization constant anywhere;",
@@ -113,42 +115,42 @@ VanWart_2025_telavancin <- function() {
         "'Coefficient (L)' / '(L/hour)' unit labels, the Figure 1 absolute CL",
         "scale, and the Table 3 steady-state AUC0-24)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power function on CL, Vc and Vp, normalized to the population mean of",
         "47.1 years (Table 1). Not retained on CLd: age on CLd entered forward",
         "selection at step 13 (Table S3) but was the single relationship",
         "removed during backward elimination (P = 0.05841), and Table 2",
         "reports no CLd-age power."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power function on Vp only, normalized to the population mean of 27.3",
         "kg/m^2 (Table 1). Retained alongside the Vp weight effect; Van Wart",
         "2025 Discussion reads the pair as separating body size from relative",
         "obesity. The exponent is negative (-0.308), so at a fixed weight a",
         "more obese subject has a smaller peripheral volume."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = "BSA-normalized creatinine clearance",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "BSA-normalized creatinine clearance",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives the renal clearance arm through a sigmoidal Hill",
         "function and is the one covariate exempted from backward elimination",
         "(included a priori). Van Wart 2025 Methods: computed with ideal body",
@@ -159,14 +161,14 @@ VanWart_2025_telavancin <- function() {
         "mL/min/1.73 m^2 scale (not normalized), since CLcr50 = 68.3 is",
         "reported on that scale."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Proportional shift on Vc only. The Table 2 coefficient is NEGATIVE",
         "(-0.0584) despite the row being labelled 'Vc-proportional increase",
         "for females', so females have 5.84% LOWER central volume than males;",
@@ -174,14 +176,14 @@ VanWart_2025_telavancin <- function() {
         "confirming the sign is not a typesetting artifact. Encoded as",
         "(1 + e_sexf_vc * SEXF)."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     DIS_HABP = list(
-      description        = "Hospital-acquired bacterial pneumonia infection-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hospital-acquired bacterial pneumonia infection-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not HABP; the shared all-zero reference across the four infection-type columns is the uninfected healthy subject)",
-      notes              = paste(
+      notes = paste(
         "Van Wart 2025 estimated ONE shared coefficient for the pooled",
         "bacteremia / HABP / VABP stratum on each of CL, Vc and Vp, so the",
         "shared coefficient is applied to (DIS_BACTEREMIA + DIS_HABP +",
@@ -189,79 +191,79 @@ VanWart_2025_telavancin <- function() {
         "distinct per the DIS_VABP register discipline: sibling analyses (and",
         "Cammarata 2024, which separates them) may resolve them individually."
       ),
-      source_name        = "Infection type = HABP"
+      source_name = "Infection type = HABP"
     ),
     DIS_VABP = list(
-      description        = "Ventilator-associated bacterial pneumonia infection-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ventilator-associated bacterial pneumonia infection-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not VABP; shared all-zero reference is the uninfected healthy subject)",
-      notes              = paste(
+      notes = paste(
         "Shares one coefficient with DIS_HABP and DIS_BACTEREMIA on CL, Vc and",
         "Vp. Van Wart 2025 Table 1 pools HABP and VABP into a single 18.3%",
         "demographic stratum and never reports them separately."
       ),
-      source_name        = "Infection type = VABP"
+      source_name = "Infection type = VABP"
     ),
     DIS_BACTEREMIA = list(
-      description        = "Uncomplicated bacteremia infection-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Uncomplicated bacteremia infection-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not bacteremia; shared all-zero reference is the uninfected healthy subject)",
-      notes              = paste(
+      notes = paste(
         "Uncomplicated Staphylococcus aureus bacteremia, contributed by the",
         "single Phase 2 study in Table 1 (18 subjects, 1.5%). Shares one",
         "coefficient with DIS_HABP and DIS_VABP on CL, Vc and Vp."
       ),
-      source_name        = "Infection type = bacteremia"
+      source_name = "Infection type = bacteremia"
     ),
     DIS_CSSSI = list(
-      description        = "Complicated skin and skin-structure infection infection-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Complicated skin and skin-structure infection infection-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not cSSSI; shared all-zero reference is the uninfected healthy subject)",
-      notes              = paste(
+      notes = paste(
         "The largest infected stratum (557 subjects, 46.2%). Carries its own",
         "coefficient on CL, Vc and Vp, separate from the pooled",
         "bacteremia / HABP / VABP coefficient. Distinct from the",
         "severity-WITHIN-cohort indicator DIS_INFECT_CSSSI_SEV."
       ),
-      source_name        = "Infection type = cSSSI"
+      source_name = "Infection type = cSSSI"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Intermittent-hemodialysis-active indicator (time-varying per-session gate)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent-hemodialysis-active indicator (time-varying per-session gate)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hemodialysis session running; also 0 for every subject not on dialysis)",
-      notes              = paste(
+      notes = paste(
         "Gates the additive dialysis clearance term. Van Wart 2025:",
         "'CL_DL was estimated only during those periods where intermittent",
         "hemodialysis (IHD) was active and was fixed to a value of zero when",
         "IHD was not operative.' Informed by only 8 CKD5 subjects, which is",
         "why the IIV on CL_DL is imprecise (%SEM 135)."
       ),
-      source_name        = "IHD active"
+      source_name = "IHD active"
     ),
     RRT_HEMODIAL_STATUS = list(
-      description        = "Dialysis-dependent (CKD5) subject indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Dialysis-dependent (CKD5) subject indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not dialysis-dependent)",
-      notes              = paste(
+      notes = paste(
         "Subject-level flag identifying the 8 chronic kidney disease stage 5",
         "subjects on intermittent hemodialysis (Table 1, 0.66%). Used only to",
         "gate the additive central-volume increase together with",
         "T_POST_HEMODIAL; the dialysis CLEARANCE term is gated by the",
         "time-varying RRT_HEMODIAL_ACTIVE instead."
       ),
-      source_name        = "CKD5"
+      source_name = "CKD5"
     ),
     T_POST_HEMODIAL = list(
-      description        = "Time elapsed since the end of the last intermittent-hemodialysis session",
-      units              = "h",
-      type               = "continuous",
+      description = "Time elapsed since the end of the last intermittent-hemodialysis session",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Used only through the > 48 h threshold that switches on",
         "the additive central-volume increase in dialysis-dependent subjects.",
         "Van Wart 2025: 'An additive increase in the central volume of",
@@ -272,33 +274,33 @@ VanWart_2025_telavancin <- function() {
         "additionally gated by RRT_HEMODIAL_STATUS so the value is inert",
         "outside the CKD5 stratum."
       ),
-      source_name        = "Time since last IHD session"
+      source_name = "Time since last IHD session"
     ),
     STUDY_TLV_PHASE2 = list(
-      description        = "Phase 2 study cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2 study cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 or Phase 4 study, when STUDY_TLV_PHASE3 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the Phase 2 proportional residual-error magnitude. Van Wart",
         "2025 estimated three constant-coefficient-of-variation terms by study",
         "phase, with Phases 1 and 4 combined into a single value; the additive",
         "component is shared across all phases. Paired with STUDY_TLV_PHASE3;",
         "both 0 selects the pooled Phase 1 / Phase 4 term."
       ),
-      source_name        = "Study phase = 2"
+      source_name = "Study phase = 2"
     ),
     STUDY_TLV_PHASE3 = list(
-      description        = "Phase 3 study cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 study cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase 1 or Phase 4 study, when STUDY_TLV_PHASE2 is also 0)",
-      notes              = paste(
+      notes = paste(
         "Selects the Phase 3 proportional residual-error magnitude. See",
         "STUDY_TLV_PHASE2 for the full phase-stratified residual-error",
         "rationale."
       ),
-      source_name        = "Study phase = 3"
+      source_name = "Study phase = 3"
     )
   )
 
@@ -312,18 +314,18 @@ VanWart_2025_telavancin <- function() {
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate (Methods) and summarised in Table 1",
         "(171 cm, SD 10.6, range 122-203) but retained on no parameter."
       )
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and summarised in Table 1 (1.92",
         "m^2, SD 0.259, range 1.22-2.96) but retained on no parameter. BSA",
         "still enters the model indirectly, because CRCL is normalized to",
@@ -332,9 +334,9 @@ VanWart_2025_telavancin <- function() {
     ),
     RACE_BLACK = list(
       description = "Black race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Race was screened as a categorical covariate (Methods) and summarised",
         "in Table 1 (Caucasian 76.1%, Black 13.1%, Asian 4.57%, Other 6.39%)",
         "but no race relationship survived forward selection (Table S3)."
@@ -342,9 +344,9 @@ VanWart_2025_telavancin <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened with race; not retained. See RACE_BLACK."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened with race; not retained. See RACE_BLACK."
     )
   )
 

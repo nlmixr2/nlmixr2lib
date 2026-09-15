@@ -33,56 +33,58 @@ Glatard_2025_octreotide <- function() {
   # SDs (Friberg_2012_voriconazole precedent) with an exponential IIV on
   # each (Chandasana 2024 / Yamamoto 2023 eta-on-epsilon precedent).
   paper_specific_etas <- c(
-    "etalogitffast", "etaexpSdCam2029", "etaexpSdIr"
+    "etalogitffast",
+    "etaexpSdCam2029",
+    "etaexpSdIr"
   )
   paper_specific_residual_sds <- c("expSdCam2029", "expSdIr")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling with reference weight 75 kg; exponent fixed at",
         "0.75 on CL and Q and at 1 on V and Vp (Table 3; Eqs 7-10)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     INJSITE_THIGH = list(
-      description        = "Subcutaneous injection into the thigh",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subcutaneous injection into the thigh",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Fractional change of -0.351 on MAT_fast",
         "for CAM2029 relative to abdominal injection (Table 3; Eq 11).",
         "Mutually exclusive with INJSITE_BUTTOCK; both 0 = abdomen.",
         "Applies to CAM2029 only -- octreotide IR absorption carries no",
         "injection-site effect in the published model."
       ),
-      source_name        = "Injection site"
+      source_name = "Injection site"
     ),
     INJSITE_BUTTOCK = list(
-      description        = "Subcutaneous injection into the buttock",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subcutaneous injection into the buttock",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Fractional change of -0.527 on MAT_fast",
         "for CAM2029 relative to abdominal injection (Table 3; Eq 11).",
         "Supported by only 1.5% of observations (from 5.1% of participants);",
         "the authors advise interpreting this effect with caution.",
         "Mutually exclusive with INJSITE_THIGH; both 0 = abdomen."
       ),
-      source_name        = "Injection site"
+      source_name = "Injection site"
     ),
     FORM_OCTREOTIDE_IR = list(
-      description        = "Immediate-release octreotide formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Immediate-release octreotide formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CAM2029 sustained-release depot)",
-      notes              = paste(
+      notes = paste(
         "Per-observation-record indicator selecting which of the two",
         "formulation-specific log-scale residual error terms applies",
         "(Table 3: additive RUV on the log scale 0.393 for CAM2029 vs",
@@ -93,17 +95,17 @@ Glatard_2025_octreotide <- function() {
         "octreotide IR and, after a washout, CAM2029, so the indicator is",
         "time-varying within a participant."
       ),
-      source_name        = "Treatment"
+      source_name = "Treatment"
     ),
     PRIOR_OCTREOTIDE = list(
-      description        = paste(
+      description = paste(
         "Record is a pre-first-dose baseline sample in a participant",
         "already receiving octreotide (LAR) or lanreotide therapy"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (octreotide-naive, or any record at/after the first study dose)",
-      notes              = paste(
+      notes = paste(
         "Per-record indicator, NOT a per-subject flag. Gates the estimated",
         "'concentration due to pre-treatment' (`rbase`, 0.433 ng/mL) that",
         "the authors added as a fudge factor for participants who entered",
@@ -117,7 +119,7 @@ Glatard_2025_octreotide <- function() {
         "adding `rbase` to the prediction and replacing the prediction",
         "with `rbase` are the same thing there."
       ),
-      source_name        = "Pre-treatment"
+      source_name = "Pre-treatment"
     )
   )
 
@@ -126,15 +128,21 @@ Glatard_2025_octreotide <- function() {
   # here to preserve the provenance of the paper's covariate screen.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       notes = "Exploratory covariate on CL and on the absorption parameters; not retained (Sect. 3.3)."
     ),
     SEXF = list(
-      description = "Female sex", units = "(binary)", type = "binary",
+      description = "Female sex",
+      units = "(binary)",
+      type = "binary",
       notes = "Exploratory covariate on CL and on the absorption parameters; not retained (Sect. 3.3)."
     ),
     BMI = list(
-      description = "Body mass index", units = "kg/m^2", type = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       notes = paste(
         "Tested on the absorption parameters rather than WT because that was",
         "judged more appropriate for the subcutaneous route; not retained",
@@ -142,15 +150,21 @@ Glatard_2025_octreotide <- function() {
       )
     ),
     CRCL = list(
-      description = "Creatinine clearance", units = "mL/min", type = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       notes = "Exploratory covariate on CL; not retained (Sect. 3.3)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
       notes = "Exploratory covariate on CL; not retained (Sect. 3.3)."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       notes = paste(
         "Reached significance as an exponential effect on CL in the SCM",
         "forward step (Online Resource 4, dOFV -15.88) but was deliberately",
@@ -160,7 +174,8 @@ Glatard_2025_octreotide <- function() {
       )
     ),
     DEVICE_AI = list(
-      description = "Pre-filled pen (autoinjector) vs pre-filled syringe", units = "(binary)",
+      description = "Pre-filled pen (autoinjector) vs pre-filled syringe",
+      units = "(binary)",
       type = "binary",
       notes = paste(
         "Drug delivery system / device design; no evidence of an effect on",
@@ -170,26 +185,26 @@ Glatard_2025_octreotide <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
-    depot3      = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "octreotide", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
+    depot3 = list(analyte = "octreotide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "octreotide", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "octreotide", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 216L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 216L,
+    n_studies = 3L,
     n_observations = 4098L,
-    age_range      = "18-83 years",
-    age_median     = "47 years",
-    weight_range   = "50.5-144 kg",
-    weight_median  = "79.8 kg",
-    bmi_range      = "19.2-50.7 kg/m^2",
+    age_range = "18-83 years",
+    age_median = "47 years",
+    weight_range = "50.5-144 kg",
+    weight_median = "79.8 kg",
+    bmi_range = "19.2-50.7 kg/m^2",
     sex_female_pct = 58,
     race_ethnicity = c(White = 96, Asian = 2.3, Black = 0.46, Other = 0.93),
-    disease_state  = paste(
+    disease_state = paste(
       "75 healthy participants (phase 1 trial HS-19-664) and 141 patients",
       "with acromegaly (phase 3 trials HS-18-633 and HS-19-647). Patients",
       "entering the phase 3 trials were on a stable monthly dose of",
@@ -197,7 +212,7 @@ Glatard_2025_octreotide <- function() {
       "marked PK difference between healthy participants and patients was",
       "identified."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "CAM2029 10 or 20 mg SC every 4 weeks (single dose and repeated",
       "dosing); octreotide IR 0.25 mg SC every 8 h (4 doses) in the",
       "phase 1 trial."
@@ -209,8 +224,8 @@ Glatard_2025_octreotide <- function() {
       "criterion, so severe renal or hepatic impairment could not be",
       "evaluated."
     ),
-    regions        = "Not reported (EudraCT 2020-002643-35; NCT04076462; NCT04125836)",
-    notes          = paste(
+    regions = "Not reported (EudraCT 2020-002643-35; NCT04076462; NCT04125836)",
+    notes = paste(
       "Baseline characteristics from Table 1 and Online Resource 3.",
       "Injection sites across the 4098 observations: abdomen 88.0%,",
       "thigh 10.3%, buttock 1.5%, missing 0.2%. Assay LLOQ 0.0286 ng/mL",

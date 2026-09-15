@@ -10,7 +10,7 @@ Singu_2024_gentamicin <- function() {
     sep = " "
   )
   vignette <- "Singu_2024_gentamicin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Residual-error parameters that do not follow the bare canonical
   # propSd / addSd / expSd naming because the source stratifies residual
@@ -25,11 +25,11 @@ Singu_2024_gentamicin <- function() {
 
   covariateData <- list(
     WT_BIRTH = list(
-      description        = "Birth weight (time-fixed per subject).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Birth weight (time-fixed per subject).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric (power) effect on both CL and Vc, centred on the cohort",
         "median birth weight 1.57 kg (Table 1, range 0.90-3.92 kg). Table 3",
         "footnote: 'CLTV and VTV are the clearance and volume of distribution",
@@ -41,14 +41,14 @@ Singu_2024_gentamicin <- function() {
         "(Results Section 3.4). The covariate is BIRTH weight, not a",
         "time-varying current weight."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PNA = list(
-      description        = "Postnatal age (chronological time since birth).",
-      units              = "months",
-      type               = "continuous",
+      description = "Postnatal age (chronological time since birth).",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Singu 2024 reports postnatal age in DAYS in Table 1 (median 4.0,",
         "range 1.0-17) and in YEARS inside the maturation function (the",
         "typical neonate has PNA 4 days = 0.011 years; PNA50 = 0.0332",
@@ -60,14 +60,14 @@ Singu_2024_gentamicin <- function() {
         "footnote). The first day of life is defined as day 1, so PNA is",
         "strictly positive and FMAT is well defined."
       ),
-      source_name        = "PNA"
+      source_name = "PNA"
     ),
     WBC = list(
-      description        = "White blood cell count (marker of sepsis).",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "White blood cell count (marker of sepsis).",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters CL as a power effect on the ratio of NATURAL-LOG-transformed",
         "values: (log(WBC) / 2.39)^-0.560. Equation 3 states 'WBC was",
         "log-transformed' and Results Section 3.4 defines the typical neonate",
@@ -80,16 +80,16 @@ Singu_2024_gentamicin <- function() {
         "decline in eGFR. This is the first report of WBC as a covariate on",
         "gentamicin CL in neonates."
       ),
-      source_name        = "WBC"
+      source_name = "WBC"
     )
   )
 
   covariatesDataExcluded <- list(
     GA = list(
       description = "Gestational age at birth (weeks). Screened during covariate model building.",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = paste(
+      units = "weeks",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Cohort median 32 weeks (range 24-40;",
         "Table 1); 43/52 (82.7%) were preterm (< 37 weeks). Methods Section",
         "2.4.4 lists gestational age among the covariates tested",
@@ -99,9 +99,9 @@ Singu_2024_gentamicin <- function() {
     ),
     CREAT = list(
       description = "Serum creatinine (mg/dL); tested as its reciprocal 1/SCr. Screened during covariate model building.",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/dL",
+      type = "continuous",
+      notes = paste(
         "Screened as the reciprocal 1/SCr to approximate kidney function and",
         "'to reduce collinearity in the covariate vector' (Results Section",
         "3.4); not retained. Cohort median 0.72 mg/dL (range 0.20-1.66;",
@@ -114,19 +114,19 @@ Singu_2024_gentamicin <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 50L,
-    n_enrolled      = 52L,
-    n_studies       = 1L,
-    n_observations  = 100L,
-    age_range       = "GA 24-40 weeks (median 32) at birth; PNA 1.0-17 days (median 4.0) at sampling",
-    age_median      = "GA 32 weeks; PNA 4.0 days (0.011 years)",
-    weight_range    = "birth weight 0.90-3.92 kg",
-    weight_median   = "birth weight 1.57 kg",
-    sex_female_pct  = 44.2,
-    race_ethnicity  = "Not reported (single-centre Namibian neonatal unit).",
-    ga_range        = "24-40 weeks (median 32); 43/52 (82.7%) preterm at < 37 weeks GA",
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 50L,
+    n_enrolled = 52L,
+    n_studies = 1L,
+    n_observations = 100L,
+    age_range = "GA 24-40 weeks (median 32) at birth; PNA 1.0-17 days (median 4.0) at sampling",
+    age_median = "GA 32 weeks; PNA 4.0 days (0.011 years)",
+    weight_range = "birth weight 0.90-3.92 kg",
+    weight_median = "birth weight 1.57 kg",
+    sex_female_pct = 44.2,
+    race_ethnicity = "Not reported (single-centre Namibian neonatal unit).",
+    ga_range = "24-40 weeks (median 32); 43/52 (82.7%) preterm at < 37 weeks GA",
+    disease_state = paste(
       "Neonates admitted to the Neonatal Unit of the Maternity Ward,",
       "Windhoek Central Hospital, with suspected or confirmed sepsis.",
       "Sepsis was suspected on clinical symptoms (temperature spike,",
@@ -138,15 +138,15 @@ Singu_2024_gentamicin <- function() {
       "11.0 x 10^9/L (range 1.67-37.4); median serum creatinine 0.72 mg/dL",
       "(range 0.20-1.66); median height 41 cm (range 30-53)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Gentamicin 5 mg/kg as an intravenous bolus over 3-5 s every 24 h",
       "(median dose 7.9 mg, range 4.0-17 mg), co-administered with",
       "benzylpenicillin 100,000 IU/kg every 12 h or ampicillin 50 mg/kg",
       "every 8 h."
     ),
-    co_medication   = "Benzylpenicillin 100,000 IU/kg q12h or ampicillin 50 mg/kg q8h.",
-    regions         = "Single centre (Windhoek Central Hospital, Windhoek, Namibia).",
-    notes           = paste(
+    co_medication = "Benzylpenicillin 100,000 IU/kg q12h or ampicillin 50 mg/kg q8h.",
+    regions = "Single centre (Windhoek Central Hospital, Windhoek, Namibia).",
+    notes = paste(
       "Prospective, non-randomised observational study. 52 neonates",
       "enrolled, 50 PK-evaluable, each contributing exactly two serum",
       "samples for 100 observations total. Sampling used the informative",

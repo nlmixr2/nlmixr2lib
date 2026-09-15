@@ -16,26 +16,26 @@ Roelofsen_2023_cefotaxime <- function() {
   # repository default for a mathematical peripheral compartment and is not a
   # paper-sourced claim.
   compartmentData <- list(
-    central     = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the Chronic Kidney Disease Epidemiology Collaboration (CKD-EPI) equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the Chronic Kidney Disease Epidemiology Collaboration (CKD-EPI) equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roelofsen 2023 Sect. 2.3 names the CKD-EPI equation as the estimating formula. Table 1 reports the cohort median 57 mL/min/1.73 m^2 (range 4-347), and 57 is exactly the normalizing constant printed in the Sect. 3.2 clearance equation, consistent with Sect. 2.6 ('Continuous covariates were normalized to the population median'). The cohort spans severe renal impairment through augmented renal clearance. One patient had an eGFR above 300 mL/min/1.73 m^2; the Discussion reports that capping that subject at 141 (the second-highest value) did not markedly change the estimates. The Sect. 2.7 Monte Carlo simulations evaluated only 10, 30, 50, 80 and 100 mL/min/1.73 m^2, explicitly to avoid extrapolating beyond the range in which the covariate predominantly occurred. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the creatinine-based CKD-EPI estimate. Note that the paper's abstract glosses eGFR as '(creatinine clearance)', but Sect. 2.3 is the authority and specifies CKD-EPI.",
-      source_name        = "eGFR"
+      notes = "Roelofsen 2023 Sect. 2.3 names the CKD-EPI equation as the estimating formula. Table 1 reports the cohort median 57 mL/min/1.73 m^2 (range 4-347), and 57 is exactly the normalizing constant printed in the Sect. 3.2 clearance equation, consistent with Sect. 2.6 ('Continuous covariates were normalized to the population median'). The cohort spans severe renal impairment through augmented renal clearance. One patient had an eGFR above 300 mL/min/1.73 m^2; the Discussion reports that capping that subject at 141 (the second-highest value) did not markedly change the estimates. The Sect. 2.7 Monte Carlo simulations evaluated only 10, 30, 50, 80 and 100 mL/min/1.73 m^2, explicitly to avoid extrapolating beyond the range in which the covariate predominantly occurred. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; the assay form here is the creatinine-based CKD-EPI estimate. Note that the paper's abstract glosses eGFR as '(creatinine clearance)', but Sect. 2.3 is the authority and specifies CKD-EPI.",
+      source_name = "eGFR"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Roelofsen 2023 Table 1 reports the cohort median 26 g/L (range 11-47), and 26 is exactly the normalizing constant printed in the Sect. 3.2 clearance equation. The paper reports albumin in SI g/L, which is already the canonical unit, so no conversion is applied in model(). The effect is POSITIVE (higher albumin gives higher clearance), which the Discussion notes is the opposite of the direction expected from protein-binding displacement for a drug with only ~30% protein binding; the authors' preferred interpretation is that higher albumin marks less severe illness and therefore fewer physiological changes affecting PK, while noting that SOFA and APACHE II scores did not themselves reach significance on clearance. The Sect. 2.7 simulations evaluated only 20, 30 and 40 g/L, to avoid extrapolating beyond the range in which the covariate predominantly occurred.",
-      source_name        = "albumin"
+      notes = "Roelofsen 2023 Table 1 reports the cohort median 26 g/L (range 11-47), and 26 is exactly the normalizing constant printed in the Sect. 3.2 clearance equation. The paper reports albumin in SI g/L, which is already the canonical unit, so no conversion is applied in model(). The effect is POSITIVE (higher albumin gives higher clearance), which the Discussion notes is the opposite of the direction expected from protein-binding displacement for a drug with only ~30% protein binding; the authors' preferred interpretation is that higher albumin marks less severe illness and therefore fewer physiological changes affecting PK, while noting that SOFA and APACHE II scores did not themselves reach significance on clearance. The Sect. 2.7 simulations evaluated only 20, 30 and 40 g/L, to avoid extrapolating beyond the range in which the covariate predominantly occurred.",
+      source_name = "albumin"
     )
   )
 
@@ -46,127 +46,127 @@ Roelofsen_2023_cefotaxime <- function() {
   # (dOFV 3.84) and backward elimination p < 0.001 (dOFV 10.83).
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 64 years (range 23-85).",
-      source_name        = "AGE"
+      notes = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 64 years (range 23-85).",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Screened per Sect. 2.3/2.6 (supplementary control stream column `GEN`); not retained. Table 1 reports 57 male / 35 female.",
-      source_name        = "GEN"
+      notes = "Screened per Sect. 2.3/2.6 (supplementary control stream column `GEN`); not retained. Table 1 reports 57 male / 35 female.",
+      source_name = "GEN"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6 (supplementary control stream column `WGT`); not retained. Table 1 median 76 kg (range 45-150). The final model therefore carries NO body-size term, so clearance and volumes are absolute values for a typical ICU adult rather than weight-normalized.",
-      source_name        = "WGT"
+      notes = "Screened per Sect. 2.3/2.6 (supplementary control stream column `WGT`); not retained. Table 1 median 76 kg (range 45-150). The final model therefore carries NO body-size term, so clearance and volumes are absolute values for a typical ICU adult rather than weight-normalized.",
+      source_name = "WGT"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.6 (supplementary control stream column `BMI`); not retained. Table 1 median 26 kg/m^2 (range 17.8-46.3).",
-      source_name        = "BMI"
+      notes = "Screened per Sect. 2.6 (supplementary control stream column `BMI`); not retained. Table 1 median 26 kg/m^2 (range 17.8-46.3).",
+      source_name = "BMI"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6 (supplementary control stream column `CRE`); not retained as a standalone covariate, the CKD-EPI eGFR built from it having entered instead. Table 1 median 98 umol/L (range 5-913).",
-      source_name        = "CRE"
+      notes = "Screened per Sect. 2.3/2.6 (supplementary control stream column `CRE`); not retained as a standalone covariate, the CKD-EPI eGFR built from it having entered instead. Table 1 median 98 umol/L (range 5-913).",
+      source_name = "CRE"
     ),
     UREA = list(
-      description        = "Serum urea",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum urea",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6 (supplementary control stream column `URE`); not retained. No summary value is tabulated.",
-      source_name        = "URE"
+      notes = "Screened per Sect. 2.3/2.6 (supplementary control stream column `URE`); not retained. No summary value is tabulated.",
+      source_name = "URE"
     ),
     CRP = list(
-      description        = "C-reactive protein",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 127 mg/L (range 0-488).",
-      source_name        = "CRP"
+      notes = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 127 mg/L (range 0-488).",
+      source_name = "CRP"
     ),
     WBC = list(
-      description        = "White blood cell (leucocyte) count",
-      units              = "10^9 cells/L",
-      type               = "continuous",
+      description = "White blood cell (leucocyte) count",
+      units = "10^9 cells/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 13 x 10^9 cells/L (range 0.9-100).",
-      source_name        = "WBC"
+      notes = "Screened per Sect. 2.3/2.6; not retained. Table 1 median 13 x 10^9 cells/L (range 0.9-100).",
+      source_name = "WBC"
     ),
     TEMP = list(
-      description        = "Body temperature",
-      units              = "degC",
-      type               = "continuous",
+      description = "Body temperature",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. No summary value is tabulated.",
-      source_name        = "TEMP"
+      notes = "Screened per Sect. 2.3/2.6; not retained. No summary value is tabulated.",
+      source_name = "TEMP"
     ),
     SOFA = list(
-      description        = "Sequential Organ Failure Assessment score",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Sequential Organ Failure Assessment score",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. The Discussion states explicitly that SOFA showed NO change in objective function value during forward covariate analysis. Table 1 median 13 (range 1-21).",
-      source_name        = "SOF"
+      notes = "Screened per Sect. 2.3/2.6; not retained. The Discussion states explicitly that SOFA showed NO change in objective function value during forward covariate analysis. Table 1 median 13 (range 1-21).",
+      source_name = "SOF"
     ),
     APACHE2 = list(
-      description        = "Acute Physiology and Chronic Health Evaluation II score",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Acute Physiology and Chronic Health Evaluation II score",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6; not retained. The Discussion states explicitly that APACHE II produced an INCREASE in objective function value during forward covariate analysis. Table 1 median 23 (range 7-71).",
-      source_name        = "APA"
+      notes = "Screened per Sect. 2.3/2.6; not retained. The Discussion states explicitly that APACHE II produced an INCREASE in objective function value during forward covariate analysis. Table 1 median 23 (range 7-71).",
+      source_name = "APA"
     ),
     RRT_CRRT_STATUS = list(
-      description        = "Continuous renal replacement therapy status indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on CRRT)",
-      notes              = "Screened per Sect. 2.3/2.6 as a binary covariate; not retained. Table 1 reports 5 of 92 patients (5.4%) on CRRT. The Discussion records two important caveats: CRRT was registered only at BASELINE because duration and continuation during sampling were not captured, and excluding the 5 CRRT patients did not markedly influence the PK estimates. The authors state the effect of CRRT on cefotaxime PK needs further investigation, so this model should not be used to describe patients on renal replacement therapy.",
-      source_name        = "EPI"
+      notes = "Screened per Sect. 2.3/2.6 as a binary covariate; not retained. Table 1 reports 5 of 92 patients (5.4%) on CRRT. The Discussion records two important caveats: CRRT was registered only at BASELINE because duration and continuation during sampling were not captured, and excluding the 5 CRRT patients did not markedly influence the PK estimates. The authors state the effect of CRRT on cefotaxime PK needs further investigation, so this model should not be used to describe patients on renal replacement therapy.",
+      source_name = "EPI"
     ),
     FLUIDBAL = list(
-      description        = "Cumulative fluid balance",
-      units              = "L",
-      type               = "continuous",
+      description = "Cumulative fluid balance",
+      units = "L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened per Sect. 2.3/2.6 (supplementary control stream column `VBL`); not retained. No summary value is tabulated.",
-      source_name        = "VBL"
+      notes = "Screened per Sect. 2.3/2.6 (supplementary control stream column `VBL`); not retained. No summary value is tabulated.",
+      source_name = "VBL"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 92L,
-    n_studies        = 1L,
-    n_sites          = 2L,
+    species = "human",
+    n_subjects = 92L,
+    n_studies = 1L,
+    n_sites = 2L,
     n_concentrations = 437L,
-    age_range        = "23-85 years (Table 1 median 64)",
-    age_median       = "64 years (range 23-85)",
-    weight_range     = "45-150 kg",
-    weight_median    = "76 kg (range 45-150)",
-    sex_female_pct   = 38.0,
-    disease_state    = "Critically ill adults admitted to the intensive care unit with an expected stay of more than 72 hours, receiving intravenous cefotaxime as the systemic component of selective digestive decontamination (SDD) with or without additional treatment. The cohort is deliberately heterogeneous (general ICU plus trauma). Excluded: patients under 18 years, admission for burn wounds, cefotaxime discontinued before sampling, and absence of written informed consent. Table 1 severity: APACHE II median 23 (range 7-71); SOFA median 13 (range 1-21); C-reactive protein median 127 mg/L (range 0-488); leucocytes median 13 x 10^9 cells/L (range 0.9-100). Five patients (5.4%) were on CRRT at baseline.",
-    dose_range       = "Cefotaxime 1 g intravenously every 6 h (80 patients) or every 4 h (12 patients), per the SDD protocol and at the discretion of the attending physician. Infusion durations in the study ranged from 1 minute to 1 hour.",
-    regions          = "Netherlands (Erasmus University Medical Center and Maasstad Hospital, Rotterdam)",
-    renal_function   = "CKD-EPI eGFR median 57 mL/min/1.73 m^2 (range 4-347); serum creatinine median 98 umol/L (range 5-913). The cohort spans severe renal impairment through augmented renal clearance.",
-    notes            = "Prospective observational PK/PD sub-study of the EXPAT trial (Netherlands Trial Registry NTR 5632), enrolling January 2016 to June 2017. 93 patients were enrolled and 1 was excluded for a physiologically impossible concentration-time profile, leaving 92. Five samples per patient were drawn within a single dosing interval on day 2 of therapy (15-30 min pre-dose, 15-30 min post-administration, 1 h and 3 h after end of infusion, and immediately pre-next-dose); of 453 analysed samples, 16 were excluded and 7 were not drawn, giving 437 observations. Total (not free) plasma cefotaxime was assayed by validated UPLC-MS/MS with a calibration range of 0.25-12.5 mg/L. Two samples (0.5%) were below the limit of quantification and were dropped rather than imputed. Model fit in NONMEM 7.4.2 with FOCE-INTERACTION on untransformed data (supplementary control stream S1 uses ADVAN5). Covariate selection by forward inclusion at p < 0.05 (dOFV 3.84) then backward elimination at p < 0.001 (dOFV 10.83). Reported eta shrinkage in the final model: 2.2% on CL, 13.3% on Vc, 17.3% on Q. The desacetylcefotaxime metabolite was NOT measured; the authors argue its contribution is about 5% of cefotaxime's antimicrobial activity. A protein binding of 30% was assumed for the target-attainment simulations (taken from Aardema et al.), so free concentrations are 0.70 times the total concentrations this model predicts."
+    age_range = "23-85 years (Table 1 median 64)",
+    age_median = "64 years (range 23-85)",
+    weight_range = "45-150 kg",
+    weight_median = "76 kg (range 45-150)",
+    sex_female_pct = 38.0,
+    disease_state = "Critically ill adults admitted to the intensive care unit with an expected stay of more than 72 hours, receiving intravenous cefotaxime as the systemic component of selective digestive decontamination (SDD) with or without additional treatment. The cohort is deliberately heterogeneous (general ICU plus trauma). Excluded: patients under 18 years, admission for burn wounds, cefotaxime discontinued before sampling, and absence of written informed consent. Table 1 severity: APACHE II median 23 (range 7-71); SOFA median 13 (range 1-21); C-reactive protein median 127 mg/L (range 0-488); leucocytes median 13 x 10^9 cells/L (range 0.9-100). Five patients (5.4%) were on CRRT at baseline.",
+    dose_range = "Cefotaxime 1 g intravenously every 6 h (80 patients) or every 4 h (12 patients), per the SDD protocol and at the discretion of the attending physician. Infusion durations in the study ranged from 1 minute to 1 hour.",
+    regions = "Netherlands (Erasmus University Medical Center and Maasstad Hospital, Rotterdam)",
+    renal_function = "CKD-EPI eGFR median 57 mL/min/1.73 m^2 (range 4-347); serum creatinine median 98 umol/L (range 5-913). The cohort spans severe renal impairment through augmented renal clearance.",
+    notes = "Prospective observational PK/PD sub-study of the EXPAT trial (Netherlands Trial Registry NTR 5632), enrolling January 2016 to June 2017. 93 patients were enrolled and 1 was excluded for a physiologically impossible concentration-time profile, leaving 92. Five samples per patient were drawn within a single dosing interval on day 2 of therapy (15-30 min pre-dose, 15-30 min post-administration, 1 h and 3 h after end of infusion, and immediately pre-next-dose); of 453 analysed samples, 16 were excluded and 7 were not drawn, giving 437 observations. Total (not free) plasma cefotaxime was assayed by validated UPLC-MS/MS with a calibration range of 0.25-12.5 mg/L. Two samples (0.5%) were below the limit of quantification and were dropped rather than imputed. Model fit in NONMEM 7.4.2 with FOCE-INTERACTION on untransformed data (supplementary control stream S1 uses ADVAN5). Covariate selection by forward inclusion at p < 0.05 (dOFV 3.84) then backward elimination at p < 0.001 (dOFV 10.83). Reported eta shrinkage in the final model: 2.2% on CL, 13.3% on Vc, 17.3% on Q. The desacetylcefotaxime metabolite was NOT measured; the authors argue its contribution is about 5% of cefotaxime's antimicrobial activity. A protein binding of 30% was assumed for the target-attainment simulations (taken from Aardema et al.), so free concentrations are 0.70 times the total concentrations this model predicts."
   )
 
   ini({

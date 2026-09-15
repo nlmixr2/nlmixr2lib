@@ -25,7 +25,7 @@ Rolsma_2025_meropenem <- function() {
     sep = " "
   )
   vignette <- "Rolsma_2025_betalactams_cysticfibrosis"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
     central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE)
@@ -33,11 +33,11 @@ Rolsma_2025_meropenem <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance computed on lean body weight (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance computed on lean body weight (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source name CLCR,LBW. Supplemental Table 6 abbreviation list:",
         "'CL_CR,LBW, creatinine clearance calculated according to the",
         "Cockcroft-Gault equation using lean body weight (subjects > 12 years",
@@ -57,14 +57,14 @@ Rolsma_2025_meropenem <- function() {
         "at or above 90 mL/min (Table 1, Figure 3): 'increased creatinine",
         "clearance led to reduced PTA' (Abstract)."
       ),
-      source_name        = "CLCR,LBW"
+      source_name = "CLCR,LBW"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source name TBW. Drives allometric scaling of the NON-RENAL",
         "clearance arm only, with a 61 kg reference and an exponent of 0.75,",
         "read from the Supplemental Table 6B unit string 'L/h/61kg^0.75 TBW'.",
@@ -82,16 +82,16 @@ Rolsma_2025_meropenem <- function() {
         "CLCR as an important driver of clearance'. Cohort 62.21 +/- 19.51 kg",
         "(median 61.30, range 36.3 to 137.0) per Supplemental Table 3."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     )
   )
 
   covariatesDataExcluded <- list(
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "BMI bands the non-renal clearance arm in the source's fitted model,",
         "but the source instructs that the high-BMI arm must not be used for",
         "prediction, so no BMI effect is encoded here and the packaged model",
@@ -115,9 +115,9 @@ Rolsma_2025_meropenem <- function() {
     ),
     FFM = list(
       description = "Fat-free mass by the Janmahasatian formula (reported by the source as lean body weight)",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a size descriptor and NOT retained as a direct covariate",
         "on any meropenem parameter -- total body weight described the",
         "non-renal clearance arm instead (Results 'PopPK Modeling': 'total",
@@ -133,9 +133,9 @@ Rolsma_2025_meropenem <- function() {
     ),
     CFTRMOD = list(
       description = "CFTR modulator use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened and explicitly rejected. Results 'PopPK Modeling': 'Other",
         "covariates, such as sample acquisition site, CFTR mutation, use of",
         "CFTR modulators ..., or complications of CF (eg, diabetes) did not",
@@ -146,9 +146,9 @@ Rolsma_2025_meropenem <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods 'PopPK Model Development' covariate list) but not",
         "retained. The meropenem cohort is almost entirely adult -- children",
         "under 17 years were 6% of meropenem cases -- so the age range",
@@ -159,18 +159,18 @@ Rolsma_2025_meropenem <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 1.68 +/-",
         "0.28 m^2 (median 1.70, range 1.2 to 2.5) per Supplemental Table 3."
       )
     ),
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. Cohort 167.01",
         "+/- 10.97 cm (median 167.65, range 145.0 to 188.0) per Supplemental",
         "Table 3."
@@ -178,9 +178,9 @@ Rolsma_2025_meropenem <- function() {
     ),
     SEXF = list(
       description = "Sex indicator (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened (Methods covariate list) but not retained. 48% female among",
         "meropenem enrollments (24 of 50) per Supplemental Table 2. Sex",
         "nevertheless enters the model indirectly, as an input to both the",
@@ -191,17 +191,17 @@ Rolsma_2025_meropenem <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
-    n_enrollments  = 50L,
-    age_range      = "13 to 65 years",
-    age_median     = "29.5 years (mean 30.9 +/- 11.0)",
-    weight_range   = "36.3 to 137.0 kg total body weight",
-    weight_median  = "61.30 kg total body weight (mean 62.21 +/- 19.51); lean body weight median 49.15 kg (mean 45.27 +/- 11.00)",
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
+    n_enrollments = 50L,
+    age_range = "13 to 65 years",
+    age_median = "29.5 years (mean 30.9 +/- 11.0)",
+    weight_range = "36.3 to 137.0 kg total body weight",
+    weight_median = "61.30 kg total body weight (mean 62.21 +/- 19.51); lean body weight median 49.15 kg (mean 45.27 +/- 11.00)",
     sex_female_pct = 100 * 24 / 50,
     race_ethnicity = c(White = 98, `Multi-Racial` = 2, `Hispanic or Latino (ethnicity)` = 2),
-    disease_state  = paste(
+    disease_state = paste(
       "Cystic fibrosis, admitted for a pulmonary exacerbation or for",
       "microbial eradication therapy. 96% of the meropenem group carried at",
       "least one copy of the DF508 mutation. 48% reported any CFTR modulator",
@@ -222,7 +222,7 @@ Rolsma_2025_meropenem <- function() {
       "mL/min). The cohort distribution of CLCR,LBW is not tabulated in the",
       "paper or supplement."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous infusion, standard of care as ordered by the treating",
       "team. The majority of doses were 2000 mg (n = 918); the remaining 80",
       "doses were 500 to 1800 mg. Most doses in participants under 17 years",
@@ -230,8 +230,8 @@ Rolsma_2025_meropenem <- function() {
       "mg/kg (n = 30). Infusion durations in hours were 0.05 (3 doses), 0.5",
       "(85 doses) and 3 (910 doses)."
     ),
-    regions        = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
-    notes          = paste(
+    regions = "United States (Vanderbilt University Medical Center, Nashville TN; University of Iowa Hospital, Iowa City IA).",
+    notes = paste(
       "Opportunistic sampling during hospitalization, January 2018 to March",
       "2020. 192 of the 667 total plasma samples in the study were meropenem.",
       "Assay LC-MS/MS, linear 0.1 to 150 mg/L for meropenem. NONMEM 7.4.3",

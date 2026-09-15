@@ -1,66 +1,66 @@
 Thomson_1989_lisinopril <- function() {
   description <- "One-compartment population PK model for oral lisinopril (an ACE inhibitor) at steady state in elderly and renal-disease hypertensive adults (Thomson 1989). First-order absorption with apparent clearance CL/F driven by body weight, serum creatinine, age, and a binary compensated-cardiac-failure indicator; apparent volume V/F and absorption rate ka are population means without retained covariate effects."
-  reference   <- "Thomson AH, Kelly JG, Whiting B. Lisinopril population pharmacokinetics in elderly and renal disease patients with hypertension. Br J Clin Pharmacol 1989;27(1):57-65. doi:10.1111/j.1365-2125.1989.tb05335.x."
-  vignette    <- "Thomson_1989_lisinopril"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Thomson AH, Kelly JG, Whiting B. Lisinopril population pharmacokinetics in elderly and renal disease patients with hypertension. Br J Clin Pharmacol 1989;27(1):57-65. doi:10.1111/j.1365-2125.1989.tb05335.x."
+  vignette <- "Thomson_1989_lisinopril"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lisinopril", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lisinopril", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lisinopril", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the steady-state PK profile (kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the steady-state PK profile (kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear multiplicative effect on CL/F: CL/F = 0.251 * WT * (other factors). Reference cohort mean 72 kg (Thomson 1989 'Data set'). The CL/F coefficient theta1 = 0.251 L/(h*kg) -- not a separate fixed allometric exponent. Thomson 1989 Discussion warns that extrapolation above 90 kg is unwise because only four obese patients were included.",
-      source_name        = "wt"
+      notes = "Linear multiplicative effect on CL/F: CL/F = 0.251 * WT * (other factors). Reference cohort mean 72 kg (Thomson 1989 'Data set'). The CL/F coefficient theta1 = 0.251 L/(h*kg) -- not a separate fixed allometric exponent. Thomson 1989 Discussion warns that extrapolation above 90 kg is unwise because only four obese patients were included.",
+      source_name = "wt"
     ),
     AGE = list(
-      description        = "Age at the steady-state PK profile (years)",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at the steady-state PK profile (years)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F with reference 65 years: (AGE/65)^(-0.451) per Thomson 1989 Eq. and Table 3. Cohort mean 65 years; the renal-disease trial enrolled two patients under 40 years, so Thomson 1989 Discussion warns against extrapolation below 40 years.",
-      source_name        = "Age"
+      notes = "Power effect on CL/F with reference 65 years: (AGE/65)^(-0.451) per Thomson 1989 Eq. and Table 3. Cohort mean 65 years; the renal-disease trial enrolled two patients under 40 years, so Thomson 1989 Discussion warns against extrapolation below 40 years.",
+      source_name = "Age"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration at the steady-state PK profile (umol/L)",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration at the steady-state PK profile (umol/L)",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL/F with reference 70 umol/L: (CREAT/70)^(-0.887) per Thomson 1989 Eq. and Table 3. Captures the dominant renal-function effect on lisinopril clearance; Thomson 1989 reports this non-linear creatinine-only encoding outperformed both the linear-on-Cr and the Jelliffe-nomogram creatinine-clearance covariate (Table 2 models 2-7).",
-      source_name        = "Cr"
+      notes = "Power effect on CL/F with reference 70 umol/L: (CREAT/70)^(-0.887) per Thomson 1989 Eq. and Table 3. Captures the dominant renal-function effect on lisinopril clearance; Thomson 1989 reports this non-linear creatinine-only encoding outperformed both the linear-on-Cr and the Jelliffe-nomogram creatinine-clearance covariate (Table 2 models 2-7).",
+      source_name = "Cr"
     ),
     DIS_CHF = list(
-      description        = "Compensated congestive heart failure indicator at study entry",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Compensated congestive heart failure indicator at study entry",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diagnosed cardiac failure)",
-      notes              = "Multiplicative covariate on CL/F: CL/F is multiplied by 0.645 (~35% lower) when DIS_CHF = 1 per Thomson 1989 Table 2 model 11 and Eq. for cardiac failure. Encoded as theta6^DIS_CHF in the model() body so that DIS_CHF = 0 gives factor 1 and DIS_CHF = 1 gives factor 0.645. Time-fixed per subject; 13 of 60 patients in the analysis cohort had compensated cardiac failure. Thomson 1989 Discussion notes that all CHF patients were on background cardiac glycosides, and a likelihood comparison favoured the disease indicator over the concomitant-medication indicator (Table 2 model 11 LLD = 24 vs model 12 LLD = 15), so the effect is attributed to the disease, not the drug.",
-      source_name        = "chf"
+      notes = "Multiplicative covariate on CL/F: CL/F is multiplied by 0.645 (~35% lower) when DIS_CHF = 1 per Thomson 1989 Table 2 model 11 and Eq. for cardiac failure. Encoded as theta6^DIS_CHF in the model() body so that DIS_CHF = 0 gives factor 1 and DIS_CHF = 1 gives factor 0.645. Time-fixed per subject; 13 of 60 patients in the analysis cohort had compensated cardiac failure. Thomson 1989 Discussion notes that all CHF patients were on background cardiac glycosides, and a likelihood comparison favoured the disease indicator over the concomitant-medication indicator (Table 2 model 11 LLD = 24 vs model 12 LLD = 15), so the effect is attributed to the disease, not the drug.",
+      source_name = "chf"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 60L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 60L,
+    n_studies = 2L,
     n_observations = 381L,
-    age_range      = "Adults (cohort mean 65 years; two renal-disease patients under 40 years; elderly trial inclusion was 65+ years)",
-    age_median     = "mean 65 years",
-    weight_range   = "Adults (cohort mean 72 kg; only four obese patients > 90 kg)",
-    weight_median  = "mean 72 kg",
+    age_range = "Adults (cohort mean 65 years; two renal-disease patients under 40 years; elderly trial inclusion was 65+ years)",
+    age_median = "mean 65 years",
+    weight_range = "Adults (cohort mean 72 kg; only four obese patients > 90 kg)",
+    weight_median = "mean 72 kg",
     sex_female_pct = NA_real_,
-    disease_state  = "Hypertensive adults from two multicentre trials: Trial I (n=40, elderly hypertension; age >= 65 years; mild-to-moderate systolic/diastolic or isolated systolic hypertension) and Trial II (n=20, renal-disease hypertension stratified by creatinine clearance 30-60, <30, or on haemodialysis). 13 patients had compensated cardiac failure on background cardiac glycosides; one patient was on haemodialysis.",
-    dose_range     = "Oral lisinopril 2.5-40 mg daily (median 10 mg daily) at the steady-state profile.",
-    regions        = "United Kingdom and Ireland (multicentre)",
-    notes          = "Steady-state concentration-time profiles (samples at 0, 1, 2, 4, 6, 8, 12 h after the morning dose) collected after at least 2 weeks at a constant dose. Lisinopril measured by radioimmunoassay (Hichens et al. 1981). 79 of the initial 140 enrolled patients were excluded for missing dosing/sampling, missing biochemistry, or unreliable compliance; one outlier with tenfold-elevated concentrations was also excluded after preliminary investigation. Comorbidities and concomitant medications detailed in Thomson 1989 Table 1; 22 of 60 patients (37%) received no other drugs during the lisinopril study period. Demographic distributions (age, weight, serum creatinine) shown in Thomson 1989 Figure 1; dose and peak-concentration distributions in Figure 2."
+    disease_state = "Hypertensive adults from two multicentre trials: Trial I (n=40, elderly hypertension; age >= 65 years; mild-to-moderate systolic/diastolic or isolated systolic hypertension) and Trial II (n=20, renal-disease hypertension stratified by creatinine clearance 30-60, <30, or on haemodialysis). 13 patients had compensated cardiac failure on background cardiac glycosides; one patient was on haemodialysis.",
+    dose_range = "Oral lisinopril 2.5-40 mg daily (median 10 mg daily) at the steady-state profile.",
+    regions = "United Kingdom and Ireland (multicentre)",
+    notes = "Steady-state concentration-time profiles (samples at 0, 1, 2, 4, 6, 8, 12 h after the morning dose) collected after at least 2 weeks at a constant dose. Lisinopril measured by radioimmunoassay (Hichens et al. 1981). 79 of the initial 140 enrolled patients were excluded for missing dosing/sampling, missing biochemistry, or unreliable compliance; one outlier with tenfold-elevated concentrations was also excluded after preliminary investigation. Comorbidities and concomitant medications detailed in Thomson 1989 Table 1; 22 of 60 patients (37%) received no other drugs during the lisinopril study period. Demographic distributions (age, weight, serum creatinine) shown in Thomson 1989 Figure 1; dose and peak-concentration distributions in Figure 2."
   )
 
   ini({

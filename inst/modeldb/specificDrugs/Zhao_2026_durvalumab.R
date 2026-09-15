@@ -19,114 +19,117 @@ Zhao_2026_durvalumab <- function() {
   # LLOQ-ULOQ range of 0.05-3.2 ug/mL on the assayed dilution, so the specimen
   # is serum rather than plasma.
   compartmentData <- list(
-    central     = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "durvalumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effects on CL (exponent 0.378) and Vc (exponent 0.503), both normalized to 69.4 kg. The normalizer 69.4 is printed inside the CL_cont.cov and Vc,i equations in Results 3.2; it is the reference weight INHERITED from the previous five-study model, not this analysis's own pooled median of 69.6 kg (Table 1, Total column). The two differ by only 0.2 kg here, but do not conflate them -- the same 69.4 kg normalizer appears in the sibling branch of this lineage, Abegesah_2025_durvalumab.R.",
-      source_name        = "WT"
+      notes = "Power effects on CL (exponent 0.378) and Vc (exponent 0.503), both normalized to 69.4 kg. The normalizer 69.4 is printed inside the CL_cont.cov and Vc,i equations in Results 3.2; it is the reference weight INHERITED from the previous five-study model, not this analysis's own pooled median of 69.6 kg (Table 1, Total column). The two differ by only 0.2 kg here, but do not conflate them -- the same 69.4 kg normalizer appears in the sibling branch of this lineage, Abegesah_2025_durvalumab.R.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (exponent -0.526) normalized to 39 g/L, printed in the CL_cont.cov equation in Results 3.2. Reported and used in SI g/L (Table 1 median 39.0 g/L, range 3.70-78.0), so no g/dL conversion applies. Albumin is the most influential covariate in the model: Results 3.2 reports a +21.3% change in steady-state CL at the 5th percentile of albumin, the largest single covariate effect in the Figure 1C tornado plot. The same 39 g/L reference is used by the sibling AstraZeneca models Abegesah_2025_durvalumab.R and Hwang_2022_tremelimumab.R.",
-      source_name        = "alb"
+      notes = "Power effect on CL (exponent -0.526) normalized to 39 g/L, printed in the CL_cont.cov equation in Results 3.2. Reported and used in SI g/L (Table 1 median 39.0 g/L, range 3.70-78.0), so no g/dL conversion applies. Albumin is the most influential covariate in the model: Results 3.2 reports a +21.3% change in steady-state CL at the 5th percentile of albumin, the largest single covariate effect in the Figure 1C tornado plot. The same 39 g/L reference is used by the sibling AstraZeneca models Abegesah_2025_durvalumab.R and Hwang_2022_tremelimumab.R.",
+      source_name = "alb"
     ),
     CRCL = list(
-      description        = "Baseline creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Baseline creatinine clearance (raw Cockcroft-Gault style, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (exponent 0.112) normalized to 85.66 mL/min, printed in the CL_cont.cov equation in Results 3.2. Table 1 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register default mL/min/1.73 m^2 (same precedent as the sibling durvalumab models Abegesah_2025_durvalumab.R, which carries the identical 85.66 normalizer, and deVries_2025_durvalumab.R, whose Baverel 2018 normalizer is 85.65).",
-      source_name        = "CrCL"
+      notes = "Power effect on CL (exponent 0.112) normalized to 85.66 mL/min, printed in the CL_cont.cov equation in Results 3.2. Table 1 reports 'Creatinine clearance (mL/min)' with no BSA normalization, so the per-model unit is mL/min rather than the register default mL/min/1.73 m^2 (same precedent as the sibling durvalumab models Abegesah_2025_durvalumab.R, which carries the identical 85.66 normalizer, and deVries_2025_durvalumab.R, whose Baverel 2018 normalizer is 85.65).",
+      source_name = "CrCL"
     ),
     SEXF = list(
-      description        = "Sex (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative effects for females on CL (1 - 0.166) and Vc (1 - 0.144), printed in the CL_cat.cov and Vc,i equations in Results 3.2 with male as the explicit reference (the '1_male' factor). Direction agrees with every sibling durvalumab model: Abegesah_2025_durvalumab.R (female CL 1 - 0.161, Vc 1 - 0.140), Ogasawara_2020_durvalumab.R (female CL 0.791) and deVries_2025_durvalumab.R (female CL 0.857).",
-      source_name        = "sex"
+      notes = "Multiplicative effects for females on CL (1 - 0.166) and Vc (1 - 0.144), printed in the CL_cat.cov and Vc,i equations in Results 3.2 with male as the explicit reference (the '1_male' factor). Direction agrees with every sibling durvalumab model: Abegesah_2025_durvalumab.R (female CL 1 - 0.161, Vc 1 - 0.140), Ogasawara_2020_durvalumab.R (female CL 0.791) and deVries_2025_durvalumab.R (female CL 0.857).",
+      source_name = "sex"
     ),
     ECOG_GE1 = list(
-      description        = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline ECOG performance status >= 1 (1 = ECOG 1 or worse, 0 = ECOG 0)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG performance status 0, 'normal activity')",
-      notes              = "Multiplicative effect on CL of (1 - 0.0604), printed in the CL_cat.cov equation in Results 3.2 as the paper's binary 'ECOGbin', whose note defines ECOGbin = 0 as 'normal activity' and ECOGbin = 1 as 'restricted activity or in bed <= 50% of the time'. Table 2 records those three strata as 40.5 / 59.2 / 0.0934 percent, so the ordinal score collapses to this binary indicator. Unlike the sibling Abegesah_2025_durvalumab.R -- where the Fig. 1 tornado plot contradicts the equation's sign -- Zhao 2026 is self-consistent: Table 3 and the printed equation both give -0.0604.",
-      source_name        = "ECOGbin"
+      notes = "Multiplicative effect on CL of (1 - 0.0604), printed in the CL_cat.cov equation in Results 3.2 as the paper's binary 'ECOGbin', whose note defines ECOGbin = 0 as 'normal activity' and ECOGbin = 1 as 'restricted activity or in bed <= 50% of the time'. Table 2 records those three strata as 40.5 / 59.2 / 0.0934 percent, so the ordinal score collapses to this binary indicator. Unlike the sibling Abegesah_2025_durvalumab.R -- where the Fig. 1 tornado plot contradicts the equation's sign -- Zhao 2026 is self-consistent: Table 3 and the printed equation both give -0.0604.",
+      source_name = "ECOGbin"
     ),
     CONMED_CHEMO = list(
-      description        = "Durvalumab co-administered with standard-of-care platinum-based chemotherapy (without tremelimumab)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Durvalumab co-administered with standard-of-care platinum-based chemotherapy (without tremelimumab)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (durvalumab monotherapy)",
-      notes              = "The paper's 'comb' column is a three-level categorical defined in the Results 3.2 equation note (comb = 0 durvalumab monotherapy, comb = 1 durvalumab + SOC chemotherapy, comb = 2 durvalumab + tremelimumab + SOC chemotherapy) carrying multiplicative CL factors of 1, (1 - 0.0701) and (1 - 0.0578) respectively. It is stored here as two canonical columns, CONMED_CHEMO and CONMED_TREMELIMUMAB, so that each column keeps its register meaning; the model reconstructs the comb = 1 stratum as CONMED_CHEMO * (1 - CONMED_TREMELIMUMAB). IMPORTANT -- this covariate is TIME-VARYING within AEGEAN: the neoadjuvant phase (durvalumab 1500 mg Q3W x 4 with platinum doublet) is comb = 1, whereas the post-surgical adjuvant phase (durvalumab 1500 mg Q4W x 12 as monotherapy) is comb = 0. All published AEGEAN exposure metrics (Tables S3 and S4) are derived from the neoadjuvant phase, i.e. at comb = 1.",
-      source_name        = "comb"
+      notes = "The paper's 'comb' column is a three-level categorical defined in the Results 3.2 equation note (comb = 0 durvalumab monotherapy, comb = 1 durvalumab + SOC chemotherapy, comb = 2 durvalumab + tremelimumab + SOC chemotherapy) carrying multiplicative CL factors of 1, (1 - 0.0701) and (1 - 0.0578) respectively. It is stored here as two canonical columns, CONMED_CHEMO and CONMED_TREMELIMUMAB, so that each column keeps its register meaning; the model reconstructs the comb = 1 stratum as CONMED_CHEMO * (1 - CONMED_TREMELIMUMAB). IMPORTANT -- this covariate is TIME-VARYING within AEGEAN: the neoadjuvant phase (durvalumab 1500 mg Q3W x 4 with platinum doublet) is comb = 1, whereas the post-surgical adjuvant phase (durvalumab 1500 mg Q4W x 12 as monotherapy) is comb = 0. All published AEGEAN exposure metrics (Tables S3 and S4) are derived from the neoadjuvant phase, i.e. at comb = 1.",
+      source_name = "comb"
     ),
     CONMED_TREMELIMUMAB = list(
-      description        = "Durvalumab co-administered with tremelimumab (always on a chemotherapy backbone in this dataset)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Durvalumab co-administered with tremelimumab (always on a chemotherapy backbone in this dataset)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no tremelimumab co-administration)",
-      notes              = "Identifies the paper's comb = 2 stratum (durvalumab + tremelimumab + SOC chemotherapy, the POSEIDON triplet arm per Table S1), carrying a multiplicative CL factor of (1 - 0.0578) per Table 3 row 'COMB 2 on CL'. Because no tremelimumab-without-chemotherapy patients exist in this pooled dataset, CONMED_TREMELIMUMAB = 1 implies CONMED_CHEMO = 1 and this column alone selects the comb = 2 factor. No AEGEAN patient receives tremelimumab, so this covariate is 0 throughout the validation vignette. This is the mirror image of the sibling model Hwang_2022_tremelimumab.R, where tremelimumab is the analyte and durvalumab co-administration is the covariate.",
-      source_name        = "comb"
+      notes = "Identifies the paper's comb = 2 stratum (durvalumab + tremelimumab + SOC chemotherapy, the POSEIDON triplet arm per Table S1), carrying a multiplicative CL factor of (1 - 0.0578) per Table 3 row 'COMB 2 on CL'. Because no tremelimumab-without-chemotherapy patients exist in this pooled dataset, CONMED_TREMELIMUMAB = 1 implies CONMED_CHEMO = 1 and this column alone selects the comb = 2 factor. No AEGEAN patient receives tremelimumab, so this covariate is 0 throughout the validation vignette. This is the mirror image of the sibling model Hwang_2022_tremelimumab.R, where tremelimumab is the analyte and durvalumab co-administration is the covariate.",
+      source_name = "comb"
     )
   )
 
   covariatesDataExcluded <- list(
     LDH = list(
       description = "Baseline lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "DELIBERATELY REMOVED BY THIS ANALYSIS. LDH on CL was a retained covariate of the previous five-study model (and is still carried by the parallel branch Abegesah_2025_durvalumab.R, exponent 0.0515 normalized to 247 U/L). Results 3.2 states that 'the significance of all covariates in the previous model except for LDH was confirmed' and that 'the final model removed the LDH covariate and retained the other covariates from the previous model'. Accordingly no LDH term appears in Table 3 or in the printed CL_cont.cov equation, and none is implemented here. Table 1 still reports the distribution (Total median 235 U/L; AEGEAN patients had notably lower LDH, median 184 U/L, than previous studies, median 247 U/L) -- which is the stated reason the covariate lost significance when AEGEAN was added."
+      units = "U/L",
+      type = "continuous",
+      notes = "DELIBERATELY REMOVED BY THIS ANALYSIS. LDH on CL was a retained covariate of the previous five-study model (and is still carried by the parallel branch Abegesah_2025_durvalumab.R, exponent 0.0515 normalized to 247 U/L). Results 3.2 states that 'the significance of all covariates in the previous model except for LDH was confirmed' and that 'the final model removed the LDH covariate and retained the other covariates from the previous model'. Accordingly no LDH term appears in Table 3 or in the printed CL_cont.cov equation, and none is implemented here. Table 1 still reports the distribution (Total median 235 U/L; AEGEAN patients had notably lower LDH, median 184 U/L, than previous studies, median 247 U/L) -- which is the stated reason the covariate lost significance when AEGEAN was added."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained. Table 1 reports a median of 63.0 years (range 19.0-96.0) and Table 2 the categories < 65 / 65-75 / >= 75 at 55.4 / 34.5 / 10.0 percent. Results 3.3 states that the impact of age categories on durvalumab exposure was investigated and that 'none of the investigated covariates were considered to have a significant effect on durvalumab exposure'. No age coefficient appears in Table 3."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained. Table 1 reports a median of 63.0 years (range 19.0-96.0) and Table 2 the categories < 65 / 65-75 / >= 75 at 55.4 / 34.5 / 10.0 percent. Results 3.3 states that the impact of age categories on durvalumab exposure was investigated and that 'none of the investigated covariates were considered to have a significant effect on durvalumab exposure'. No age coefficient appears in Table 3."
     ),
     ADA_POS = list(
       description = "Treatment-emergent anti-drug antibody (TEADA) positive status",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported and discussed but explicitly NOT evaluated as a PK covariate: 'The number of TEADA-positive patients was small (3.58%) in the PopPK dataset, and TEADA was not evaluated as a covariate' (Results 3.3). For the 25 TEADA-positive AEGEAN patients the empirical-Bayes exposures differed from TEADA-negative patients by < 20% (Figure S3), so durvalumab PK is unlikely to be affected by ADA status. Table 2 gives 115/3212 (3.58%) positive overall and 25/385 (6.49%) within AEGEAN."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported and discussed but explicitly NOT evaluated as a PK covariate: 'The number of TEADA-positive patients was small (3.58%) in the PopPK dataset, and TEADA was not evaluated as a covariate' (Results 3.3). For the 25 TEADA-positive AEGEAN patients the empirical-Bayes exposures differed from TEADA-negative patients by < 20% (Figure S3), so durvalumab PK is unlikely to be affected by ADA status. Table 2 gives 115/3212 (3.58%) positive overall and 25/385 (6.49%) within AEGEAN."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3205L,
-    n_studies      = 6L,
+    species = "human",
+    n_subjects = 3205L,
+    n_studies = 6L,
     n_observations = 12466L,
-    age_range      = "19.0-96.0 years",
-    age_median     = "63.0 years",
-    weight_range   = "31.0-175 kg",
-    weight_median  = "69.6 kg",
+    age_range = "19.0-96.0 years",
+    age_median = "63.0 years",
+    weight_range = "31.0-175 kg",
+    weight_median = "69.6 kg",
     sex_female_pct = 35.0,
     race_ethnicity = c(
-      White = 67.3, Asian = 25.1, Black = 2.33, Other = 3.80,
+      White = 67.3,
+      Asian = 25.1,
+      Black = 2.33,
+      Other = 3.80,
       `American Indian/Alaskan Native` = 1.15,
       `Native Hawaiian or Other Pacific Islander` = 0.249,
       Multiple = 0.0623
     ),
-    disease_state  = "Solid tumours (primary indication non-small-cell lung cancer 70.6%, advanced solid tumour 20.6%, small-cell lung cancer 8.75%; by tumour type lung 79.4%, bladder 5.95%, other 14.7%)",
-    dose_range     = "Pooled across six studies (Table S1): 0.1-10 mg/kg every 2 weeks, 15 mg/kg every 3 weeks and 20 mg/kg every 4 weeks in Study 1108; 10 mg/kg every 2 weeks in ATLANTIC and PACIFIC; 1500 mg every 3 weeks in CASPIAN; 1500 mg every 3 weeks (+/- tremelimumab 75 mg) then 1500 mg every 4 weeks in POSEIDON; and in AEGEAN 1500 mg every 3 weeks for 4 neoadjuvant cycles with platinum-based chemotherapy followed by 1500 mg every 4 weeks for 12 adjuvant cycles. All intravenous. Doses < 3 mg/kg were excluded from the population PK analysis for lack of dose proportionality (Table S1 footnote a).",
-    regions        = "Global (Europe 38.5%, North America 33.5%, Asia 22.6%, South America 3.61%, Africa 0.778%, other 0.996%)",
+    disease_state = "Solid tumours (primary indication non-small-cell lung cancer 70.6%, advanced solid tumour 20.6%, small-cell lung cancer 8.75%; by tumour type lung 79.4%, bladder 5.95%, other 14.7%)",
+    dose_range = "Pooled across six studies (Table S1): 0.1-10 mg/kg every 2 weeks, 15 mg/kg every 3 weeks and 20 mg/kg every 4 weeks in Study 1108; 10 mg/kg every 2 weeks in ATLANTIC and PACIFIC; 1500 mg every 3 weeks in CASPIAN; 1500 mg every 3 weeks (+/- tremelimumab 75 mg) then 1500 mg every 4 weeks in POSEIDON; and in AEGEAN 1500 mg every 3 weeks for 4 neoadjuvant cycles with platinum-based chemotherapy followed by 1500 mg every 4 weeks for 12 adjuvant cycles. All intravenous. Doses < 3 mg/kg were excluded from the population PK analysis for lack of dose proportionality (Table S1 footnote a).",
+    regions = "Global (Europe 38.5%, North America 33.5%, Asia 22.6%, South America 3.61%, Africa 0.778%, other 0.996%)",
     treatment_regimen = "Durvalumab monotherapy, durvalumab + standard-of-care chemotherapy, and durvalumab + tremelimumab + standard-of-care chemotherapy (the paper's comb = 0, 1 and 2 strata). AEGEAN contributes comb = 1 during the neoadjuvant phase and comb = 0 during the adjuvant phase.",
     ecog_distribution = "Normal activity 40.5%, restricted activity 59.2%, in bed <= 50% of the time 0.0934%, missing 0.125%",
     renal_function = "By baseline creatinine clearance (Table 2 footnote b): normal (>= 90 mL/min) 43.0%, mild (60-<90) 40.6%, moderate (30-<60) 14.4%, severe (< 30) 1.96%",
     hepatic_function = "NCI-ODWG: normal 86.4%, mild 11.8%, moderate 0.436%, severe 0.0311%, missing 1.34%",
-    notes          = "Baseline demographics per Tables 1 and 2 of Zhao 2026, which summarise N = 3212. The final analysis dataset is 12 466 PK samples from 3205 patients: 2827 evaluable patients from the five previous studies plus 385 from AEGEAN gives 3212, from which 7 were excluded for physiologically impossible covariate values in previous analyses, and 145 below-LLOQ samples (1.16%) were dropped (Results 3.1). Studies pooled (Table S1): CD-ON-MEDI4736-1108 (Study 1108, phase 1/2, advanced solid tumours, n = 1012), D4191C00003 (ATLANTIC, phase 2, locally advanced/metastatic NSCLC, n = 443), D4191C00001 (PACIFIC, phase 3, unresectable stage III NSCLC, n = 473), D419QC00001 (CASPIAN, phase 3, extensive-stage SCLC, n = 260), D419MC00004 (POSEIDON, phase 3, metastatic NSCLC, n = 326) and D9106C00001 (AEGEAN, phase 3, resectable stage II to IIIB (N2) NSCLC, n = 385 evaluable). Other pooled baseline medians: creatinine clearance 85.5 mL/min (25.7-718), albumin 39.0 g/L (3.70-78.0), LDH 235 U/L (4.00-15 800), AST 20.0 IU/L, ALT 18.0 IU/L, total bilirubin 0.420 mg/dL, neutrophil-to-lymphocyte ratio 3.30 (63.6% missing). Treatment-emergent ADA positive 3.58%. The covariate reference values used inside the model equations (weight 69.4 kg, creatinine clearance 85.66 mL/min, albumin 39 g/L) are inherited from the previous five-study model, not this analysis's own pooled medians (69.6 kg, 85.5 mL/min, 39.0 g/L)."
+    notes = "Baseline demographics per Tables 1 and 2 of Zhao 2026, which summarise N = 3212. The final analysis dataset is 12 466 PK samples from 3205 patients: 2827 evaluable patients from the five previous studies plus 385 from AEGEAN gives 3212, from which 7 were excluded for physiologically impossible covariate values in previous analyses, and 145 below-LLOQ samples (1.16%) were dropped (Results 3.1). Studies pooled (Table S1): CD-ON-MEDI4736-1108 (Study 1108, phase 1/2, advanced solid tumours, n = 1012), D4191C00003 (ATLANTIC, phase 2, locally advanced/metastatic NSCLC, n = 443), D4191C00001 (PACIFIC, phase 3, unresectable stage III NSCLC, n = 473), D419QC00001 (CASPIAN, phase 3, extensive-stage SCLC, n = 260), D419MC00004 (POSEIDON, phase 3, metastatic NSCLC, n = 326) and D9106C00001 (AEGEAN, phase 3, resectable stage II to IIIB (N2) NSCLC, n = 385 evaluable). Other pooled baseline medians: creatinine clearance 85.5 mL/min (25.7-718), albumin 39.0 g/L (3.70-78.0), LDH 235 U/L (4.00-15 800), AST 20.0 IU/L, ALT 18.0 IU/L, total bilirubin 0.420 mg/dL, neutrophil-to-lymphocyte ratio 3.30 (63.6% missing). Treatment-emergent ADA positive 3.58%. The covariate reference values used inside the model equations (weight 69.4 kg, creatinine clearance 85.66 mL/min, albumin 39 g/L) are inherited from the previous five-study model, not this analysis's own pooled medians (69.6 kg, 85.5 mL/min, 39.0 g/L)."
   )
 
   ini({

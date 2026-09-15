@@ -23,17 +23,17 @@ Zhao_2026_venetoclax <- function() {
   # biological matrix. Verified against Zhao 2026 Methods (oral venetoclax,
   # plasma concentrations by UHPLC with carbamazepine internal standard).
   compartmentData <- list(
-    depot   = list(analyte = "venetoclax", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "venetoclax", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "venetoclax", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form effect on CL/F with exponent 1.4, mean-centred at 1.27 m^2 ",
         "(Zhao 2026 Eq. 6 and Table 3; 1.27 m^2 is the cohort mean BSA reported ",
         "in Table 1, so the centring constant equals the cohort mean and is a ",
@@ -45,14 +45,14 @@ Zhao_2026_venetoclax <- function() {
         "(120 mg/m^2 on day 1 and 240 mg/m^2 on days 2-28 when not ",
         "co-administered with azoles). Baseline value in the source dataset."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     TPRO = list(
-      description        = "Total serum protein",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power-form effect on V/F with exponent 1.7, mean-centred at 62 g/L ",
         "(Zhao 2026 Eq. 5 and Table 3; 62 g/L is the cohort median and is ",
         "within rounding of the cohort mean 62.53 g/L reported in Table 1). ",
@@ -64,14 +64,14 @@ Zhao_2026_venetoclax <- function() {
         "(Discussion). Venetoclax is >99% plasma-protein bound. Baseline value ",
         "in the source dataset."
       ),
-      source_name        = "TP"
+      source_name = "TP"
     ),
     CONMED_AZOLE = list(
-      description        = "Concomitant triazole antifungal therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant triazole antifungal therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant triazole antifungal)",
-      notes              = paste0(
+      notes = paste0(
         "Exponential effect on CL/F with coefficient -1.1 (Zhao 2026 Eq. 6 and ",
         "Table 3), i.e. CL/F is multiplied by exp(-1.1) = 0.333, a 67% ",
         "reduction. Pooled over posaconazole and voriconazole only -- both ",
@@ -83,7 +83,7 @@ Zhao_2026_venetoclax <- function() {
         "describe a post-cessation lag, so unlike Kirubakaran 2022 tacrolimus ",
         "no carry-forward window should be assumed."
       ),
-      source_name        = "Triazole"
+      source_name = "Triazole"
     )
   )
 
@@ -96,55 +96,55 @@ Zhao_2026_venetoclax <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a mean-centred power covariate; not retained. Zhao 2026 chose not to model CYP3A maturation explicitly (unlike Badawi 2022 pediatric venetoclax), citing Phoenix NLME limitations (Discussion)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a mean-centred power covariate; not retained. Zhao 2026 chose not to model CYP3A maturation explicitly (unlike Badawi 2022 pediatric venetoclax), citing Phoenix NLME limitations (Discussion)."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a mean-centred power covariate; not retained."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a mean-centred power covariate; not retained."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a mean-centred power covariate; not retained. Most enrolled patients had normal liver function, limiting the power to detect a hepatic effect (Limitations)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a mean-centred power covariate; not retained. Most enrolled patients had normal liver function, limiting the power to detect a hepatic effect (Limitations)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a mean-centred power covariate; not retained. Most enrolled patients had normal renal function (Limitations)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a mean-centred power covariate; not retained. Most enrolled patients had normal renal function (Limitations)."
     ),
     LDH = list(
       description = "Serum lactate dehydrogenase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a mean-centred power covariate; not retained."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a mean-centred power covariate; not retained."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 1L,
     n_concentrations = 225L,
-    age_range      = "0.3-18 years",
-    age_median     = "12 years",
-    age_mean       = "11 years (SD 4.6)",
-    weight_range   = "8-112 kg",
-    weight_median  = "45 kg",
-    weight_mean    = "42 kg (SD 21.2)",
-    height_range   = "63-190 cm",
-    height_median  = "156 cm",
-    bsa_range      = "0.33-2.35 m^2",
-    bsa_median     = "1.38 m^2",
-    bsa_mean       = "1.27 m^2 (SD 0.4; the model centring constant)",
+    age_range = "0.3-18 years",
+    age_median = "12 years",
+    age_mean = "11 years (SD 4.6)",
+    weight_range = "8-112 kg",
+    weight_median = "45 kg",
+    weight_mean = "42 kg (SD 21.2)",
+    height_range = "63-190 cm",
+    height_median = "156 cm",
+    bsa_range = "0.33-2.35 m^2",
+    bsa_median = "1.38 m^2",
+    bsa_mean = "1.27 m^2 (SD 0.4; the model centring constant)",
     sex_female_pct = 51.0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Pediatric hematological malignancy: acute myeloid leukemia 64/96 ",
       "(66.7%), acute lymphoblastic leukemia 20/96 (20.8%), non-Hodgkin ",
       "lymphoma 5/96 (5.2%), mixed lineage acute leukemia 4/96 (4.2%), ",
@@ -152,14 +152,14 @@ Zhao_2026_venetoclax <- function() {
       "(1.0%) (Table 1). Malignancy type was screened as a categorical ",
       "covariate but not retained."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Oral venetoclax once daily. Stepwise dose escalation over 2-3 days to a ",
       "maintenance dose of 100-400 mg once daily, adjusted for response, ",
       "adverse reactions and tolerance (Study Design). Clinical practice at ",
       "the centre doses on BSA: 120 mg/m^2 on day 1 and 240 mg/m^2 on days ",
       "2-28 when not co-administered with azole antifungals (Discussion)."
     ),
-    regions        = "Single centre, Peking University People's Hospital, Beijing, China",
+    regions = "Single centre, Peking University People's Hospital, Beijing, China",
     conmed_triazole_pct = 33.3,
     total_protein_range = "39.2-99.4 g/L (median 62, mean 62.53, SD 7.50)",
     covariates_screened_not_retained = paste0(
@@ -176,7 +176,7 @@ Zhao_2026_venetoclax <- function() {
       "inst/references/covariate-columns.md and are recorded here only, ",
       "since none is referenced by model()."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Retrospective real-world therapeutic drug monitoring, December 2021 to ",
       "December 2024. Sparse sampling: a pre-dose trough drawn 30 min before ",
       "the next dose (22-24 h post-dose, C0) and a 6 h post-dose sample ",

@@ -30,25 +30,46 @@ Zhu_2023_irinotecan <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "irinotecan", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "irinotecan", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     tumor_is = list(
-      analyte = "irinotecan", units = "umol", specimen = "tumor", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "tumor",
+      verified = TRUE
     ),
     tumor_cell = list(
-      analyte = "irinotecan", units = "umol", specimen = "tumor", verified = TRUE
+      analyte = "irinotecan",
+      units = "umol",
+      specimen = "tumor",
+      verified = TRUE
     ),
     central_sn38 = list(
-      analyte = "SN-38", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "SN-38",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_sn38 = list(
-      analyte = "SN-38", units = "umol", specimen = "plasma", verified = TRUE
+      analyte = "SN-38",
+      units = "umol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     tumor_sn38 = list(
-      analyte = "SN-38", units = "umol", specimen = "tumor", verified = TRUE
+      analyte = "SN-38",
+      units = "umol",
+      specimen = "tumor",
+      verified = TRUE
     )
   )
 

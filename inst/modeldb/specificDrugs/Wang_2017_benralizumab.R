@@ -7,35 +7,35 @@ Wang_2017_benralizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "benralizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "benralizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "benralizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on CL (exponent fixed at 0.75), Vc (estimated exponent e_wt_vc), and Vp (estimated exponent e_wt_vp), normalized to study-population mean 77 kg (Table 2; median not published).",
-      source_name        = "WT"
+      notes = "Allometric scaling on CL (exponent fixed at 0.75), Vc (estimated exponent e_wt_vc), and Vp (estimated exponent e_wt_vp), normalized to study-population mean 77 kg (Table 2; median not published).",
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody status, high-titer",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody status, high-titer",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (negative or low-titer, i.e., titer < 400)",
-      notes              = "1 = high-titer ADA with titer >= 400; time-varying (assessed at each predesignated sampling visit). Called 'ADAs' in the original publication. exp(1.52) = ~4.6-fold increase in CL. Source column name 'ADA'.",
-      source_name        = "ADA"
+      notes = "1 = high-titer ADA with titer >= 400; time-varying (assessed at each predesignated sampling visit). Called 'ADAs' in the original publication. exp(1.52) = ~4.6-fold increase in CL. Source column name 'ADA'.",
+      source_name = "ADA"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese heritage indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese heritage indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Multiplicative factor on Vc (e_jpn_vc = 1.34). Wang 2017 enrolled a dedicated Japanese healthy-volunteer cohort alongside non-Japanese subjects; the indicator captures both the racial and cohort effect. Source column name 'JAPANESE_HV'.",
-      source_name        = "JAPANESE_HV"
+      notes = "Multiplicative factor on Vc (e_jpn_vc = 1.34). Wang 2017 enrolled a dedicated Japanese healthy-volunteer cohort alongside non-Japanese subjects; the indicator captures both the racial and cohort effect. Source column name 'JAPANESE_HV'.",
+      source_name = "JAPANESE_HV"
     )
   )
   dosing <- c("depot", "central")

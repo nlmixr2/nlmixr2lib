@@ -40,45 +40,45 @@ Goggin_2004_emfilermin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear absolute effect on V/F centered at the cohort-median 62 kg (Goggin 2004 Methods Step 2 and Table 5): TVP_V = 235 + 6.7 * (WT - 62). Studied weight range 48-83 kg; the typical-V/F term becomes negative below ~27 kg, so the model is extrapolation-unsafe outside the studied range.",
-      source_name        = "WGT"
+      notes = "Linear absolute effect on V/F centered at the cohort-median 62 kg (Goggin 2004 Methods Step 2 and Table 5): TVP_V = 235 + 6.7 * (WT - 62). Studied weight range 48-83 kg; the typical-V/F term becomes negative below ~27 kg, so the model is extrapolation-unsafe outside the studied range.",
+      source_name = "WGT"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator: 1 = healthy postmenopausal woman on hormone replacement therapy (phase I studies 1 and 2), 0 = infertile premenopausal woman undergoing IVF-ET (proof-of-concept study 3).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator: 1 = healthy postmenopausal woman on hormone replacement therapy (phase I studies 1 and 2), 0 = infertile premenopausal woman undergoing IVF-ET (proof-of-concept study 3).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IVF-ET patient)",
-      notes              = "Time-fixed per subject. Goggin 2004 Methods Step 2 encodes the type-of-population covariate with TYPE = 1 for IVF-ET patients and reports the typical CL/F = 57 L/h standardised for healthy postmenopausal women (Table 4, row 'CL/F'). The canonical DIS_HEALTHY convention uses 0 = patient as reference, so the structural typical lcl is shifted to the IVF-ET (patient) state: lcl = log(57 * 0.649) = log(37.0); the e_dis_healthy_cl coefficient (= -log(0.649)) restores the paper's PM-typical 57 L/h at DIS_HEALTHY = 1. Mathematically identical to the paper's TVP_CL = Ppop * 0.649^TYPE with TYPE = 1 - DIS_HEALTHY.",
-      source_name        = "TYPE"
+      notes = "Time-fixed per subject. Goggin 2004 Methods Step 2 encodes the type-of-population covariate with TYPE = 1 for IVF-ET patients and reports the typical CL/F = 57 L/h standardised for healthy postmenopausal women (Table 4, row 'CL/F'). The canonical DIS_HEALTHY convention uses 0 = patient as reference, so the structural typical lcl is shifted to the IVF-ET (patient) state: lcl = log(57 * 0.649) = log(37.0); the e_dis_healthy_cl coefficient (= -log(0.649)) restores the paper's PM-typical 57 L/h at DIS_HEALTHY = 1. Mathematically identical to the paper's TVP_CL = Ppop * 0.649^TYPE with TYPE = 1 - DIS_HEALTHY.",
+      source_name = "TYPE"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion-variability multiplexing.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Three protocol-defined occasions per Goggin 2004 Methods Step 1 ('In this analysis three occasions were defined: occasion 1, the first day of treatment; occasion 3, the last day of treatment (either day 6 or 7); and occasion 2, all intermediate days (mostly day 4).'). Decomposed inside model() into binary indicators oc1 / oc2 / oc3 that multiplex the three IOV etas on log-V/F. Single estimated variance shared across occasions (NONMEM $OMEGA BLOCK(1) SAME pattern; nlmixr2 has no SAME shortcut so occasions 2 and 3 are fix()'d to the occasion-1 variance).",
-      source_name        = "OCC"
+      notes = "Three protocol-defined occasions per Goggin 2004 Methods Step 1 ('In this analysis three occasions were defined: occasion 1, the first day of treatment; occasion 3, the last day of treatment (either day 6 or 7); and occasion 2, all intermediate days (mostly day 4).'). Decomposed inside model() into binary indicators oc1 / oc2 / oc3 that multiplex the three IOV etas on log-V/F. Single estimated variance shared across occasions (NONMEM $OMEGA BLOCK(1) SAME pattern; nlmixr2 has no SAME shortcut so occasions 2 and 3 are fix()'d to the occasion-1 variance).",
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 64L,
-    n_studies      = 3L,
-    age_range      = "30-64 years (across cohorts)",
-    age_median     = "58 years (postmenopausal cohorts) / 34 years (IVF-ET cohort)",
-    weight_range   = "48-83 kg (across cohorts)",
-    weight_median  = "62 kg (overall cohort median; PM = 63 kg, IVF-ET = 61 kg)",
+    species = "human",
+    n_subjects = 64L,
+    n_studies = 3L,
+    age_range = "30-64 years (across cohorts)",
+    age_median = "58 years (postmenopausal cohorts) / 34 years (IVF-ET cohort)",
+    weight_range = "48-83 kg (across cohorts)",
+    weight_median = "62 kg (overall cohort median; PM = 63 kg, IVF-ET = 61 kg)",
     sex_female_pct = 100,
     race_ethnicity = "Not reported in the paper. Studies conducted in the UK (Cambridge, Nottingham).",
-    disease_state  = "Two cohorts: (1) healthy postmenopausal women on Cyclo-progynova/Progynova/Utrogestan hormone replacement therapy (studies 1 and 2; n = 25 after exclusion of two subjects with bioanalytical or dosing problems); (2) premenopausal women with recurrent implantation failure undergoing in vitro fertilization or intracytoplasmic sperm injection and embryo transfer (study 3; n = 39), pretreated with nafarelin pituitary down-regulation, recombinant FSH ovarian stimulation, and recombinant hCG triggering.",
-    dose_range     = "Subcutaneous emfilermin 100 ug or 250 ug single dose (study 1), 150 ug BID for 7 days (study 2), or 150 ug BID for 7 days starting on the day of embryo transfer (study 3).",
-    regions        = "United Kingdom (Cambridge: Addenbrooke's Hospital, Bourn Hall Clinic, Papworth Hospital; Nottingham: The Park Hospital).",
-    notes          = "Subject characteristics (Table 1): study 1 (n = 14) median age 58 years (range 50-64), median WT 63 kg (range 55-70); study 2 (n = 11) median age 58 years (range 49-63), median WT 63 kg (range 56-80); study 3 (n = 39) median age 34 years (range 30-37), median WT 61 kg (range 48-83). Analysis dataset: 342 samples from 64 subjects (226 from postmenopausal women, 116 from IVF-ET patients) after exclusion of subject 113 (suspected dosing error) and subject 116 (haemolyzed samples). Below-LoQ samples (LoQ = 50 pg/mL) treated as missing. ALT, AST, creatinine, and bilirubin were screened as univariate covariates but not retained in the final model (Methods Step 3, Table 3). Population type and age were confounded; the analysis retains population type rather than age because the OBJ drop with age alone was only 3.5 points vs 33.4 for population type."
+    disease_state = "Two cohorts: (1) healthy postmenopausal women on Cyclo-progynova/Progynova/Utrogestan hormone replacement therapy (studies 1 and 2; n = 25 after exclusion of two subjects with bioanalytical or dosing problems); (2) premenopausal women with recurrent implantation failure undergoing in vitro fertilization or intracytoplasmic sperm injection and embryo transfer (study 3; n = 39), pretreated with nafarelin pituitary down-regulation, recombinant FSH ovarian stimulation, and recombinant hCG triggering.",
+    dose_range = "Subcutaneous emfilermin 100 ug or 250 ug single dose (study 1), 150 ug BID for 7 days (study 2), or 150 ug BID for 7 days starting on the day of embryo transfer (study 3).",
+    regions = "United Kingdom (Cambridge: Addenbrooke's Hospital, Bourn Hall Clinic, Papworth Hospital; Nottingham: The Park Hospital).",
+    notes = "Subject characteristics (Table 1): study 1 (n = 14) median age 58 years (range 50-64), median WT 63 kg (range 55-70); study 2 (n = 11) median age 58 years (range 49-63), median WT 63 kg (range 56-80); study 3 (n = 39) median age 34 years (range 30-37), median WT 61 kg (range 48-83). Analysis dataset: 342 samples from 64 subjects (226 from postmenopausal women, 116 from IVF-ET patients) after exclusion of subject 113 (suspected dosing error) and subject 116 (haemolyzed samples). Below-LoQ samples (LoQ = 50 pg/mL) treated as missing. ALT, AST, creatinine, and bilirubin were screened as univariate covariates but not retained in the final model (Methods Step 3, Table 3). Population type and age were confounded; the analysis retains population type rather than age because the OBJ drop with age alone was only 3.5 points vs 33.4 for population type."
   )
 
   ini({

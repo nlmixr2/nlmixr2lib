@@ -34,8 +34,8 @@ Li_2015_taspoglutide_mbma <- function() {
   )
   vignette <- "Li_2015_taspoglutide_mbma"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (MBMA driver is the METRIC_TASPO_C covariate)",
+    time = "week",
+    dosing = "n/a (MBMA driver is the METRIC_TASPO_C covariate)",
     concentration = paste0(
       "FPG (mmol/L change from baseline; signed); HbA1c (% change from ",
       "baseline; signed). Output Cc is unused."
@@ -47,24 +47,44 @@ Li_2015_taspoglutide_mbma <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fpg_placebo   = list(analyte = "Fasting Plasma Glucose (change from baseline)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    fpg_drug      = list(analyte = "Fasting Plasma Glucose (change from baseline)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    hba1c_placebo = list(analyte = "Glycosylated Hemoglobin (change from baseline)", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    hba1c_drug    = list(analyte = "Glycosylated Hemoglobin (change from baseline)", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    fpg_placebo = list(
+      analyte = "Fasting Plasma Glucose (change from baseline)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    fpg_drug = list(
+      analyte = "Fasting Plasma Glucose (change from baseline)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    hba1c_placebo = list(
+      analyte = "Glycosylated Hemoglobin (change from baseline)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    hba1c_drug = list(
+      analyte = "Glycosylated Hemoglobin (change from baseline)",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     METRIC_TASPO_C = list(
-      description        = paste0(
+      description = paste0(
         "Per-arm taspoglutide average plasma concentration between weeks 2 ",
         "and 4 (the drug-effect 'metric' in Li 2015). Set to 0 for placebo ",
         "arms; 59.85 pmol/L for taspoglutide 10 mg once-weekly SC arms; ",
         "119.7 pmol/L for taspoglutide 20 mg once-weekly SC arms."
       ),
-      units              = "pmol/L",
-      type               = "continuous",
+      units = "pmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "MBMA study-arm-level covariate. The canonical register in ",
         "inst/references/covariate-columns.md is for individual-level ",
         "pop-PK covariates and does not directly fit this MBMA study-arm ",
@@ -76,38 +96,38 @@ Li_2015_taspoglutide_mbma <- function() {
         "concentrations themselves were derived by Li et al. from Ratner ",
         "2010 (the source taspoglutide PK study)."
       ),
-      source_name        = "Cavg.2-4w (Li 2015 Section 3.2)"
+      source_name = "Cavg.2-4w (Li 2015 Section 3.2)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3702L,
-    n_studies      = 8L,
+    species = "human",
+    n_subjects = 3702L,
+    n_studies = 8L,
     n_studies_validation = 1L,
-    age_range      = paste0(
+    age_range = paste0(
       "adults with type 2 diabetes (per-study demographics not pooled in ",
       "Li 2015 Table 1; underlying trials enrolled adults broadly per ",
       "Ratner 2010, Nauck 2009, Bergenstal 2012, Henry 2012, Raz 2012, ",
       "Hollander 2013, Pratley 2013, Nauck 2013)"
     ),
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = NA_real_,
     race_ethnicity = NA_character_,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Type 2 diabetes mellitus, pooled across mono- and combination-therapy ",
       "regimens (drug-naive; inadequately controlled on metformin; failing ",
       "metformin + sulphonylurea; inadequately controlled on metformin + ",
       "TZD; etc., per Li 2015 Table 1)"
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Placebo, taspoglutide 10 mg once weekly SC, taspoglutide 20 mg once ",
       "weekly SC; treatment durations 8-52 weeks (Li 2015 Table 1)"
     ),
-    regions        = "International (publicly published phase 2/3 trials)",
-    notes          = paste0(
+    regions = "International (publicly published phase 2/3 trials)",
+    notes = paste0(
       "Model fit by Monolix 4.2/4.3 (SAEM) to digitised mean PD data from 9 ",
       "publications: Nauck 2009 (T-emerge 1 setup, n=373), Ratner 2010 ",
       "(n=64), Nauck 2009 (n=148), Nauck 2013 (n=709), Hollander 2013 ",

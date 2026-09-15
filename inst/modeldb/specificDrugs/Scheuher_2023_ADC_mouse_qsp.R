@@ -1,37 +1,52 @@
 Scheuher_2023_ADC_mouse_qsp <- function() {
   description <- "QSP. Mouse in vivo platform model for HER2-targeting antibody-drug conjugates (T-DM1 default, N87 tumor xenograft; T-DXd variant supported via parameter overrides). Combines: (i) mouse plasma PK for ADC / naked antibody / free payload in central + peripheral compartments; (ii) mechanistic tumor uptake via a Krogh cylinder + surface exchange model; (iii) intracellular ADC processing (HER2 binding, endocytosis, recycling, degradation, endosomal payload release, cytosol transport, tubulin binding); and (iv) tumor growth inhibition via a Simeoni-style 4-stage transit-chain cascade with Hill-type kill on the proliferating stage. Amounts in nmol; concentrations amount/volume."
-  reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Mouse in vivo model = Tables S1b, S2b-c, S3c-d."
-  vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
+  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Mouse in vivo model = Tables S1b, S2b-c, S3c-d."
+  vignette <- "Scheuher_2023_ADC_platform_qsp"
+  units <- list(time = "h", dosing = "nmol", concentration = "nM")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    adc_central         = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
-    ab_central          = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
-    pl_central          = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
-    adc_peripheral      = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
-    ab_peripheral       = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
-    pl_peripheral       = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
-    adc_ext_tumor       = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
-    ab_ext_tumor        = list(analyte = "naked antibody", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_ext_tumor        = list(analyte = "free payload", units = "nmol", specimen = "tumor", verified = FALSE),
-    n1                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n2                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n3                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
-    n4                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
-    her2_surf_tumor     = list(analyte = "HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    adc_central = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_central = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_central = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_peripheral = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_peripheral = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_peripheral = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_ext_tumor = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
+    ab_ext_tumor = list(analyte = "naked antibody", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_ext_tumor = list(analyte = "free payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    n1 = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n2 = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n3 = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n4 = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2_surf_tumor = list(analyte = "HER2", units = "nmol", specimen = "tumor", verified = FALSE),
     her2_adc_surf_tumor = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_ab_surf_tumor  = list(analyte = "naked antibody-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_endo_tumor     = list(analyte = "endosomal HER2", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_adc_endo_tumor = list(analyte = "ADC-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    her2_ab_endo_tumor  = list(analyte = "naked antibody-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_endo_tumor       = list(analyte = "free payload in endosomes", units = "nmol", specimen = "tumor", verified = FALSE),
-    pl_cyto_tumor       = list(analyte = "free payload in cytosol", units = "nmol", specimen = "tumor", verified = FALSE),
-    t_cyto_tumor        = list(analyte = "tubulin-bound payload", units = "nmol", specimen = "tumor", verified = FALSE),
-    tpl_cyto_tumor      = list(analyte = "payload bound to tubulin", units = "nmol", specimen = "tumor", verified = FALSE)
+    her2_ab_surf_tumor = list(
+      analyte = "naked antibody-HER2 complex",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    her2_endo_tumor = list(analyte = "endosomal HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_endo_tumor = list(
+      analyte = "ADC-HER2 endosome complex",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    her2_ab_endo_tumor = list(
+      analyte = "naked antibody-HER2 endosome complex",
+      units = "nmol",
+      specimen = "tumor",
+      verified = FALSE
+    ),
+    pl_endo_tumor = list(analyte = "free payload in endosomes", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_cyto_tumor = list(analyte = "free payload in cytosol", units = "nmol", specimen = "tumor", verified = FALSE),
+    t_cyto_tumor = list(analyte = "tubulin-bound payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    tpl_cyto_tumor = list(analyte = "payload bound to tubulin", units = "nmol", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
@@ -39,13 +54,13 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
   covariatesDataExcluded <- list()
 
   population <- list(
-    species        = "mouse (BT-474EEI, BT-474, N87, KPL-4 breast cancer xenograft; non-tumor-bearing mice for PK-only)",
-    n_subjects     = NA_integer_,
-    n_studies      = 5L,
-    disease_state  = "HER2-expressing human breast cancer cell-line xenograft tumors in immunocompromised mice",
-    dose_range     = "3 mg/kg IV bolus (non-tumor-bearing mouse PK, Erickson 2012 / Okamoto 2020); 300 ug/kg DM1-equivalent IV (tumor xenograft, Erickson 2012); PD studies at multiple doses (Table S2c cell-line-specific fits)",
-    regions        = "Preclinical (Scheuher et al. 2023 fits + literature-digitized data)",
-    notes          = "Cell-line-specific PD parameters (Table S2c): BT-474 T-DM1, BT-474EEI T-DM1, N87 T-DM1 + T-DXd, KPL-4 T-DM1. Default parameterization: N87 with T-DM1 (kkill_max=0.31/day, tau=0.25 day, kc50=485 nM, n_Hill=1, tdouble=12.37 day, klin=189.56 mm3/day). Trastuzumab does NOT bind rodent HER2, so this model has no systemic HER2 sink or soluble HER2 term (see human model for those extensions). See vignette Errata for deviations from paper's per-stage tumor-cell tracking."
+    species = "mouse (BT-474EEI, BT-474, N87, KPL-4 breast cancer xenograft; non-tumor-bearing mice for PK-only)",
+    n_subjects = NA_integer_,
+    n_studies = 5L,
+    disease_state = "HER2-expressing human breast cancer cell-line xenograft tumors in immunocompromised mice",
+    dose_range = "3 mg/kg IV bolus (non-tumor-bearing mouse PK, Erickson 2012 / Okamoto 2020); 300 ug/kg DM1-equivalent IV (tumor xenograft, Erickson 2012); PD studies at multiple doses (Table S2c cell-line-specific fits)",
+    regions = "Preclinical (Scheuher et al. 2023 fits + literature-digitized data)",
+    notes = "Cell-line-specific PD parameters (Table S2c): BT-474 T-DM1, BT-474EEI T-DM1, N87 T-DM1 + T-DXd, KPL-4 T-DM1. Default parameterization: N87 with T-DM1 (kkill_max=0.31/day, tau=0.25 day, kc50=485 nM, n_Hill=1, tdouble=12.37 day, klin=189.56 mm3/day). Trastuzumab does NOT bind rodent HER2, so this model has no systemic HER2 sink or soluble HER2 term (see human model for those extensions). See vignette Errata for deviations from paper's per-stage tumor-cell tracking."
   )
 
   ini({

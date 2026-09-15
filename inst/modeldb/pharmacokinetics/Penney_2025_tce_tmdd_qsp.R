@@ -38,12 +38,17 @@ Penney_2025_tce_tmdd_qsp <- function() {
   # reuses the canonical generic TMDD pair `target` / `complex` because the
   # paper's TAA is deliberately unspecified (it is fitted per antigen).
   compartmentData <- list(
-    central            = list(analyte = "T-cell engager (free)",            units = "nM", specimen = "serum",       verified = TRUE),
-    peripheral1        = list(analyte = "T-cell engager (free)",            units = "nM", specimen = "serum",       verified = TRUE),
-    target_cd3_central = list(analyte = "CD3 receptor (free)",              units = "nM", specimen = "whole blood", verified = TRUE),
-    drug_cd3_central   = list(analyte = "T-cell engager-CD3 dimer",         units = "nM", specimen = "whole blood", verified = TRUE),
-    target             = list(analyte = "tumor-associated antigen (free)",  units = "nM", specimen = "tumor",       verified = TRUE),
-    complex            = list(analyte = "T-cell engager-TAA dimer",         units = "nM", specimen = "tumor",       verified = TRUE)
+    central = list(analyte = "T-cell engager (free)", units = "nM", specimen = "serum", verified = TRUE),
+    peripheral1 = list(analyte = "T-cell engager (free)", units = "nM", specimen = "serum", verified = TRUE),
+    target_cd3_central = list(analyte = "CD3 receptor (free)", units = "nM", specimen = "whole blood", verified = TRUE),
+    drug_cd3_central = list(
+      analyte = "T-cell engager-CD3 dimer",
+      units = "nM",
+      specimen = "whole blood",
+      verified = TRUE
+    ),
+    target = list(analyte = "tumor-associated antigen (free)", units = "nM", specimen = "tumor", verified = TRUE),
+    complex = list(analyte = "T-cell engager-TAA dimer", units = "nM", specimen = "tumor", verified = TRUE)
   )
 
   covariateData <- list()

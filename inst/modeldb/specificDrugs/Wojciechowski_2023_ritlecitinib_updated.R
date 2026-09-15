@@ -14,111 +14,111 @@ Wojciechowski_2023_ritlecitinib_updated <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "ritlecitinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "ritlecitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ritlecitinib", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight; allometrically scales CL/F, Q/F, Vc/F and Vp/F",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote. Updated-model analysis population median 75.0 kg (range 35.1-164). Table S3 run 5 tested an estimated weight exponent on Vc/F but the fixed allometric form was retained.",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline weight (NONMEM column BWT). Reference 70 kg with fixed exponents 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F; Wojciechowski 2023 Table 2 footnote. Updated-model analysis population median 75.0 kg (range 35.1-164). Table S3 run 5 tested an estimated weight exponent on Vc/F but the fixed allometric form was retained.",
+      source_name = "BWT"
     ),
     DIS_RA = list(
-      description        = "Rheumatoid arthritis patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rheumatoid arthritis patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant, moderate hepatic impairment participant, or a patient with one of the other pooled indications)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 1). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group (PTST in {1, 2, 3, 5}) that scales the IIV and residual-error magnitudes. The CL/F reference category is healthy participants.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 1). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group (PTST in {1, 2, 3, 5}) that scales the IIV and residual-error magnitudes. The CL/F reference category is healthy participants.",
+      source_name = "PTST"
     ),
     DIS_UC = list(
-      description        = "Ulcerative colitis patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ulcerative colitis patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant, moderate hepatic impairment participant, or a patient with one of the other pooled indications)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 2). Carries multiplicative effects on both CL/F and F, and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes. The F effect's reference group is healthy participants plus RA, alopecia areata and vitiligo patients (ESM $PK: reference subjects for COVPTSTF are healthy participants, RA, AA, vitiligo). Moderate-to-severe UC per the phase IIb study.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 2). Carries multiplicative effects on both CL/F and F, and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes. The F effect's reference group is healthy participants plus RA, alopecia areata and vitiligo patients (ESM $PK: reference subjects for COVPTSTF are healthy participants, RA, AA, vitiligo). Moderate-to-severe UC per the phase IIb study.",
+      source_name = "PTST"
     ),
     DIS_ALOPECIA_AREATA = list(
-      description        = "Alopecia areata patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Alopecia areata patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant, moderate hepatic impairment participant, or a patient with one of the other pooled indications)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 3). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes.",
+      source_name = "PTST"
     ),
     DIS_VITILIGO = list(
-      description        = "Vitiligo patient indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Vitiligo patient indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy participant, moderate hepatic impairment participant, or a patient with one of the other pooled indications)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 5). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes. Non-segmental vitiligo per the phase IIb study.",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 5). Carries a multiplicative effect on CL/F and contributes to the inflammatory-disease group that scales the IIV and residual-error magnitudes. Non-segmental vitiligo per the phase IIb study.",
+      source_name = "PTST"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function; in this analysis population every non-flagged participant had normal hepatic function)",
-      notes              = "Derived from the NONMEM PTST patient-type column (PTST = 6). Classified by Child-Pugh score (Wojciechowski 2023 Sect. 2.4.2), from the dedicated phase I hepatic impairment study NCT04016077 (n = 10). Carries a multiplicative effect on F only. Note that moderate hepatic impairment participants are EXCLUDED from the inflammatory-disease group that scales the IIV and residual-error magnitudes (the control stream tests PTST > 0 AND PTST < 6).",
-      source_name        = "PTST"
+      notes = "Derived from the NONMEM PTST patient-type column (PTST = 6). Classified by Child-Pugh score (Wojciechowski 2023 Sect. 2.4.2), from the dedicated phase I hepatic impairment study NCT04016077 (n = 10). Carries a multiplicative effect on F only. Note that moderate hepatic impairment participants are EXCLUDED from the inflammatory-disease group that scales the IIV and residual-error magnitudes (the control stream tests PTST > 0 AND PTST < 6).",
+      source_name = "PTST"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat-meal administration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat-meal administration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted, or food intake not controlled)",
-      notes              = "Per-dose-record indicator derived from the NONMEM FOOD column (0 = fasted, 1 = high-fat meal, 2 = not controlled for food); the control stream applies the effect only when FOOD = 1, so both fasted and not-controlled records are the reference.",
-      source_name        = "FOOD"
+      notes = "Per-dose-record indicator derived from the NONMEM FOOD column (0 = fasted, 1 = high-fat meal, 2 = not controlled for food); the control stream applies the effect only when FOOD = 1, so both fasted and not-controlled records are the reference.",
+      source_name = "FOOD"
     ),
     DOSE = list(
-      description        = "Administered ritlecitinib dose level for the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered ritlecitinib dose level for the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only as a step-function switch: the control stream applies a separate ka effect when DOSE = 800 exactly (IF (DOSE.EQ.800)). Every dose level below 800 mg is the reference. Updated-model dose range 5-800 mg.",
-      source_name        = "DOSE"
+      notes = "Used only as a step-function switch: the control stream applies a separate ka effect when DOSE = 800 exactly (IF (DOSE.EQ.800)). Every dose level below 800 mg is the reference. Updated-model dose range 5-800 mg.",
+      source_name = "DOSE"
     ),
     FORM_CAPSULE = list(
-      description        = "Capsule formulation indicator (any capsule)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Capsule formulation indicator (any capsule)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet or oral solution)",
-      notes              = "Per-dose-record indicator derived from the NONMEM FORM column (2 = tablet, 11 = capsule); the control stream comment names the reference as tablet and solution. Carries a multiplicative effect on ka only. The capsule arm is the pilot capsule formulation evaluated in the phase I study NCT04004663; Wojciechowski 2023 Discussion reports it gave a 14% lower Cmax and approximately no change in AUC(tau) relative to the tablet.",
-      source_name        = "FORM"
+      notes = "Per-dose-record indicator derived from the NONMEM FORM column (2 = tablet, 11 = capsule); the control stream comment names the reference as tablet and solution. Carries a multiplicative effect on ka only. The capsule arm is the pilot capsule formulation evaluated in the phase I study NCT04004663; Wojciechowski 2023 Discussion reports it gave a 14% lower Cmax and approximately no change in AUC(tau) relative to the tablet.",
+      source_name = "FORM"
     ),
     FORM_RIT_OVERENCAP = list(
-      description        = "Over-encapsulated ritlecitinib capsule indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Over-encapsulated ritlecitinib capsule indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (tablet, oral solution, pilot capsule, or large-API-particle-size capsule)",
-      notes              = "Per-dose-record indicator for the over-encapsulated capsule arm only. The control stream selects it with IF (FORM.EQ.11 .AND. TRT.EQ.4), i.e. a capsule record within treatment arm 4; TRT is not listed in the deposited $INPUT record, so the deposited stream appears to be a lightly edited copy of the executed one and the condition is represented here by a single dedicated indicator column. Scales the rate of loss from the depot compartment, NOT the amount reaching the systemic circulation: Table S3 tested both parameterisations (run 17 loss from depot, dOFV -40.3; run 16 amount reaching systemic circulation, dOFV -39.4) and the loss-from-depot form was carried forward.",
-      source_name        = "FORM (with TRT)"
+      notes = "Per-dose-record indicator for the over-encapsulated capsule arm only. The control stream selects it with IF (FORM.EQ.11 .AND. TRT.EQ.4), i.e. a capsule record within treatment arm 4; TRT is not listed in the deposited $INPUT record, so the deposited stream appears to be a lightly edited copy of the executed one and the condition is represented here by a single dedicated indicator column. Scales the rate of loss from the depot compartment, NOT the amount reaching the systemic circulation: Table S3 tested both parameterisations (run 17 loss from depot, dOFV -40.3; run 16 amount reaching systemic circulation, dOFV -39.4) and the loss-from-depot form was carried forward.",
+      source_name = "FORM (with TRT)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 668L,
-    n_studies      = 10L,
+    species = "human",
+    n_subjects = 668L,
+    n_studies = 10L,
     n_observations = 5187L,
-    age_range      = "18.0-74.0 years",
-    age_median     = "43.0 years",
-    weight_range   = "35.1-164 kg",
-    weight_median  = "75.0 kg",
+    age_range = "18.0-74.0 years",
+    age_median = "43.0 years",
+    weight_range = "35.1-164 kg",
+    weight_median = "75.0 kg",
     sex_female_pct = 45.2,
     race_ethnicity = c(White = 79.5, Asian = 12.0, Black = 2.4, Other = 1.3, Missing = 4.8),
-    disease_state  = "Healthy participants (98; 14.7%), rheumatoid arthritis (42; 6.3%), ulcerative colitis (150; 22.5%), alopecia areata (70; 10.5%), vitiligo (298; 44.6%) and moderate hepatic impairment (10; 1.5%).",
-    dose_range     = "5-800 mg/day oral ritlecitinib (single and multiple dose; tablet, capsule and oral-solution formulations, fasted and high-fat-meal conditions)",
-    regions        = "Global (12-trial ritlecitinib clinical development programme; see Table S1 of the Electronic Supplementary Material)",
+    disease_state = "Healthy participants (98; 14.7%), rheumatoid arthritis (42; 6.3%), ulcerative colitis (150; 22.5%), alopecia areata (70; 10.5%), vitiligo (298; 44.6%) and moderate hepatic impairment (10; 1.5%).",
+    dose_range = "5-800 mg/day oral ritlecitinib (single and multiple dose; tablet, capsule and oral-solution formulations, fasted and high-fat-meal conditions)",
+    regions = "Global (12-trial ritlecitinib clinical development programme; see Table S1 of the Electronic Supplementary Material)",
     renal_function = "Normal (severe renal impairment participants entered only at the final-model iteration)",
     hepatic_function = "Normal, plus 10 participants with Child-Pugh moderate hepatic impairment (NCT04016077)",
-    notes          = "Demographics from Wojciechowski 2023 Table 1, updated-model column. Median baseline creatinine clearance 113 mL/min (range 45.4-271) and median albumin 4.50 g/dL (range 2.80-5.40). Below-limit-of-quantification observations were excluded during estimation. Age, sex, race, baseline creatinine clearance and moderate hepatic impairment on CL/F were screened (Table S3) but not retained in the final covariate model."
+    notes = "Demographics from Wojciechowski 2023 Table 1, updated-model column. Median baseline creatinine clearance 113 mL/min (range 45.4-271) and median albumin 4.50 g/dL (range 2.80-5.40). Below-limit-of-quantification observations were excluded during estimation. Age, sex, race, baseline creatinine clearance and moderate hepatic impairment on CL/F were screened (Table S3) but not retained in the final covariate model."
   )
 
   # Implementation notes (see the vignette 'Assumptions and deviations'

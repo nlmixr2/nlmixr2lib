@@ -45,7 +45,8 @@ test_that("cytokine_reset = FALSE drops only the reset records", {
   args <- list(dose_time = c(0, 168), dose_mg = 76, obs_time = c(0, 100))
   with_reset <- do.call(Poels_2025_elranatamab_qsp_events, args)
   without <- do.call(
-    Poels_2025_elranatamab_qsp_events, c(args, list(cytokine_reset = FALSE))
+    Poels_2025_elranatamab_qsp_events,
+    c(args, list(cytokine_reset = FALSE))
   )
   expect_equal(nrow(with_reset) - nrow(without), 2L)
   expect_false(any(without$evid == 6L))
@@ -58,7 +59,9 @@ test_that("cytokine_reset = FALSE drops only the reset records", {
 
 test_that("dose_mg is recycled and inputs are validated", {
   ev <- Poels_2025_elranatamab_qsp_events(
-    dose_time = c(0, 168, 336), dose_mg = 76, obs_time = 0
+    dose_time = c(0, 168, 336),
+    dose_mg = 76,
+    obs_time = 0
   )
   expect_equal(ev$amt[ev$evid == 1L], rep(76 / 148500 * 1e9, 3L))
 
@@ -82,7 +85,9 @@ test_that("the emitted evid = 6 records really rescale cauc", {
     d / dt(cauc) <- 1
   })
   ev <- Poels_2025_elranatamab_qsp_events(
-    dose_time = c(0, 10, 20), dose_mg = 76, obs_time = c(9.999, 19.999, 29.999),
+    dose_time = c(0, 10, 20),
+    dose_mg = 76,
+    obs_time = c(9.999, 19.999, 29.999),
     obs_cmt = "depot"
   )
   out <- as.data.frame(

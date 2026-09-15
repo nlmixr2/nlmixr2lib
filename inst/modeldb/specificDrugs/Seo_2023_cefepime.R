@@ -12,17 +12,17 @@ Seo_2023_cefepime <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated by the Cockcroft-Gault equation (raw, NOT BSA-normalized).",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the Cockcroft-Gault equation (raw, NOT BSA-normalized).",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the Seo 2023 final model, entering",
         "total clearance as the power term (CG / 77.21)^theta_2",
         "(Table 2, 'Structural model' row 'CL = theta_1 x (CG/77.21)^theta_2').",
@@ -41,27 +41,27 @@ Seo_2023_cefepime <- function() {
         "mL/min; the Monte Carlo simulations extrapolate the term over 0-130",
         "mL/min (simulation 1) and 0-170 mL/min (simulations 2-3)."
       ),
-      source_name        = "CG"
+      source_name = "CG"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = 144L,
-    age_range      = "IQR 62-76 years (mean 67.10, SD 10.47; median 67)",
-    age_median     = "67 years",
-    weight_range   = "IQR 54.4-65 kg (mean 59.68, SD 10.53; median 60)",
-    weight_median  = "60 kg",
-    height_range   = "IQR 155-172 cm (mean 164.05, SD 8.64; median 165)",
-    bsa_range      = "IQR 1.56-1.75 m^2 (mean 1.64, SD 0.17; median 1.60)",
+    age_range = "IQR 62-76 years (mean 67.10, SD 10.47; median 67)",
+    age_median = "67 years",
+    weight_range = "IQR 54.4-65 kg (mean 59.68, SD 10.53; median 60)",
+    weight_median = "60 kg",
+    height_range = "IQR 155-172 cm (mean 164.05, SD 8.64; median 165)",
+    bsa_range = "IQR 1.56-1.75 m^2 (mean 1.64, SD 0.17; median 1.60)",
     sex_female_pct = 42.9,
-    disease_state  = "Critically ill adults with hospital-acquired pneumonia (HAP) or ventilator-associated pneumonia (VAP); cefepime also indicated for empirical management of septic shock of unknown source. Severity at enrollment: SOFA mean 5.05 (SD 3.04, median 4, IQR 4-5); APACHE II mean 17.33 (SD 4.63, median 17, IQR 14-22). Patients with a history of beta-lactam allergy were excluded.",
+    disease_state = "Critically ill adults with hospital-acquired pneumonia (HAP) or ventilator-associated pneumonia (VAP); cefepime also indicated for empirical management of septic shock of unknown source. Severity at enrollment: SOFA mean 5.05 (SD 3.04, median 4, IQR 4-5); APACHE II mean 17.33 (SD 4.63, median 17, IQR 14-22). Patients with a history of beta-lactam allergy were excluded.",
     renal_function = "Cockcroft-Gault CLCR mean 79.02 mL/min (SD 47.67), median 77.2 (IQR 45.3-125). Serum creatinine mean 1.07 mg/dL (SD 0.80), median 0.80 (IQR 0.53-1.12); only two patients exceeded 2 mg/dL (3.44 and 2.71 mg/dL). BUN mean 22.48 mg/dL (SD 9.60).",
-    dose_range     = "2 g cefepime as a 30-minute IV infusion every 8, 12 or 24 h; seven blood samples per patient over the first dose interval",
-    regions        = "Republic of Korea (single 840-bed university-affiliated tertiary referral centre: Hallym University Sacred Heart Hospital, Anyang). Prospective enrollment September-November 2019; IRB 2019-05-033.",
-    notes          = paste(
+    dose_range = "2 g cefepime as a 30-minute IV infusion every 8, 12 or 24 h; seven blood samples per patient over the first dose interval",
+    regions = "Republic of Korea (single 840-bed university-affiliated tertiary referral centre: Hallym University Sacred Heart Hospital, Anyang). Prospective enrollment September-November 2019; IRB 2019-05-033.",
+    notes = paste(
       "Baseline demographics per Seo 2023 Table 1 (n = 21; 12 men, 9 women).",
       "Serum protein mean 5.42 g/dL (SD 0.67), albumin mean 2.87 g/dL (SD 0.43).",
       "144 plasma concentrations entered the population PK analysis. Fit in",

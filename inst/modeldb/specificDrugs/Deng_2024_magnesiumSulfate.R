@@ -1,8 +1,8 @@
 Deng_2024_magnesiumSulfate <- function() {
   description <- "One-compartment population PK model of magnesium sulfate (MgSO4-7H2O) given by intravenous infusion, with creatinine clearance, body mass index and concomitant furosemide effects on clearance and a concomitant furosemide effect on volume, in Chinese women with preeclampsia (Deng 2024)."
   reference <- "Deng J, Peng L, Wang Y, Li J, Tang L, Yu Y. Population pharmacokinetics and dose optimization of magnesium sulfate in Chinese preeclampsia population. BMC Pregnancy Childbirth 2024;24:424. doi:10.1186/s12884-024-06620-x"
-  vignette  <- "Deng_2024_magnesiumSulfate"
-  units     <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  vignette <- "Deng_2024_magnesiumSulfate"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -13,28 +13,28 @@ Deng_2024_magnesiumSulfate <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Maternal creatinine clearance. Raw (NOT BSA-normalised) mL/min; Deng 2024 reports it only as 'creatinine clearance (CCR)' and never states the estimating equation, so the assay form is unknown. The cohort is renally hyperfiltrating (mean 182.18 +/- 67.15 mL/min), which the paper attributes to the 40-65% pregnancy-associated rise in glomerular filtration rate.",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Maternal creatinine clearance. Raw (NOT BSA-normalised) mL/min; Deng 2024 reports it only as 'creatinine clearance (CCR)' and never states the estimating equation, so the assay form is unknown. The cohort is renally hyperfiltrating (mean 182.18 +/- 67.15 mL/min), which the paper attributes to the 40-65% pregnancy-associated rise in glomerular filtration rate.",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, encoded here as (CRCL/175)^e_crcl_cl with exponent +0.39 from Deng 2024 Table 2 (dCLdCCR). IMPORTANT: the reference value 175 is NOT the constant printed in the paper's own equation. Deng 2024 prints 'CL(L/h) = 2.98 x (CCR/51)^0.39 x (BMI/51)^-0.54 x (1 - 0.16 x furosemide) x exp(etaCL)' -- normalising BOTH covariates by 51, which is the number of subjects (n = 51), not a covariate reference value for either. 175 mL/min is the study's own median CCR, stated verbatim in the Monte Carlo simulation section ('when CCR and BMI are taken at the median (CCR:175 ml/min, BMI:29 kg/m2)'). See the vignette's Assumptions and deviations section for the full argument.",
-      source_name        = "CCR"
+      notes = "Power effect on CL, encoded here as (CRCL/175)^e_crcl_cl with exponent +0.39 from Deng 2024 Table 2 (dCLdCCR). IMPORTANT: the reference value 175 is NOT the constant printed in the paper's own equation. Deng 2024 prints 'CL(L/h) = 2.98 x (CCR/51)^0.39 x (BMI/51)^-0.54 x (1 - 0.16 x furosemide) x exp(etaCL)' -- normalising BOTH covariates by 51, which is the number of subjects (n = 51), not a covariate reference value for either. 175 mL/min is the study's own median CCR, stated verbatim in the Monte Carlo simulation section ('when CCR and BMI are taken at the median (CCR:175 ml/min, BMI:29 kg/m2)'). See the vignette's Assumptions and deviations section for the full argument.",
+      source_name = "CCR"
     ),
     BMI = list(
-      description        = "Maternal body mass index at baseline.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Maternal body mass index at baseline.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, encoded here as (BMI/29)^e_bmi_cl with exponent -0.54 from Deng 2024 Table 2 (dCLdBMI). The reference value 29 kg/m^2 is the study median stated in the Monte Carlo simulation section; Deng 2024 Table 1 gives the median as 29.13 (IQR 27.16-33.30), a 0.4% difference that changes the covariate multiplier by 0.24%. As with CRCL, this replaces the '51' printed in the paper's equation. The negative exponent means higher BMI lowers magnesium clearance; the paper flags this as opposite in direction to body-weight effects in other magnesium popPK models and attributes it to preeclampsia-associated water retention.",
-      source_name        = "BMI"
+      notes = "Power effect on CL, encoded here as (BMI/29)^e_bmi_cl with exponent -0.54 from Deng 2024 Table 2 (dCLdBMI). The reference value 29 kg/m^2 is the study median stated in the Monte Carlo simulation section; Deng 2024 Table 1 gives the median as 29.13 (IQR 27.16-33.30), a 0.4% difference that changes the covariate multiplier by 0.24%. As with CRCL, this replaces the '51' printed in the paper's equation. The negative exponent means higher BMI lowers magnesium clearance; the paper flags this as opposite in direction to body-weight effects in other magnesium popPK models and attributes it to preeclampsia-associated water retention.",
+      source_name = "BMI"
     ),
     CONMED_FUROSEMIDE = list(
-      description        = "Concomitant furosemide (loop diuretic) administration indicator; 1 = the woman received furosemide during the treatment window, 0 = she did not.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant furosemide (loop diuretic) administration indicator; 1 = the woman received furosemide during the treatment window, 0 = she did not.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant furosemide)",
-      notes              = "16 of 51 women (31.37%) received furosemide (Deng 2024 Table 1). Enters BOTH clearance and volume as a fractional-change term: cl is multiplied by (1 + e_conmed_furosemide_cl * CONMED_FUROSEMIDE) = 0.84 and vc by (1 + e_conmed_furosemide_vc * CONMED_FUROSEMIDE) = 0.75 when furosemide is present, per Deng 2024 Table 2 (dCLdfurosemide = -0.16, dVdfurosemide = -0.25) and the printed final-model equations. Both effects RAISE serum magnesium, which the paper attributes to furosemide being prescribed for the volume overload and renal impairment of progressing preeclampsia rather than to a direct drug interaction; the paper describes this as the first report of a furosemide effect on magnesium popPK. Because the indicator is a marker of disease progression as much as of coadministration, do not transport it to a population in which furosemide is used for another reason.",
-      source_name        = "furosemide"
+      notes = "16 of 51 women (31.37%) received furosemide (Deng 2024 Table 1). Enters BOTH clearance and volume as a fractional-change term: cl is multiplied by (1 + e_conmed_furosemide_cl * CONMED_FUROSEMIDE) = 0.84 and vc by (1 + e_conmed_furosemide_vc * CONMED_FUROSEMIDE) = 0.75 when furosemide is present, per Deng 2024 Table 2 (dCLdfurosemide = -0.16, dVdfurosemide = -0.25) and the printed final-model equations. Both effects RAISE serum magnesium, which the paper attributes to furosemide being prescribed for the volume overload and renal impairment of progressing preeclampsia rather than to a direct drug interaction; the paper describes this as the first report of a furosemide effect on magnesium popPK. Because the indicator is a marker of disease progression as much as of coadministration, do not transport it to a population in which furosemide is used for another reason.",
+      source_name = "furosemide"
     )
   )
 
@@ -46,31 +46,31 @@ Deng_2024_magnesiumSulfate <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Maternal age at enrolment",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Median 31 (IQR 28-35), mean 31.86 +/- 5.22 years (Deng 2024 Table 1). Screened in the stepwise covariate model on CL and V; not retained and no point estimate reported."
+      units = "years",
+      type = "continuous",
+      notes = "Median 31 (IQR 28-35), mean 31.86 +/- 5.22 years (Deng 2024 Table 1). Screened in the stepwise covariate model on CL and V; not retained and no point estimate reported."
     ),
     ALB = list(
       description = "Maternal serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Mean 30.45 +/- 4.66 g/L (Deng 2024 Table 1). Screened in the stepwise covariate model; not retained and no point estimate reported."
+      units = "g/L",
+      type = "continuous",
+      notes = "Mean 30.45 +/- 4.66 g/L (Deng 2024 Table 1). Screened in the stepwise covariate model; not retained and no point estimate reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
-    age_range      = "18-45 years by inclusion criteria; observed median 31 (IQR 28-35), mean 31.86 +/- 5.22 years",
-    age_median     = "31 years",
-    weight_range   = "not reported; body size is characterised by BMI only (median 29.13 kg/m^2, IQR 27.16-33.30)",
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
+    age_range = "18-45 years by inclusion criteria; observed median 31 (IQR 28-35), mean 31.86 +/- 5.22 years",
+    age_median = "31 years",
+    weight_range = "not reported; body size is characterised by BMI only (median 29.13 kg/m^2, IQR 27.16-33.30)",
     sex_female_pct = 100,
     race_ethnicity = "Chinese (women enrolled at the Affiliated Suzhou Hospital of Nanjing Medical University, Suzhou, Jiangsu)",
-    disease_state  = "Preeclampsia requiring intravenous MgSO4 for seizure prophylaxis; gestational age 32.31 +/- 3.92 weeks at treatment. Exclusions: myasthenia gravis or other neuromuscular disorder, severe renal insufficiency, hypermagnesaemia, hypocalcaemia, hypokalaemia, heart block, stillbirth, fetal malformation, diabetes mellitus, thyroid disease, intrahepatic cholestasis.",
-    dose_range     = "Day 1: 5 g MgSO4-7H2O intravenous loading dose over 30-120 min followed by a 10 g maintenance dose over 6-8 h by infusion pump. Days 2-5: 10 g maintenance dose only. Maternal blood was sampled at 0, 4, 5 and 12 h after the day-2 maintenance dose, so the model was fit to maintenance-dose data with no loading dose in the observation window.",
-    regions        = "China (Suzhou, Jiangsu)",
-    notes          = "Prospective observational study, April 2021 - April 2023; 199 serum magnesium concentrations from 51 women (2-4 samples each). Estimation in Phoenix NLME 8.3 by FOCE-ELS; model evaluated by 1000-replicate nonparametric bootstrap, goodness-of-fit plots and a visual predictive check. Doses are administered as MgSO4-7H2O (heptahydrate, MW 246.47) and serum concentrations are reported as elemental magnesium; the PK parameters in this file use dose units of mg of elemental Mg and concentration units of mg/L of elemental Mg, matching the sibling models Salinger_2013_magnesiumSulfate.R and Easterling_2018_magnesium_sulfate.R. Convert administered MgSO4-7H2O grams to mg Mg by multiplying by 24.305/246.47 = 0.0986 (5 g = 493.1 mg Mg, 10 g = 986.2 mg Mg, 15 g = 1479.3 mg Mg). The mg/L concentration unit is fixed by the Deng 2024 Fig. 3 visual-predictive-check y-axis ('Prediction-corrected concentrations (mg/L)', observations spanning roughly 20-52 mg/L); the additive residual SD of 3.65 is on that same mg/L scale. Additional covariates screened and rejected: serum calcium (2.17 +/- 0.15, tabulated as g/L but almost certainly mmol/L), labetalol (50/51, 98.03%), nifedipine (22/51, 43.14%), adverse-reaction occurrence (21/51, 41.18%), gestational age, diagnosis and mode of delivery (cesarean 40, vaginal 4, rivanol-induced abortion 7). IMPORTANT -- this model carries NO endogenous magnesium baseline term, because Deng 2024 Table 2 estimates none; it therefore predicts administered-magnesium concentrations only, whereas the data it was fit to are total serum magnesium. The paper reports an observed baseline of 0.76 mmol/L (18.5 mg/L, IQR 0.71-0.86) and its own Fig. 4 simulations visibly start every curve at 0.80 mmol/L, so the authors added a baseline post hoc that is not a parameter of the published model. Both sibling magnesium models DO estimate a baseline (Salinger 2013 BL = 20.8 mg/L, Easterling 2018 BL = 22.48 mg/L). Add roughly 18.5 mg/L to Cc before comparing this model against measured total serum magnesium. See the vignette's Assumptions and deviations section."
+    disease_state = "Preeclampsia requiring intravenous MgSO4 for seizure prophylaxis; gestational age 32.31 +/- 3.92 weeks at treatment. Exclusions: myasthenia gravis or other neuromuscular disorder, severe renal insufficiency, hypermagnesaemia, hypocalcaemia, hypokalaemia, heart block, stillbirth, fetal malformation, diabetes mellitus, thyroid disease, intrahepatic cholestasis.",
+    dose_range = "Day 1: 5 g MgSO4-7H2O intravenous loading dose over 30-120 min followed by a 10 g maintenance dose over 6-8 h by infusion pump. Days 2-5: 10 g maintenance dose only. Maternal blood was sampled at 0, 4, 5 and 12 h after the day-2 maintenance dose, so the model was fit to maintenance-dose data with no loading dose in the observation window.",
+    regions = "China (Suzhou, Jiangsu)",
+    notes = "Prospective observational study, April 2021 - April 2023; 199 serum magnesium concentrations from 51 women (2-4 samples each). Estimation in Phoenix NLME 8.3 by FOCE-ELS; model evaluated by 1000-replicate nonparametric bootstrap, goodness-of-fit plots and a visual predictive check. Doses are administered as MgSO4-7H2O (heptahydrate, MW 246.47) and serum concentrations are reported as elemental magnesium; the PK parameters in this file use dose units of mg of elemental Mg and concentration units of mg/L of elemental Mg, matching the sibling models Salinger_2013_magnesiumSulfate.R and Easterling_2018_magnesium_sulfate.R. Convert administered MgSO4-7H2O grams to mg Mg by multiplying by 24.305/246.47 = 0.0986 (5 g = 493.1 mg Mg, 10 g = 986.2 mg Mg, 15 g = 1479.3 mg Mg). The mg/L concentration unit is fixed by the Deng 2024 Fig. 3 visual-predictive-check y-axis ('Prediction-corrected concentrations (mg/L)', observations spanning roughly 20-52 mg/L); the additive residual SD of 3.65 is on that same mg/L scale. Additional covariates screened and rejected: serum calcium (2.17 +/- 0.15, tabulated as g/L but almost certainly mmol/L), labetalol (50/51, 98.03%), nifedipine (22/51, 43.14%), adverse-reaction occurrence (21/51, 41.18%), gestational age, diagnosis and mode of delivery (cesarean 40, vaginal 4, rivanol-induced abortion 7). IMPORTANT -- this model carries NO endogenous magnesium baseline term, because Deng 2024 Table 2 estimates none; it therefore predicts administered-magnesium concentrations only, whereas the data it was fit to are total serum magnesium. The paper reports an observed baseline of 0.76 mmol/L (18.5 mg/L, IQR 0.71-0.86) and its own Fig. 4 simulations visibly start every curve at 0.80 mmol/L, so the authors added a baseline post hoc that is not a parameter of the published model. Both sibling magnesium models DO estimate a baseline (Salinger 2013 BL = 20.8 mg/L, Easterling 2018 BL = 22.48 mg/L). Add roughly 18.5 mg/L to Cc before comparing this model against measured total serum magnesium. See the vignette's Assumptions and deviations section."
   )
 
   ini({

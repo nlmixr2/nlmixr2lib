@@ -43,15 +43,26 @@ Trujillo_2025_proinsulin_qsp <- function() {
   vignette <- "Trujillo_2025_proinsulin_qsp"
 
   paper_specific_compartments <- c(
-    "gastric_cho", "gastric_other", "gut_glucose", "glucose",
-    "tubular_glucose", "insulin", "insulin_per", "glp1", "glp1_inactive",
-    "glucagon", "glucose_delay30", "glucose_delay90", "proinsulin",
-    "insulin_musc", "proinsulin_musc"
+    "gastric_cho",
+    "gastric_other",
+    "gut_glucose",
+    "glucose",
+    "tubular_glucose",
+    "insulin",
+    "insulin_per",
+    "glp1",
+    "glp1_inactive",
+    "glucagon",
+    "glucose_delay30",
+    "glucose_delay90",
+    "proinsulin",
+    "insulin_musc",
+    "proinsulin_musc"
   )
 
   units <- list(
-    time          = "min",
-    dosing        = "kcal",
+    time = "min",
+    dosing = "kcal",
     concentration = "mg/dL"
   )
 
@@ -62,11 +73,11 @@ Trujillo_2025_proinsulin_qsp <- function() {
 
   covariateData <- list(
     ON_TREATMENT = list(
-      description        = "Proinsulin-to-insulin conversion therapy indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Proinsulin-to-insulin conversion therapy indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (untreated)",
-      notes              = paste(
+      notes = paste(
         "1 = the hypothetical proinsulin-converting drug is active, adding the",
         "first-order ProinsulinConv flux (Eq 6, rate constant 1/K_CPro) that",
         "moves plasma proinsulin into the plasma insulin pool; 0 = untreated,",
@@ -80,32 +91,47 @@ Trujillo_2025_proinsulin_qsp <- function() {
         "(treatment starts partway through a simulation).",
         sep = " "
       ),
-      source_name        = "ON_TREATMENT"
+      source_name = "ON_TREATMENT"
     )
   )
 
   compartmentData <- list(
-    gastric_cho      = list(analyte = "dietary carbohydrate", units = "kcal", specimen = "administration site", verified = TRUE),
-    gastric_other    = list(analyte = "dietary non-carbohydrate calories", units = "kcal", specimen = "administration site", verified = TRUE),
-    gut_glucose      = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = TRUE),
-    glucose          = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = TRUE),
-    tubular_glucose  = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE),
-    insulin          = list(analyte = "insulin", units = "nmol", specimen = "plasma", verified = TRUE),
-    insulin_per      = list(analyte = "insulin", units = "nmol", specimen = "tissue", verified = TRUE),
-    glp1             = list(analyte = "active GLP-1", units = "pmol", specimen = "plasma", verified = TRUE),
-    glp1_inactive    = list(analyte = "inactive GLP-1", units = "pmol", specimen = "plasma", verified = TRUE),
-    glucagon         = list(analyte = "glucagon", units = "pmol", specimen = "plasma", verified = TRUE),
-    glucose_delay30  = list(analyte = "glucose", units = "mg/dL", specimen = "not applicable", verified = TRUE),
-    glucose_delay90  = list(analyte = "glucose", units = "mg/dL", specimen = "not applicable", verified = TRUE),
-    proinsulin       = list(analyte = "proinsulin", units = "nmol", specimen = "plasma", verified = TRUE),
-    insulin_musc     = list(analyte = "insulin", units = "uU/mL", specimen = "not applicable", verified = TRUE),
-    proinsulin_musc  = list(analyte = "proinsulin", units = "uU/mL equivalent", specimen = "not applicable", verified = TRUE)
+    gastric_cho = list(
+      analyte = "dietary carbohydrate",
+      units = "kcal",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    gastric_other = list(
+      analyte = "dietary non-carbohydrate calories",
+      units = "kcal",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    gut_glucose = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = TRUE),
+    glucose = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = TRUE),
+    tubular_glucose = list(analyte = "glucose", units = "mg", specimen = "urine", verified = TRUE),
+    insulin = list(analyte = "insulin", units = "nmol", specimen = "plasma", verified = TRUE),
+    insulin_per = list(analyte = "insulin", units = "nmol", specimen = "tissue", verified = TRUE),
+    glp1 = list(analyte = "active GLP-1", units = "pmol", specimen = "plasma", verified = TRUE),
+    glp1_inactive = list(analyte = "inactive GLP-1", units = "pmol", specimen = "plasma", verified = TRUE),
+    glucagon = list(analyte = "glucagon", units = "pmol", specimen = "plasma", verified = TRUE),
+    glucose_delay30 = list(analyte = "glucose", units = "mg/dL", specimen = "not applicable", verified = TRUE),
+    glucose_delay90 = list(analyte = "glucose", units = "mg/dL", specimen = "not applicable", verified = TRUE),
+    proinsulin = list(analyte = "proinsulin", units = "nmol", specimen = "plasma", verified = TRUE),
+    insulin_musc = list(analyte = "insulin", units = "uU/mL", specimen = "not applicable", verified = TRUE),
+    proinsulin_musc = list(
+      analyte = "proinsulin",
+      units = "uU/mL equivalent",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 4,
-    n_studies     = 2,
+    species = "human",
+    n_subjects = 4,
+    n_studies = 2,
     disease_state = paste(
       "Four virtual patients spanning healthy physiology and the type 2",
       "diabetes spectrum: VPHealthy, VPT2DM-1 and VPT2DM-2 (early / moderate",
@@ -114,13 +140,13 @@ Trujillo_2025_proinsulin_qsp <- function() {
       "(Trujillo 2025 Section 2.5, Table 1).",
       sep = " "
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "Three meals per day for 52 weeks, plus a 75 g oral glucose tolerance",
       "test after a 16 h fast (Section 2.6). The hypothetical conversion",
       "therapy was explored at conversion rates up to ~7 pM/min.",
       sep = " "
     ),
-    notes         = paste(
+    notes = paste(
       "The virtual patients are model constructs, not fitted individuals.",
       "They were calibrated against fasting insulin, proinsulin and the",
       "proinsulin/insulin ratio from the literature and from baseline samples",

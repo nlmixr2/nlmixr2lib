@@ -43,8 +43,8 @@ Naik_2013_fasiglifam <- function() {
   paper_specific_compartments <- c("glucose", "Hba1c")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg fasiglifam (TAK-875, oral, once daily)",
+    time = "h",
+    dosing = "mg fasiglifam (TAK-875, oral, once daily)",
     concentration = paste(
       "Cc in mg/L (equivalent to ug/mL; EC50 = 3.16 ug/mL = 3.16 mg/L);",
       "FPG in mg/dL; HbA1c in %"
@@ -56,20 +56,20 @@ Naik_2013_fasiglifam <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "fasiglifam", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "fasiglifam", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
-    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    Hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    glucose = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Hba1c = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex (female indicator)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex (female indicator)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female is the reference / typical subject)",
-      notes              = paste(
+      notes = paste(
         "Additive covariate effects. Naik 2013 reports SEX = 1 for male",
         "and SEX = 0 for female (source column SEX); the canonical SEXF",
         "uses SEXF = 1 for female. The model applies the paper's",
@@ -78,14 +78,14 @@ Naik_2013_fasiglifam <- function() {
         "SEXF = 0 (male) yields CL/F = 0.75 + 0.31 = 1.06 L/h and",
         "MPL = 0.0590 + 0.0363 = 0.0953."
       ),
-      source_name        = "SEX (1 = male, 0 = female in Naik 2013 supplement)"
+      source_name = "SEX (1 = male, 0 = female in Naik 2013 supplement)"
     ),
     FPG = list(
-      description        = "Observed baseline fasting plasma glucose at study entry",
-      units              = "mg/dL (paper convention; 1 mmol/L = 18.02 mg/dL)",
-      type               = "continuous",
+      description = "Observed baseline fasting plasma glucose at study entry",
+      units = "mg/dL (paper convention; 1 mmol/L = 18.02 mg/dL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline FPG (per-subject, time-fixed) is used as a covariate",
         "in three places: exponential effect on Emax of the FPG",
         "indirect-response model (Table 2 row 'BFPG on Emax' = 0.00746",
@@ -96,14 +96,14 @@ Naik_2013_fasiglifam <- function() {
         "glucose(t) state. Reference value 163.5 mg/dL is the typical",
         "subject in Naik 2013 Figure 2 tornado plot."
       ),
-      source_name        = "BFPG (paper narrative) / FPG (source dataset column, baseline value)"
+      source_name = "BFPG (paper narrative) / FPG (source dataset column, baseline value)"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase (baseline)",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase (baseline)",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential effect on Emax of the FPG indirect-response model",
         "(Table 2 row 'AST on Emax' = 0.00731 per (U/L); centred at",
         "21 U/L). Naik 2013 supplement control stream s06 encodes this",
@@ -117,14 +117,14 @@ Naik_2013_fasiglifam <- function() {
         "cohort. Reference value 21 U/L is the typical subject in",
         "Naik 2013 Figure 2 tornado plot."
       ),
-      source_name        = "SGOT (serum glutamic-oxaloacetic transaminase; legacy name for AST)"
+      source_name = "SGOT (serum glutamic-oxaloacetic transaminase; legacy name for AST)"
     ),
     T_DIAG_DIAB = list(
-      description        = "Time since T2DM diagnosis at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Time since T2DM diagnosis at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (additive) effect on baseline HbA1c BLA1 (Table 2 row",
         "'DD on BLA1' = 0.0133 %/year; centred at 4.61 years). Naik",
         "2013 Discussion notes 'Disease duration had no significant",
@@ -135,94 +135,94 @@ Naik_2013_fasiglifam <- function() {
         "Naik 2013 Figure 2 tornado plot. Cohort range 0.39 - 14.75",
         "years (Naik 2013 Discussion)."
       ),
-      source_name        = "DD (disease duration)"
+      source_name = "DD (disease duration)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age at study entry (screened, not retained in final model)",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry (screened, not retained in final model)",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened against PK and efficacy parameters via forward-",
         "addition + backward-elimination stepwise covariate selection",
         "(Wahlby 2001 protocol). Not retained in the final PK, PK-FPG,",
         "or PK-HbA1c models. Cohort mean 51.5 +/- 10.6 years (range",
         "21 - 79) per Naik 2013 Table 1."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     WT = list(
-      description        = "Body weight at baseline (screened, not retained in final model)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline (screened, not retained in final model)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. Cohort mean 86.0 kg (range 49.5 -",
         "172.7) per Naik 2013 Table 1."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     BMI = list(
-      description        = "Body mass index at baseline (screened, not retained in final model)",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline (screened, not retained in final model)",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. Cohort mean 31.7 +/- 5.1 kg/m^2 per",
         "Naik 2013 Table 1."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     CRCL = list(
-      description        = "Creatinine clearance (screened, not retained in final model)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (screened, not retained in final model)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. Cohort mean 129.7 +/- 44.0 mL/min per",
         "Naik 2013 Table 1. Renal excretion of fasiglifam is minimal",
         "(CLr <= 0.003 L/h; Naik 2013 Introduction)."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     ALB = list(
-      description        = "Serum albumin (screened, not retained in final model)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (screened, not retained in final model)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. Cohort mean 41.8 +/- 3.3 g/L per",
         "Naik 2013 Table 1."
       ),
-      source_name        = "ALB (source column ALBU)"
+      source_name = "ALB (source column ALBU)"
     ),
     CONMED_METFORMIN = list(
-      description        = "Concomitant metformin (screened, not retained in final model)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant metformin (screened, not retained in final model)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no metformin)",
-      notes              = paste(
+      notes = paste(
         "Screened; not retained. 76.3 pct of the PK/PD cohort was on",
         "background metformin at baseline (Naik 2013 Table 1). Naik",
         "2013 Discussion attributes the lack-of-effect to prior",
         "metformin steady state at study entry."
       ),
-      source_name        = "METF (paper reports metformin dose 1696 +/- 442 mg for 273 subjects; the binary Yes/No indicator was screened)"
+      source_name = "METF (paper reports metformin dose 1696 +/- 442 mg for 273 subjects; the binary Yes/No indicator was screened)"
     )
   )
 
   population <- list(
-    species                 = "human",
-    n_subjects_pk           = 286L,
-    n_subjects_pkpd         = 346L,
-    n_pk_observations       = 1211L,
-    n_fpg_observations      = 2710L,
-    n_hba1c_observations    = 1381L,
-    n_studies               = 1L,
-    study_design            = paste(
+    species = "human",
+    n_subjects_pk = 286L,
+    n_subjects_pkpd = 346L,
+    n_pk_observations = 1211L,
+    n_fpg_observations = 2710L,
+    n_hba1c_observations = 1381L,
+    n_studies = 1L,
+    study_design = paste(
       "Phase 2, randomised, double-blind, placebo- and active-comparator",
       "(glimepiride)-controlled, parallel-group, multicentre study",
       "(Burant 2012 Lancet). Seven treatment groups: placebo, TAK-875",
@@ -230,24 +230,24 @@ Naik_2013_fasiglifam <- function() {
       "patients were on stable metformin monotherapy for >= 8 weeks",
       "before screening, or on diet + exercise alone for >= 8 weeks."
     ),
-    age_range               = "21 - 79 years (mean 51.5 +/- 10.6)",
-    weight_range            = "49.5 - 172.7 kg (mean 86.0 kg)",
-    sex_female_pct          = 53.5,
-    race_ethnicity          = c(Caucasian = 82.4, AfricanAmerican = 10.1, Asian = 3.2, Other = 4.3),
-    ethnicity_hispanic_pct  = 66.8,
-    disease_state           = paste(
+    age_range = "21 - 79 years (mean 51.5 +/- 10.6)",
+    weight_range = "49.5 - 172.7 kg (mean 86.0 kg)",
+    sex_female_pct = 53.5,
+    race_ethnicity = c(Caucasian = 82.4, AfricanAmerican = 10.1, Asian = 3.2, Other = 4.3),
+    ethnicity_hispanic_pct = 66.8,
+    disease_state = paste(
       "Type 2 diabetes mellitus (T2DM) inadequately controlled on stable",
       "metformin monotherapy or on diet + exercise alone. Baseline FPG",
       "mean 170.3 +/- 51.1 mg/dL; baseline HbA1c mean 8.4 +/- 0.93 pct.",
       "Disease duration mean 5.7 +/- 4.9 years (range 0.39 - 14.75)."
     ),
-    dose_range              = paste(
+    dose_range = paste(
       "Fasiglifam 6.25, 12.5, 25, 50, 100, and 200 mg orally once daily",
       "for 12 weeks. Placebo arm was included in the PK-efficacy",
       "dataset but not in the PK-only dataset."
     ),
-    regions                 = "Not tabulated in Naik 2013; the parent Burant 2012 phase-2 trial was US / Latin America / Europe multicentre.",
-    notes                   = paste(
+    regions = "Not tabulated in Naik 2013; the parent Burant 2012 phase-2 trial was US / Latin America / Europe multicentre.",
+    notes = paste(
       "Data from 346 T2DM patients (PK-efficacy dataset) and 286 T2DM",
       "patients (PK dataset). Naik 2013 Table 1 tabulates baseline",
       "demographics and clinical laboratory values. Population-PK-PD",

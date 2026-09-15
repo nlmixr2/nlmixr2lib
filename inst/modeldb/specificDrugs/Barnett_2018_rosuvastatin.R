@@ -19,51 +19,51 @@ Barnett_2018_rosuvastatin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "rosuvastatin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "rosuvastatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "rosuvastatin", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "rosuvastatin", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "rosuvastatin", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     OCC = list(
-      description        = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator (Barnett 2018 study design: OCC1 = rifampicin-only period, OCC2 = rosuvastatin-only period, OCC3 = combined rifampicin + rosuvastatin period).",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Time-varying within subject; constant within an occasion. Rosuvastatin was dosed on OCC2 and OCC3 in the source clinical study (Lai et al. 2016 n=12 healthy-male SLCO1B1-wildtype cohort). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV eta on log-Ka (only Ka carried IOV in the Barnett 2018 RSV fit, with a single shared variance across the two RSV occasions). OCC1 (RIF-only period) has no rosuvastatin data in the source fit; its eta is unused for in-paper simulations and is retained only for users who want to simulate at all three study occasions.",
-      source_name        = "OCC"
+      notes = "Time-varying within subject; constant within an occasion. Rosuvastatin was dosed on OCC2 and OCC3 in the source clinical study (Lai et al. 2016 n=12 healthy-male SLCO1B1-wildtype cohort). Decomposed inside model() into binary indicators oc1, oc2, oc3 that multiplex the per-occasion IOV eta on log-Ka (only Ka carried IOV in the Barnett 2018 RSV fit, with a single shared variance across the two RSV occasions). OCC1 (RIF-only period) has no rosuvastatin data in the source fit; its eta is unused for in-paper simulations and is retained only for users who want to simulate at all three study occasions.",
+      source_name = "OCC"
     ),
     CONMED_RIF = list(
-      description        = "Concomitant single-dose rifampicin co-administration indicator (1 = within a 600 mg rifampicin co-administration period in the Barnett 2018 study design; 0 = rosuvastatin alone).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant single-dose rifampicin co-administration indicator (1 = within a 600 mg rifampicin co-administration period in the Barnett 2018 study design; 0 = rosuvastatin alone).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (rosuvastatin alone)",
-      notes              = "Time-varying within subject. Used here as the binary period-level covariate that captures Barnett 2018 Table 1's reductions of V1, V2, and Q during the rifampicin phase: V1_RSV 430 -> 2.98 L (~99% reduction), V2_RSV 865 -> 128 L (~85% reduction), Q_RSV 45.3 -> 5.03 L/h (~89% reduction). Distinct semantics from the multi-day CYP3A4-induction use of CONMED_RIF in Svensson_2014_bedaquiline: here rifampicin is acute (single 600 mg oral dose) and acts predominantly as a competitive OATP1B inhibitor, with the empirical distribution-parameter changes captured by this covariate likely reflecting OATP1B-inhibition-driven changes in hepatic distribution rather than enzyme induction.",
-      source_name        = "CONMED_RIF"
+      notes = "Time-varying within subject. Used here as the binary period-level covariate that captures Barnett 2018 Table 1's reductions of V1, V2, and Q during the rifampicin phase: V1_RSV 430 -> 2.98 L (~99% reduction), V2_RSV 865 -> 128 L (~85% reduction), Q_RSV 45.3 -> 5.03 L/h (~89% reduction). Distinct semantics from the multi-day CYP3A4-induction use of CONMED_RIF in Svensson_2014_bedaquiline: here rifampicin is acute (single 600 mg oral dose) and acts predominantly as a competitive OATP1B inhibitor, with the empirical distribution-parameter changes captured by this covariate likely reflecting OATP1B-inhibition-driven changes in hepatic distribution rather than enzyme induction.",
+      source_name = "CONMED_RIF"
     ),
     CP_RIF_UM = list(
-      description        = "Instantaneous rifampicin plasma concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of biliary rosuvastatin clearance (Barnett 2018 Methods, RSV model section).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Instantaneous rifampicin plasma concentration as a time-varying perpetrator covariate driving competitive OATP1B inhibition of biliary rosuvastatin clearance (Barnett 2018 Methods, RSV model section).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Set to 0 outside the rifampicin co-administration window so the OATP1B inhibition term in the central-compartment ODE collapses to the baseline form. The PK trajectory of rifampicin is parameterised in modellib('Barnett_2018_rifampicin'); users typically simulate the rifampicin model first and then feed its central-compartment concentration (after MW conversion to umol/L; rifampicin MW 822.94 g/mol) as the CP_RIF_UM column on the RSV event table. Reference peak: ~29 umol/L (see modellib('Barnett_2018_rifampicin') typical-value simulation).",
-      source_name        = "CRIF"
+      notes = "Time-varying. Set to 0 outside the rifampicin co-administration window so the OATP1B inhibition term in the central-compartment ODE collapses to the baseline form. The PK trajectory of rifampicin is parameterised in modellib('Barnett_2018_rifampicin'); users typically simulate the rifampicin model first and then feed its central-compartment concentration (after MW conversion to umol/L; rifampicin MW 822.94 g/mol) as the CP_RIF_UM column on the RSV event table. Reference peak: ~29 umol/L (see modellib('Barnett_2018_rifampicin') typical-value simulation).",
+      source_name = "CRIF"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 12L,
-    n_studies        = 1L,
-    n_observations   = 264L,
-    age_range        = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
-    weight_range     = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
-    sex_female_pct   = 0,
-    disease_state    = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study.",
-    dose_range       = "Single 5 mg oral rosuvastatin dose at the start of OCC2 and at the start of OCC3 (co-administered with 600 mg rifampicin on OCC3).",
-    regions          = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
-    notes            = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 264 RSV plasma samples (OCC2 = 132, OCC3 = 132) plus 44 RSV urine samples (cumulative excretion over 0-7 h and 7-24 h post-dose) were fit simultaneously in NONMEM using FOCE."
+    species = "human",
+    n_subjects = 12L,
+    n_studies = 1L,
+    n_observations = 264L,
+    age_range = "Healthy adult males; demographic distribution not tabulated by Barnett 2018 (source dataset Lai et al. 2016, 12 healthy male subjects, SLCO1B1 c.521 T>C wildtype only; no OATP1B1*5 / *15 carriers).",
+    weight_range = "(not extracted; Barnett 2018 Methods do not tabulate per-subject weights for the n=12 cohort.)",
+    sex_female_pct = 0,
+    disease_state = "Healthy adult male volunteers in a three-occasion (7-day washout between OCC1-2 and OCC2-3) drug-drug-interaction crossover study.",
+    dose_range = "Single 5 mg oral rosuvastatin dose at the start of OCC2 and at the start of OCC3 (co-administered with 600 mg rifampicin on OCC3).",
+    regions = "(not extracted; the underlying clinical study Lai et al. 2016 region was not explicitly stated in Barnett 2018 Methods.)",
+    notes = "Demographics inferred from Barnett 2018 Methods (Clinical data section) and the cited source clinical study Lai Y et al., Pharmacol Res Perspect 2016;4(3):e00207. The 264 RSV plasma samples (OCC2 = 132, OCC3 = 132) plus 44 RSV urine samples (cumulative excretion over 0-7 h and 7-24 h post-dose) were fit simultaneously in NONMEM using FOCE."
   )
 
   ini({

@@ -44,8 +44,8 @@ Chatterjee_2016_pembrolizumab <- function() {
   vignette <- "Chatterjee_2016_pembrolizumab"
 
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no PK input; pembrolizumab exposure enters as the per-subject covariate AUC_PEMBRO in mg*day/L)",
+    time = "day",
+    dosing = "n/a (no PK input; pembrolizumab exposure enters as the per-subject covariate AUC_PEMBRO in mg*day/L)",
     concentration = "mm (the observable `TS` is the RECIST 1.1 sum of the longest diameters of target lesions)"
   )
 
@@ -63,12 +63,12 @@ Chatterjee_2016_pembrolizumab <- function() {
 
   covariateData <- list(
     TUM_SLD = list(
-      description        = "Observed baseline sum of the longest diameters of target lesions per RECIST 1.1, measured at initial screening.",
-      units              = "mm",
-      type               = "continuous",
+      description = "Observed baseline sum of the longest diameters of target lesions per RECIST 1.1, measured at initial screening.",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "Baseline",
-      notes              = paste(
+      source_name = "Baseline",
+      notes = paste(
         "The paper's 'Baseline' term: 'the actual measured tumor size (SLD) at initial screening' (Methods, tumor size NLME model structure).",
         "Supplementary Methods, Structural Model Selection: 'Fixing baseline tumor size to observed values was found to improve model stability', so the baseline is a per-subject regressor and is NOT estimated.",
         "It initialises both sub-states, growth(0) = (1 - f) * TUM_SLD and shrink(0) = f * TUM_SLD, so TS(0) = TUM_SLD exactly.",
@@ -78,12 +78,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     AUC_PEMBRO = list(
-      description        = "Per-subject pembrolizumab area under the serum concentration-time curve at steady state over a 6-week interval (AUCss-6weeks).",
-      units              = "mg*day/L (equivalently ug*day/mL; the paper prints 'mg/l x day' in Methods and 'ug.day/ml' on the Figure 2 axis -- numerically identical)",
-      type               = "continuous",
+      description = "Per-subject pembrolizumab area under the serum concentration-time curve at steady state over a 6-week interval (AUCss-6weeks).",
+      units = "mg*day/L (equivalently ug*day/mL; the paper prints 'mg/l x day' in Methods and 'ug.day/ml' on the Figure 2 axis -- numerically identical)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "AUCss-6weeks",
-      notes              = paste(
+      source_name = "AUCss-6weeks",
+      notes = paste(
         "Log-linear (power) effect on kdeath: kdeath = TVkdeath * (AUC_PEMBRO / 7079)^theta, per the Methods exposure-effect equation.",
         "The normalizing constant AUCtypical,ss-6weeks = 7079 mg*day/L is the population-typical exposure stated in the Methods and is hard-coded in model() as a structural constant of the published equation.",
         "The source analysis did NOT model pembrolizumab PK here: 'Results from the independent population pharmacokinetics model provided post hoc clearance (CL) estimates, with plasma exposure within the dosing interval at steady state calculated as dose/CL'. That upstream popPK model was 'submitted for publication' when this paper appeared and was published as Ahamadi 2017 (CPT Pharmacometrics Syst Pharmacol 6:49-57), which is packaged in this library as Ahamadi_2017_pembrolizumab.",
@@ -93,12 +93,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     PDL1_TUM = list(
-      description        = "Baseline tumor PD-L1 expression by immunohistochemistry (22C3 clone), reported as the Tumor Proportion Score (TPS): the percentage of tumor cells with membranous PD-L1 staining.",
-      units              = "percent (0-100)",
-      type               = "continuous",
+      description = "Baseline tumor PD-L1 expression by immunohistochemistry (22C3 clone), reported as the Tumor Proportion Score (TPS): the percentage of tumor cells with membranous PD-L1 staining.",
+      units = "percent (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "PD-L1",
-      notes              = paste(
+      source_name = "PD-L1",
+      notes = paste(
         "Carried as the canonical continuous TPS column; model() derives the paper's three non-reference indicator levels from it.",
         "Category boundaries per the Supplementary Methods, Handling of Covariates: TPS >= 50% ('strongly positive'), TPS 1%-49% ('weakly positive'), TPS < 1% ('negative').",
         "TPS 1%-49% is the MOST FREQUENT category (201 of 505, supplementary Table S3) and is therefore the model's reference level, receiving no covariate term.",
@@ -108,12 +108,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     PDL1_TUM_MISSING = list(
-      description        = "Binary indicator: 1 = the baseline PD-L1 tumor proportion score could not be assigned for this subject, 0 = a TPS value is available.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = the baseline PD-L1 tumor proportion score could not be assigned for this subject, 0 = a TPS value is available.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (PD-L1 TPS available)",
-      source_name        = "PD-L1 'Unknown'",
-      notes              = paste(
+      source_name = "PD-L1 'Unknown'",
+      notes = paste(
         "The source analysis retained 'unknown' PD-L1 as a fourth modelled category with its own coefficient (PD-L1_3, supplementary Table S6) rather than imputing it into a measured level; 60 of 505 subjects were unknown (supplementary Table S3).",
         "Supplementary text, Final Exposure-Response Model: 'the only final model parameter that was identified with poor precision was PD-L1_3 on kdeath ... The large uncertainty in this parameter likely reflects that the unknown PD-L1 category includes patients with PD-L1-positive and negative tumors'. RSE 145%; interpret the coefficient with caution.",
         "Mutually exclusive with the derived TPS >= 50% and TPS < 1% indicators.",
@@ -121,12 +121,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     TUM_EGFR_MUT = list(
-      description        = "Binary indicator of tumor EGFR (epidermal growth factor receptor) mutation status: 1 = EGFR-mutant tumor, 0 = EGFR wild-type tumor.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator of tumor EGFR (epidermal growth factor receptor) mutation status: 1 = EGFR-mutant tumor, 0 = EGFR wild-type tumor.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EGFR wild type, the most frequent category)",
-      source_name        = "EGFR status",
-      notes              = paste(
+      source_name = "EGFR status",
+      notes = paste(
         "Additive effect on the logit of the responsive tumor fraction f (EGFR_1, supplementary Table S6).",
         "EGFR wild type is the most frequent category (409 of 505; supplementary Table S3) and is therefore the reference level.",
         "Supplementary text, Covariate Effects: 'EGFR mutation was associated with a lower fraction of the tumor that responds to treatment ... median f was 3.2-fold higher in patients with EGFR wild-type versus mutant tumors'.",
@@ -135,12 +135,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     TUM_EGFR_MUT_MISSING = list(
-      description        = "Binary indicator: 1 = tumor EGFR mutation status was not determined for this subject, 0 = EGFR status (wild type or mutant) is known.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = tumor EGFR mutation status was not determined for this subject, 0 = EGFR status (wild type or mutant) is known.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (EGFR status known)",
-      source_name        = "EGFR 'Unknown'",
-      notes              = paste(
+      source_name = "EGFR 'Unknown'",
+      notes = paste(
         "The source analysis retained 'unknown' EGFR as a third modelled category with its own coefficient on logit(f) (EGFR_2, supplementary Table S6) rather than imputing it into the wild-type reference; 26 of 505 subjects were unknown (supplementary Table S3).",
         "The estimated coefficient is positive (+1.66), i.e. EGFR-unknown subjects had a HIGHER responsive fraction than the wild-type reference; as with the PD-L1 unknown stratum this is a missingness artefact, not a biological effect, and should not be extrapolated.",
         "Mutually exclusive with TUM_EGFR_MUT = 1.",
@@ -148,12 +148,12 @@ Chatterjee_2016_pembrolizumab <- function() {
       )
     ),
     T_SCAN_TO_DOSE = list(
-      description        = "Per-subject delay between the baseline tumor scan (the model's time origin) and the first pembrolizumab dose.",
-      units              = "day",
-      type               = "continuous",
+      description = "Per-subject delay between the baseline tumor scan (the model's time origin) and the first pembrolizumab dose.",
+      units = "day",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "delay",
-      notes              = paste(
+      source_name = "delay",
+      notes = paste(
         "The paper's 'delay' term in the structural equation: 'the delay between baseline and the first dose' (Methods, tumor size NLME model structure).",
         "Supplementary Methods, Structural Model Selection: an ESTIMATED pharmacologic delay in drug action was tested and dropped (frequency < 5%, high shrinkage), but 'A delay between the baseline scan and the first pembrolizumab dose was retained in the model as a fixed individual-specific parameter' -- i.e. it is per-subject DATA, not an estimated parameter, and so is carried here as a covariate.",
         "Enters the model only through max(0, t - T_SCAN_TO_DOSE): the sensitive sub-state is held at its initial value until the first dose and decays at kdeath thereafter. The resistant sub-state grows from t = 0 regardless.",
@@ -175,68 +175,68 @@ Chatterjee_2016_pembrolizumab <- function() {
   covariatesDataExcluded <- list(
     SMOKER = list(
       description = "Smoking history (former or current smoker vs nonsmoker).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested during the stepwise covariate search and not selected (supplementary Methods, Covariate Effects: 'covariates such as number of lines of prior treatment, smoking history, baseline tumor size, or ECOG performance status ... were not selected'). Cohort: 382 former/current smokers, 121 nonsmokers, 2 unknown (supplementary Table S3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested during the stepwise covariate search and not selected (supplementary Methods, Covariate Effects: 'covariates such as number of lines of prior treatment, smoking history, baseline tumor size, or ECOG performance status ... were not selected'). Cohort: 382 former/current smokers, 121 nonsmokers, 2 unknown (supplementary Table S3)."
     ),
     WHO_PS = list(
       description = "ECOG (Eastern Cooperative Oncology Group) performance status, 0 or 1.",
-      units       = "(integer score)",
-      type        = "categorical",
-      notes       = "Tested and not selected (supplementary Methods, Covariate Effects). Cohort: ECOG 0 in 177, ECOG 1 in 325, unknown in 3 (supplementary Table S3). Eligibility restricted enrolment to ECOG 0-1."
+      units = "(integer score)",
+      type = "categorical",
+      notes = "Tested and not selected (supplementary Methods, Covariate Effects). Cohort: ECOG 0 in 177, ECOG 1 in 325, unknown in 3 (supplementary Table S3). Eligibility restricted enrolment to ECOG 0-1."
     ),
     AGE = list(
       description = "Age at baseline.",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Tested as part of the demographics block and not selected (main-article Methods). Cohort median 64 years, range 32-93 (supplementary Table S4)."
+      units = "year",
+      type = "continuous",
+      notes = "Tested as part of the demographics block and not selected (main-article Methods). Cohort median 64 years, range 32-93 (supplementary Table S4)."
     ),
     SEXF = list(
       description = "Biological sex indicator (1 = female).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested as part of the demographics block and not selected (main-article Methods). Cohort: 267 male, 238 female (supplementary Table S3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested as part of the demographics block and not selected (main-article Methods). Cohort: 267 male, 238 female (supplementary Table S3)."
     ),
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Tested as part of the demographics block and not selected (main-article Methods). Cohort median 70.00 kg, range 35.70-132.00, 1 missing (supplementary Table S4). Note that weight DOES enter the model indirectly, through the mg/kg dose that determines AUC_PEMBRO."
+      units = "kg",
+      type = "continuous",
+      notes = "Tested as part of the demographics block and not selected (main-article Methods). Cohort median 70.00 kg, range 35.70-132.00, 1 missing (supplementary Table S4). Note that weight DOES enter the model indirectly, through the mg/kg dose that determines AUC_PEMBRO."
     ),
     PRIOR_THERAPY = list(
       description = "Any prior systemic therapy for advanced NSCLC (yes / no), and the number of prior lines.",
-      units       = "(binary / count)",
-      type        = "categorical",
-      notes       = "Tested and not selected (supplementary Methods, Covariate Effects, explicitly names 'number of lines of prior treatment'). Cohort: 418 previously treated, 87 treatment-naive (supplementary Table S3)."
+      units = "(binary / count)",
+      type = "categorical",
+      notes = "Tested and not selected (supplementary Methods, Covariate Effects, explicitly names 'number of lines of prior treatment'). Cohort: 418 previously treated, 87 treatment-naive (supplementary Table S3)."
     ),
     RACE = list(
       description = "Race, grouped as white vs Asian vs other for testing.",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Regrouped for testability and not retained: supplementary Methods, Covariate Effects -- 'because the majority of patients were white and there were <10 patients in 3 of the 6 race categories, races were grouped as white vs Asian vs other to allow for testing'. Cohort: 418 white, 63 Asian, 18 Black or African American, 3 multiracial, 1 American Indian or Alaskan native, 1 Native Hawaiian or other Pacific Islander, 1 unknown (supplementary Table S3)."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Regrouped for testability and not retained: supplementary Methods, Covariate Effects -- 'because the majority of patients were white and there were <10 patients in 3 of the 6 race categories, races were grouped as white vs Asian vs other to allow for testing'. Cohort: 418 white, 63 Asian, 18 Black or African American, 3 multiracial, 1 American Indian or Alaskan native, 1 Native Hawaiian or other Pacific Islander, 1 unknown (supplementary Table S3)."
     ),
     ALK_TRANSLOC = list(
       description = "ALK gene translocation / rearrangement status.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "NOT formally tested: supplementary Methods, Covariate Effects -- 'Because <2% of patients in the dataset harbored an ALK translocation, ALK status was not formally tested as a covariate.' Cohort: 435 wild type, 8 mutation or translocation, 62 unknown (supplementary Table S3)."
+      units = "(binary)",
+      type = "binary",
+      notes = "NOT formally tested: supplementary Methods, Covariate Effects -- 'Because <2% of patients in the dataset harbored an ALK translocation, ALK status was not formally tested as a covariate.' Cohort: 435 wild type, 8 mutation or translocation, 62 unknown (supplementary Table S3)."
     )
   )
 
   population <- list(
-    species         = "human (adults with locally advanced or metastatic NSCLC)",
-    n_subjects      = 496L,
-    n_studies       = 1L,
-    age_range       = "32-93 years (supplementary Table S4, N = 505 with measurable baseline disease)",
-    age_median      = "64 years",
-    weight_range    = "35.70-132.00 kg",
-    weight_median   = "70.00 kg",
-    sex_female_pct  = 47.1,
-    race_ethnicity  = c(White = 82.8, Asian = 12.5, Black = 3.6, Other = 1.2),
-    disease_state   = "locally advanced or metastatic non-small-cell lung cancer, ECOG performance status 0-1, PD-L1 positive by the prototype assay for the final cohort; 83% previously treated",
-    dose_range      = "pembrolizumab 2 mg/kg IV Q3W, 10 mg/kg IV Q3W, or 10 mg/kg IV Q2W (not a model input; enters only through AUC_PEMBRO)",
-    regions         = "multinational KEYNOTE-001 (NCT01295827), phase Ib, multicenter open-label",
-    notes           = paste(
+    species = "human (adults with locally advanced or metastatic NSCLC)",
+    n_subjects = 496L,
+    n_studies = 1L,
+    age_range = "32-93 years (supplementary Table S4, N = 505 with measurable baseline disease)",
+    age_median = "64 years",
+    weight_range = "35.70-132.00 kg",
+    weight_median = "70.00 kg",
+    sex_female_pct = 47.1,
+    race_ethnicity = c(White = 82.8, Asian = 12.5, Black = 3.6, Other = 1.2),
+    disease_state = "locally advanced or metastatic non-small-cell lung cancer, ECOG performance status 0-1, PD-L1 positive by the prototype assay for the final cohort; 83% previously treated",
+    dose_range = "pembrolizumab 2 mg/kg IV Q3W, 10 mg/kg IV Q3W, or 10 mg/kg IV Q2W (not a model input; enters only through AUC_PEMBRO)",
+    regions = "multinational KEYNOTE-001 (NCT01295827), phase Ib, multicenter open-label",
+    notes = paste(
       "Modeling population (main-article Methods, exposure-efficacy analysis): n = 496 patients with both PK data and measurable disease per RECIST v1.1 by central review at baseline --",
       "  6 treatment-naive + 47 previously treated at 2 mg/kg Q3W",
       "  45 treatment-naive + 216 previously treated at 10 mg/kg Q3W",

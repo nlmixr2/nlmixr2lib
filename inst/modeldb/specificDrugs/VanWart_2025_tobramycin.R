@@ -35,11 +35,11 @@ VanWart_2025_tobramycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters the model only through the Cockcroft-Gault creatinine clearance and the",
         "Gehan and George body-surface-area formula computed in the supplemental control",
         "stream $PK block; there is no separate allometric term on any structural",
@@ -48,41 +48,41 @@ VanWart_2025_tobramycin <- function() {
         "weight also sets the dose amount in the analysis data set.",
         sep = " "
       ),
-      source_name        = "WTKG"
+      source_name = "WTKG"
     ),
     HT = list(
-      description        = "Body height at study entry.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at study entry.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only to compute body surface area by the Gehan and George formula",
         "BSA = 0.0235 * WT^0.51456 * HT^0.42246, which in turn normalises the male",
         "creatinine clearance to 1.73 m2 (supplemental control stream $PK). Height ranged",
         "147-190 cm across the 16 analysis subjects (column HTCM).",
         sep = " "
       ),
-      source_name        = "HTCM"
+      source_name = "HTCM"
     ),
     AGE = list(
-      description        = "Age at study entry.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters only through the (140 - AGE) numerator of the Cockcroft-Gault creatinine",
         "clearance in the supplemental control stream $PK block. Age ranged 23-72 years",
         "(median 43 years) across the 16 analysis subjects (column AGE).",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Selects between the two creatinine clearance branches of the supplemental",
         "control stream $PK block. The source column is already named SEXF with the",
         "canonical 1 = female orientation, so no recoding is needed. The two branches are",
@@ -94,14 +94,14 @@ VanWart_2025_tobramycin <- function() {
         "Errata. 5 of the 16 analysis subjects (31.2%) were female.",
         sep = " "
       ),
-      source_name        = "SEXF"
+      source_name = "SEXF"
     ),
     CREAT = list(
-      description        = "Serum creatinine at study entry.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine at study entry.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Denominator of the Cockcroft-Gault creatinine clearance in the supplemental",
         "control stream $PK block, which uses the 72 constant appropriate to mg/dL.",
         "Serum creatinine ranged 0.6-1.2 mg/dL across the 16 analysis subjects",
@@ -109,17 +109,17 @@ VanWart_2025_tobramycin <- function() {
         "denominator about 88-fold and is the single easiest way to misuse this model.",
         sep = " "
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   covariatesDataExcluded <- list(
     CRCL = list(
-      description        = "Body-surface-area-normalised creatinine clearance.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Body-surface-area-normalised creatinine clearance.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "CRCL is the covariate that actually acts on clearance, but it is not a data",
         "column for this model: the supplemental control stream derives it inside $PK",
         "from WT, HT, AGE, SEXF, and CREAT, and that derivation is reproduced in",
@@ -130,48 +130,54 @@ VanWart_2025_tobramycin <- function() {
         "'for a typical 90 mL/min/1.73m2 patient').",
         sep = " "
       ),
-      source_name        = "CLCR"
+      source_name = "CLCR"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte = "tobramycin", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "tobramycin",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "tobramycin", units = "mg",
-      specimen = "serum", verified = TRUE
+      analyte = "tobramycin",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     elf = list(
-      analyte = "tobramycin", units = "mg/L",
-      specimen = "epithelial lining fluid", verified = TRUE
+      analyte = "tobramycin",
+      units = "mg/L",
+      specimen = "epithelial lining fluid",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 1L,
-    age_range      = "23-72 years (median 43 years)",
-    weight_range   = "50-84 kg (median 68 kg)",
-    height_range   = "147-190 cm",
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 1L,
+    age_range = "23-72 years (median 43 years)",
+    weight_range = "50-84 kg (median 68 kg)",
+    height_range = "147-190 cm",
     sex_female_pct = 100 * 5 / 16,
-    disease_state  = "Adults with pneumonia undergoing bronchoscopy with bronchoalveolar lavage.",
+    disease_state = "Adults with pneumonia undergoing bronchoscopy with bronchoalveolar lavage.",
     renal_function = paste(
       "Serum creatinine 0.6-1.2 mg/dL. Derived creatinine clearance spans roughly",
       "60-160 mL/min/1.73 m^2 using the control stream's own sex-specific formulas; no",
       "subject had severe renal impairment.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "1 mg/kg tobramycin as a 30-minute IV infusion every 8 h, with dose adjustment as",
       "needed to reach peak and trough concentrations of approximately 8 and < 2 mg/L;",
       "bronchoscopy was performed at least 2 days after any adjustment so serum",
       "concentrations were at steady state.",
       sep = " "
     ),
-    regions        = "Spain (the source clinical study of Carcas 1999).",
+    regions = "Spain (the source clinical study of Carcas 1999).",
     n_observations = paste(
       "63 serum concentrations and 16 urea-corrected ELF concentrations (1 per patient,",
       "4 patients at each of 0.5, 2, 4, and 8 h), counted from the 95-row analysis data",
@@ -181,7 +187,7 @@ VanWart_2025_tobramycin <- function() {
       "and not the 64 that the Results text implies.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Van Wart 2025 is a re-analysis: it fits a population PK model to individual",
       "dosing, demographic, renal-function, and time-matched serum/ELF concentration data",
       "published by Carcas 1999, which was chosen over the gentamicin and netilmicin",

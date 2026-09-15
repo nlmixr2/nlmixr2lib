@@ -8,51 +8,51 @@ Schipani_2016_rifampicin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in the Schipani 2016 cohort. Used for allometric scaling on CL/F (exponent 0.75 fixed) and V/F (exponent 1.0 fixed) with reference weight 70 kg per Schipani 2016 Methods 'For weight as a covariate an allometric model was applied to standardize the CL and V pharmacokinetic parameters using a standard weight (WTstd) of 70 kg ... and fixing the exponent to 0.75 for CL and 1 for V.' Cohort range 4.8 - 87 kg (Table 2).",
-      source_name        = "WT"
+      notes = "Time-fixed per subject in the Schipani 2016 cohort. Used for allometric scaling on CL/F (exponent 0.75 fixed) and V/F (exponent 1.0 fixed) with reference weight 70 kg per Schipani 2016 Methods 'For weight as a covariate an allometric model was applied to standardize the CL and V pharmacokinetic parameters using a standard weight (WTstd) of 70 kg ... and fixing the exponent to 0.75 for CL and 1 for V.' Cohort range 4.8 - 87 kg (Table 2).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Power-form normalized covariate effect on CL/F per Schipani 2016 equation 4: CL_i = (theta_CL * (WT_i/70)^0.75 * (AGE_i/AGE_median)^theta_age) * exp(eta_CL). The paper does not report AGE_median explicitly; we use 33 years (the adult median per Table 2) so that the equation evaluated at the adult typical demographics (WT = 70 kg, AGE = 33 y, F = 1) gives the paper's stated typical CL/F = 23.9 L/h ('mean population estimate for CL/F in the adult subpopulation (F fixed to 1)'). Cohort age range 0.58 (7 months) - 65 years (Table 2). See vignette Errata for the centering assumption.",
-      source_name        = "AGE"
+      notes = "Time-fixed per subject. Power-form normalized covariate effect on CL/F per Schipani 2016 equation 4: CL_i = (theta_CL * (WT_i/70)^0.75 * (AGE_i/AGE_median)^theta_age) * exp(eta_CL). The paper does not report AGE_median explicitly; we use 33 years (the adult median per Table 2) so that the equation evaluated at the adult typical demographics (WT = 70 kg, AGE = 33 y, F = 1) gives the paper's stated typical CL/F = 23.9 L/h ('mean population estimate for CL/F in the adult subpopulation (F fixed to 1)'). Cohort age range 0.58 (7 months) - 65 years (Table 2). See vignette Errata for the centering assumption.",
+      source_name = "AGE"
     ),
     CHILD = list(
-      description        = "Binary indicator for child subpopulation (1 = child, 0 = adult)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator for child subpopulation (1 = child, 0 = adult)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = "Schipani 2016 Results: 'Individuals with a weight between 5 and 29 kg were considered children, which corresponded with age < 15 years.' Used to apply the relative bioavailability factor F = 0.517^CHILD on the depot. Adults: CHILD = 0 implies F = 1; children: CHILD = 1 implies F = 0.517 (children have 48.3% lower bioavailability than adults per Discussion). The paper used the weight cutoff < 30 kg; in the implementation either WT < 30 kg or AGE < 15 y can derive CHILD.",
-      source_name        = "CHILD"
+      notes = "Schipani 2016 Results: 'Individuals with a weight between 5 and 29 kg were considered children, which corresponded with age < 15 years.' Used to apply the relative bioavailability factor F = 0.517^CHILD on the depot. Adults: CHILD = 0 implies F = 1; children: CHILD = 1 implies F = 0.517 (children have 48.3% lower bioavailability than adults per Discussion). The paper used the weight cutoff < 30 kg; in the implementation either WT < 30 kg or AGE < 15 y can derive CHILD.",
+      source_name = "CHILD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 165L,
-    n_studies      = 1L,
-    age_range      = "0.58 - 65 years (overall); children 0.58 - 14 y (median 6.125); adults 14 - 65 y (median 33)",
-    weight_range   = "4.8 - 87 kg (overall); children 4.8 - 29 kg (median 15); adults 30 - 87 kg (median 49)",
+    species = "human",
+    n_subjects = 165L,
+    n_studies = 1L,
+    age_range = "0.58 - 65 years (overall); children 0.58 - 14 y (median 6.125); adults 14 - 65 y (median 33)",
+    weight_range = "4.8 - 87 kg (overall); children 4.8 - 29 kg (median 15); adults 30 - 87 kg (median 49)",
     sex_female_pct = round(68 / 165 * 100, 1),
     race_ethnicity = "Malawian (not stratified further)",
-    disease_state  = "Tuberculosis patients receiving rifampicin in fixed-dose-combination anti-TB therapy. HIV co-infection: 62% of children, 70% of adults; HIV status not a significant covariate.",
-    dose_range     = "Oral rifampicin in fixed-dose-combination tablets per Malawian weight-banded guidelines (Schipani 2016 Table 1): children 60-300 mg/day (RHZ R60/H30/Z150 or RH R60/H60 tablets, 1-5 tablets per weight band 0-29 kg); adults 300-750 mg/day (RHZE R150/H75/Z400/E275 tablets, 2-5 tablets per weight band 30 to >=75 kg).",
-    regions        = "Malawi (Queen Elizabeth Central Hospital, Blantyre)",
+    disease_state = "Tuberculosis patients receiving rifampicin in fixed-dose-combination anti-TB therapy. HIV co-infection: 62% of children, 70% of adults; HIV status not a significant covariate.",
+    dose_range = "Oral rifampicin in fixed-dose-combination tablets per Malawian weight-banded guidelines (Schipani 2016 Table 1): children 60-300 mg/day (RHZ R60/H30/Z150 or RH R60/H60 tablets, 1-5 tablets per weight band 0-29 kg); adults 300-750 mg/day (RHZE R150/H75/Z400/E275 tablets, 2-5 tablets per weight band 30 to >=75 kg).",
+    regions = "Malawi (Queen Elizabeth Central Hospital, Blantyre)",
     sampling_design = "Mixed rich + sparse design. Rich PK: 40 adults and 22 children (5-6 samples per patient at 0 pre-dose, 0.5/1/2/3/4/6/8 h, and 24 h post-dose). Sparse PK: 75 adults and 28 children (1-2 samples per patient in a window up to 8 h post-dose). Total 608 plasma concentrations.",
-    assay          = "Plasma rifampicin by validated HPLC; LLOQ 0.5 mg/L.",
-    notes          = "Mixed adult+pediatric simultaneous popPK fit. Covariates evaluated by stepwise forward-backward selection: weight, age, gender, HIV status. Only weight (allometric, fixed) and age (estimated power form) retained on CL/F; a fixed child-vs-adult relative bioavailability factor was retained on F. Patients enrolled at least 2 weeks after starting intensive-phase TB treatment."
+    assay = "Plasma rifampicin by validated HPLC; LLOQ 0.5 mg/L.",
+    notes = "Mixed adult+pediatric simultaneous popPK fit. Covariates evaluated by stepwise forward-backward selection: weight, age, gender, HIV status. Only weight (allometric, fixed) and age (estimated power form) retained on CL/F; a fixed child-vs-adult relative bioavailability factor was retained on F. Patients enrolled at least 2 weeks after starting intensive-phase TB treatment."
   )
 
   ini({

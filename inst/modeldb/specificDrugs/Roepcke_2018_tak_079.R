@@ -22,8 +22,8 @@ Roepcke_2018_tak_079 <- function() {
   paper_specific_compartments <- c("nkcell")
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -32,25 +32,25 @@ Roepcke_2018_tak_079 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "TAK-079", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "TAK-079", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "CD38", units = "mg", specimen = "lymph", verified = FALSE),
-    nkcell       = list(analyte = "NK-cells", units = "mg", specimen = "lymph", verified = FALSE),
-    precursor1   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
-    bcell        = list(analyte = "B-cells", units = "mg", specimen = "lymph", verified = FALSE)
+    nkcell = list(analyte = "NK-cells", units = "mg", specimen = "lymph", verified = FALSE),
+    precursor1 = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    bcell = list(analyte = "B-cells", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list(
     ROUTE_IV = list(
-      description        = "Route of administration indicator (1 = IV, 0 = SC).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Route of administration indicator (1 = IV, 0 = SC).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (IV)",
-      notes              = paste(
+      notes = paste(
         "Per-subject route covariate carrying the paper's route-of-administration",
         "effect on central volume of distribution. IV is the reference category",
         "(Vc = exp(lvc) = 0.141 L); SC scales Vc by (1 - e_route_iv_vc) = 0.303",
@@ -62,20 +62,20 @@ Roepcke_2018_tak_079 <- function() {
         "names the target compartment.",
         sep = " "
       ),
-      source_name        = "ROUT"
+      source_name = "ROUT"
     )
   )
 
   population <- list(
-    species        = "cynomolgus monkey (Macaca fascicularis)",
-    n_subjects     = 140L,
-    n_studies      = 8L,
-    n_male         = 58L,
-    n_female       = 82L,
-    weight_range   = "2.1-4.7 kg (pooled PK dataset)",
+    species = "cynomolgus monkey (Macaca fascicularis)",
+    n_subjects = 140L,
+    n_studies = 8L,
+    n_male = 58L,
+    n_female = 82L,
+    weight_range = "2.1-4.7 kg (pooled PK dataset)",
     weight_typical = "2.6 kg (reference weight used for human-scaling; Berkeley Madonna code and Supplemental 'Scaling of monkey PK parameters')",
-    disease_state  = "Healthy cynomolgus monkeys (placebo groups excluded from PK dataset).",
-    dose_range     = paste(
+    disease_state = "Healthy cynomolgus monkeys (placebo groups excluded from PK dataset).",
+    dose_range = paste(
       "0.03-100 mg/kg TAK-079. Single-dose IV bolus / 30-min IV infusion",
       "(studies 1-4 infusion; studies 5-8 bolus) and repeat-dose QW / Q2W IV",
       "(studies 1-6). SC single-dose 0.03, 0.1, 0.3, 1 mg/kg in one group of",
@@ -83,14 +83,14 @@ Roepcke_2018_tak_079 <- function() {
       sep = " "
     ),
     n_observations_pk = 2199L,
-    ada_status     = paste(
+    ada_status = paste(
       "Anti-drug antibodies (ADA) developed over time in repeat-dose studies;",
       "229 ADA-affected PK observations were flagged (ADAF=1) and excluded",
       "during model development (Roepcke 2018 Section 3.1 and Supplemental",
       "'Data set preparation'). Not a covariate in the final model.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Data pooled from eight preclinical monkey studies (Roepcke 2018 Table 1):",
       "studies 1-6 were toxicology / repeat-dose (weekly QW or every-other-week",
       "Q2W); studies 2, 7, 8 were single-dose PK / PD. Placebo animals",

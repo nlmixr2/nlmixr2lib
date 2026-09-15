@@ -25,8 +25,8 @@ Ravva_2015_varenicline <- function() {
   # that omits the depot_placebo record silently drops the entire placebo term.
   dosing <- c("depot", "depot_placebo")
   units <- list(
-    time          = "h",
-    dosing        = paste(
+    time = "h",
+    dosing = paste(
       "mg (varenicline, oral); the placebo 'kinetic' system takes a dimensionless dummy dose",
       "of 1 into depot_placebo at every dosing time",
       sep = " "
@@ -42,11 +42,21 @@ Ravva_2015_varenicline <- function() {
   # biological matrix. verified = TRUE for the placebo states because their
   # role is stated explicitly in Ravva 2015 Figure 1 and the Methods.
   compartmentData <- list(
-    depot           = list(analyte = "varenicline", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
-    depot_placebo   = list(analyte = "placebo response dummy dose", units = "dimensionless", specimen = "not applicable", verified = TRUE),
-    central_placebo = list(analyte = "placebo response dummy dose", units = "dimensionless", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "varenicline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "varenicline", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_placebo = list(
+      analyte = "placebo response dummy dose",
+      units = "dimensionless",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    central_placebo = list(
+      analyte = "placebo response dummy dose",
+      units = "dimensionless",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   # The PK layer's covariates are those of the Ravva 2009 pooled model, which
@@ -59,44 +69,44 @@ Ravva_2015_varenicline <- function() {
   # sibling extraction of that model.
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Estimated creatinine clearance by the Cockcroft-Gault formula (raw, NOT BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL/F with reference 100 mL/min (Ravva 2009 Table 4 final-model q_CRCL). Carried into Ravva 2015 unchanged: the PK layer was not re-estimated here, only used as MAP-Bayesian priors (Ravva 2015 Methods, 'Pharmacokinetic and Pharmacodynamic Analyses'). The Ravva 2015 cohort is 40 healthy adult smokers, so CRCL sits at the upper end of the Ravva 2009 range.",
-      source_name        = "CLcr"
+      notes = "Power scaling on CL/F with reference 100 mL/min (Ravva 2009 Table 4 final-model q_CRCL). Carried into Ravva 2015 unchanged: the PK layer was not re-estimated here, only used as MAP-Bayesian priors (Ravva 2015 Methods, 'Pharmacokinetic and Pharmacodynamic Analyses'). The Ravva 2015 cohort is 40 healthy adult smokers, so CRCL sits at the upper end of the Ravva 2009 range.",
+      source_name = "CLcr"
     ),
     WT = list(
-      description        = "Total body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V2/F (estimated exponent), and on V3/F and Q/F (fixed allometric exponents 1 and 0.75) with reference 70 kg (Ravva 2009 Table 4). Ravva 2015 Results reports mean body weight 77 kg (range 59-95) for males and 72 kg (range 58-90) for females.",
-      source_name        = "WT"
+      notes = "Power scaling on V2/F (estimated exponent), and on V3/F and Q/F (fixed allometric exponents 1 and 0.75) with reference 70 kg (Ravva 2009 Table 4). Ravva 2015 Results reports mean body weight 77 kg (range 59-95) for males and 72 kg (range 58-90) for females.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on V2/F with reference 45 years (Ravva 2009 Table 4 final-model q_AGE). Ravva 2015 Results reports a mean age of 36 years (range 18-63).",
-      source_name        = "AGE"
+      notes = "Power scaling on V2/F with reference 45 years (Ravva 2009 Table 4 final-model q_AGE). Ravva 2015 Results reports a mean age of 36 years (range 18-63).",
+      source_name = "AGE"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (reference race for the Ravva 2009 typical individual)",
-      notes              = "Power-of-categorical-indicator form on CL/F and V2/F (Ravva 2009 Table 4 q_Black). Ravva 2015 Results reports that all but one of the 40 subjects (97.5%) were White, so this indicator is 0 for essentially the whole Ravva 2015 cohort; it is retained because the PK layer is the Ravva 2009 model in full.",
-      source_name        = "Race (Black)"
+      notes = "Power-of-categorical-indicator form on CL/F and V2/F (Ravva 2009 Table 4 q_Black). Ravva 2015 Results reports that all but one of the 40 subjects (97.5%) were White, so this indicator is 0 for essentially the whole Ravva 2015 cohort; it is retained because the PK layer is the Ravva 2009 model in full.",
+      source_name = "Race (Black)"
     ),
     RACE_OTHER = list(
-      description        = "Composite 'Other' race indicator pooling Hispanic, Asian, and Other (Ravva 2009 grouping)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite 'Other' race indicator pooling Hispanic, Asian, and Other (Ravva 2009 grouping)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (reference race for the Ravva 2009 typical individual)",
-      notes              = "Power-of-categorical-indicator form on CL/F and V2/F (Ravva 2009 Table 4 q_Other). As with RACE_BLACK, essentially 0 across the Ravva 2015 cohort (97.5% White).",
-      source_name        = "Race (Hispanic + Asian + Other)"
+      notes = "Power-of-categorical-indicator form on CL/F and V2/F (Ravva 2009 Table 4 q_Other). As with RACE_BLACK, essentially 0 across the Ravva 2015 cohort (97.5% White).",
+      source_name = "Race (Hispanic + Asian + Other)"
     )
   )
 
@@ -112,80 +122,80 @@ Ravva_2015_varenicline <- function() {
   covariatesDataExcluded <- list(
     NICOTINE = list(
       description = "Study (not treatment period) baseline plasma nicotine concentration",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; mean 12.3 ng/mL, range 0-29."
+      units = "ng/mL",
+      type = "continuous",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; mean 12.3 ng/mL, range 0-29."
     ),
     COTININE = list(
       description = "Study (not treatment period) baseline plasma cotinine concentration",
-      units       = "ng/mL",
-      type        = "continuous",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; mean 235 ng/mL, range 74-430."
+      units = "ng/mL",
+      type = "continuous",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; mean 235 ng/mL, range 74-430."
     ),
     CO_EXHALED = list(
       description = "Study (not treatment period) baseline exhaled carbon monoxide",
-      units       = "ppm",
-      type        = "continuous",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; mean 20 ppm, range 10-38."
+      units = "ppm",
+      type = "continuous",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; mean 20 ppm, range 10-38."
     ),
     SMOKING_YEARS = list(
       description = "Years of smoking",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; subjects had smoked since age 17 (range 12-31) at a mean age of 36 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; subjects had smoked since age 17 (range 12-31) at a mean age of 36 years."
     ),
     CIGS_PER_DAY = list(
       description = "Average number of cigarettes smoked per day",
-      units       = "cigarettes/day",
-      type        = "continuous",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; mean approximately 21 per day, range 16-40."
+      units = "cigarettes/day",
+      type = "continuous",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; mean approximately 21 per day, range 16-40."
     ),
     FTND_Q1 = list(
       description = "Fagerstrom Test for Nicotine Dependence question 1 score (time to first cigarette after waking)",
-      units       = "(ordered category)",
-      type        = "categorical",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained; cohort distribution <5 min: 9, 6-30 min: 23, 31-60 min: 6, >60 min: 2."
+      units = "(ordered category)",
+      type = "categorical",
+      notes = "Screened in the Ravva 2015 covariate search and not retained; cohort distribution <5 min: 9, 6-30 min: 23, 31-60 min: 6, >60 min: 2."
     ),
     SEQUENCE = list(
       description = "Crossover treatment sequence (varenicline-then-placebo vs placebo-then-varenicline)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = "Screened in the Ravva 2015 covariate search and not retained."
+      units = "(categorical)",
+      type = "categorical",
+      notes = "Screened in the Ravva 2015 covariate search and not retained."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the Ravva 2015 covariate search as a PD covariate and not retained; the randomized cohort was 21 male and 19 female. Sex still enters the PK layer indirectly through the Cockcroft-Gault CRCL and through body weight."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the Ravva 2015 covariate search as a PD covariate and not retained; the randomized cohort was 21 male and 19 female. Sex still enters the PK layer indirectly through the Cockcroft-Gault CRCL and through body weight."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40L,
-    n_studies      = 1L,
-    age_range      = "18-63 years",
-    age_mean       = "36 years",
-    weight_range   = "59-95 kg (males); 58-90 kg (females)",
-    weight_mean    = "77 kg (males); 72 kg (females)",
+    species = "human",
+    n_subjects = 40L,
+    n_studies = 1L,
+    age_range = "18-63 years",
+    age_mean = "36 years",
+    weight_range = "59-95 kg (males); 58-90 kg (females)",
+    weight_mean = "77 kg (males); 72 kg (females)",
     sex_female_pct = 47.5,
     race_ethnicity = c(White = 97.5, Other = 2.5),
-    disease_state  = paste(
+    disease_state = paste(
       "Otherwise healthy adult smokers aged 18-65 not currently intending to quit, smoking at",
       "least 20 cigarettes/day, or 11-19 cigarettes/day with a first cigarette within 30 min",
       "of waking. Overnight smoking and food abstinence, confirmed biochemically with exhaled",
       "CO < 15 ppm.",
       sep = " "
     ),
-    dose_range     = "Single 2 mg oral dose (2 x 1 mg tablets) of varenicline versus placebo",
-    regions        = "Single center, United States (Center for Behavioral Medicine, The Miriam Hospital)",
-    samples        = paste(
+    dose_range = "Single 2 mg oral dose (2 x 1 mg tablets) of varenicline versus placebo",
+    regions = "Single center, United States (Center for Behavioral Medicine, The Miriam Hospital)",
+    samples = paste(
       "305 varenicline plasma concentrations, 387 placebo-period craving responses and 390",
       "varenicline-period craving responses. Only the abstinence window from time 0 (just",
       "before dosing) to 4 h postdose, before the cue reactivity session, was analysed.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Randomized, double-blind, placebo-controlled, two-period crossover with a 7-day washout",
       "(Ravva 2015 Methods, 'Study Design' and 'Study Procedures'; demographics from Results,",
       "'Subject Disposition and Smoking History'). Smoking history: about 21 cigarettes/day",

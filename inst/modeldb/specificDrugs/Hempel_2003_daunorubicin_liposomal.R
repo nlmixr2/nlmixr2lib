@@ -28,11 +28,11 @@ Hempel_2003_daunorubicin_liposomal <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at the time of the dose. Enters as a linear (proportional) scalar on both CL and V: CL_ind = theta_CL * WT and V_ind = theta_V * WT (i.e., allometric exponent fixed to 1, no reference-weight normalisation -- the published typical-value parameters are reported per kg).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at the time of the dose. Enters as a linear (proportional) scalar on both CL and V: CL_ind = theta_CL * WT and V_ind = theta_V * WT (i.e., allometric exponent fixed to 1, no reference-weight normalisation -- the published typical-value parameters are reported per kg).",
+      units = "kg",
+      type = "continuous",
       reference_category = "n/a -- linear scaling with no reference weight; the paper's typical-value CL = 6.41 mL/h/kg and V = 65.4 mL/kg multiply by the individual's weight directly.",
-      notes              = paste(
+      notes = paste(
         "Hempel 2003 Methods: 'total body weight was used throughout';",
         "cohort range 14-76.5 kg, median 48.8 kg (Table 1). The source",
         "paper does not state whether weight was time-varying across",
@@ -46,31 +46,31 @@ Hempel_2003_daunorubicin_liposomal <- function() {
         "eta in rxode2; see the validation vignette Assumptions and",
         "deviations section."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species          = "human (paediatric and adolescent)",
-    n_subjects       = 24L,
-    n_studies        = 1L,
-    age_range        = "2.84-23.2 years",
-    age_median       = "15.4 years",
-    weight_range     = "14-76.5 kg",
-    weight_median    = "48.8 kg",
-    height_range     = "0.89-1.98 m",
-    height_median    = "1.61 m",
-    bsa_range        = "0.58-1.98 m^2",
-    bsa_median       = "1.48 m^2",
-    bmi_range        = "12.6-23.5 kg/m^2",
-    bmi_median       = "17.6 kg/m^2",
-    sex_female_pct   = NA_real_,
-    disease_state    = "Predominantly relapsed acute myeloic leukaemia (19/24); five other malignancies (two relapsed acute lymphoblastic leukaemia, one relapsed osteosarcoma, one relapsed Ewing sarcoma, one multiple endocrine neoplasia). All patients had previously received conventional daunorubicin and/or doxorubicin.",
-    dose_range       = "Liposomal daunorubicin (Daunoxome) 30-60 mg/m^2 as a 1- to 2.5-hour IV infusion on days 1 and 5 (induction); four patients in the 60 mg/m^2 group intensified to days 1, 3, and 5 in subsequent cycles.",
-    regions          = "Germany (16 paediatric haematology/oncology centres enrolling in the AML-REZ 97 protocol of the German Society for Paediatric Oncology and Haematology, GPOH).",
-    sampling_window  = "Plasma sampling suggested at end of infusion, 2-4 h, 4-8 h, 12-17 h, 20-28 h after first dose, predose and ~24/48 h after second dose. Overall 214 plasma concentrations from 72 cycles (mean 3 per cycle, 9 per patient).",
-    assay            = "Total daunorubicin (free plus liposome-encapsulated; organic-solvent sample preparation destroys liposomes prior to analysis) quantified by capillary electrophoresis with laser-induced fluorescence detection. Within-day accuracy / precision 3.9-12.9% and 3.8-10.7% (n = 8); LOQ 2 ug/L (= 2 ng/mL).",
-    notes            = paste(
+    species = "human (paediatric and adolescent)",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "2.84-23.2 years",
+    age_median = "15.4 years",
+    weight_range = "14-76.5 kg",
+    weight_median = "48.8 kg",
+    height_range = "0.89-1.98 m",
+    height_median = "1.61 m",
+    bsa_range = "0.58-1.98 m^2",
+    bsa_median = "1.48 m^2",
+    bmi_range = "12.6-23.5 kg/m^2",
+    bmi_median = "17.6 kg/m^2",
+    sex_female_pct = NA_real_,
+    disease_state = "Predominantly relapsed acute myeloic leukaemia (19/24); five other malignancies (two relapsed acute lymphoblastic leukaemia, one relapsed osteosarcoma, one relapsed Ewing sarcoma, one multiple endocrine neoplasia). All patients had previously received conventional daunorubicin and/or doxorubicin.",
+    dose_range = "Liposomal daunorubicin (Daunoxome) 30-60 mg/m^2 as a 1- to 2.5-hour IV infusion on days 1 and 5 (induction); four patients in the 60 mg/m^2 group intensified to days 1, 3, and 5 in subsequent cycles.",
+    regions = "Germany (16 paediatric haematology/oncology centres enrolling in the AML-REZ 97 protocol of the German Society for Paediatric Oncology and Haematology, GPOH).",
+    sampling_window = "Plasma sampling suggested at end of infusion, 2-4 h, 4-8 h, 12-17 h, 20-28 h after first dose, predose and ~24/48 h after second dose. Overall 214 plasma concentrations from 72 cycles (mean 3 per cycle, 9 per patient).",
+    assay = "Total daunorubicin (free plus liposome-encapsulated; organic-solvent sample preparation destroys liposomes prior to analysis) quantified by capillary electrophoresis with laser-induced fluorescence detection. Within-day accuracy / precision 3.9-12.9% and 3.8-10.7% (n = 8); LOQ 2 ug/L (= 2 ng/mL).",
+    notes = paste(
       "Patient demographics from Table 1. Sex split is not tabulated as a",
       "count; the paper notes 'boys are on average heavier than girls",
       "(median 58.0 vs 37.5 kg)' but no significant sex difference in PK",

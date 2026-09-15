@@ -45,22 +45,24 @@ Williams_2016_rituximab_acr <- function() {
 
   paper_specific_etas <- c("etaACR")
   paper_specific_residual_sds <- c(
-    "addSd_pacr20", "addSd_pacr50", "addSd_pacr70"
+    "addSd_pacr20",
+    "addSd_pacr50",
+    "addSd_pacr70"
   )
 
   units <- list(
-    time          = "week",
-    dosing        = "(none; PD-only ordered-categorical responder-rate model with no PK compartment or exposure driver)",
+    time = "week",
+    dosing = "(none; PD-only ordered-categorical responder-rate model with no PK compartment or exposure driver)",
     concentration = "(observation is per-time probability of achieving ACR20/ACR50/ACR70 on the 0-1 scale; latent variable is on the probit scale)"
   )
 
   covariateData <- list(
     TEND_68JOINT = list(
-      description        = "Baseline tender joint count on the 68-joint (extended) scale (integer 0-68).",
-      units              = "count (0-68)",
-      type               = "continuous",
+      description = "Baseline tender joint count on the 68-joint (extended) scale (integer 0-68).",
+      units = "count (0-68)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the covariate model as an additive",
         "log-scale effect (TEND_68JOINT - 24) on PMAX and on the onset",
         "half-life (Williams 2016 Supplemental Methods; reference value 24 =",
@@ -68,14 +70,14 @@ Williams_2016_rituximab_acr <- function() {
         "TEND_28JOINT which uses the 28-joint DAS28 subscale.",
         sep = " "
       ),
-      source_name        = "TJ68"
+      source_name = "TJ68"
     ),
     SWOL_66JOINT = list(
-      description        = "Baseline swollen joint count on the 66-joint (extended) scale (integer 0-66).",
-      units              = "count (0-66)",
-      type               = "continuous",
+      description = "Baseline swollen joint count on the 66-joint (extended) scale (integer 0-66).",
+      units = "count (0-66)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Enters the covariate model as an additive",
         "log-scale effect (SWOL_66JOINT - 16) on PMAX and onset half-life",
         "(Williams 2016 Supplemental Methods; reference value 16 = paper's",
@@ -83,14 +85,14 @@ Williams_2016_rituximab_acr <- function() {
         "which uses the 28-joint DAS28 subscale.",
         sep = " "
       ),
-      source_name        = "SJ66"
+      source_name = "SJ66"
     ),
     CRP = list(
-      description        = "Baseline C-reactive protein (BCRP).",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline C-reactive protein (BCRP).",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline value). Enters the covariate model",
         "on the log(CRP + 1) scale to accommodate the highly skewed",
         "distribution and BCRP = 0 observations (Williams 2016 Supplemental",
@@ -99,42 +101,42 @@ Williams_2016_rituximab_acr <- function() {
         "- 2.2) additively on PMAX and onset half-life.",
         sep = " "
       ),
-      source_name        = "BCRP"
+      source_name = "BCRP"
     ),
     PGA_PT = list(
-      description        = "Baseline patient's global assessment of arthritis (100-mm visual analogue scale).",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline patient's global assessment of arthritis (100-mm visual analogue scale).",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Additive log-scale effect (PGA_PT - 70)",
         "on PMAX and onset half-life; reference 70 mm is the paper's",
         "declared median of the ACR dataset. Distinct from the physician's",
         "global assessment (BLPHYVAS) and from patient-reported pain (PAIN).",
         sep = " "
       ),
-      source_name        = "PGA"
+      source_name = "PGA"
     ),
     BLPHYVAS = list(
-      description        = "Baseline physician's global assessment of disease activity (100-mm visual analogue scale).",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline physician's global assessment of disease activity (100-mm visual analogue scale).",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Additive log-scale effect (BLPHYVAS - 68) on",
         "PMAX and onset half-life (Williams 2016 Supplemental Methods;",
         "reference 68 = paper's declared median of the ACR dataset).",
         "Distinct from the patient's own global assessment (PGA_PT).",
         sep = " "
       ),
-      source_name        = "PhGA"
+      source_name = "PhGA"
     ),
     PAIN = list(
-      description        = "Baseline patient-reported global arthritis pain (100-mm visual analogue scale).",
-      units              = "mm (0-100 VAS)",
-      type               = "continuous",
+      description = "Baseline patient-reported global arthritis pain (100-mm visual analogue scale).",
+      units = "mm (0-100 VAS)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Additive log-scale effect (PAIN - 70) on",
         "PMAX and onset half-life; reference 70 = paper's declared median.",
         "The PAIN VAS is the patient's own pain rating; distinct from PGA_PT",
@@ -142,27 +144,27 @@ Williams_2016_rituximab_acr <- function() {
         "(physician's global assessment).",
         sep = " "
       ),
-      source_name        = "PAIN"
+      source_name = "PAIN"
     ),
     BLHAQ = list(
-      description        = "Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0-3 composite score).",
-      units              = "unitless (0-3 composite)",
-      type               = "continuous",
+      description = "Baseline Health Assessment Questionnaire Disability Index (HAQ-DI; 0-3 composite score).",
+      units = "unitless (0-3 composite)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Additive log-scale effect (BLHAQ - 1.75) on",
         "PMAX and onset half-life; reference 1.75 = paper's declared median",
         "of the ACR dataset.",
         sep = " "
       ),
-      source_name        = "HAQ-DI"
+      source_name = "HAQ-DI"
     ),
     TRT = list(
-      description        = "Treatment-arm integer indicator: 0 = rituximab-EU (reference), 1 = PF-05280586 (proposed biosimilar), 2 = rituximab-US.",
-      units              = "(categorical / integer-coded)",
-      type               = "categorical",
+      description = "Treatment-arm integer indicator: 0 = rituximab-EU (reference), 1 = PF-05280586 (proposed biosimilar), 2 = rituximab-US.",
+      units = "(categorical / integer-coded)",
+      type = "categorical",
       reference_category = "0 (rituximab-EU)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Same integer coding as the companion",
         "DAS28cfb model file. Encodes the trial's three treatment arms.",
         "Two derived indicators are computed inside model() as",
@@ -170,31 +172,31 @@ Williams_2016_rituximab_acr <- function() {
         "the covariate function additively on the log scale.",
         sep = " "
       ),
-      source_name        = "TRT"
+      source_name = "TRT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 214L,
-    n_studies        = 1L,
-    n_observations   = 1402L,
-    age_range        = "adults (>=18 years); mean (SD) 54.8 (11.7) years (PF-05280586), 55.7 (10.2) years (rituximab-EU), 53.8 (11.8) years (rituximab-US)",
-    weight_range     = "mean (SD) 86.2 (22.0) kg (PF-05280586), 82.6 (19.8) kg (rituximab-EU), 80.4 (21.6) kg (rituximab-US)",
-    sex_female_pct   = 77.6,
-    disease_state    = "Active rheumatoid arthritis on background methotrexate with inadequate response to one or more TNF-antagonist therapies (see companion DAS28cfb model for full baseline demographics).",
-    dose_range       = "1000 mg IV on days 1 and 15 (standard rituximab RA induction course). All subjects received 100 mg IV methylprednisolone premedication.",
-    regions          = "Multi-regional biosimilar development trial (ClinicalTrials.gov NCT01526057).",
+    species = "human",
+    n_subjects = 214L,
+    n_studies = 1L,
+    n_observations = 1402L,
+    age_range = "adults (>=18 years); mean (SD) 54.8 (11.7) years (PF-05280586), 55.7 (10.2) years (rituximab-EU), 53.8 (11.8) years (rituximab-US)",
+    weight_range = "mean (SD) 86.2 (22.0) kg (PF-05280586), 82.6 (19.8) kg (rituximab-EU), 80.4 (21.6) kg (rituximab-US)",
+    sex_female_pct = 77.6,
+    disease_state = "Active rheumatoid arthritis on background methotrexate with inadequate response to one or more TNF-antagonist therapies (see companion DAS28cfb model for full baseline demographics).",
+    dose_range = "1000 mg IV on days 1 and 15 (standard rituximab RA induction course). All subjects received 100 mg IV methylprednisolone premedication.",
+    regions = "Multi-regional biosimilar development trial (ClinicalTrials.gov NCT01526057).",
     baseline_disease = list(
       TEND_68JOINT_by_arm = "PF-05280586 22.7 (12.6); rituximab-EU 23.7 (13.2); rituximab-US 29.7 (15.0)",
       SWOL_66JOINT_by_arm = "PF-05280586 15.4 (8.8); rituximab-EU 17.9 (10.6); rituximab-US 18.9 (8.4)",
-      CRP_by_arm_mg_L     = "PF-05280586 12.4 (14.9); rituximab-EU 14.7 (17.6); rituximab-US 18.2 (25.1)",
-      PGA_by_arm          = "PF-05280586 67.4 (16.8); rituximab-EU 67.7 (20.9); rituximab-US 74.8 (16.0)",
-      PhGA_by_arm         = "PF-05280586 64.6 (15.3); rituximab-EU 66.1 (15.5); rituximab-US 70.1 (15.6)",
-      PAIN_by_arm         = "PF-05280586 65.6 (17.8); rituximab-EU 66.1 (21.0); rituximab-US 72.1 (18.5)",
-      HAQ_DI_by_arm       = "PF-05280586 1.67 (0.56); rituximab-EU 1.61 (0.53); rituximab-US 1.74 (0.62)"
+      CRP_by_arm_mg_L = "PF-05280586 12.4 (14.9); rituximab-EU 14.7 (17.6); rituximab-US 18.2 (25.1)",
+      PGA_by_arm = "PF-05280586 67.4 (16.8); rituximab-EU 67.7 (20.9); rituximab-US 74.8 (16.0)",
+      PhGA_by_arm = "PF-05280586 64.6 (15.3); rituximab-EU 66.1 (15.5); rituximab-US 70.1 (15.6)",
+      PAIN_by_arm = "PF-05280586 65.6 (17.8); rituximab-EU 66.1 (21.0); rituximab-US 72.1 (18.5)",
+      HAQ_DI_by_arm = "PF-05280586 1.67 (0.56); rituximab-EU 1.61 (0.53); rituximab-US 1.74 (0.62)"
     ),
-    notes            = paste(
+    notes = paste(
       "Baseline demographics from Williams 2016 Table 1. The ACR responder",
       "dataset included 1402 observations",
       "(Williams 2016 Results 'Population PK/PD models'). Composite",

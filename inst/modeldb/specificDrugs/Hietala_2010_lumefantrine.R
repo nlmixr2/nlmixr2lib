@@ -36,34 +36,34 @@ Hietala_2010_lumefantrine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear (per-kg) weight normalisation of CL / V parameters.",
         "Hietala 2010 reports the lumefantrine PK parameters on a",
         "per-kg basis (Table 2: 'CL/F (ml/h/kg)', 'V/F (liters/kg)'),",
         "so individual CL = lcl * WT, Vc = lvc * WT inside model().",
         "Population mean WT 14 kg (range 8-30 kg, Results)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   covariatesDataExcluded <- list(
     MILK = list(
-      description        = "Concomitant intake of 200 mL full-fat (3.4%) cow's milk with each dose",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant intake of 200 mL full-fat (3.4%) cow's milk with each dose",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (water)",
-      notes              = paste(
+      notes = paste(
         "Hietala 2010 randomised the 50 patients 1:1 between dosing with",
         "200 mL of full-fat (3.4%) cow's milk and dosing with water (n = 25",
         "per arm). The protocol-mandated 200 mL of milk was completed on",
@@ -75,33 +75,33 @@ Hietala_2010_lumefantrine <- function() {
         "lumefantrine') and was not retained in the final model. Documented",
         "here for provenance but excluded from model()."
       ),
-      source_name        = "MILK"
+      source_name = "MILK"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 50L,
-    n_studies       = 1L,
-    n_observations  = 423L,
-    age_range       = "1-10 years (mean 4; Results)",
-    weight_range    = "8-30 kg (mean 14; Results)",
-    sex_female_pct  = 62,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    n_observations = 423L,
+    age_range = "1-10 years (mean 4; Results)",
+    weight_range = "8-30 kg (mean 14; Results)",
+    sex_female_pct = 62,
+    disease_state = paste(
       "Acute uncomplicated Plasmodium falciparum malaria with asexual",
       "parasite density 2,000-200,000 / microL at admission and either",
       "axillary temperature >= 37.5 degC or history of fever within 24 h",
       "(Methods)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "Coartem (Novartis): 20 mg artemether + 120 mg lumefantrine per",
       "tablet. Weight-based dosing: 5-14 kg -> 1 tablet/dose,",
       "15-24 kg -> 2 tablets/dose, 25-34 kg -> 3 tablets/dose. Six",
       "doses (oral) at 0, 8, 24, 36, 48, and 60 hours."
     ),
-    regions            = "Tanzania (Fukayosi Primary Health Care Centre, Bagamoyo District)",
+    regions = "Tanzania (Fukayosi Primary Health Care Centre, Bagamoyo District)",
     trial_registration = "ClinicalTrials.gov NCT00336375",
-    notes              = paste(
+    notes = paste(
       "Demographics from Hietala 2010 Results. 423 LUM plasma",
       "concentrations from 50 patients were included in the PK model",
       "(19 LUM samples below limit-of-detection were excluded). Companion",

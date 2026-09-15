@@ -16,86 +16,85 @@ Gastonguay_2005_efaproxiral <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "efaproxiral", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "efaproxiral", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "efaproxiral", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area (baseline, per subject; m^2).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area (baseline, per subject; m^2).",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 1.8 m^2 per Equation 1 of Gastonguay 2005; cohort median 1.82 m^2 (Table 1). Used as power-model effect on CL, V1, V2 and Q.",
-      source_name        = "BSA"
+      notes = "Reference value 1.8 m^2 per Equation 1 of Gastonguay 2005; cohort median 1.82 m^2 (Table 1). Used as power-model effect on CL, V1, V2 and Q.",
+      source_name = "BSA"
     ),
     AGE = list(
-      description        = "Age at study entry (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at study entry (years).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 60 yrs per Equation 1; cohort median 57 yrs (Table 1). Used as power-model effect on CL, V1, V2 and SLPRBC.",
-      source_name        = "AGE"
+      notes = "Reference value 60 yrs per Equation 1; cohort median 57 yrs (Table 1). Used as power-model effect on CL, V1, V2 and SLPRBC.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin. Source paper reports baseline albumin (BALB) in g/dL with reference value 3.5 g/dL in Equation 1; canonical ALB is in g/L (SI), so model() applies an inline conversion alb_gdL <- ALB * 0.1 before the power-model power-of-(BALB/3.5) terms.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin. Source paper reports baseline albumin (BALB) in g/dL with reference value 3.5 g/dL in Equation 1; canonical ALB is in g/L (SI), so model() applies an inline conversion alb_gdL <- ALB * 0.1 before the power-model power-of-(BALB/3.5) terms.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BALB in g/dL (Table 1 cohort median 3.6 g/dL). Reference value 3.5 g/dL per Equation 1 of Gastonguay 2005. Power-model effect on V1, V2, SLPRBC. Conversion factor 1 g/dL = 10 g/L applied in model().",
-      source_name        = "BALB"
+      notes = "Source column BALB in g/dL (Table 1 cohort median 3.6 g/dL). Reference value 3.5 g/dL per Equation 1 of Gastonguay 2005. Power-model effect on V1, V2, SLPRBC. Conversion factor 1 g/dL = 10 g/L applied in model().",
+      source_name = "BALB"
     ),
     DOSE_EFP_MAX_MG = list(
-      description        = "Per-subject maximum administered efaproxiral dose (mg). Time-fixed; defined as the largest single-administration dose the subject received during the trial.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-subject maximum administered efaproxiral dose (mg). Time-fixed; defined as the largest single-administration dose the subject received during the trial.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 6800 mg per Equation 1 of Gastonguay 2005 (close to median 100 mg/kg x ~72 kg). Used as power-model effect on SLPRBC. The paper uses MDOS as the variable symbol.",
-      source_name        = "MDOS"
+      notes = "Reference value 6800 mg per Equation 1 of Gastonguay 2005 (close to median 100 mg/kg x ~72 kg). Used as power-model effect on SLPRBC. The paper uses MDOS as the variable symbol.",
+      source_name = "MDOS"
     ),
     TUMTP_BREAST = list(
-      description        = "Breast-cancer indicator (1 = primary cancer type breast, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Breast-cancer indicator (1 = primary cancer type breast, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-breast; lung cancer is the implicit reference among the four-level CATP factor)",
-      notes              = "Source factor CATP with levels 1=lung (reference), 2=breast, 3=cranial GBM, 4=other (Data section). Decompose as TUMTP_BREAST = as.integer(CATP == 2). Used as a categorical power-model multiplier on SLPp50.",
-      source_name        = "(derived from CATP == 2)"
+      notes = "Source factor CATP with levels 1=lung (reference), 2=breast, 3=cranial GBM, 4=other (Data section). Decompose as TUMTP_BREAST = as.integer(CATP == 2). Used as a categorical power-model multiplier on SLPp50.",
+      source_name = "(derived from CATP == 2)"
     ),
     TUMTP_GLIO = list(
-      description        = "Cranial glioblastoma multiforme indicator (1 = primary cancer type cranial GBM, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cranial glioblastoma multiforme indicator (1 = primary cancer type cranial GBM, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-GBM; lung cancer is the implicit reference)",
-      notes              = "Source factor CATP level 3 = cranial GBM. Decompose as TUMTP_GLIO = as.integer(CATP == 3). Used as a categorical power-model multiplier on SLPp50.",
-      source_name        = "(derived from CATP == 3)"
+      notes = "Source factor CATP level 3 = cranial GBM. Decompose as TUMTP_GLIO = as.integer(CATP == 3). Used as a categorical power-model multiplier on SLPp50.",
+      source_name = "(derived from CATP == 3)"
     ),
     TUMTP_OTHER = list(
-      description        = "Other primary cancer type indicator (1 = primary cancer type other, 0 = otherwise).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Other primary cancer type indicator (1 = primary cancer type other, 0 = otherwise).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-other; lung cancer is the implicit reference)",
-      notes              = "Source factor CATP level 4 = other. Decompose as TUMTP_OTHER = as.integer(CATP == 4). Used as a categorical power-model multiplier on SLPp50.",
-      source_name        = "(derived from CATP == 4)"
+      notes = "Source factor CATP level 4 = other. Decompose as TUMTP_OTHER = as.integer(CATP == 4). Used as a categorical power-model multiplier on SLPp50.",
+      source_name = "(derived from CATP == 4)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 451L,
-    n_studies      = 6L,
-    age_range      = "28-87 years",
-    age_median     = "57 years",
-    weight_range   = "38.6-129 kg",
-    weight_median  = "72.3 kg",
+    species = "human",
+    n_subjects = 451L,
+    n_studies = 6L,
+    age_range = "28-87 years",
+    age_median = "57 years",
+    weight_range = "38.6-129 kg",
+    weight_median = "72.3 kg",
     sex_female_pct = 50.3,
-    race_ethnicity = c(Caucasian = 90.2, Black = 5.8, NativeAmerican = 0.2,
-                       Asian = 0.7, Hispanic = 2.0, Other = 1.1),
-    disease_state  = "Adults with cancer receiving radiation therapy. Primary tumor types: lung (50.8%), breast (17.3%), cranial glioblastoma multiforme (16.0%), other (16.0%).",
-    dose_range     = "Efaproxiral 75-100 mg/kg as a 30-minute IV infusion, 2-3 times per week (Data section).",
-    regions        = "Pooled six phase I-III trials; specific region distribution not reported in the poster.",
-    bsa_range      = "1.31-2.50 m^2 (median 1.82)",
-    albumin_range  = "2.2-5.0 g/dL (median 3.6)",
-    notes          = "Demographics from Table 1 (continuous: age, weight, height, baseline hemoglobin, baseline albumin, baseline creatinine, ideal body weight, body surface area, baseline and truncated creatinine clearance; categorical: sex, primary cancer type, race). Database contained 2582 plasma EFP concentrations, 2881 RBC EFP concentrations and 2483 p50 values (the latter from phase I-II studies only); total 7946 observations."
+    race_ethnicity = c(Caucasian = 90.2, Black = 5.8, NativeAmerican = 0.2, Asian = 0.7, Hispanic = 2.0, Other = 1.1),
+    disease_state = "Adults with cancer receiving radiation therapy. Primary tumor types: lung (50.8%), breast (17.3%), cranial glioblastoma multiforme (16.0%), other (16.0%).",
+    dose_range = "Efaproxiral 75-100 mg/kg as a 30-minute IV infusion, 2-3 times per week (Data section).",
+    regions = "Pooled six phase I-III trials; specific region distribution not reported in the poster.",
+    bsa_range = "1.31-2.50 m^2 (median 1.82)",
+    albumin_range = "2.2-5.0 g/dL (median 3.6)",
+    notes = "Demographics from Table 1 (continuous: age, weight, height, baseline hemoglobin, baseline albumin, baseline creatinine, ideal body weight, body surface area, baseline and truncated creatinine clearance; categorical: sex, primary cancer type, race). Database contained 2582 plasma EFP concentrations, 2881 RBC EFP concentrations and 2483 p50 values (the latter from phase I-II studies only); total 7946 observations."
   )
 
   ini({

@@ -1,58 +1,58 @@
 Bulitta_2010_ceftazidime <- function() {
   description <- "Three-compartment population PK model for ceftazidime after 5-min IV infusion in cystic fibrosis patients and healthy volunteers (Bulitta 2010), with allometric fat-free-mass scaling and a cystic-fibrosis-vs-healthy disease-group factor on total clearance."
-  reference   <- "Bulitta JB, Landersdorfer CB, Huttner SJ, Drusano GL, Kinzig M, Holzgrabe U, Stephan U, Sorgel F. Population pharmacokinetic comparison and pharmacodynamic breakpoints of ceftazidime in cystic fibrosis patients and healthy volunteers. Antimicrob Agents Chemother. 2010;54(3):1275-1282. doi:10.1128/AAC.00936-09"
-  vignette    <- "Bulitta_2010_ceftazidime"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Bulitta JB, Landersdorfer CB, Huttner SJ, Drusano GL, Kinzig M, Holzgrabe U, Stephan U, Sorgel F. Population pharmacokinetic comparison and pharmacodynamic breakpoints of ceftazidime in cystic fibrosis patients and healthy volunteers. Antimicrob Agents Chemother. 2010;54(3):1275-1282. doi:10.1128/AAC.00936-09"
+  vignette <- "Bulitta_2010_ceftazidime"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling on clearances (exponent 0.75) and linear scaling on volumes (exponent 1.0) with reference 53 kg. Bulitta 2010 Methods 'Body size model' fixes the exponents; Table 3 footnote states that all CL and V estimates are group estimates for subjects of standard size, fat-free mass = 53 kg. FFM was derived per subject from total body weight, height, and sex via the Janmahasatian et al. (2005) formula (Methods, Subjects).",
-      source_name        = "FFM"
+      notes = "Allometric scaling on clearances (exponent 0.75) and linear scaling on volumes (exponent 1.0) with reference 53 kg. Bulitta 2010 Methods 'Body size model' fixes the exponents; Table 3 footnote states that all CL and V estimates are group estimates for subjects of standard size, fat-free mass = 53 kg. FFM was derived per subject from total body weight, height, and sex via the Janmahasatian et al. (2005) formula (Methods, Subjects).",
+      source_name = "FFM"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (cystic fibrosis patient)",
-      notes              = "Multiplicative effects on CL and on V1 / V2 / V3 relative to the CF reference. Bulitta 2010 Table 3 parameterises the disease contrast through scale factors FCYFCL = 1.17 and FCYFVSS = 1.01 with the healthy volunteer cohort serving as the structural reference (e.g., CL_CF = 7.82 L/h = 6.68 L/h x 1.17 at FFM = 53 kg). The model file uses the canonical DIS_HEALTHY orientation (1 = healthy, 0 = patient) so the typical-value parameters represent the CF reference (DIS_HEALTHY = 0) and the e_healthy_* effects shift them toward the HV estimates when DIS_HEALTHY = 1. The reorientation preserves the published parameter values exactly: e_healthy_cl = log(1 / FCYFCL) and e_healthy_vc / vp / vp2 = log(1 / FCYFVSS). The intercompartmental clearances Q and Q2 are not stratified by disease group (Table 3 reports identical values 27.9 and 2.57 L/h for both cohorts). Source NONMEM dataset column name is not stated in the paper; the source orientation likely was a CF-indicator that was re-expressed as DIS_HEALTHY = 1 - CF in the package."
+      notes = "Multiplicative effects on CL and on V1 / V2 / V3 relative to the CF reference. Bulitta 2010 Table 3 parameterises the disease contrast through scale factors FCYFCL = 1.17 and FCYFVSS = 1.01 with the healthy volunteer cohort serving as the structural reference (e.g., CL_CF = 7.82 L/h = 6.68 L/h x 1.17 at FFM = 53 kg). The model file uses the canonical DIS_HEALTHY orientation (1 = healthy, 0 = patient) so the typical-value parameters represent the CF reference (DIS_HEALTHY = 0) and the e_healthy_* effects shift them toward the HV estimates when DIS_HEALTHY = 1. The reorientation preserves the published parameter values exactly: e_healthy_cl = log(1 / FCYFCL) and e_healthy_vc / vp / vp2 = log(1 / FCYFVSS). The intercompartmental clearances Q and Q2 are not stratified by disease group (Table 3 reports identical values 27.9 and 2.57 L/h for both cohorts). Source NONMEM dataset column name is not stated in the paper; the source orientation likely was a CF-indicator that was re-expressed as DIS_HEALTHY = 1 - CF in the package."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 15L,
-    n_studies      = 1L,
-    n_cf           = 8L,
-    n_hv           = 7L,
-    age_range      = "10-45 years (CF 10-45; HV 19-33; Table 1)",
-    age_median     = "CF 20 years; HV 22 years",
-    weight_range   = "14.2-73.5 kg (CF 14.2-73.5; HV 56-71)",
-    weight_median  = "CF 37.9 kg; HV 67 kg",
-    ffm_range      = "13.9-60.5 kg (CF 13.9-57.7; HV 46.4-60.5; Janmahasatian formula)",
-    ffm_median     = "CF 35.9 kg; HV 54.0 kg",
-    height_range   = "105-191 cm (CF 105-176; HV 164-191)",
-    height_median  = "CF 164 cm; HV 175 cm",
-    bmi_range      = "12.5-23.7 kg/m^2 (CF 12.5-23.7; HV 19.5-23.7)",
+    species = "human",
+    n_subjects = 15L,
+    n_studies = 1L,
+    n_cf = 8L,
+    n_hv = 7L,
+    age_range = "10-45 years (CF 10-45; HV 19-33; Table 1)",
+    age_median = "CF 20 years; HV 22 years",
+    weight_range = "14.2-73.5 kg (CF 14.2-73.5; HV 56-71)",
+    weight_median = "CF 37.9 kg; HV 67 kg",
+    ffm_range = "13.9-60.5 kg (CF 13.9-57.7; HV 46.4-60.5; Janmahasatian formula)",
+    ffm_median = "CF 35.9 kg; HV 54.0 kg",
+    height_range = "105-191 cm (CF 105-176; HV 164-191)",
+    height_median = "CF 164 cm; HV 175 cm",
+    bmi_range = "12.5-23.7 kg/m^2 (CF 12.5-23.7; HV 19.5-23.7)",
     sex_female_pct = 47.0,
     race_ethnicity = "All Caucasian (Bulitta 2010 Methods, Subjects)",
-    disease_state  = "8 cystic fibrosis patients with normal renal function and 7 healthy volunteers; CF patients smaller and leaner than HV (Tables 1-2). Study performed in 1983.",
-    dose_range     = "Single 2 g IV over 5 min (one CF patient received 1 g, one 1.5 g, one 3 g per physician judgment)",
-    regions        = "Germany (single-centre)",
-    samples        = "21 plasma samples per subject between 0 and 12 h after end of infusion (0, 5, 10, 15, 20, 30, 45, 60, 90 min and 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10, 12 h after end of infusion)",
-    notes          = "Allometric scaling by fat-free mass reduced the unexplained between-subject variance by 32% on CL and by 18-26% on the peripheral volumes relative to linear scaling by total weight (Bulitta 2010 Table 5). The paper estimated the same model with three independent estimation algorithms (NONMEM, S-ADAPT, NPAG); this model file reproduces the NONMEM column of Table 3."
+    disease_state = "8 cystic fibrosis patients with normal renal function and 7 healthy volunteers; CF patients smaller and leaner than HV (Tables 1-2). Study performed in 1983.",
+    dose_range = "Single 2 g IV over 5 min (one CF patient received 1 g, one 1.5 g, one 3 g per physician judgment)",
+    regions = "Germany (single-centre)",
+    samples = "21 plasma samples per subject between 0 and 12 h after end of infusion (0, 5, 10, 15, 20, 30, 45, 60, 90 min and 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10, 12 h after end of infusion)",
+    notes = "Allometric scaling by fat-free mass reduced the unexplained between-subject variance by 32% on CL and by 18-26% on the peripheral volumes relative to linear scaling by total weight (Bulitta 2010 Table 5). The paper estimated the same model with three independent estimation algorithms (NONMEM, S-ADAPT, NPAG); this model file reproduces the NONMEM column of Table 3."
   )
 
   ini({

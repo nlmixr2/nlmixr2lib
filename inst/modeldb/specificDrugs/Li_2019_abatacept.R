@@ -8,87 +8,87 @@ Li_2019_abatacept <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "abatacept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "abatacept", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 70 kg. Power effect on CL (exp 0.651), VC (exp 0.452), and VP (exp 0.457) per Li 2019 Table 1B and the final-model covariate equation in Methods/Results.",
-      source_name        = "BWT"
+      notes = "Reference 70 kg. Power effect on CL (exp 0.651), VC (exp 0.452), and VP (exp 0.457) per Li 2019 Table 1B and the final-model covariate equation in Methods/Results.",
+      source_name = "BWT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 50 years. Power effect on CL (exp -0.186) per Li 2019 Table 1B.",
-      source_name        = "AGE"
+      notes = "Reference 50 years. Power effect on CL (exp -0.186) per Li 2019 Table 1B.",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
+      description = "Baseline serum albumin",
       units = "g/L",
-      type               = "continuous",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 4.0 g/dL. Li 2019 Methods states 'baseline albumin of 4.0 mg/dL' which is a publication unit typo (normal human albumin is ~4 g/dL; 4 mg/dL is physiologically impossible). Coded as 4.0 g/dL here; see vignette Errata. Power effect on CL (exp -0.687) per Li 2019 Table 1B.",
-      source_name        = "ALB"
+      notes = "Reference 4.0 g/dL. Li 2019 Methods states 'baseline albumin of 4.0 mg/dL' which is a publication unit typo (normal human albumin is ~4 g/dL; 4 mg/dL is physiologically impossible). Coded as 4.0 g/dL here; see vignette Errata. Power effect on CL (exp -0.687) per Li 2019 Table 1B.",
+      source_name = "ALB"
     ),
     CRCL = list(
-      description        = "Calculated glomerular filtration rate (BSA-normalized)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Calculated glomerular filtration rate (BSA-normalized)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 90 mL/min/1.73 m^2. Li 2019 uses 'cGFR' (calculated GFR, BSA-normalized); mapped to the canonical CRCL (which is defined to accept either MDRD-estimated eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.162) per Li 2019 Table 1B.",
-      source_name        = "cGFR"
+      notes = "Reference 90 mL/min/1.73 m^2. Li 2019 uses 'cGFR' (calculated GFR, BSA-normalized); mapped to the canonical CRCL (which is defined to accept either MDRD-estimated eGFR or BSA-normalized measured CrCl). Power effect on CL (exp 0.162) per Li 2019 Table 1B.",
+      source_name = "cGFR"
     ),
     SWOL_28JOINT = list(
-      description        = "Baseline swollen joint count (28-joint scale)",
-      units              = "count (0-28)",
-      type               = "continuous",
+      description = "Baseline swollen joint count (28-joint scale)",
+      units = "count (0-28)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference 16. Applied as ((SWOL_28JOINT + 1)/(16 + 1))^0.0965 on CL to avoid the zero-count edge case per the Li 2019 final-model covariate equation. Not clinically relevant per Li 2019.",
-      source_name        = "SWOL"
+      notes = "Reference 16. Applied as ((SWOL_28JOINT + 1)/(16 + 1))^0.0965 on CL to avoid the zero-count edge case per the Li 2019 final-model covariate equation. Not clinically relevant per Li 2019.",
+      source_name = "SWOL"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male; reference subject is male per Li 2019 Methods)",
-      notes              = "Li 2019 codes SEX = 0 for males (reference) and SEX = 1 for females; the CL ~ SEX coefficient is -0.0722 (CL lower in females). SEXF is a direct one-to-one rename of the Li 2019 SEX column.",
-      source_name        = "SEX"
+      notes = "Li 2019 codes SEX = 0 for males (reference) and SEX = 1 for females; the CL ~ SEX coefficient is -0.0722 (CL lower in females). SEXF is a direct one-to-one rename of the Li 2019 SEX column.",
+      source_name = "SEX"
     ),
     CONMED_NSAID = list(
-      description        = "Concomitant NSAID use at baseline",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant NSAID use at baseline",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on concomitant NSAIDs; typical patient)",
-      notes              = "Exponential effect on CL: CL multiplied by exp(0.0640 * CONMED_NSAID) per Li 2019 final-model covariate equation. Patients on NSAIDs have ~6.6% higher CL (not clinically relevant per Li 2019). Baseline-only in Li 2019.",
-      source_name        = "NSAID"
+      notes = "Exponential effect on CL: CL multiplied by exp(0.0640 * CONMED_NSAID) per Li 2019 final-model covariate equation. Patients on NSAIDs have ~6.6% higher CL (not clinically relevant per Li 2019). Baseline-only in Li 2019.",
+      source_name = "NSAID"
     ),
     FORM_ABA_PHASE2 = list(
-      description        = "Abatacept SC formulation indicator, 1 = phase-2 SC formulation, 0 = phase-3 (commercial) SC formulation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Abatacept SC formulation indicator, 1 = phase-2 SC formulation, 0 = phase-3 (commercial) SC formulation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase-3 commercial SC formulation)",
-      notes              = "Model-specific covariate: formulation indicators are kept non-canonical per the nlmixr2lib global policy unless they clearly generalize across multiple drugs. Added on the logit scale to the typical F: logit_F = logit_F_TV + CONMED_FORM_ABA_PHASE2 * (-1.16). The phase-2 SC formulation had a different pH and a lower absolute bioavailability (~0.56) than the phase-3/commercial formulation (~0.81, the reference). Set to 0 for routine simulation of the commercial 125 mg SC regimen.",
-      source_name        = "FORM"
+      notes = "Model-specific covariate: formulation indicators are kept non-canonical per the nlmixr2lib global policy unless they clearly generalize across multiple drugs. Added on the logit scale to the typical F: logit_F = logit_F_TV + CONMED_FORM_ABA_PHASE2 * (-1.16). The phase-2 SC formulation had a different pH and a lower absolute bioavailability (~0.56) than the phase-3/commercial formulation (~0.81, the reference). Set to 0 for routine simulation of the commercial 125 mg SC regimen.",
+      source_name = "FORM"
     )
   )
 
   population <- list(
-    n_subjects     = 2244L,
+    n_subjects = 2244L,
     n_observations = 10382L,
-    n_studies      = 11L,
-    disease_state  = "Rheumatoid arthritis (adult); 4 phase 2 and 7 phase 3 studies pooled.",
-    dose_range     = "IV abatacept 0.5-10 mg/kg Q4W (6 studies) and SC abatacept 75-200 mg QW (4 studies); one study (ACQUIRE) included both IV and SC. Approved regimens are weight-tiered ~10 mg/kg IV Q4W and fixed 125 mg SC QW.",
-    regions        = "Multi-regional (11 pooled global phase 2 and phase 3 studies).",
+    n_studies = 11L,
+    disease_state = "Rheumatoid arthritis (adult); 4 phase 2 and 7 phase 3 studies pooled.",
+    dose_range = "IV abatacept 0.5-10 mg/kg Q4W (6 studies) and SC abatacept 75-200 mg QW (4 studies); one study (ACQUIRE) included both IV and SC. Approved regimens are weight-tiered ~10 mg/kg IV Q4W and fixed 125 mg SC QW.",
+    regions = "Multi-regional (11 pooled global phase 2 and phase 3 studies).",
     reference_subject = "50-year-old male, BWT 70 kg, baseline albumin 4.0 g/dL (publication typo: 'mg/dL'), cGFR 90 mL/min/1.73 m^2, swollen joint count 16, not on concomitant NSAIDs, phase-3 SC formulation; reference values approximate the median (continuous) or mode (categorical) of the popPK dataset.",
-    notes          = "Baseline demographics per Li 2019 Methods Data and Study Populations (Table S3 referenced for full demographic summary). After exclusion of samples missing dose/sample information and below-LLOQ concentrations, 10 382/13 610 (76.3%) samples from 2244 patients entered the analysis dataset. LLOQ of the validated ELISA was 1.0 ng/mL. SC phase-2 formulation (different pH) was replaced by the phase-3 commercial formulation to improve product stability."
+    notes = "Baseline demographics per Li 2019 Methods Data and Study Populations (Table S3 referenced for full demographic summary). After exclusion of samples missing dose/sample information and below-LLOQ concentrations, 10 382/13 610 (76.3%) samples from 2244 patients entered the analysis dataset. LLOQ of the validated ELISA was 1.0 ng/mL. SC phase-2 formulation (different pH) was replaced by the phase-3 commercial formulation to improve product stability."
   )
 
   ini({

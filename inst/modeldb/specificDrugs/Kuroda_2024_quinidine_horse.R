@@ -56,19 +56,19 @@ Kuroda_2024_quinidine_horse <- function() {
   # V1 the central compartment, V2 and V3 the peripheral compartments, and
   # adds Kabs and F "to the model for PO administration".
   compartmentData <- list(
-    depot       = list(analyte = "quinidine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "quinidine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed adult-horse body weight. Kuroda 2024 Table 1 reports every structural volume and",
         "clearance per kilogram (L/kg, L/kg/h), so WT enters as a linear multiplier (exponent 1) on cl,",
         "vc, q, vp, q2 and vp2 rather than as an estimated allometric term; Kabs (1/h) and F (%) are not",
@@ -79,14 +79,14 @@ Kuroda_2024_quinidine_horse <- function() {
         "weighed 473-563 kg (healthy) and 430-540 kg (atrial fibrillation).",
         sep = " "
       ),
-      source_name        = "BW (body weight; Kuroda 2024 section 2.1)"
+      source_name = "BW (body weight; Kuroda 2024 section 2.1)"
     ),
     ROUTE_IV = list(
-      description        = "Indicator for intravenous administration of quinidine hydrochloride monohydrate",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for intravenous administration of quinidine hydrochloride monohydrate",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (oral quinidine sulfate dihydrate by nasogastric tube)",
-      notes              = paste(
+      notes = paste(
         "Per-observation dosing-route indicator (1 = 5-min IV infusion, 0 = oral administration by",
         "nasogastric tube). Kuroda 2024 retained no route covariate effect on any structural parameter,",
         "but Table 1 estimates a separate proportional AND additive residual-error pair per dataset:",
@@ -96,7 +96,7 @@ Kuroda_2024_quinidine_horse <- function() {
         "cmt = depot for oral doses), which controls where the dose enters, not the residual magnitude.",
         sep = " "
       ),
-      source_name        = "dataset index 0 (IV) / 1 (PO) in the Phoenix NLME residual-error parameter names Stdev0 / Stdev1"
+      source_name = "dataset index 0 (IV) / 1 (PO) in the Phoenix NLME residual-error parameter names Stdev0 / Stdev1"
     )
   )
 
@@ -108,33 +108,33 @@ Kuroda_2024_quinidine_horse <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate on every structural parameter (section 2.5) but not retained; no effect size is reported. Horses were 2-7 years old (healthy) and 2-10 years old (atrial fibrillation)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as a candidate covariate on every structural parameter (section 2.5) but not retained; no effect size is reported. Horses were 2-7 years old (healthy) and 2-10 years old (atrial fibrillation)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "categorical",
-      notes       = "Screened as a candidate covariate (section 2.5, 'sex') but not retained; no effect size is reported. The cohort was five stallions and five mares (healthy) and 12 stallions and seven mares (atrial fibrillation)."
+      units = "(binary)",
+      type = "categorical",
+      notes = "Screened as a candidate covariate (section 2.5, 'sex') but not retained; no effect size is reported. The cohort was five stallions and five mares (healthy) and 12 stallions and seven mares (atrial fibrillation)."
     ),
     DIS_HEALTHY = list(
       description = "Healthy-horse indicator (complement is naturally occurring atrial fibrillation)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a candidate covariate (section 2.5, 'condition (healthy or AF)') but not retained; no effect size is reported. Because the disease state was rejected, the Discussion concludes 'the dosing regimen proposed in this study can probably be applied to the entire Thoroughbred population'."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a candidate covariate (section 2.5, 'condition (healthy or AF)') but not retained; no effect size is reported. Because the disease state was rejected, the Discussion concludes 'the dosing regimen proposed in this study can probably be applied to the entire Thoroughbred population'."
     )
   )
 
   population <- list(
-    species        = "horse (Thoroughbred)",
-    n_subjects     = 29L,
-    n_studies      = 2L,
-    age_range      = "2-7 years (healthy); 2-10 years (atrial fibrillation)",
-    weight_range   = "473-563 kg (healthy); 430-540 kg (atrial fibrillation)",
+    species = "horse (Thoroughbred)",
+    n_subjects = 29L,
+    n_studies = 2L,
+    age_range = "2-7 years (healthy); 2-10 years (atrial fibrillation)",
+    weight_range = "473-563 kg (healthy); 430-540 kg (atrial fibrillation)",
     sex_female_pct = 41.4,
-    disease_state  = "healthy (n = 10) or naturally occurring atrial fibrillation under quinidine therapy (n = 19); 18 of the 19 converted to sinus rhythm",
-    dose_range     = paste(
+    disease_state = "healthy (n = 10) or naturally occurring atrial fibrillation under quinidine therapy (n = 19); 18 of the 19 converted to sinus rhythm",
+    dose_range = paste(
       "Healthy horses: single 5 mg/kg quinidine hydrochloride monohydrate (4.28 mg/kg QND base) as a",
       "5-min IV infusion into the right jugular vein in 500 mL sterile saline, and single 20 mg/kg",
       "quinidine sulfate dihydrate (16.58 mg/kg QND base) in 500 mL water by nasogastric tube with a",
@@ -144,7 +144,7 @@ Kuroda_2024_quinidine_horse <- function() {
       "and intervals.",
       sep = " "
     ),
-    sampling       = paste(
+    sampling = paste(
       "IV arm: pre-dose and 0, 5, 10, 20, 30, 45 min and 1, 2, 3, 4, 6, 8, 12 h. Single oral arm:",
       "pre-dose and 30 min, 1, 1.5, 2, 2.5, 3, 4, 5, 7, 9, 12, 24 h. Twice-oral arm: pre-dose and",
       "30 min, 1, 1.5, 2, 2.5, 3, 5.8, 6.5, 7, 7.5, 8, 8.5, 9, 12, 24 h after the first dose.",
@@ -156,8 +156,8 @@ Kuroda_2024_quinidine_horse <- function() {
       "were excluded from the model.",
       sep = " "
     ),
-    regions        = "Japan (Equine Research Institute, Japan Racing Association, Shimotsuke; Miho and Ritto Training Center racehorse hospitals)",
-    notes          = paste(
+    regions = "Japan (Equine Research Institute, Japan Racing Association, Shimotsuke; Miho and Ritto Training Center racehorse hospitals)",
+    notes = paste(
       "Section 2.1 describes 10 healthy horses plus 19 horses with atrial fibrillation, and the",
       "Abstract states that 'the data from 29 horses were modeled', so n_subjects is 29. The Table 1",
       "caption instead says 'in 27 horses'; the paper never reconciles the two or names an exclusion,",

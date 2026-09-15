@@ -9,23 +9,23 @@ Duong_2017_AT9283 <- function() {
     sep = " "
   )
   vignette <- "Duong_2017_AT9283"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "AT9283", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "AT9283", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "AT9283", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used for allometric scaling of all four PK parameters (CL, Vc, Q,",
         "Vp) standardised to a reference body weight of 70 kg (Duong 2017",
         "Methods Equations 2 and 3). Allometric exponents fixed a priori",
@@ -35,14 +35,14 @@ Duong_2017_AT9283 <- function() {
         "adults solid tumour 73.6 kg, adults leukaemia 67.4 kg, children",
         "solid tumour 29.2 kg, children leukaemia 16.1 kg)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (BSA-normalised mL/min/1.73 m^2; MDRD formula for adults, bedside Schwartz formula for children under 18 years)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (BSA-normalised mL/min/1.73 m^2; MDRD formula for adults, bedside Schwartz formula for children under 18 years)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Estimated GFR by the Modification of Diet in Renal Disease",
         "(MDRD) formula for adults (Duong 2017 Equation 4) and the bedside",
         "Schwartz formula for children aged under 18 years (Equation 5).",
@@ -54,14 +54,14 @@ Duong_2017_AT9283 <- function() {
         "accepted source assays. Cohort GFR range from Table 2: 31.9-299.4",
         "mL/min/1.73 m^2 (adults median 77.1, children median 132.9)."
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     ),
     CHILD = list(
-      description        = "Child age-cohort indicator (1 = paediatric subject under 18 years of age, 0 = adult)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Child age-cohort indicator (1 = paediatric subject under 18 years of age, 0 = adult)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult)",
-      notes              = paste(
+      notes = paste(
         "Selects the residual error structure: adults (CHILD = 0) use a",
         "combined additive + proportional residual error, children",
         "(CHILD = 1) use an additive-only residual error (Duong 2017",
@@ -73,33 +73,33 @@ Duong_2017_AT9283 <- function() {
         "Schwartz for children); CRCL is computed at data-preparation",
         "time outside the model."
       ),
-      source_name        = "Study group (adult vs paediatric trial)"
+      source_name = "Study group (adult vs paediatric trial)"
     )
   )
 
   population <- list(
-    species             = "human",
-    n_subjects          = 92L,
-    n_adults            = 53L,
-    n_children          = 39L,
-    n_studies           = 4L,
-    n_concentrations    = 1770L,
-    age_range           = "1-86 years (pooled across four Phase I trials; Table 2)",
-    age_median          = "Adults solid tumour: 63 years; adults leukaemia: 54 years; children solid tumour: 9 years; children leukaemia: 3 years (Table 2)",
-    weight_range        = "8.9-120.5 kg (Table 2)",
-    weight_median       = "Adults solid tumour: 73.6 kg; adults leukaemia: 67.4 kg; children solid tumour: 29.2 kg; children leukaemia: 16.1 kg (Table 2)",
-    bsa_range           = "0.44-2.50 m^2 (Table 2)",
-    bmi_range           = "13.2-43.6 kg/m^2 (Table 2)",
-    crcl_range          = "31.9-299.4 mL/min/1.73 m^2 (Table 2); adults median 77.1 mL/min/1.73 m^2 (most with mild-to-moderately reduced kidney function), children median 132.9 mL/min/1.73 m^2 (predominantly normal or elevated kidney function)",
-    sex_female_pct      = "Not reported per group in Duong 2017",
-    race_ethnicity      = "Not reported",
-    disease_state       = "Patients with relapsed or refractory solid tumours (n = 61) or relapsed or refractory leukaemias (n = 31) across four Phase I dose-escalation trials. Adults had a mix of normal and mild-to-moderately reduced kidney function; children had predominantly normal or elevated kidney function.",
-    dose_range          = "4.5-486 mg/m^2 per 72 h as a continuous intravenous infusion every 21 days. Doses adjusted to body surface area by the Mosteller formula. Identified MTDs (mg/m^2 per 72 h): 27 in adults with solid tumours, 324 in adults with leukaemia, 55.5 in children with solid tumours; the paediatric leukaemia trial was terminated before the MTD was reached, with simulated MTD estimated at 30 mg/kg per 72 h.",
-    regions             = "USA and UK (Astex Pharmaceuticals sponsored the adult studies; Cancer Research UK sponsored the paediatric studies)",
-    trials              = "Arkenau et al. (NCT00443976, adults solid tumour); Foran et al. (NCT00522990, adults leukaemia); Moreno et al. (NCT00985868, children solid tumour); Cancer Research UK (NCT01431664, children leukaemia)",
-    sampling            = "Adult trials: 0.5, 1, 4, 8, 12, 22, 32, 46, 56, 70, 72, 72.05, 72.25, 72.30, 72.45, 73, 74, 75, 76, 78, 80, 84, 96 h and day 8 in cycles 1 and 2. Paediatric trials: 0, 4, 24, 48, 70, 73, 76 and 96 h after the start of the cycle-1 infusion (Table 1).",
-    assay               = "Validated LC-MS/MS assay; calibration range 0.1-500 ng/mL; lower limit of quantification 0.1 ng/mL. Approximately 3 percent of samples were below the LLOQ and were excluded from the analysis.",
-    notes               = "Demographics from Duong 2017 Tables 1 and 2. 1770 plasma AT9283 concentrations from 92 patients used in the final population PK analysis. NONMEM v7.3 with first-order conditional estimation with interaction (FOCE-I); observations log-transformed prior to fitting. Final model selection driven by drop in objective function value with backward elimination (DELTA OFV > 6.63, P < 0.01)."
+    species = "human",
+    n_subjects = 92L,
+    n_adults = 53L,
+    n_children = 39L,
+    n_studies = 4L,
+    n_concentrations = 1770L,
+    age_range = "1-86 years (pooled across four Phase I trials; Table 2)",
+    age_median = "Adults solid tumour: 63 years; adults leukaemia: 54 years; children solid tumour: 9 years; children leukaemia: 3 years (Table 2)",
+    weight_range = "8.9-120.5 kg (Table 2)",
+    weight_median = "Adults solid tumour: 73.6 kg; adults leukaemia: 67.4 kg; children solid tumour: 29.2 kg; children leukaemia: 16.1 kg (Table 2)",
+    bsa_range = "0.44-2.50 m^2 (Table 2)",
+    bmi_range = "13.2-43.6 kg/m^2 (Table 2)",
+    crcl_range = "31.9-299.4 mL/min/1.73 m^2 (Table 2); adults median 77.1 mL/min/1.73 m^2 (most with mild-to-moderately reduced kidney function), children median 132.9 mL/min/1.73 m^2 (predominantly normal or elevated kidney function)",
+    sex_female_pct = "Not reported per group in Duong 2017",
+    race_ethnicity = "Not reported",
+    disease_state = "Patients with relapsed or refractory solid tumours (n = 61) or relapsed or refractory leukaemias (n = 31) across four Phase I dose-escalation trials. Adults had a mix of normal and mild-to-moderately reduced kidney function; children had predominantly normal or elevated kidney function.",
+    dose_range = "4.5-486 mg/m^2 per 72 h as a continuous intravenous infusion every 21 days. Doses adjusted to body surface area by the Mosteller formula. Identified MTDs (mg/m^2 per 72 h): 27 in adults with solid tumours, 324 in adults with leukaemia, 55.5 in children with solid tumours; the paediatric leukaemia trial was terminated before the MTD was reached, with simulated MTD estimated at 30 mg/kg per 72 h.",
+    regions = "USA and UK (Astex Pharmaceuticals sponsored the adult studies; Cancer Research UK sponsored the paediatric studies)",
+    trials = "Arkenau et al. (NCT00443976, adults solid tumour); Foran et al. (NCT00522990, adults leukaemia); Moreno et al. (NCT00985868, children solid tumour); Cancer Research UK (NCT01431664, children leukaemia)",
+    sampling = "Adult trials: 0.5, 1, 4, 8, 12, 22, 32, 46, 56, 70, 72, 72.05, 72.25, 72.30, 72.45, 73, 74, 75, 76, 78, 80, 84, 96 h and day 8 in cycles 1 and 2. Paediatric trials: 0, 4, 24, 48, 70, 73, 76 and 96 h after the start of the cycle-1 infusion (Table 1).",
+    assay = "Validated LC-MS/MS assay; calibration range 0.1-500 ng/mL; lower limit of quantification 0.1 ng/mL. Approximately 3 percent of samples were below the LLOQ and were excluded from the analysis.",
+    notes = "Demographics from Duong 2017 Tables 1 and 2. 1770 plasma AT9283 concentrations from 92 patients used in the final population PK analysis. NONMEM v7.3 with first-order conditional estimation with interaction (FOCE-I); observations log-transformed prior to fitting. Final model selection driven by drop in objective function value with backward elimination (DELTA OFV > 6.63, P < 0.01)."
   )
 
   ini({

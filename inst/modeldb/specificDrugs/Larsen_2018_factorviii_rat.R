@@ -29,8 +29,8 @@ Larsen_2018_factorviii_rat <- function() {
   )
   vignette <- "Larsen_2018_haemophilia_animal_popPK"
   units <- list(
-    time          = "h",
-    dosing        = "IU",
+    time = "h",
+    dosing = "IU",
     concentration = "IU/mL"
   )
 
@@ -43,42 +43,42 @@ Larsen_2018_factorviii_rat <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (rat)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (rat)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-animal body weight. Used for within-species",
         "allometric scaling around the rat median weight of",
         "0.32 kg (Larsen 2018 Table 1). Range 0.22-0.41 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Gates the fractional female-",
         "multiplier on CL (Larsen 2018 Table 3 Rat Cov",
         "CL,Female = 1.39)."
       ),
-      source_name        = "SEXF"
+      source_name = "SEXF"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 60L,
-    n_studies      = NA_integer_,
-    weight_range   = "0.22-0.41 kg",
-    weight_median  = "0.32 kg",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 60L,
+    n_studies = NA_integer_,
+    weight_range = "0.22-0.41 kg",
+    weight_median = "0.32 kg",
     sex_female_pct = 50,
-    disease_state  = "healthy (non-haemophilic; endogenous FVIII present)",
-    dose_range     = "single IV bolus, vehicle, 50, 250, or 1250 IU/kg rFVIII",
-    regions        = "Denmark (Novo Nordisk in-house)",
-    notes          = paste(
+    disease_state = "healthy (non-haemophilic; endogenous FVIII present)",
+    dose_range = "single IV bolus, vehicle, 50, 250, or 1250 IU/kg rFVIII",
+    regions = "Denmark (Novo Nordisk in-house)",
+    notes = paste(
       "60 Sprague-Dawley rats (30 M, 30 F). Sampling up to 24",
       "h post-dose. Endogenous FVIII was measurable in rats",
       "and is carried as a fitted additive baseline of 1.12",

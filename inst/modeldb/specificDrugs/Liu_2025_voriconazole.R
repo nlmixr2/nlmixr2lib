@@ -5,17 +5,17 @@ Liu_2025_voriconazole <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     PROCALCITONIN = list(
-      description        = "Serum procalcitonin concentration",
-      units              = "ug/L",
-      type               = "continuous",
+      description = "Serum procalcitonin concentration",
+      units = "ug/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-normalized power effect on apparent clearance, (PROCALCITONIN / 0.19)^e_procalcitonin_cl,",
         "per the published",
         "final-model equation on Liu 2025 p. 4024. The divisor 0.19 ug/L is the training-group median of",
@@ -37,14 +37,14 @@ Liu_2025_voriconazole <- function() {
         "CUM_FLUID_BAL_PCT and others) and with PCT = proximal convoluted tubule in Lu_2014_sglt_qsp.R.",
         "See inst/references/covariate-columns.md, PROCALCITONIN."
       ),
-      source_name        = "PCT"
+      source_name = "PCT"
     ),
     TBA = list(
-      description        = "Total serum bile acids",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bile acids",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Median-normalized power effect on apparent clearance, (TBA / 3.95)^e_tba_cl, per the published",
         "final-model equation on Liu 2025 p. 4024. The divisor 3.95 umol/L is the training-group median of",
         "Liu 2025 Table 1 (IQR 2.50-7.45 umol/L; the testing group median is lower, 3.59, IQR 2.40-4.32).",
@@ -55,14 +55,14 @@ Liu_2025_voriconazole <- function() {
         "Fasting-versus-postprandial status is not stated. Baseline-versus-time-varying status is likewise",
         "not stated; see the PROCALCITONIN notes for the same consideration."
       ),
-      source_name        = "TBA"
+      source_name = "TBA"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential effect on apparent clearance centred at 72 years, exp(e_age_cl * (AGE - 72.0)), per",
         "the published final-model equation on Liu 2025 p. 4024. The centring constant 72.0 is the",
         "training-group median age of Liu 2025 Table 1 (IQR 67-78 years; testing group median 73, IQR",
@@ -73,7 +73,7 @@ Liu_2025_voriconazole <- function() {
         "range 67-78 years the effect spans exp(-0.017 * (78 - 67)) = 0.83, a 17% clearance decrement.",
         "Liu 2025 Discussion attributes the effect to the age-related decline in hepatic function."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     )
   )
 
@@ -87,19 +87,19 @@ Liu_2025_voriconazole <- function() {
   # support. The Table 1 distributions are reproduced in population$notes.
 
   population <- list(
-    species        = "human",
-    n_subjects     = 270L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 270L,
+    n_studies = 1L,
     n_observations = 393L,
-    age_range      = ">= 60 years (inclusion criterion)",
-    age_median     = "72 years (training), 73 years (testing)",
-    weight_median  = "58 kg",
+    age_range = ">= 60 years (inclusion criterion)",
+    age_median = "72 years (training), 73 years (testing)",
+    weight_median = "58 kg",
     sex_female_pct = 28.3,
     race_ethnicity = c(Chinese = 100),
-    disease_state  = "Elderly hospitalized inpatients receiving voriconazole for more than 3 days and undergoing therapeutic drug monitoring. Patients on dialysis, those with concentrations below the lower limit of quantification, and those with incomplete administration records were excluded.",
-    dose_range     = "Median daily dose 6.90 mg/kg/day (IQR 6.00-8.00). At the median weight of 58 kg this is 400 mg/day, i.e. the standard 200 mg twice-daily maintenance regimen. 86.0% of training records were intravenous and 14.0% oral (testing 83.5% / 16.5%). Median total treatment duration 6 days (IQR 4-11); median time after dose at sampling 10.57 h (IQR 9.68-11.50), consistent with pre-dose trough sampling on a 12-hourly schedule. Only 5.7% of daily doses exceeded 10 mg/kg/day, the threshold above which the authors cite nonlinear elimination as material.",
-    regions        = "Single center: the First Affiliated Hospital of Army Medical University, Chongqing, China.",
-    notes          = paste(
+    disease_state = "Elderly hospitalized inpatients receiving voriconazole for more than 3 days and undergoing therapeutic drug monitoring. Patients on dialysis, those with concentrations below the lower limit of quantification, and those with incomplete administration records were excluded.",
+    dose_range = "Median daily dose 6.90 mg/kg/day (IQR 6.00-8.00). At the median weight of 58 kg this is 400 mg/day, i.e. the standard 200 mg twice-daily maintenance regimen. 86.0% of training records were intravenous and 14.0% oral (testing 83.5% / 16.5%). Median total treatment duration 6 days (IQR 4-11); median time after dose at sampling 10.57 h (IQR 9.68-11.50), consistent with pre-dose trough sampling on a 12-hourly schedule. Only 5.7% of daily doses exceeded 10 mg/kg/day, the threshold above which the authors cite nonlinear elimination as material.",
+    regions = "Single center: the First Affiliated Hospital of Army Medical University, Chongqing, China.",
+    notes = paste(
       "Retrospective single-center study, March 2022 - December 2023. 393 therapeutic-drug-monitoring",
       "concentrations from 270 patients, measured by LC-MS/MS (Shimadzu LC-30AD with AB Sciex QTRAP 5500).",
       "An additional 48 patients contributing 76 concentrations, enrolled December 2023 - March 2024, form",

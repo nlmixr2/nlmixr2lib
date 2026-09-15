@@ -12,8 +12,8 @@ Zhu_2023_omalizumab_pediatric <- function() {
   vignette <- "Zhu_2023_omalizumab_pediatric"
 
   units <- list(
-    time          = "week",
-    dosing        = "n/a (PD-only model; omalizumab and free IgE PK provided externally via the IGE_FREE covariate)",
+    time = "week",
+    dosing = "n/a (PD-only model; omalizumab and free IgE PK provided externally via the IGE_FREE covariate)",
     concentration = "fraction predicted (FEV1 percent predicted on the 0-1 fractional scale; multiply by 100 to display on the conventional 0-100 percent scale)"
   )
 
@@ -22,17 +22,22 @@ Zhu_2023_omalizumab_pediatric <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    fev1pp = list(analyte = "FEV1 percent predicted on a 0-1 fractional scale", units = NA_character_, specimen = "blood cell", verified = FALSE)
+    fev1pp = list(
+      analyte = "FEV1 percent predicted on a 0-1 fractional scale",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     IGE_FREE = list(
-      description        = "Serum free IgE concentration at the FEV1 observation time. The exogenous time-varying PD driver: it enters the inhibition Hill term imax * IGE_FREE^hill / (ec50^hill + IGE_FREE^hill) to suppress steady-state FEV1pp.",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Serum free IgE concentration at the FEV1 observation time. The exogenous time-varying PD driver: it enters the inhibition Hill term imax * IGE_FREE^hill / (ec50^hill + IGE_FREE^hill) to suppress steady-state FEV1pp.",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying per FEV1 observation. The Zhu 2023 source paper preprocessed the IgE input as follows (Methods 'Data Used in the Population Pediatric IgE-FEV1 Model'). For omalizumab-treated subjects: total IgE at week 0 was used pretreatment (free IgE = total IgE before anti-IgE drug), assayed free IgE was used post-treatment, and the free IgE value at week 0.1 was imputed by back-extrapolation from the first post-treatment free IgE observation to capture the rapid suppression of free IgE within one day of subcutaneous omalizumab dosing. Linear (and log-linear, tested as a sensitivity analysis) interpolation between observed IgE values produced the per-FEV1-observation input value. For placebo subjects: the subject's AVERAGE total IgE over the 24-week steroid-stable period was used (constant per subject across all observation rows), because free IgE equals total IgE in the absence of anti-IgE drug. Downstream nlmixr2lib users combining this PD model with an upstream omalizumab popPK / IgE-binding model can populate IGE_FREE from the freeIgE observable of Hayashi_2007_omalizumab.R or any equivalent sequential PK source.",
-      source_name        = "C_IgE,i(t) (paper symbol in the structural-model equation; NONMEM column name not disclosed)"
+      notes = "Time-varying per FEV1 observation. The Zhu 2023 source paper preprocessed the IgE input as follows (Methods 'Data Used in the Population Pediatric IgE-FEV1 Model'). For omalizumab-treated subjects: total IgE at week 0 was used pretreatment (free IgE = total IgE before anti-IgE drug), assayed free IgE was used post-treatment, and the free IgE value at week 0.1 was imputed by back-extrapolation from the first post-treatment free IgE observation to capture the rapid suppression of free IgE within one day of subcutaneous omalizumab dosing. Linear (and log-linear, tested as a sensitivity analysis) interpolation between observed IgE values produced the per-FEV1-observation input value. For placebo subjects: the subject's AVERAGE total IgE over the 24-week steroid-stable period was used (constant per subject across all observation rows), because free IgE equals total IgE in the absence of anti-IgE drug. Downstream nlmixr2lib users combining this PD model with an upstream omalizumab popPK / IgE-binding model can populate IGE_FREE from the freeIgE observable of Hayashi_2007_omalizumab.R or any equivalent sequential PK source.",
+      source_name = "C_IgE,i(t) (paper symbol in the structural-model equation; NONMEM column name not disclosed)"
     )
   )
 
@@ -42,61 +47,63 @@ Zhu_2023_omalizumab_pediatric <- function() {
   # triggering an unused-covariate convention warning.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age at study entry",
-      units              = "year",
-      type               = "continuous",
+      description = "Subject age at study entry",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened in the pediatric IgE-FEV1 model with a power model (age normalized by reference value) on Imax, IC50, and FEV1max (Zhu 2023 Methods 'Model Development and Covariate Analysis'). The covariate models 'either did not converge or appeared to reach local minimums during estimation, indicating that the data did not support identification of covariate effects'. Dropped from the final model.",
-      source_name        = "Age"
+      notes = "Screened in the pediatric IgE-FEV1 model with a power model (age normalized by reference value) on Imax, IC50, and FEV1max (Zhu 2023 Methods 'Model Development and Covariate Analysis'). The covariate models 'either did not converge or appeared to reach local minimums during estimation, indicating that the data did not support identification of covariate effects'. Dropped from the final model.",
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed among covariates considered for evaluation but not formally tested because of collinearity with age in the pediatric cohort. Paper Methods: 'Given the different response pattern (in both magnitude and onset) observed in pediatrics and the collinearity between covariates (e.g., high correlation between age and body weight in pediatric subjects), only the age effect was examined during the pediatric model development'.",
-      source_name        = "Body weight"
+      notes = "Listed among covariates considered for evaluation but not formally tested because of collinearity with age in the pediatric cohort. Paper Methods: 'Given the different response pattern (in both magnitude and onset) observed in pediatrics and the collinearity between covariates (e.g., high correlation between age and body weight in pediatric subjects), only the age effect was examined during the pediatric model development'.",
+      source_name = "Body weight"
     ),
     FEV1PP_BASELINE = list(
-      description        = "Baseline FEV1 (percent predicted) at study entry",
-      units              = "fraction predicted (0-1 scale)",
-      type               = "continuous",
+      description = "Baseline FEV1 (percent predicted) at study entry",
+      units = "fraction predicted (0-1 scale)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed as a covariate of interest. Observed baseline FEV1 was used directly per-subject as the initial condition for the FEV1 ODE in the fitting process (Zhu 2023 Results: 'observed baseline FEV1 was used rather than an estimated value for each individual'), so the baseline does not enter the final model as a separate covariate effect on a structural parameter.",
-      source_name        = "Baseline FEV1 (% predicted)"
+      notes = "Listed as a covariate of interest. Observed baseline FEV1 was used directly per-subject as the initial condition for the FEV1 ODE in the fitting process (Zhu 2023 Results: 'observed baseline FEV1 was used rather than an estimated value for each individual'), so the baseline does not enter the final model as a separate covariate effect on a structural parameter.",
+      source_name = "Baseline FEV1 (% predicted)"
     ),
     IGE_BASELINE = list(
-      description        = "Baseline serum total IgE at screening",
-      units              = "ng/mL (paper also reports IU/mL; conversion 1 IU/mL = 2.42 ng/mL)",
-      type               = "continuous",
+      description = "Baseline serum total IgE at screening",
+      units = "ng/mL (paper also reports IU/mL; conversion 1 IU/mL = 2.42 ng/mL)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Listed as a covariate of interest. Visual inspection of IIV versus baseline IgE 'did not reveal any clear trends' (Supplementary Figure S1) and the covariate was not retained in the final model.",
-      source_name        = "Baseline IgE (screening)"
+      notes = "Listed as a covariate of interest. Visual inspection of IIV versus baseline IgE 'did not reveal any clear trends' (Supplementary Figure S1) and the covariate was not retained in the final model.",
+      source_name = "Baseline IgE (screening)"
     )
   )
 
   population <- list(
-    species           = "human",
-    n_subjects        = 535L,
-    n_studies         = 1L,
-    study_names       = c("IA05 (omalizumab in pediatric moderate-to-severe asthma; 24-week steroid-stable phase used for the IgE-FEV1 model)"),
-    n_observations    = 1515L,
-    n_omalizumab_obs  = 960L,
-    n_placebo_obs     = 555L,
+    species = "human",
+    n_subjects = 535L,
+    n_studies = 1L,
+    study_names = c(
+      "IA05 (omalizumab in pediatric moderate-to-severe asthma; 24-week steroid-stable phase used for the IgE-FEV1 model)"
+    ),
+    n_observations = 1515L,
+    n_omalizumab_obs = 960L,
+    n_placebo_obs = 555L,
     n_omalizumab_subj = 351L,
-    n_placebo_subj    = 184L,
-    age_range         = "6-11 years",
-    age_median        = "9 years",
-    weight_range      = "19.3-81.3 kg",
-    weight_median     = "31 kg",
-    height_range      = "104-168 cm",
-    height_median     = "134 cm",
-    sex_female_pct    = NA_real_,
-    race_ethnicity    = NA_character_,
-    disease_state     = "Children aged 6-11 with moderate-to-severe, persistent, inadequately controlled allergic asthma. Baseline FEV1 (% predicted) mean (range) 87% (25-148%); baseline serum IgE mean (range) 950 (36-4500) ng/mL.",
-    dose_range        = "Omalizumab 75-375 mg SC every 2 or 4 weeks (dose and dosing frequency determined per the US package insert table from body weight + baseline IgE at screening, designed to achieve individualized free IgE suppression).",
-    regions           = "Multinational pediatric trial (Study IA05).",
-    notes             = "n=535 pediatric subjects from Study IA05 (Phase III randomized, double-blind, placebo-controlled; full enrolment 627 patients, of which 535 contributed data over the 24-week steroid-stable period used for the IgE-FEV1 model). Demographics from Table I of Zhu 2023. The 24-week steroid-stable phase was used to control for the confounding effect of steroid use on FEV1."
+    n_placebo_subj = 184L,
+    age_range = "6-11 years",
+    age_median = "9 years",
+    weight_range = "19.3-81.3 kg",
+    weight_median = "31 kg",
+    height_range = "104-168 cm",
+    height_median = "134 cm",
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Children aged 6-11 with moderate-to-severe, persistent, inadequately controlled allergic asthma. Baseline FEV1 (% predicted) mean (range) 87% (25-148%); baseline serum IgE mean (range) 950 (36-4500) ng/mL.",
+    dose_range = "Omalizumab 75-375 mg SC every 2 or 4 weeks (dose and dosing frequency determined per the US package insert table from body weight + baseline IgE at screening, designed to achieve individualized free IgE suppression).",
+    regions = "Multinational pediatric trial (Study IA05).",
+    notes = "n=535 pediatric subjects from Study IA05 (Phase III randomized, double-blind, placebo-controlled; full enrolment 627 patients, of which 535 contributed data over the 24-week steroid-stable period used for the IgE-FEV1 model). Demographics from Table I of Zhu 2023. The 24-week steroid-stable phase was used to control for the confounding effect of steroid use on FEV1."
   )
 
   ini({

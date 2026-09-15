@@ -10,44 +10,44 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     depot_kpd = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
-    effect    = list(analyte = "P1NP", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "P1NP", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Per-subject assigned once-daily oral dose (mg) of fosdagrocorat or prednisone driving the dose-and-time-dependent rebound term on biomarker synthesis. Set to 0 for placebo (methotrexate only).",
-      units              = "mg",
-      type               = "continuous",
+      description = "Per-subject assigned once-daily oral dose (mg) of fosdagrocorat or prednisone driving the dose-and-time-dependent rebound term on biomarker synthesis. Set to 0 for placebo (methotrexate only).",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject (time-fixed) assigned q.d. dose level in milligrams. Enters the model only via the empirical rebound multiplier on synthesis 1 + RBmax * DOSE * t / (T50 + t); the drug input to the K-PD depot is supplied separately via dosing events with rate 7 * DOSE mg/week (Shoji 2017 Methods, K-PD model). Cohort levels in the source trial: 0 (placebo), 1, 5, 10, 15 (fosdagrocorat q.d. mg) and 5, 10 (prednisone q.d. mg).",
-      source_name        = "DOSE"
+      notes = "Per-subject (time-fixed) assigned q.d. dose level in milligrams. Enters the model only via the empirical rebound multiplier on synthesis 1 + RBmax * DOSE * t / (T50 + t); the drug input to the K-PD depot is supplied separately via dosing events with rate 7 * DOSE mg/week (Shoji 2017 Methods, K-PD model). Cohort levels in the source trial: 0 (placebo), 1, 5, 10, 15 (fosdagrocorat q.d. mg) and 5, 10 (prednisone q.d. mg).",
+      source_name = "DOSE"
     ),
     DRUG_PRED = list(
-      description        = "1 = subject is in the prednisone comparator arm; 0 = subject is in the fosdagrocorat arm or placebo. Per-subject (time-fixed) categorical indicator switching the drug-elimination rate KDE and the sigmoid-Emax inhibition parameters (Imax, EDK50) between the two drugs.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = subject is in the prednisone comparator arm; 0 = subject is in the fosdagrocorat arm or placebo. Per-subject (time-fixed) categorical indicator switching the drug-elimination rate KDE and the sigmoid-Emax inhibition parameters (Imax, EDK50) between the two drugs.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fosdagrocorat or placebo)",
-      notes              = "Shoji 2017 Table 2 reports separate KDE, Imax, and EDK50 estimates for fosdagrocorat and prednisone; the rebound parameters (RBmax, T50) and the response-side parameters (Kd, BL, SLP) are shared between the two drugs. The model selects the active parameter set by adding a log-ratio offset (dlkel_pred / dledk50_pred) and a logit-difference (dlogitimax_pred) when DRUG_PRED = 1, recovering the published Prednisone typical values exactly. For placebo subjects (no dosing events into the K-PD depot) DRUG_PRED is informational only.",
-      source_name        = "DRUG_PRED"
+      notes = "Shoji 2017 Table 2 reports separate KDE, Imax, and EDK50 estimates for fosdagrocorat and prednisone; the rebound parameters (RBmax, T50) and the response-side parameters (Kd, BL, SLP) are shared between the two drugs. The model selects the active parameter set by adding a log-ratio offset (dlkel_pred / dledk50_pred) and a logit-difference (dlogitimax_pred) when DRUG_PRED = 1, recovering the published Prednisone typical values exactly. For placebo subjects (no dosing events into the K-PD depot) DRUG_PRED is informational only.",
+      source_name = "DRUG_PRED"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 321L,
-    n_observations   = 4837L,
-    n_studies        = 1L,
-    age_range        = "18-80 years (median 56)",
-    weight_range     = "36.6-144 kg (median 71.0)",
-    bmi_range        = "15.9-51.0 kg/m^2 (median 27.1)",
-    sex_female_pct   = 80,
-    race_ethnicity   = c(White = 87.5, Black = 2.2, Asian = 7.5, Other = 2.8),
-    disease_state    = "Adults with active rheumatoid arthritis on background methotrexate (clinicaltrials.gov NCT01393639, phase II randomized double-blind parallel-group trial).",
-    dose_range       = "Fosdagrocorat 1, 5, 10, or 15 mg q.d. orally; prednisone 5 or 10 mg q.d. orally; placebo q.d. All for 8 weeks followed by a 4-week taper (weeks 9-10 every other day at reduced dose; weeks 11-12 every 3 days) per protocol.",
-    regions          = "Global multi-regional Phase II trial.",
+    species = "human",
+    n_subjects = 321L,
+    n_observations = 4837L,
+    n_studies = 1L,
+    age_range = "18-80 years (median 56)",
+    weight_range = "36.6-144 kg (median 71.0)",
+    bmi_range = "15.9-51.0 kg/m^2 (median 27.1)",
+    sex_female_pct = 80,
+    race_ethnicity = c(White = 87.5, Black = 2.2, Asian = 7.5, Other = 2.8),
+    disease_state = "Adults with active rheumatoid arthritis on background methotrexate (clinicaltrials.gov NCT01393639, phase II randomized double-blind parallel-group trial).",
+    dose_range = "Fosdagrocorat 1, 5, 10, or 15 mg q.d. orally; prednisone 5 or 10 mg q.d. orally; placebo q.d. All for 8 weeks followed by a 4-week taper (weeks 9-10 every other day at reduced dose; weeks 11-12 every 3 days) per protocol.",
+    regions = "Global multi-regional Phase II trial.",
     bl_p1np_ng_per_mL = "Median 48.5 ng/mL [min 10.9, max 184]",
-    bl_oc_ng_per_mL   = "Median 22.4 ng/mL [min 4.85, max 85.9]",
-    notes            = "Baseline demographics from Shoji 2017 Table 1 (full intent-to-treat n = 323; n = 321 used in this K-PD analysis after exclusion of 2 patients with missing baseline biomarker concentrations). Race breakdown is the all-treatments column (white/black/Asian/other = 281/7/24/9). Background therapy: methotrexate in all arms."
+    bl_oc_ng_per_mL = "Median 22.4 ng/mL [min 4.85, max 85.9]",
+    notes = "Baseline demographics from Shoji 2017 Table 1 (full intent-to-treat n = 323; n = 321 used in this K-PD analysis after exclusion of 2 patients with missing baseline biomarker concentrations). Race breakdown is the all-treatments column (white/black/Asian/other = 281/7/24/9). Background therapy: methotrexate in all arms."
   )
 
   ini({

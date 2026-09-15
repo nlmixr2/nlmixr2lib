@@ -23,48 +23,48 @@ Heuberger_2018_salbutamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "salbutamol", units = "ug", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "salbutamol", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
     central_sulf = list(analyte = "S-SAL", units = "ug", specimen = "plasma", verified = FALSE),
-    urine        = list(analyte = "salbutamol", units = "ug", specimen = "urine", verified = FALSE),
-    urine_sulf   = list(analyte = "S-SAL", units = "ug", specimen = "urine", verified = FALSE),
-    urine_vol    = list(analyte = "not applicable", units = "ug", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "salbutamol", units = "ug", specimen = "urine", verified = FALSE),
+    urine_sulf = list(analyte = "S-SAL", units = "ug", specimen = "urine", verified = FALSE),
+    urine_vol = list(analyte = "not applicable", units = "ug", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight 70 kg. Drives allometric scaling on renal",
         "clearances (exponent 0.75), distribution volumes (exponent 1.0),",
         "intercompartmental clearance (exponent 0.75), and cardiac output",
         "(exponent 0.79). Heuberger 2018 simulation cohort was generated",
         "as Normal(mean = 84 kg, SD = 17 kg) for elite athletes."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000,
-    n_studies      = 0,
-    age_range      = "Adult (not explicit in source)",
-    weight_range   = "Simulated cohort: Normal(mean 84 kg, SD 17 kg)",
-    weight_median  = "84 kg (simulated typical elite athlete)",
+    species = "human",
+    n_subjects = 1000,
+    n_studies = 0,
+    age_range = "Adult (not explicit in source)",
+    weight_range = "Simulated cohort: Normal(mean 84 kg, SD 17 kg)",
+    weight_median = "84 kg (simulated typical elite athlete)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy adult elite athletes (cyclists)",
-    dose_range     = paste(
+    disease_state = "Healthy adult elite athletes (cyclists)",
+    dose_range = paste(
       "Inhalation: single 1600 ug (Haase validation) or 800 ug BID",
       "steady-state (WADA allowed); Oral: 8 mg QD x 14 days (anabolic",
       "scenario). The model accepts any inhalation or oral regimen."
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "Virtual cohort. Parameters synthesised from literature, not fit to",
       "individual data. Calibration target was the Haase 2009 [BJSM",
       "doi:10.1136/bjsm.2008.052522] mean concentration-time profile after",

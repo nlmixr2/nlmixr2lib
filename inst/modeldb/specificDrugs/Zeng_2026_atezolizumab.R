@@ -22,74 +22,74 @@ Zeng_2026_atezolizumab <- function() {
   # ug/mL) and the control stream scales the central compartment by V1
   # (S1 = V1), so both states hold atezolizumab as an amount in mg.
   compartmentData <- list(
-    central     = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "atezolizumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference weight 77 kg (Zeng 2026 Supplement, NONMEM $PK: TVCL includes (WT/77)**THETA(7) and TVV1 includes (WT/77)**THETA(11)). The virtual cohort draws WT from an age- and sex-dependent normal distribution (Zeng 2026 Supplement, population-generation code).",
-      source_name        = "WT"
+      notes = "Power scaling on CL and Vc with reference weight 77 kg (Zeng 2026 Supplement, NONMEM $PK: TVCL includes (WT/77)**THETA(7) and TVV1 includes (WT/77)**THETA(11)). The virtual cohort draws WT from an age- and sex-dependent normal distribution (Zeng 2026 Supplement, population-generation code).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL and Vc with reference 40 g/L (Zeng 2026 Supplement, NONMEM $PK: (ALB/40)**THETA(8) on CL and (ALB/40)**THETA(12) on V1). Reported in g/L (SI): Zeng 2026 Table 1 gives the virtual-cohort median as 42.0-42.2 g/L and the supplement draws it as rnorm(n, 42, sd = 3.5). The Methods sentence 'a mean of 42 g/dL' is a unit typo in the source text; Table 1 and the covariate reference of 40 both establish g/L.",
-      source_name        = "ALB"
+      notes = "Power scaling on CL and Vc with reference 40 g/L (Zeng 2026 Supplement, NONMEM $PK: (ALB/40)**THETA(8) on CL and (ALB/40)**THETA(12) on V1). Reported in g/L (SI): Zeng 2026 Table 1 gives the virtual-cohort median as 42.0-42.2 g/L and the supplement draws it as rnorm(n, 42, sd = 3.5). The Methods sentence 'a mean of 42 g/dL' is a unit typo in the source text; Table 1 and the covariate reference of 40 both establish g/L.",
+      source_name = "ALB"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor size (sum of diameters of target lesions)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor size (sum of diameters of target lesions)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference 63 mm (Zeng 2026 Supplement, NONMEM $PK: (BTS/63)**THETA(9)). Zeng 2026 Table 1 reports the virtual-cohort baseline tumor size in mm (median 67.5-69.3 mm) and the supplement draws it as rlnorm(n, 4.2, sd = 0.7), i.e. a median of exp(4.2) = 66.7 mm. The Methods sentence 'baseline tumor burden ... 4.2 mm^3' conflates the log-scale meanlog with a volume; Table 1 and the generating code establish mm.",
-      source_name        = "BTS"
+      notes = "Power scaling on CL with reference 63 mm (Zeng 2026 Supplement, NONMEM $PK: (BTS/63)**THETA(9)). Zeng 2026 Table 1 reports the virtual-cohort baseline tumor size in mm (median 67.5-69.3 mm) and the supplement draws it as rlnorm(n, 4.2, sd = 0.7), i.e. a median of exp(4.2) = 66.7 mm. The Methods sentence 'baseline tumor burden ... 4.2 mm^3' conflates the log-scale meanlog with a volume; Table 1 and the generating code establish mm.",
+      source_name = "BTS"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Multiplicative factor on Vc (0.896) and Vp (0.707) for females relative to males (Zeng 2026 Supplement, NONMEM $PK: (THETA(13)**ISF) on V1 and (THETA(14)**ISF) on V2). The control-stream column is named ISF and the population-generation code sets SEX = 1 for female, 0 for male, so ISF is an is-female indicator and maps directly onto the canonical SEXF with no value transformation.",
-      source_name        = "ISF"
+      notes = "Multiplicative factor on Vc (0.896) and Vp (0.707) for females relative to males (Zeng 2026 Supplement, NONMEM $PK: (THETA(13)**ISF) on V1 and (THETA(14)**ISF) on V2). The control-stream column is named ISF and the population-generation code sets SEX = 1 for female, 0 for male, so ISF is an is-female indicator and maps directly onto the canonical SEXF with no value transformation.",
+      source_name = "ISF"
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Multiplicative factor of 1.158 on CL for ADA-positive patients (Zeng 2026 Supplement, NONMEM $PK: (THETA(10)**ATAG)). Renamed from the source column ATAG (anti-therapy antibody) to the canonical ADA_POS. Drawn as rbinom(n, 1, 0.4) in the virtual cohort, giving the 38.3-43.3 percent ADA-positive fractions in Zeng 2026 Table 1.",
-      source_name        = "ATAG"
+      notes = "Multiplicative factor of 1.158 on CL for ADA-positive patients (Zeng 2026 Supplement, NONMEM $PK: (THETA(10)**ATAG)). Renamed from the source column ATAG (anti-therapy antibody) to the canonical ADA_POS. Drawn as rbinom(n, 1, 0.4) in the virtual cohort, giving the 38.3-43.3 percent ADA-positive fractions in Zeng 2026 Table 1.",
+      source_name = "ATAG"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Baseline age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Not a covariate of the PK model. Age enters only the virtual-population generator, where it drives body weight (Zeng 2026 Supplement: BW = 65 + 0.75 * (AGE - 40) + N(0, 3.5) for females and 85 + 0.75 * (AGE - 40) + N(0, 10) for males, with AGE ~ U(20, 80)). Documented here so the cohort-construction provenance is preserved without declaring an unused model covariate."
+      units = "years",
+      type = "continuous",
+      notes = "Not a covariate of the PK model. Age enters only the virtual-population generator, where it drives body weight (Zeng 2026 Supplement: BW = 65 + 0.75 * (AGE - 40) + N(0, 3.5) for females and 85 + 0.75 * (AGE - 40) + N(0, 10) for males, with AGE ~ U(20, 80)). Documented here so the cohort-construction provenance is preserved without declaring an unused model covariate."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1000,
-    n_studies      = 1,
-    age_range      = "20-80 years",
-    age_median     = "44.6-51 years across the three software implementations",
-    weight_range   = "43.2-136 kg",
-    weight_median  = "79.6-83.2 kg across the three software implementations",
+    species = "human",
+    n_subjects = 1000,
+    n_studies = 1,
+    age_range = "20-80 years",
+    age_median = "44.6-51 years across the three software implementations",
+    weight_range = "43.2-136 kg",
+    weight_median = "79.6-83.2 kg across the three software implementations",
     sex_female_pct = 51.2,
-    disease_state  = "Metastatic non-small cell lung cancer (the underlying population PK model was developed in NSCLC patients per the FDA CDER review of BLA 761041Orig1s000).",
-    dose_range     = "840, 1200 or 1680 mg IV; standard 1200 mg q3w and three extended-interval regimens (2 loading cycles at 840 mg q2w, 1200 mg q3w or 1680 mg q4w followed by 840 mg q6w), 7 cycles total",
-    notes          = "The 1000 subjects are a SIMULATED virtual population, not an estimation dataset: this model was not fitted to observed data in the source publication. Covariates were generated in R, Julia and NONMEM from the distributions given in the Zeng 2026 Supplement (seed 12345): AGE ~ U(20, 80) rounded; SEX Bernoulli(0.5) with 1 = female; WT normal about an age- and sex-dependent mean; ADA_POS ~ Bernoulli(0.4); ALB ~ N(42, 3.5) g/L; TUMSZ ~ lognormal(meanlog 4.2, sdlog 0.7) mm. Baseline albumin and tumor-size distributions were anchored on the medians reported by Stroh et al. Clin Pharmacol Ther 2017;102(2):305-312. Realised cohort demographics are in Zeng 2026 Table 1. The size of the FDA estimation dataset is not reported in this publication."
+    disease_state = "Metastatic non-small cell lung cancer (the underlying population PK model was developed in NSCLC patients per the FDA CDER review of BLA 761041Orig1s000).",
+    dose_range = "840, 1200 or 1680 mg IV; standard 1200 mg q3w and three extended-interval regimens (2 loading cycles at 840 mg q2w, 1200 mg q3w or 1680 mg q4w followed by 840 mg q6w), 7 cycles total",
+    notes = "The 1000 subjects are a SIMULATED virtual population, not an estimation dataset: this model was not fitted to observed data in the source publication. Covariates were generated in R, Julia and NONMEM from the distributions given in the Zeng 2026 Supplement (seed 12345): AGE ~ U(20, 80) rounded; SEX Bernoulli(0.5) with 1 = female; WT normal about an age- and sex-dependent mean; ADA_POS ~ Bernoulli(0.4); ALB ~ N(42, 3.5) g/L; TUMSZ ~ lognormal(meanlog 4.2, sdlog 0.7) mm. Baseline albumin and tumor-size distributions were anchored on the medians reported by Stroh et al. Clin Pharmacol Ther 2017;102(2):305-312. Realised cohort demographics are in Zeng 2026 Table 1. The size of the FDA estimation dataset is not reported in this publication."
   )
 
   ini({

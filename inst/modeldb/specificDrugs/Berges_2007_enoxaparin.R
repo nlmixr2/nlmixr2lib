@@ -8,47 +8,47 @@ Berges_2007_enoxaparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 65 kg (PROPHRE.75 population median). Used with power scaling on CL (exponent 0.78) and Vc (exponent 1.25). Mean 66 kg, range 38-108 kg per Berges 2007 Table 1.",
-      source_name        = "WT"
+      notes = "Reference weight 65 kg (PROPHRE.75 population median). Used with power scaling on CL (exponent 0.78) and Vc (exponent 1.25). Mean 66 kg, range 38-108 kg per Berges 2007 Table 1.",
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Creatinine clearance estimated by the simplified Modification of Diet in Renal Disease (MDRD / simplified Levey) formula",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated by the simplified Modification of Diet in Renal Disease (MDRD / simplified Levey) formula",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference value 69 mL/min (PROPHRE.75 population median for simplified-MDRD CrCl). Stored under the canonical CRCL column per inst/references/covariate-columns.md; the simplified-MDRD output is conceptually in mL/min/1.73 m^2 but Berges 2007 reports it in mL/min (Table 1: mean 69, range 27-127). Used with power scaling on CL (exponent 0.25). Note that the paper retained simplified-MDRD CrCl in preference to Cockcroft-Gault CrCl (also reported in Table 1) because it produced the larger reduction in objective function during forward selection (Table 2). The Cockcroft-Gault alternative is documented for reference only.",
-      source_name        = "CrCl_MDRD"
+      notes = "Reference value 69 mL/min (PROPHRE.75 population median for simplified-MDRD CrCl). Stored under the canonical CRCL column per inst/references/covariate-columns.md; the simplified-MDRD output is conceptually in mL/min/1.73 m^2 but Berges 2007 reports it in mL/min (Table 1: mean 69, range 27-127). Used with power scaling on CL (exponent 0.25). Note that the paper retained simplified-MDRD CrCl in preference to Cockcroft-Gault CrCl (also reported in Table 1) because it produced the larger reduction in objective function during forward selection (Table 2). The Cockcroft-Gault alternative is documented for reference only.",
+      source_name = "CrCl_MDRD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 189L,
-    n_studies      = 1L,
-    age_range      = "75-95 years",
-    age_median     = "81 years",
-    age_mean_sd    = "82 +/- 5 years",
-    weight_range   = "38-108 kg",
-    weight_median  = "65 kg",
+    species = "human",
+    n_subjects = 189L,
+    n_studies = 1L,
+    age_range = "75-95 years",
+    age_median = "81 years",
+    age_mean_sd = "82 +/- 5 years",
+    weight_range = "38-108 kg",
+    weight_median = "65 kg",
     weight_mean_sd = "66 +/- 14 kg",
     sex_female_pct = 62,
     race_ethnicity = "Not reported (French university-hospital cohort)",
-    disease_state  = "Elderly (>75 years) hospitalized patients receiving venous thromboembolism (VTE) prophylaxis; 63% immobile due to acute medical disease, 15% orthopaedic surgery, 22% stroke; 50% with moderate or severe renal failure (CrCl < 50 mL/min by Cockcroft-Gault) or 18% (by simplified MDRD); 24% diabetes, 19% cancer, 57% hypertension; 36% concomitant antiplatelet agents",
-    dose_range     = "4000 IU subcutaneous once daily",
-    regions        = "France (University Hospital of Saint-Etienne)",
+    disease_state = "Elderly (>75 years) hospitalized patients receiving venous thromboembolism (VTE) prophylaxis; 63% immobile due to acute medical disease, 15% orthopaedic surgery, 22% stroke; 50% with moderate or severe renal failure (CrCl < 50 mL/min by Cockcroft-Gault) or 18% (by simplified MDRD); 24% diabetes, 19% cancer, 57% hypertension; 36% concomitant antiplatelet agents",
+    dose_range = "4000 IU subcutaneous once daily",
+    regions = "France (University Hospital of Saint-Etienne)",
     renal_function = "Simplified-MDRD CrCl median 69 mL/min (range 27-127); Cockcroft-Gault CrCl median 52 mL/min (range 24-93)",
-    notes          = "Baseline demographics per Berges 2007 Table 1 (PROPHRE.75 study, prospective cohort, mean treatment duration 7 days). A total of 451 anti-factor Xa activity samples (mean 2.4 per patient, very sparse) were analysed; 56 below-LOQ values (LOQ 0.05 IU/mL) were excluded from estimation."
+    notes = "Baseline demographics per Berges 2007 Table 1 (PROPHRE.75 study, prospective cohort, mean treatment duration 7 days). A total of 451 anti-factor Xa activity samples (mean 2.4 per patient, very sparse) were analysed; 56 below-LOQ values (LOQ 0.05 IU/mL) were excluded from estimation."
   )
 
   ini({

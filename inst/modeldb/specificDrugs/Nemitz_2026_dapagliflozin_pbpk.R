@@ -64,22 +64,41 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
   # `depot_iv` (intravenous, mg) - never directly into a plasma or tissue
   # compartment.
   paper_specific_compartments <- c(
-    "depot_iv", "gut_lumen", "gut_plasma", "gut_plasma_d3og",
-    "portal", "portal_d3og", "liver_plasma", "liver_plasma_d3og",
-    "liver_d3og", "hepatic_vein", "hepatic_vein_d3og",
-    "kidney_plasma", "kidney_plasma_d3og", "kidney_d3og",
-    "lung_plasma", "lung_plasma_d3og", "rest", "rest_plasma",
-    "rest_plasma_d3og", "venous", "venous_d3og", "arterial",
-    "arterial_d3og", "feces", "urine_d3og", "glc_urine"
+    "depot_iv",
+    "gut_lumen",
+    "gut_plasma",
+    "gut_plasma_d3og",
+    "portal",
+    "portal_d3og",
+    "liver_plasma",
+    "liver_plasma_d3og",
+    "liver_d3og",
+    "hepatic_vein",
+    "hepatic_vein_d3og",
+    "kidney_plasma",
+    "kidney_plasma_d3og",
+    "kidney_d3og",
+    "lung_plasma",
+    "lung_plasma_d3og",
+    "rest",
+    "rest_plasma",
+    "rest_plasma_d3og",
+    "venous",
+    "venous_d3og",
+    "arterial",
+    "arterial_d3og",
+    "feces",
+    "urine_d3og",
+    "glc_urine"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Scales every absolute organ volume and, through cardiac output",
         "(COBW = 1.548 mL/s/kg), every blood flow: Methods Section 2.2",
         "states that 'absolute organ volumes and blood flows were",
@@ -88,14 +107,14 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
         "parameter BW). Methods Section 2.5 states that study-specific mean",
         "bodyweight was applied where reported."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     FPG = list(
-      description        = "Fasting plasma glucose concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Fasting plasma glucose concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Drives the entire pharmacodynamic layer. Model Assumptions",
         "(Section 2.3) state that diurnal variation in plasma glucose was",
         "not modelled and a constant fasting plasma glucose was assumed:",
@@ -110,14 +129,14 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
         "as a data column (rather than a state) additionally allows a",
         "time-varying glucose profile to be supplied."
       ),
-      source_name        = "KI__glc_ext"
+      source_name = "KI__glc_ext"
     ),
     RENALFUNC_REL = list(
-      description        = "Relative renal function as a fraction of normal",
-      units              = "(dimensionless)",
-      type               = "continuous",
+      description = "Relative renal function as a fraction of normal",
+      units = "(dimensionless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "1 = normal renal function. Methods Section 2.2 maps KDIGO",
         "categories onto this scalar: normal (eGFR >= 90 mL/min) = 1.00,",
         "mild (GFR 50-89) = 0.69, moderate (GFR 30-49) = 0.32 and severe",
@@ -130,14 +149,14 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
         "by 40-60% while barely changing parent plasma exposure.",
         "Source name f_renal_function (SBML KI__f_renal_function)."
       ),
-      source_name        = "f_renal_function"
+      source_name = "f_renal_function"
     ),
     HEPFUNC_REL = list(
-      description        = "Relative liver function as a fraction of normal",
-      units              = "(dimensionless)",
-      type               = "continuous",
+      description = "Relative liver function as a fraction of normal",
+      units = "(dimensionless)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "1 = normal liver function. The source parameterises hepatic",
         "impairment with the OPPOSITE orientation, as a cirrhosis severity",
         "f_cirrhosis on [0, 0.95], so this column is the complement:",
@@ -155,14 +174,14 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
         "reproducing the paper's figures, which are labelled by",
         "f_cirrhosis."
       ),
-      source_name        = "f_cirrhosis"
+      source_name = "f_cirrhosis"
     ),
     FED = list(
-      description        = "Fed state at the time of dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed state at the time of dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "1 = dose taken in the fed state. Methods Section 2.2 implements",
         "the food effect as the intestinal absorption scaling factor",
         "f_absorption, fasted = 1.00 and fed = 0.30, so the model computes",
@@ -177,7 +196,7 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
         "over 0.1-10.0; to reproduce that scan, set f_absorption directly",
         "rather than through this binary indicator."
       ),
-      source_name        = "f_absorption"
+      source_name = "f_absorption"
     )
   )
 
@@ -185,62 +204,62 @@ Nemitz_2026_dapagliflozin_pbpk <- function() {
   # SBML; only the two dosing compartments and the cumulative excretion
   # pools are amounts.
   compartmentData <- list(
-    depot                = list(analyte = "dapagliflozin", units = "mg",     specimen = "administration site", verified = TRUE),
-    depot_iv             = list(analyte = "dapagliflozin", units = "mg",     specimen = "administration site", verified = TRUE),
-    gut_lumen            = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "administration site", verified = TRUE),
-    feces                = list(analyte = "dapagliflozin", units = "mmol",   specimen = "faeces",              verified = TRUE),
-    gut_plasma           = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    gut_plasma_d3og      = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    portal               = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    portal_d3og          = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    liver_plasma         = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    liver_plasma_d3og    = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    liver                = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    liver_d3og           = list(analyte = "D3OG",          units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    hepatic_vein         = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    hepatic_vein_d3og    = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    kidney_plasma        = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    kidney_plasma_d3og   = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    kidney               = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    kidney_d3og          = list(analyte = "D3OG",          units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    urine                = list(analyte = "dapagliflozin", units = "mmol",   specimen = "urine",               verified = TRUE),
-    urine_d3og           = list(analyte = "D3OG",          units = "mmol",   specimen = "urine",               verified = TRUE),
-    lung_plasma          = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    lung_plasma_d3og     = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    lung                 = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    rest_plasma          = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    rest_plasma_d3og     = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    rest                 = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue",              verified = TRUE),
-    venous               = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    venous_d3og          = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    arterial             = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    arterial_d3og        = list(analyte = "D3OG",          units = "mmol/L", specimen = "plasma",              verified = TRUE),
-    glc_urine            = list(analyte = "glucose",       units = "mmol",   specimen = "urine",               verified = TRUE)
+    depot = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    depot_iv = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = TRUE),
+    gut_lumen = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "administration site", verified = TRUE),
+    feces = list(analyte = "dapagliflozin", units = "mmol", specimen = "faeces", verified = TRUE),
+    gut_plasma = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    gut_plasma_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    portal = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    portal_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    liver_plasma = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    liver_plasma_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    liver_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    hepatic_vein = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    hepatic_vein_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    kidney_plasma = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    kidney_plasma_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    kidney = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    kidney_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    urine = list(analyte = "dapagliflozin", units = "mmol", specimen = "urine", verified = TRUE),
+    urine_d3og = list(analyte = "D3OG", units = "mmol", specimen = "urine", verified = TRUE),
+    lung_plasma = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    lung_plasma_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    lung = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    rest_plasma = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    rest_plasma_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    rest = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "tissue", verified = TRUE),
+    venous = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    venous_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    arterial = list(analyte = "dapagliflozin", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    arterial_d3og = list(analyte = "D3OG", units = "mmol/L", specimen = "plasma", verified = TRUE),
+    glc_urine = list(analyte = "glucose", units = "mmol", specimen = "urine", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 28L,
-    age_range      = "adults; not tabulated per study in the source",
-    weight_range   = paste(
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 28L,
+    age_range = "adults; not tabulated per study in the source",
+    weight_range = paste(
       "study-specific mean bodyweight where reported (Methods Section",
       "2.5); 75 kg reference individual otherwise"
     ),
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy volunteers, patients with type 1 or type 2 diabetes",
       "mellitus, and subjects with renal or hepatic impairment. Pediatric",
       "and animal studies were excluded (Methods Section 2.1)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral 0.001-500 mg single and multiple dose across the curated",
       "studies (Table 1); 10 mg is the standard maintenance dose. A single",
       "80 microgram intravenous dose (Boulton 2013) informs the",
       "distribution parameters."
     ),
-    regions        = "not reported; the curated studies are international",
-    notes          = paste(
+    regions = "not reported; the curated studies are international",
+    notes = paste(
       "Deterministic typical-individual model. Methods Section 2.2 states",
       "explicitly that 'all simulations were performed deterministically",
       "using the optimized parameter set representing the typical (mean)",

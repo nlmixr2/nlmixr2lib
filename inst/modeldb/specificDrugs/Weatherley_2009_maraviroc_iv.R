@@ -27,7 +27,7 @@ Weatherley_2009_maraviroc_iv <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral3 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE)
@@ -36,15 +36,15 @@ Weatherley_2009_maraviroc_iv <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
-    age_range      = "22-42 years",
-    weight_range   = "65-93 kg",
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
+    age_range = "22-42 years",
+    weight_range = "65-93 kg",
     sex_female_pct = 0,
-    disease_state  = "Healthy adult male volunteers (Pfizer study A4001009, open ascending IV solution).",
-    dose_range     = "3, 10, or 30 mg maraviroc as a 1-hour intravenous solution infusion (single dose).",
-    notes          = paste(
+    disease_state = "Healthy adult male volunteers (Pfizer study A4001009, open ascending IV solution).",
+    dose_range = "3, 10, or 30 mg maraviroc as a 1-hour intravenous solution infusion (single dose).",
+    notes = paste(
       "473 plasma concentrations from 20 subjects across the three IV dose levels.",
       "Concentrations measured by SPE-LC-MS-MS (LLOQ 0.5 ng/mL).",
       "See Weatherley 2009 Table 1 (row A4001009, IV-only analysis)."

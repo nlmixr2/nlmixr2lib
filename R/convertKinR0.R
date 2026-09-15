@@ -15,11 +15,7 @@
 #' @examples
 #'
 #' addIndirect(stim = "in") |> convertKinR0()
-convertKinR0 <- function(ui,
-                         kin = "kin",
-                         kout = "kout",
-                         R = "R",
-                         R0 = "R0") {
+convertKinR0 <- function(ui, kin = "kin", kout = "kout", R = "R", R0 = "R0") {
   .ui <- rxode2::assertRxUi(ui)
   kin <- rxode2::assertVariableExists(.ui, kin)
   rxode2::assertVariableNew(.ui, R0)
@@ -36,27 +32,22 @@ convertKinR0 <- function(ui,
   .modelLines <- .ui$lstExpr
   .w <- .whichDdt(.modelLines, R, start = "", end = "(0)")
   if (length(.w) != 1L) {
-    stop(paste0("the model does not have the expected ",
-      R, "(0) expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected ", R, "(0) expression"), call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   if (!identical(.tmp$w[[3]], str2lang(paste0(kin, "/", kout)))) {
-    stop(paste0("the model does not have the expected ",
-      R, "(0) <- ", kin, "/", kout, " expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected ", R, "(0) <- ", kin, "/", kout, " expression"), call. = FALSE)
   }
   .modelLines <- c(
     str2lang(paste0(R0, "<- u", R0)),
     .tmp$pre,
     list(str2lang(paste0(R, "(0) <- ", R0))),
-    .tmp$post)
+    .tmp$post
+  )
 
   .w <- .whichDdt(.modelLines, R)
   if (length(.w) != 1L) {
-    stop(paste0("the model does not have the expected d/dt(",
-      R, ") expression"),
-    call. = FALSE)
+    stop(paste0("the model does not have the expected d/dt(", R, ") expression"), call. = FALSE)
   }
   .tmp <- .extractModelLinesAtW(.modelLines, .w)
   .tmp$w <- searchReplaceHelper(.tmp$w, str2lang(kin), str2lang(paste0(kout, "*", R0)))
@@ -76,6 +67,5 @@ convertKinR0 <- function(ui,
     rm("description", envir = .ui$meta)
   }
   rxode2::model(.ui) <- .modelLines
-  .iniAddTheta(.ui, paste0("u", R0),
-    label = paste0("untransformed baseline (", R0, ")"))
+  .iniAddTheta(.ui, paste0("u", R0), label = paste0("untransformed baseline (", R0, ")"))
 }

@@ -18,18 +18,18 @@ Stringer_2013_sipoglitazar_mixture <- function() {
   paper_specific_residual_sds <- c("propSdPhase1", "propSdPhase2")
 
   compartmentData <- list(
-    depot       = list(analyte = "sipoglitazar", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "sipoglitazar", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "sipoglitazar", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     UGT2B15_IM = list(
-      description        = "Subject assigned to the UGT2B15 intermediate-metaboliser subpopulation (POP2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject assigned to the UGT2B15 intermediate-metaboliser subpopulation (POP2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with UGT2B15_PM = 0, i.e. the extensive-metaboliser subpopulation (POP1)",
-      notes              = paste(
+      notes = paste(
         "Latent subpopulation membership. Stringer 2013 estimated this with the",
         "NONMEM $MIX subroutine from apparent clearance alone, deliberately without",
         "using the UGT2B15 genotype. rxode2 / nlmixr2 has no $MIX analogue, so the",
@@ -37,66 +37,66 @@ Stringer_2013_sipoglitazar_mixture <- function() {
         "the paper estimated are recorded in population$mixture_probabilities and",
         "are what a simulation should sample the indicator from."
       ),
-      source_name        = "POP2 (CL2 IM)"
+      source_name = "POP2 (CL2 IM)"
     ),
     UGT2B15_PM = list(
-      description        = "Subject assigned to the UGT2B15 poor-metaboliser subpopulation (POP3)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Subject assigned to the UGT2B15 poor-metaboliser subpopulation (POP3)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 with UGT2B15_IM = 0, i.e. the extensive-metaboliser subpopulation (POP1)",
-      notes              = paste(
+      notes = paste(
         "Latent subpopulation membership; see UGT2B15_IM notes. Stringer 2013",
         "reports that 61 of the 744 subjects genotyped *1/*1 or *1/*2 (8%) were",
         "assigned to this subpopulation, i.e. their phenotype did not match their",
         "genotype (supplementary Results, Figure S3)."
       ),
-      source_name        = "POP3 (CL3 PM)"
+      source_name = "POP3 (CL3 PM)"
     ),
     FFM = list(
-      description        = "Fat-free mass",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear centered effect on the central volume per Stringer 2013 equation 4.",
         "The paper does not report the cohort median FFM, so the centering value is",
         "an assumption of this extraction (50 kg); see the vignette Errata."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     STUDY_SIPO_PHASE2 = list(
-      description        = "Observation belongs to the phase II type-2-diabetes patient studies (EC201, EC202)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Observation belongs to the phase II type-2-diabetes patient studies (EC201, EC202)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (phase I healthy-volunteer study 006)",
-      notes              = paste(
+      notes = paste(
         "Selects the phase II proportional residual magnitude and switches on the",
         "inter-individual variability on that residual."
       ),
-      source_name        = "study"
+      source_name = "study"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1151,
-    n_studies      = 3,
-    age_range      = "18-75 years",
-    age_median     = "26 years (phase I, study 006); 56 years (EC201); 57 years (EC202)",
-    weight_range   = "48-149 kg",
-    weight_median  = "71 kg (phase I, study 006); 90 kg (EC201); 87 kg (EC202)",
+    species = "human",
+    n_subjects = 1151,
+    n_studies = 3,
+    age_range = "18-75 years",
+    age_median = "26 years (phase I, study 006); 56 years (EC201); 57 years (EC202)",
+    weight_range = "48-149 kg",
+    weight_median = "71 kg (phase I, study 006); 90 kg (EC201); 87 kg (EC202)",
     sex_female_pct = 54.1,
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 524 healthy volunteers (phase I study 006) and 627 adults with type",
       "2 diabetes mellitus and no prior exposure to antidiabetic medication",
       "(phase II studies EC201 and EC202)"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single oral 64 mg (study 006); once- or twice-daily oral 8, 16, 32 and 64 mg",
       "total daily dose for 12 weeks (EC201, EC202)"
     ),
     mixture_probabilities = c(EM = 0.18, IM = 0.522, PM = 0.30),
-    notes          = paste(
+    notes = paste(
       "Same pooled analysis population as Stringer_2013_sipoglitazar; the two models",
       "differ only in how a subject's clearance stratum is assigned. The mixture",
       "prior weights are supplementary Table A1 rows 'Probability of belonging to",

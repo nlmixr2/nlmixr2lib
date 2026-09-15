@@ -15,8 +15,8 @@ Wilhelm_2012_ciclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
@@ -25,54 +25,54 @@ Wilhelm_2012_ciclosporin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight (kg). Tested but not retained.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Wilhelm 2012 Results / Covariate model building: weight (median 84 kg, range 53-110 kg) was entered into the basic model individually with CL and V1 as candidate parameters; the effect did not meet the statistical (delta-OFV > 6.6) and clinical (>= 20% change in typical value across observed range) inclusion criteria. Reported in Results: 'None of the covariates investigated for their influence on CL and V1 (WT, BSA, INH, IND) proved to be significant.'",
+      units = "kg",
+      type = "continuous",
+      notes = "Wilhelm 2012 Results / Covariate model building: weight (median 84 kg, range 53-110 kg) was entered into the basic model individually with CL and V1 as candidate parameters; the effect did not meet the statistical (delta-OFV > 6.6) and clinical (>= 20% change in typical value across observed range) inclusion criteria. Reported in Results: 'None of the covariates investigated for their influence on CL and V1 (WT, BSA, INH, IND) proved to be significant.'",
       source_name = "WT"
     ),
     BSA = list(
       description = "Body surface area (m^2). Tested but not retained.",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Wilhelm 2012 Results: tested on CL and V1, did not meet inclusion criteria. Cohort BSA median 2.02 m^2 (range 1.48-2.43, Table 1).",
+      units = "m^2",
+      type = "continuous",
+      notes = "Wilhelm 2012 Results: tested on CL and V1, did not meet inclusion criteria. Cohort BSA median 2.02 m^2 (range 1.48-2.43, Table 1).",
       source_name = "BSA"
     ),
     INH = list(
       description = "Co-medication with CYP3A4 inhibitors (binary). Tested but not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Wilhelm 2012 Methods/Results: dichotomous indicator for cotreatment with CYP3A4 inhibitors; all 20 subjects received fluconazole 50 mg once daily as antimycotic prophylaxis so within-cohort variability on this covariate was negligible. Did not meet inclusion criteria.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Wilhelm 2012 Methods/Results: dichotomous indicator for cotreatment with CYP3A4 inhibitors; all 20 subjects received fluconazole 50 mg once daily as antimycotic prophylaxis so within-cohort variability on this covariate was negligible. Did not meet inclusion criteria.",
       source_name = "INH"
     ),
     IND = list(
       description = "Co-medication with CYP3A4 inducers (binary). Tested but not retained.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Wilhelm 2012 Methods/Results: dichotomous indicator for cotreatment with CYP3A4 inducers; tested on CL via the multiplicative form CL = theta1 * (1 + theta2 * IND). Did not meet inclusion criteria.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Wilhelm 2012 Methods/Results: dichotomous indicator for cotreatment with CYP3A4 inducers; tested on CL via the multiplicative form CL = theta1 * (1 + theta2 * IND). Did not meet inclusion criteria.",
       source_name = "IND"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 20L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 20L,
+    n_studies = 1L,
     n_observations = "436 whole-blood ciclosporin concentrations across the 20 subjects following IV and oral CsA administration",
-    age_range      = "37-66 years",
-    age_median     = "54 years",
-    weight_range   = "53-110 kg",
-    weight_median  = "84 kg",
-    bsa_range      = "1.48-2.43 m^2",
-    bsa_median     = "2.02 m^2",
+    age_range = "37-66 years",
+    age_median = "54 years",
+    weight_range = "53-110 kg",
+    weight_median = "84 kg",
+    bsa_range = "1.48-2.43 m^2",
+    bsa_median = "2.02 m^2",
     sex_female_pct = 35.0,
     race_ethnicity = "Not reported in source paper (single-centre Dutch cohort).",
-    disease_state  = "Adults undergoing allogeneic haematopoietic stem cell transplantation (HSCT) for haematological malignancies (acute myeloid leukaemia n=7, non-Hodgkin lymphoma n=6, chronic lymphoblastic leukaemia n=2, other n=5). Conditioning regimens were fludarabine/cyclophosphamide (n=10), fludarabine/total body irradiation (n=6), or cyclophosphamide/total body irradiation (n=4) per Table 1.",
-    dose_range     = "2.5 mg/kg IV by 3 h infusion at study start; subsequently BID with dose adjusted to target trough 200-400 ug/L; oral phase used Neoral microemulsion at a mean of 2.77 +/- 0.81 mg/kg during the recorded oral profile.",
-    co_medication  = "All subjects received fluconazole 50 mg once daily (CYP3A4 inhibitor) as antimycotic prophylaxis. Other routine prophylaxis: ciprofloxacin 500 mg BID, valacyclovir 500 mg BID, phenethicillin 250 mg QID, co-trimoxazole 960 mg BID twice weekly.",
-    regions        = "The Netherlands (single centre: VU University Medical Center, Amsterdam).",
+    disease_state = "Adults undergoing allogeneic haematopoietic stem cell transplantation (HSCT) for haematological malignancies (acute myeloid leukaemia n=7, non-Hodgkin lymphoma n=6, chronic lymphoblastic leukaemia n=2, other n=5). Conditioning regimens were fludarabine/cyclophosphamide (n=10), fludarabine/total body irradiation (n=6), or cyclophosphamide/total body irradiation (n=4) per Table 1.",
+    dose_range = "2.5 mg/kg IV by 3 h infusion at study start; subsequently BID with dose adjusted to target trough 200-400 ug/L; oral phase used Neoral microemulsion at a mean of 2.77 +/- 0.81 mg/kg during the recorded oral profile.",
+    co_medication = "All subjects received fluconazole 50 mg once daily (CYP3A4 inhibitor) as antimycotic prophylaxis. Other routine prophylaxis: ciprofloxacin 500 mg BID, valacyclovir 500 mg BID, phenethicillin 250 mg QID, co-trimoxazole 960 mg BID twice weekly.",
+    regions = "The Netherlands (single centre: VU University Medical Center, Amsterdam).",
     sampling_window = "IV profile: predose and 0.25, 0.5, 1, 1.5, 2.5, 4, 4.5, 6.5, 9, 10, 12 h after start of infusion. Oral profile (post-tolerance): predose and 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 5, 8, 12 h after the morning dose.",
-    assay          = "Validated specific fluorescence polarization immunoassay (FPIA) on AxSYM (Abbott Diagnostics). LLOQ 80 ug/L; intra-assay CV < 10%; accuracy 96% at 400 ug/L. Low cross-reactivity with CsA metabolites (AM1 5.5%, AM9 13.7%, AM4n 2.1%, AM19 2.5%).",
-    notes          = "Study period January 2005 - February 2008. Approved by VU University Medical Center Ethics Committee, written informed consent obtained. Demographic details from Table 1; sampling schedule from Methods 'Study design'."
+    assay = "Validated specific fluorescence polarization immunoassay (FPIA) on AxSYM (Abbott Diagnostics). LLOQ 80 ug/L; intra-assay CV < 10%; accuracy 96% at 400 ug/L. Low cross-reactivity with CsA metabolites (AM1 5.5%, AM9 13.7%, AM4n 2.1%, AM19 2.5%).",
+    notes = "Study period January 2005 - February 2008. Approved by VU University Medical Center Ethics Committee, written informed consent obtained. Demographic details from Table 1; sampling schedule from Methods 'Study design'."
   )
 
   ini({

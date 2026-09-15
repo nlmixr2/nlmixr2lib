@@ -43,39 +43,39 @@ Almond_2016_carbamazepine_invitro <- function() {
   vignette <- "Almond_2016_cyp3a4_induction"
 
   units <- list(
-    time          = "h",
-    dosing        = "(none; static in vitro concentration-response model driven by an external carbamazepine concentration covariate)",
+    time = "h",
+    dosing = "(none; static in vitro concentration-response model driven by an external carbamazepine concentration covariate)",
     concentration = "(both observations are dimensionless fold-induction over vehicle control; the driving covariate CP_CARBAMAZEPINE_UM is the nominal carbamazepine concentration in the culture medium in uM)"
   )
 
   covariateData <- list(
     CP_CARBAMAZEPINE_UM = list(
-      description        = "Nominal carbamazepine concentration in the hepatocyte culture medium, supplied as a covariate. In this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical.",
-      units              = "umol/L (uM)",
-      type               = "continuous",
+      description = "Nominal carbamazepine concentration in the hepatocyte culture medium, supplied as a covariate. In this in-vitro model the column carries a culture-medium concentration rather than a plasma concentration, but the quantity and units (uM) are identical.",
+      units = "umol/L (uM)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Almond 2016 Table 1: carbamazepine was assayed at seven final concentrations in culture medium containing 0.1 percent dimethyl sulfoxide (v/v) -- 1, 3, 10, 30, 100, 300 and 1000 uM.",
         "The top concentration is roughly 17-fold above the fitted IndC50 of about 59 uM on both endpoints, so the plateau is less well determined than for rifampicin; this shows up as the wide donor-level S.D. on the activity IndC50 (37.3 on a mean of 59.1).",
         "Carbamazepine MW = 236.3 g/mol (Supplemental Table 2), so 1 uM = 0.2363 mg/L.",
         "Set to 0 for the vehicle-control condition, at which the model returns fold = 1 by construction."
       ),
-      source_name        = "concentration of the inducer"
+      source_name = "concentration of the inducer"
     )
   )
 
   population <- list(
-    species          = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
-    n_subjects       = 4L,
-    n_studies        = 1L,
-    age_range        = NA_character_,
-    weight_range     = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Not applicable -- primary human hepatocytes in culture.",
-    dose_range       = "Nominal carbamazepine concentrations 1, 3, 10, 30, 100, 300 and 1000 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
-    regions          = NA_character_,
-    notes            = paste(
+    species = "in vitro (cryopreserved human hepatocytes, four donors: Hu1206, Hu1191, Hu1198, Hu4193)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Not applicable -- primary human hepatocytes in culture.",
+    dose_range = "Nominal carbamazepine concentrations 1, 3, 10, 30, 100, 300 and 1000 uM in culture medium with 0.1 percent dimethyl sulfoxide (v/v) (Table 1).",
+    regions = NA_character_,
+    notes = paste(
       "Cryopreserved human hepatocytes from four donors (Hu1206, Hu1191, Hu1198, Hu4193; Life Technologies) were incubated with serial dilutions of the inducer prepared daily in dimethyl sulfoxide (Materials and Methods).",
       "Two endpoints were measured in parallel in the same incubations: CYP3A4 catalytic activity as 6-beta-hydroxytestosterone formation by liquid chromatography-tandem mass spectrometry, and CYP3A4 mRNA by the QuantiGene Plex 2.0 assay. Because both readouts come from the same cells in the same experiment, they are two outputs of one model rather than two model files.",
       "Curve fitting was carried out on each donor individually and the mean Indmax and IndC50 then calculated across donors; Table 2 reports those means with the donor-level standard deviations, which is what this file's inter-individual variability encodes.",

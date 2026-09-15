@@ -33,13 +33,13 @@ Yau_2023_diazepam_pbpk_lumped_human <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_diazepam_pbpk"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "diazepam pbpk lumped", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -47,20 +47,20 @@ Yau_2023_diazepam_pbpk_lumped_human <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 55L,
-    n_studies      = 7L,
-    age_range      = "adults; study 2 contrasted young vs elderly subjects",
-    weight_range   = "70-kg reference man used for the physiological constants (Table S1)",
+    species = "human",
+    n_subjects = 55L,
+    n_studies = 7L,
+    age_range = "adults; study 2 contrasted young vs elderly subjects",
+    weight_range = "70-kg reference man used for the physiological constants (Table S1)",
     sex_female_pct = NA_real_,
-    disease_state  = "healthy volunteers / normal subjects",
-    dose_range     = paste(
+    disease_state = "healthy volunteers / normal subjects",
+    dose_range = paste(
       "IV diazepam 0.1-0.15 mg/kg or 10 mg, given as bolus or as short",
       "infusions of 0.375-2 min across the seven contributing studies",
       "(Table S4)"
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "35 human IV concentration-time profiles pooled from seven published",
       "studies (Table S4), digitised with WebPlotDigitizer 4.2. Of the 35",
       "profiles, 28 are individual profiles (4 from Table S4 study 6, 23",

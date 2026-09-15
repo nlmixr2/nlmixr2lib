@@ -8,35 +8,35 @@ Merchan_2015_azithromycin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric exponents fixed a priori at 0.75 on CL and Q and at 1.0 on V1 and V2 (Merchan 2015 Methods 'Pharmacokinetic data analysis'). Reference weight 1 kg, indicated by the parameter units CL = L/h/kg^0.75 and V1 = L/kg reported in Table 3 and confirmed by the worked half-life calculation 'a typical neonate weighing 1 kg' in Results.",
-      source_name        = "WT"
+      notes = "Allometric exponents fixed a priori at 0.75 on CL and Q and at 1.0 on V1 and V2 (Merchan 2015 Methods 'Pharmacokinetic data analysis'). Reference weight 1 kg, indicated by the parameter units CL = L/h/kg^0.75 and V1 = L/kg reported in Table 3 and confirmed by the worked half-life calculation 'a typical neonate weighing 1 kg' in Results.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species         = "human (preterm neonates)",
-    n_subjects      = 40,
-    n_studies       = 3,
-    age_range       = "postnatal age <72 h at first dose; gestational age at birth 24-28 weeks (multidose cohort)",
-    weight_range    = "preterm neonate birth weight, multidose cohort 856 +/- 202 g (Ureaplasma positive) and 929 +/- 285 g (Ureaplasma negative)",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "Multidose cohort (n=15): White ~67%, Black ~33%; ~13% Hispanic ethnicity (Table 1).",
-    disease_state   = "Mechanically ventilated preterm infants at risk for Ureaplasma respiratory tract colonization and bronchopulmonary dysplasia.",
-    dose_range      = "Pooled across three studies: single 10 mg/kg IV (n=12), single 20 mg/kg IV (n=13), and 3 doses of 20 mg/kg IV q24h (n=15). All infusions over 60 min.",
-    n_observations  = "239 plasma azithromycin concentrations from 40 subjects.",
-    regions         = "United States (six neonatal intensive care sites, December 2011 - June 2012 enrolment for the multidose cohort; the two earlier single-dose studies are cited as references 14 and 15).",
-    fda_ind         = "FDA IND 78990 (multidose study); related trial NCT01778634.",
-    notes           = "Demographic counts and ranges reproduced from Merchan 2015 Methods and Table 1. Covariates explored but not retained in the final model: gestational age, sex, height, body surface area (Methods 'Pharmacokinetic data analysis'); interoccasion variability across the three studies was also tested and dropped. The multidose cohort detail in Table 1 is the only stratified-demographic table; baseline characteristics from the two earlier single-dose studies are summarised in their primary references (14 and 15) and are not reproduced here."
+    species = "human (preterm neonates)",
+    n_subjects = 40,
+    n_studies = 3,
+    age_range = "postnatal age <72 h at first dose; gestational age at birth 24-28 weeks (multidose cohort)",
+    weight_range = "preterm neonate birth weight, multidose cohort 856 +/- 202 g (Ureaplasma positive) and 929 +/- 285 g (Ureaplasma negative)",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Multidose cohort (n=15): White ~67%, Black ~33%; ~13% Hispanic ethnicity (Table 1).",
+    disease_state = "Mechanically ventilated preterm infants at risk for Ureaplasma respiratory tract colonization and bronchopulmonary dysplasia.",
+    dose_range = "Pooled across three studies: single 10 mg/kg IV (n=12), single 20 mg/kg IV (n=13), and 3 doses of 20 mg/kg IV q24h (n=15). All infusions over 60 min.",
+    n_observations = "239 plasma azithromycin concentrations from 40 subjects.",
+    regions = "United States (six neonatal intensive care sites, December 2011 - June 2012 enrolment for the multidose cohort; the two earlier single-dose studies are cited as references 14 and 15).",
+    fda_ind = "FDA IND 78990 (multidose study); related trial NCT01778634.",
+    notes = "Demographic counts and ranges reproduced from Merchan 2015 Methods and Table 1. Covariates explored but not retained in the final model: gestational age, sex, height, body surface area (Methods 'Pharmacokinetic data analysis'); interoccasion variability across the three studies was also tested and dropped. The multidose cohort detail in Table 1 is the only stratified-demographic table; baseline characteristics from the two earlier single-dose studies are summarised in their primary references (14 and 15) and are not reproduced here."
   )
 
   ini({

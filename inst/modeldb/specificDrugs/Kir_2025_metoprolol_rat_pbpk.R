@@ -19,11 +19,11 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
   vignette <- "Kir_2025_atenolol_metoprolol_malnutrition"
 
   units <- list(
-    time          = "min",
-    dosing        = "ug",
+    time = "min",
+    dosing = "ug",
     concentration = "ug/mL",
-    amount        = "ug",
-    weight        = "kg"
+    amount = "ug",
+    weight = "kg"
   )
 
   # Every volume, flow, amount and clearance in this model is normalised PER KG
@@ -32,11 +32,11 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
 
   covariateData <- list(
     MAL_NOURISH = list(
-      description        = "Malnutrition status at study entry",
-      units              = "unitless",
-      type               = "binary",
+      description = "Malnutrition status at study entry",
+      units = "unitless",
+      type = "binary",
       reference_category = "0 (control, non-malnourished)",
-      notes              = paste(
+      notes = paste(
         "1 = malnourished, produced experimentally by feeding a 5% protein isocaloric diet",
         "for 17-20 days; 0 = control, fed the 20% protein isocaloric diet (Methods 2.2.1).",
         "Malnutrition was confirmed biochemically in Table 1: body weight 233 g vs 302 g",
@@ -49,7 +49,7 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
         "It deliberately does NOT change fd1, Kp1 or the underlying CLint, which were",
         "shared across groups in the published fit (Results 3.1)."
       ),
-      source_name        = "Group"
+      source_name = "Group"
     )
   )
 
@@ -58,15 +58,15 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Table 1: 302 (SD 16.47) g control vs 233 (SD 14.25) g malnourished; screened, not retained."
+      units = "kg",
+      type = "continuous",
+      notes = "Table 1: 302 (SD 16.47) g control vs 233 (SD 14.25) g malnourished; screened, not retained."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Table 1: 4.68 (SD 0.13) g/dL control vs 4.15 (SD 0.15) g/dL malnourished.",
         "Not retained as a covariate, but albumin IS used indirectly: the fraction unbound",
         "was rescaled from the control value by the albumin ratio (fu 0.805 -> 0.908),",
@@ -75,30 +75,30 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
     ),
     TCHOL = list(
       description = "Total cholesterol",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Table 1: 66.5 (SD 10.01) mg/dL control vs 49.5 (SD 2.69) mg/dL malnourished; screened, not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Table 1: 66.5 (SD 10.01) mg/dL control vs 49.5 (SD 2.69) mg/dL malnourished; screened, not retained."
     )
   )
 
   compartmentData <- list(
-    a_blood            = list(analyte = "metoprolol", units = "ug", specimen = "whole blood", verified = TRUE),
+    a_blood = list(analyte = "metoprolol", units = "ug", specimen = "whole blood", verified = TRUE),
     a_rapidly_perfused = list(analyte = "metoprolol", units = "ug", specimen = "tissue", verified = TRUE),
-    a_slowly_perfused  = list(analyte = "metoprolol", units = "ug", specimen = "tissue", verified = TRUE),
-    a_liver            = list(analyte = "metoprolol", units = "ug", specimen = "tissue", verified = TRUE)
+    a_slowly_perfused = list(analyte = "metoprolol", units = "ug", specimen = "tissue", verified = TRUE),
+    a_liver = list(analyte = "metoprolol", units = "ug", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 8L,
-    n_studies      = 2L,
-    age_range      = NA_character_,
-    weight_range   = "233 (SD 14.25) g malnourished to 302 (SD 16.47) g control",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 8L,
+    n_studies = 2L,
+    age_range = NA_character_,
+    weight_range = "233 (SD 14.25) g malnourished to 302 (SD 16.47) g control",
     sex_female_pct = 0,
-    disease_state  = "Experimental protein-calorie malnutrition (5% protein isocaloric diet, 17-20 days) vs control (20% protein isocaloric diet)",
-    dose_range     = "312 mg/kg metoprolol base single oral dose (400 mg/kg metoprolol tartrate); literature IV reference 0.5, 1 and 2 mg/kg",
-    regions        = "Turkey (Kobay Experimental Animals Laboratory, Ankara)",
-    notes          = paste(
+    disease_state = "Experimental protein-calorie malnutrition (5% protein isocaloric diet, 17-20 days) vs control (20% protein isocaloric diet)",
+    dose_range = "312 mg/kg metoprolol base single oral dose (400 mg/kg metoprolol tartrate); literature IV reference 0.5, 1 and 2 mg/kg",
+    regions = "Turkey (Kobay Experimental Animals Laboratory, Ankara)",
+    notes = paste(
       "n = 4 control + 4 malnourished male Sprague-Dawley rats (Methods 2.2.1); the oral",
       "arms are the only rats actually dosed in this study. Metoprolol tartrate was",
       "dissolved in purified water at 400 mg/kg, equal to 312 mg/kg metoprolol base, and",

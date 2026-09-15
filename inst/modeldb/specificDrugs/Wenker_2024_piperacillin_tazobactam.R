@@ -49,11 +49,11 @@ Wenker_2024_piperacillin_tazobactam <- function() {
 
   covariateData <- list(
     FTMIC_TZP = list(
-      description        = "Percentage of the dosing interval during which the free piperacillin/tazobactam concentration exceeds the MIC of the challenge isolate",
-      units              = "% (0-100)",
-      type               = "continuous",
+      description = "Percentage of the dosing interval during which the free piperacillin/tazobactam concentration exceeds the MIC of the challenge isolate",
+      units = "% (0-100)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-experiment PK/PD index, supplied as a covariate because Wenker 2024 published no",
         "structural PK model for the HFIM (Supplementary Methods states only that a model was",
         "fit in nlmixr2 to the bioassay concentrations, with the fit shown graphically in",
@@ -68,15 +68,15 @@ Wenker_2024_piperacillin_tazobactam <- function() {
         "(AUC_TILM and siblings) for interval-integrated exposure driving a PK/PD-index model.",
         sep = " "
       ),
-      source_name        = "fT>MIC / 'Percent of time > MIC' (Wenker 2024 Figure 1 x-axis and Results, Dose-fractionation study; per-patient medians in Table 1)"
+      source_name = "fT>MIC / 'Percent of time > MIC' (Wenker 2024 Figure 1 x-axis and Results, Dose-fractionation study; per-patient medians in Table 1)"
     )
   )
 
   population <- list(
-    species            = "in vitro (hollow-fibre infection model; Escherichia coli, Klebsiella pneumoniae, Pseudomonas aeruginosa)",
-    n_subjects         = 21L,
-    n_studies          = 1L,
-    organism           = paste(
+    species = "in vitro (hollow-fibre infection model; Escherichia coli, Klebsiella pneumoniae, Pseudomonas aeruginosa)",
+    n_subjects = 21L,
+    n_studies = 1L,
+    organism = paste(
       "Six Gram-negative strains, one laboratory reference strain and five clinical isolates",
       "(Supplementary Methods). Piperacillin/tazobactam MICs by CLSI broth microdilution",
       "(Results, Dose-fractionation study): Escherichia coli ATCC 25922 = 2 mg/L,",
@@ -85,7 +85,7 @@ Wenker_2024_piperacillin_tazobactam <- function() {
       "Pseudomonas aeruginosa SWPC04 = 4 mg/L.",
       sep = " "
     ),
-    system             = paste(
+    system = paste(
       "Hollow-fibre infection model (Supplementary Methods). Cartridges primed 24 h with PBS",
       "then 24 h with Mueller-Hinton broth. Pumps set to mimic a piperacillin half-life of 2 h.",
       "Cartridge volume 28 mL, tubing 39 mL, central reservoir 10 mL (run 1) or 30 mL (run 2),",
@@ -93,19 +93,19 @@ Wenker_2024_piperacillin_tazobactam <- function() {
       "26.6 mL/h (run 1) or 33.6 mL/h (run 2). All experiments at 37 C.",
       sep = " "
     ),
-    medium             = "Mueller-Hinton broth (protein-free, so free fraction = 1)",
-    duration           = "24 h per experiment, with piperacillin/tazobactam infused every 6 h",
-    regimens           = paste(
+    medium = "Mueller-Hinton broth (protein-free, so free fraction = 1)",
+    duration = "24 h per experiment, with piperacillin/tazobactam infused every 6 h",
+    regimens = paste(
       "Dose levels were set from the predicted bolus Cmax of piperacillin/tazobactam",
       "(Supplementary Methods): high 128/16 mg/L, middle 32/8 mg/L, low 8/1 mg/L.",
       "Infusion duration 30 min or 3 h, every 6 h over 24 h.",
       "Piperacillin and tazobactam were used in an 8:1 ratio throughout.",
       sep = " "
     ),
-    starting_inoculum  = "Not reported numerically; the inoculum titre was estimated by UV spectrophotometer OD before each experiment (Methods, Method for dose-fractionation assays) and the resulting time courses are shown graphically in Figure S1",
-    n_experiments      = "21 total: 7 growth control and 14 dose-fractionation experiments (Methods, Method for dose-fractionation assays)",
-    disease_state      = "Not applicable (in vitro infection model)",
-    notes              = paste(
+    starting_inoculum = "Not reported numerically; the inoculum titre was estimated by UV spectrophotometer OD before each experiment (Methods, Method for dose-fractionation assays) and the resulting time courses are shown graphically in Figure S1",
+    n_experiments = "21 total: 7 growth control and 14 dose-fractionation experiments (Methods, Method for dose-fractionation assays)",
+    disease_state = "Not applicable (in vitro infection model)",
+    notes = paste(
       "The clinical arm of Wenker 2024 (a nine-patient ICU case series, Table 1) is NOT part of",
       "this packaged model. That target-attainment analysis simulated plasma concentrations",
       "using the primary PK parameters of a separate publication (Lonsdale et al. 2020 ABDose,",

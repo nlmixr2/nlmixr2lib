@@ -5,8 +5,8 @@ Suri_2018_brentuximab <- function() {
   paper_specific_compartments <- c("lag")
 
   units <- list(
-    time          = "h",
-    dosing        = "umol",
+    time = "h",
+    dosing = "umol",
     concentration = "umol/L"
   )
 
@@ -15,100 +15,100 @@ Suri_2018_brentuximab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
-    peripheral2      = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
-    target           = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "not applicable", verified = FALSE),
-    lag              = list(analyte = "brentuximab vedotin", units = "umol", specimen = "administration site", verified = FALSE),
-    central_mmae     = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    target = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "not applicable", verified = FALSE),
+    lag = list(analyte = "brentuximab vedotin", units = "umol", specimen = "administration site", verified = FALSE),
+    central_mmae = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "plasma", verified = FALSE),
     peripheral1_mmae = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Baseline body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Baseline body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effects on ADC central volume V1 (exponent 1.27), ADC clearance CL (exponent 0.457), MMAE central volume V1 (exponent 0.89), and MMAE clearance CL (exponent 2.81). Reference 1.865 m^2 (Suri 2018 Table 1 overall-population mean; supplement 1 states continuous covariates were 'normalized for the population mean'). Pooled-population BSA range 1.264-2.858 m^2.",
-      source_name        = "BSA"
+      notes = "Time-fixed baseline. Power effects on ADC central volume V1 (exponent 1.27), ADC clearance CL (exponent 0.457), MMAE central volume V1 (exponent 0.89), and MMAE clearance CL (exponent 2.81). Reference 1.865 m^2 (Suri 2018 Table 1 overall-population mean; supplement 1 states continuous covariates were 'normalized for the population mean'). Pooled-population BSA range 1.264-2.858 m^2.",
+      source_name = "BSA"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effects on ADC clearance CL (exponent -0.496) and MMAE clearance CL (exponent 0.982). Reference 36.81 g/L (Suri 2018 Table 1 overall-population mean). Pooled-population ALB range 17-53 g/L.",
-      source_name        = "ALB"
+      notes = "Time-fixed baseline. Power effects on ADC clearance CL (exponent -0.496) and MMAE clearance CL (exponent 0.982). Reference 36.81 g/L (Suri 2018 Table 1 overall-population mean). Pooled-population ALB range 17-53 g/L.",
+      source_name = "ALB"
     ),
     TBILI = list(
-      description        = "Baseline total serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on MMAE clearance CL only (exponent -0.1). Reference 7.78 umol/L (Suri 2018 Table 1 overall-population mean). Pooled-population TBILI range 2-123 umol/L. Suri 2018 reports the column as 'Bilirubin' without the 'total' qualifier; in the related Mould-lab ADC papers the TBILI canonical convention is total bilirubin in umol/L (SI units), which matches the Table 1 reporting unit and range here.",
-      source_name        = "BILIRUBIN"
+      notes = "Time-fixed baseline. Power effect on MMAE clearance CL only (exponent -0.1). Reference 7.78 umol/L (Suri 2018 Table 1 overall-population mean). Pooled-population TBILI range 2-123 umol/L. Suri 2018 reports the column as 'Bilirubin' without the 'total' qualifier; in the related Mould-lab ADC papers the TBILI canonical convention is total bilirubin in umol/L (SI units), which matches the Table 1 reporting unit and range here.",
+      source_name = "BILIRUBIN"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on MMAE clearance CL only (exponent -0.143). Reference 72.4 umol/L (Suri 2018 Table 1 overall-population mean). Pooled-population CREAT range 35-159 umol/L. Suri 2018 supplement Table S5 notes that creatinine concentration was used instead of creatinine clearance because creatinine clearance is collinear with body size, which is already in the model.",
-      source_name        = "CREATININE"
+      notes = "Time-fixed baseline. Power effect on MMAE clearance CL only (exponent -0.143). Reference 72.4 umol/L (Suri 2018 Table 1 overall-population mean). Pooled-population CREAT range 35-159 umol/L. Suri 2018 supplement Table S5 notes that creatinine concentration was used instead of creatinine clearance because creatinine clearance is collinear with body size, which is already in the model.",
+      source_name = "CREATININE"
     ),
     TUMTP_PCALCL = list(
-      description        = "Primary cutaneous anaplastic large-cell lymphoma indicator (1 = pcALCL, 0 = other tumor types)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Primary cutaneous anaplastic large-cell lymphoma indicator (1 = pcALCL, 0 = other tumor types)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Categorical effect on ADC clearance only: cl_adc *= e_pcalcl_cl^TUMTP_PCALCL with e_pcalcl_cl = 0.728 (pcALCL patients have ~27% lower typical-value ADC CL than non-pcALCL patients). Reference category is 0 = non-pcALCL (the four other tumor types in the pooled cohort: Hodgkin lymphoma, systemic ALCL, mycosis fungoides, other CD30+ hematologic malignancies). 16 of 380 patients in the pooled cohort were pcALCL (4.2%).",
-      source_name        = "PCALCL"
+      notes = "Time-fixed. Categorical effect on ADC clearance only: cl_adc *= e_pcalcl_cl^TUMTP_PCALCL with e_pcalcl_cl = 0.728 (pcALCL patients have ~27% lower typical-value ADC CL than non-pcALCL patients). Reference category is 0 = non-pcALCL (the four other tumor types in the pooled cohort: Hodgkin lymphoma, systemic ALCL, mycosis fungoides, other CD30+ hematologic malignancies). 16 of 380 patients in the pooled cohort were pcALCL (4.2%).",
+      source_name = "PCALCL"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positive in a 'newer-assay' study (1 = ever ADA-positive in NCT01990534 [Walewski 2016] or NCT01578499 [ALCANZA], 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positive in a 'newer-assay' study (1 = ever ADA-positive in NCT01990534 [Walewski 2016] or NCT01578499 [ALCANZA], 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-varying once positive (Suri 2018 Methods: 'patients were treated as being positive at all times following the first time when ADA positivity was detected'). Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapos_cl * ADA_POS) with e_adapos_cl = 0.125 (12.5% higher CL when positive in a newer study). Mutually exclusive with ADA_POSOLD and ADA_MISSING. Reference category 0 = ADA-negative or not in a newer-assay study. The newer assay (sensitivity 23.573 ng/mL, drug tolerance 25 ug/mL) was used in NCT01990534 and the ALCANZA phase III trial.",
-      source_name        = "ATAPOSNEW"
+      notes = "Time-varying once positive (Suri 2018 Methods: 'patients were treated as being positive at all times following the first time when ADA positivity was detected'). Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adapos_cl * ADA_POS) with e_adapos_cl = 0.125 (12.5% higher CL when positive in a newer study). Mutually exclusive with ADA_POSOLD and ADA_MISSING. Reference category 0 = ADA-negative or not in a newer-assay study. The newer assay (sensitivity 23.573 ng/mL, drug tolerance 25 ug/mL) was used in NCT01990534 and the ALCANZA phase III trial.",
+      source_name = "ATAPOSNEW"
     ),
     ADA_POSOLD = list(
-      description        = "Anti-drug antibody positive in an 'older-assay' study (1 = ever ADA-positive in NCT00430846, NCT00649584, NCT00848926, NCT00866047, 0 = otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positive in an 'older-assay' study (1 = ever ADA-positive in NCT00430846, NCT00649584, NCT00848926, NCT00866047, 0 = otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-varying once positive. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adaposold_cl * ADA_POSOLD) with e_adaposold_cl = 0.177 (17.7% higher CL when positive in an older study). Mutually exclusive with ADA_POS and ADA_MISSING. Reference category 0 = ADA-negative or not in an older-assay study. The older assay (sensitivity 4 ng/mL, drug tolerance 3,125 ng/mL) was used in NCT00430846, NCT00649584, NCT00848926, and NCT00866047. The 'older' vs 'newer' split is retained as a covariate because differing assay sensitivity / drug tolerance led to differing apparent ADA-on-CL effect sizes.",
-      source_name        = "ATAPOSOLD"
+      notes = "Time-varying once positive. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adaposold_cl * ADA_POSOLD) with e_adaposold_cl = 0.177 (17.7% higher CL when positive in an older study). Mutually exclusive with ADA_POS and ADA_MISSING. Reference category 0 = ADA-negative or not in an older-assay study. The older assay (sensitivity 4 ng/mL, drug tolerance 3,125 ng/mL) was used in NCT00430846, NCT00649584, NCT00848926, and NCT00866047. The 'older' vs 'newer' split is retained as a covariate because differing assay sensitivity / drug tolerance led to differing apparent ADA-on-CL effect sizes.",
+      source_name = "ATAPOSOLD"
     ),
     ADA_MISSING = list(
-      description        = "Anti-drug antibody result missing (1 = ADA value missing, 0 = ADA value reported)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody result missing (1 = ADA value missing, 0 = ADA value reported)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adam_cl * ADA_MISSING) with e_adam_cl = 0.192 (19.2% higher typical-value CL when ADA result is missing). Mutually exclusive with ADA_POS and ADA_POSOLD. Reference category 0 = ADA result reported (positive or negative). 205 of 380 patients in the pooled cohort had missing ADA values (Suri 2018 Table S2).",
-      source_name        = "ATAMISSING"
+      notes = "Time-fixed. Multiplicative additive effect on ADC clearance: cl_adc *= (1 + e_adam_cl * ADA_MISSING) with e_adam_cl = 0.192 (19.2% higher typical-value CL when ADA result is missing). Mutually exclusive with ADA_POS and ADA_POSOLD. Reference category 0 = ADA result reported (positive or negative). 205 of 380 patients in the pooled cohort had missing ADA values (Suri 2018 Table S2).",
+      source_name = "ATAMISSING"
     )
   )
 
   population <- list(
-    n_subjects     = 380L,
-    n_studies      = 6L,
-    age_range      = "12-87 years (overall median 37; ALCANZA subgroup median 61)",
-    age_median     = "37 years",
-    weight_range   = "39-168 kg",
-    weight_median  = "76.46 kg (overall mean)",
-    bsa_range      = "1.264-2.858 m^2",
-    bsa_median     = "1.865 m^2 (overall mean)",
+    n_subjects = 380L,
+    n_studies = 6L,
+    age_range = "12-87 years (overall median 37; ALCANZA subgroup median 61)",
+    age_median = "37 years",
+    weight_range = "39-168 kg",
+    weight_median = "76.46 kg (overall mean)",
+    bsa_range = "1.264-2.858 m^2",
+    bsa_median = "1.865 m^2 (overall mean)",
     sex_female_pct = 45,
     race_ethnicity = c(White = 83, Black = 6, Asian = 8, Other = 2),
-    disease_state  = "CD30-positive malignancies pooled across six studies: Hodgkin lymphoma (HL, 246 patients = 64.7%), systemic ALCL (sALCL, 66 = 17.4%), mycosis fungoides (MF, 50 = 13.2%), primary cutaneous ALCL (pcALCL, 16 = 4.2%), and other hematologic malignancies (2 = 0.5%). The ALCANZA phase III subgroup (66 CTCL patients) is the focus of the exposure-response analyses, but the population PK model is fit to the full pooled 380-patient dataset.",
-    dose_range     = "Phase I dose-ranging 0.1-1.8 mg/kg IV every 3 weeks (NCT00430846, NCT00649584); phase II/III 1.2 or 1.8 mg/kg IV every 3 weeks (NCT00848926, NCT00866047, NCT01990534, ALCANZA NCT01578499); 30-minute IV infusion. Licensed regimen is 1.8 mg/kg every 3 weeks with dose capping at 180 mg for patients >100 kg.",
-    regions        = "Multinational (US, Europe, Asia).",
-    study_phase    = "Phase I (NCT00430846 Younes 2010, NCT00649584 Fanale 2012); phase II (NCT00848926 Younes 2012 HL, NCT00866047 Pro 2012 sALCL, NCT01990534 Walewski 2016 HL); phase III (NCT01578499 ALCANZA Prince 2017 CTCL).",
+    disease_state = "CD30-positive malignancies pooled across six studies: Hodgkin lymphoma (HL, 246 patients = 64.7%), systemic ALCL (sALCL, 66 = 17.4%), mycosis fungoides (MF, 50 = 13.2%), primary cutaneous ALCL (pcALCL, 16 = 4.2%), and other hematologic malignancies (2 = 0.5%). The ALCANZA phase III subgroup (66 CTCL patients) is the focus of the exposure-response analyses, but the population PK model is fit to the full pooled 380-patient dataset.",
+    dose_range = "Phase I dose-ranging 0.1-1.8 mg/kg IV every 3 weeks (NCT00430846, NCT00649584); phase II/III 1.2 or 1.8 mg/kg IV every 3 weeks (NCT00848926, NCT00866047, NCT01990534, ALCANZA NCT01578499); 30-minute IV infusion. Licensed regimen is 1.8 mg/kg every 3 weeks with dose capping at 180 mg for patients >100 kg.",
+    regions = "Multinational (US, Europe, Asia).",
+    study_phase = "Phase I (NCT00430846 Younes 2010, NCT00649584 Fanale 2012); phase II (NCT00848926 Younes 2012 HL, NCT00866047 Pro 2012 sALCL, NCT01990534 Walewski 2016 HL); phase III (NCT01578499 ALCANZA Prince 2017 CTCL).",
     n_observations = "9,541 ADC + 9,669 MMAE concentration records (excluding ~3% BLOQ records) across 380 subjects; 22,660 total NONMEM records.",
     reference_subject = "BSA 1.865 m^2, ALB 36.81 g/L, TBILI 7.78 umol/L, CREAT 72.4 umol/L, TUMTP_PCALCL 0, ADA_POS 0, ADA_POSOLD 0, ADA_MISSING 0 (Suri 2018 Table 1 overall-population means; ADA-negative reference).",
-    notes          = "Baseline characteristics from Suri 2018 Table 1 (overall column, n = 380). Suri 2018 supplement 1 (Methods) states continuous covariates were modeled as TVP = P_pop * (cov / cov_mean)^theta, normalized for the population mean — so the reference values used here are the Table 1 reported means rather than round numbers. The ALCANZA subgroup (n = 66 CTCL patients with MF or pcALCL) was older (median age 61 vs 37 overall), had higher albumin (mean 42.4 vs 36.8 g/L), and lower creatinine clearance (mean 105 vs 139 mL/min) than the overall population."
+    notes = "Baseline characteristics from Suri 2018 Table 1 (overall column, n = 380). Suri 2018 supplement 1 (Methods) states continuous covariates were modeled as TVP = P_pop * (cov / cov_mean)^theta, normalized for the population mean — so the reference values used here are the Table 1 reported means rather than round numbers. The ALCANZA subgroup (n = 66 CTCL patients with MF or pcALCL) was older (median age 61 vs 37 overall), had higher albumin (mean 42.4 vs 36.8 g/L), and lower creatinine clearance (mean 105 vs 139 mL/min) than the overall population."
   )
 
   ini({

@@ -32,18 +32,21 @@ Schlachter_2026_atogepant <- function() {
   # the final Phase 3 Model (Table 2 'sigma prop' rows). Same shape as
   # Pohl_2022_linzagolix.R, which carries two study-specific strata.
   paper_specific_residual_sds <- c(
-    "propSdPhase1", "propSdCgpPk02", "propSdCgpMd01", "propSdPhase3"
+    "propSdPhase1",
+    "propSdCgpPk02",
+    "propSdCgpMd01",
+    "propSdPhase3"
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-model effect on apparent central volume only:",
         "V1/F = 86.1 * (WT / 76.8)^0.411, printed as a display equation in",
         "Section 3.1. The 76.8 kg reference is the value printed in that",
@@ -55,14 +58,14 @@ Schlachter_2026_atogepant <- function() {
         "196 kg (Table 1). Body weight was screened on, but not retained",
         "for, CL/F."
       ),
-      source_name        = "Body weight"
+      source_name = "Body weight"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (patient with episodic or chronic migraine)",
-      notes              = paste(
+      notes = paste(
         "Selects between the two apparent-clearance typical values printed",
         "side by side in Table 2 and in the Section 3.1 display equation:",
         "CL/F = 22.9 L/h in healthy participants and 17.4 L/h in patients.",
@@ -75,14 +78,14 @@ Schlachter_2026_atogepant <- function() {
         "No statistically significant PK difference was found between",
         "patients with episodic and with chronic migraine, so both carry 0."
       ),
-      source_name        = "Healthy participant vs patient"
+      source_name = "Healthy participant vs patient"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal hepatic function, or mild or moderate impairment)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on apparent clearance: CL/F * (1 - 0.366),",
         "a 36.6% reduction (Table 2 and the Section 3.1 display equation).",
         "Mild and moderate hepatic impairment were tested and were NOT",
@@ -93,14 +96,14 @@ Schlachter_2026_atogepant <- function() {
         "(Table 1), all from the dedicated hepatic-impairment study",
         "CGP-PK-01 (Table S1)."
       ),
-      source_name        = "Severe hepatic impairment"
+      source_name = "Severe hepatic impairment"
     ),
     CONMED_ITRACONAZOLE = list(
-      description        = "Concomitant itraconazole (strong CYP3A4 / P-gp inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant itraconazole (strong CYP3A4 / P-gp inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant itraconazole)",
-      notes              = paste(
+      notes = paste(
         "Two multiplicative effects, both printed in Table 2 and in the",
         "Section 3.1 display equations: CL/F * (1 - 0.662), a 66.2%",
         "clearance reduction, and Frel * (1 + 0.949), a 1.95-fold increase",
@@ -109,14 +112,14 @@ Schlachter_2026_atogepant <- function() {
         "the dedicated drug-drug-interaction study CGP-PK-02 (40 subjects,",
         "2.9% of the Phase 3 Model population)."
       ),
-      source_name        = "Itraconazole"
+      source_name = "Itraconazole"
     ),
     CONMED_RIFAMPICIN_SD = list(
-      description        = "Concomitant rifampicin, single dose (OATP1B1 inhibition phase)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin, single dose (OATP1B1 inhibition phase)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant rifampicin)",
-      notes              = paste(
+      notes = paste(
         "Rifampicin ('rifampin' in the source paper's US usage) enters this",
         "model as TWO mutually exclusive indicators because its single-dose",
         "and multiple-dose effects act through different mechanisms and in",
@@ -133,14 +136,14 @@ Schlachter_2026_atogepant <- function() {
         "the Section 3.1 prose and the Abstract; the three-to-one majority",
         "is followed here. See the vignette Errata."
       ),
-      source_name        = "Rifampin after first dose"
+      source_name = "Rifampin after first dose"
     ),
     CONMED_RIFAMPICIN_MD = list(
-      description        = "Concomitant rifampicin, multiple doses (CYP3A4 induction phase)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant rifampicin, multiple doses (CYP3A4 induction phase)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant rifampicin)",
-      notes              = paste(
+      notes = paste(
         "The multiple-dose rifampicin state, which the Discussion attributes",
         "to CYP3A4 induction: CL/F * (1 + 0.818), a 1.82-fold increase, and",
         "Frel * (1 - 0.248), a 24.8% decrease. Opposite in direction to the",
@@ -150,14 +153,14 @@ Schlachter_2026_atogepant <- function() {
         "exclusive: a record with both set to 1 is not a state the source",
         "analysis contains."
       ),
-      source_name        = "Rifampin following multiple doses"
+      source_name = "Rifampin following multiple doses"
     ),
     CONMED_QUINIDINE = list(
-      description        = "Concomitant quinidine (P-glycoprotein inhibitor)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant quinidine (P-glycoprotein inhibitor)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant quinidine)",
-      notes              = paste(
+      notes = paste(
         "Multiplicative effect on apparent clearance only: CL/F * (1 -",
         "0.285), a 28.5% reduction (Table 2 and the Section 3.1 display",
         "equation). Unlike itraconazole and rifampicin, quinidine carries no",
@@ -165,14 +168,14 @@ Schlachter_2026_atogepant <- function() {
         "dedicated drug-drug-interaction study 3101-103-002 (25 subjects,",
         "1.8% of the Phase 3 Model population; Table 1)."
       ),
-      source_name        = "Quinidine"
+      source_name = "Quinidine"
     ),
     FED_HIGHFAT = list(
-      description        = "High-fat meal at the time of dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "High-fat meal at the time of dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Single multiplicative effect on the",
         "absorption lag time: ALAG = 0.276 * (1 + 0.672), printed as a",
         "display equation in Section 3.1, which lengthens the lag from 0.276",
@@ -182,14 +185,14 @@ Schlachter_2026_atogepant <- function() {
         "3101-105-002 (Table S1), so FED_HIGHFAT applies rather than the",
         "general FED."
       ),
-      source_name        = "Food"
+      source_name = "Food"
     ),
     DOSE_ATOGEPANT_MG = list(
-      description        = "Administered atogepant dose level",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered atogepant dose level",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-dose-record dose amount in mg, driving two power-model effects",
         "printed as display equations in Section 3.1:",
         "Frel = (dose / 60 mg)^0.119 and Tk0 = 0.908 * (dose / 60 mg)^0.199.",
@@ -204,14 +207,14 @@ Schlachter_2026_atogepant <- function() {
         "covariate column literally named DOSE (any casing) is consumed by",
         "rxode2's etTrans() and never reaches model()."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     FORM_ATOGEPANT_EARLYTAB = list(
-      description        = "Early phase 1 atogepant tablet formulation",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Early phase 1 atogepant tablet formulation",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (the Formulation 5 tablet used in the phase 2b/3 and phase 3 studies)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator for the early phase 1 tablet",
         "presentations, with a single multiplicative effect on the",
         "zero-order absorption duration: Tk0 * (1 - 0.353), a 35% shorter",
@@ -233,14 +236,14 @@ Schlachter_2026_atogepant <- function() {
         "Table 2 labels this estimate as a formulation effect 'on ka'; it is",
         "applied to Tk0."
       ),
-      source_name        = "Formulation"
+      source_name = "Formulation"
     ),
     STUDY_CGP_PK_02 = list(
-      description        = "Phase 1 itraconazole drug-drug-interaction study CGP-PK-02 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 1 itraconazole drug-drug-interaction study CGP-PK-02 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other contributing study)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific proportional residual error magnitude",
         "0.228 (22.8% CV) reported in Table 2 as 'sigma prop (study",
         "CGP-PK-02)'. CGP-PK-02 is the 40-subject single-dose itraconazole",
@@ -249,14 +252,14 @@ Schlachter_2026_atogepant <- function() {
         "(Table S1). Per-record study-fixed indicator; mutually exclusive",
         "with STUDY_CGP_MD_01 and STUDY_ATOGEPANT_PHASE3."
       ),
-      source_name        = "Study"
+      source_name = "Study"
     ),
     STUDY_CGP_MD_01 = list(
-      description        = "Phase 2b/3 episodic-migraine study CGP-MD-01 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 2b/3 episodic-migraine study CGP-MD-01 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other contributing study)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific proportional residual error magnitude",
         "0.585 (58.5% CV) reported in Table 2 as 'sigma prop (study",
         "CGP-MD-01)'. CGP-MD-01 is the 463-subject phase 2b/3 dose-ranging",
@@ -266,14 +269,14 @@ Schlachter_2026_atogepant <- function() {
         "strata. Per-record study-fixed indicator; mutually exclusive with",
         "STUDY_CGP_PK_02 and STUDY_ATOGEPANT_PHASE3."
       ),
-      source_name        = "Study"
+      source_name = "Study"
     ),
     STUDY_ATOGEPANT_PHASE3 = list(
-      description        = "Phase 3 ADVANCE or PROGRESS study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Phase 3 ADVANCE or PROGRESS study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other contributing study)",
-      notes              = paste(
+      notes = paste(
         "Selects the study-specific proportional residual error magnitude",
         "0.491 (49.1% CV) reported in Table 2 as 'sigma prop (ADVANCE and",
         "PROGRESS studies)'. One indicator covers both pivotal phase 3",
@@ -286,14 +289,14 @@ Schlachter_2026_atogepant <- function() {
         "stratum, 'all phase 1 studies except CGP-PK-02', whose residual",
         "error is 0.307 (30.7% CV)."
       ),
-      source_name        = "Study"
+      source_name = "Study"
     ),
     OCC = list(
-      description        = "Dosing-occasion index for the inter-occasion variability on relative bioavailability",
-      units              = "(integer)",
-      type               = "categorical",
+      description = "Dosing-occasion index for the inter-occasion variability on relative bioavailability",
+      units = "(integer)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer occasion column, 1 to 4, multiplexing the four",
         "inter-occasion-variability etas on relative bioavailability. The",
         "source reports the IOV variance on Frel (Table 2 'omega2 IOV Frel'",
@@ -303,7 +306,7 @@ Schlachter_2026_atogepant <- function() {
         "and every occasion shares it. Pass OCC = 1 for single-occasion",
         "data so the first IOV eta applies. See the vignette Errata."
       ),
-      source_name        = "Occasion"
+      source_name = "Occasion"
     )
   )
 
@@ -316,9 +319,9 @@ Schlachter_2026_atogepant <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F and V1/F in the Phase 1 Model and evaluated in the",
         "Figure 4 forest plot with a reference group of < 65 years; the",
         "confidence interval included 1 (no effect) for both AUC24 and Cmax.",
@@ -327,9 +330,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Retained in the Phase 1 Model as a -0.19 fractional effect on CL/F",
         "(Table 2) but NOT retained in the Phase 3 Model. Evaluated in the",
         "Figure 4 forest plot against a male reference group with a < 20%",
@@ -339,9 +342,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "The stepwise covariate search found Asian descent statistically",
         "significant on CL/F in the Phase 2 Model but it was removed for",
         "over-parameterisation (Supplement Section 1.2.3), and it was not",
@@ -353,9 +356,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     CRCL = list(
       description = "Creatinine clearance (Cockcroft-Gault)",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F in the Phase 1 Model. Mild and moderate renal",
         "impairment were predicted to have no relevant effect on atogepant",
         "PK (Figure 4 and the Discussion). Phase 3 Model median 127 mL/min",
@@ -365,9 +368,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     CONMED_STATIN = list(
       description = "Concomitant statin use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Tested on both CL/F and Frel in the Phase 3 Model covariate search",
         "(Table S3) and found significant on neither (Section 3.1).",
         "Figure 4 puts the effect at a 14% AUC24 increase and a 13% Cmax",
@@ -377,9 +380,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     CONMED_BCRP_INHIBITOR = list(
       description = "Concomitant breast cancer resistance protein (BCRP) inhibitor use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Evaluated only in the Figure 4 forest plot, against a no-BCRP-",
         "inhibitor reference. Expected to change AUC24 by a 1% decrease with",
         "no change in Cmax, and the confidence interval included 1."
@@ -387,9 +390,9 @@ Schlachter_2026_atogepant <- function() {
     ),
     CONMED_BCRP_SUBSTRATE = list(
       description = "Concomitant breast cancer resistance protein (BCRP) substrate use",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Evaluated only in the Figure 4 forest plot, against a",
         "no-BCRP-substrate reference. Expected to change AUC24 by a 3%",
         "decrease and Cmax by a 3% decrease, and the confidence interval",
@@ -399,41 +402,45 @@ Schlachter_2026_atogepant <- function() {
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "atogepant", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "atogepant", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "atogepant", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "atogepant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "atogepant", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "atogepant", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1356,
-    n_studies      = 14,
-    age_range      = "18-78 years",
-    age_median     = "39.0 years",
-    weight_range   = "40.7-196 kg",
-    weight_median  = "77.6 kg",
-    height_median  = "166 cm (range 146-204)",
+    species = "human",
+    n_subjects = 1356,
+    n_studies = 14,
+    age_range = "18-78 years",
+    age_median = "39.0 years",
+    weight_range = "40.7-196 kg",
+    weight_median = "77.6 kg",
+    height_median = "166 cm (range 146-204)",
     sex_female_pct = 74.7,
     race_ethnicity = c(
-      Caucasian = 76.0, `Black/African American` = 17.9, Asian = 3.5,
-      Multiple = 1.9, `Native American/Alaska Native` = 0.3,
-      `Pacific Islander` = 0.2, `Not used` = 0.1
+      Caucasian = 76.0,
+      `Black/African American` = 17.9,
+      Asian = 3.5,
+      Multiple = 1.9,
+      `Native American/Alaska Native` = 0.3,
+      `Pacific Islander` = 0.2,
+      `Not used` = 0.1
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "351 healthy participants and 1005 patients with episodic migraine.",
       "Hepatic function: 98.2% none, 0.6% mild, 0.6% moderate, 0.6% severe.",
       "Renal function per Cockcroft-Gault: 87.2% normal (> 90 mL/min),",
       "11.9% mild (60-89), 1.0% moderate (30-59); no severe impairment."
     ),
     renal_function = "median creatinine clearance 127 mL/min (range 46.5-392)",
-    co_medication  = paste(
+    co_medication = paste(
       "Itraconazole 40 subjects (2.9%), rifampicin 31 (2.3%), quinidine 25",
       "(1.8%), concomitant statin 67 (4.9%); 1260 (92.9%) had no",
       "cotreatment (Table 1)."
     ),
-    dose_range     = "10-300 mg oral tablet, once or twice daily, single and multiple dose",
-    notes          = paste(
+    dose_range = "10-300 mg oral tablet, once or twice daily, single and multiple dose",
+    notes = paste(
       "Baseline characteristics from Schlachter 2026 Table 1, Phase 3 Model",
       "column. 11,763 observations from 1356 participants across 12 phase 1",
       "studies, the phase 2b/3 study CGP-MD-01 and the phase 3 ADVANCE study",

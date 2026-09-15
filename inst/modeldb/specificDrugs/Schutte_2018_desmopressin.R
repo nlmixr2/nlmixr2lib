@@ -8,39 +8,39 @@ Schutte_2018_desmopressin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "desmopressin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "desmopressin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "desmopressin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "desmopressin", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "desmopressin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FVIIIRECENT = list(
-      description        = "Most recently measured FVIII coagulant activity (FVIII:C) <=1 day before the desmopressin administration, in the absence of any treatment effect on the measurement. Per-occasion baseline-capacity index distinct from the model's observed FVIII:C time profile.",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Most recently measured FVIII coagulant activity (FVIII:C) <=1 day before the desmopressin administration, in the absence of any treatment effect on the measurement. Per-occasion baseline-capacity index distinct from the model's observed FVIII:C time profile.",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on baseline FVIII (+0.74), V1 (-0.61) and CL (-0.73) with reference 0.15 IU/mL (Schutte 2018 Table 2 and Eqs. 1-3; reference value is the study-population median FVIII-recent). Required input for simulation. The source paper also defines a binary missing-data branch with flat correction factors 1.2 / 1.1 / 0.78 on baseline FVIII / V1 / CL when FVIII-recent was unavailable for a fitted subject; this branch is documented in the validation vignette deviations and is NOT encoded in model() (see vignette).",
-      source_name        = "FVIII-recent"
+      notes = "Power scaling on baseline FVIII (+0.74), V1 (-0.61) and CL (-0.73) with reference 0.15 IU/mL (Schutte 2018 Table 2 and Eqs. 1-3; reference value is the study-population median FVIII-recent). Required input for simulation. The source paper also defines a binary missing-data branch with flat correction factors 1.2 / 1.1 / 0.78 on baseline FVIII / V1 / CL when FVIII-recent was unavailable for a fitted subject; this branch is documented in the validation vignette deviations and is NOT encoded in model() (see vignette).",
+      source_name = "FVIII-recent"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 128L,
+    species = "human",
+    n_subjects = 128L,
     n_administrations = 142L,
-    n_observations   = 623L,
-    n_studies        = 1L,
-    age_range        = "7-75 years",
-    age_median       = "28 years",
-    weight_range     = "26-120 kg",
-    weight_median    = "75 kg",
-    sex_female_pct   = 0,
-    race_ethnicity   = "not reported in source (single-centre Dutch cohort)",
-    disease_state    = "Nonsevere haemophilia A (FVIII activity >=0.01 IU/mL); mild HA 107/128 (84%) and moderate HA 21/128 (16%) with F8-gene mutations across A1 / A2 / A3 / B / C1 / C2 domains.",
-    dose_range       = "0.3 ug/kg desmopressin intravenously over 30 minutes (126/137 administrations, 92%) or 300 ug intranasally (11/137 administrations, 8%).",
-    regions          = "Netherlands (single-centre retrospective cohort at Erasmus University Medical Centre, Rotterdam).",
-    indication       = "Desmopressin test dose 109/131 (83%), surgical prophylaxis 9/131 (7%), and treatment of bleeding 13/131 (10%).",
-    notes            = "Haemophilia A is X-linked recessive; the registered cohort is essentially male, so sex_female_pct = 0. Baseline FVIII-recent (n = 120 with measurement available) had median 0.15 IU/mL (IQR 0.08 - 0.24); this is used as the reference value in the covariate equations. Sample times nominally 0.5, 1, 2, 3, 4, 6 and 24 h after the desmopressin administration (test-dose protocol); fewer time points in prophylaxis or bleed indications. 14 patients contributed two administrations on different occasions."
+    n_observations = 623L,
+    n_studies = 1L,
+    age_range = "7-75 years",
+    age_median = "28 years",
+    weight_range = "26-120 kg",
+    weight_median = "75 kg",
+    sex_female_pct = 0,
+    race_ethnicity = "not reported in source (single-centre Dutch cohort)",
+    disease_state = "Nonsevere haemophilia A (FVIII activity >=0.01 IU/mL); mild HA 107/128 (84%) and moderate HA 21/128 (16%) with F8-gene mutations across A1 / A2 / A3 / B / C1 / C2 domains.",
+    dose_range = "0.3 ug/kg desmopressin intravenously over 30 minutes (126/137 administrations, 92%) or 300 ug intranasally (11/137 administrations, 8%).",
+    regions = "Netherlands (single-centre retrospective cohort at Erasmus University Medical Centre, Rotterdam).",
+    indication = "Desmopressin test dose 109/131 (83%), surgical prophylaxis 9/131 (7%), and treatment of bleeding 13/131 (10%).",
+    notes = "Haemophilia A is X-linked recessive; the registered cohort is essentially male, so sex_female_pct = 0. Baseline FVIII-recent (n = 120 with measurement available) had median 0.15 IU/mL (IQR 0.08 - 0.24); this is used as the reference value in the covariate equations. Sample times nominally 0.5, 1, 2, 3, 4, 6 and 24 h after the desmopressin administration (test-dose protocol); fewer time points in prophylaxis or bleed indications. 14 patients contributed two administrations on different occasions."
   )
 
   ini({

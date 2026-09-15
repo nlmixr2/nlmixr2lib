@@ -8,11 +8,11 @@ SoriaChacartegui_2026_tramadol <- function() {
   # biological matrix.
   compartmentData <- list(
     depot = list(
-      analyte  = "tramadol",
-      units    = "mg",
+      analyte = "tramadol",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE,
-      notes    = paste(
+      notes = paste(
         "A_dep of Supplementary Figure S1: the absorption compartment that the",
         "transit chain drains into and that empties into central at rate Ka.",
         "The transit chain itself (A_0 ... A_n) is NOT carried as explicit ODE",
@@ -25,29 +25,29 @@ SoriaChacartegui_2026_tramadol <- function() {
       )
     ),
     central = list(
-      analyte  = "tramadol",
-      units    = "mg",
+      analyte = "tramadol",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE,
-      notes    = "A_c of Supplementary Figure S1; Cc = 1000 * central / vc is the plasma tramadol concentration in ng/mL."
+      notes = "A_c of Supplementary Figure S1; Cc = 1000 * central / vc is the plasma tramadol concentration in ng/mL."
     ),
     peripheral1 = list(
-      analyte  = "tramadol",
-      units    = "mg",
+      analyte = "tramadol",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE,
-      notes    = "A_p of Supplementary Figure S1; exchanges with central through Q (K23 = Q/Vc, K32 = Q/Vp)."
+      notes = "A_p of Supplementary Figure S1; exchanges with central through Q (K23 = Q/Vc, K32 = Q/Vp)."
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      source_name        = "Weight",
-      notes              = paste(
+      source_name = "Weight",
+      notes = paste(
         "Enters Vc/F -- and ONLY Vc/F -- through the PsN stepwise-covariate-",
         "modelling linear function for a continuous covariate,",
         "Vc = Vc_typical * (1 + e_wt_vc * (WT - 70)), centred on the cohort",
@@ -63,12 +63,12 @@ SoriaChacartegui_2026_tramadol <- function() {
       )
     ),
     CYP2D6_IM = list(
-      description        = "CYP2D6 intermediate-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2D6 intermediate-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = CYP2D6 normal or ultrarapid metabolizer (the pooled reference group)",
-      source_name        = "CYP2D6 phenotype (IM versus NM + UM)",
-      notes              = paste(
+      source_name = "CYP2D6 phenotype (IM versus NM + UM)",
+      notes = paste(
         "Enters CL/F through the PsN stepwise-covariate-modelling linear",
         "function for a bivariate categorical covariate (Methods 2.4),",
         "CL = CL_typical * (1 + e_cyp2d6_im_cl * CYP2D6_IM). Phenotypes were",
@@ -86,20 +86,20 @@ SoriaChacartegui_2026_tramadol <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24L,
-    n_studies      = 1L,
-    age_range      = "Median 24 years (IQR 22-27)",
-    age_median     = "24 years",
-    weight_range   = "Median 70.0 kg (IQR 66.2-74.2); men 72.5 kg (69.2-77.8), women 57.6 kg (55.4-68.6)",
-    weight_median  = "70.0 kg",
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    age_range = "Median 24 years (IQR 22-27)",
+    age_median = "24 years",
+    weight_range = "Median 70.0 kg (IQR 66.2-74.2); men 72.5 kg (69.2-77.8), women 57.6 kg (55.4-68.6)",
+    weight_median = "70.0 kg",
     sex_female_pct = 29.2,
     race_ethnicity = "European (self-reported biogeographic origin); all 24 volunteers",
-    disease_state  = "Healthy volunteers (phase I bioequivalence trial, EUDRA-CT 2013-000196-32)",
-    dose_range     = "Single oral 37.5 mg tramadol hydrochloride oral drops (Adolonta), co-administered with 400 mg ibuprofen arginine oral solution (Espidifen), under fasting conditions",
+    disease_state = "Healthy volunteers (phase I bioequivalence trial, EUDRA-CT 2013-000196-32)",
+    dose_range = "Single oral 37.5 mg tramadol hydrochloride oral drops (Adolonta), co-administered with 400 mg ibuprofen arginine oral solution (Espidifen), under fasting conditions",
     administration = "Oral solution (drops)",
-    regions        = "Spain (single centre: Hospital Universitario de La Princesa, Madrid)",
-    notes          = paste(
+    regions = "Spain (single centre: Hospital Universitario de La Princesa, Madrid)",
+    notes = paste(
       "Median height 1.72 m (IQR 1.67-1.77); median BMI 22.6 kg/m2 (IQR",
       "21.8-25.5); trial eligibility required BMI 18.5-30 kg/m2 (Table 1 and",
       "Discussion). 18 post-dose plasma samples per volunteer from 0.25 h to",

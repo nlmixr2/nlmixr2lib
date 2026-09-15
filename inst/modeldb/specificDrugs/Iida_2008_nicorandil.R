@@ -34,17 +34,17 @@ Iida_2008_nicorandil <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "nicorandil", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "nicorandil", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "nicorandil", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed body weight used for allometric scaling on a 70 kg",
         "reference: exponent 0.75 on CL and Q per paper Equation 5",
         "(CL_GRP = CL_POPSTD * (Wt / 70)^(3/4)); exponent 1.0 on V1 and",
@@ -54,17 +54,17 @@ Iida_2008_nicorandil <- function() {
         "58.6 +/- 11.3 kg (AHF bolus), 60.3 +/- 10.7 kg (AHF bolus+inf),",
         "61.8 +/- 10.2 kg (AHF long-term infusion)."
       ),
-      source_name        = "Weight (kg)"
+      source_name = "Weight (kg)"
     ),
     DIS_HEALTHY = list(
-      description        = paste(
+      description = paste(
         "Healthy-volunteer cohort indicator (1 = healthy adult, 0 =",
         "acute heart failure (AHF) patient). Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (AHF patient)",
-      notes              = paste(
+      notes = paste(
         "Iida 2008 reports POP_CL, POP_V1, POP_Q, POP_V2 in Table 2 as",
         "healthy-volunteer typicals with multiplicative fractional-",
         "change factors FCL = 1.94, FV1 = 1.39, FQ = 0.519, FV2 = 4.06",
@@ -87,25 +87,25 @@ Iida_2008_nicorandil <- function() {
         "only nicorandil concentrations; no PAWP was measured in",
         "healthy subjects."
       ),
-      source_name        = "(paper text: 'healthy subjects' vs 'AHF patients'; Tables 1 and 2)"
+      source_name = "(paper text: 'healthy subjects' vs 'AHF patients'; Tables 1 and 2)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 105L,
-    n_studies      = 5L,
-    age_range      = paste(
+    species = "human",
+    n_subjects = 105L,
+    n_studies = 5L,
+    age_range = paste(
       "Healthy bolus 33.0 +/- 7.7 y; healthy bolus+inf 41.2 +/- 5.9 y;",
       "AHF bolus 62.8 +/- 12.8 y; AHF bolus+inf 65.1 +/- 11.5 y;",
       "AHF long-term inf 70.8 +/- 8.4 y (Table 1, mean +/- SD)"
     ),
-    age_median     = "(not reported as median; mean +/- SD per Table 1)",
-    weight_range   = "58.6-63.6 kg cohort means (Table 1; individual range not tabulated)",
-    weight_median  = "(not reported as median; mean +/- SD per Table 1)",
+    age_median = "(not reported as median; mean +/- SD per Table 1)",
+    weight_range = "58.6-63.6 kg cohort means (Table 1; individual range not tabulated)",
+    weight_median = "(not reported as median; mean +/- SD per Table 1)",
     sex_female_pct = 32.4,
     race_ethnicity = "(not reported in Table 1; conducted in Japan)",
-    disease_state  = paste(
+    disease_state = paste(
       "Acute heart failure (AHF) including acute exacerbation of",
       "chronic heart failure, NYHA functional class II to IV. AHF",
       "aetiologies pooled across studies (Table 1): ischaemic heart",
@@ -118,7 +118,7 @@ Iida_2008_nicorandil <- function() {
       "five studies and contributed nicorandil concentrations only",
       "(no PAWP)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Healthy bolus: 6, 12, 18, 24 mg IV over 5 min (every subject",
       "received four ascending doses). Healthy bolus+infusion: 12 mg",
       "IV bolus over 5 min followed by 6, 9, or 12 mg/h infusion for",
@@ -128,8 +128,8 @@ Iida_2008_nicorandil <- function() {
       "AHF long-term infusion: 200 ug/kg IV bolus over 5 min followed",
       "by 200 ug/kg/h infusion for 48 h."
     ),
-    regions        = "Japan (Chugai Clinical Research Center sponsor)",
-    notes          = paste(
+    regions = "Japan (Chugai Clinical Research Center sponsor)",
+    notes = paste(
       "Population-PK estimation: NONMEM Version V with FOCE-INTER",
       "(Methods, 'Model estimation'). The PK model was developed",
       "first; the PD layer was developed with PK parameters held",

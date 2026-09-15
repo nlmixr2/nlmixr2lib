@@ -51,8 +51,8 @@ Dodds_2021_covid19_viralkinetic <- function() {
   paper_specific_compartments <- c("eclipse")
 
   units <- list(
-    time          = "day",
-    dosing        = "no dosing (simulation-only viral kinetic model; drug effects supplied via imax_*, smax_* parameter overrides)",
+    time = "day",
+    dosing = "no dosing (simulation-only viral kinetic model; drug effects supplied via imax_*, smax_* parameter overrides)",
     concentration = "virus copies/mL; target/eclipse/infected cells #/mL"
   )
 
@@ -61,27 +61,42 @@ Dodds_2021_covid19_viralkinetic <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    target   = list(analyte = "uninfected epithelial target cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    eclipse  = list(analyte = "latently (eclipse) infected cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    infected = list(analyte = "productively infected cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
-    virus    = list(analyte = "free virions", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    target = list(
+      analyte = "uninfected epithelial target cells",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    eclipse = list(
+      analyte = "latently (eclipse) infected cells",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    infected = list(
+      analyte = "productively infected cells",
+      units = NA_character_,
+      specimen = "blood cell",
+      verified = FALSE
+    ),
+    virus = list(analyte = "free virions", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "Adults hospitalized with COVID-19 (specific ages not tabulated in Dodds 2021; upstream Goncalves 2020 studied 13 hospitalized patients from Zou et al. 2020 nasopharyngeal-swab dataset).",
-    weight_range   = "Not reported.",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "Adults hospitalized with COVID-19 (specific ages not tabulated in Dodds 2021; upstream Goncalves 2020 studied 13 hospitalized patients from Zou et al. 2020 nasopharyngeal-swab dataset).",
+    weight_range = "Not reported.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not reported.",
-    disease_state  = "Hospitalized COVID-19 patients (upstream Goncalves 2020 dataset). Model is intended for simulation of natural-history and hypothetical antiviral intervention scenarios in the early stage of SARS-CoV-2 infection.",
-    dose_range     = "No physical dosing (drug-effect step functions replace an explicit PK layer).",
-    regimens       = "N/A -- simulation-only.",
-    regions        = "Not reported (upstream Goncalves 2020 patients from China).",
-    notes          = paste(
+    disease_state = "Hospitalized COVID-19 patients (upstream Goncalves 2020 dataset). Model is intended for simulation of natural-history and hypothetical antiviral intervention scenarios in the early stage of SARS-CoV-2 infection.",
+    dose_range = "No physical dosing (drug-effect step functions replace an explicit PK layer).",
+    regimens = "N/A -- simulation-only.",
+    regions = "Not reported (upstream Goncalves 2020 patients from China).",
+    notes = paste(
       "The population underlying the parameter estimation is described in",
       "Goncalves et al. (2020) CPT PSP 9(9):509-514, which fitted the",
       "target-cell-limited-with-eclipse model to 13 hospitalized COVID-19",

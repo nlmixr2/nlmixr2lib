@@ -9,91 +9,91 @@ Darwish_2025b_trofinetide <- function() {
   # lithium-heparinized WHOLE BLOOD (Methods, "Study Design and Populations"),
   # not plasma.
   compartmentData <- list(
-    depot       = list(analyte = "trofinetide", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "trofinetide", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "trofinetide", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance; reference 58 kg, the median body weight of the analysis population (Darwish 2025b Table 2 footnote, 'WTKG/58'). Analysis-population range 9.8-140 kg (mean 56.5). The exponent rose from 0.443 in Darwish_2025a_trofinetide to 0.486 here, the largest covariate change apart from the two Rett syndrome shifts; Darwish 2025b Discussion attributes this to the addition of the 2-4 year old DAFFODIL cohort (mean weight 13.4 kg), which extends the weight range downward by 3.2 kg.",
-      source_name        = "WTKG"
+      notes = "Power effect on clearance; reference 58 kg, the median body weight of the analysis population (Darwish 2025b Table 2 footnote, 'WTKG/58'). Analysis-population range 9.8-140 kg (mean 56.5). The exponent rose from 0.443 in Darwish_2025a_trofinetide to 0.486 here, the largest covariate change apart from the two Rett syndrome shifts; Darwish 2025b Discussion attributes this to the addition of the 2-4 year old DAFFODIL cohort (mean weight 13.4 kg), which extends the weight range downward by 3.2 kg.",
+      source_name = "WTKG"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on central volume; reference 22.4 years, the median age of the analysis population (Darwish 2025b Table 2 footnote, 'AGE/22.4'). Analysis-population range 2-64 years (mean 21.8). Note that the reference age is unchanged from Darwish_2025a_trofinetide even though the age range now extends down to 2 years.",
-      source_name        = "AGE"
+      notes = "Power effect on central volume; reference 22.4 years, the median age of the analysis population (Darwish 2025b Table 2 footnote, 'AGE/22.4'). Analysis-population range 2-64 years (mean 21.8). Note that the reference age is unchanged from Darwish_2025a_trofinetide even though the age range now extends down to 2 years.",
+      source_name = "AGE"
     ),
     CRCL = list(
-      description        = "Glomerular filtration rate, BSA-normalized (creatinine-based estimate)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Glomerular filtration rate, BSA-normalized (creatinine-based estimate)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on clearance; reference 124 mL/min/1.73 m^2, the median GFR of the analysis population (Darwish 2025b Table 2 footnote, 'GFR/124'). The source column is named GFR and maps to the canonical general-scope CRCL covariate, which covers BSA-normalized renal function from either a creatinine-based estimate or a tracer-measured GFR. Darwish 2025b Methods states that GFR was estimated with the Schwartz equation for subjects under 18 years of age but does not name the equation used for adults. Creatinine clearance was screened as a separate covariate in the earlier model and was not retained; GFR is the renal descriptor carried into the final model.",
-      source_name        = "GFR"
+      notes = "Power effect on clearance; reference 124 mL/min/1.73 m^2, the median GFR of the analysis population (Darwish 2025b Table 2 footnote, 'GFR/124'). The source column is named GFR and maps to the canonical general-scope CRCL covariate, which covers BSA-normalized renal function from either a creatinine-based estimate or a tracer-measured GFR. Darwish 2025b Methods states that GFR was estimated with the Schwartz equation for subjects under 18 years of age but does not name the equation used for adults. Creatinine clearance was screened as a separate covariate in the earlier model and was not retained; GFR is the renal descriptor carried into the final model.",
+      source_name = "GFR"
     ),
     DIS_RETT = list(
-      description        = "Rett syndrome disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Rett syndrome disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-Rett cohort)",
-      notes              = "1 = patient with Rett syndrome, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of Rett_i). Decreases CL by 14.6% and increases Vp by 80.5%. Both shifts moved materially when the DAFFODIL data were added: Darwish 2025b Results reports them as the only covariate effects changing by more than 10% relative to Darwish_2025a_trofinetide, by +13.6% (CL, -0.169 to -0.146) and +30.7% (Vp, 0.616 to 0.805). Also selects the disease-cohort residual-error magnitude, which Darwish 2025b pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury. All Rett syndrome participants were female.",
-      source_name        = "Rett"
+      notes = "1 = patient with Rett syndrome, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of Rett_i). Decreases CL by 14.6% and increases Vp by 80.5%. Both shifts moved materially when the DAFFODIL data were added: Darwish 2025b Results reports them as the only covariate effects changing by more than 10% relative to Darwish_2025a_trofinetide, by +13.6% (CL, -0.169 to -0.146) and +30.7% (Vp, 0.616 to 0.805). Also selects the disease-cohort residual-error magnitude, which Darwish 2025b pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury. All Rett syndrome participants were female.",
+      source_name = "Rett"
     ),
     DIS_TBI = list(
-      description        = "Traumatic brain injury disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Traumatic brain injury disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-TBI cohort)",
-      notes              = "1 = patient with traumatic brain injury, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of TBI_i). Increases CL by 22.9% and decreases Vp by 75.3%. NOTE: distinct from the register's DIS_BURN_RECENT canonical, whose documented source alias 'TBI' denotes recent burn injury rather than traumatic brain injury. Also selects the disease-cohort residual-error magnitude.",
-      source_name        = "TBI"
+      notes = "1 = patient with traumatic brain injury, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of TBI_i). Increases CL by 22.9% and decreases Vp by 75.3%. NOTE: distinct from the register's DIS_BURN_RECENT canonical, whose documented source alias 'TBI' denotes recent burn injury rather than traumatic brain injury. Also selects the disease-cohort residual-error magnitude.",
+      source_name = "TBI"
     ),
     DIS_FXS = list(
-      description        = "Fragile X syndrome disease-state indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fragile X syndrome disease-state indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteers and any non-FXS cohort)",
-      notes              = "1 = patient with fragile X syndrome, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of FXS_i). Increases Vc by 116%, the largest single covariate effect in the model. Also selects the disease-cohort residual-error magnitude. All fragile X syndrome participants were male.",
-      source_name        = "FXS"
+      notes = "1 = patient with fragile X syndrome, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of FXS_i). Increases Vc by 116%, the largest single covariate effect in the model. Also selects the disease-cohort residual-error magnitude. All fragile X syndrome participants were male.",
+      source_name = "FXS"
     ),
     FED = list(
-      description        = "Fed-vs-fasted state at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted state at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "1 = dose administered in the fed state, 0 = fasted (Darwish 2025b Table 2 footnote, definition of Fed_i). Decreases ka by 9.69% and F1 by 13.3%. Estimated from the dedicated phase 1 food-effect study ACP-2566-006, in which the fed arm followed a high-fat meal (Supplementary Material Table S2); Darwish 2025b does not report the meal composition in the main text, and the effect is pooled with the fed dosing in the phase 3 LAVENDER study, so the general FED canonical applies rather than FED_HIGHFAT.",
-      source_name        = "FED"
+      notes = "1 = dose administered in the fed state, 0 = fasted (Darwish 2025b Table 2 footnote, definition of Fed_i). Decreases ka by 9.69% and F1 by 13.3%. Estimated from the dedicated phase 1 food-effect study ACP-2566-006, in which the fed arm followed a high-fat meal (Supplementary Material Table S2); Darwish 2025b does not report the meal composition in the main text, and the effect is pooled with the fed dosing in the phase 3 LAVENDER study, so the general FED canonical applies rather than FED_HIGHFAT.",
+      source_name = "FED"
     ),
     DOSE_18G = list(
-      description        = "18 g trofinetide dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "18 g trofinetide dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any dose level other than 18 g, including the 2-12 g therapeutic weight-banded doses)",
-      notes              = "1 = subject received the 18 g supratherapeutic dose, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of DoseGrp1_i). Decreases F1 by 13.2%. Arises from the thorough-QTc study ACP-2566-008, which gave single 12, 18, or 24 g oral doses (Supplementary Material Table S1); the effect captures the less-than-proportional rise in exposure above the therapeutic range. Mutually exclusive with DOSE_24G. Unchanged from Darwish_2025a_trofinetide.",
-      source_name        = "DoseGrp1"
+      notes = "1 = subject received the 18 g supratherapeutic dose, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of DoseGrp1_i). Decreases F1 by 13.2%. Arises from the thorough-QTc study ACP-2566-008, which gave single 12, 18, or 24 g oral doses (Supplementary Material Table S1); the effect captures the less-than-proportional rise in exposure above the therapeutic range. Mutually exclusive with DOSE_24G. Unchanged from Darwish_2025a_trofinetide.",
+      source_name = "DoseGrp1"
     ),
     DOSE_24G = list(
-      description        = "24 g trofinetide dose-level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "24 g trofinetide dose-level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any dose level other than 24 g, including the 2-12 g therapeutic weight-banded doses)",
-      notes              = "1 = subject received the 24 g supratherapeutic dose, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of DoseGrp2_i). Decreases F1 by 28.4%, roughly twice the 18 g reduction. Arises from the thorough-QTc study ACP-2566-008. Mutually exclusive with DOSE_18G. Unchanged from Darwish_2025a_trofinetide.",
-      source_name        = "DoseGrp2"
+      notes = "1 = subject received the 24 g supratherapeutic dose, 0 = all other subjects (Darwish 2025b Table 2 footnote, definition of DoseGrp2_i). Decreases F1 by 28.4%, roughly twice the 18 g reduction. Arises from the thorough-QTc study ACP-2566-008. Mutually exclusive with DOSE_18G. Unchanged from Darwish_2025a_trofinetide.",
+      source_name = "DoseGrp2"
     ),
     AE_DIARRHEA = list(
-      description        = "Concurrent treatment-emergent diarrhea indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concurrent treatment-emergent diarrhea indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diarrhea at the time of the dose record)",
-      notes              = "1 = subject experiencing diarrhea, 0 = otherwise. The Darwish 2025b Table 2 footnote explicitly describes Diar_i as a TIME-VARYING indicator, so the value is carried per dose record rather than per subject. Decreases F1 by 15.7%, up from 14.8% in Darwish_2025a_trofinetide. Diarrhea is the most common trofinetide adverse event, which is why the sponsor carried it structurally rather than screening it out.",
-      source_name        = "Diar"
+      notes = "1 = subject experiencing diarrhea, 0 = otherwise. The Darwish 2025b Table 2 footnote explicitly describes Diar_i as a TIME-VARYING indicator, so the value is carried per dose record rather than per subject. Decreases F1 by 15.7%, up from 14.8% in Darwish_2025a_trofinetide. Diarrhea is the most common trofinetide adverse event, which is why the sponsor carried it structurally rather than screening it out.",
+      source_name = "Diar"
     )
   )
 
@@ -105,55 +105,55 @@ Darwish_2025b_trofinetide <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as part of the composite 'sex/disease state' covariate, which Darwish 2025b Methods enumerates as six categories: male healthy volunteers, female healthy volunteers, patients with Rett syndrome (female only), patients with fragile X syndrome (male only), male patients with TBI, and female patients with TBI. Only the disease-state contrasts survived backward elimination, so sex itself is not in the final model; the retained members of that composite are DIS_RETT, DIS_TBI, and DIS_FXS. The analysis population was 56.9% female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as part of the composite 'sex/disease state' covariate, which Darwish 2025b Methods enumerates as six categories: male healthy volunteers, female healthy volunteers, patients with Rett syndrome (female only), patients with fragile X syndrome (male only), male patients with TBI, and female patients with TBI. Only the disease-state contrasts survived backward elimination, so sex itself is not in the final model; the retained members of that composite are DIS_RETT, DIS_TBI, and DIS_FXS. The analysis population was 56.9% female."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Listed among the covariates re-evaluated in Darwish 2025b Methods but not retained; body weight was the size descriptor carried into the final model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Listed among the covariates re-evaluated in Darwish 2025b Methods but not retained; body weight was the size descriptor carried into the final model."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model. Darwish 2025b does not report the units in which it was screened."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a hepatic-function marker (Darwish 2025b Methods) but not retained in the final model. Darwish 2025b does not report the units in which it was screened."
     ),
     ROUTE_NGT = list(
       description = "Gastric-tube-vs-oral enteral administration route indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Darwish 2025b Methods lists 'route of enteral administration (oral or gastric tube)' among the covariates screened; it was not retained, so oral and gastric-tube doses share the same absorption and bioavailability parameters here. Gastric-tube dosing was common in the Rett syndrome cohorts -- 31-41% of participants in the three Neu-2566-Rett studies and 4 of 13 (30.8%) in DAFFODIL (Darwish 2025b Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Darwish 2025b Methods lists 'route of enteral administration (oral or gastric tube)' among the covariates screened; it was not retained, so oral and gastric-tube doses share the same absorption and bioavailability parameters here. Gastric-tube dosing was common in the Rett syndrome cohorts -- 31-41% of participants in the three Neu-2566-Rett studies and 4 of 13 (30.8%) in DAFFODIL (Darwish 2025b Table 1)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 455,
+    species = "human",
+    n_subjects = 455,
     n_observations = 5709,
-    n_studies      = 14,
-    age_range      = "2-64 years (mean 21.8)",
-    weight_range   = "9.8-140 kg (mean 56.5)",
+    n_studies = 14,
+    age_range = "2-64 years (mean 21.8)",
+    weight_range = "9.8-140 kg (mean 56.5)",
     sex_female_pct = 56.9,
-    gfr_reference  = "124 mL/min/1.73 m^2 (analysis-population median)",
-    disease_state  = "Pooled analysis of 156 healthy volunteers, 198 patients with Rett syndrome (female only), 57 patients with traumatic brain injury (male only), and 44 patients with fragile X syndrome (male only).",
-    dose_range     = "Oral, gastric-tube, and intravenous (bolus and infusion) trofinetide; oral doses spanned the 2-12 g therapeutic weight-banded range plus supratherapeutic single 18 g and 24 g dose levels.",
-    regions        = "Not reported",
-    notes          = "Darwish 2025b Results, 'Population Pharmacokinetic Model'. This is the 14-study update of the 13-study model packaged as Darwish_2025a_trofinetide: it adds 114 concentrations from 13 girls aged 2-4 years with Rett syndrome enrolled in the phase 2/3 DAFFODIL study (ACP-2566-009), whose mean age was 3 years (range 2-4) and mean baseline body weight 13.4 kg (range 9.8-18.1). The DAFFODIL subgroup was 92.3% white and 7.7% Asian; race is not reported for the pooled population. Assay: LC-MS/MS in lithium-heparinized whole blood, LLOQ 0.100 ug/mL, ULOQ 100 ug/mL. The target steady-state exposure range used to confirm the weight-banded regimens was AUC0-12 of 800-1200 ug*h/mL. DAFFODIL dosing escalated from 2 g BID to 4 g BID at week 2, then to weight-banded 5 g BID (>= 9 to < 12 kg) or 6 g BID (>= 12 to < 20 kg) at week 4 (Supplementary Material Table S2)."
+    gfr_reference = "124 mL/min/1.73 m^2 (analysis-population median)",
+    disease_state = "Pooled analysis of 156 healthy volunteers, 198 patients with Rett syndrome (female only), 57 patients with traumatic brain injury (male only), and 44 patients with fragile X syndrome (male only).",
+    dose_range = "Oral, gastric-tube, and intravenous (bolus and infusion) trofinetide; oral doses spanned the 2-12 g therapeutic weight-banded range plus supratherapeutic single 18 g and 24 g dose levels.",
+    regions = "Not reported",
+    notes = "Darwish 2025b Results, 'Population Pharmacokinetic Model'. This is the 14-study update of the 13-study model packaged as Darwish_2025a_trofinetide: it adds 114 concentrations from 13 girls aged 2-4 years with Rett syndrome enrolled in the phase 2/3 DAFFODIL study (ACP-2566-009), whose mean age was 3 years (range 2-4) and mean baseline body weight 13.4 kg (range 9.8-18.1). The DAFFODIL subgroup was 92.3% white and 7.7% Asian; race is not reported for the pooled population. Assay: LC-MS/MS in lithium-heparinized whole blood, LLOQ 0.100 ug/mL, ULOQ 100 ug/mL. The target steady-state exposure range used to confirm the weight-banded regimens was AUC0-12 of 800-1200 ug*h/mL. DAFFODIL dosing escalated from 2 g BID to 4 g BID at week 2, then to weight-banded 5 g BID (>= 9 to < 12 kg) or 6 g BID (>= 12 to < 20 kg) at week 4 (Supplementary Material Table S2)."
   )
 
   ini({

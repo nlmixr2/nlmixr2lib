@@ -22,44 +22,44 @@ Wallender_2021_piperaquine_qtc <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Acts on the EMBEDDED PK model only (allometric exponent 0.75 on all clearances and 1 on all volumes, referenced to the study-median 8.6 kg), and thereby on QTcB indirectly through piperaquine concentration. Weight was tested as a direct covariate on the QTc parameters and was not retained (Methods, 'PK-QTc analysis').",
-      source_name        = "WEIGHT"
+      notes = "Time-varying. Acts on the EMBEDDED PK model only (allometric exponent 0.75 on all clearances and 1 on all volumes, referenced to the study-median 8.6 kg), and thereby on QTcB indirectly through piperaquine concentration. Weight was tested as a direct covariate on the QTc parameters and was not retained (Methods, 'PK-QTc analysis').",
+      source_name = "WEIGHT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age at birth plus postnatal age).",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age at birth plus postnatal age).",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "WEEKS, not the register-default months. Acts on the EMBEDDED PK model only, through the Emax maturation term PMA / (PMA + 96) on clearance. Age was tested as a direct covariate on the QTc parameters and was not retained.",
-      source_name        = "Post menstrual age"
+      notes = "WEEKS, not the register-default months. Acts on the EMBEDDED PK model only, through the Emax maturation term PMA / (PMA + 96) on clearance. Age was tested as a direct covariate on the QTc parameters and was not retained.",
+      source_name = "Post menstrual age"
     ),
     WAZ = list(
-      description        = "Weight-for-age z-score against the WHO Child Growth Standards.",
-      units              = "unitless (z-score)",
-      type               = "continuous",
+      description = "Weight-for-age z-score against the WHO Child Growth Standards.",
+      units = "unitless (z-score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Acts on the EMBEDDED PK model only, through relative oral bioavailability, and therefore reaches QTcB only through piperaquine exposure. This is the mechanism behind Supplementary Figure 6, where predicted maximum QTcB differs between malnourished and better-nourished children.",
-      source_name        = "WAZ"
+      notes = "Time-varying. Acts on the EMBEDDED PK model only, through relative oral bioavailability, and therefore reaches QTcB only through piperaquine exposure. This is the mechanism behind Supplementary Figure 6, where predicted maximum QTcB differs between malnourished and better-nourished children.",
+      source_name = "WAZ"
     ),
     SELFADMIN = list(
-      description        = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Self-administered dosing-occasion indicator: 1 = the DP course was taken at home without direct observation, 0 = every daily dose of the course was directly observed.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (directly observed therapy)",
-      notes              = "Per dosing occasion. Acts on the EMBEDDED PK model only. Every course contributing to this sub-model was directly observed, because the electrocardiograms were paired with the intensive-PK substudy in which all three daily doses were given in clinic, so SELFADMIN = 0 is the setting that reproduces the data this model was fit to.",
-      source_name        = "Self-administered DP"
+      notes = "Per dosing occasion. Acts on the EMBEDDED PK model only. Every course contributing to this sub-model was directly observed, because the electrocardiograms were paired with the intensive-PK substudy in which all three daily doses were given in clinic, so SELFADMIN = 0 is the setting that reproduces the data this model was fit to.",
+      source_name = "Self-administered DP"
     ),
     OCC = list(
-      description        = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion index identifying the DP treatment course, for between-occasion variability on relative oral bioavailability.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "One occasion per three-day DP course; values 1 to 25 are multiplexed inside model() onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance. OCC = 0, or any value outside 1..25, yields the occasion-free typical value. See modellib('Wallender_2021_piperaquine') for the full annotation.",
-      source_name        = "OCC"
+      notes = "One occasion per three-day DP course; values 1 to 25 are multiplexed inside model() onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance. OCC = 0, or any value outside 1..25, yields the occasion-free typical value. See modellib('Wallender_2021_piperaquine') for the full annotation.",
+      source_name = "OCC"
     )
   )
 
@@ -67,34 +67,34 @@ Wallender_2021_piperaquine_qtc <- function() {
   # Documentation only.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Tested as a covariate on the PK-QTc parameters and not retained: 'Age, sex and weight were tested as covariates for the PK-QTc model' (Methods, added in revision at the reviewer's request; Peer Review File response to the reviewer question on line 178). No coefficient is reported, so none can be encoded."
+      notes = "Tested as a covariate on the PK-QTc parameters and not retained: 'Age, sex and weight were tested as covariates for the PK-QTc model' (Methods, added in revision at the reviewer's request; Peer Review File response to the reviewer question on line 178). No coefficient is reported, so none can be encoded."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    transit2 = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "32 and 104 weeks of age (the two intensive-PK visits)",
-    weight_median  = "8.6 kg (the parent study median, used as the allometric reference)",
-    disease_state  = "Healthy Ugandan infants and toddlers enrolled in the intensive pharmacokinetic substudy of an intermittent preventive treatment trial; 22 from the every-12-weeks arm and 10 from the every-4-weeks arm.",
-    dose_range     = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days, directly observed at both intensive-PK visits.",
-    regions        = "Tororo District, Uganda",
-    biomarkers     = "QT interval corrected by Bazett's formula (QT divided by the square root of the RR interval). Median pre-drug QTcB 413 msec (range 347-472) and post-drug 424 msec (range 388-482).",
-    notes          = "Substudy of NCT02163447. An electrocardiogram was obtained before the first dose of DP at 32 and 104 weeks of age and again 2 to 3 h after the third daily dose. Bazett's correction was chosen because it best corrected for heart rate in this cohort. The PK sampling schedule was venipuncture at 0.5, 1, 2, 3, 4, 6, 8 and 24 h after the third daily dose, then finger-prick at 24 h and at 4, 7, 14 and 21 days. Linear and Emax models were tested for the concentration-QTcB relationship and the linear model was retained. Estimation in NONMEM 7.4."
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "32 and 104 weeks of age (the two intensive-PK visits)",
+    weight_median = "8.6 kg (the parent study median, used as the allometric reference)",
+    disease_state = "Healthy Ugandan infants and toddlers enrolled in the intensive pharmacokinetic substudy of an intermittent preventive treatment trial; 22 from the every-12-weeks arm and 10 from the every-4-weeks arm.",
+    dose_range = "Weight-band dosed dihydroartemisinin-piperaquine once daily for three consecutive days, directly observed at both intensive-PK visits.",
+    regions = "Tororo District, Uganda",
+    biomarkers = "QT interval corrected by Bazett's formula (QT divided by the square root of the RR interval). Median pre-drug QTcB 413 msec (range 347-472) and post-drug 424 msec (range 388-482).",
+    notes = "Substudy of NCT02163447. An electrocardiogram was obtained before the first dose of DP at 32 and 104 weeks of age and again 2 to 3 h after the third daily dose. Bazett's correction was chosen because it best corrected for heart rate in this cohort. The PK sampling schedule was venipuncture at 0.5, 1, 2, 3, 4, 6, 8 and 24 h after the third daily dose, then finger-prick at 24 h and at 4, 7, 14 and 21 days. Linear and Emax models were tested for the concentration-QTcB relationship and the linear model was retained. Estimation in NONMEM 7.4."
   )
 
   ini({

@@ -39,25 +39,35 @@ Ibrahim_2025_ibrutinib_bp <- function() {
   # transit suffix deserves registration; see the vignette Errata.
   paper_specific_compartments <- c("sbp_transit1", "dbp_transit1")
   units <- list(
-    time          = "day",
-    dosing        = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
+    time = "day",
+    dosing = "n/a (no drug-dosing events; ibrutinib exposure enters as the time-varying covariate AUC_IBRU)",
     concentration = "systolic and diastolic blood pressure in mmHg (neither output is a drug concentration)"
   )
 
   compartmentData <- list(
-    sbp_transit1 = list(analyte = "systolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE),
-    sbp          = list(analyte = "systolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE),
-    dbp_transit1 = list(analyte = "diastolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE),
-    dbp          = list(analyte = "diastolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE)
+    sbp_transit1 = list(
+      analyte = "systolic blood pressure",
+      units = "mmHg",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    sbp = list(analyte = "systolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE),
+    dbp_transit1 = list(
+      analyte = "diastolic blood pressure",
+      units = "mmHg",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    dbp = list(analyte = "diastolic blood pressure", units = "mmHg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     AUC_IBRU = list(
-      description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
-      units              = "h*ng/mL",
-      type               = "continuous",
+      description = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",
+      units = "h*ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying: the value tracks the patient's current daily ibrutinib dose level and drops to 0 during",
         "treatment interruptions. Ibrutinib enters this model ONLY through this column -- the model contains no drug",
         "compartment and no dosing events. Ibrahim 2025 computed daily AUC(0-24) from the individual ibrutinib plasma",
@@ -67,14 +77,14 @@ Ibrahim_2025_ibrutinib_bp <- function() {
         "the IAUC50 of the companion efficacy model (28.4 h*ng/mL; modellib('Ibrahim_2025_ibrutinib_cll')), which is",
         "why the paper's de-escalation schedules shed hypertension risk faster than they shed efficacy."
       ),
-      source_name        = "auc"
+      source_name = "auc"
     ),
     AGE = list(
-      description        = "Baseline age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline value). Enters the SYSTOLIC mean transit time in power form",
         "mtt_sbp = exp(lmtt_sbp + etalmtt_sbp + e_age_mtt_sbp * log(AGE / 70)), equivalently",
         "MTT_sBP = 53.6 * (AGE / 70)^-3.87. Older patients reach the ibrutinib-elevated sBP steady state faster.",
@@ -89,19 +99,19 @@ Ibrahim_2025_ibrutinib_bp <- function() {
         "Table 2 footnote c gives MTTsBP = e^(LN(79.9) - 5.04*LN(Age/63)) with 63 years the mean baseline age of that",
         "population. See the vignette Errata."
       ),
-      source_name        = "LNAGE"
+      source_name = "LNAGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 246L,
-    n_studies      = 2L,
-    age_range      = "mean 70 (SD 8.9) years",
-    disease_state  = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
-    dose_range     = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; 420 mg once daily in PCYC-1115",
-    regions        = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
-    notes          = paste(
+    species = "human",
+    n_subjects = 246L,
+    n_studies = 2L,
+    age_range = "mean 70 (SD 8.9) years",
+    disease_state = "Chronic lymphocytic leukemia (CLL); 151 (61%) treatment-naive, 95 (39%) relapsed/refractory",
+    dose_range = "ibrutinib 420 mg once daily (n = 94) or 840 mg once daily (n = 38) in PCYC-1102; 420 mg once daily in PCYC-1115",
+    regions = "United States and international (PCYC-1102 phase Ib/II; PCYC-1115 phase III)",
+    notes = paste(
       "Baseline demographics from Ibrahim 2025 Table S1 (Data S1, PSP-2025-0220-s01.docx), which reports only age and",
       "CLL group for the pooled n = 246 analysis population. Data were obtained through the Yale University Open Data",
       "Access (YODA) Project 2020-4386. Grade 2 hypertension is defined in the paper as sBP >= 140 mmHg or",

@@ -52,20 +52,20 @@ Kemal_2026_nemtabrutinib_bor <- function() {
 
   covariateData <- list(
     CSS_NEMTA = list(
-      description        = "Individual average on-treatment plasma concentration of nemtabrutinib (Cavg).",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Individual average on-treatment plasma concentration of nemtabrutinib (Cavg).",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A post-hoc exposure metric, not an observation. Kemal 2026 (Methods 2.3 and 2.4) simulated each participant's concentration-time profile from the companion population PK model using that participant's own dosing history - including dose interruptions and dose reductions - and their individual post hoc PK parameter estimates, then computed Cavg as the cumulative on-treatment AUC divided by the treatment duration. Generate it for simulation with modellib('Kemal_2026_nemtabrutinib'). Enters this model UNCENTRED, matching the raw glm intercept printed in Table S4. Observed distribution in the CLL/SLL exposure-efficacy cohort (Figure 3 reference boxplots): median about 600 ng/mL at 45 mg (n = 16), about 750 ng/mL at 65 mg (n = 203), and about 850 ng/mL at 80 mg (n = 54), with the pooled range extending to about 2000 ng/mL.",
-      source_name        = "Cavg"
+      notes = "A post-hoc exposure metric, not an observation. Kemal 2026 (Methods 2.3 and 2.4) simulated each participant's concentration-time profile from the companion population PK model using that participant's own dosing history - including dose interruptions and dose reductions - and their individual post hoc PK parameter estimates, then computed Cavg as the cumulative on-treatment AUC divided by the treatment duration. Generate it for simulation with modellib('Kemal_2026_nemtabrutinib'). Enters this model UNCENTRED, matching the raw glm intercept printed in Table S4. Observed distribution in the CLL/SLL exposure-efficacy cohort (Figure 3 reference boxplots): median about 600 ng/mL at 45 mg (n = 16), about 750 ng/mL at 65 mg (n = 203), and about 850 ng/mL at 80 mg (n = 54), with the pooled range extending to about 2000 ng/mL.",
+      source_name = "Cavg"
     ),
     T_TRT = list(
-      description        = "Time on nemtabrutinib treatment (the paper's 'follow up time' / 'time on treatment').",
-      units              = "days",
-      type               = "continuous",
+      description = "Time on nemtabrutinib treatment (the paper's 'follow up time' / 'time on treatment').",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Carried continuously, NOT dichotomized: Kemal 2026 enters it through the saturable term T_TRT / (ET50 + T_TRT) with ET50 = 200 days, because 'the effect of time on response rate is only expected to persist initially' (Methods 2.4). The paper motivates the saturable form from the clinical observation that the proportion of responders to BTK inhibitors rises rapidly over the first 3-6 months and more slowly through about 12 months. Figure 3 draws the fitted relationship at two values of this covariate, 180 and 360 days. For patients who dropped out, Kemal 2026 assessed whether they had attained PR or CR and computed their exposure over the time they remained in the study, so this column is the time actually on treatment rather than the planned course.",
-      source_name        = "follow up time"
+      notes = "Carried continuously, NOT dichotomized: Kemal 2026 enters it through the saturable term T_TRT / (ET50 + T_TRT) with ET50 = 200 days, because 'the effect of time on response rate is only expected to persist initially' (Methods 2.4). The paper motivates the saturable form from the clinical observation that the proportion of responders to BTK inhibitors rises rapidly over the first 3-6 months and more slowly through about 12 months. Figure 3 draws the fitted relationship at two values of this covariate, 180 and 360 days. For patients who dropped out, Kemal 2026 assessed whether they had attained PR or CR and computed their exposure over the time they remained in the study, so this column is the time actually on treatment rather than the planned course.",
+      source_name = "follow up time"
     )
   )
 
@@ -75,33 +75,33 @@ Kemal_2026_nemtabrutinib_bor <- function() {
   # be referenced in model().
   covariatesDataExcluded <- list(
     N_PRIORTHER = list(
-      description        = "Number of prior lines of anticancer therapy before starting nemtabrutinib.",
-      units              = "(count)",
-      type               = "continuous",
+      description = "Number of prior lines of anticancer therapy before starting nemtabrutinib.",
+      units = "(count)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Named in Results 3.5 as a covariate 'expected to be relevant predictors of efficacy', but not estimable in this analysis because ALL patients in the cohort had received prior treatment, leaving no untreated contrast. No coefficient is reported anywhere in the paper or supplement.",
-      source_name        = "prior lines of treatment"
+      notes = "Named in Results 3.5 as a covariate 'expected to be relevant predictors of efficacy', but not estimable in this analysis because ALL patients in the cohort had received prior treatment, leaving no untreated contrast. No coefficient is reported anywhere in the paper or supplement.",
+      source_name = "prior lines of treatment"
     ),
     SNP_TP53_MUT = list(
-      description        = "TP53 tumour-suppressor gene mutation status.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "TP53 tumour-suppressor gene mutation status.",
+      units = "(binary)",
+      type = "binary",
       reference_category = NULL,
-      notes              = "Named in Results 3.5 and again in the Discussion as an expected prognostic predictor, but not evaluable here because 'many of them had missing TP53 gene mutation status'. Kemal 2026 states that TP53 aberrations will be explored once phase 3 data accrue. No coefficient is reported.",
-      source_name        = "TP53 gene mutation status"
+      notes = "Named in Results 3.5 and again in the Discussion as an expected prognostic predictor, but not evaluable here because 'many of them had missing TP53 gene mutation status'. Kemal 2026 states that TP53 aberrations will be explored once phase 3 data accrue. No coefficient is reported.",
+      source_name = "TP53 gene mutation status"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 288L,
-    n_studies      = 2L,
-    age_range      = "25-89 years (pooled population PK analysis set)",
-    weight_range   = "41.2-147 kg (pooled population PK analysis set)",
-    disease_state  = "Relapsed / refractory chronic lymphocytic leukemia or small lymphocytic lymphoma (CLL/SLL). This is the CLL/SLL subset of the 578-patient population PK analysis set; the two exposure-safety models from the same paper instead use all 578 patients regardless of primary diagnosis.",
-    dose_range     = "5-80 mg nemtabrutinib once daily orally; the doses received by most patients, and the ones drawn as reference boxplots in Figure 3, are 45, 65 and 80 mg (n = 16, 203 and 54 respectively). 65 mg daily is the recommended phase 2 dose.",
-    endpoint       = "Best overall response (BOR): investigator-assessed partial response (PR) or complete response (CR) per iwCLL 2018 criteria, attained at any time throughout treatment. Methods 2.4 defines responders only as those attaining PR or CR; the assessor and the response criteria are stated nowhere in the running text and are recoverable ONLY from the Figure 3 y-axis label, which reads 'BOR (INV per IWCLL2018 Criteria)' - text that sits inside the vector figure and so does not appear in any text extraction of the PDF. In BELLWAVE-003, CLL/SLL participants treated with 65 mg showed an objective response rate of 35.0% at a median follow-up of 9.1 months; no PR or CR was observed at doses of 30 mg or below.",
-    notes          = "The exposure-efficacy analysis set is the largest single-indication subset of the population PK analysis population: patients with a primary CLL/SLL diagnosis, available response data and available PK, who completed at least one treatment cycle. Patients who dropped out were retained, scored on whether they had attained PR or CR, with exposure computed over the time they remained in the study. Fitted by multivariate logistic regression in R v4.3.3 with a final AIC of 262.34."
+    species = "human",
+    n_subjects = 288L,
+    n_studies = 2L,
+    age_range = "25-89 years (pooled population PK analysis set)",
+    weight_range = "41.2-147 kg (pooled population PK analysis set)",
+    disease_state = "Relapsed / refractory chronic lymphocytic leukemia or small lymphocytic lymphoma (CLL/SLL). This is the CLL/SLL subset of the 578-patient population PK analysis set; the two exposure-safety models from the same paper instead use all 578 patients regardless of primary diagnosis.",
+    dose_range = "5-80 mg nemtabrutinib once daily orally; the doses received by most patients, and the ones drawn as reference boxplots in Figure 3, are 45, 65 and 80 mg (n = 16, 203 and 54 respectively). 65 mg daily is the recommended phase 2 dose.",
+    endpoint = "Best overall response (BOR): investigator-assessed partial response (PR) or complete response (CR) per iwCLL 2018 criteria, attained at any time throughout treatment. Methods 2.4 defines responders only as those attaining PR or CR; the assessor and the response criteria are stated nowhere in the running text and are recoverable ONLY from the Figure 3 y-axis label, which reads 'BOR (INV per IWCLL2018 Criteria)' - text that sits inside the vector figure and so does not appear in any text extraction of the PDF. In BELLWAVE-003, CLL/SLL participants treated with 65 mg showed an objective response rate of 35.0% at a median follow-up of 9.1 months; no PR or CR was observed at doses of 30 mg or below.",
+    notes = "The exposure-efficacy analysis set is the largest single-indication subset of the population PK analysis population: patients with a primary CLL/SLL diagnosis, available response data and available PK, who completed at least one treatment cycle. Patients who dropped out were retained, scored on whether they had attained PR or CR, with exposure computed over the time they remained in the study. Fitted by multivariate logistic regression in R v4.3.3 with a final AIC of 262.34."
   )
 
   ini({

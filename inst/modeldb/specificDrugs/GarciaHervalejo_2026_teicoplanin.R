@@ -41,11 +41,11 @@ GarciaHervalejo_2026_teicoplanin <- function() {
 
   covariateData <- list(
     IBW = list(
-      description        = "Ideal body weight by the Devine formula; the anthropometric descriptor retained on clearance in preference to total body weight, adjusted body weight, BMI and BSA",
-      units              = "kg",
-      type               = "continuous",
+      description = "Ideal body weight by the Devine formula; the anthropometric descriptor retained on clearance in preference to total body weight, adjusted body weight, BMI and BSA",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column IBW. Enters clearance as the POWER term printed in",
         "Garcia-Hervalejo 2026 Equation 1, normalised to the development-cohort",
         "median of 61 kg: (IBW / 61)^3.2. Table 1 gives the development-cohort",
@@ -89,14 +89,14 @@ GarciaHervalejo_2026_teicoplanin <- function() {
         "model extrapolation and should be interpreted with caution'. Given the",
         "exponent, extrapolation beyond the fitted range is unusually hazardous."
       ),
-      source_name        = "IBW"
+      source_name = "IBW"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate by the CKD-EPI equation, BSA-normalised; power effect on clearance",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate by the CKD-EPI equation, BSA-normalised; power effect on clearance",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column eGFR. CKD-EPI-estimated glomerular filtration rate",
         "(Methods, 'Study Design and Population': 'Renal function was estimated",
         "using the CKD-EPI (Chronic Kidney Disease Epidemiology Collaboration)",
@@ -132,14 +132,14 @@ GarciaHervalejo_2026_teicoplanin <- function() {
         "were EXCLUDED by design (Methods), so the model carries no information",
         "about dialysis and the observed range is 26-141 mL/min/1.73 m^2."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     ),
     AGE = list(
-      description        = "Subject age; centred linear effect on clearance",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age; centred linear effect on clearance",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column AGE. Enters clearance as the median-CENTRED LINEAR",
         "multiplier printed in Equation 1: (1 + 0.012 * (AGE - 62)), with 62",
         "years the development-cohort median age (Table 1, range 18-85).",
@@ -179,40 +179,40 @@ GarciaHervalejo_2026_teicoplanin <- function() {
         "clearance).",
         "TIME-FIXED at baseline."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Median 68 kg (range 41-127) in the development cohort (Table 1). Screened as one of five anthropometric descriptors on CL and not retained: 'Among the anthropometric descriptors evaluated (total body weight, adjusted body weight, IBW, BMI, and BSA), IBW was the descriptor that best explained interindividual variability in CL' (Results). The Discussion adds that total body weight 'may overestimate the metabolically active mass contributing to drug clearance' in patients with cachexia, fluid overload or malnutrition. Per-descriptor statistics are in Supplementary Table S1, which is not on disk."
+      units = "kg",
+      type = "continuous",
+      notes = "Median 68 kg (range 41-127) in the development cohort (Table 1). Screened as one of five anthropometric descriptors on CL and not retained: 'Among the anthropometric descriptors evaluated (total body weight, adjusted body weight, IBW, BMI, and BSA), IBW was the descriptor that best explained interindividual variability in CL' (Results). The Discussion adds that total body weight 'may overestimate the metabolically active mass contributing to drug clearance' in patients with cachexia, fluid overload or malnutrition. Per-descriptor statistics are in Supplementary Table S1, which is not on disk."
     ),
     ABW = list(
       description = "Adjusted body weight, computed with a 0.4 correction factor applied to the excess of total over ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Collected as a demographic variable (Methods: 'adjusted body weight (using a 0.4 correction factor for excess body weight)') and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated. The name ABW is NOT registered in inst/references/covariate-columns.md because the model does not use it; it is documented here only to preserve the provenance of the paper's covariate screen."
+      units = "kg",
+      type = "continuous",
+      notes = "Collected as a demographic variable (Methods: 'adjusted body weight (using a 0.4 correction factor for excess body weight)') and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated. The name ABW is NOT registered in inst/references/covariate-columns.md because the model does not use it; it is documented here only to preserve the provenance of the paper's covariate screen."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Collected as weight/height^2 (Methods) and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Collected as weight/height^2 (Methods) and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated."
     ),
     BSA = list(
       description = "Body surface area by the Du Bois formula",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Collected by the Du Bois formula (Methods) and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated."
+      units = "m^2",
+      type = "continuous",
+      notes = "Collected by the Du Bois formula (Methods) and screened as an anthropometric descriptor on CL, losing to IBW (Results). No cohort summary is tabulated."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/dL",
+      type = "continuous",
+      notes = paste(
         "Median 3.3 g/dL (range 2.4-4.3) in the development cohort (Table 1) --",
         "uniformly low, the normal adult range being roughly 3.5-5.0 g/dL.",
         "Screened on CL and NOT retained, which the Discussion treats as a",
@@ -227,60 +227,60 @@ GarciaHervalejo_2026_teicoplanin <- function() {
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Median 5.4 g/dL (range 3.7-8.7) in the development cohort (Table 1). Screened as a biochemical covariate and not retained; per-covariate statistics are in Supplementary Table S1, which is not on disk."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Median 5.4 g/dL (range 3.7-8.7) in the development cohort (Table 1). Screened as a biochemical covariate and not retained; per-covariate statistics are in Supplementary Table S1, which is not on disk."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Median 0.71 mg/dL (range 0.30-2.11) in the development cohort (Table 1). Collected as the input to the CKD-EPI equation; renal function entered the final model through the derived eGFR (canonical CRCL) rather than through raw creatinine."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Median 0.71 mg/dL (range 0.30-2.11) in the development cohort (Table 1). Collected as the input to the CKD-EPI equation; renal function entered the final model through the derived eGFR (canonical CRCL) rather than through raw creatinine."
     ),
     CRP = list(
       description = "C-reactive protein",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Median 7.82 mg/dL in the development cohort (Table 1; the printed range '7.82-43.54' shares its lower bound with the median, which appears to be a transcription slip in the source table -- the validation cohort's range is given as 0.13-47.84). Screened as a biochemical covariate and not retained."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Median 7.82 mg/dL in the development cohort (Table 1; the printed range '7.82-43.54' shares its lower bound with the median, which appears to be a transcription slip in the source table -- the validation cohort's range is given as 0.13-47.84). Screened as a biochemical covariate and not retained."
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Median 9.2 g/dL (range 6.9-13.3) in the development cohort (Table 1), reflecting the anaemia typical of this population. Screened as a biochemical covariate and not retained."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Median 9.2 g/dL (range 6.9-13.3) in the development cohort (Table 1), reflecting the anaemia typical of this population. Screened as a biochemical covariate and not retained."
     ),
     PLT = list(
       description = "Platelet count",
-      units       = "cells/uL",
-      type        = "continuous",
-      notes       = "Median 36,500/uL (range 3000-565,000) in the development cohort (Table 1), reflecting the profound thrombocytopenia of neutropenic haematology patients. Screened as a biochemical covariate and not retained."
+      units = "cells/uL",
+      type = "continuous",
+      notes = "Median 36,500/uL (range 3000-565,000) in the development cohort (Table 1), reflecting the profound thrombocytopenia of neutropenic haematology patients. Screened as a biochemical covariate and not retained."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "40% of the development cohort were female (Table 1). Sex is not a covariate in the final model, but it is an input to the Devine ideal-body-weight formula that produces IBW (intercept 50.0 kg for men, 45.5 kg for women), so it acts on clearance indirectly through that derivation. Categorical covariates were screened by ANOVA on the eta values (Methods)."
+      units = "(binary)",
+      type = "binary",
+      notes = "40% of the development cohort were female (Table 1). Sex is not a covariate in the final model, but it is an input to the Devine ideal-body-weight formula that produces IBW (intercept 50.0 kg for men, 45.5 kg for women), so it acts on clearance indirectly through that derivation. Categorical covariates were screened by ANOVA on the eta values (Methods)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Collected as a demographic variable (Methods). No cohort summary is tabulated. Not a covariate in the final model, but it is the other input to the Devine ideal-body-weight formula, so a user starting from raw demographics needs HT and SEXF to derive the IBW column this model consumes."
+      units = "cm",
+      type = "continuous",
+      notes = "Collected as a demographic variable (Methods). No cohort summary is tabulated. Not a covariate in the final model, but it is the other input to the Devine ideal-body-weight formula, so a user starting from raw demographics needs HT and SEXF to derive the IBW column this model consumes."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 100L,
-    n_studies        = 1L,
+    species = "human",
+    n_subjects = 100L,
+    n_studies = 1L,
     n_concentrations = 168L,
-    age_median       = "62 years",
-    age_range        = "18-85 years (development cohort, Table 1); the study enrolled adults aged >= 18 years",
-    weight_median    = "68 kg total body weight; 61.4 kg ideal body weight",
-    weight_range     = "41-127 kg total body weight; 46.25-77 kg ideal body weight (development cohort, Table 1)",
-    sex_female_pct   = 40,
-    race_ethnicity   = "Not reported by category; single-centre Spanish cohort (University Hospital of Salamanca)",
-    disease_state    = paste(
+    age_median = "62 years",
+    age_range = "18-85 years (development cohort, Table 1); the study enrolled adults aged >= 18 years",
+    weight_median = "68 kg total body weight; 61.4 kg ideal body weight",
+    weight_range = "41-127 kg total body weight; 46.25-77 kg ideal body weight (development cohort, Table 1)",
+    sex_female_pct = 40,
+    race_ethnicity = "Not reported by category; single-centre Spanish cohort (University Hospital of Salamanca)",
+    disease_state = paste(
       "Hospitalised adults (>= 18 years) with malignant haematological",
       "neoplasms receiving intravenous teicoplanin as part of treatment for",
       "febrile neutropenia. Diagnoses in the development cohort (Table 1):",
@@ -293,7 +293,7 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       "as were those with incomplete data or no valid concentration",
       "measurement."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "Teicoplanin by 30-minute intravenous infusion. All patients started on",
       "600 mg every 12 h, with subsequent doses individualised by therapeutic",
       "drug monitoring (Methods). Realised exposure in the development cohort",
@@ -307,8 +307,8 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       "protocol), and the proposed intensified 12 mg/kg q12h x 5 then 12 mg/kg",
       "q24h."
     ),
-    regions          = "Spain (University Hospital of Salamanca; patients treated February 2021 to December 2023)",
-    renal_function   = paste(
+    regions = "Spain (University Hospital of Salamanca; patients treated February 2021 to December 2023)",
+    renal_function = paste(
       "Preserved to augmented. Development cohort CKD-EPI eGFR median 92.15",
       "mL/min/1.73 m^2 (range 26-141) and serum creatinine median 0.71 mg/dL",
       "(range 0.30-2.11). Patients with end-stage renal disease or on renal",
@@ -347,7 +347,7 @@ GarciaHervalejo_2026_teicoplanin <- function() {
       "precision and no evidence of systematic bias' but does NOT print numeric",
       "MPE or MAPE values."
     ),
-    notes            = paste(
+    notes = paste(
       "Retrospective single-centre study; 151 patients and 263 serum",
       "concentrations in total, split 100 patients / 168 concentrations for",
       "model development and 51 patients / 95 concentrations for external",

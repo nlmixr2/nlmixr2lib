@@ -23,89 +23,89 @@ Yu_2022_ofatumumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "ofatumumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "ofatumumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "CD20+ B cells", units = "mg", specimen = "not applicable", verified = FALSE),
-    bcell        = list(analyte = "CD20+ B cells", units = "mg", specimen = "blood cell", verified = FALSE),
+    bcell = list(analyte = "CD20+ B cells", units = "mg", specimen = "blood cell", verified = FALSE),
     bcell_periph = list(analyte = "CD20+ B cells", units = "mg", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (baseline; time-fixed)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (baseline; time-fixed)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on ka, Vc, ksyn0, CL, B0, kout per Yu 2022 covariate equations P_i = P_TV * (WT_i/70)^beta. Reference 70 kg (median weight in the pooled five-study cohort, Table 2).",
-      source_name        = "WT"
+      notes = "Power effect on ka, Vc, ksyn0, CL, B0, kout per Yu 2022 covariate equations P_i = P_TV * (WT_i/70)^beta. Reference 70 kg (median weight in the pooled five-study cohort, Table 2).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on B0 per Yu 2022 covariate equation B0_i = B0 * (AGE_i/38)^beta. Reference 38 years (median age in the pooled five-study cohort, Table 2).",
-      source_name        = "Age"
+      notes = "Power effect on B0 per Yu 2022 covariate equation B0_i = B0 * (AGE_i/38)^beta. Reference 38 years (median age in the pooled five-study cohort, Table 2).",
+      source_name = "Age"
     ),
     BLBCELL = list(
-      description        = "Baseline CD19+ B cell count (cells/uL) measured by FACS prior to first dose",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline CD19+ B cell count (cells/uL) measured by FACS prior to first dose",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on Emax per Yu 2022 covariate equation Emax_i = Emax * (Bcell0_i/200)^beta. Reference 200 cells/uL (median baseline CD19+ B cell count in the pooled cohort, Table 2).",
-      source_name        = "Bcell0"
+      notes = "Power effect on Emax per Yu 2022 covariate equation Emax_i = Emax * (Bcell0_i/200)^beta. Reference 200 cells/uL (median baseline CD19+ B cell count in the pooled cohort, Table 2).",
+      source_name = "Bcell0"
     ),
     ROUTE_IV = list(
-      description        = "Intravenous administration indicator (1 = IV, 0 = SC)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intravenous administration indicator (1 = IV, 0 = SC)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (SC)",
-      notes              = "Per-subject route covariate carrying paper's [Admin route = IV] effect on R0, CL, Q, ksyn_inf. Reference is SC. For simulation, set ROUTE_IV = 1 for IV cohorts (dose into central) and 0 for SC cohorts (dose into depot).",
-      source_name        = "Admin route = IV"
+      notes = "Per-subject route covariate carrying paper's [Admin route = IV] effect on R0, CL, Q, ksyn_inf. Reference is SC. For simulation, set ROUTE_IV = 1 for IV cohorts (dose into central) and 0 for SC cohorts (dose into depot).",
+      source_name = "Admin route = IV"
     ),
     DEVICE_AI = list(
-      description        = "SC autoinjector device indicator (1 = autoinjector, 0 = prefilled syringe)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SC autoinjector device indicator (1 = autoinjector, 0 = prefilled syringe)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (PFS)",
-      notes              = "Per-subject device covariate carrying paper's [Formulation = AI] effect on k_e(P) and R0. Reference is PFS. Set to 0 for IV subjects since device is undefined for IV; IV effects are carried by ROUTE_IV.",
-      source_name        = "Formulation = AI"
+      notes = "Per-subject device covariate carrying paper's [Formulation = AI] effect on k_e(P) and R0. Reference is PFS. Set to 0 for IV subjects since device is undefined for IV; IV effects are carried by ROUTE_IV.",
+      source_name = "Formulation = AI"
     ),
     STUDY_APLIOS = list(
-      description        = "APLIOS (NCT03560739) study indicator (1 = APLIOS, 0 = other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "APLIOS (NCT03560739) study indicator (1 = APLIOS, 0 = other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-APLIOS)",
-      notes              = "Per-subject categorical effect on Emax per Yu 2022 covariate equation Emax_i = Emax * exp(beta * [Study_i = APLIOS]).",
-      source_name        = "Study = APLIOS"
+      notes = "Per-subject categorical effect on Emax per Yu 2022 covariate equation Emax_i = Emax * exp(beta * [Study_i = APLIOS]).",
+      source_name = "Study = APLIOS"
     ),
     STUDY_MIRROR = list(
-      description        = "MIRROR (NCT01457924) study indicator (1 = MIRROR, 0 = other)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "MIRROR (NCT01457924) study indicator (1 = MIRROR, 0 = other)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-MIRROR)",
-      notes              = "Per-subject categorical effect on kout per Yu 2022 covariate equation kout_i = kout * exp(beta * [Study_i = MIRROR]).",
-      source_name        = "Study = MIRROR"
+      notes = "Per-subject categorical effect on kout per Yu 2022 covariate equation kout_i = kout * exp(beta * [Study_i = MIRROR]).",
+      source_name = "Study = MIRROR"
     )
   )
 
   population <- list(
-    n_subjects     = 1486L,
-    n_studies      = 5L,
-    age_range      = "18-56 years",
-    age_median     = "38 years",
-    weight_range   = "40.5-171.6 kg",
-    weight_median  = "70.0 kg",
+    n_subjects = 1486L,
+    n_studies = 5L,
+    age_range = "18-56 years",
+    age_median = "38 years",
+    weight_range = "40.5-171.6 kg",
+    weight_median = "70.0 kg",
     sex_female_pct = 67.8,
     race_ethnicity = c(White = 91.1, Black = 2.4, Asian = 2.5, Other_AmInd_AlaskaNative = 3.2, Unknown = 0.7),
-    disease_state  = "Adults with relapsing forms of multiple sclerosis (RMS), including relapsing-remitting MS (RRMS); EDSS 0-5.5 at screening; mean EDSS 2.8 (range 0-6).",
-    dose_range     = "OMS115102: 100/300/700 mg IV at weeks 0+2 or 24+26 (700 mg arm excluded from PK analysis). MIRROR: 0/3/30/60 mg SC q12w or 60 mg SC q4w. APLIOS and ASCLEPIOS I/II: 20 mg SC q4w after three weekly 20-mg loading doses on days 1, 7, 14 (with the AI device used in 141 APLIOS patients; PFS otherwise).",
-    regions        = "Multi-regional phase 2/3 programme (OMS115102, MIRROR, APLIOS, ASCLEPIOS I, ASCLEPIOS II).",
-    studies        = "OMS115102 (N=25 IV RRMS), MIRROR (N=231 SC PFS RRMS), APLIOS (N=284 SC AI/PFS RMS), ASCLEPIOS I (N=465 SC PFS RMS), ASCLEPIOS II (N=481 SC PFS RMS); patients treated with ofatumumab and with B cell data who were included in the final model.",
+    disease_state = "Adults with relapsing forms of multiple sclerosis (RMS), including relapsing-remitting MS (RRMS); EDSS 0-5.5 at screening; mean EDSS 2.8 (range 0-6).",
+    dose_range = "OMS115102: 100/300/700 mg IV at weeks 0+2 or 24+26 (700 mg arm excluded from PK analysis). MIRROR: 0/3/30/60 mg SC q12w or 60 mg SC q4w. APLIOS and ASCLEPIOS I/II: 20 mg SC q4w after three weekly 20-mg loading doses on days 1, 7, 14 (with the AI device used in 141 APLIOS patients; PFS otherwise).",
+    regions = "Multi-regional phase 2/3 programme (OMS115102, MIRROR, APLIOS, ASCLEPIOS I, ASCLEPIOS II).",
+    studies = "OMS115102 (N=25 IV RRMS), MIRROR (N=231 SC PFS RRMS), APLIOS (N=284 SC AI/PFS RMS), ASCLEPIOS I (N=465 SC PFS RMS), ASCLEPIOS II (N=481 SC PFS RMS); patients treated with ofatumumab and with B cell data who were included in the final model.",
     bcell_baseline_median = "200 cells/uL CD19+ (range 0-1520; pooled five-study cohort, Table 2)",
-    edss_median    = "2.5 (range 0-6, baseline)",
-    notes          = "Pooled phase 2/3 dataset assembled for the population PK-B cell analysis. PK dataset: 9168 plasma concentrations from 1440 patients (placebo and 700-mg cohorts excluded). PD dataset: 17,158 CD19+ B cell counts from 1486 patients. ASCLEPIOS B cell counts modelled as interval-censored (LLOQ 0/5/15/25 cells/uL bins). Anti-drug antibody incidence < 2 % with no detectable PK or B cell impact (Yu 2022 Results 'Data')."
+    edss_median = "2.5 (range 0-6, baseline)",
+    notes = "Pooled phase 2/3 dataset assembled for the population PK-B cell analysis. PK dataset: 9168 plasma concentrations from 1440 patients (placebo and 700-mg cohorts excluded). PD dataset: 17,158 CD19+ B cell counts from 1486 patients. ASCLEPIOS B cell counts modelled as interval-censored (LLOQ 0/5/15/25 cells/uL bins). Anti-drug antibody incidence < 2 % with no detectable PK or B cell impact (Yu 2022 Results 'Data')."
   )
 
   ini({

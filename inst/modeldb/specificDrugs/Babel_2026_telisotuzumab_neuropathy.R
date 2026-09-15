@@ -35,39 +35,39 @@ Babel_2026_telisotuzumab_neuropathy <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CAV covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CAV covariate column)",
     concentration = "prob_peripheral_neuropathy_grade3 (probability of a grade 3 or worse peripheral neuropathy event, 0-1)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Same column and same derivation as in the companion efficacy model Babel_2026_telisotuzumab_orr, but computed on the larger exposure-SAFETY analysis set (284 patients from both studies rather than 193 LUMINOSITY patients). Babel 2026 Methods: post hoc estimates from the population PK model using actual doses received, averaged up to the time of the event. Reproduce the column with modellib('Babel_2026_telisotuzumab'). Enters on the NATURAL-LOG scale and UNCENTRED. Babel 2026 Figure 4 shows binned quartile medians near 3.6, 5.1, 6.6 and 8.2 ug/mL.",
-      source_name        = "CavgADC"
+      notes = "Same column and same derivation as in the companion efficacy model Babel_2026_telisotuzumab_orr, but computed on the larger exposure-SAFETY analysis set (284 patients from both studies rather than 193 LUMINOSITY patients). Babel 2026 Methods: post hoc estimates from the population PK model using actual doses received, averaged up to the time of the event. Reproduce the column with modellib('Babel_2026_telisotuzumab'). Enters on the NATURAL-LOG scale and UNCENTRED. Babel 2026 Figure 4 shows binned quartile medians near 3.6, 5.1, 6.6 and 8.2 ug/mL.",
+      source_name = "CavgADC"
     )
   )
 
   covariatesDataExcluded <- list(
     NEUROPATHY_HX = list(
       description = "History of peripheral neuropathy at baseline; 1 = yes, 0 = no.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed in Babel 2026 Table S2 as a safety covariate of interest and the most clinically plausible predictor for this particular endpoint, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, prior therapy, number of prior systemic therapies, liver metastasis at baseline, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed in Babel 2026 Table S2 as a safety covariate of interest and the most clinically plausible predictor for this particular endpoint, but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, prior therapy, number of prior systemic therapies, liver metastasis at baseline, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 284L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 284L,
+    n_studies = 2L,
     n_observations = "284 binary event records (one per patient; landmark analysis, no repeated measures)",
-    disease_state  = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
-    dose_range     = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
-    notes          = paste0(
+    disease_state = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
+    dose_range = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
+    notes = paste0(
       "Baseline demographics of this analysis set are in Babel 2026 ",
       "Table S6. Babel 2026 evaluated an endpoint further only when it ",
       "had more than 10 events and showed a trend in the quartile ",

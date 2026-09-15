@@ -8,51 +8,51 @@ Ni_2013_ciclosporin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying allowed; used for allometric scaling with reference weight 70 kg (Ni 2013 Methods 'Covariate analysis').",
-      source_name        = "WT"
+      notes = "Time-varying allowed; used for allometric scaling with reference weight 70 kg (Ni 2013 Methods 'Covariate analysis').",
+      source_name = "WT"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used in the renal-function factor RF = 1 - (CREAT/44) * e_creat_cl on CL/F. The denominator 44 umol/L is a cohort-derived scaling constant close to the cohort median CREAT of 44.2 umol/L (Ni 2013 Table 1).",
-      source_name        = "CREA"
+      notes = "Used in the renal-function factor RF = 1 - (CREAT/44) * e_creat_cl on CL/F. The denominator 44 umol/L is a cohort-derived scaling constant close to the cohort median CREAT of 44.2 umol/L (Ni 2013 Table 1).",
+      source_name = "CREA"
     ),
     CONMED_STANOZOLOL = list(
-      description        = "Concomitant stanozolol coadministration indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant stanozolol coadministration indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no stanozolol coadministration)",
-      notes              = "78 of 102 children were on stanozolol (Ni 2013 Table 1). Time-fixed per subject in the published analysis. Power-form multiplicative effect on CL/F: cl *= e_conmed_stanozolol_cl ^ CONMED_STANOZOLOL (Ni 2013 Table 2 'F comedication').",
-      source_name        = "stanozolol indicator (no specific NONMEM column reported)"
+      notes = "78 of 102 children were on stanozolol (Ni 2013 Table 1). Time-fixed per subject in the published analysis. Power-form multiplicative effect on CL/F: cl *= e_conmed_stanozolol_cl ^ CONMED_STANOZOLOL (Ni 2013 Table 2 'F comedication').",
+      source_name = "stanozolol indicator (no specific NONMEM column reported)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 102L,
-    n_studies      = 1L,
-    age_range      = "0.9-17.6 years",
-    age_median     = "8.7 years (mean +/- SD 8.8 +/- 3.6)",
-    weight_range   = "6.5-69.0 kg",
-    weight_median  = "29.8 kg (mean +/- SD 31.3 +/- 12.7)",
+    species = "human",
+    n_subjects = 102L,
+    n_studies = 1L,
+    age_range = "0.9-17.6 years",
+    age_median = "8.7 years (mean +/- SD 8.8 +/- 3.6)",
+    weight_range = "6.5-69.0 kg",
+    weight_median = "29.8 kg (mean +/- SD 31.3 +/- 12.7)",
     sex_female_pct = 52.9,
     race_ethnicity = "Chinese",
-    disease_state  = "Chinese children with acquired or congenital aplastic anemia",
-    dose_range     = "30-375 mg/day oral (median 150 mg/day; 5.3 +/- 1.7 mg/kg/day; administered BID, target trough C0 = 200 ng/mL)",
-    regions        = "China (Children's Hospital of Zhejiang University, Hangzhou)",
-    notes          = "Therapeutic drug monitoring (TDM) dataset, 2003-2009; 592 trough blood ciclosporin concentrations measured by FPIA (median sampling time 12.1 h post-dose, range 10.0-16.0 h). 78 of 102 patients were on stanozolol, 79 on prednisone; only stanozolol retained in the final covariate model. Baseline serum creatinine median 44.2 umol/L (range 5.8-120.0); see Ni 2013 Table 1."
+    disease_state = "Chinese children with acquired or congenital aplastic anemia",
+    dose_range = "30-375 mg/day oral (median 150 mg/day; 5.3 +/- 1.7 mg/kg/day; administered BID, target trough C0 = 200 ng/mL)",
+    regions = "China (Children's Hospital of Zhejiang University, Hangzhou)",
+    notes = "Therapeutic drug monitoring (TDM) dataset, 2003-2009; 592 trough blood ciclosporin concentrations measured by FPIA (median sampling time 12.1 h post-dose, range 10.0-16.0 h). 78 of 102 patients were on stanozolol, 79 on prednisone; only stanozolol retained in the final covariate model. Baseline serum creatinine median 44.2 umol/L (range 5.8-120.0); see Ni 2013 Table 1."
   )
 
   ini({

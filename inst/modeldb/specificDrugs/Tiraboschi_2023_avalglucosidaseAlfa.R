@@ -10,18 +10,18 @@ Tiraboschi_2023_avalglucosidaseAlfa <- function() {
     # not identify a biological matrix for either peripheral compartment --
     # they are mathematical distribution compartments of the concatenated
     # structure -- so those entries are unverified.
-    central     = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying body weight, the only covariate retained in the final model.",
         "Power (allometric) effect on CL, V1 (= Vc) and Vmax with reference weight 70.5 kg,",
         "the median of the weight values in the analysis dataset (Tiraboschi 2023 Table 3 footnotes a-c:",
@@ -32,7 +32,7 @@ Tiraboschi_2023_avalglucosidaseAlfa <- function() {
         "which were fixed; see supplementary Table 1 of the source for the model search.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
@@ -41,90 +41,124 @@ Tiraboschi_2023_avalglucosidaseAlfa <- function() {
   # referenced in model(); see the vignette "Assumptions and deviations".
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Age", units = "years", type = "continuous", reference_category = NULL,
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened by stepwise forward-inclusion / backward-elimination; not retained. Age and body weight were correlated, and the retained allometric weight model already captured the paediatric-versus-adult difference (Results, Model development)."
     ),
     SEXF = list(
-      description = "Biological sex indicator, 1 = female, 0 = male", units = "(binary)", type = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
       notes = "Screened as 'gender'; not retained. 46.2% of the pooled cohort were female (Table 2)."
     ),
     CRCL = list(
-      description = "Body-size-normalized creatinine clearance (renal function)", units = "mL/min/1.73 m^2",
-      type = "continuous", reference_category = NULL,
+      description = "Body-size-normalized creatinine clearance (renal function)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
+      reference_category = NULL,
       notes = paste(
         "The ONLY covariate that met the forward-inclusion criterion (BCLCRN on CL, dOFV = 15), but the authors",
         "deliberately did not retain it: across the observed range 50.2 to 528 mL/min/1.73 m^2 predicted CL moved",
         "only from 0.781 to 0.843 L/h versus 0.812 L/h at the median 161 mL/min/1.73 m^2, i.e. +/-4%, and CLCRN is",
         "not comparable between adults and children < 12 years (Results, Model development).",
-        "Reported as CLCRN / BCLCRN in the source.", sep = " "
+        "Reported as CLCRN / BCLCRN in the source.",
+        sep = " "
       )
     ),
     ALB = list(
-      description = "Serum albumin", units = "g/L", type = "continuous", reference_category = NULL,
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline; not retained. Exposure was additionally stratified by albumin < / >= 45 g/L in Table 4 with no meaningful difference."
     ),
     ALT = list(
-      description = "Alanine aminotransferase", units = "U/L", type = "continuous", reference_category = NULL,
+      description = "Alanine aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline (reported in IU/L); not retained. Mean (SD) 83.8 (58.6) IU/L (Table 2)."
     ),
     AST = list(
-      description = "Aspartate aminotransferase", units = "U/L", type = "continuous", reference_category = NULL,
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline (reported in IU/L); not retained. Mean (SD) 98.8 (90.6) IU/L (Table 2)."
     ),
     ALP = list(
-      description = "Alkaline phosphatase", units = "U/L", type = "continuous", reference_category = NULL,
+      description = "Alkaline phosphatase",
+      units = "U/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline (reported in IU/L); not retained."
     ),
     TBILI = list(
-      description = "Total bilirubin", units = "umol/L", type = "continuous", reference_category = NULL,
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline; not retained. Exposure was additionally stratified by bilirubin < / >= 6.8 umol/L in Table 4 with no meaningful difference."
     ),
     CPK = list(
-      description = "Creatine kinase", units = "U/L", type = "continuous", reference_category = NULL,
+      description = "Creatine kinase",
+      units = "U/L",
+      type = "continuous",
+      reference_category = NULL,
       notes = "Screened at baseline (reported in IU/L); not retained. Mean (SD) 769 (583) IU/L (Table 2); elevated as expected in Pompe disease."
     ),
     ADA_POS = list(
-      description = "Anti-drug-antibody-positive status indicator", units = "(binary)", type = "binary",
+      description = "Anti-drug-antibody-positive status indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
       notes = "ADA occurrence was investigated as a covariate using a three-tiered assay approach (Bioanalysis; Model development) and was not retained."
     ),
     DIS_IOPD = list(
       description = "Infantile-onset Pompe disease indicator (versus late-onset Pompe disease)",
-      units = "(binary)", type = "binary", reference_category = "0 (late-onset Pompe disease, LOPD)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (late-onset Pompe disease, LOPD)",
       notes = paste(
         "Disease type was screened explicitly and did NOT meet the selection criteria -- one of the paper's key findings,",
         "since it means a single allometric model describes both IOPD (n = 16, 1-11 years) and LOPD (n = 75) patients",
         "(Results, Model development). Not a registered canonical in inst/references/covariate-columns.md:",
-        "the final model does not use it, so no register entry is proposed by this extraction.", sep = " "
+        "the final model does not use it, so no register entry is proposed by this extraction.",
+        sep = " "
       )
     ),
     PRIOR_ALGLUCOSIDASE = list(
-      description = "Prior treatment with alglucosidase alfa indicator", units = "(binary)", type = "binary",
+      description = "Prior treatment with alglucosidase alfa indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (treatment-naive)",
       notes = paste(
         "Previous alglucosidase alfa treatment status was screened and not retained; 67.0% of the pooled cohort were",
         "pre-treated (Table 2). Not a registered canonical in inst/references/covariate-columns.md: the final model",
-        "does not use it, so no register entry is proposed by this extraction.", sep = " "
+        "does not use it, so no register entry is proposed by this extraction.",
+        sep = " "
       )
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 91L,
+    species = "human",
+    n_subjects = 91L,
     n_observations = 2242L,
-    n_studies      = 4L,
-    age_range      = "1-78.4 years",
-    age_median     = "mean (SD) 39.2 (20.3) years overall; 46 (15.1) years in LOPD, 6.9 (3.2) years in IOPD",
-    weight_range   = "9.9-129 kg",
-    weight_median  = "70.5 kg (median of the weight values; mean (SD) 67.7 (26.3) kg)",
+    n_studies = 4L,
+    age_range = "1-78.4 years",
+    age_median = "mean (SD) 39.2 (20.3) years overall; 46 (15.1) years in LOPD, 6.9 (3.2) years in IOPD",
+    weight_range = "9.9-129 kg",
+    weight_median = "70.5 kg (median of the weight values; mean (SD) 67.7 (26.3) kg)",
     sex_female_pct = 46.2,
     race_ethnicity = c(Caucasian = 83.5, Asian = 12.1, Black = 2.2, Other = 2.2),
-    disease_state  = "Late-onset Pompe disease (LOPD, n = 75, including 1 adolescent) and infantile-onset Pompe disease (IOPD, n = 16, aged 1-11 years) showing clinical decline and suboptimal response to alglucosidase alfa.",
-    dose_range     = "5, 10, 20 or 40 mg/kg intravenously every 2 weeks. Infusions were administered stepwise: 1 mg/kg/h for 30 min, then 3 mg/kg/h for 30 min, then 5 mg/kg/h for 30 min, then 7 mg/kg/h until the planned amount was delivered (total infusion 3.71 h for 20 mg/kg and 6.57 h for 40 mg/kg).",
-    regions        = "International multi-regional (4 pooled clinical trials).",
-    notes          = paste(
+    disease_state = "Late-onset Pompe disease (LOPD, n = 75, including 1 adolescent) and infantile-onset Pompe disease (IOPD, n = 16, aged 1-11 years) showing clinical decline and suboptimal response to alglucosidase alfa.",
+    dose_range = "5, 10, 20 or 40 mg/kg intravenously every 2 weeks. Infusions were administered stepwise: 1 mg/kg/h for 30 min, then 3 mg/kg/h for 30 min, then 5 mg/kg/h for 30 min, then 7 mg/kg/h until the planned amount was delivered (total infusion 3.71 h for 20 mg/kg and 6.57 h for 40 mg/kg).",
+    regions = "International multi-regional (4 pooled clinical trials).",
+    notes = paste(
       "Pooled from NCT01898364 (phase 1, LOPD, N = 24), NCT02032524 (phase 1/2, LOPD, N = 19),",
       "NCT02782741 (phase 3 NEO/COMET, treatment-naive LOPD, N = 51) and NCT03019406 (phase 2 Mini-COMET, IOPD, N = 16);",
       "study designs in Tiraboschi 2023 Table 1, baseline demographics in Table 2.",
@@ -132,7 +166,8 @@ Tiraboschi_2023_avalglucosidaseAlfa <- function() {
       "leaving 2242 (LOPD 2042, IOPD 200) concentration-time points.",
       "The fluorometric enzyme-activity assay for free avalglucosidase alfa was validated from 0.0125 (LLOQ) to 3.0 ug/mL",
       "for the diluted sample. NONMEM 7.4.1, FOCE with interaction.",
-      "Pre-treatment with alglucosidase alfa: 67.0% of the pooled cohort.", sep = " "
+      "Pre-treatment with alglucosidase alfa: 67.0% of the pooled cohort.",
+      sep = " "
     )
   )
 

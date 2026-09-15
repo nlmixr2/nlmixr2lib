@@ -37,18 +37,18 @@ Sun_2025_maribavir_headache <- function() {
   )
   vignette <- "Sun_2025_maribavir"
   units <- list(
-    time          = "n/a (static landmark exposure-response regression; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the AUC_MBV_DAY covariate column)",
+    time = "n/a (static landmark exposure-response regression; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_MBV_DAY covariate column)",
     concentration = "prob_headache (probability of treatment-emergent headache, 0-1; also logit_headache)"
   )
 
   covariateData <- list(
     AUC_MBV_DAY = list(
-      description        = "Individual maribavir area under the plasma concentration-time curve over the calendar day on which the adverse event occurred. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion maribavir population PK model.",
-      units              = "ug*h/mL",
-      type               = "continuous",
+      description = "Individual maribavir area under the plasma concentration-time curve over the calendar day on which the adverse event occurred. Supplied as data: this model has no PK layer, and the source analysis used individual predictions from the companion maribavir population PK model.",
+      units = "ug*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Sun 2025 estimates the coefficient PER INCREMENT OF 10 ug*h/mL, so",
         "model() divides this column by 10. This is the DAY-OF-EVENT exposure, not",
         "the steady-state exposure: where a subject had more than one event of the",
@@ -62,61 +62,61 @@ Sun_2025_maribavir_headache <- function() {
         "In this model the exposure enters with slope 0.0513 per 10 ug*h/mL (odds",
         "ratio 1.05 (1.02-1.08), p < 0.001)."
       ),
-      source_name        = "AUCday of maribavir (increment of 10 h.ug/mL)"
+      source_name = "AUCday of maribavir (increment of 10 h.ug/mL)"
     ),
     HCT_TCD_ALEMTUZUMAB = list(
-      description        = "Graft T-cell depletion with in-vivo alemtuzumab for the current transplant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Graft T-cell depletion with in-vivo alemtuzumab for the current transplant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no T-cell depletion)",
-      notes              = paste(
+      notes = paste(
         "9 of 238 subjects (3.8%). One of three indicators decomposing the T-cell",
         "depletion modality; all three are 0 for an unmanipulated graft (135 of",
         "238, 56.7%). The three are kept separate rather than pooled into one",
         "'any depletion' flag because their estimated effects differ in SIGN.",
         "Coefficient +1.77, the only significant level of the set."
       ),
-      source_name        = "T-Cell depletion modality, Alemtuzumab administration (in vivo)"
+      source_name = "T-Cell depletion modality, Alemtuzumab administration (in vivo)"
     ),
     HCT_TCD_ATG = list(
-      description        = "Graft T-cell depletion with in-vivo anti-thymocyte globulin for the current transplant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Graft T-cell depletion with in-vivo anti-thymocyte globulin for the current transplant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no T-cell depletion)",
-      notes              = paste(
+      notes = paste(
         "74 of 238 subjects (31.1%), the commonest depletion modality in the cohort.",
         "Coefficient -0.882, not significant -- and OPPOSITE in sign to the",
         "alemtuzumab level, which is why the three modalities are carried as",
         "separate indicators rather than pooled into one depletion flag."
       ),
-      source_name        = "T-Cell depletion modality, Anti-thymocyte globulin administration (in vivo)"
+      source_name = "T-Cell depletion modality, Anti-thymocyte globulin administration (in vivo)"
     ),
     HCT_TCD_EXVIVO = list(
-      description        = "Ex-vivo graft T-cell depletion for the current transplant.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Ex-vivo graft T-cell depletion for the current transplant.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no T-cell depletion)",
-      notes              = paste(
+      notes = paste(
         "19 of 238 subjects (8.0%).",
         "Coefficient +0.863, not significant."
       ),
-      source_name        = "T-Cell depletion modality, Ex-vivo T-cell depletion"
+      source_name = "T-Cell depletion modality, Ex-vivo T-cell depletion"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 238L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 238L,
+    n_studies = 1L,
     n_observations = "238 binary headache records, one per patient",
-    age_range      = "12 to <18 years: 1 (0.4%); 18 to <45: 47 (19.7%); 45 to <65: 142 (59.7%); >=65: 48 (20.2%) (Table S2)",
-    weight_range   = "Not reported for the AURORA arm; Table 1 reports 'NR' for the AURORA weights specifically. The pooled PK analysis population spans 36.1-141 kg.",
+    age_range = "12 to <18 years: 1 (0.4%); 18 to <45: 47 (19.7%); 45 to <65: 142 (59.7%); >=65: 48 (20.2%) (Table S2)",
+    weight_range = "Not reported for the AURORA arm; Table 1 reports 'NR' for the AURORA weights specifically. The pooled PK analysis population spans 36.1-141 kg.",
     sex_female_pct = 45.4,
     race_ethnicity = c(Caucasian = 79.8, Asian = 13.0, Black = 3.4, Other = 2.9, Missing = 0.8),
-    disease_state  = "Allogeneic HCT recipients (238/238, 100%) with FIRST asymptomatic cytomegalovirus infection after transplant; all were maribavir-susceptible at baseline. Baseline CMV DNA: very low 71, low 127, high 39, missing 1. CMV serostatus D+/R+ 123 (51.7%), D-/R+ 83 (34.9%), D+/R- 18 (7.6%), D-/R- 8 (3.4%). Reason for transplant: acute myeloid leukaemia 88 (37.0%), myelodysplastic syndrome 37 (15.5%), acute lymphocytic leukaemia 21 (8.8%), non-Hodgkin lymphoma 19 (8.0%), other 73 (30.7%). Conditioning: reduced-intensity 116 (48.7%), myeloablative 86 (36.1%), non-myeloablative 32 (13.4%).",
-    dose_range     = "Maribavir 400 mg orally twice daily, the AURORA randomized dose",
-    regions        = "North America 59 (24.8%), Europe 138 (58.0%), Asia Pacific 41 (17.2%) (Table S2)",
-    notes          = paste0(
+    disease_state = "Allogeneic HCT recipients (238/238, 100%) with FIRST asymptomatic cytomegalovirus infection after transplant; all were maribavir-susceptible at baseline. Baseline CMV DNA: very low 71, low 127, high 39, missing 1. CMV serostatus D+/R+ 123 (51.7%), D-/R+ 83 (34.9%), D+/R- 18 (7.6%), D-/R- 8 (3.4%). Reason for transplant: acute myeloid leukaemia 88 (37.0%), myelodysplastic syndrome 37 (15.5%), acute lymphocytic leukaemia 21 (8.8%), non-Hodgkin lymphoma 19 (8.0%), other 73 (30.7%). Conditioning: reduced-intensity 116 (48.7%), myeloablative 86 (36.1%), non-myeloablative 32 (13.4%).",
+    dose_range = "Maribavir 400 mg orally twice daily, the AURORA randomized dose",
+    regions = "North America 59 (24.8%), Europe 138 (58.0%), Asia Pacific 41 (17.2%) (Table S2)",
+    notes = paste0(
       "This is the exposure-response analysis population: the maribavir arm of ",
       "the phase 3 AURORA study, a subset of the 930-subject population PK ",
       "analysis population. Individual exposures were derived from the ",

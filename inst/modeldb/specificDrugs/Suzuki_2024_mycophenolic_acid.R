@@ -39,8 +39,8 @@ Suzuki_2024_mycophenolic_acid <- function() {
   )
   vignette <- "Suzuki_2024_mycophenolic_acid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -50,18 +50,18 @@ Suzuki_2024_mycophenolic_acid <- function() {
   # mg/L", and F1 carries the MMF -> MPA molecular-weight conversion, so
   # every state holds an MPA-equivalent amount in mg.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (TBW).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (TBW).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Allometric size scaling with reference TBW = 70 kg; exponent fixed ",
         "at 0.75 on CL/F and Q/F and at 1 on VC/F and VP/F (Suzuki 2024 ",
         "Methods 'Covariate model' Equation 1, Results Equation 8). The ",
@@ -77,20 +77,20 @@ Suzuki_2024_mycophenolic_acid <- function() {
         "is encoded here. Cohort TBW 2.5th / 50th / 97.5th percentiles ",
         "39.6 / 55.9 / 77.5 kg (Table 1)."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     ),
     CRCL = list(
-      description        = paste0(
+      description = paste0(
         "Creatinine clearance estimated by the Cockcroft-Gault equation with ",
         "body weight FIXED at 70 kg, i.e. standardised per 70 kg rather than ",
         "per 1.73 m^2 BSA. Appendix S1: CLCR = (140 - AGE) / SCR * 70 / 72 * ",
         "FCPR with FCPR = 1 for men and 0.85 for women, SCR in mg/dL and AGE ",
         "in years."
       ),
-      units              = "mL/min/70 kg",
-      type               = "continuous",
+      units = "mL/min/70 kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Enters the model only through the renal-function ratio RF = CRCL / ",
         "CLcr_std with CLcr_std = 100 mL/min/70 kg = 6 L/h/70 kg (Suzuki 2024 ",
         "Equation 4), which multiplies the renal clearance arm (Equation 5). ",
@@ -104,17 +104,17 @@ Suzuki_2024_mycophenolic_acid <- function() {
         "and 100 mL/min/70 kg. Time-varying within subject as graft function ",
         "recovers."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     POD = list(
-      description        = paste0(
+      description = paste0(
         "Post-transplantation day: days elapsed since renal transplantation. ",
         "The paper calls this PTD."
       ),
-      units              = "days",
-      type               = "continuous",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-varying within subject. Enters relative bioavailability only, ",
         "as F_PTD = exp(K_PTD * POD / POD_max) with POD_max = 84 days, the ",
         "maximum PTD in the analysis dataset (Suzuki 2024 Equation 6, ",
@@ -130,28 +130,28 @@ Suzuki_2024_mycophenolic_acid <- function() {
         "extrapolates rather than saturating. Cohort 2.5th / 50th / 97.5th ",
         "percentiles 23 / 40 / 84 days (Table 1)."
       ),
-      source_name        = "PTD"
+      source_name = "PTD"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 42L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 42L,
+    n_studies = 1L,
     n_observations = "312 plasma MPA concentrations (Suzuki 2024 Results 'PopPK of MPA')",
-    age_range      = "29.0-68.9 years (2.5th-97.5th percentile; median 51.0)",
-    age_median     = "51.0 years",
-    weight_range   = "39.6-77.5 kg (2.5th-97.5th percentile; median 55.9)",
-    weight_median  = "55.9 kg",
-    height_range   = "1.50-1.80 m (2.5th-97.5th percentile; median 1.66)",
+    age_range = "29.0-68.9 years (2.5th-97.5th percentile; median 51.0)",
+    age_median = "51.0 years",
+    weight_range = "39.6-77.5 kg (2.5th-97.5th percentile; median 55.9)",
+    weight_median = "55.9 kg",
+    height_range = "1.50-1.80 m (2.5th-97.5th percentile; median 1.66)",
     sex_female_pct = 31.0,
     race_ethnicity = "not reported; single-centre Japanese cohort",
-    disease_state  = "adult kidney transplant recipients receiving mycophenolate mofetil immunosuppression",
+    disease_state = "adult kidney transplant recipients receiving mycophenolate mofetil immunosuppression",
     renal_function = "creatinine clearance 6.6-148.8 mL/min/70 kg (2.5th-97.5th percentile; median 52.8), i.e. spanning normal to severely impaired graft function",
-    dose_range     = "mycophenolate mofetil 500 mg (n = 10), 750 mg (n = 25) or 1000 mg (n = 7) orally twice daily, every 12 h",
-    regions        = "Japan (Nagasaki University Hospital, April 2011 to September 2019)",
-    co_medication  = "tacrolimus (n = 24, median trough 6.9 ug/L) and prednisone (n = 23, median 10 mg/day) in some patients; neither improved the OFV as a covariate on CL/F or VC/F and neither is in the final model",
-    notes          = paste0(
+    dose_range = "mycophenolate mofetil 500 mg (n = 10), 750 mg (n = 25) or 1000 mg (n = 7) orally twice daily, every 12 h",
+    regions = "Japan (Nagasaki University Hospital, April 2011 to September 2019)",
+    co_medication = "tacrolimus (n = 24, median trough 6.9 ug/L) and prednisone (n = 23, median 10 mg/day) in some patients; neither improved the OFV as a covariate on CL/F or VC/F and neither is in the final model",
+    notes = paste0(
       "Baseline demographics from Suzuki 2024 Table 1 (reported as 2.5th / ",
       "50th / 97.5th percentiles rather than mean +/- SD). Sex 29 male / 13 ",
       "female. Steady-state samples; MPA measured by PETINIA immunoassay ",

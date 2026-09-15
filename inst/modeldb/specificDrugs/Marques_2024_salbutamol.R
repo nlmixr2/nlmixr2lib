@@ -35,12 +35,16 @@ Marques_2024_salbutamol <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "salbutamol", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "salbutamol",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "salbutamol", units = "ug",
-      specimen = "plasma", verified = TRUE
+      analyte = "salbutamol",
+      units = "ug",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
@@ -53,66 +57,66 @@ Marques_2024_salbutamol <- function() {
   # documented here so the paper's headline claim is not lost.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Section 3.4 reports a significant effect of age on Cl and Q in the",
         "virtual-patient model; no coefficient is published. Table 5",
         "stratifies individual EBE parameters at 5-22 vs 23-65 years, but",
         "those are descriptive subgroup summaries, not covariate effects,",
         "and are in units irreconcilable with Table 3."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Section 3.4 reports a significant effect of weight on Cl, Q and V2",
         "in the virtual-patient model; no coefficient is published. Table 5",
         "stratifies at 17.77-75.00 vs 75.01-105.00 kg (descriptive only)."
       ),
-      source_name        = "Weight"
+      source_name = "Weight"
     ),
     HT = list(
-      description        = "Height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened as a continuous covariate (Section 2.4) and correlated",
         "with AUC, Cmax and clearance in the data exploration (Section 3.1),",
         "but not retained as a reported covariate effect on any parameter."
       ),
-      source_name        = "Height"
+      source_name = "Height"
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male",
-      notes              = paste(
+      notes = paste(
         "Section 3.4 reports a significant effect of gender on ka and Cl in",
         "the virtual-patient model; no coefficient is published. Table 5",
         "reports both parameters as lower in females (descriptive only).",
         "The source reports gender as a two-level 'Female' / 'Male'",
         "categorical; SEXF is the canonical encoding."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     ),
     RACE_ASIAN_NORTHEAST = list(
-      description        = paste(
+      description = paste(
         "North East Asian heritage indicator (1 = Japanese or Chinese,",
         "0 = American Indian / Alaskan Native)"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = American Indian / Alaskan Native",
-      notes              = paste(
+      notes = paste(
         "Section 3.4 reports a significant effect of race on Cl in the",
         "virtual-patient model; no coefficient is published. The virtual",
         "cohort has exactly two race levels (Table 1: American Indian or",
@@ -123,29 +127,32 @@ Marques_2024_salbutamol <- function() {
         "Native), which is a further reason the covariate layer cannot be",
         "carried over to the Table 4 fit."
       ),
-      source_name        = "Race"
+      source_name = "Race"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30,
-    n_studies      = 1,
-    age_range      = "18-65 years (eligibility criterion)",
-    age_median     = "26.8 years (mean, SD 4.8; Table 1)",
-    weight_range   = ">= 50 kg (eligibility criterion); BMI 19.0-34.0 kg/m^2",
-    weight_median  = "78.9 kg (mean, SD 17.6; Table 1)",
+    species = "human",
+    n_subjects = 30,
+    n_studies = 1,
+    age_range = "18-65 years (eligibility criterion)",
+    age_median = "26.8 years (mean, SD 4.8; Table 1)",
+    weight_range = ">= 50 kg (eligibility criterion); BMI 19.0-34.0 kg/m^2",
+    weight_median = "78.9 kg (mean, SD 17.6; Table 1)",
     sex_female_pct = 26.7,
     race_ethnicity = c(
-      White = 90, Multi = 7, AmericanIndianOrAlaskanNative = 3, Asian = 0
+      White = 90,
+      Multi = 7,
+      AmericanIndianOrAlaskanNative = 3,
+      Asian = 0
     ),
-    disease_state  = "Healthy nonsmoking volunteers (no asthma)",
-    dose_range     = paste(
+    disease_state = "Healthy nonsmoking volunteers (no asthma)",
+    dose_range = paste(
       "600 ug salbutamol (as sulfate) as a single dose: 3 x 200 ug blisters",
       "inhaled via unit-dose dry-powder inhaler (UD-DPI)"
     ),
-    regions        = NA_character_,
-    notes          = paste(
+    regions = NA_character_,
+    notes = paste(
       "GlaxoSmithKline study NCT01984086, Part A Treatment A, accessed",
       "through Vivli. Open-label, randomized, crossover, two-cohort,",
       "single-dose study in healthy volunteers. Baseline demographics are",

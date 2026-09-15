@@ -8,7 +8,7 @@ Mao_2024_sirolimus <- function() {
     sep = " "
   )
   vignette <- "Mao_2024_sirolimus"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Sirolimus C0 was measured in WHOLE BLOOD (Methods,
@@ -16,17 +16,17 @@ Mao_2024_sirolimus <- function() {
   # enzyme multiplied immunoassay), so `central` is a whole-blood
   # compartment, not a plasma compartment.
   compartmentData <- list(
-    depot   = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "sirolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     HCT = list(
-      description        = "Hematocrit (packed red blood cell volume fraction).",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit (packed red blood cell volume fraction).",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate retained in the final model (Mao 2024 Results:",
         "adding HCT dropped the objective function value by 32.9, and nothing",
         "was removed during backward elimination). Power form on CL/F",
@@ -41,7 +41,7 @@ Mao_2024_sirolimus <- function() {
         "the source does not state whether it was carried as baseline-only",
         "or time-varying, so treat it as a baseline covariate."
       ),
-      source_name        = "HCT"
+      source_name = "HCT"
     )
   )
 
@@ -54,80 +54,106 @@ Mao_2024_sirolimus <- function() {
   # published for any of them, so none can be encoded.
   covariatesDataExcluded <- list(
     AGE = list(
-      description = "Subject age.", units = "years", type = "continuous",
+      description = "Subject age.",
+      units = "years",
+      type = "continuous",
       notes = "Screened as a continuous covariate (Methods, Covariate Model); not retained. Cohort median 51.0 years [28.0-74.0]."
     ),
     WT = list(
-      description = "Total body weight.", units = "kg", type = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       notes = "Screened as a continuous covariate; not retained. Cohort median 68.0 kg [39.0-90.0]. No allometric scaling appears in the final model."
     ),
     POD = list(
-      description = "Postoperative day (days since liver transplantation).", units = "days", type = "continuous",
+      description = "Postoperative day (days since liver transplantation).",
+      units = "days",
+      type = "continuous",
       notes = "Screened as a continuous covariate; not retained. Cohort median 92 days [14-699]."
     ),
     ALT = list(
-      description = "Serum alanine aminotransferase activity.", units = "U/L", type = "continuous",
+      description = "Serum alanine aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       notes = "Screened as a continuous covariate; not retained. Cohort median 21.0 U/L [5.0-187.0]."
     ),
     CRCL = list(
-      description = "Creatinine clearance (Cockcroft-Gault).", units = "mL/min", type = "continuous",
+      description = "Creatinine clearance (Cockcroft-Gault).",
+      units = "mL/min",
+      type = "continuous",
       notes = "Screened as a continuous covariate; not retained. Cohort median 89.4 mL/min [27.0-170.0]. Table 1 footnote a gives the formula used: CRCL = [140 - age] * weight / [0.818 * SCR (umol/L)] * k, with k = 1 for male and 0.85 for female."
     ),
     SEXF = list(
-      description = "Female sex indicator (1 = female, 0 = male).", units = "unitless", type = "categorical",
+      description = "Female sex indicator (1 = female, 0 = male).",
+      units = "unitless",
+      type = "categorical",
       notes = "Screened as a categorical covariate; not retained. Cohort was 99 male / 4 female, so the female stratum carried almost no information."
     ),
     DOSE_SIROLIMUS_MGD = list(
-      description = "Sirolimus daily dose.", units = "mg/day", type = "continuous",
+      description = "Sirolimus daily dose.",
+      units = "mg/day",
+      type = "continuous",
       notes = "Screened as a continuous covariate to test for dose-dependent (nonlinear) PK; not retained. Cohort median 1.0 mg/day [0.5-2.0]."
     ),
     CONMED_MPA = list(
-      description = "Concomitant mycophenolic acid.", units = "unitless", type = "categorical",
+      description = "Concomitant mycophenolic acid.",
+      units = "unitless",
+      type = "categorical",
       notes = "Entered during forward inclusion but removed in backward elimination (Discussion); 24 of 103 patients. No point estimate published."
     ),
     CONMED_WUZHI = list(
-      description = "Concomitant Wuzhi capsule (a Schisandra-derived traditional Chinese herbal preparation and potent CYP3A4 inhibitor).", units = "unitless", type = "categorical",
+      description = "Concomitant Wuzhi capsule (a Schisandra-derived traditional Chinese herbal preparation and potent CYP3A4 inhibitor).",
+      units = "unitless",
+      type = "categorical",
       notes = "Entered during forward inclusion but removed in backward elimination (Discussion); 26 of 103 patients. No point estimate published."
     ),
     CONMED_GCV = list(
-      description = "Concomitant ganciclovir.", units = "unitless", type = "categorical",
+      description = "Concomitant ganciclovir.",
+      units = "unitless",
+      type = "categorical",
       notes = "Screened as a categorical covariate; not retained. 5 of 103 patients."
     ),
     CONMED_STEROID = list(
-      description = "Concomitant prednisone acetate.", units = "unitless", type = "categorical",
+      description = "Concomitant prednisone acetate.",
+      units = "unitless",
+      type = "categorical",
       notes = "Screened as a categorical covariate; not retained. 10 of 103 patients."
     ),
     CONMED_PPI = list(
-      description = "Concomitant esomeprazole (proton-pump inhibitor).", units = "unitless", type = "categorical",
+      description = "Concomitant esomeprazole (proton-pump inhibitor).",
+      units = "unitless",
+      type = "categorical",
       notes = "Screened as a categorical covariate; not retained. 10 of 103 patients."
     ),
     CONMED_CCB = list(
-      description = "Concomitant amlodipine (calcium-channel blocker).", units = "unitless", type = "categorical",
+      description = "Concomitant amlodipine (calcium-channel blocker).",
+      units = "unitless",
+      type = "categorical",
       notes = "Screened as a categorical covariate; not retained. 10 of 103 patients."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 103L,
-    n_studies       = 1L,
-    n_observations  = 216L,
-    age_range       = "28.0-74.0 years",
-    age_median      = "51.0 years",
-    weight_range    = "39.0-90.0 kg",
-    weight_median   = "68.0 kg",
-    sex_female_pct  = 3.9,
-    race_ethnicity  = "Not reported; single-centre Chinese cohort (Wuhan), so predominantly Han Chinese.",
-    disease_state   = "Adult liver transplant recipients receiving oral sirolimus tablets to prevent graft rejection.",
-    dose_range      = "0.5-2.0 mg/day. Regimens present in the analysis dataset: 0.5 mg qd, 1 mg qd, 2 mg qd, 1 mg qod, 2 mg qod, 0.5 mg qd alternating with 1 mg qd, and 1 mg qd alternating with 2 mg qd.",
-    regions         = "China (single centre: Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan).",
-    hematocrit      = "Median 38.0 percent [17.5-49.5]; the 10th, 50th, and 90th percentiles used for the dosing simulations were 28, 38, and 46 percent.",
-    renal_function  = "Creatinine clearance median 89.4 mL/min [27.0-170.0] (Cockcroft-Gault).",
+    species = "human",
+    n_subjects = 103L,
+    n_studies = 1L,
+    n_observations = 216L,
+    age_range = "28.0-74.0 years",
+    age_median = "51.0 years",
+    weight_range = "39.0-90.0 kg",
+    weight_median = "68.0 kg",
+    sex_female_pct = 3.9,
+    race_ethnicity = "Not reported; single-centre Chinese cohort (Wuhan), so predominantly Han Chinese.",
+    disease_state = "Adult liver transplant recipients receiving oral sirolimus tablets to prevent graft rejection.",
+    dose_range = "0.5-2.0 mg/day. Regimens present in the analysis dataset: 0.5 mg qd, 1 mg qd, 2 mg qd, 1 mg qod, 2 mg qod, 0.5 mg qd alternating with 1 mg qd, and 1 mg qd alternating with 2 mg qd.",
+    regions = "China (single centre: Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology, Wuhan).",
+    hematocrit = "Median 38.0 percent [17.5-49.5]; the 10th, 50th, and 90th percentiles used for the dosing simulations were 28, 38, and 46 percent.",
+    renal_function = "Creatinine clearance median 89.4 mL/min [27.0-170.0] (Cockcroft-Gault).",
     hepatic_function = "Post-transplant graft function still recovering; ALT median 21.0 U/L [5.0-187.0], AST median 25.0 U/L [12.0-190.0], albumin median 44.2 g/L [27.2-50.9].",
-    co_medication   = "Ganciclovir 5/103, prednisone acetate 10/103, esomeprazole 10/103, amlodipine 10/103, mycophenolic acid 24/103, Wuzhi capsule 26/103.",
-    assay           = "Enzyme multiplied immunoassay technique on an Architect i1000 analyser with the ARCHITECT Sirolimus Reagent Kit; assay range 2-30 ng/mL, detection limit 0.3 ng/mL, intra- and inter-day CV below 10 percent.",
+    co_medication = "Ganciclovir 5/103, prednisone acetate 10/103, esomeprazole 10/103, amlodipine 10/103, mycophenolic acid 24/103, Wuzhi capsule 26/103.",
+    assay = "Enzyme multiplied immunoassay technique on an Architect i1000 analyser with the ARCHITECT Sirolimus Reagent Kit; assay range 2-30 ng/mL, detection limit 0.3 ng/mL, intra- and inter-day CV below 10 percent.",
     therapeutic_window = "4-8 ng/mL whole-blood trough (C0), the target used for the dosing-regimen simulations.",
-    notes           = "Retrospective single-centre therapeutic-drug-monitoring cohort collected between January 2018 and August 2024; demographics from Table 1. ALL samples are pre-dose trough (C0) concentrations -- there is no information about the absorption or distribution phase in the data, which is why ka was fixed and why the authors flag Vc/F as less reliably estimated (Discussion, Limitations)."
+    notes = "Retrospective single-centre therapeutic-drug-monitoring cohort collected between January 2018 and August 2024; demographics from Table 1. ALL samples are pre-dose trough (C0) concentrations -- there is no information about the absorption or distribution phase in the data, which is why ka was fixed and why the authors flag Vc/F as less reliably estimated (Discussion, Limitations)."
   )
 
   ini({

@@ -18,45 +18,45 @@ Chandasana_2024b_lamivudine <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power (allometric) effect on CL (exponent 0.758) and V (exponent 0.677) with reference weight 18.5 kg (Chandasana 2024 Table 3). Both exponents were estimated. Weight range 3.1-66.4 kg in the pooled six-study model-development population (reported as 5.1-66.4 kg in the Chandasana 2024 Discussion); 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort.",
-      source_name        = "WT"
+      notes = "Power (allometric) effect on CL (exponent 0.758) and V (exponent 0.677) with reference weight 18.5 kg (Chandasana 2024 Table 3). Both exponents were estimated. Weight range 3.1-66.4 kg in the pooled six-study model-development population (reported as 5.1-66.4 kg in the Chandasana 2024 Discussion); 8.15-39.30 kg in the IMPAACT 2019 external-validation cohort.",
+      source_name = "WT"
     ),
     FORM_SOLUTION = list(
-      description        = "Oral-solution formulation indicator (1 = lamivudine oral solution, 0 = solid oral dosage form: tablet, capsule or dispersible tablet)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Oral-solution formulation indicator (1 = lamivudine oral solution, 0 = solid oral dosage form: tablet, capsule or dispersible tablet)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (solid oral dosage form; absolute bioavailability 0.609)",
-      notes              = "Chandasana 2024 Table 3 reports absolute bioavailability F1 = 0.496 for the oral solution and F1 = 0.609 for the tablet; the source model identified a higher absolute bioavailability for solid dosage forms (tablet and capsule) than for the oral solution, consistent with a lamivudine relative-bioavailability study in children (Chandasana 2024 '3TC Pediatric PopPK Model', citing Kasirye 2012). The ABC/DTG/3TC dispersible tablet used in IMPAACT 2019 is treated as a solid dosage form (F1 = 0.609): reproducing Chandasana 2024 Table 4 with F1 = 0.609 matches the published geometric-mean AUC0-24 to within 2.4% in every weight band, whereas F1 = 0.496 under-predicts it by about 26%.",
-      source_name        = "formulation"
+      notes = "Chandasana 2024 Table 3 reports absolute bioavailability F1 = 0.496 for the oral solution and F1 = 0.609 for the tablet; the source model identified a higher absolute bioavailability for solid dosage forms (tablet and capsule) than for the oral solution, consistent with a lamivudine relative-bioavailability study in children (Chandasana 2024 '3TC Pediatric PopPK Model', citing Kasirye 2012). The ABC/DTG/3TC dispersible tablet used in IMPAACT 2019 is treated as a solid dosage form (F1 = 0.609): reproducing Chandasana 2024 Table 4 with F1 = 0.609 matches the published geometric-mean AUC0-24 to within 2.4% in every weight band, whereas F1 = 0.496 under-predicts it by about 26%.",
+      source_name = "formulation"
     ),
     OCC = list(
-      description        = "Integer-valued occasion / period indicator for inter-occasion variability on CL, V and Ka",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued occasion / period indicator for inter-occasion variability on CL, V and Ka",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Chandasana 2024 Table 3 reports a single inter-occasion variability magnitude per parameter (CL/F 24.9% CV, V/F 60.0% CV, Ka 19.7% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_*_<k> pattern with additional ~ fix(...) slots.",
-      source_name        = "OCC"
+      notes = "Chandasana 2024 Table 3 reports a single inter-occasion variability magnitude per parameter (CL/F 24.9% CV, V/F 60.0% CV, Ka 19.7% CV) shared across occasions, i.e. the NONMEM $OMEGA BLOCK(1) SAME idiom. Two occasions are encoded here (the minimum that makes IOV operational); set OCC = 1 for every record to reproduce the single steady-state occasion simulated in Chandasana 2024 Table 4. Users needing more occasions extend the oc<k> / etaiov_*_<k> pattern with additional ~ fix(...) slots.",
+      source_name = "OCC"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 209L,
-    n_studies      = 6L,
-    age_range      = "4 months to 19 years",
-    weight_range   = "3.1-66.4 kg",
-    disease_state  = "Children living with HIV-1 receiving oral lamivudine",
-    dose_range     = "Oral lamivudine; in the IMPAACT 2019 confirmatory simulations 90 mg (>=6 to <10 kg), 120 mg (>=10 to <14 kg), 150 mg (>=14 to <20 kg) and 180 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 300 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
-    notes          = "Model-development population: a pooled analysis of six clinical studies reported in the US FDA clinical pharmacology review for Ziagen and Epivir (Chandasana 2024 reference 16), summarised in Chandasana 2024 '3TC Pediatric PopPK Model' and Table 3. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 597 lamivudine intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated. The predefined exposure target for dose confirmation was a geometric-mean AUC0-24 of 6.3-26.5 ug*h/mL (Chandasana 2024 Methods)."
+    species = "human",
+    n_subjects = 209L,
+    n_studies = 6L,
+    age_range = "4 months to 19 years",
+    weight_range = "3.1-66.4 kg",
+    disease_state = "Children living with HIV-1 receiving oral lamivudine",
+    dose_range = "Oral lamivudine; in the IMPAACT 2019 confirmatory simulations 90 mg (>=6 to <10 kg), 120 mg (>=10 to <14 kg), 150 mg (>=14 to <20 kg) and 180 mg (>=20 to <25 kg) once daily as the ABC/DTG/3TC dispersible tablet, and 300 mg once daily as the ABC/DTG/3TC tablet (>=25 to <40 kg)",
+    notes = "Model-development population: a pooled analysis of six clinical studies reported in the US FDA clinical pharmacology review for Ziagen and Epivir (Chandasana 2024 reference 16), summarised in Chandasana 2024 '3TC Pediatric PopPK Model' and Table 3. External-validation cohort: IMPAACT 2019 (NCT03760458), an international phase I/II open-label study in children <12 years living with HIV-1 enrolled into five weight bands (>=6 to <10, >=10 to <14, >=14 to <20, >=20 to <25 and >=25 to <40 kg); 55 participants contributed 597 lamivudine intensive and sparse PK samples, median (min-max) baseline age 6.0 (1.00-11.0) years and weight 17.00 (8.15-39.30) kg, 45.5% female, 67% Black and 31% Asian (Chandasana 2024 Results). The existing model was applied to the IMPAACT 2019 data with NONMEM MAXEVAL = 0, i.e. no parameter was re-estimated. The predefined exposure target for dose confirmation was a geometric-mean AUC0-24 of 6.3-26.5 ug*h/mL (Chandasana 2024 Methods)."
   )
 
   ini({

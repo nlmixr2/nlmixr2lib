@@ -3,8 +3,8 @@ Yoon_2023_vancomycin <- function() {
   reference <- "Yoon S, Guk J, Lee S-G, Chae D, Kim J-H, Park K. Model-informed precision dosing in vancomycin treatment. Front Pharmacol. 2023;14:1252757. doi:10.3389/fphar.2023.1252757"
   vignette <- "Yoon_2023_vancomycin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -17,103 +17,103 @@ Yoon_2023_vancomycin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling referenced to 70 kg, exponent 0.75 on CL and Q and 1 on V and Vp (Yoon 2023 Eq. 1-2 and Methods section 2.3: 'The same allometry scaling was also applied to the inter-compartmental clearance (Q) and peripheral volume of distribution (Vp)'). Cohort median 59 kg (range 2.6-106 kg), Table 1.",
-      source_name        = "WT"
+      notes = "Allometric scaling referenced to 70 kg, exponent 0.75 on CL and Q and 1 on V and Vp (Yoon 2023 Eq. 1-2 and Methods section 2.3: 'The same allometry scaling was also applied to the inter-compartmental clearance (Q) and peripheral volume of distribution (Vp)'). Cohort median 59 kg (range 2.6-106 kg), Table 1.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Chronological age",
-      units              = "years",
-      type               = "continuous",
+      description = "Chronological age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the model twice. (1) The creatinine production rate RCr = 64.2 * exp(kCr * (AGE - 30)) (Yoon 2023 Eq. 7), where kCr takes one of two estimated values according to whether AGE is at or above 30 years (-0.0127/yr) or below it (0.0193/yr) - Table 3 reports the two values as separate rows. (2) A centred exponential effect on the central volume, COVV = exp(kV * (AGE - 40)) (Eq. 16). Cohort median 60 years (range 0-93), Table 1.",
-      source_name        = "age"
+      notes = "Enters the model twice. (1) The creatinine production rate RCr = 64.2 * exp(kCr * (AGE - 30)) (Yoon 2023 Eq. 7), where kCr takes one of two estimated values according to whether AGE is at or above 30 years (-0.0127/yr) or below it (0.0193/yr) - Table 3 reports the two values as separate rows. (2) A centred exponential effect on the central volume, COVV = exp(kV * (AGE - 40)) (Eq. 16). Cohort median 60 years (range 0-93), Table 1.",
+      source_name = "age"
     ),
     PAGE = list(
-      description        = "Postmenstrual age",
-      units              = "weeks",
-      type               = "continuous",
+      description = "Postmenstrual age",
+      units = "weeks",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drives the sigmoid clearance-maturation factor Fmat = PMA^gamma / (PMA50^gamma + PMA^gamma) (Yoon 2023 Eq. 8, after Holford 2013), with PMA50 = 43.9 and gamma = 2.08 from Table 3. UNITS ARE WEEKS, not the register default of months: Yoon 2023 Methods section 2.4 states the maturation factor is 'associated with postmenstrual age (PMA) of up to 48 weeks (Anderson et al., 2007)', PMA50 = 43.9 is only meaningful on the weeks scale (43.9 months would place 50% maturation at 3.7 years and leave a 4-year-old only 54% mature, contradicting the paper's own restriction of Fmat to children under 4), and Table 1's PMA row - median 70, range 39-232 - is the under-4 paediatric subgroup in weeks (39 weeks is term gestation; 232 weeks is 4.45 years). Table 1 labels that row '(month)', which is a units typo; see the vignette Errata. For an adult, PAGE (weeks) is approximately AGE * 52.18 + 40, at which point Fmat is within 0.02% of 1.",
-      source_name        = "PMA"
+      notes = "Drives the sigmoid clearance-maturation factor Fmat = PMA^gamma / (PMA50^gamma + PMA^gamma) (Yoon 2023 Eq. 8, after Holford 2013), with PMA50 = 43.9 and gamma = 2.08 from Table 3. UNITS ARE WEEKS, not the register default of months: Yoon 2023 Methods section 2.4 states the maturation factor is 'associated with postmenstrual age (PMA) of up to 48 weeks (Anderson et al., 2007)', PMA50 = 43.9 is only meaningful on the weeks scale (43.9 months would place 50% maturation at 3.7 years and leave a 4-year-old only 54% mature, contradicting the paper's own restriction of Fmat to children under 4), and Table 1's PMA row - median 70, range 39-232 - is the under-4 paediatric subgroup in weeks (39 weeks is term gestation; 232 weeks is 4.45 years). Table 1 labels that row '(month)', which is a units typo; see the vignette Errata. For an adult, PAGE (weeks) is approximately AGE * 52.18 + 40, at which point Fmat is within 0.02% of 1.",
+      source_name = "PMA"
     ),
     CREAT = list(
-      description        = "Serum (plasma) creatinine concentration",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum (plasma) creatinine concentration",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters as the denominator of the creatinine-clearance model CLCr = RCr / Cr * exp(-ktox * t) (Yoon 2023 Eq. 6). Measured by a rate-blanked compensated kinetic Jaffe method (Methods section 2.2). Cohort median 0.7 mg/dL (range 0.2-12.9), Table 1. The mg/dL unit is fixed by the paper's own arithmetic: RCr is a creatinine production rate in mg/h, so RCr/Cr has units of dL/h, and 64.2/1.0 = 64.2 dL/h = 107 mL/min is the expected creatinine clearance of a healthy 30-year-old.",
-      source_name        = "Cr"
+      notes = "Enters as the denominator of the creatinine-clearance model CLCr = RCr / Cr * exp(-ktox * t) (Yoon 2023 Eq. 6). Measured by a rate-blanked compensated kinetic Jaffe method (Methods section 2.2). Cohort median 0.7 mg/dL (range 0.2-12.9), Table 1. The mg/dL unit is fixed by the paper's own arithmetic: RCr is a creatinine production rate in mg/h, so RCr/Cr has units of dL/h, and 64.2/1.0 = 64.2 dL/h = 107 mL/min is the expected creatinine clearance of a healthy 30-year-old.",
+      source_name = "Cr"
     ),
     BUN = list(
-      description        = "Blood urea nitrogen",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Blood urea nitrogen",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Exponential effect on clearance centred at 15 mg/dL, exp(kBUN * (BUN - 15)) with kBUN = -0.00874 (Yoon 2023 Eq. 15, Table 3). The centring constant 15 is close to the cohort median of 15.25 mg/dL (Table 1). Note that the paper's Results describe a biphasic BUN relationship ('Vancomycin CL exhibited a gradual increase with BUN levels up to 15 mg/dL, followed by a subsequent decrease'); the printed final-model equation is monotonically decreasing and is what is encoded here - see the vignette Errata.",
-      source_name        = "BUN"
+      notes = "Exponential effect on clearance centred at 15 mg/dL, exp(kBUN * (BUN - 15)) with kBUN = -0.00874 (Yoon 2023 Eq. 15, Table 3). The centring constant 15 is close to the cohort median of 15.25 mg/dL (Table 1). Note that the paper's Results describe a biphasic BUN relationship ('Vancomycin CL exhibited a gradual increase with BUN levels up to 15 mg/dL, followed by a subsequent decrease'); the printed final-model equation is monotonically decreasing and is what is encoded here - see the vignette Errata.",
+      source_name = "BUN"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Proportional shift on clearance, (1 + thetaFEM * FEM) with thetaFEM = -0.199, i.e. 19.9% lower clearance in women (Yoon 2023 Eq. 15, Table 3). The paper defines 'FEM = 1 for female and 0 for male' in Results section 3.2, so the canonical SEXF orientation matches the source column with no value transformation. 41.1% of the PK cohort were female (Table 1). The corresponding dose reduction is quoted as 20% in the Table 5 footnote.",
-      source_name        = "FEM"
+      notes = "Proportional shift on clearance, (1 + thetaFEM * FEM) with thetaFEM = -0.199, i.e. 19.9% lower clearance in women (Yoon 2023 Eq. 15, Table 3). The paper defines 'FEM = 1 for female and 0 for male' in Results section 3.2, so the canonical SEXF orientation matches the source column with no value transformation. 41.1% of the PK cohort were female (Table 1). The corresponding dose reduction is quoted as 20% in the Table 5 footnote.",
+      source_name = "FEM"
     ),
     DIS_DIAB = list(
-      description        = "Diabetes-mellitus comorbidity indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Diabetes-mellitus comorbidity indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no diabetes)",
-      notes              = "Proportional shift on clearance, (1 + thetaDM * DM) with thetaDM = -0.151 (Yoon 2023 Eq. 15, Table 3). The paper defines 'DM = 1 for diabetes and 0 for no diabetes' in Results section 3.2. 28.4% of the PK cohort were diabetic (Table 1). The corresponding dose reduction is quoted as 15% in the Table 5 footnote.",
-      source_name        = "DM"
+      notes = "Proportional shift on clearance, (1 + thetaDM * DM) with thetaDM = -0.151 (Yoon 2023 Eq. 15, Table 3). The paper defines 'DM = 1 for diabetes and 0 for no diabetes' in Results section 3.2. 28.4% of the PK cohort were diabetic (Table 1). The corresponding dose reduction is quoted as 15% in the Table 5 footnote.",
+      source_name = "DM"
     ),
     DIS_RENAL = list(
-      description        = "History of renal disease indicator (any of acute kidney disease, chronic kidney disease, or other renal disease)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "History of renal disease indicator (any of acute kidney disease, chronic kidney disease, or other renal disease)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no renal disease)",
-      notes              = "Proportional shift on clearance, (1 + thetaREN * REN) with thetaREN = -0.237 (Yoon 2023 Eq. 15, Table 3). The paper defines 'REN = 1 for renal disease and 0 for no renal disease' in Results section 3.2. Table 1 resolves the source column into four levels - none (72.9%), acute kidney disease (9.04%), chronic kidney disease (8.86%) and others (9.23%) - which the final model pools into a single binary indicator; the 27.1% with any renal disease are the REN = 1 group. The corresponding dose reduction is quoted as 23% in the Table 5 footnote. This effect is multiplicative WITH, not a replacement for, the continuous creatinine-driven renal-function factor Fren.",
-      source_name        = "REN"
+      notes = "Proportional shift on clearance, (1 + thetaREN * REN) with thetaREN = -0.237 (Yoon 2023 Eq. 15, Table 3). The paper defines 'REN = 1 for renal disease and 0 for no renal disease' in Results section 3.2. Table 1 resolves the source column into four levels - none (72.9%), acute kidney disease (9.04%), chronic kidney disease (8.86%) and others (9.23%) - which the final model pools into a single binary indicator; the 27.1% with any renal disease are the REN = 1 group. The corresponding dose reduction is quoted as 23% in the Table 5 footnote. This effect is multiplicative WITH, not a replacement for, the continuous creatinine-driven renal-function factor Fren.",
+      source_name = "REN"
     ),
     DIS_PNEUMONIA = list(
-      description        = "Pneumonia indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Pneumonia indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no pneumonia)",
-      notes              = "Additive - not multiplicative - shift on the CRP transit rate constant, ktr = theta_ktr + thetaPNE * PNE with thetaPNE = 0.0058/h (Yoon 2023 Results section 3.3 equation, Table 4). The paper defines 'PNE = 1 indicates pneumonia and 0 indicates no pneumonia'. 32.0% of the 128-patient PD cohort had pneumonia (Table 2). Recorded as a general pneumonia indicator, not the hospital- or ventilator-acquired infection-type indicators DIS_HABP / DIS_VABP: Yoon 2023 uses pneumonia as a comorbidity / secondary-infection flag ('The hospitalization of up to 113 days was due to a secondary infection caused by pneumonia'), in the same medical-history family as DIS_DIAB and DIS_HYPERT, and never classifies it as hospital- or ventilator-associated.",
-      source_name        = "PNE"
+      notes = "Additive - not multiplicative - shift on the CRP transit rate constant, ktr = theta_ktr + thetaPNE * PNE with thetaPNE = 0.0058/h (Yoon 2023 Results section 3.3 equation, Table 4). The paper defines 'PNE = 1 indicates pneumonia and 0 indicates no pneumonia'. 32.0% of the 128-patient PD cohort had pneumonia (Table 2). Recorded as a general pneumonia indicator, not the hospital- or ventilator-acquired infection-type indicators DIS_HABP / DIS_VABP: Yoon 2023 uses pneumonia as a comorbidity / secondary-infection flag ('The hospitalization of up to 113 days was due to a secondary infection caused by pneumonia'), in the same medical-history family as DIS_DIAB and DIS_HYPERT, and never classifies it as hospital- or ventilator-associated.",
+      source_name = "PNE"
     )
   )
 
   covariatesDataExcluded <- list(
     DIS_HYPERT = list(
       description = "Hypertension comorbidity indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as a candidate covariate on CL and V (Yoon 2023 Methods section 2.4) but not retained in the final model. 52.4% of the PK cohort (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as a candidate covariate on CL and V (Yoon 2023 Methods section 2.4) but not retained in the final model. 52.4% of the PK cohort (Table 1)."
     ),
     DIS_SEPSIS = list(
       description = "Sepsis indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Yoon 2023 Methods section 2.4). 17.5% of the PK cohort (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Yoon 2023 Methods section 2.4). 17.5% of the PK cohort (Table 1)."
     ),
     DIS_EDEMA = list(
       description = "Pleural effusion / oedema indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Yoon 2023 Methods section 2.4). Yoon 2023 Table 1 pools pleural effusion and oedema into a single row; 9.0% of the PK cohort."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Yoon 2023 Methods section 2.4). Yoon 2023 Table 1 pools pleural effusion and oedema into a single row; 9.0% of the PK cohort."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Collected and tabulated (Yoon 2023 Table 1, median 2.9 g/dL, range 1-4.4) but not retained in the final model."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Collected and tabulated (Yoon 2023 Table 1, median 2.9 g/dL, range 1-4.4) but not retained in the final model."
     )
     # Cardiovascular disease (47.2%), haematological malignancy (22.5%),
     # neutropenia (3.5%) and total serum protein (median 5.7 g/dL) were also
@@ -125,31 +125,31 @@ Yoon_2023_vancomycin <- function() {
   )
 
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "serum", verified = TRUE),
-    auc_total   = list(analyte = "vancomycin", units = "mg*h/L", specimen = "not applicable", verified = TRUE),
-    prol        = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    transit1    = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    transit2    = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
-    crp         = list(analyte = "C-reactive protein", units = "mg/L", specimen = "serum", verified = TRUE),
-    severity    = list(analyte = "disease severity", units = "unitless", specimen = "not applicable", verified = TRUE)
+    auc_total = list(analyte = "vancomycin", units = "mg*h/L", specimen = "not applicable", verified = TRUE),
+    prol = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
+    transit1 = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
+    transit2 = list(analyte = "C-reactive protein", units = "mg/L", specimen = "not applicable", verified = TRUE),
+    crp = list(analyte = "C-reactive protein", units = "mg/L", specimen = "serum", verified = TRUE),
+    severity = list(analyte = "disease severity", units = "unitless", specimen = "not applicable", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 542L,
-    n_subjects_pd  = 128L,
-    n_studies      = 1L,
-    age_range      = "0-93 years",
-    age_median     = "60 years",
-    weight_range   = "2.6-106 kg",
-    weight_median  = "59 kg",
+    species = "human",
+    n_subjects = 542L,
+    n_subjects_pd = 128L,
+    n_studies = 1L,
+    age_range = "0-93 years",
+    age_median = "60 years",
+    weight_range = "2.6-106 kg",
+    weight_median = "59 kg",
     sex_female_pct = 41.1,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Hospitalised patients treated with intravenous vancomycin and enrolled in therapeutic drug monitoring; comorbidities include hypertension (52.4%), cardiovascular disease (47.2%), diabetes (28.4%), haematological malignancy (22.5%), sepsis (17.5%), renal disease (27.1%) and pneumonia (32.0% of the PD subset)",
-    dose_range     = "500-1500 mg per dose by intravenous infusion, dosing intervals 6-24 h",
-    regions        = "Republic of Korea (Severance Hospital, Seoul)",
-    notes          = "Retrospective analysis of electronic medical records; 1,526 vancomycin concentrations from 542 patients for PK (22 aged under 4 years, 18 aged 4-19 years, 502 adults) and 845 CRP measurements from 128 of those patients for PD. Demographics are Yoon 2023 Tables 1 (PK) and 2 (PD). The PD subset has median age 63 years, median weight 57.15 kg, 38.3% female and median CRP 73 mg/L. Mean length of stay 20 days (range 2-113 days). Vancomycin assayed by a KIMS immunoassay on a Roche Cobas c702 with a lower limit of quantitation of 4.0 mg/L; the cohort is Korean, so race is recorded as Asian although the paper does not tabulate it."
+    disease_state = "Hospitalised patients treated with intravenous vancomycin and enrolled in therapeutic drug monitoring; comorbidities include hypertension (52.4%), cardiovascular disease (47.2%), diabetes (28.4%), haematological malignancy (22.5%), sepsis (17.5%), renal disease (27.1%) and pneumonia (32.0% of the PD subset)",
+    dose_range = "500-1500 mg per dose by intravenous infusion, dosing intervals 6-24 h",
+    regions = "Republic of Korea (Severance Hospital, Seoul)",
+    notes = "Retrospective analysis of electronic medical records; 1,526 vancomycin concentrations from 542 patients for PK (22 aged under 4 years, 18 aged 4-19 years, 502 adults) and 845 CRP measurements from 128 of those patients for PD. Demographics are Yoon 2023 Tables 1 (PK) and 2 (PD). The PD subset has median age 63 years, median weight 57.15 kg, 38.3% female and median CRP 73 mg/L. Mean length of stay 20 days (range 2-113 days). Vancomycin assayed by a KIMS immunoassay on a Roche Cobas c702 with a lower limit of quantitation of 4.0 mg/L; the cohort is Korean, so race is recorded as Asian although the paper does not tabulate it."
   )
 
   ini({

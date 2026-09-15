@@ -30,18 +30,23 @@ Lu_2019_tacrolimus_industry_meta <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "tacrolimus industry meta",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RACE_ASIAN = list(
-      description        = "Asian race indicator (self-reported)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator (self-reported)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian; White or Black)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. Lu 2019 Methods 2.3.3: 'Race was ",
         "coded as a 3-category covariate in the analysis: White, ",
         "Black or Asian.' The Asian cohort in Lu 2019 (n = 44 of ",
@@ -50,27 +55,27 @@ Lu_2019_tacrolimus_industry_meta <- function() {
         "Effects: CL/F linear (1 + 0.59 * RACE_ASIAN), F1 linear ",
         "(1 + 0.25 * RACE_ASIAN + e_race_black_f * RACE_BLACK)."
       ),
-      source_name        = "RACE (Asian level)"
+      source_name = "RACE (Asian level)"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator (self-reported)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator (self-reported)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black; White or Asian)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. n = 24 of 408 patients (Table 2). ",
         "Effect retained only on F1 (-43.3% vs Whites); Black race ",
         "on CL/F was dropped during backward elimination due to ",
         "lack of precision (Lu 2019 Results 3.2)."
       ),
-      source_name        = "RACE (Black level)"
+      source_name = "RACE (Black level)"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. 132 females / 408 (32.4%) per ",
         "Table 2. Linear effect on Vc/F: (1 - 0.446 * SEXF), i.e., ",
         "44.6% lower Vc/F in females (Table 3 'Sex on Vc/F' = ",
@@ -78,28 +83,28 @@ Lu_2019_tacrolimus_industry_meta <- function() {
         "characterisation; the structural model parameter is ",
         "-0.446."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     ALB = list(
-      description        = "Serum albumin concentration (time-varying)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration (time-varying)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "SI units. Power scaling on Vc/F and F1 with reference ",
         "ALB = 39 g/L (Lu 2019 final-model equations; the same ",
         "value is used as the 'normal' ALB scenario in the Lu 2019 ",
         "simulation, Methods 2.3.5). Exponents: 1.03 on Vc/F, 1.04 ",
         "on F1."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase activity (time-varying)",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase activity (time-varying)",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power scaling on CL/F, Vc/F, Vp/F, and F1. The Lu 2019 ",
         "final-model equations write the AST factor as ",
         "(LAST / 3.15)^theta with LAST = log(AST), 'normalized at ",
@@ -114,14 +119,14 @@ Lu_2019_tacrolimus_industry_meta <- function() {
         "2.3.5: normal 25 IU/L, mild elevation 100 IU/L, moderate ",
         "elevation 400 IU/L."
       ),
-      source_name        = "AST (entered as LAST = log(AST))"
+      source_name = "AST (entered as LAST = log(AST))"
     ),
     FORM_TAC_IR = list(
-      description        = "Tacrolimus immediate-release vs prolonged-release formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Tacrolimus immediate-release vs prolonged-release formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (prolonged-release, Advagraf / Astagraf XL)",
-      notes              = paste0(
+      notes = paste0(
         "Per-subject (or per-occasion in cross-over studies). ",
         "Canonical convention: FORM_TAC_IR = 1 for the twice-daily ",
         "immediate-release tacrolimus formulation (Prograf), ",
@@ -142,21 +147,21 @@ Lu_2019_tacrolimus_industry_meta <- function() {
         "the formulation effect on F1 is omitted here. See ",
         "vignette Assumptions and deviations."
       ),
-      source_name        = "FORMULATION (1 = PR-T in Lu 2019)"
+      source_name = "FORMULATION (1 = PR-T in Lu 2019)"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 408L,
-    n_studies        = 8L,
-    age_range        = "5 - 71 years (17 paediatric, 391 adult)",
-    age_median       = "48 years",
-    weight_range     = "18.5 - 148.5 kg",
-    weight_median    = "74 kg",
-    sex_female_pct   = 32.4,
-    race_ethnicity   = c(White = 83.3, Asian = 10.8, Black = 5.9),
-    disease_state    = paste0(
+    species = "human",
+    n_subjects = 408L,
+    n_studies = 8L,
+    age_range = "5 - 71 years (17 paediatric, 391 adult)",
+    age_median = "48 years",
+    weight_range = "18.5 - 148.5 kg",
+    weight_median = "74 kg",
+    sex_female_pct = 32.4,
+    race_ethnicity = c(White = 83.3, Asian = 10.8, Black = 5.9),
+    disease_state = paste0(
       "Adult and paediatric liver, kidney, and heart solid-organ ",
       "transplant recipients on immediate-release (Prograf) and/or ",
       "prolonged-release (Advagraf / Astagraf XL) oral tacrolimus ",
@@ -165,14 +170,14 @@ Lu_2019_tacrolimus_industry_meta <- function() {
       "comparative studies in primary kidney or liver transplant ",
       "recipients (n = 143)."
     ),
-    dose_range       = paste0(
+    dose_range = paste0(
       "Oral tacrolimus, dose individualised by trough monitoring ",
       "(target 5 - 20 ng/mL whole-blood trough); both formulations ",
       "given as 1 mg : 1 mg total-daily-dose conversion. Lu 2019 ",
       "simulation scenario used IR-T 5 mg BID and PR-T 10 mg QD."
     ),
     n_concentrations = 23176L,
-    sampling_design  = paste0(
+    sampling_design = paste0(
       "Rich PK sampling on PK-assessment days (predose and 0.5, 1, ",
       "2, 3, 4, 6, 8, 12, 12.5, 13, 14, 15, 16, 18, 20, 24 h post-",
       "dose), plus trough monitoring throughout the treatment ",
@@ -181,7 +186,7 @@ Lu_2019_tacrolimus_industry_meta <- function() {
       "KT01, Japanese cohort); lower limit of quantitation 0.1 ",
       "ng/mL."
     ),
-    studies          = paste0(
+    studies = paste0(
       "8 Astellas Phase II studies pooled (Lu 2019 Table 1): ",
       "02-0-131 (adult kidney, n = 57); FG-506E-12-02 (adult ",
       "kidney, n = 60); FJ-506E-KT01 (Japanese adult kidney, ",
@@ -190,8 +195,8 @@ Lu_2019_tacrolimus_industry_meta <- function() {
       "mean age 9 years); FG-506E-12-01 (primary kidney, n = 66); ",
       "FG-506-11-01 (primary liver, n = 77)."
     ),
-    regions          = "Multi-national (8 Astellas Phase II studies)",
-    notes            = paste0(
+    regions = "Multi-national (8 Astellas Phase II studies)",
+    notes = paste0(
       "Software: NONMEM v7.3 with FOCE-I; bootstrap n = 1000 ",
       "(509 successful runs, 491 minimization-terminated runs ",
       "skipped). Type of organ transplanted (kidney vs liver vs ",

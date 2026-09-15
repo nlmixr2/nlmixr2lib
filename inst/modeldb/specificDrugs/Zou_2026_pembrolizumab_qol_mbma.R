@@ -12,84 +12,84 @@ Zou_2026_pembrolizumab_qol_mbma <- function() {
   vignette <- "Zou_2026_pembrolizumab_qol"
 
   units <- list(
-    time          = "week",
-    dosing        = "none",
+    time = "week",
+    dosing = "none",
     concentration = "score (arm-mean EORTC QLQ-C30 GHS/QoL on the 0-100 scale, exposed as qol_ghs; the model observation logit_qol_ghs is that score on the logit-of-fraction scale and is NOT a drug concentration)"
   )
 
   covariateData <- list(
     TRT = list(
-      description        = "Study-arm treatment indicator: 0 = pembrolizumab arm (pembrolizumab monotherapy or pembrolizumab in combination with another agent), 1 = control arm (the comparator regimen of the original trial -- chemotherapy, targeted therapy, placebo plus standard of care, or placebo alone, depending on trial design).",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Study-arm treatment indicator: 0 = pembrolizumab arm (pembrolizumab monotherapy or pembrolizumab in combination with another agent), 1 = control arm (the comparator regimen of the original trial -- chemotherapy, targeted therapy, placebo plus standard of care, or placebo alone, depending on trial design).",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = "0 (pembrolizumab)",
-      notes              = "MBMA study-arm-level indicator (a property of the trial arm, not of an individual patient). Zou 2026 Section 2.2 defines exactly two arm groups and pools every comparator regimen into the single 'control' level, so this column cannot distinguish chemotherapy from placebo control. Reference is pembrolizumab, not placebo -- this is the reverse of the usual popPK convention and the sign of both retained covariate effects follows from it (Table S1 row labels read 'Effect of control arm on ..., pembrolizumab as reference'). The paper's Equation 5 writes the effect as P_ik = theta_P * exp(Cov_trt) with Cov_trt = 0 for pembrolizumab and theta_P_control for control; the Monolix [INDIVIDUAL] block applies that shift on the LOGIT scale for the logit-normal Emax and on the LOG scale for the log-normal SLP, which is how it is encoded here.",
-      source_name        = "TRT (Monolix [COVARIATE] block, categories 'Pembrolizumab' and 'Placebo'; Zou 2026 Supplementary Codes section B)"
+      notes = "MBMA study-arm-level indicator (a property of the trial arm, not of an individual patient). Zou 2026 Section 2.2 defines exactly two arm groups and pools every comparator regimen into the single 'control' level, so this column cannot distinguish chemotherapy from placebo control. Reference is pembrolizumab, not placebo -- this is the reverse of the usual popPK convention and the sign of both retained covariate effects follows from it (Table S1 row labels read 'Effect of control arm on ..., pembrolizumab as reference'). The paper's Equation 5 writes the effect as P_ik = theta_P * exp(Cov_trt) with Cov_trt = 0 for pembrolizumab and theta_P_control for control; the Monolix [INDIVIDUAL] block applies that shift on the LOGIT scale for the logit-normal Emax and on the LOG scale for the log-normal SLP, which is how it is encoded here.",
+      source_name = "TRT (Monolix [COVARIATE] block, categories 'Pembrolizumab' and 'Placebo'; Zou 2026 Supplementary Codes section B)"
     ),
     N_ARM = list(
-      description        = "Number of participants contributing to the study-arm-level QoL mean at that observation; the arm sample size used as the meta-analytic weight.",
-      units              = "participants",
-      type               = "count",
+      description = "Number of participants contributing to the study-arm-level QoL mean at that observation; the arm sample size used as the meta-analytic weight.",
+      units = "participants",
+      type = "count",
       reference_category = NULL,
-      notes              = "MBMA weighting regressor, supplied per observation row rather than estimated. Zou 2026 uses it in TWO places, which is why it is a covariate here rather than a downstream scaling applied after the solve (the pattern used by Mercier_2014_tramadol_tapentadol_mbma and Chen_2025_methotrexate_*_mbma, where only the residual is weighted). (1) The between-treatment-arm random effect on baseline QoL is divided by sqrt(N_ARM) -- Supplementary Codes section A, 'tE0RE = tE0 + etaBSVE0 + etaBTAVE0/sqrt(NOC)' -- so a large arm's mean baseline sits closer to its study's baseline, as an arm mean's standard error should. (2) The residual SD is divided by sqrt(N_ARM), equivalent to the paper's Equation 3 variance sigma^2 / N_ijk. Baseline arm sizes in the fitted database span 26 to 1098 participants (Zou 2026 Table 1). Must be strictly positive; the model divides by sqrt(N_ARM) twice.",
-      source_name        = "NOC (Monolix regressor; Zou 2026 Supplementary Codes sections A and B) / N_ijk (Zou 2026 Equations 2 and 3)"
+      notes = "MBMA weighting regressor, supplied per observation row rather than estimated. Zou 2026 uses it in TWO places, which is why it is a covariate here rather than a downstream scaling applied after the solve (the pattern used by Mercier_2014_tramadol_tapentadol_mbma and Chen_2025_methotrexate_*_mbma, where only the residual is weighted). (1) The between-treatment-arm random effect on baseline QoL is divided by sqrt(N_ARM) -- Supplementary Codes section A, 'tE0RE = tE0 + etaBSVE0 + etaBTAVE0/sqrt(NOC)' -- so a large arm's mean baseline sits closer to its study's baseline, as an arm mean's standard error should. (2) The residual SD is divided by sqrt(N_ARM), equivalent to the paper's Equation 3 variance sigma^2 / N_ijk. Baseline arm sizes in the fitted database span 26 to 1098 participants (Zou 2026 Table 1). Must be strictly positive; the model divides by sqrt(N_ARM) twice.",
+      source_name = "NOC (Monolix regressor; Zou 2026 Supplementary Codes sections A and B) / N_ijk (Zou 2026 Equations 2 and 3)"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Study-arm mean patient age.",
-      units              = "years",
-      type               = "continuous",
+      description = "Study-arm mean patient age.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened by the full fixed-effects covariate model of Zou 2026 Section 2.5 on E0, Emax and SLP using the centred exponential form P_i = theta_P * exp(theta_Age * AGE / Age_Ref) (Equation 6), but NOT retained: Section 3.2 states 'No additional significant covariates were identified during model development' beyond treatment. No point estimate and no Age_Ref value is published, so the effect cannot be encoded."
+      notes = "Screened by the full fixed-effects covariate model of Zou 2026 Section 2.5 on E0, Emax and SLP using the centred exponential form P_i = theta_P * exp(theta_Age * AGE / Age_Ref) (Equation 6), but NOT retained: Section 3.2 states 'No additional significant covariates were identified during model development' beyond treatment. No point estimate and no Age_Ref value is published, so the effect cannot be encoded."
     ),
     SEXF_PCT = list(
-      description        = "Study-arm percentage of enrolled participants who are female.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm percentage of enrolled participants who are female.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The paper collects and screens the arm-level proportion of MALE patients (Monolix column MaleP); SEXF_PCT = 100 - MaleP. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. Recorded on the female-percentage orientation so it matches the individual-level SEXF canonical (1 = female) and the RACE_ASIAN_PCT / PS_ECOG_0_PCT arm-level percentage family; the transformation from the paper's column is stated here so the provenance is not lost."
+      notes = "The paper collects and screens the arm-level proportion of MALE patients (Monolix column MaleP); SEXF_PCT = 100 - MaleP. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. Recorded on the female-percentage orientation so it matches the individual-level SEXF canonical (1 = female) and the RACE_ASIAN_PCT / PS_ECOG_0_PCT arm-level percentage family; the transformation from the paper's column is stated here so the provenance is not lost."
     ),
     PS_ECOG_0_PCT = list(
-      description        = "Study-arm percentage of enrolled participants with an ECOG performance status of 0 at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm percentage of enrolled participants with an ECOG performance status of 0 at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Monolix column ECOG0P. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. Uses the registered arm-level percentage canonical PS_ECOG_0_PCT rather than a per-subject ECOG indicator, because this MBMA carries the arm's ECOG-0 fraction."
+      notes = "Monolix column ECOG0P. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. Uses the registered arm-level percentage canonical PS_ECOG_0_PCT rather than a per-subject ECOG indicator, because this MBMA carries the arm's ECOG-0 fraction."
     ),
     DIS_STAGE4_PCT = list(
-      description        = "Study-arm percentage of enrolled participants with stage IV disease at baseline.",
-      units              = "%",
-      type               = "continuous",
+      description = "Study-arm percentage of enrolled participants with stage IV disease at baseline.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Monolix column DSIVP. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. The Monolix [FILEINFO] header also carries DSIP, DSIIP and DSIIIP (stage I, II and III percentages) but only DSIVP is declared as a covariate in [CONTENT], so only the stage IV fraction entered the screen. Follows the DIS_CHD_PERCENT / TUMTP_SQUAM_PCT arm-level prevalence-percentage family; documentation only, so not registered in inst/references/covariate-columns.md."
+      notes = "Monolix column DSIVP. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. The Monolix [FILEINFO] header also carries DSIP, DSIIP and DSIIIP (stage I, II and III percentages) but only DSIVP is declared as a covariate in [CONTENT], so only the stage IV fraction entered the screen. Follows the DIS_CHD_PERCENT / TUMTP_SQUAM_PCT arm-level prevalence-percentage family; documentation only, so not registered in inst/references/covariate-columns.md."
     ),
     TUMTP = list(
-      description        = "Study-arm tumour type, a seven-level categorical: colorectal, endometrial, HNSCC, melanoma, NSCLC, TNBC, urothelial.",
-      units              = "(categorical)",
-      type               = "categorical",
+      description = "Study-arm tumour type, a seven-level categorical: colorectal, endometrial, HNSCC, melanoma, NSCLC, TNBC, urothelial.",
+      units = "(categorical)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = "Monolix column DIS, declared with exactly those seven categories in the [COVARIATE] block. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. The paper's Limitations paragraph is explicit that this is a power problem rather than evidence of no effect: 'the dataset lacked sufficient power to compare pembrolizumab's QoL benefits across different tumor types.' Recorded as the single source categorical rather than as seven TUMTP_<type> indicator columns because no per-type effect was estimated; a future extraction that does estimate per-type effects should use the registered TUMTP_MEL / TUMTP_NSCLC / TUMTP_CRC / TUMTP_BLADDER indicators."
+      notes = "Monolix column DIS, declared with exactly those seven categories in the [COVARIATE] block. Screened on E0, Emax and SLP per Zou 2026 Section 2.5 and not retained. The paper's Limitations paragraph is explicit that this is a power problem rather than evidence of no effect: 'the dataset lacked sufficient power to compare pembrolizumab's QoL benefits across different tumor types.' Recorded as the single source categorical rather than as seven TUMTP_<type> indicator columns because no per-type effect was estimated; a future extraction that does estimate per-type effects should use the registered TUMTP_MEL / TUMTP_NSCLC / TUMTP_CRC / TUMTP_BLADDER indicators."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 11326L,
-    n_studies      = 20L,
-    n_arms         = 36L,
+    species = "human",
+    n_subjects = 11326L,
+    n_studies = 20L,
+    n_arms = 36L,
     n_observations = 410L,
-    age_range      = "collected per arm but not reported in the publication (screened as the AGE covariate and not retained)",
-    weight_range   = "not reported",
+    age_range = "collected per arm but not reported in the publication (screened as the AGE covariate and not retained)",
+    weight_range = "not reported",
     sex_female_pct = NA_real_,
     race_ethnicity = "not reported",
-    disease_state  = "adults with advanced / metastatic solid tumours enrolled in trials of pembrolizumab: melanoma (4 study entries), NSCLC (8), TNBC (3), urothelial carcinoma (2), HNSCC (1), colorectal cancer (1) and endometrial cancer (1)",
-    dose_range     = "not modelled -- this MBMA has no exposure term; pembrolizumab arms are pooled across monotherapy and combination regimens and no dose or concentration enters the model",
-    regimens       = "pembrolizumab monotherapy or pembrolizumab plus another agent (pooled into one 'pembrolizumab' level) versus the trial's comparator arm (chemotherapy, targeted therapy, placebo plus standard of care, or placebo alone; pooled into one 'control' level)",
-    timepoints     = "arm-mean EORTC QLQ-C30 GHS/QoL reported at 3 to 24 timepoints per arm (Zou 2026 Table 1); at least three measurements per arm were required for inclusion",
-    regions        = "not reported",
-    notes          = "MBMA at the study-arm level: each modelled data point is the arm-mean QoL score in one trial arm at one timepoint, weighted by the arm sample size N_ARM. 228 of the 410 observations are from pembrolizumab arms and 182 from control arms (Zou 2026 Section 3.1). n_studies = 20 counts Table 1 rows; there are 19 unique trials because KEYNOTE-054 (NCT02362594) contributes two rows -- Bottomley 2021 and Buhrer 2024 report the same trial (Table 1 footnote a), with identical baseline arm sizes of 514 pembrolizumab and 505 control. n_arms = 36 counts the 19 rows with non-zero pembrolizumab data plus the 17 rows with non-zero control data. n_subjects = 11326 is a DERIVED lower bound, not a published figure -- the paper reports no participant total. It is the sum of the Table 1 baseline sample sizes (7248 pembrolizumab + 5097 control = 12345) minus the 1019 participants of the second KEYNOTE-054 row. Table 1 footnote a states that the two KEYNOTE-054 entries 'were published with different population inclusion criteria and follow-up durations; therefore, both datasets were included', so the two rows overlap heavily but are not the identical cohort and the exact unique-participant count is indeterminate from what is published. Of the 16 study entries reporting a between-group comparison, 8 reported improved QoL with pembrolizumab and 8 reported no significant or clinically meaningful difference; the model recovers a treatment effect in the second subset too (Zou 2026 Figure 4C). Sources of data were published figures and tables digitised with WebPlotDigitizer. The model is intended for simulating arm-mean QoL trajectories and is NOT suitable for individual-subject simulation. Zou 2026 also reports Wilcoxon comparisons of the empirical-Bayes SLP and Emax between arms (Figure 4B/4C); those are post-hoc statistics on the fitted parameters, not additional model components."
+    disease_state = "adults with advanced / metastatic solid tumours enrolled in trials of pembrolizumab: melanoma (4 study entries), NSCLC (8), TNBC (3), urothelial carcinoma (2), HNSCC (1), colorectal cancer (1) and endometrial cancer (1)",
+    dose_range = "not modelled -- this MBMA has no exposure term; pembrolizumab arms are pooled across monotherapy and combination regimens and no dose or concentration enters the model",
+    regimens = "pembrolizumab monotherapy or pembrolizumab plus another agent (pooled into one 'pembrolizumab' level) versus the trial's comparator arm (chemotherapy, targeted therapy, placebo plus standard of care, or placebo alone; pooled into one 'control' level)",
+    timepoints = "arm-mean EORTC QLQ-C30 GHS/QoL reported at 3 to 24 timepoints per arm (Zou 2026 Table 1); at least three measurements per arm were required for inclusion",
+    regions = "not reported",
+    notes = "MBMA at the study-arm level: each modelled data point is the arm-mean QoL score in one trial arm at one timepoint, weighted by the arm sample size N_ARM. 228 of the 410 observations are from pembrolizumab arms and 182 from control arms (Zou 2026 Section 3.1). n_studies = 20 counts Table 1 rows; there are 19 unique trials because KEYNOTE-054 (NCT02362594) contributes two rows -- Bottomley 2021 and Buhrer 2024 report the same trial (Table 1 footnote a), with identical baseline arm sizes of 514 pembrolizumab and 505 control. n_arms = 36 counts the 19 rows with non-zero pembrolizumab data plus the 17 rows with non-zero control data. n_subjects = 11326 is a DERIVED lower bound, not a published figure -- the paper reports no participant total. It is the sum of the Table 1 baseline sample sizes (7248 pembrolizumab + 5097 control = 12345) minus the 1019 participants of the second KEYNOTE-054 row. Table 1 footnote a states that the two KEYNOTE-054 entries 'were published with different population inclusion criteria and follow-up durations; therefore, both datasets were included', so the two rows overlap heavily but are not the identical cohort and the exact unique-participant count is indeterminate from what is published. Of the 16 study entries reporting a between-group comparison, 8 reported improved QoL with pembrolizumab and 8 reported no significant or clinically meaningful difference; the model recovers a treatment effect in the second subset too (Zou 2026 Figure 4C). Sources of data were published figures and tables digitised with WebPlotDigitizer. The model is intended for simulating arm-mean QoL trajectories and is NOT suitable for individual-subject simulation. Zou 2026 also reports Wilcoxon comparisons of the empirical-Bayes SLP and Emax between arms (Figure 4B/4C); those are post-hoc statistics on the fitted parameters, not additional model components."
   )
 
   ini({

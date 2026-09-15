@@ -1,8 +1,8 @@
 Alqurain_2024_vancomycin <- function() {
   description <- "One-compartment IV population PK model for vancomycin in non-critical-care adult (>= 40 years) medical-ward inpatients in the Eastern Province of Saudi Arabia, built from routine therapeutic-drug-monitoring trough concentrations. Clearance is an uncentered exponential (log-linear) function of C-reactive protein and Cockcroft-Gault creatinine clearance, so exp(lcl) is the clearance at CRP = 0 and CRCL = 0 rather than a typical-patient clearance; volume of distribution carries no covariates."
-  reference   <- "Alqurain AA, Alrashidi LN, Aloraifej SK, Alkhalifah M, Alsayed HA, Abohelaika S, Alshabeeb MA, Aldhafeeri AS, Almuslim M, Bumozah TN, Alomar MJ, Alshehab AA, Alamer AA, Al-Matouq J, Bidasee KR, Alomar FA. Factors Affecting Vancomycin Trough Concentration; a Population Pharmacokinetic Model in Non-Critical Care Saudi Patients. Drug Des Devel Ther. 2024;18:6185-6198. doi:10.2147/DDDT.S496512"
-  vignette    <- "Alqurain_2024_vancomycin"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Alqurain AA, Alrashidi LN, Aloraifej SK, Alkhalifah M, Alsayed HA, Abohelaika S, Alshabeeb MA, Aldhafeeri AS, Almuslim M, Bumozah TN, Alomar MJ, Alshehab AA, Alamer AA, Al-Matouq J, Bidasee KR, Alomar FA. Factors Affecting Vancomycin Trough Concentration; a Population Pharmacokinetic Model in Non-Critical Care Saudi Patients. Drug Des Devel Ther. 2024;18:6185-6198. doi:10.2147/DDDT.S496512"
+  vignette <- "Alqurain_2024_vancomycin"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the source: the single disposition
@@ -14,11 +14,11 @@ Alqurain_2024_vancomycin <- function() {
 
   covariateData <- list(
     CRP = list(
-      description        = "C-reactive protein concentration measured at the time the vancomycin trough sample was drawn",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein concentration measured at the time the vancomycin trough sample was drawn",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Standard (not high-sensitivity) assay; NOT a baseline value -- Alqurain 2024 Discussion states 'the CRP values were",
         "measured at the time of vancomycin trough level collection, and they are not reflective to the actual inflammatory",
         "state when initiating vancomycin therapy.' Cohort mean 80.6 +/- 32.5 (Table 1); the Simulx simulation scenarios use",
@@ -32,14 +32,14 @@ Alqurain_2024_vancomycin <- function() {
         "a ~6000-fold span that a log-transformed or mean-centered covariate cannot generate) and Figure 6.",
         sep = " "
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     ),
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Alqurain 2024 Methods, 'Study Design, Subjects, and Sample Collection': 'CrCl was calculated using the",
         "Cockcroft-Gault formula.' The paper applies no BSA normalization, so the column is raw mL/min; the canonical CRCL",
         "register entry explicitly accepts raw Cockcroft-Gault mL/min with the assay form documented per model (precedents:",
@@ -49,25 +49,25 @@ Alqurain_2024_vancomycin <- function() {
         "kidney disease were an exclusion criterion, so the low-CrCl tail is acute rather than chronic renal impairment.",
         sep = " "
       ),
-      source_name        = "CrCl"
+      source_name = "CrCl"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 124L,
+    species = "human",
+    n_subjects = 124L,
     n_observations = 172L,
-    n_studies      = 1L,
-    age_range      = "40-99 years (inclusion criterion >= 40 years); median 79 years (IQR 50-86). Age bands (Table 1): 40-49 8 (7%), 50-59 8 (7%), 60-69 42 (33%), 70-79 31 (25%), 80-89 26 (21%), 90-99 9 (7%).",
-    age_median     = "79 years",
-    weight_range   = "Mean 72 +/- 20 kg (Table 1)",
+    n_studies = 1L,
+    age_range = "40-99 years (inclusion criterion >= 40 years); median 79 years (IQR 50-86). Age bands (Table 1): 40-49 8 (7%), 50-59 8 (7%), 60-69 42 (33%), 70-79 31 (25%), 80-89 26 (21%), 90-99 9 (7%).",
+    age_median = "79 years",
+    weight_range = "Mean 72 +/- 20 kg (Table 1)",
     sex_female_pct = 41,
     race_ethnicity = "Not reported; single-country cohort recruited in the Eastern Province of Saudi Arabia",
-    disease_state  = "Adults admitted to general medical wards and initiated on systemic vancomycin. Patients in the emergency department, intensive care unit or surgical wards, patients with chronic kidney disease, and pregnant women were excluded, so this is explicitly a non-critical-care population. Most patients nonetheless had some degree of (acute) renal impairment: mean CrCl 61.1 +/- 48.2 mL/min, 35% at <= 30 mL/min. Mean serum albumin 29.5 +/- 8 g/L; mean serum creatinine 183 +/- 171 (units reported as mg/dL in Table 1, but the magnitude is consistent with umol/L).",
+    disease_state = "Adults admitted to general medical wards and initiated on systemic vancomycin. Patients in the emergency department, intensive care unit or surgical wards, patients with chronic kidney disease, and pregnant women were excluded, so this is explicitly a non-critical-care population. Most patients nonetheless had some degree of (acute) renal impairment: mean CrCl 61.1 +/- 48.2 mL/min, 35% at <= 30 mL/min. Mean serum albumin 29.5 +/- 8 g/L; mean serum creatinine 183 +/- 171 (units reported as mg/dL in Table 1, but the magnitude is consistent with umol/L).",
     renal_function = "Mean Cockcroft-Gault CrCl 61.1 +/- 48.2 mL/min; > 120 mL/min 17 (14%), 91-120 21 (17%), 61-90 14 (11%), 31-60 28 (23%), <= 30 mL/min 44 (35%) (Table 1)",
-    dose_range     = "500-1750 mg per intravenous dose (Table 1: 500 mg 25%, 750 mg 15%, 850 mg 2%, 1000 mg 40%, 1200 mg 1%, 1250 mg 9%, 1500 mg 6%, 1750 mg 2%). Doses were standardized to 500 mg for figure presentation only; actual doses were used in the modelling.",
-    regions        = "Saudi Arabia (Eastern Province): Al-Mana General Hospital Al-Khobar, Qatif Central Hospital, and Dammam Medical Complex",
-    notes          = "Multicentre retrospective study of routine therapeutic-drug-monitoring records collected 1 January - 31 December 2022; one visit per patient. 172 trough concentrations from 124 patients. Baseline demographics are Table 1 of Alqurain 2024. Concentrations were measured by enzyme-multiplied immunoassay (EMIT) with a 2-50 mg/L calibration range, so only trough samples inform the fit -- the authors note this prevented resolution of a distribution phase and is why a one-compartment model was retained."
+    dose_range = "500-1750 mg per intravenous dose (Table 1: 500 mg 25%, 750 mg 15%, 850 mg 2%, 1000 mg 40%, 1200 mg 1%, 1250 mg 9%, 1500 mg 6%, 1750 mg 2%). Doses were standardized to 500 mg for figure presentation only; actual doses were used in the modelling.",
+    regions = "Saudi Arabia (Eastern Province): Al-Mana General Hospital Al-Khobar, Qatif Central Hospital, and Dammam Medical Complex",
+    notes = "Multicentre retrospective study of routine therapeutic-drug-monitoring records collected 1 January - 31 December 2022; one visit per patient. 172 trough concentrations from 124 patients. Baseline demographics are Table 1 of Alqurain 2024. Concentrations were measured by enzyme-multiplied immunoassay (EMIT) with a 2-50 mg/L calibration range, so only trough samples inform the fit -- the authors note this prevented resolution of a distribution phase and is why a one-compartment model was retained."
   )
 
   ini({

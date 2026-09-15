@@ -12,72 +12,72 @@ Wang_2013_morphine <- function() {
   vignette <- "Wang_2013_morphine"
   units <- list(time = "min", dosing = "ug", concentration = "ug/L")
 
-  ddmore_id    <- "DDMODEL00000269"
+  ddmore_id <- "DDMODEL00000269"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline (one row per subject in the bundled simulated dataset; the .mod $INPUT comment labels BW as 'bodyweight in kg').",
         "Drives the bodyweight-dependent allometric exponent (BDE) on morphine clearance:",
         "KBDE(WT) = (KDEC + (KMAX - KDEC)) - KDEC * WT^GAMMA / (KHAL^GAMMA + WT^GAMMA),",
         "with KDEC = 0.594, KMAX - KDEC = 0.872, KHAL = 4.01 kg, GAMMA = 4.62.",
         "Reference weight for allometric scaling is 70 kg (TVCL = THETA(5) * (BW/70)^KBDE in the .mod $PK)."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CHILD = list(
-      description        = "Age-stratum indicator: 1 if the subject is in the 0-3 year (newborn / infant / young child) stratum, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Age-stratum indicator: 1 if the subject is in the 0-3 year (newborn / infant / young child) stratum, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult baseline together with ADOLESCENT = 0)",
-      notes              = paste(
+      notes = paste(
         "Derived from the source POP column documented in the .mod $INPUT comments:",
         "POP = 1 (0-3 years) -> CHILD = 1; POP != 1 -> CHILD = 0.",
         "CHILD = 0 AND ADOLESCENT = 0 identifies the adult stratum (POP = 3, 18-36 years)",
         "that triggers the F1 = 0.88 oral-bioavailability adjustment in the .mod $PK block."
       ),
-      source_name        = "POP"
+      source_name = "POP"
     ),
     ADOLESCENT = list(
-      description        = "Age-stratum indicator: 1 if the subject is in the 6-15 year (children-adolescents) stratum, 0 otherwise.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Age-stratum indicator: 1 if the subject is in the 6-15 year (children-adolescents) stratum, 0 otherwise.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-adolescent: 0-3 year paediatric stratum or adult stratum)",
-      notes              = paste(
+      notes = paste(
         "Derived from the source POP column documented in the .mod $INPUT comments:",
         "POP = 2 (6-15 years) -> ADOLESCENT = 1; POP != 2 -> ADOLESCENT = 0.",
         "Adolescents take a different intercompartmental clearance Q (lq_adolescent, no BW scaling; THETA(10))",
         "and a different central volume V1 (lvc_adolescent, still BW-scaled; THETA(11))",
         "via the IF (POP.EQ.2) overrides in the .mod $PK block."
       ),
-      source_name        = "POP"
+      source_name = "POP"
     )
   )
 
   population <- list(
-    n_subjects     = 475L,
-    n_studies      = "Pooled across multiple paediatric and adult studies (full study list reported in the publication; original Wang 2013 PDF is not on disk under literature/).",
-    age_range      = "0-3 years (newborns / infants / young children stratum, POP = 1), 6-15 years (children-adolescents stratum, POP = 2), 18-36 years (adults stratum, POP = 3) per the .mod $INPUT comments.",
-    weight_range   = "0.6-85 kg in the bundle's simulated dataset (across the three POP strata).",
+    n_subjects = 475L,
+    n_studies = "Pooled across multiple paediatric and adult studies (full study list reported in the publication; original Wang 2013 PDF is not on disk under literature/).",
+    age_range = "0-3 years (newborns / infants / young children stratum, POP = 1), 6-15 years (children-adolescents stratum, POP = 2), 18-36 years (adults stratum, POP = 3) per the .mod $INPUT comments.",
+    weight_range = "0.6-85 kg in the bundle's simulated dataset (across the three POP strata).",
     sex_female_pct = "Not extractable from DDMORE bundle (Wang 2013 PDF not on disk under literature/).",
     race_ethnicity = "Not extractable from DDMORE bundle.",
-    disease_state  = "Mixed paediatric and adult cohorts receiving morphine. Specific clinical indication not extractable from DDMORE bundle alone; the publication abstract describes 358 neonates / infants / children / adults plus 117 adolescents.",
-    dose_range     = "Variable by study; doses in the bundle's simulated dataset are in micrograms with infusion rates ranging from short bolus-equivalent infusions (~10 s) to 60-min infusions (e.g., 1850 ug at 30.83 ug/min in adults; 53 ug at 265 ug/min in 0.6-kg neonates).",
-    regions        = "Not extractable from DDMORE bundle.",
-    notes          = paste(
+    disease_state = "Mixed paediatric and adult cohorts receiving morphine. Specific clinical indication not extractable from DDMORE bundle alone; the publication abstract describes 358 neonates / infants / children / adults plus 117 adolescents.",
+    dose_range = "Variable by study; doses in the bundle's simulated dataset are in micrograms with infusion rates ranging from short bolus-equivalent infusions (~10 s) to 60-min infusions (e.g., 1850 ug at 30.83 ug/min in adults; 53 ug at 265 ug/min in 0.6-kg neonates).",
+    regions = "Not extractable from DDMORE bundle.",
+    notes = paste(
       "Demographic counts are summarised from the publication abstract (358 neonates / infants / children / adults + 117 adolescents = 475)",
       "and the .mod $INPUT comments (POP age-stratum definitions).",
       "Original Wang 2013 PDF is not on disk under the literature tree at extraction time;",

@@ -33,8 +33,8 @@ Jensen_2023_lngIus52mg <- function() {
   )
   vignette <- "Jensen_2023_lngIus52mg"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel loaded in the intrauterine reservoir)",
+    time = "h",
+    dosing = "mg (levonorgestrel loaded in the intrauterine reservoir)",
     concentration = "ng/L (total LNG in plasma; also derived unbound LNG in ng/L) and nmol/L (SHBG in serum)"
   )
 
@@ -43,20 +43,20 @@ Jensen_2023_lngIus52mg <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "LNG", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "unbound LNG", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "LNG", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "unbound LNG", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "unbound LNG", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "LNG", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    shbg        = list(analyte = "SHBG", units = NA_character_, specimen = "serum", verified = FALSE)
+    effect = list(analyte = "LNG", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    shbg = list(analyte = "SHBG", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Continuous covariate on apparent clearance of LNG and on SHBG baseline via power-law scaling.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Continuous covariate on apparent clearance of LNG and on SHBG baseline via power-law scaling.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight is 68 kg (medWT), the pooled median across the",
         "8-year popPK dataset (median weight column in Supplementary Table 1:",
         "70 kg MET, 67 kg Phase 2 Study 308901, 62 kg Phase 3 Study 89532;",
@@ -67,27 +67,34 @@ Jensen_2023_lngIus52mg <- function() {
         "unknown for a given subject. Body weight is the only covariate the",
         "8-year model retained (Supplementary Section 1.5)."
       ),
-      source_name        = "WGHTC"
+      source_name = "WGHTC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 920L,
-    n_studies      = 3L,
-    studies        = c(
+    species = "human",
+    n_subjects = 920L,
+    n_studies = 3L,
+    studies = c(
       "NCT02985541 (Mirena Extension Trial, MET, Phase 3, US 54 centers, 2016-2021)",
       "NCT00185380 (Phase 2 Study 308901, LNG-IUS 52 mg, up to ~3 y)",
       "Leiras Study Report 02-89532-07 (Phase 3 Study 89532, LNG-IUS 52 mg, up to ~5 y)"
     ),
-    age_range      = "18-40 years (medians 29-33 across the three studies)",
-    weight_range   = "39-164 kg (medians 62 / 67 / 70 kg across studies; pooled median 68 kg)",
+    age_range = "18-40 years (medians 29-33 across the three studies)",
+    weight_range = "39-164 kg (medians 62 / 67 / 70 kg across studies; pooled median 68 kg)",
     sex_female_pct = 100,
-    race_ethnicity = c(White = 75.4, Black = 14.1, Asian = 2.5, AmericanIndianAlaskaNative = 0.6, Multiple = 3.9, NotReported = 3.6),
-    disease_state  = "Premenopausal fertile women using LNG-IUS 52 mg (Mirena) for contraception, with or without heavy menstrual bleeding.",
-    dose_range     = "Single insertion of a 52 mg LNG intrauterine reservoir (F1 ~ 0.971 of the loaded amount enters the release pool); no additional dosing over 8 years of continuous use.",
-    regions        = "United States (MET); global for the pooled Phase 2 / 3 upstream studies.",
-    notes          = paste(
+    race_ethnicity = c(
+      White = 75.4,
+      Black = 14.1,
+      Asian = 2.5,
+      AmericanIndianAlaskaNative = 0.6,
+      Multiple = 3.9,
+      NotReported = 3.6
+    ),
+    disease_state = "Premenopausal fertile women using LNG-IUS 52 mg (Mirena) for contraception, with or without heavy menstrual bleeding.",
+    dose_range = "Single insertion of a 52 mg LNG intrauterine reservoir (F1 ~ 0.971 of the loaded amount enters the release pool); no additional dosing over 8 years of continuous use.",
+    regions = "United States (MET); global for the pooled Phase 2 / 3 upstream studies.",
+    notes = paste(
       "Race percentages are baseline demographics for the 362 MET subjects",
       "starting extended treatment in year 6 (Supplementary Section 2.1);",
       "pooled race distribution across all 3 studies not reported. Total",

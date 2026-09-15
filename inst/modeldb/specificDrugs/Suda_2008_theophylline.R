@@ -1,51 +1,51 @@
 Suda_2008_theophylline <- function() {
   description <- "Steady-state population PK model for oral theophylline in 52 Japanese premature neonates and infants with apnea (Suda 2008). One-compartment first-order absorption structure; oral clearance CL/F is the only structural parameter the paper estimates (steady-state trough analysis Css = R / CL/F). Body-weight allometric scaling and a binary indicator for the Apnecut formulation (vs the in-house theophylline-alcohol comparator) on CL/F."
-  reference   <- "Suda Y, Hanada K, Tsuchiwata S, Saito M, Nakamura T, Ito Y, Ishikawa Y, Kushida K, Ogata H. Population pharmacokinetic analysis of two theophylline formulations in premature neonates and infants with apnea. Yakugaku Zasshi. 2008;128(4):635-641. doi:10.1248/yakushi.128.635"
-  vignette    <- "Suda_2008_theophylline"
-  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  reference <- "Suda Y, Hanada K, Tsuchiwata S, Saito M, Nakamura T, Ito Y, Ishikawa Y, Kushida K, Ogata H. Population pharmacokinetic analysis of two theophylline formulations in premature neonates and infants with apnea. Yakugaku Zasshi. 2008;128(4):635-641. doi:10.1248/yakushi.128.635"
+  vignette <- "Suda_2008_theophylline"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "theophylline", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (current, time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (current, time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Suda 2008 final model (page 638 / Table 3) scales CL/F as (BW(g)/1000)^1.08, i.e. body weight in grams divided by 1000. With WT expressed in kg in nlmixr2lib, this is equivalent to (WT/1)^1.08, so the implicit reference body weight is 1 kg (1000 g). The studied range is 841-2548 g (Table 1); simulations at weights well outside this range are an extrapolation.",
-      source_name        = "BW"
+      notes = "Suda 2008 final model (page 638 / Table 3) scales CL/F as (BW(g)/1000)^1.08, i.e. body weight in grams divided by 1000. With WT expressed in kg in nlmixr2lib, this is equivalent to (WT/1)^1.08, so the implicit reference body weight is 1 kg (1000 g). The studied range is 841-2548 g (Table 1); simulations at weights well outside this range are an extrapolation.",
+      source_name = "BW"
     ),
     FORM_THEO_APNECUT = list(
-      description        = "Binary indicator of the Apnecut oral theophylline product (Kowa Co., Ltd.); 1 = Apnecut (APC), 0 = theophylline alcohol (TA) in-house preparation reference",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator of the Apnecut oral theophylline product (Kowa Co., Ltd.); 1 = Apnecut (APC), 0 = theophylline alcohol (TA) in-house preparation reference",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (TA in-house preparation, the registry reference)",
-      notes              = "Suda 2008 final model (page 638): CL/F is multiplied by (1 - 0.282 * AP) with AP = 1 for Apnecut and 0 for theophylline alcohol. Canonical FORM_THEO_APNECUT preserves the source orientation. The two formulations are both oral liquids: TA is an in-house theophylline-alcohol preparation (5 mg/mL, with ethanol final concentration 10 percent) compounded at the National Center for Child Health and Development; APC is the commercial Apnecut internal-use solution (4 mg/mL aqueous) from Kowa Co., Ltd. (Methods Section 3, page 637).",
-      source_name        = "AP"
+      notes = "Suda 2008 final model (page 638): CL/F is multiplied by (1 - 0.282 * AP) with AP = 1 for Apnecut and 0 for theophylline alcohol. Canonical FORM_THEO_APNECUT preserves the source orientation. The two formulations are both oral liquids: TA is an in-house theophylline-alcohol preparation (5 mg/mL, with ethanol final concentration 10 percent) compounded at the National Center for Child Health and Development; APC is the commercial Apnecut internal-use solution (4 mg/mL aqueous) from Kowa Co., Ltd. (Methods Section 3, page 637).",
+      source_name = "AP"
     )
   )
 
   population <- list(
-    species          = "human (Japanese premature neonates and infants with apnea)",
-    n_subjects       = 52L,
-    n_observations   = 90L,
-    n_studies        = 1L,
-    age_range        = "9-107 postnatal days (mean 34, SD 21)",
-    weight_range     = "841-2548 g (mean 1465, SD 365)",
+    species = "human (Japanese premature neonates and infants with apnea)",
+    n_subjects = 52L,
+    n_observations = 90L,
+    n_studies = 1L,
+    age_range = "9-107 postnatal days (mean 34, SD 21)",
+    weight_range = "841-2548 g (mean 1465, SD 365)",
     birth_weight_range = "528-2158 g (mean 1236, SD 380)",
-    pca_range        = "30-42 weeks postconceptional age (mean 34, SD 2)",
-    sex_female_pct   = 51.9,
-    race_ethnicity   = "Japanese (single-centre cohort at National Center for Child Health and Development, Tokyo)",
-    disease_state    = "Premature neonatal apnea (apnea of prematurity) - apnea episodes >20 seconds, or shorter episodes accompanied by bradycardia or cyanosis. Frequent in infants born <34 weeks gestational age.",
-    dose_range       = "Approximately 4 mg/kg/d oral theophylline divided every 12 hours (q12h). Mean dose 2.14 mg per administration. TA (n=36): 2.49 (SD 0.78) mg; APC (n=16): 1.53 (SD 0.51) mg per dose (Table 2).",
-    regions          = "Japan (National Center for Child Health and Development, Setagaya-ku, Tokyo - single centre).",
-    notes            = "Retrospective chart review of patients hospitalised between June 2005 and January 2007. Plasma theophylline measured as part of routine therapeutic drug monitoring on the JCA-BM1650 automated analyser (JEOL Ltd.) by homogeneous enzyme immunoassay. Only steady-state trough samples (>= 4 days on the oral product, >= 7 hours since last dose) were included (Methods Section 2, page 637). Variables collected but not retained in the final model: sex (SEXF), postnatal age (PNA, days), corrected postconceptional age (PCA, weeks; significantly correlated with body weight per Figure 2, so dropped to avoid collinearity), gestational age (GA, weeks), birth weight (WT_BIRTH, g), Apgar scores at 1 and 5 minutes (AS1, AS5), and oxygen supply status (OXY). Sex and postnatal age were significant in univariate models but were excluded from the full model (Table 3). Oxygen supply was tested and rejected; the authors note (Discussion, page 640) that prior reports of an oxygen-supply effect were in much younger infants and that their steady-state cohort is older. The therapeutic theophylline window is 5-13 ug/mL; toxicity (tachycardia, abdominal distension, emesis) onsets quickly above 13 ug/mL (Methods Section 1, page 636)."
+    pca_range = "30-42 weeks postconceptional age (mean 34, SD 2)",
+    sex_female_pct = 51.9,
+    race_ethnicity = "Japanese (single-centre cohort at National Center for Child Health and Development, Tokyo)",
+    disease_state = "Premature neonatal apnea (apnea of prematurity) - apnea episodes >20 seconds, or shorter episodes accompanied by bradycardia or cyanosis. Frequent in infants born <34 weeks gestational age.",
+    dose_range = "Approximately 4 mg/kg/d oral theophylline divided every 12 hours (q12h). Mean dose 2.14 mg per administration. TA (n=36): 2.49 (SD 0.78) mg; APC (n=16): 1.53 (SD 0.51) mg per dose (Table 2).",
+    regions = "Japan (National Center for Child Health and Development, Setagaya-ku, Tokyo - single centre).",
+    notes = "Retrospective chart review of patients hospitalised between June 2005 and January 2007. Plasma theophylline measured as part of routine therapeutic drug monitoring on the JCA-BM1650 automated analyser (JEOL Ltd.) by homogeneous enzyme immunoassay. Only steady-state trough samples (>= 4 days on the oral product, >= 7 hours since last dose) were included (Methods Section 2, page 637). Variables collected but not retained in the final model: sex (SEXF), postnatal age (PNA, days), corrected postconceptional age (PCA, weeks; significantly correlated with body weight per Figure 2, so dropped to avoid collinearity), gestational age (GA, weeks), birth weight (WT_BIRTH, g), Apgar scores at 1 and 5 minutes (AS1, AS5), and oxygen supply status (OXY). Sex and postnatal age were significant in univariate models but were excluded from the full model (Table 3). Oxygen supply was tested and rejected; the authors note (Discussion, page 640) that prior reports of an oxygen-supply effect were in much younger infants and that their steady-state cohort is older. The therapeutic theophylline window is 5-13 ug/mL; toxicity (tachycardia, abdominal distension, emesis) onsets quickly above 13 ug/mL (Methods Section 1, page 636)."
   )
 
   ini({

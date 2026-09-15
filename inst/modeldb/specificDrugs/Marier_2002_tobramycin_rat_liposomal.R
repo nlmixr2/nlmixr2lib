@@ -16,7 +16,8 @@ Marier_2002_tobramycin_rat_liposomal <- function() {
     "central, and a fitted lung bioavailability FL accounting for the",
     "fraction of the intratracheal dose actually reaching the lung tissue",
     "compartment.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Marier JF, Lavigne J, Ducharme MP.",
     "Pharmacokinetics and efficacies of liposomal and conventional",
@@ -24,11 +25,12 @@ Marier_2002_tobramycin_rat_liposomal <- function() {
     "with pulmonary Burkholderia cepacia infection.",
     "Antimicrob Agents Chemother. 2002;46(12):3776-3781.",
     "doi:10.1128/aac.46.12.3776-3781.2002.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Marier_2002_tobramycin_rat_liposomal"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ug (amount in lung tissue; Vc not fitted)"
   )
 
@@ -36,34 +38,39 @@ Marier_2002_tobramycin_rat_liposomal <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "tobramycin rat liposomal",
+      units = "ug",
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Sprague-Dawley, male)",
-    n_subjects     = 39L,
-    n_studies      = 1L,
-    age_range      = "Adult (specific age not reported)",
-    weight_range   = "175-225 g at study entry",
+    species = "rat (Sprague-Dawley, male)",
+    n_subjects = 39L,
+    n_studies = 1L,
+    age_range = "Adult (specific age not reported)",
+    weight_range = "175-225 g at study entry",
     sex_female_pct = 0,
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic pulmonary Burkholderia cepacia infection (strain BC 1368;",
       "genomovar III, tobramycin MIC 128 ug/mL). Infection established 6",
       "days pre-dose by intratracheal inoculation of agar beads carrying",
       "10^6 CFU; confirmed by throat-swab culture 3-5 days post-inoculation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 1,200 ug intratracheal bolus of liposomal tobramycin (Tobi",
       "rehydrated into DPPC:DMPG 10:1 phospholipid lyophilisate, extruded",
       "to 230-400 nm) delivered as 100 uL via calibrated pipette followed",
       "by an air bolus to ensure complete intratracheal delivery."
     ),
-    regions        = "Canada (MDS Pharma Services, St-Laurent, Montreal)",
-    notes          = paste(
+    regions = "Canada (MDS Pharma Services, St-Laurent, Montreal)",
+    notes = paste(
       "Sparse sampling: 3 rats per time point at 0.5, 1, 2, 3, 5, 7, 9, 11,",
       "13, 15, 16, 18, and 24 h post-dose (cardiac-puncture exsanguination",
       "under ketamine + xylazine anaesthesia). HPLC-UV quantitation of",

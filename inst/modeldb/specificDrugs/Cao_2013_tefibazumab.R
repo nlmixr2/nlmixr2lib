@@ -10,24 +10,24 @@ Cao_2013_tefibazumab <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     plasma = list(analyte = "tefibazumab", units = "mg", specimen = "plasma", verified = FALSE),
-    tight  = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
-    leaky  = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
-    lymph  = list(analyte = "tefibazumab", units = "mg", specimen = "lymph", verified = FALSE)
+    tight = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph = list(analyte = "tefibazumab", units = "mg", specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = NA_integer_,
-    n_studies      = 1,
-    age_range      = "adults (per Hetherington 2006 source study)",
-    weight_range   = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
+    n_subjects = NA_integer_,
+    n_studies = 1,
+    age_range = "adults (per Hetherington 2006 source study)",
+    weight_range = "70 kg reference body weight (Cao 2013 Table 2 footnote)",
     sex_female_pct = NA_real_,
     race_ethnicity = NA,
-    disease_state  = "End-stage renal disease requiring hemodialysis (tefibazumab humanized IgG1 anti-clumping factor A from Staphylococcus aureus).",
-    dose_range     = "10, 20 mg/kg IV (Cao 2013 Figure 5 tefibazumab panel)",
-    regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Hetherington S et al. Antimicrob Agents Chemother 2006;50:3499-3500 (PMID 17005843). Cao 2013 notes that Model A is preferred for tefibazumab on the basis of the latent constraint sigma_tight > sigma_leaky, even though Model B has a slightly lower objective function value."
+    disease_state = "End-stage renal disease requiring hemodialysis (tefibazumab humanized IgG1 anti-clumping factor A from Staphylococcus aureus).",
+    dose_range = "10, 20 mg/kg IV (Cao 2013 Figure 5 tefibazumab panel)",
+    regions = NA,
+    notes = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Hetherington S et al. Antimicrob Agents Chemother 2006;50:3499-3500 (PMID 17005843). Cao 2013 notes that Model A is preferred for tefibazumab on the basis of the latent constraint sigma_tight > sigma_leaky, even though Model B has a slightly lower objective function value."
   )
 
   ini({

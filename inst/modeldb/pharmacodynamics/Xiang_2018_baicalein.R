@@ -34,8 +34,8 @@ Xiang_2018_baicalein <- function() {
   vignette <- "Xiang_2018_baicalein"
 
   units <- list(
-    time          = "h",
-    dosing        = "uM (static baicalein covariate; no administered events)",
+    time = "h",
+    dosing = "uM (static baicalein covariate; no administered events)",
     concentration = "pg/mL (TNF-alpha, IL-6), unitless ratio (iNOS), uM (NO)"
   )
 
@@ -44,24 +44,24 @@ Xiang_2018_baicalein <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    tnf      = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tnf = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
     transit1 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
     transit2 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
-    il6      = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
-    inos     = list(analyte = "iNOS", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    no       = list(analyte = "NO", units = NA_character_, specimen = "plasma", verified = FALSE)
+    il6 = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    inos = list(analyte = "iNOS", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    no = list(analyte = "NO", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CONC_BAI_UM = list(
-      description        = paste(
+      description = paste(
         "Static baicalein concentration in the cell-culture medium",
         "(time-invariant per experimental design)."
       ),
-      units              = "uM",
-      type               = "continuous",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per Xiang 2018 Materials and Methods",
         "('Measurement of the Production of TNF-alpha, IL-6 and NO'):",
         "RAW264.7 cells were pretreated with baicalein for 0.5 h",
@@ -79,15 +79,15 @@ Xiang_2018_baicalein <- function() {
         "is distinct from the state-derived plasma concentration Cc",
         "and the CP_<DRUG> plasma-PD-driver family)."
       ),
-      source_name        = "C_Bai (Xiang 2018 Eq 2)"
+      source_name = "C_Bai (Xiang 2018 Eq 2)"
     )
   )
 
   population <- list(
-    species        = "in vitro (RAW264.7 mouse macrophage cell line)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    disease_state  = paste(
+    species = "in vitro (RAW264.7 mouse macrophage cell line)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    disease_state = paste(
       "LPS-induced inflammation in murine RAW264.7 macrophages",
       "(Center of Cellular Resources, Chinese Academy of Sciences,",
       "Shanghai). Cells were cultured in DMEM + 10% FBS + 1%",
@@ -95,7 +95,7 @@ Xiang_2018_baicalein <- function() {
       "1 ug/mL LPS from Escherichia coli O55:B5 (Sigma) after a 0.5 h",
       "pretreatment with baicalein at 10, 20, or 40 uM (control = 0 uM)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Static covariate concentrations (no PK dosing events):",
       "baicalein 0, 10, 20, 40 uM and LPS 1 ug/mL throughout the",
       "24.5 h experiment. TNF-alpha and IL-6 measured by ELISA",
@@ -107,7 +107,7 @@ Xiang_2018_baicalein <- function() {
       "1.5, 2.5, 4.5, 8.5, and 12.5 h baicalein-treated points were",
       "used (24.5 h excluded per Materials and Methods)."
     ),
-    notes          = paste(
+    notes = paste(
       "Estimation in Monolix 2016R1 (Lixoft, Antony, France) with",
       "FOCEELS. Final model retained kinTNF, koutTNF, kinIL6, koutIL6,",
       "tau1, kiniNOS, tau2, kinNO, alpha, and delta as estimated",

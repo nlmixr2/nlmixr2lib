@@ -68,60 +68,155 @@ Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp <- function() {
     isf_bm_acp = list(analyte = "ACP-5862", units = "mg", specimen = "tissue", verified = TRUE),
     isf_bm_ibr = list(analyte = "ibrutinib", units = "mg", specimen = "tissue", verified = TRUE),
     isf_bm_pci = list(analyte = "PCI-45227", units = "mg", specimen = "tissue", verified = TRUE),
-    btk_free_pbmc = list(analyte = "Bruton tyrosine kinase (unoccupied)", units = "nmol", specimen = "blood cell", verified = TRUE),
+    btk_free_pbmc = list(
+      analyte = "Bruton tyrosine kinase (unoccupied)",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     btk_atp_pbmc = list(analyte = "BTK-ATP complex", units = "nmol", specimen = "blood cell", verified = TRUE),
     btk_zan_pbmc = list(analyte = "BTK-zanubrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_zan_inact_pbmc = list(analyte = "irreversibly inactivated BTK-zanubrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_aca_pbmc = list(analyte = "BTK-acalabrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_aca_inact_pbmc = list(analyte = "irreversibly inactivated BTK-acalabrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
+    btk_zan_inact_pbmc = list(
+      analyte = "irreversibly inactivated BTK-zanubrutinib complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    btk_aca_pbmc = list(
+      analyte = "BTK-acalabrutinib complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    btk_aca_inact_pbmc = list(
+      analyte = "irreversibly inactivated BTK-acalabrutinib complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     btk_acp_pbmc = list(analyte = "BTK-ACP-5862 complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_acp_inact_pbmc = list(analyte = "irreversibly inactivated BTK-ACP-5862 complex", units = "nmol", specimen = "blood cell", verified = TRUE),
+    btk_acp_inact_pbmc = list(
+      analyte = "irreversibly inactivated BTK-ACP-5862 complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     btk_ibr_pbmc = list(analyte = "BTK-ibrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_ibr_inact_pbmc = list(analyte = "irreversibly inactivated BTK-ibrutinib complex", units = "nmol", specimen = "blood cell", verified = TRUE),
+    btk_ibr_inact_pbmc = list(
+      analyte = "irreversibly inactivated BTK-ibrutinib complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     btk_pci_pbmc = list(analyte = "BTK-PCI-45227 complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_pci_inact_pbmc = list(analyte = "irreversibly inactivated BTK-PCI-45227 complex", units = "nmol", specimen = "blood cell", verified = TRUE),
-    btk_free_ln = list(analyte = "Bruton tyrosine kinase (unoccupied)", units = "nmol", specimen = "lymph", verified = TRUE),
+    btk_pci_inact_pbmc = list(
+      analyte = "irreversibly inactivated BTK-PCI-45227 complex",
+      units = "nmol",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    btk_free_ln = list(
+      analyte = "Bruton tyrosine kinase (unoccupied)",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
     btk_atp_ln = list(analyte = "BTK-ATP complex", units = "nmol", specimen = "lymph", verified = TRUE),
     btk_zan_ln = list(analyte = "BTK-zanubrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_zan_inact_ln = list(analyte = "irreversibly inactivated BTK-zanubrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
+    btk_zan_inact_ln = list(
+      analyte = "irreversibly inactivated BTK-zanubrutinib complex",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
     btk_aca_ln = list(analyte = "BTK-acalabrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_aca_inact_ln = list(analyte = "irreversibly inactivated BTK-acalabrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
+    btk_aca_inact_ln = list(
+      analyte = "irreversibly inactivated BTK-acalabrutinib complex",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
     btk_acp_ln = list(analyte = "BTK-ACP-5862 complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_acp_inact_ln = list(analyte = "irreversibly inactivated BTK-ACP-5862 complex", units = "nmol", specimen = "lymph", verified = TRUE),
+    btk_acp_inact_ln = list(
+      analyte = "irreversibly inactivated BTK-ACP-5862 complex",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
     btk_ibr_ln = list(analyte = "BTK-ibrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_ibr_inact_ln = list(analyte = "irreversibly inactivated BTK-ibrutinib complex", units = "nmol", specimen = "lymph", verified = TRUE),
+    btk_ibr_inact_ln = list(
+      analyte = "irreversibly inactivated BTK-ibrutinib complex",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
     btk_pci_ln = list(analyte = "BTK-PCI-45227 complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_pci_inact_ln = list(analyte = "irreversibly inactivated BTK-PCI-45227 complex", units = "nmol", specimen = "lymph", verified = TRUE),
-    btk_free_bm = list(analyte = "Bruton tyrosine kinase (unoccupied)", units = "nmol", specimen = "tissue", verified = TRUE),
+    btk_pci_inact_ln = list(
+      analyte = "irreversibly inactivated BTK-PCI-45227 complex",
+      units = "nmol",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    btk_free_bm = list(
+      analyte = "Bruton tyrosine kinase (unoccupied)",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     btk_atp_bm = list(analyte = "BTK-ATP complex", units = "nmol", specimen = "tissue", verified = TRUE),
     btk_zan_bm = list(analyte = "BTK-zanubrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    btk_zan_inact_bm = list(analyte = "irreversibly inactivated BTK-zanubrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    btk_zan_inact_bm = list(
+      analyte = "irreversibly inactivated BTK-zanubrutinib complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     btk_aca_bm = list(analyte = "BTK-acalabrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    btk_aca_inact_bm = list(analyte = "irreversibly inactivated BTK-acalabrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    btk_aca_inact_bm = list(
+      analyte = "irreversibly inactivated BTK-acalabrutinib complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     btk_acp_bm = list(analyte = "BTK-ACP-5862 complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    btk_acp_inact_bm = list(analyte = "irreversibly inactivated BTK-ACP-5862 complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    btk_acp_inact_bm = list(
+      analyte = "irreversibly inactivated BTK-ACP-5862 complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     btk_ibr_bm = list(analyte = "BTK-ibrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    btk_ibr_inact_bm = list(analyte = "irreversibly inactivated BTK-ibrutinib complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    btk_ibr_inact_bm = list(
+      analyte = "irreversibly inactivated BTK-ibrutinib complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     btk_pci_bm = list(analyte = "BTK-PCI-45227 complex", units = "nmol", specimen = "tissue", verified = TRUE),
-    btk_pci_inact_bm = list(analyte = "irreversibly inactivated BTK-PCI-45227 complex", units = "nmol", specimen = "tissue", verified = TRUE)
+    btk_pci_inact_bm = list(
+      analyte = "irreversibly inactivated BTK-PCI-45227 complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species       = "human",
-    n_subjects    = 1000L,
+    species = "human",
+    n_subjects = 1000L,
     disease_state = paste(
       "B-cell malignancies (chronic lymphocytic leukaemia / small lymphocytic",
       "lymphoma, mantle cell lymphoma and Waldenstrom macroglobulinaemia);",
       "the BTK-binding module is parameterised for primary CLL cells.",
       sep = " "
     ),
-    dose_range    = paste(
+    dose_range = paste(
       "Zanubrutinib 160 mg BID or 320 mg QD (reduced doses 80 mg BID, 80 mg",
       "QD); acalabrutinib 100 mg BID, 100 mg QD or 200 mg QD; ibrutinib",
       "420 mg QD (reduced doses 280 mg QD, 140 mg QD).",
       sep = " "
     ),
-    notes         = paste(
+    notes = paste(
       "In silico cohort: 1000 virtual patients generated by sampling the",
       "parameter distributions in Table S1 (Methods section 2.5). The",
       "underlying PK parameters come from published population-PK analyses",

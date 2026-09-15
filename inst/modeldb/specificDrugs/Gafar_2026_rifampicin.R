@@ -25,11 +25,11 @@ Gafar_2026_rifampicin <- function() {
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass, computed from total body weight, height and sex with the Janmahasatian formula.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass, computed from total body weight, height and sex with the Janmahasatian formula.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Janmahasatian formula, reproduced in the Table 1 footnote and the",
         "Table S4 footnote of the source paper:",
         "males FFM = 9270 * WT / (6680 + 216 * BMI);",
@@ -48,14 +48,14 @@ Gafar_2026_rifampicin <- function() {
         "51.3 kg Canada, 40.1 kg Indonesia, 38.0 kg Vietnam (Table S7).",
         "Source column FFM."
       ),
-      source_name        = "FFM"
+      source_name = "FFM"
     ),
     REGION_CANADA = list(
-      description        = "1 = participant enrolled at a Canadian study site (Calgary, Edmonton, Montreal, Vancouver), 0 = otherwise. Reference country is Indonesia.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = participant enrolled at a Canadian study site (Calgary, Edmonton, Montreal, Vancouver), 0 = otherwise. Reference country is Indonesia.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Indonesia, the reference country; Vietnam is carried by REGION_VIETNAM)",
-      notes              = paste(
+      notes = paste(
         "Country and rifampicin formulation are completely confounded in the",
         "2R2 trial, so the source paper labels this effect a",
         "'country-specific formulation effect' (Table 2). Every Canadian",
@@ -74,27 +74,27 @@ Gafar_2026_rifampicin <- function() {
         "prehepatic bioavailability as THETA(11)**FRM1. Source column FRM",
         "(value 1)."
       ),
-      source_name        = "FRM"
+      source_name = "FRM"
     ),
     REGION_VIETNAM = list(
-      description        = "1 = participant enrolled at a Vietnamese study site (Hanoi, Ho Chi Minh City), 0 = otherwise. Reference country is Indonesia.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = participant enrolled at a Vietnamese study site (Hanoi, Ho Chi Minh City), 0 = otherwise. Reference country is Indonesia.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Indonesia, the reference country; Canada is carried by REGION_CANADA)",
-      notes              = paste(
+      notes = paste(
         "See REGION_CANADA for the country / formulation confounding. Enters",
         "multiplicatively on prehepatic bioavailability as THETA(12)**FRM2,",
         "where FRM2 = 1 when the source column FRM is 2 (Svizera) or 3",
         "(Mekophar). Source column FRM (values 2 and 3 pooled)."
       ),
-      source_name        = "FRM"
+      source_name = "FRM"
     ),
     OCC = list(
-      description        = "Integer occasion indicator for between-occasion variability. Two occasions in the source analysis.",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion indicator for between-occasion variability. Two occasions in the source analysis.",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Between-occasion variability was estimated over 2 consecutive doses",
         "with at least 1 postdose observation in the same individual",
         "(Methods 'Stochastic Model'). The control stream $PK block builds",
@@ -105,14 +105,14 @@ Gafar_2026_rifampicin <- function() {
         "mean-transit-time IOV etas. For a single-occasion simulation pass",
         "OCC = 1 so the first IOV eta applies. Source column OCC."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     SAMPLE_INTENSIVE = list(
-      description        = "1 = the observation belongs to the intensive PK substudy (serial sampling at 0, 1, 2, 4, 8, 12 h after directly observed dosing); 0 = sparse PK substudy (2 and 4 h after self-administered dosing at home).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = the observation belongs to the intensive PK substudy (serial sampling at 0, 1, 2, 4, 8, 12 h after directly observed dosing); 0 = sparse PK substudy (2 and 4 h after self-administered dosing at home).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (sparse sampling)",
-      notes              = paste(
+      notes = paste(
         "Record-level switch between the two proportional residual-error",
         "magnitudes. Stratifying by sampling strategy dropped the objective",
         "function value by 23 points (1 df, P < .001) versus a single",
@@ -122,7 +122,7 @@ Gafar_2026_rifampicin <- function() {
         "(Table 1). Control stream: IF(ITS.EQ.1) PROP = IPRED*THETA(14).",
         "Source column ITS."
       ),
-      source_name        = "ITS"
+      source_name = "ITS"
     )
   )
 
@@ -131,61 +131,61 @@ Gafar_2026_rifampicin <- function() {
   # without declaring covariates that model() never references.
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling by total body weight was tested and rejected in favour of fat-free mass (100-point higher OFV; Results 'Covariate Model'). WT is still needed upstream of the model as an input to the Janmahasatian FFM formula. Cohort median 60.0 kg, IQR 51.0-71.0 (Table 1)."
+      notes = "Allometric scaling by total body weight was tested and rejected in favour of fat-free mass (100-point higher OFV; Results 'Covariate Model'). WT is still needed upstream of the model as an input to the Janmahasatian FFM formula. Cohort median 60.0 kg, IQR 51.0-71.0 (Table 1)."
     ),
     HT = list(
-      description        = "Body height at baseline.",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at baseline.",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not a model covariate; an input to the Janmahasatian FFM formula via BMI. Reported in metres in the source (median 1.59 m, IQR 1.52-1.66; Table 1); the canonical column is in cm."
+      notes = "Not a model covariate; an input to the Janmahasatian FFM formula via BMI. Reported in metres in the source (median 1.59 m, IQR 1.52-1.66; Table 1); the canonical column is in cm."
     ),
     SEXF = list(
-      description        = "1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened and not retained: 'Sex was not an independent predictor of exposure, as its effects were already accounted for by fat-free mass' (Results 'Covariate Model'). Still needed upstream as an input to the sex-specific Janmahasatian FFM formula. 255/440 (57.9%) of the modelled cohort were female (Table 1)."
+      notes = "Screened and not retained: 'Sex was not an independent predictor of exposure, as its effects were already accounted for by fat-free mass' (Results 'Covariate Model'). Still needed upstream as an input to the sex-specific Janmahasatian FFM formula. 255/440 (57.9%) of the modelled cohort were female (Table 1)."
     ),
     AGE = list(
-      description        = "Age at baseline.",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened on absorption and disposition parameters and not retained (Results 'Covariate Model'). Cohort median 40 years, IQR 26-50; 32/440 (7.3%) were adolescents aged 10-17 years (Table 1)."
+      notes = "Screened on absorption and disposition parameters and not retained (Results 'Covariate Model'). Cohort median 40 years, IQR 26-50; 32/440 (7.3%) were adolescents aged 10-17 years (Table 1)."
     ),
     BMI = list(
-      description        = "Body mass index at baseline.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at baseline.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the Janmahasatian FFM formula but is not itself a model covariate. Nutritional status, the categorical BMI / BMI-for-age-Z-score derivative defined in the Table 1 footnote, was screened and not retained. Cohort median 24.1 kg/m^2, IQR 20.7-27.8 (Table 1)."
+      notes = "Enters the Janmahasatian FFM formula but is not itself a model covariate. Nutritional status, the categorical BMI / BMI-for-age-Z-score derivative defined in the Table 1 footnote, was screened and not retained. Cohort median 24.1 kg/m^2, IQR 20.7-27.8 (Table 1)."
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = TRUE),
-    liver   = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = TRUE),
+    depot = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = TRUE),
+    liver = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = TRUE),
     central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 440L,
-    n_studies      = 1L,
-    age_range      = "10 years and older (eligibility); modelled cohort median 40 years, IQR 26-50; 32 (7.3%) adolescents aged 10-17 years and 408 (92.7%) adults aged 18 years or older",
-    weight_range   = "at least 25 kg (eligibility); modelled cohort median 60.0 kg, IQR 51.0-71.0 kg",
-    ffm_range      = "median 41 kg, IQR 35.3-49.2 kg (Table 1); per country 51.3 kg Canada, 40.1 kg Indonesia, 38.0 kg Vietnam (Table S7)",
+    species = "human",
+    n_subjects = 440L,
+    n_studies = 1L,
+    age_range = "10 years and older (eligibility); modelled cohort median 40 years, IQR 26-50; 32 (7.3%) adolescents aged 10-17 years and 408 (92.7%) adults aged 18 years or older",
+    weight_range = "at least 25 kg (eligibility); modelled cohort median 60.0 kg, IQR 51.0-71.0 kg",
+    ffm_range = "median 41 kg, IQR 35.3-49.2 kg (Table 1); per country 51.3 kg Canada, 40.1 kg Indonesia, 38.0 kg Vietnam (Table S7)",
     sex_female_pct = 57.9,
     race_ethnicity = "not reported; participants were enrolled in Canada, Indonesia and Vietnam",
-    disease_state  = "Tuberculosis infection (positive tuberculin skin test or interferon-gamma release assay with tuberculosis disease excluded) with an indication for tuberculosis preventive therapy. Generally healthy, in contrast with the tuberculosis-disease cohorts of most published rifampicin popPK models. 14 (3.2%) were HIV-1 positive and received lamivudine/tenofovir/efavirenz with efavirenz 800 mg once daily; 12 (2.7%) had diabetes mellitus; 63 (14.3%) took comedications with a potential drug-drug interaction.",
-    dose_range     = "Oral rifampicin once daily, dispensed by the prespecified weight bands of Table S3 (25-35, >35-55 and >55 kg) targeting 10 mg/kg/day for 120 days (4R10; 300/450/600 mg) or 20 or 30 mg/kg/day for 60 days (2R20 600/900/1200 mg; 2R30 900/1350/1800 mg). Treatment arms for the popPK analysis were redefined by the actual mg/kg dose received: 5.1-15.0 mg/kg (n = 191), 15.1-25.0 mg/kg (n = 159) and 25.1-35.0 mg/kg (n = 90). Cohort median actual dose 17.1 mg/kg, IQR 9.4-23.2.",
-    regions        = "Canada (Calgary, Edmonton, Montreal, Vancouver; n = 87, 19.8%), Indonesia (Bandung; n = 265, 60.2%) and Vietnam (Hanoi, Ho Chi Minh City; n = 88, 20.0%)",
-    notes          = paste(
+    disease_state = "Tuberculosis infection (positive tuberculin skin test or interferon-gamma release assay with tuberculosis disease excluded) with an indication for tuberculosis preventive therapy. Generally healthy, in contrast with the tuberculosis-disease cohorts of most published rifampicin popPK models. 14 (3.2%) were HIV-1 positive and received lamivudine/tenofovir/efavirenz with efavirenz 800 mg once daily; 12 (2.7%) had diabetes mellitus; 63 (14.3%) took comedications with a potential drug-drug interaction.",
+    dose_range = "Oral rifampicin once daily, dispensed by the prespecified weight bands of Table S3 (25-35, >35-55 and >55 kg) targeting 10 mg/kg/day for 120 days (4R10; 300/450/600 mg) or 20 or 30 mg/kg/day for 60 days (2R20 600/900/1200 mg; 2R30 900/1350/1800 mg). Treatment arms for the popPK analysis were redefined by the actual mg/kg dose received: 5.1-15.0 mg/kg (n = 191), 15.1-25.0 mg/kg (n = 159) and 25.1-35.0 mg/kg (n = 90). Cohort median actual dose 17.1 mg/kg, IQR 9.4-23.2.",
+    regions = "Canada (Calgary, Edmonton, Montreal, Vancouver; n = 87, 19.8%), Indonesia (Bandung; n = 265, 60.2%) and Vietnam (Hanoi, Ho Chi Minh City; n = 88, 20.0%)",
+    notes = paste(
       "Two pharmacokinetic substudies nested in the 2R2 phase 2b randomized",
       "trial (NCT03988933). 51 participants from Bandung, Indonesia",
       "contributed intensive profiles (0, 1, 2, 4, 8 and 12 h after directly",

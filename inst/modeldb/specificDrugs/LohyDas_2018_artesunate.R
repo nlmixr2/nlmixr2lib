@@ -27,28 +27,28 @@ LohyDas_2018_artesunate <- function() {
     sep = " "
   )
   vignette <- "LohyDas_2018_artesunate"
-  units    <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot              = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit1           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit2           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    transit3           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
-    central            = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
     central_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight at enrollment",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight at enrollment",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at enrollment. Lohy Das 2018 Results p.5: 'Allometric",
         "scaling of all disposition parameters, centered by the median",
         "weight of 50 kg improved the model fit.' Methods p.4: 'Scaled body",
@@ -57,20 +57,20 @@ LohyDas_2018_artesunate <- function() {
         "of the population.' Applied to both ARS and DHA disposition",
         "parameters. Cohort weight range 40-60 kg (Table 1 IQR 46.0-53.5)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
-    age_range      = "18-55 years (Table 1 median 25.5, IQR 21.5-39.5)",
-    weight_range   = "median 50.0 kg (Table 1 IQR 46.0-53.5)",
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
+    age_range = "18-55 years (Table 1 median 25.5, IQR 21.5-39.5)",
+    weight_range = "median 50.0 kg (Table 1 IQR 46.0-53.5)",
     weight_typical = "50 kg (population median; allometric reference)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Southeast Asian (Burmese)",
-    disease_state  = paste(
+    disease_state = paste(
       "Uncomplicated Plasmodium falciparum malaria; mono-infection with",
       "asexual parasite density 10,000-100,000/uL at enrollment. Inclusion",
       "criteria: 18-55 years, P. falciparum monoinfection, fever in last",
@@ -80,7 +80,7 @@ LohyDas_2018_artesunate <- function() {
       "history of chronic medical illness, splenectomy, hypersensitivity",
       "to artesunate, prior anti-malarial drug use within 48 h."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral artesunate monotherapy 4 mg/kg/day once daily for 7 days,",
       "administered with 8 oz of milk (directly observed); study drug",
       "Guilin Pharmaceutical Co. Ltd., lot AS091001. Plasma concentration",
@@ -90,19 +90,19 @@ LohyDas_2018_artesunate <- function() {
       "200 mg artesunate per dose, equivalent to about 520,260 nmol using",
       "the ARS molar mass 384.42 g/mol."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Frequent first-dose sampling at 0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 3,",
       "4, 6, and 8 h post-dose. ARS and DHA plasma concentrations were",
       "measured by LC-MS/MS (Lourens / Lindegardh assay); LLOQ 1.2 ng/mL",
       "(ARS) and 2.0 ng/mL (DHA), i.e. 3.12 nM (ARS) and 7.02 nM (DHA) in",
       "molar units. M3 method was used for samples below LLOQ."
     ),
-    regions        = paste(
+    regions = paste(
       "Myanmar (Kawthaung, southern Myanmar, Palm Tree plantation site",
       "hospital). Australian New Zealand Clinical Trials Registry",
       "ACTRN12610000896077; conducted in 2011."
     ),
-    notes          = paste(
+    notes = paste(
       "Of 53 patients recruited, 1 was excluded for not meeting",
       "inclusion/exclusion criteria and 2 were excluded from the PK",
       "analysis for missing covariates and PK/PD data, leaving 50 patients",

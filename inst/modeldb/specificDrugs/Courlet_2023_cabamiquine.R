@@ -52,37 +52,52 @@ Courlet_2023_cabamiquine <- function() {
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Courlet 2023 Fig. 2.
   compartmentData <- list(
-    depot          = list(analyte = "cabamiquine", units = "mg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral1    = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    peripheral2    = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood",         verified = TRUE),
-    gallbladder    = list(analyte = "cabamiquine", units = "mg", specimen = "bile",                verified = TRUE),
-    parasite_liver = list(analyte = "Plasmodium falciparum liver-stage parasites", units = "parasites", specimen = "tissue", verified = TRUE),
-    parasite_blood = list(analyte = "Plasmodium falciparum blood-stage parasites", units = "parasites/mL", specimen = "blood cell", verified = TRUE),
-    kill_onset     = list(analyte = "killing-onset fraction (dimensionless)", units = "fraction", specimen = "not applicable", verified = TRUE)
+    depot = list(analyte = "cabamiquine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral1 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    peripheral2 = list(analyte = "cabamiquine", units = "mg", specimen = "whole blood", verified = TRUE),
+    gallbladder = list(analyte = "cabamiquine", units = "mg", specimen = "bile", verified = TRUE),
+    parasite_liver = list(
+      analyte = "Plasmodium falciparum liver-stage parasites",
+      units = "parasites",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    parasite_blood = list(
+      analyte = "Plasmodium falciparum blood-stage parasites",
+      units = "parasites/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    kill_onset = list(
+      analyte = "killing-onset fraction (dimensionless)",
+      units = "fraction",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling of the PK layer with exponents fixed at 0.75 on",
         "the apparent clearances and 1 on the apparent volumes (Courlet 2023",
         "Supplementary Material 1). The paper does not state the reference",
         "weight; the packaged model uses the conventional 70 kg. See",
         "vignette Assumptions and deviations."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_CABAMIQUINE_MG = list(
-      description        = "Administered cabamiquine single oral dose",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered cabamiquine single oral dose",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Per-subject single oral dose, entering the PK layer as the",
         "empirical power effect on the apparent central volume",
         "V2/F = 2363 * (WT/70)^1 * DOSE_CABAMIQUINE_MG^(-0.50). The",
@@ -94,14 +109,14 @@ Courlet_2023_cabamiquine <- function() {
         "are 119.6 / 318.8 / 637.6 mg free base. See vignette Assumptions",
         "and deviations and modellib('Courlet_2023_cabamiquine_pk')."
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     ),
     STUDY_SPZCH = list(
-      description        = "Sporozoite challenge (SpzCh) study indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sporozoite challenge (SpzCh) study indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (induced blood stage malaria, IBSM, challenge)",
-      notes              = paste(
+      notes = paste(
         "1 = participant enrolled in the phase Ib sporozoite challenge study",
         "(inoculated with approximately 3,200 P. falciparum NF54",
         "sporozoites, so infection starts at the liver stage); 0 = subject",
@@ -115,18 +130,18 @@ Courlet_2023_cabamiquine <- function() {
         "Finc * inoculum when STUDY_SPZCH = 1 and the blood state is seeded",
         "with P0 when STUDY_SPZCH = 0."
       ),
-      source_name        = "SpzCh"
+      source_name = "SpzCh"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 61L,
-    n_studies      = 2L,
-    age_range      = "18-55 years",
+    species = "human",
+    n_subjects = 61L,
+    n_studies = 2L,
+    age_range = "18-55 years",
     sex_female_pct = 0,
     race_ethnicity = c(White = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy malaria-naive adult men experimentally challenged with",
       "Plasmodium falciparum. IBSM cohort (22 participants, study 1 part 2):",
       "inoculated with 3D7-infected erythrocytes 8 days before dosing.",
@@ -134,14 +149,14 @@ Courlet_2023_cabamiquine <- function() {
       "inoculated with approximately 3,200 NF54 sporozoites, with drug given",
       "2 h (early liver stage) or 96 h (late liver stage) after inoculation."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IBSM: single oral doses of 150, 400, and 800 mg cabamiquine succinate",
       "salt (1 mg salt = 0.797 mg free base). SpzCh: single oral doses of",
       "30, 60, 80, 100, 150, 200, 400, and 800 mg free base."
     ),
-    regions        = "Australia (QIMR Berghofer) and the Netherlands",
+    regions = "Australia (QIMR Berghofer) and the Netherlands",
     trial_registration = "ClinicalTrials.gov NCT03261401 (study 1)",
-    notes          = paste(
+    notes = paste(
       "Parasitemia was measured by qPCR with a lower limit of quantification",
       "of 1 parasite/mL; 60% of parasitemia measures were below the LLOQ",
       "(72% of those from the SpzCh study), handled with the M3 method",

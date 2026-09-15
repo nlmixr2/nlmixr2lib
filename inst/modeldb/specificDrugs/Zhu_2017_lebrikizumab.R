@@ -8,99 +8,99 @@ Zhu_2017_lebrikizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lebrikizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "lebrikizumab", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "lebrikizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, Vc, Vp, and Q; normalized as WT/70 per Table 3 footnote.",
-      source_name        = "WT"
+      notes = "Power effect on CL, Vc, Vp, and Q; normalized as WT/70 per Table 3 footnote.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as AGE/40 per Table 3 footnote.",
-      source_name        = "AGE"
+      notes = "Power effect on CL; normalized as AGE/40 per Table 3 footnote.",
+      source_name = "AGE"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Source paper reports the covariate in the canonical SEXF encoding (1 = female).",
-      source_name        = "SEXF"
+      notes = "Source paper reports the covariate in the canonical SEXF encoding (1 = female).",
+      source_name = "SEXF"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Source used column 'ADA' with the semantic of 'ever positive'. Renamed to the canonical ADA_POS per covariate-columns.md; confirm that the time-frame semantics of ADA_POS (current/observation-time) match the source 'ever-positive' definition before applying the effect.",
-      source_name        = "ADA"
+      notes = "Source used column 'ADA' with the semantic of 'ever positive'. Renamed to the canonical ADA_POS per covariate-columns.md; confirm that the time-frame semantics of ADA_POS (current/observation-time) match the source 'ever-positive' definition before applying the effect.",
+      source_name = "ADA"
     ),
     RACE_BLACK = list(
-      description        = "Black or African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black or African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White / reference race group)",
-      notes              = "Power-style multiplicative effect on CL.",
-      source_name        = "RACE_BLACK"
+      notes = "Power-style multiplicative effect on CL.",
+      source_name = "RACE_BLACK"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White / reference race group)",
-      notes              = "Power-style multiplicative effect on CL.",
-      source_name        = "RACE_ASIAN"
+      notes = "Power-style multiplicative effect on CL.",
+      source_name = "RACE_ASIAN"
     ),
     RACE_OTHER = list(
-      description        = "Race category 'Other' indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Race category 'Other' indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (White / reference race group)",
-      notes              = "Power-style multiplicative effect on CL.",
-      source_name        = "RACE_OTHER"
+      notes = "Power-style multiplicative effect on CL.",
+      source_name = "RACE_OTHER"
     ),
     FORM_LEB_NS0 = list(
-      description        = "NS0 cell-line formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "NS0 cell-line formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (reference CHO formulation)",
-      notes              = "Typically 0 in routine use; affects ka and bioavailability.",
-      source_name        = "FORM_LEB_NS0"
+      notes = "Typically 0 in routine use; affects ka and bioavailability.",
+      source_name = "FORM_LEB_NS0"
     ),
     FORM_LEB_CHO_PHASE2 = list(
-      description        = "CHO Phase 2 formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CHO Phase 2 formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (reference formulation)",
-      notes              = "Typically 0 in routine use; affects ka and bioavailability.",
-      source_name        = "FORM_LEB_CHO_PHASE2"
+      notes = "Typically 0 in routine use; affects ka and bioavailability.",
+      source_name = "FORM_LEB_CHO_PHASE2"
     )
   )
 
   population <- list(
-    n_subjects     = 2148L,
+    n_subjects = 2148L,
     n_observations = 21917L,
-    n_studies      = 6L,
-    age_range      = "18-75 years (adults only)",
-    age_median     = "48 years",
-    weight_range   = "40-165 kg",
-    weight_median  = "~77 kg",
+    n_studies = 6L,
+    age_range = "18-75 years (adults only)",
+    age_median = "48 years",
+    weight_range = "40-165 kg",
+    weight_median = "~77 kg",
     sex_female_pct = 58,
     race_ethnicity = "White majority; Black, Asian, and 'Other' categories also represented (each with a separate CL effect in the final model).",
-    disease_state  = "Pooled analysis across 6 studies: 2 Phase I studies in healthy volunteers (n=114), 1 Phase II study in asthma, 1 Phase II study in atopic dermatitis, 1 Phase II study in idiopathic pulmonary fibrosis, and the Phase III MILLY program in moderate-to-severe asthma.",
-    dose_range     = "37.5-250 mg SC (pooled analysis also included some IV data from the Phase I studies).",
-    regions        = "Multi-regional (not reported in detail in Zhu 2017).",
-    notes          = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote). Three formulations were evaluated: the reference CHO formulation used in late development, an early-development NS0 formulation, and an interim CHO formulation used in Phase 2 ('CHO Phase 2'); indicator covariates FORM_LEB_NS0 and FORM_LEB_CHO_PHASE2 are both 0 for the reference formulation."
+    disease_state = "Pooled analysis across 6 studies: 2 Phase I studies in healthy volunteers (n=114), 1 Phase II study in asthma, 1 Phase II study in atopic dermatitis, 1 Phase II study in idiopathic pulmonary fibrosis, and the Phase III MILLY program in moderate-to-severe asthma.",
+    dose_range = "37.5-250 mg SC (pooled analysis also included some IV data from the Phase I studies).",
+    regions = "Multi-regional (not reported in detail in Zhu 2017).",
+    notes = "Reference covariate values are WT = 70 kg and AGE = 40 years (Table 3 footnote). Three formulations were evaluated: the reference CHO formulation used in late development, an early-development NS0 formulation, and an interim CHO formulation used in Phase 2 ('CHO Phase 2'); indicator covariates FORM_LEB_NS0 and FORM_LEB_CHO_PHASE2 are both 0 for the reference formulation."
   )
 
   ini({

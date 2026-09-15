@@ -5,8 +5,8 @@ Attarwala_2023_mRNA3927 <- function() {
   paper_specific_compartments <- c("pcc", "pcc_p")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/mL"
   )
 
@@ -15,39 +15,39 @@ Attarwala_2023_mRNA3927 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "PCC protein", units = "mg", specimen = "not applicable", verified = FALSE),
-    pcc         = list(analyte = "PCC protein", units = "mg", specimen = "tissue", verified = FALSE),
-    pcc_p       = list(analyte = "PCC protein", units = "mg", specimen = "plasma", verified = FALSE)
+    effect = list(analyte = "PCC protein", units = "mg", specimen = "not applicable", verified = FALSE),
+    pcc = list(analyte = "PCC protein", units = "mg", specimen = "tissue", verified = FALSE),
+    pcc_p = list(analyte = "PCC protein", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used for allometric scaling across species).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used for allometric scaling across species).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight is 0.025 kg (PCC-deficient mouse strain 4011020 (A138T) PCCA -/-, the species the PK + PD model was anchored to). Scales all PK clearances and volumes: volume exponent fixed at 1, clearance exponents estimated (cla = 0.631 on CL12 and CL32; clb = 1.10 on CL23 and CL20). The paper uses this same allometric scheme to extrapolate from mouse / rat / cyno PK directly to humans (Discussion, p. 145). PCC protein and downstream biomarker PD parameters are NOT body-weight-scaled in the published model; their fits are mouse-only and the human extrapolation re-uses them unchanged.",
-      source_name        = "BW"
+      notes = "Reference weight is 0.025 kg (PCC-deficient mouse strain 4011020 (A138T) PCCA -/-, the species the PK + PD model was anchored to). Scales all PK clearances and volumes: volume exponent fixed at 1, clearance exponents estimated (cla = 0.631 on CL12 and CL32; clb = 1.10 on CL23 and CL20). The paper uses this same allometric scheme to extrapolate from mouse / rat / cyno PK directly to humans (Discussion, p. 145). PCC protein and downstream biomarker PD parameters are NOT body-weight-scaled in the published model; their fits are mouse-only and the human extrapolation re-uses them unchanged.",
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "preclinical: mouse (PCC-deficient strain 4011020 (A138T) PCCA -/-; N = 111) + rat (juvenile Sprague-Dawley; N = 19) + cynomolgus monkey (N = 16). Model is allometrically scalable to humans (the paper's intended use; Discussion p. 145) by setting WT to the human value and using the same fixed structural parameters and allometric exponents.",
-    n_subjects     = 146L,
-    n_studies      = 3L,
-    n_mice         = 111L,
-    n_rats         = 19L,
-    n_monkeys      = 16L,
-    age_range      = "preclinical: juvenile rats and monkeys; mice not specified.",
-    weight_range   = "mouse ~25 g (reference), rat ~200 g (juvenile Sprague-Dawley), cynomolgus monkey ~3 kg (paper does not report exact body weights; the allometric scaling uses BW / 0.025 with body weight supplied per subject).",
+    species = "preclinical: mouse (PCC-deficient strain 4011020 (A138T) PCCA -/-; N = 111) + rat (juvenile Sprague-Dawley; N = 19) + cynomolgus monkey (N = 16). Model is allometrically scalable to humans (the paper's intended use; Discussion p. 145) by setting WT to the human value and using the same fixed structural parameters and allometric exponents.",
+    n_subjects = 146L,
+    n_studies = 3L,
+    n_mice = 111L,
+    n_rats = 19L,
+    n_monkeys = 16L,
+    age_range = "preclinical: juvenile rats and monkeys; mice not specified.",
+    weight_range = "mouse ~25 g (reference), rat ~200 g (juvenile Sprague-Dawley), cynomolgus monkey ~3 kg (paper does not report exact body weights; the allometric scaling uses BW / 0.025 with body weight supplied per subject).",
     sex_female_pct = NA_real_,
-    disease_state  = "Propionic acidemia (PCC deficiency) in the mouse cohort; healthy juvenile Sprague-Dawley rats and cynomolgus monkeys.",
-    dose_range     = "mouse 0.2, 0.5, 1, 2 mg/kg IV bolus (single dose) and 0.5, 2 mg/kg IV bolus q3W x 4 (multiple dose); rat 1, 3, 9 mg/kg IV bolus q2W (3 doses); monkey 1, 3, 5 mg/kg IV bolus q2W (3 doses).",
-    regions        = "Preclinical study at Moderna, Inc. (Cambridge, MA, USA); rat / monkey work conducted under Moderna IACUC.",
-    notes          = "PK was fit simultaneously across the three species using allometric scaling on body weight; PD (PCC protein and 2-MC / 3-HP / C3/C2 biomarkers) was fit on PCC-deficient mice only. The published model is the back-end of the first-in-human dose-selection analysis for Phase 1/2 study NCT04159103 in patients (>= 1 year of age) with propionic acidemia. Estimation method: FOCEI (Pumas 2.0) except 3-HP which used Laplacian. Per-subject body weight is required to recover species-specific parameter values; supply WT = 0.025 (mouse), 0.20 (rat), 3.0 (monkey), or 70 (adult human) for typical-individual simulations."
+    disease_state = "Propionic acidemia (PCC deficiency) in the mouse cohort; healthy juvenile Sprague-Dawley rats and cynomolgus monkeys.",
+    dose_range = "mouse 0.2, 0.5, 1, 2 mg/kg IV bolus (single dose) and 0.5, 2 mg/kg IV bolus q3W x 4 (multiple dose); rat 1, 3, 9 mg/kg IV bolus q2W (3 doses); monkey 1, 3, 5 mg/kg IV bolus q2W (3 doses).",
+    regions = "Preclinical study at Moderna, Inc. (Cambridge, MA, USA); rat / monkey work conducted under Moderna IACUC.",
+    notes = "PK was fit simultaneously across the three species using allometric scaling on body weight; PD (PCC protein and 2-MC / 3-HP / C3/C2 biomarkers) was fit on PCC-deficient mice only. The published model is the back-end of the first-in-human dose-selection analysis for Phase 1/2 study NCT04159103 in patients (>= 1 year of age) with propionic acidemia. Estimation method: FOCEI (Pumas 2.0) except 3-HP which used Laplacian. Per-subject body weight is required to recover species-specific parameter values; supply WT = 0.025 (mouse), 0.20 (rat), 3.0 (monkey), or 70 (adult human) for typical-individual simulations."
   )
 
   ini({

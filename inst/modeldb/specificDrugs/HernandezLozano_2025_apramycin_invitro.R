@@ -23,15 +23,38 @@ HernandezLozano_2025_apramycin_invitro <- function() {
   # Nielsen_2007_semimechanistic_antibiotic_pd.R.
   paper_specific_compartments <- c(
     "apramycin",
-    "bact_s1", "bact_d1", "bact_s2", "bact_d2"
+    "bact_s1",
+    "bact_d1",
+    "bact_s2",
+    "bact_d2"
   )
 
   compartmentData <- list(
     apramycin = list(analyte = "apramycin", units = "mg/L", specimen = "administration site", verified = TRUE),
-    bact_s1 = list(analyte = "Escherichia coli, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_d1 = list(analyte = "Escherichia coli, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_s2 = list(analyte = "Escherichia coli, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE),
-    bact_d2 = list(analyte = "Escherichia coli, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    bact_s1 = list(
+      analyte = "Escherichia coli, main apramycin-susceptible subpopulation, growing drug-susceptible (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d1 = list(
+      analyte = "Escherichia coli, main apramycin-susceptible subpopulation, dormant drug-insusceptible (D) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_s2 = list(
+      analyte = "Escherichia coli, subpopulation with decreased apramycin susceptibility, growing drug-susceptible (S) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    bact_d2 = list(
+      analyte = "Escherichia coli, subpopulation with decreased apramycin susceptibility, dormant drug-insusceptible (D) state",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(

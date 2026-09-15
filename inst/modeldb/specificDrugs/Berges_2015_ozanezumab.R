@@ -9,25 +9,30 @@ Berges_2015_ozanezumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "ozanezumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "ozanezumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "ozanezumab", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "proportion of skeletal-muscle membrane Nogo-A co-localized with ozanez", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(
+      analyte = "proportion of skeletal-muscle membrane Nogo-A co-localized with ozanez",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 76L,
-    n_studies      = 1L,
-    age_range      = "Adults with ALS (NCT00875446); Berges 2015 reports n=76 enrolled (57 ozanezumab + 19 placebo).",
-    weight_range   = "Not reported in Berges 2015; dosing is mg/kg so absolute mg dose depends on individual body weight.",
+    species = "human",
+    n_subjects = 76L,
+    n_studies = 1L,
+    age_range = "Adults with ALS (NCT00875446); Berges 2015 reports n=76 enrolled (57 ozanezumab + 19 placebo).",
+    weight_range = "Not reported in Berges 2015; dosing is mg/kg so absolute mg dose depends on individual body weight.",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = "Amyotrophic lateral sclerosis (ALS); first-in-human single-ascending and repeat-dose study.",
-    dose_range     = "Part 1: single IV doses 0.01-15 mg/kg (5 cohorts). Part 2: two IV doses 0.5-15 mg/kg given ~4 weeks apart (3 cohorts). Infusion duration 1 hour.",
-    regions        = "Not reported in Berges 2015.",
-    notes          = "Study reference: Meininger V et al. (NCT00875446). PK was sampled in all dosed subjects; the Nogo-A co-localization PD endpoint came from skeletal-muscle biopsy IHC in cohorts 7 and 8 (and pre-dose samples from cohorts 5-8). Muscle samples from cohort 3 were unsuitable for IHC due to freeze artefacts (Berges 2015 Methods; Table 1)."
+    disease_state = "Amyotrophic lateral sclerosis (ALS); first-in-human single-ascending and repeat-dose study.",
+    dose_range = "Part 1: single IV doses 0.01-15 mg/kg (5 cohorts). Part 2: two IV doses 0.5-15 mg/kg given ~4 weeks apart (3 cohorts). Infusion duration 1 hour.",
+    regions = "Not reported in Berges 2015.",
+    notes = "Study reference: Meininger V et al. (NCT00875446). PK was sampled in all dosed subjects; the Nogo-A co-localization PD endpoint came from skeletal-muscle biopsy IHC in cohorts 7 and 8 (and pre-dose samples from cohorts 5-8). Muscle samples from cohort 3 were unsuitable for IHC due to freeze artefacts (Berges 2015 Methods; Table 1)."
   )
 
   ini({

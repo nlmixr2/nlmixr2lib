@@ -26,29 +26,29 @@ DeJongh_2025_azd7648_mouse <- function() {
   vignette <- "DeJongh_2025_azd7648_olaparib_xenograft"
 
   units <- list(
-    time          = "h",
-    dosing        = "umol/kg",
+    time = "h",
+    dosing = "umol/kg",
     concentration = "uM"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "AZD7648", units = "umol/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "AZD7648", units = "umol/kg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "AZD7648", units = "umol/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "AZD7648", units = "umol/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "AZD7648", units = "umol/kg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     STRAIN_NUDE = list(
-      source_name        = "STR",
-      description        = paste(
+      source_name = "STR",
+      description = paste(
         "Mouse strain indicator: 1 = Hsd:Athymic Nude-Foxn1nu, 0 =",
         "C.B-17/IcrHan(R)Hsd-Prkdcscid (SCID). Gates both the absorption",
         "rate constant and relative bioavailability."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = paste(
+      notes = paste(
         "NONMEM control stream (DeJongh 2025 supplementary file 5,",
         "10928_2025_9962_MOESM5_ESM.txt): `NUDE=0; IF (STR.EQ.1) NUDE=1`",
         "with `F1 = (1 + NUDE*THETA(8))` and strain-specific KA."
@@ -57,21 +57,21 @@ DeJongh_2025_azd7648_mouse <- function() {
   )
 
   population <- list(
-    species        = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid and female Hsd:Athymic Nude-Foxn1nu)",
-    n_studies      = 8L,
-    age_range      = "at least 6 weeks of age",
-    weight_range   = "(not reported in the source publication)",
+    species = "mouse (female SCID C.B-17/IcrHan(R)Hsd-Prkdcscid and female Hsd:Athymic Nude-Foxn1nu)",
+    n_studies = 8L,
+    age_range = "at least 6 weeks of age",
+    weight_range = "(not reported in the source publication)",
     sex_female_pct = 100,
-    disease_state  = "non-tumour-bearing and FaDu ATM-knockout xenograft-bearing satellite PK groups",
-    dose_range     = paste(
+    disease_state = "non-tumour-bearing and FaDu ATM-knockout xenograft-bearing satellite PK groups",
+    dose_range = paste(
       "Oral AZD7648 18.75-150 mg/kg as single and multiple doses,",
       "alone and in combination with oral olaparib. Doses enter the",
       "model in umol/kg (100 mg/kg = 262.8812 umol/kg, i.e. a molar",
       "mass of 380.4 g/mol, read from the AMT and DOSE_AZD columns of",
       "the supplied NONMEM dataset, supplementary file 7)."
     ),
-    regions        = "preclinical (AstraZeneca, Cambridge UK)",
-    notes          = paste(
+    regions = "preclinical (AstraZeneca, Cambridge UK)",
+    notes = paste(
       "Plasma concentration data after single or multiple oral dosing of",
       "AZD7648 in SCID and nude mice, pooled from eight studies into one",
       "population PK dataset; the underlying PK study designs are",

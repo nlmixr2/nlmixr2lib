@@ -40,23 +40,23 @@ Saleh_2023_phenobarbital_mouse_pbpk <- function() {
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
 
   compartmentData <- list(
-    central              = list(analyte = "phenobarbital", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_vascular       = list(analyte = "phenobarbital", units = "ng", specimen = "plasma", verified = TRUE),
-    brain_ecf            = list(analyte = "phenobarbital", units = "ng", specimen = "brain ISF", verified = TRUE),
-    brain_cell_membrane  = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_icf            = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_lysosome       = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
-    brain_csf_lv         = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_tfv        = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_cm         = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
-    brain_csf_sas        = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE)
+    central = list(analyte = "phenobarbital", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_vascular = list(analyte = "phenobarbital", units = "ng", specimen = "plasma", verified = TRUE),
+    brain_ecf = list(analyte = "phenobarbital", units = "ng", specimen = "brain ISF", verified = TRUE),
+    brain_cell_membrane = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_icf = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_lysosome = list(analyte = "phenobarbital", units = "ng", specimen = "tissue", verified = TRUE),
+    brain_csf_lv = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_tfv = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_cm = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE),
+    brain_csf_sas = list(analyte = "phenobarbital", units = "ng", specimen = "CSF", verified = TRUE)
   )
 
   population <- list(
-    species      = "mouse (ICR)",
+    species = "mouse (ICR)",
     disease_state = "healthy / tumour-bearing laboratory mice; CNS physiology parameterised for the healthy mouse",
-    dose_range   = "10 mg/kg IP (single dose; Table IV)",
-    notes        = paste(
+    dose_range = "10 mg/kg IP (single dose; Table IV)",
+    notes = paste(
       "Unbound plasma and microdialysis brain-ECF concentration-time",
       "data for phenobarbital came from ref [19]",
       "(Table II). Subject counts per drug are not reported. Doses in",
@@ -249,4 +249,3 @@ Saleh_2023_phenobarbital_mouse_pbpk <- function() {
     Cc ~ prop(propSd)
   })
 }
-

@@ -28,10 +28,10 @@ Mukker_2026_tuvusertib_mouse_tgi <- function() {
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot          = list(analyte = "tuvusertib", units = "mg/kg", specimen = "administration site", verified = TRUE),
-    central        = list(analyte = "tuvusertib", units = "mg/kg", specimen = "plasma", verified = TRUE),
-    peripheral1    = list(analyte = "tuvusertib", units = "mg/kg", specimen = "tissue", verified = TRUE),
-    cycling_cells  = list(analyte = "proliferating tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
+    depot = list(analyte = "tuvusertib", units = "mg/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tuvusertib", units = "mg/kg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "tuvusertib", units = "mg/kg", specimen = "tissue", verified = TRUE),
+    cycling_cells = list(analyte = "proliferating tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
     damaged_cells1 = list(analyte = "drug-damaged tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
     damaged_cells2 = list(analyte = "drug-damaged tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE),
     damaged_cells3 = list(analyte = "drug-damaged tumor cells", units = "mm^3", specimen = "tumor", verified = TRUE)
@@ -40,13 +40,13 @@ Mukker_2026_tuvusertib_mouse_tgi <- function() {
   covariateData <- list()
 
   population <- list(
-    species       = "mouse (CTG-3021 ARID1A-mutated gastric-cancer patient-derived xenograft)",
-    n_subjects    = NA_integer_,
-    n_studies     = 1L,
+    species = "mouse (CTG-3021 ARID1A-mutated gastric-cancer patient-derived xenograft)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
     disease_state = "subcutaneous CTG-3021 ARID1A-mutated gastric-cancer patient-derived xenograft; ARID1A loss causes topoisomerase 2A and cell-cycle defects that make the cells more reliant on ATR activity",
-    dose_range    = "25-50 mg/kg tuvusertib, continuous daily and 2 weeks on / 1 week off intermittent regimens",
-    regions       = "preclinical in-vivo xenograft study",
-    notes         = paste(
+    dose_range = "25-50 mg/kg tuvusertib, continuous daily and 2 weeks on / 1 week off intermittent regimens",
+    regions = "preclinical in-vivo xenograft study",
+    notes = paste(
       "Mukker 2026 does not report the number of animals per arm, the",
       "randomisation tumor volume, or any interindividual / residual variability",
       "for this fit; Supplementary Table S1 lists point estimates only. The same",

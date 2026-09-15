@@ -49,32 +49,32 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
   )
   vignette <- "Nakashima_2015_valproic_acid_seizure_control"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. Acts on the PK layer only (apparent oral clearance).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. Acts on the PK layer only (apparent oral clearance).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Eq 7 / Table 2 'Gender on CL/F' = 0.917, applied as a ",
         "power form 0.917^SEXF (females have 8.3% lower CL/F). Sex carries ",
         "no PD coefficient in any of the three Nakashima 2015 models. The ",
         "subgroup's own sex split is not reported; the full cohort was ",
         "37.7% female (Table 1)."
       ),
-      source_name        = "female"
+      source_name = "female"
     ),
     DOSE_VPA_MGD = list(
-      description        = "Patient's own TOTAL daily valproic acid dose, not normalised by body weight. Drives both apparent clearance and apparent volume in the fixed PK layer.",
-      units              = "mg/d",
-      type               = "continuous",
+      description = "Patient's own TOTAL daily valproic acid dose, not normalised by body weight. Drives both apparent clearance and apparent volume in the fixed PK layer.",
+      units = "mg/d",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Eqs 6-7 scale both Vd/F and CL/F by (Dose/1000)^theta ",
         "with Dose the daily VPA dose in mg/day, so 1000 mg/day is the ",
         "reference. Must be strictly positive. This covariate is the DAILY ",
@@ -84,14 +84,14 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
         "(Table 1). Adults in this cohort were started on 400-1200 mg/day ",
         "and escalated by 200 mg/day steps (Methods)."
       ),
-      source_name        = "Dose"
+      source_name = "Dose"
     ),
     CONMED_CBZ = list(
-      description        = "Concomitant carbamazepine indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant carbamazepine indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant carbamazepine)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'CBZ on CL/F' = 1.19, power form ",
         "1.19^CONMED_CBZ (+19% CL/F). Carbamazepine carries a PD ",
         "coefficient in the all-age Eq 6 (-1.75 intercept) and a large one ",
@@ -99,54 +99,54 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
         "from Eq 8, so it has no PD effect here. Full-cohort prevalence 47 ",
         "of 77 (61.0%; Table 1)."
       ),
-      source_name        = "CBZ"
+      source_name = "CBZ"
     ),
     CONMED_PB = list(
-      description        = "Concomitant phenobarbital indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenobarbital indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenobarbital)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'PB on CL/F' = 1.12, power form ",
         "1.12^CONMED_PB (+12% CL/F). Phenobarbital carries a PD coefficient ",
         "in the <= 18 y Eq 7 (-1.93 intercept) but is absent from Eq 8. ",
         "Full-cohort prevalence 31 of 77 (40.3%; Table 1)."
       ),
-      source_name        = "PB"
+      source_name = "PB"
     ),
     CONMED_PHT = list(
-      description        = "Concomitant phenytoin indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant phenytoin indicator; 1 = co-administered, 0 = not. Acts on the PK layer only in this model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant phenytoin)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'PHT on CL/F' = 1.43, power form ",
         "1.43^CONMED_PHT (+43% CL/F). Phenytoin carries a PD slope ",
         "coefficient in the all-age Eq 6 (-3.62) and in the <= 18 y Eq 7 ",
         "(-3.86) but is absent from Eq 8. Full-cohort prevalence 22 of 77 ",
         "(28.6%; Table 1)."
       ),
-      source_name        = "PHT"
+      source_name = "PHT"
     ),
     CONMED_CLB = list(
-      description        = "Concomitant clobazam indicator; 1 = co-administered, 0 = not. Acts on the PK layer only.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clobazam indicator; 1 = co-administered, 0 = not. Acts on the PK layer only.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clobazam)",
-      notes              = paste0(
+      notes = paste0(
         "Ogusu 2014 Table 2 'CLB on CL/F' = 0.906, power form ",
         "0.906^CONMED_CLB (-9.4% CL/F). Clobazam carries no PD coefficient ",
         "in any of the three Nakashima 2015 models. Full-cohort prevalence ",
         "33 of 77 (42.9%; Table 1)."
       ),
-      source_name        = "CLB"
+      source_name = "CLB"
     ),
     CONMED_CZP = list(
-      description        = "Concomitant clonazepam indicator; 1 = co-administered, 0 = not. Acts on the PD logit intercept only.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant clonazepam indicator; 1 = co-administered, 0 = not. Acts on the PD logit intercept only.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no concomitant clonazepam)",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Eq 8 gives -2.56 on the logit intercept, more than ",
         "twice the all-age Eq 6 value of -1.18, and clonazepam is the only ",
         "concomitant AED retained at all in this subgroup. Not a PK ",
@@ -155,14 +155,14 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
         "CZP association is unclear (Discussion). Full-cohort prevalence 21 ",
         "of 77 (27.3%; Table 1)."
       ),
-      source_name        = "CZP"
+      source_name = "CZP"
     ),
     SNP_SCN1A_RS3812718_GA = list(
-      description        = "SCN1A rs3812718 (IVS5-91 G>A) heterozygous G/A genotype indicator; 1 = G/A, 0 = otherwise. Acts on the PD logit INTERCEPT only in this model.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SCN1A rs3812718 (IVS5-91 G>A) heterozygous G/A genotype indicator; 1 = G/A, 0 = otherwise. Acts on the PD logit INTERCEPT only in this model.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 in combination with SNP_SCN1A_RS3812718_AA = 0, i.e. the G/G genotype group",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Eq 8 gives -9.88 on the intercept, the largest ",
         "genotype effect anywhere in the paper (compare -5.87 in the ",
         "all-age Eq 6 and -4.75 in the <= 18 y Eq 7). Unlike the other two ",
@@ -173,14 +173,14 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
         "with only 21 patients in this subgroup the G/G reference group is ",
         "very small and no subgroup genotype counts are reported."
       ),
-      source_name        = "SCN1A G/A genotype"
+      source_name = "SCN1A G/A genotype"
     ),
     SNP_SCN1A_RS3812718_AA = list(
-      description        = "SCN1A rs3812718 (IVS5-91 G>A) homozygous A/A genotype indicator; 1 = A/A, 0 = otherwise. As Eq 8 is printed, this is the ONLY term that multiplies the trough concentration.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SCN1A rs3812718 (IVS5-91 G>A) homozygous A/A genotype indicator; 1 = A/A, 0 = otherwise. As Eq 8 is printed, this is the ONLY term that multiplies the trough concentration.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 in combination with SNP_SCN1A_RS3812718_GA = 0, i.e. the G/G genotype group",
-      notes              = paste0(
+      notes = paste0(
         "Nakashima 2015 Eq 8 gives -14.3, and in the printed equation this ",
         "coefficient is the one multiplied by the predicted trough ",
         "concentration. Consequence, which a user of this model must ",
@@ -192,16 +192,16 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
         "printed signs, and for the absence of any source anchor to test ",
         "it. Full-cohort prevalence 27 of 77 (35.1%; Table 1)."
       ),
-      source_name        = "SCN1A A/A genotype"
+      source_name = "SCN1A A/A genotype"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Patient age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste0(
+      units = "years",
+      type = "continuous",
+      notes = paste0(
         "Age DEFINES this subgroup (19 years or older) rather than acting ",
         "as a covariate within it, so it carries no coefficient in Eq 8 -- ",
         "unlike the all-age Eq 6, where age enters the logit intercept at ",
@@ -213,9 +213,9 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     ),
     CONMED_TPM = list(
       description = "Concomitant topiramate indicator; 1 = co-administered, 0 = not.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Retained on the exposure slope in the all-age Eq 6 (-1.73) but ",
         "absent from Eq 8, so no coefficient exists for this subgroup. ",
         "Full-cohort prevalence 10 of 77 (13.0%; Table 1)."
@@ -223,9 +223,9 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     ),
     SEIZURE_LOCUS_PARTIAL = list(
       description = "Seizure-locus indicator; 1 = partial (focal), 0 = generalized.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Retained on the exposure slope in the all-age Eq 6 (+2.41) but ",
         "absent from Eq 8. Note that the gloss printed immediately AFTER ",
         "Eq 8 still defines 'partial seizure = 1 if a partial seizure was ",
@@ -239,9 +239,9 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     ),
     MENT_DISABLED = list(
       description = "Complication with intellectual disability; 1 = present, 0 = absent.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Screened on the all-age model and dropped in backward elimination ",
         "(Nakashima 2015 Table 2 and Results); never appears in Eq 8. No ",
         "point estimate is published. Full-cohort prevalence 59 of 77 ",
@@ -251,7 +251,7 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "valproic acid", units = "mg", specimen = "serum", verified = TRUE)
   )
 
@@ -260,22 +260,22 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
   # `prob_<endpoint>` PD-output family in compartment-names.md.
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
     n_observations = "132 VPA concentration measurement points; one binary efficacy outcome per patient",
-    age_range      = "19-36.9 years (subgroup lower bound is the inclusion cut-off; cohort maximum 36.9 years)",
-    age_median     = "mean 26.16 +/- 5.34 years (median not reported)",
+    age_range = "19-36.9 years (subgroup lower bound is the inclusion cut-off; cohort maximum 36.9 years)",
+    age_median = "mean 26.16 +/- 5.34 years (median not reported)",
     sex_female_pct = NA_real_,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Epilepsy on maintenance sustained-release valproic acid, adult ",
       "subgroup (aged 19 years or older). Idiopathic epilepsy and severe ",
       "retardation were exclusion criteria."
     ),
-    dose_range     = "not reported for this subgroup; full cohort 1120.0 +/- 592.5 [50-3200] mg/day sustained-release valproic acid (adults initiated at 400-1200 mg/day)",
-    regions        = "Japan (Kumamoto Saishunso National Hospital), June 1989 to April 2011",
-    notes          = paste0(
+    dose_range = "not reported for this subgroup; full cohort 1120.0 +/- 592.5 [50-3200] mg/day sustained-release valproic acid (adults initiated at 400-1200 mg/day)",
+    regions = "Japan (Kumamoto Saishunso National Hospital), June 1989 to April 2011",
+    notes = paste0(
       "Smallest of the paper's three models: 21 patients and 132 ",
       "concentration measurement points (Results, Effect of the patient age ",
       "on the PK-PD modeling). Nakashima 2015 reports NO parameter table ",

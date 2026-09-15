@@ -8,96 +8,96 @@ Abrantes_2017_moroctocog <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "moroctocog", units = "IU", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "moroctocog", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "moroctocog", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling at reference 70 kg: fixed theory-based exponent 0.75 on CL and Q (Abrantes 2017 Table 2 footnotes b, d), shared estimated exponent 0.812 on V1 and V2 (Table 2 footnotes c, e). Cohort median 69 kg (range 3.0-134 kg; Table 1). The pooled analysis used total body weight; lean body weight and total body water were tested but weight was retained because predictions did not differ substantially and r^2 between WT and TBW was 0.963 (Results). Missing weights imputed by carrying values backward/forward within subject (Methods).",
-      source_name        = "WT"
+      notes = "Allometric power scaling at reference 70 kg: fixed theory-based exponent 0.75 on CL and Q (Abrantes 2017 Table 2 footnotes b, d), shared estimated exponent 0.812 on V1 and V2 (Table 2 footnotes c, e). Cohort median 69 kg (range 3.0-134 kg; Table 1). The pooled analysis used total body weight; lean body weight and total body water were tested but weight was retained because predictions did not differ substantially and r^2 between WT and TBW was 0.963 (Results). Missing weights imputed by carrying values backward/forward within subject (Methods).",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Piecewise-linear effect on CL with breakpoint at 1 year of age (Abrantes 2017 Table 2 footnote b). Reference 20 years (where age_eff_cl = 1). Cohort median 23 years, range 0.0027 years (1 day) to 73 years; 234 of 754 subjects (31%) were < 17 years at study entry (Table 1). Below 1 year: age_eff_cl = 1 + 0.149 * (AGE - 1) - (20 - 1) * (-0.00678) = 1.1288 + 0.149 * (AGE - 1); above 1 year: age_eff_cl = 1 + (-0.00678) * (AGE - 20). The two pieces meet at age_eff_cl = 1.1288 when AGE = 1. Mechanism hypothesised by Abrantes 2017 Discussion to reflect age-dependent von Willebrand factor levels (high at birth, decreasing through year 1, gradually increasing through childhood).",
-      source_name        = "AGE"
+      notes = "Piecewise-linear effect on CL with breakpoint at 1 year of age (Abrantes 2017 Table 2 footnote b). Reference 20 years (where age_eff_cl = 1). Cohort median 23 years, range 0.0027 years (1 day) to 73 years; 234 of 754 subjects (31%) were < 17 years at study entry (Table 1). Below 1 year: age_eff_cl = 1 + 0.149 * (AGE - 1) - (20 - 1) * (-0.00678) = 1.1288 + 0.149 * (AGE - 1); above 1 year: age_eff_cl = 1 + (-0.00678) * (AGE - 20). The two pieces meet at age_eff_cl = 1.1288 when AGE = 1. Mechanism hypothesised by Abrantes 2017 Discussion to reflect age-dependent von Willebrand factor levels (high at birth, decreasing through year 1, gradually increasing through childhood).",
+      source_name = "AGE"
     ),
     ADA_POS = list(
-      description        = "FVIII inhibitor status (1 = inhibitor-positive at >= 0.6 Bethesda units/mL, 0 = negative). FVIII inhibitors are neutralizing alloantibodies to administered FVIII measured by the Bethesda functional clotting-inhibition assay; mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "FVIII inhibitor status (1 = inhibitor-positive at >= 0.6 Bethesda units/mL, 0 = negative). FVIII inhibitors are neutralizing alloantibodies to administered FVIII measured by the Bethesda functional clotting-inhibition assay; mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (FVIII inhibitor negative)",
-      notes              = "Abrantes 2017 Table 1: 174 of 7363 observations (2.4%) from inhibitor-positive patients; 6138 (83%) negative; 1051 (14%) missing inhibitor status (imputed forward/backward). 92.5% of inhibitor-positive subjects were low-titer (< 5 BU/mL). The dichotomous status was statistically more informative than the continuous Bethesda titer (Discussion); the paper attributes this to between-laboratory variability of the inhibitor assay and to different inhibitor kinetics across types. Inhibitor status is per-occasion (titer measured per visit), although it tends to be stable over the study window for most subjects. Source column INH; canonical ADA_POS used because FVIII inhibitors are neutralizing anti-drug alloantibodies (the NAB alias of ADA_POS).",
-      source_name        = "INH"
+      notes = "Abrantes 2017 Table 1: 174 of 7363 observations (2.4%) from inhibitor-positive patients; 6138 (83%) negative; 1051 (14%) missing inhibitor status (imputed forward/backward). 92.5% of inhibitor-positive subjects were low-titer (< 5 BU/mL). The dichotomous status was statistically more informative than the continuous Bethesda titer (Discussion); the paper attributes this to between-laboratory variability of the inhibitor assay and to different inhibitor kinetics across types. Inhibitor status is per-occasion (titer measured per visit), although it tends to be stable over the study window for most subjects. Source column INH; canonical ADA_POS used because FVIII inhibitors are neutralizing anti-drug alloantibodies (the NAB alias of ADA_POS).",
+      source_name = "INH"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Black race: White, Asian, or Other)",
-      notes              = "Abrantes 2017 Table 1: 10 of 754 subjects (1.3%) self-identified as Black; 657 (87%) White; 58 (7.7%) Asian; 29 (3.8%) Other. The +88.4% V2 increase in Black subjects has wide uncertainty (95% CI 36.7-151%) reflecting the small Black-race n. The paper hypothesises higher von Willebrand factor levels in Black subjects as the mechanism (Discussion); clinical consequence considered limited. Source column RACE (multi-level: Asian / Black / Other / White); derive RACE_BLACK = as.integer(RACE == 'Black') with all non-Black races collapsed to the reference.",
-      source_name        = "RACE"
+      notes = "Abrantes 2017 Table 1: 10 of 754 subjects (1.3%) self-identified as Black; 657 (87%) White; 58 (7.7%) Asian; 29 (3.8%) Other. The +88.4% V2 increase in Black subjects has wide uncertainty (95% CI 36.7-151%) reflecting the small Black-race n. The paper hypothesises higher von Willebrand factor levels in Black subjects as the mechanism (Discussion); clinical consequence considered limited. Source column RACE (multi-level: Asian / Black / Other / White); derive RACE_BLACK = as.integer(RACE == 'Black') with all non-Black races collapsed to the reference.",
+      source_name = "RACE"
     ),
     STUDY_B1831090 = list(
-      description        = "Study B1831090 cohort indicator within the Abrantes 2017 13-study pooled analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study B1831090 cohort indicator within the Abrantes 2017 13-study pooled analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other study in the 13-study pool: B1831003, B1831004, B1831015, B1831053, B1831054, B1831061, B1831066, B1831067, B1831068, B1831070, B1831071, B1831077)",
-      notes              = "Abrantes 2017 Table 3: study B1831090 is a phase I bioequivalence study of ReFacto (n = 18, severe and moderately severe hemophilia A, rich sampling, CSA assay). The -34.7% CL reduction for B1831090 subjects relative to the other studies (Table 2 footnote b) is retained in the model so that the typical PK parameters describe the remaining 12 studies. Subject-level / time-fixed; derive once per subject from the trial identifier (STUDY_B1831090 = 1 if trial == 'B1831090', else 0). Source column STUD.",
-      source_name        = "STUD"
+      notes = "Abrantes 2017 Table 3: study B1831090 is a phase I bioequivalence study of ReFacto (n = 18, severe and moderately severe hemophilia A, rich sampling, CSA assay). The -34.7% CL reduction for B1831090 subjects relative to the other studies (Table 2 footnote b) is retained in the model so that the typical PK parameters describe the remaining 12 studies. Subject-level / time-fixed; derive once per subject from the trial identifier (STUDY_B1831090 = 1 if trial == 'B1831090', else 0). Source column STUD.",
+      source_name = "STUD"
     ),
     FORM_XYNTHA = list(
-      description        = "Xyntha vs ReFacto / ReFacto AF drug-product indicator (moroctocog alfa is the same active moiety in all three; the products differ in potency calibration)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Xyntha vs ReFacto / ReFacto AF drug-product indicator (moroctocog alfa is the same active moiety in all three; the products differ in potency calibration)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ReFacto or ReFacto AF; CSA-calibrated potency)",
-      notes              = "Abrantes 2017 Methods + Table 2 footnote g. Xyntha is OSA-calibrated and ReFacto/ReFacto AF are CSA-calibrated; the potency calibration difference is encoded as a +38.0% bioavailability multiplier (1.38^FORM_XYNTHA, equivalent to 1 + 0.38 * FORM_XYNTHA when binary) on the dose so that the model-predicted FVIII activity is in CSA-reference units (Methods). Per-observation when subjects could switch between products across trials (e.g., study B1831066 enrolled ReFacto and ReFacto AF in the same protocol); subject-level otherwise. Source column PROD.",
-      source_name        = "PROD"
+      notes = "Abrantes 2017 Methods + Table 2 footnote g. Xyntha is OSA-calibrated and ReFacto/ReFacto AF are CSA-calibrated; the potency calibration difference is encoded as a +38.0% bioavailability multiplier (1.38^FORM_XYNTHA, equivalent to 1 + 0.38 * FORM_XYNTHA when binary) on the dose so that the model-predicted FVIII activity is in CSA-reference units (Methods). Per-observation when subjects could switch between products across trials (e.g., study B1831066 enrolled ReFacto and ReFacto AF in the same protocol); subject-level otherwise. Source column PROD.",
+      source_name = "PROD"
     ),
     ASSAY_OSA = list(
-      description        = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (vs chromogenic substrate assay, CSA, as the reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (vs chromogenic substrate assay, CSA, as the reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CSA reference)",
-      notes              = "Abrantes 2017 Table 2 footnote g + Methods. Switches both the bioavailability multiplier (F decreases by 39.0% for OSA-measured observations) and the proportional residual error magnitude (+40.3% for OSA). The OSA-CSA bias is well documented in the literature for B-domain-deleted FVIII products (Discussion). Per-observation indicator: an FVIII activity sample is assayed by one method; pooled datasets across studies may mix methods. Source column METH1.",
-      source_name        = "METH1"
+      notes = "Abrantes 2017 Table 2 footnote g + Methods. Switches both the bioavailability multiplier (F decreases by 39.0% for OSA-measured observations) and the proportional residual error magnitude (+40.3% for OSA). The OSA-CSA bias is well documented in the literature for B-domain-deleted FVIII products (Discussion). Per-observation indicator: an FVIII activity sample is assayed by one method; pooled datasets across studies may mix methods. Source column METH1.",
+      source_name = "METH1"
     ),
     ASSAY_OSA_LOCAL = list(
-      description        = "OSA performed at a local (vs central) laboratory indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "OSA performed at a local (vs central) laboratory indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (central laboratory OSA or any non-OSA-local sample)",
-      notes              = "Abrantes 2017 Table 3 + Table 2 footnote g. Only study B1831003 used a local laboratory for FVIII activity measurement; the -14.6% OSA-local effect on F is interpreted as inter-laboratory variability of the OSA assay (Discussion). Sub-variant of ASSAY_OSA: ASSAY_OSA_LOCAL = 1 implies ASSAY_OSA = 1 (the local-lab samples are a subset of OSA-assayed samples). Per-observation indicator. Source column METH2.",
-      source_name        = "METH2"
+      notes = "Abrantes 2017 Table 3 + Table 2 footnote g. Only study B1831003 used a local laboratory for FVIII activity measurement; the -14.6% OSA-local effect on F is interpreted as inter-laboratory variability of the OSA assay (Discussion). Sub-variant of ASSAY_OSA: ASSAY_OSA_LOCAL = 1 implies ASSAY_OSA = 1 (the local-lab samples are a subset of OSA-assayed samples). Per-observation indicator. Source column METH2.",
+      source_name = "METH2"
     )
   )
 
   population <- list(
-    species               = "human",
-    n_subjects            = 754L,
-    n_studies             = 13L,
-    age_range             = "0.0027-73 years (1 day to 73 years)",
-    age_median            = "23 years",
-    weight_range          = "3.0-134 kg",
-    weight_median         = "69 kg",
-    sex_female_pct        = 0.1,
-    race_ethnicity        = c(White = 87.0, Asian = 7.7, Black = 1.3, Other = 3.8),
+    species = "human",
+    n_subjects = 754L,
+    n_studies = 13L,
+    age_range = "0.0027-73 years (1 day to 73 years)",
+    age_median = "23 years",
+    weight_range = "3.0-134 kg",
+    weight_median = "69 kg",
+    sex_female_pct = 0.1,
+    race_ethnicity = c(White = 87.0, Asian = 7.7, Black = 1.3, Other = 3.8),
     ethnicity_hispanic_pct = 5.2,
-    disease_state         = "Moderate to severe hemophilia A; per-study severity criteria reported in Abrantes 2017 Table 3 (most studies enrolled severe FVIII activity < 1 IU/dL or severe + moderately severe FVIII activity < 2 IU/dL). The pooled cohort contains 91 previously untreated patients (PUPs; study B1831054).",
-    inhibitor_status      = "Per-observation FVIII inhibitor status (Bethesda assay > 0.6 BU/mL = positive): 174 of 7363 observations (2.4%) positive, 6138 (83%) negative, 1051 (14%) missing; 92.5% of inhibitor-positive samples were low-titer (< 5 BU/mL). Patients with a history of inhibitors were not usually eligible for enrollment, so the inhibitor prevalence in the analysis cohort is lower than the population-level estimate (Discussion).",
-    pediatric_cohorts     = "234 of 754 subjects (31%) < 17 years at study entry. Age-cohort weights (Table 1): 0 to < 1 yr n = 62, weight median 8 kg (range 3-12); 1 to < 2 yr n = 21, 11 kg (9-14); 2 to < 6 yr n = 8, 17 kg (11-20); 6 to < 12 yr n = 25, 30 kg (21-57); 12 to < 17 yr n = 118, 56 kg (34-109). Two subjects counted in both the 6-<12 yr and 12-<17 yr cohorts (different studies).",
-    dose_range            = "Intravenous moroctocog alfa (ReFacto, ReFacto AF, or Xyntha): median dose 2000 IU (range 100-40000 IU), corresponding to median 32 IU/kg (range 2-1300 IU/kg). Per-study dosing protocols ranged from on-demand to prophylactic to perioperative (Abrantes 2017 Table 3 and Supplement Text S1).",
-    regions               = "25 countries (multinational); studies conducted between 1993 and 2013.",
-    assay_distribution    = "Per-study analytical assay: 9 studies used CSA (chromogenic substrate assay) at a central laboratory, 3 studies used OSA (one-stage clotting assay) at a central laboratory, and 1 study (B1831003) used OSA at a local laboratory (Abrantes 2017 Table 3).",
-    n_observations        = "7363 FVIII activity observations; 910 (12.4%) below the lower limit of quantification (LLOQ: 1 IU/dL in 11 studies, 2 IU/dL in 2 studies); 312 (4.2%) sampling times had 2 or more replicate measurements.",
-    notes                 = "Pooled analysis of 13 Pfizer/Wyeth-sponsored clinical trials (Abrantes 2017 Table 3). Single female enrolled (homozygous hemophilia A; B1831090). The full population PK model includes (a) a two-class mixture on endogenous FVIII activity (severe subpopulation 0.474 IU/dL at P = 0.803; moderately severe 1.59 IU/dL at P = 0.197 in 12 studies, or P = 0.110 within studies B1831015 and B1831053), (b) an additional residual-FVIII-activity component capturing incomplete-washout pre-dose activity for subjects whose first-dose pre-dose FVIII exceeded the per-study severity cutoff, and (c) inter-occasion variability of 34.7% on CL and 41.0% on V2; none of (a)-(c) are encoded in the model-library file (see vignette deviations)."
+    disease_state = "Moderate to severe hemophilia A; per-study severity criteria reported in Abrantes 2017 Table 3 (most studies enrolled severe FVIII activity < 1 IU/dL or severe + moderately severe FVIII activity < 2 IU/dL). The pooled cohort contains 91 previously untreated patients (PUPs; study B1831054).",
+    inhibitor_status = "Per-observation FVIII inhibitor status (Bethesda assay > 0.6 BU/mL = positive): 174 of 7363 observations (2.4%) positive, 6138 (83%) negative, 1051 (14%) missing; 92.5% of inhibitor-positive samples were low-titer (< 5 BU/mL). Patients with a history of inhibitors were not usually eligible for enrollment, so the inhibitor prevalence in the analysis cohort is lower than the population-level estimate (Discussion).",
+    pediatric_cohorts = "234 of 754 subjects (31%) < 17 years at study entry. Age-cohort weights (Table 1): 0 to < 1 yr n = 62, weight median 8 kg (range 3-12); 1 to < 2 yr n = 21, 11 kg (9-14); 2 to < 6 yr n = 8, 17 kg (11-20); 6 to < 12 yr n = 25, 30 kg (21-57); 12 to < 17 yr n = 118, 56 kg (34-109). Two subjects counted in both the 6-<12 yr and 12-<17 yr cohorts (different studies).",
+    dose_range = "Intravenous moroctocog alfa (ReFacto, ReFacto AF, or Xyntha): median dose 2000 IU (range 100-40000 IU), corresponding to median 32 IU/kg (range 2-1300 IU/kg). Per-study dosing protocols ranged from on-demand to prophylactic to perioperative (Abrantes 2017 Table 3 and Supplement Text S1).",
+    regions = "25 countries (multinational); studies conducted between 1993 and 2013.",
+    assay_distribution = "Per-study analytical assay: 9 studies used CSA (chromogenic substrate assay) at a central laboratory, 3 studies used OSA (one-stage clotting assay) at a central laboratory, and 1 study (B1831003) used OSA at a local laboratory (Abrantes 2017 Table 3).",
+    n_observations = "7363 FVIII activity observations; 910 (12.4%) below the lower limit of quantification (LLOQ: 1 IU/dL in 11 studies, 2 IU/dL in 2 studies); 312 (4.2%) sampling times had 2 or more replicate measurements.",
+    notes = "Pooled analysis of 13 Pfizer/Wyeth-sponsored clinical trials (Abrantes 2017 Table 3). Single female enrolled (homozygous hemophilia A; B1831090). The full population PK model includes (a) a two-class mixture on endogenous FVIII activity (severe subpopulation 0.474 IU/dL at P = 0.803; moderately severe 1.59 IU/dL at P = 0.197 in 12 studies, or P = 0.110 within studies B1831015 and B1831053), (b) an additional residual-FVIII-activity component capturing incomplete-washout pre-dose activity for subjects whose first-dose pre-dose FVIII exceeded the per-study severity cutoff, and (c) inter-occasion variability of 34.7% on CL and 41.0% on V2; none of (a)-(c) are encoded in the model-library file (see vignette deviations)."
   )
 
   ini({

@@ -19,23 +19,23 @@ Zheng_2012_adalimumab_minipig <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "adalimumab", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "adalimumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "Gottingen minipig",
-    n_subjects     = 6L,
-    n_studies      = 1L,
-    weight_range   = "IV: 10.2 kg mean; SC: 10.0 kg mean (Table 5)",
+    species = "Gottingen minipig",
+    n_subjects = 6L,
+    n_studies = 1L,
+    weight_range = "IV: 10.2 kg mean; SC: 10.0 kg mean (Table 5)",
     sex_female_pct = 100,
-    disease_state  = "Healthy Gottingen minipig; adalimumab preclinical PK.",
-    dose_range     = "40 mg IV bolus (n = 3); 40 mg SC inguinal (n = 3) (Table 5)",
-    regions        = "Contract research organizations (Denmark, UK, USA)",
-    notes          = paste(
+    disease_state = "Healthy Gottingen minipig; adalimumab preclinical PK.",
+    dose_range = "40 mg IV bolus (n = 3); 40 mg SC inguinal (n = 3) (Table 5)",
+    regions = "Contract research organizations (Denmark, UK, USA)",
+    notes = paste(
       "Zheng 2012 Tables 1 and 5. Adalimumab formulated at 50 mg/mL",
       "(commercial Abbott product). Concentration-time profiles showed",
       "evidence of anti-therapeutic antibody (ATA) formation; ATA-affected",

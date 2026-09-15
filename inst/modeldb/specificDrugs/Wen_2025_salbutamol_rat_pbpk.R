@@ -112,18 +112,18 @@ Wen_2025_salbutamol_rat_pbpk <- function() {
     elf_24 = list(analyte = "salbutamol", units = "nmol", specimen = "epithelial lining fluid", verified = TRUE), # generation 24 (alveolar)
     epi_24 = list(analyte = "salbutamol", units = "nmol", specimen = "tissue", verified = TRUE),
     sub_24 = list(analyte = "salbutamol", units = "nmol", specimen = "tissue", verified = TRUE),
-    central     = list(analyte = "salbutamol", units = "nmol", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "salbutamol", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "salbutamol", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "salbutamol", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Sets total lung volume (V_lung = 0.004126 * WT L; Appendix S1 section ",
         "3.1) and cardiac output (Q_CO = 20.77 * WT L/h; Appendix S1 section ",
         "3.1), which together fix the subepithelial volumes and every local ",
@@ -132,18 +132,18 @@ Wen_2025_salbutamol_rat_pbpk <- function() {
         "rat (Appendix S1 Table S2). The salbutamol arm used rats of 350 g ",
         "(Wen 2025 section 2.4), i.e. WT = 0.35."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     )
   )
 
   population <- list(
-    species        = "rat (male Wistar Han)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    weight_median  = "350 g",
-    disease_state  = "Healthy",
-    dose_range     = "100 nmol/kg single dose by intratracheal instillation",
-    notes          = paste0(
+    species = "rat (male Wistar Han)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    weight_median = "350 g",
+    disease_state = "Healthy",
+    dose_range = "100 nmol/kg single dose by intratracheal instillation",
+    notes = paste0(
       "Plasma and bronchoalveolar-lavage-obtained ELF concentration-time data ",
       "were digitised from Boger and Friden (2019) J Aerosol Med Pulm Drug Deliv ",
       "32:1-12 (Wen 2025 Appendix S1 Table S1); the number of animals is not ",

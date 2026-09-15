@@ -1,41 +1,41 @@
 Han_2018_methionineMetabolismCycle <- function() {
   description <- "Preclinical (rat). Seven-compartment mechanistic methionine metabolism cycle (MMC) model in Zucker Diabetic Fatty (ZDF) rats vs non-diabetic controls; predicts plasma methionine and homocysteine after IV methionine."
-  reference   <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
-  vignette    <- "Han_2018_methionineMetabolismCycle"
-  units       <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
+  reference <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
+  vignette <- "Han_2018_methionineMetabolismCycle"
+  units <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    met    = list(analyte = "methionine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    met = list(analyte = "methionine", units = NA_character_, specimen = "plasma", verified = FALSE),
     methep = list(analyte = "methionine", units = NA_character_, specimen = "lymph", verified = FALSE),
-    sam    = list(analyte = "S-adenosylmethionine", units = NA_character_, specimen = "tissue", verified = FALSE),
-    sah    = list(analyte = "S-adenosylhomocysteine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    sam = list(analyte = "S-adenosylmethionine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    sah = list(analyte = "S-adenosylhomocysteine", units = NA_character_, specimen = "tissue", verified = FALSE),
     hcyhep = list(analyte = "homocysteine", units = NA_character_, specimen = "lymph", verified = FALSE),
-    cys    = list(analyte = "cysteine", units = NA_character_, specimen = "plasma", verified = FALSE),
-    hcy    = list(analyte = "homocysteine", units = NA_character_, specimen = "plasma", verified = FALSE)
+    cys = list(analyte = "cysteine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hcy = list(analyte = "homocysteine", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DIS_DIAB = list(
-      description        = "Type-2 diabetes mellitus indicator: 1 = Zucker Diabetic Fatty (ZDF/Gmi fa/fa) rat as DIS_DIAB model; 0 = non-diabetic control (ZDF/Gmi fa/?).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type-2 diabetes mellitus indicator: 1 = Zucker Diabetic Fatty (ZDF/Gmi fa/fa) rat as DIS_DIAB model; 0 = non-diabetic control (ZDF/Gmi fa/?).",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed cohort indicator from Han 2018 Methods (Study design). Multiplicative-on-log-scale effects (Han 2018 Eqs 8-11) on K_SH, K_HM, K_HC, K_HP, K_PH; coefficients derived from the Table 1 control vs ZDF point estimates as theta = log(K_ZDF / K_control). K_CM, K_MC, K_MS, K_SS, K_EL, and Vc are common to both cohorts (Han 2018 Results, paragraph 1: 'predicted without consideration of disease status').",
-      source_name        = "ZDF"
+      notes = "Time-fixed cohort indicator from Han 2018 Methods (Study design). Multiplicative-on-log-scale effects (Han 2018 Eqs 8-11) on K_SH, K_HM, K_HC, K_HP, K_PH; coefficients derived from the Table 1 control vs ZDF point estimates as theta = log(K_ZDF / K_control). K_CM, K_MC, K_MS, K_SS, K_EL, and Vc are common to both cohorts (Han 2018 Results, paragraph 1: 'predicted without consideration of disease status').",
+      source_name = "ZDF"
     )
   )
 
   population <- list(
-    species       = "rat (Zucker Diabetic Fatty: ZDF/Gmi fa/fa diabetic + ZDF/Gmi fa/? control)",
-    n_studies     = 1,
+    species = "rat (Zucker Diabetic Fatty: ZDF/Gmi fa/fa diabetic + ZDF/Gmi fa/? control)",
+    n_studies = 1,
     disease_state = "Two cohorts: ZDF/Gmi fa/fa rats as a Type-2-diabetes mellitus model and ZDF/Gmi fa/? non-diabetic littermate controls (Han 2018 Methods, Study design).",
-    dose_range    = "Single intravenous bolus 0.8 mmol/kg methionine (mixture of L-methionine 0.6 mmol/kg + L-methionine-d4 0.2 mmol/kg). Blood sampled at 0, 10, 30, 60, 120, 210, 300, and 420 minutes after administration.",
-    regions       = "Republic of Korea (Chungnam National University, Daejeon; Seoul National University).",
-    notes         = "NONMEM 7.3.0 with Perl-Speaks-NONMEM 4.3.0, FOCE-INTER estimation. The Han 2018 paper does not numerically specify the residual-error variances ('Residual variability was explained by a combined error model using both additive and proportional error (equation was not shown)'); the packaged model therefore omits residual error and is intended for typical-value + IIV simulation rather than refitting. The paper reports IIV (%) as 70.1 for K_HM and 45.4 for K_HP in Table 1, interpreted here as %CV with variance = log((CV/100)^2 + 1). Per-group subject counts are not given in the trimmed text. Vc = 0.15 L/kg is reported as the methionine plasma volume; the same Vc is reused for the homocysteine plasma compartment in the absence of a separately-reported homocysteine volume (see vignette Assumptions)."
+    dose_range = "Single intravenous bolus 0.8 mmol/kg methionine (mixture of L-methionine 0.6 mmol/kg + L-methionine-d4 0.2 mmol/kg). Blood sampled at 0, 10, 30, 60, 120, 210, 300, and 420 minutes after administration.",
+    regions = "Republic of Korea (Chungnam National University, Daejeon; Seoul National University).",
+    notes = "NONMEM 7.3.0 with Perl-Speaks-NONMEM 4.3.0, FOCE-INTER estimation. The Han 2018 paper does not numerically specify the residual-error variances ('Residual variability was explained by a combined error model using both additive and proportional error (equation was not shown)'); the packaged model therefore omits residual error and is intended for typical-value + IIV simulation rather than refitting. The paper reports IIV (%) as 70.1 for K_HM and 45.4 for K_HP in Table 1, interpreted here as %CV with variance = log((CV/100)^2 + 1). Per-group subject counts are not given in the trimmed text. Vc = 0.15 L/kg is reported as the methionine plasma volume; the same Vc is reused for the homocysteine plasma compartment in the absence of a separately-reported homocysteine volume (see vignette Assumptions)."
   )
 
   ini({

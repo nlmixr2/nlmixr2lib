@@ -9,42 +9,49 @@ Diao_2016_daclizumab_cd56bright <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "daclizumab HYP", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "daclizumab HYP", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "daclizumab HYP", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "daclizumab HYP", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "CD56 bright NK cells", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "stimulation of CD56 bright NK cell production", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(
+      analyte = "stimulation of CD56 bright NK cell production",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. CD56 bright NK PD parameters do not carry weight covariates in Diao 2016.",
-      source_name        = "WT"
+      notes = "Used for allometric scaling of the inherited Othman 2014 PK parameters (CL, Q, Vc, Vp) with reference 70 kg; exponents 0.54 on CL/Q and 0.64 on Vc/Vp. CD56 bright NK PD parameters do not carry weight covariates in Diao 2016.",
+      source_name = "WT"
     ),
     DOSE_50MG = list(
-      description        = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Record-level indicator for the 50 mg SC dose (1 = 50 mg SC, 0 = any other SC dose or any IV dose)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (100, 150, 200, or 300 mg SC dose, or any IV dose)",
-      notes              = "Inherited from the Othman 2014 PK backbone. Diao 2016 dosing is 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations.",
-      source_name        = "(derived from AMT)"
+      notes = "Inherited from the Othman 2014 PK backbone. Diao 2016 dosing is 150 or 300 mg SC every 4 weeks, so leave DOSE_50MG = 0 in clinical simulations.",
+      source_name = "(derived from AMT)"
     )
   )
 
   population <- list(
-    n_subjects     = 1405L,
-    n_records      = 9630L,
-    n_studies      = 4L,
-    study_names    = c("205MS201 / SELECT (Phase 2, RRMS)",
-                       "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
-                       "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
-                       "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"),
-    disease_state  = "Relapsing-remitting multiple sclerosis (RRMS)",
-    dose_range     = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
-    notes          = paste0(
+    n_subjects = 1405L,
+    n_records = 9630L,
+    n_studies = 4L,
+    study_names = c(
+      "205MS201 / SELECT (Phase 2, RRMS)",
+      "205MS202 / SELECTION (Phase 2 extension with washout cohort)",
+      "205MS302 / OBSERVE (immunogenicity / PK / PD with intensive substudy)",
+      "205MS301 / DECIDE (Phase 3 vs IFN beta-1a)"
+    ),
+    disease_state = "Relapsing-remitting multiple sclerosis (RRMS)",
+    dose_range = "Daclizumab HYP 150 or 300 mg SC every 4 weeks",
+    notes = paste0(
       "Pooled PK/PD dataset of 1405 RRMS subjects with 9630 CD56 bright NK ",
       "cell records from four daclizumab HYP clinical studies (Diao 2016 ",
       "Table 2). Median (mean) baseline CD56 bright NK is 0.6% (0.75%) of ",
@@ -52,8 +59,8 @@ Diao_2016_daclizumab_cd56bright <- function() {
     ),
     pd_subgroups = list(
       `205MS201/202 (SELECT/SELECTION)` = list(subjects = 561L, records = 5071L),
-      `205MS302 (OBSERVE)`              = list(subjects = 107L, records =  922L),
-      `205MS301 (DECIDE)`                = list(subjects = 737L, records = 3637L)
+      `205MS302 (OBSERVE)` = list(subjects = 107L, records = 922L),
+      `205MS301 (DECIDE)` = list(subjects = 737L, records = 3637L)
     ),
     baseline_cd56bright_nk_pct = list(median = 0.6, mean = 0.75)
   )

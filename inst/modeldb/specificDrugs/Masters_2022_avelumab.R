@@ -8,31 +8,31 @@ Masters_2022_avelumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "avelumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "avelumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "avelumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used for allometric scaling on CL, V1, V2, and Q. Allometric exponent fixed at 1 for Q; exponents on CL, V1, V2 are estimated. Reference weight 80 kg (paper repeatedly cites ~80 kg as the median body weight used to select the 800 mg flat dose; reference weight inherited from the Wilkins 2019 base structural model is not explicitly stated in Masters 2022 but is consistent with 80 kg given the reported typical CL).",
-      source_name        = "WT"
+      notes = "Used for allometric scaling on CL, V1, V2, and Q. Allometric exponent fixed at 1 for Q; exponents on CL, V1, V2 are estimated. Reference weight 80 kg (paper repeatedly cites ~80 kg as the median body weight used to select the 800 mg flat dose; reference weight inherited from the Wilkins 2019 base structural model is not explicitly stated in Masters 2022 but is consistent with 80 kg given the reported typical CL).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    n_subjects     = 2315L,
-    n_studies      = "5 pooled trials (488 aRCC patients from JAVELIN Renal 100 and 101 combination arm + 1827 solid-tumor monotherapy patients from the prior Wilkins 2019 dataset)",
-    age_range      = "not tabulated in the main-text (pooled solid-tumor adult oncology population)",
-    weight_range   = "aRCC sub-population 44.2-143.0 kg; prior solid-tumor monotherapy sub-population 30.4-204 kg",
-    weight_median  = "aRCC sub-population 81.5 kg; prior solid-tumor monotherapy sub-population 70.6 kg",
-    disease_state  = "Advanced / metastatic solid tumors (metastatic Merkel cell carcinoma, advanced / metastatic urothelial carcinoma, advanced renal cell carcinoma, and other solid tumors)",
-    dose_range     = "10 mg/kg IV every 2 weeks (weight-based clinical regimen); 800 mg IV every 2 weeks simulated as the flat-dose alternative",
-    regions        = "Global (multinational phase Ib / III oncology trials)",
-    notes          = "Final-model pooled population per Masters 2022 Results 'Population PK analysis'. aRCC sub-population baseline demographics are in Tables S2 / S3 of the supplementary material."
+    n_subjects = 2315L,
+    n_studies = "5 pooled trials (488 aRCC patients from JAVELIN Renal 100 and 101 combination arm + 1827 solid-tumor monotherapy patients from the prior Wilkins 2019 dataset)",
+    age_range = "not tabulated in the main-text (pooled solid-tumor adult oncology population)",
+    weight_range = "aRCC sub-population 44.2-143.0 kg; prior solid-tumor monotherapy sub-population 30.4-204 kg",
+    weight_median = "aRCC sub-population 81.5 kg; prior solid-tumor monotherapy sub-population 70.6 kg",
+    disease_state = "Advanced / metastatic solid tumors (metastatic Merkel cell carcinoma, advanced / metastatic urothelial carcinoma, advanced renal cell carcinoma, and other solid tumors)",
+    dose_range = "10 mg/kg IV every 2 weeks (weight-based clinical regimen); 800 mg IV every 2 weeks simulated as the flat-dose alternative",
+    regions = "Global (multinational phase Ib / III oncology trials)",
+    notes = "Final-model pooled population per Masters 2022 Results 'Population PK analysis'. aRCC sub-population baseline demographics are in Tables S2 / S3 of the supplementary material."
   )
 
   ini({

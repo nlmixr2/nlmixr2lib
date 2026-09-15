@@ -39,14 +39,14 @@ Zhu_2024_borneol_rat_pbpk <- function() {
     sep = " "
   )
   vignette <- "Zhu_2024_borneol_pbpk"
-  dosing   <- "venous"   # IV into the venous blood pool; else buildModelDb() mislabels it
+  dosing <- "venous" # IV into the venous blood pool; else buildModelDb() mislabels it
 
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "mg/L",
-    amount        = "mg",
-    weight        = "kg"
+    amount = "mg",
+    weight = "kg"
   )
 
   # Fourteen organs; adipose is split into a vascular sub-compartment and the
@@ -58,21 +58,21 @@ Zhu_2024_borneol_rat_pbpk <- function() {
   # lipophilic monoterpene with Kadipose:plasma = 1.92 the extravascular space is
   # predominantly intracellular lipid. `other` is the paper's "rest of body" (ROB).
   compartmentData <- list(
-    lung        = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    heart       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    brain       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    muscle      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    skin        = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    other       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    spleen      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    stomach     = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    vp_adipose  = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
-    adipose     = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    intestine   = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    liver       = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
-    arterial    = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
-    venous      = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE)
+    lung = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    heart = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    brain = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    skin = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    other = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    vp_adipose = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    intestine = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    liver = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "tissue", verified = TRUE),
+    arterial = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE),
+    venous = list(analyte = "SPT-07A (D-borneol)", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   # No covariates: a fixed 0.25 kg reference rat. BW enters only the scaling of
@@ -81,16 +81,16 @@ Zhu_2024_borneol_rat_pbpk <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 258L,
-    n_studies      = 1L,
-    age_range      = NA_character_,
-    weight_range   = "0.25 kg reference rat (Table 1)",
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 258L,
+    n_studies = 1L,
+    age_range = NA_character_,
+    weight_range = "0.25 kg reference rat (Table 1)",
     sex_female_pct = NA_real_,
-    disease_state  = "Healthy rats (kinetic and tissue-distribution studies; no disease model)",
-    dose_range     = "0.5, 1 and 2 mg/kg single IV bolus; 1 mg/kg qd IV for 7 days (multiple dose)",
-    regions        = "China (China Pharmaceutical University)",
-    notes          = paste(
+    disease_state = "Healthy rats (kinetic and tissue-distribution studies; no disease model)",
+    dose_range = "0.5, 1 and 2 mg/kg single IV bolus; 1 mg/kg qd IV for 7 days (multiple dose)",
+    regions = "China (China Pharmaceutical University)",
+    notes = paste(
       "Methods 2.3.1: 180 SD rats received single doses of 0.5, 1 or 2 mg/kg and a further",
       "60 rats received 1 mg/kg qd for 7 days; Methods 2.3.2: 18 additional rats received",
       "2 mg/kg for the tissue-distribution study (plasma, heart, liver, spleen, stomach,",

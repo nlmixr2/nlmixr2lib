@@ -13,46 +13,46 @@ Petrov_2024_romiplostim <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot      = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
-    central    = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
     precursor1 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
     precursor2 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
     precursor3 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
     precursor4 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
-    circ       = list(analyte = "platelets", units = "ug", specimen = "whole blood", verified = FALSE)
+    circ = list(analyte = "platelets", units = "ug", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power covariate on apparent volume of distribution V/F: V = TVV * (WT/77)^1.04 (Petrov 2024 supplement Table S1; Monolix 2021R1 default form for a continuous covariate on a log-normal parameter). Reference 77 kg = population mean weight per Petrov 2024 Methods.",
-      source_name        = "WT"
+      notes = "Allometric power covariate on apparent volume of distribution V/F: V = TVV * (WT/77)^1.04 (Petrov 2024 supplement Table S1; Monolix 2021R1 default form for a continuous covariate on a log-normal parameter). Reference 77 kg = population mean weight per Petrov 2024 Methods.",
+      source_name = "WT"
     ),
     ADA_POS = list(
-      description        = "Anti-drug (neutralizing) antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug (neutralizing) antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NAB-negative)",
-      notes              = "Log-additive covariate on apparent first-order elimination constant: kel = TVKEL * exp(0.25 * ADA_POS) (Petrov 2024 supplement Table S1; Monolix 2021R1 default form for a binary covariate on a log-normal parameter). NAB+ subjects therefore have ~28% higher kel (faster elimination via neutralizing-antibody-mediated clearance). The source paper uses 'NAB' (neutralizing antibody, as opposed to total ADA); the canonical column name in nlmixr2lib is ADA_POS. For datasets that record only total ADA, the effect strictly applies to the NAB-positive subset.",
-      source_name        = "NAB"
+      notes = "Log-additive covariate on apparent first-order elimination constant: kel = TVKEL * exp(0.25 * ADA_POS) (Petrov 2024 supplement Table S1; Monolix 2021R1 default form for a binary covariate on a log-normal parameter). NAB+ subjects therefore have ~28% higher kel (faster elimination via neutralizing-antibody-mediated clearance). The source paper uses 'NAB' (neutralizing antibody, as opposed to total ADA); the canonical column name in nlmixr2lib is ADA_POS. For datasets that record only total ADA, the effect strictly applies to the NAB-positive subset.",
+      source_name = "NAB"
     )
   )
 
   population <- list(
-    n_subjects     = 83L,
-    n_studies      = 2L,
-    age_range      = ">= 18 years",
-    weight_mean    = "77 kg (CV 20%, normally distributed in the simulated cohort per Petrov 2024 Methods)",
+    n_subjects = 83L,
+    n_studies = 2L,
+    age_range = ">= 18 years",
+    weight_mean = "77 kg (CV 20%, normally distributed in the simulated cohort per Petrov 2024 Methods)",
     sex_female_pct = NA,
     race_ethnicity = NULL,
-    disease_state  = "Adults with chronic immune thrombocytopenia (ITP). Default parameter set: non-splenectomized, ITP mechanism 1 (increased platelet degradation, normal precursor production). Three additional subpopulations exist (non-splenectomized mechanism 2 with reduced precursor production; splenectomized mechanism 1; splenectomized mechanism 2) with different (kin, kdeg, IIV(kdeg)) tuples - documented in the vignette.",
-    dose_range     = "Subcutaneous romiplostim with weekly dose-titration algorithm targeting platelets 50-200 x 10^9/L (validation simulation, max 15 ug/kg) or 50-150 x 10^9/L (biosimilar efficacy ISCT, max 10 ug/kg). Initial dose 1 ug/kg.",
-    nab_pos_pct    = 5,
-    regions        = "Russian Federation (clinical development of GP40141 biosimilar, Makarenko 2024 healthy-volunteer source data). Validation against international romiplostim-ref pivotal trials NCT00102323 (splenectomized adults) and NCT00102336 (non-splenectomized adults).",
-    notes          = "n_subjects = 83 reflects the validation cohort (41 non-splenectomized + 42 splenectomized adults from Petrov 2024 Methods / supplement Covariate distribution). PK/PD backbone parameter values are inherited from Makarenko 2024 (healthy-volunteer popPK/PD analysis cited as reference 20 in Petrov 2024); the ITP modifications scale kin and kdeg using published platelet kinetic data (Ballem 1987 and Stoll 1985, references 31 and 32 in Petrov 2024) and were tuned to match the baseline platelet distribution of the romiplostim-ref pivotal trial (Kuter 2008, reference 13 in Petrov 2024). Steady-state baseline platelet count (simulated, 1000 virtual subjects without drug): mean ~18 x 10^9/L (CV 35%) for non-splenectomized; mean ~14 x 10^9/L (CV 50%) for splenectomized."
+    disease_state = "Adults with chronic immune thrombocytopenia (ITP). Default parameter set: non-splenectomized, ITP mechanism 1 (increased platelet degradation, normal precursor production). Three additional subpopulations exist (non-splenectomized mechanism 2 with reduced precursor production; splenectomized mechanism 1; splenectomized mechanism 2) with different (kin, kdeg, IIV(kdeg)) tuples - documented in the vignette.",
+    dose_range = "Subcutaneous romiplostim with weekly dose-titration algorithm targeting platelets 50-200 x 10^9/L (validation simulation, max 15 ug/kg) or 50-150 x 10^9/L (biosimilar efficacy ISCT, max 10 ug/kg). Initial dose 1 ug/kg.",
+    nab_pos_pct = 5,
+    regions = "Russian Federation (clinical development of GP40141 biosimilar, Makarenko 2024 healthy-volunteer source data). Validation against international romiplostim-ref pivotal trials NCT00102323 (splenectomized adults) and NCT00102336 (non-splenectomized adults).",
+    notes = "n_subjects = 83 reflects the validation cohort (41 non-splenectomized + 42 splenectomized adults from Petrov 2024 Methods / supplement Covariate distribution). PK/PD backbone parameter values are inherited from Makarenko 2024 (healthy-volunteer popPK/PD analysis cited as reference 20 in Petrov 2024); the ITP modifications scale kin and kdeg using published platelet kinetic data (Ballem 1987 and Stoll 1985, references 31 and 32 in Petrov 2024) and were tuned to match the baseline platelet distribution of the romiplostim-ref pivotal trial (Kuter 2008, reference 13 in Petrov 2024). Steady-state baseline platelet count (simulated, 1000 virtual subjects without drug): mean ~18 x 10^9/L (CV 35%) for non-splenectomized; mean ~14 x 10^9/L (CV 50%) for splenectomized."
   )
 
   ini({

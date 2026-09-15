@@ -35,19 +35,19 @@ Collins_2023_belantamab_mprotein <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "belantamab mafodotin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "belantamab mafodotin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "belantamab mafodotin", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "active belantamab mafodotin", units = "mg", specimen = "not applicable", verified = FALSE),
-    tumor       = list(analyte = "M-protein", units = "mg", specimen = "tumor", verified = FALSE)
+    effect = list(analyte = "active belantamab mafodotin", units = "mg", specimen = "not applicable", verified = FALSE),
+    tumor = list(analyte = "M-protein", units = "mg", specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list(
     MCPROT = list(
-      description        = "Baseline serum monoclonal (M) protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum monoclonal (M) protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value, reported in g/L throughout Collins 2023",
         "(register default is the US-convention g/dL; 1 g/dL = 10 g/L).",
         "Serves two roles in this model: (1) it seeds the initial condition of",
@@ -62,14 +62,14 @@ Collins_2023_belantamab_mprotein <- function() {
         "elimination) -- here the M-protein time course is the modelled state.",
         sep = " "
       ),
-      source_name        = "bMPROT"
+      source_name = "bMPROT"
     ),
     B2M = list(
-      description        = "Baseline serum beta-2-microglobulin concentration",
-      units              = "nmol/L",
-      type               = "continuous",
+      description = "Baseline serum beta-2-microglobulin concentration",
+      units = "nmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value, reported in nM (nmol/L) by Collins 2023",
         "(register default is mg/L; ~1 mg/L = 85 nmol/L for the 11.8 kDa",
         "monomer). Power exponent 0.219 on the growth rate constant KGR with",
@@ -81,14 +81,14 @@ Collins_2023_belantamab_mprotein <- function() {
         "(5th-95th percentile 170-1034; Collins 2023 Table S2).",
         sep = " "
       ),
-      source_name        = "bB2M"
+      source_name = "bB2M"
     ),
     SBCMA = list(
-      description        = "Baseline serum soluble B-cell maturation antigen (sBCMA) concentration",
-      units              = "ng/mL",
-      type               = "continuous",
+      description = "Baseline serum soluble B-cell maturation antigen (sBCMA) concentration",
+      units = "ng/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed baseline value in ng/mL, matching the register default",
         "(1 ng/mL = 1 ug/L). Power exponent -0.414 on the effect-compartment",
         "rate constant KEO with reference 100 ng/mL per the printed equation",
@@ -101,14 +101,14 @@ Collins_2023_belantamab_mprotein <- function() {
         "percentile 6.28-587; Collins 2023 Table S2).",
         sep = " "
       ),
-      source_name        = "baseline sBCMA"
+      source_name = "baseline sBCMA"
     ),
     DIS_EMD = list(
-      description        = "Extramedullary disease at screening",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Extramedullary disease at screening",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (medullary / bone-marrow-confined multiple myeloma)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed screening flag. Multiplicative factor 0.108 on the",
         "effect-compartment rate constant KEO when DIS_EMD = 1, i.e. a roughly",
         "nine-fold slower plasma-to-effect-site equilibration in patients with",
@@ -118,16 +118,16 @@ Collins_2023_belantamab_mprotein <- function() {
         "Source column MEDFL maps to canonical DIS_EMD.",
         sep = " "
       ),
-      source_name        = "MEDFL"
+      source_name = "MEDFL"
     )
   )
 
   covariatesDataExcluded <- list(
     LOT = list(
       description = "Number of prior lines of anti-myeloma therapy",
-      units       = "(count)",
-      type        = "count",
-      notes       = paste(
+      units = "(count)",
+      type = "count",
+      notes = paste(
         "Screened graphically against individual M-protein model parameter",
         "estimates but not retained in the final model; no point estimate is",
         "reported (Collins 2023 Methods, 'Other relevant covariates ... were",
@@ -138,9 +138,9 @@ Collins_2023_belantamab_mprotein <- function() {
     ),
     ECOG = list(
       description = "Baseline Eastern Cooperative Oncology Group performance status",
-      units       = "(ordinal 0-5)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(ordinal 0-5)",
+      type = "categorical",
+      notes = paste(
         "Screened graphically but not retained in the final M-protein model;",
         "no point estimate is reported (Collins 2023 Methods).",
         sep = " "
@@ -148,9 +148,9 @@ Collins_2023_belantamab_mprotein <- function() {
     ),
     MM_NIGG = list(
       description = "Non-IgG-secreting multiple myeloma indicator (immunoglobulin type)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Immunoglobulin type was screened graphically but not retained in the",
         "final M-protein model; no point estimate is reported (Collins 2023",
         "Methods).",
@@ -159,9 +159,9 @@ Collins_2023_belantamab_mprotein <- function() {
     ),
     CRP = list(
       description = "Baseline C-reactive protein concentration",
-      units       = "mg/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/L",
+      type = "continuous",
+      notes = paste(
         "Screened graphically but not retained in the final M-protein model;",
         "no point estimate is reported (Collins 2023 Methods).",
         sep = " "
@@ -170,23 +170,23 @@ Collins_2023_belantamab_mprotein <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 169L,
-    n_studies      = 2L,
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 169L,
+    n_studies = 2L,
+    disease_state = paste(
       "Relapsed/refractory multiple myeloma (RRMM). Only patients who were",
       "followed for response by serum M-protein and had a baseline serum",
       "M-protein concentration >= 5 g/L entered the M-protein model dataset.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Belantamab mafodotin by intravenous infusion every 3 weeks:",
       "0.03-4.6 mg/kg in DREAMM-1 (phase I dose escalation) and 2.5 or",
       "3.4 mg/kg in DREAMM-2 (phase II). The approved reference regimen is",
       "2.5 mg/kg every 3 weeks.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "M-protein model estimation dataset: 169 patients -- DREAMM-1",
       "(NCT02064387; n = 42) and DREAMM-2 (NCT03525678; n = 127) -- per",
       "Collins 2023 Results. The 218-patient DREAMM-2 population summarized",
@@ -218,7 +218,7 @@ Collins_2023_belantamab_mprotein <- function() {
       "M-protein median 13.0 g/L.",
       sep = " "
     ),
-    dropout        = paste(
+    dropout = paste(
       "Patient dropout attributed to progressive disease was included in the",
       "paper's simulations: patients were removed at the time of disease",
       "progression, defined by IMWG criteria for serum M-protein (an increase",
@@ -228,7 +228,7 @@ Collins_2023_belantamab_mprotein <- function() {
       "rather than a model equation and is therefore not encoded in this file.",
       sep = " "
     ),
-    software       = "NONMEM 7.3 (M-protein model and simulations); R 3.2.5 or higher."
+    software = "NONMEM 7.3 (M-protein model and simulations); R 3.2.5 or higher."
   )
 
   ini({

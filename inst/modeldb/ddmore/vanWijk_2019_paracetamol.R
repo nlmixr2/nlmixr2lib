@@ -11,24 +11,24 @@ vanWijk_2019_paracetamol <- function() {
   vignette <- "vanWijk_2019_paracetamol"
   units <- list(time = "min", dosing = "pmol", concentration = "pmol/larva")
 
-  ddmore_id    <- "DDMODEL00000294"
+  ddmore_id <- "DDMODEL00000294"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "paracetamol", units = "pmol", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "paracetamol", units = "pmol", specimen = "administration site", verified = FALSE),
     central = list(analyte = "paracetamol", units = "pmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE_DPF = list(
-      description        = "Zebrafish-larval age in days post-fertilization at the start of paracetamol exposure (integer 3, 4, or 5 in van Wijk 2019). Time-fixed per subject under the destructive-sampling design (each larva is harvested at exactly one observation time).",
-      units              = "days post-fertilization (dpf)",
-      type               = "continuous",
+      description = "Zebrafish-larval age in days post-fertilization at the start of paracetamol exposure (integer 3, 4, or 5 in van Wijk 2019). Time-fixed per subject under the destructive-sampling design (each larva is harvested at exactly one observation time).",
+      units = "days post-fertilization (dpf)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference age 3 dpf (the youngest cohort). Step-form covariate effect on K12 absorption",
         "(.mod $PK line: IF(AGE.GT.3) TVK12 = THETA(2)*(1+THETA(3))) -- so K12 doubles (~2.06x) at",
         ">= 4 dpf vs 3 dpf. Per-day power-form effect on K25 elimination",
@@ -36,26 +36,26 @@ vanWijk_2019_paracetamol <- function() {
         "Source data column AGE (integer 3..5) renamed to canonical AGE_DPF on input to avoid",
         "collision with the human-PK canonical AGE (years)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    n_subjects     = 242L,
-    n_studies      = 1L,
-    age_range      = "3-5 days post-fertilization (dpf) at the start of the 1 mM paracetamol bath exposure (van Wijk 2019 zebrafish-larvae study).",
-    weight_range   = "Not extractable from DDMORE bundle; the model parameterises elimination as a per-larva first-order rate constant rather than via an explicit larval volume.",
+    n_subjects = 242L,
+    n_studies = 1L,
+    age_range = "3-5 days post-fertilization (dpf) at the start of the 1 mM paracetamol bath exposure (van Wijk 2019 zebrafish-larvae study).",
+    weight_range = "Not extractable from DDMORE bundle; the model parameterises elimination as a per-larva first-order rate constant rather than via an explicit larval volume.",
     sex_female_pct = "Not applicable (zebrafish larvae 3-5 dpf are sexually undifferentiated; sex is not a covariate in the model).",
-    disease_state  = "Healthy zebrafish (Danio rerio) larvae at 3, 4, or 5 days post-fertilization.",
-    dose_range     = paste(
+    disease_state = "Healthy zebrafish (Danio rerio) larvae at 3, 4, or 5 days post-fertilization.",
+    dose_range = paste(
       "Continuous environmental exposure to 1 mM paracetamol in the surrounding medium (E3 zebrafish water).",
       "The .mod represents this as a single dose AMT = 1 (arbitrary unit) into a depot compartment whose",
       "DADT is held at zero throughout the simulation, so the depot amount stays constant at AMT and the",
       "absorption rate K12 (pmol/min) sets the per-minute pmol load into each larva."
     ),
-    regions        = "In vitro / aquatic study; no clinical regions.",
-    species        = "Zebrafish (Danio rerio) larvae 3-5 dpf -- preclinical entry.",
-    notes          = paste(
+    regions = "In vitro / aquatic study; no clinical regions.",
+    species = "Zebrafish (Danio rerio) larvae 3-5 dpf -- preclinical entry.",
+    notes = paste(
       "n_subjects (242) and n_obs (177) come from the Output_real_Paracetamol_Zebrafish_345dpf.lst",
       "run summary lines 'TOT. NO. OF INDIVIDUALS:' and 'TOT. NO. OF OBS RECS:' respectively.",
       "Destructive-sampling design: each larva contributes one DV observation, then is sacrificed for",

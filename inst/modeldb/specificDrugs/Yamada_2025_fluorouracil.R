@@ -31,22 +31,22 @@ Yamada_2025_fluorouracil <- function() {
 
   covariatesDataExcluded <- list(
     CONMED_ZOLBETUXIMAB = list(
-      description        = "Concomitant zolbetuximab coadministration (1 = 5-FU given in the presence of zolbetuximab, 0 = 5-FU alone)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant zolbetuximab coadministration (1 = 5-FU given in the presence of zolbetuximab, 0 = 5-FU alone)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (5-FU alone; ILUSTRO Cohort 2 Cycle 1, in which zolbetuximab was deliberately delayed to Day 3 so that 5-FU PK could be sampled without it)",
-      notes              = "Screened as a covariate on CL and on V using the fractional model P = theta_p * (1 + theta_zolbetuximab * X_zolbetuximab) (Methods, 'Evaluation of zolbetuximab effect as a covariate'; Article Equation a). Neither effect reached the forward-selection criterion: dOFV was -0.787 for the effect on CL and -2.279 for the effect on V, both well short of the 10.83 required at alpha = 0.001 with 1 degree of freedom (Supplementary Table 1; Results, 'Evaluation of zolbetuximab effect on 5-FU PK'). The rejected point estimates were -0.0531 (RSE 110.5%) on CL and 0.248 (RSE 74.6%) on V. Retained here for provenance only; the final 5-FU model has no covariates. The effect IS retained on oxaliplatin V1-V3 -- see modellib('Yamada_2025_oxaliplatin').",
-      source_name        = "X_zolbetuximab"
+      notes = "Screened as a covariate on CL and on V using the fractional model P = theta_p * (1 + theta_zolbetuximab * X_zolbetuximab) (Methods, 'Evaluation of zolbetuximab effect as a covariate'; Article Equation a). Neither effect reached the forward-selection criterion: dOFV was -0.787 for the effect on CL and -2.279 for the effect on V, both well short of the 10.83 required at alpha = 0.001 with 1 degree of freedom (Supplementary Table 1; Results, 'Evaluation of zolbetuximab effect on 5-FU PK'). The rejected point estimates were -0.0531 (RSE 110.5%) on CL and 0.248 (RSE 74.6%) on V. Retained here for provenance only; the final 5-FU model has no covariates. The effect IS retained on oxaliplatin V1-V3 -- see modellib('Yamada_2025_oxaliplatin').",
+      source_name = "X_zolbetuximab"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 1L,
-    disease_state  = "Adults with previously untreated, locally advanced unresectable or metastatic HER2-negative, CLDN18.2-positive gastric or gastroesophageal junction (G/GEJ) adenocarcinoma (CLDN18.2 positivity defined as >= 75% of tumor cells with moderate to strong membranous CLDN18 staining intensity). Cohort 2 of the phase 2 ILUSTRO study (NCT03505320).",
-    dose_range     = "mFOLFOX6 on Days 1, 15 and 29 of 42-day cycles for up to 4 cycles: 5-FU 400 mg/m^2 IV bolus over 5-15 min, followed by 5-FU 2400 mg/m^2 continuous IV infusion over 46-48 h (given with oxaliplatin 85 mg/m^2 and folinic acid 400 mg/m^2 infused over 2 h). Zolbetuximab 800 mg/m^2 loading dose then 600 mg/m^2, each a minimum 2-h IV infusion, on Days 1 and 22 of each cycle except Cycle 1, where it was given on Day 3 so that 5-FU PK could be sampled in its absence.",
-    notes          = "Baseline clinical and demographic characteristics are not tabulated in this paper; it cites the previously published ILUSTRO Cohort 2 report (reference 4) for them, which was not available on disk at extraction time. Analysis dataset: of the original 206 non-BQL postdose 5-FU concentrations (108 without zolbetuximab, 98 with zolbetuximab), 12 non-BQL postdose concentrations, 2 non-BQL predose concentrations and 35 BQL postdose concentrations were excluded during base model development for implausible PK profiles or dosing records. PK sampling: predose and 0.5, 1, 2, 5, 24 and 48 h after the start of dosing in Cycles 1 (chemotherapy alone) and 2 (chemotherapy plus zolbetuximab). Assay: validated LC-MS/MS, LLOQ 5.5 ng/mL. Estimation in NONMEM 7.5.0; condition number of the final model 2.32."
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 1L,
+    disease_state = "Adults with previously untreated, locally advanced unresectable or metastatic HER2-negative, CLDN18.2-positive gastric or gastroesophageal junction (G/GEJ) adenocarcinoma (CLDN18.2 positivity defined as >= 75% of tumor cells with moderate to strong membranous CLDN18 staining intensity). Cohort 2 of the phase 2 ILUSTRO study (NCT03505320).",
+    dose_range = "mFOLFOX6 on Days 1, 15 and 29 of 42-day cycles for up to 4 cycles: 5-FU 400 mg/m^2 IV bolus over 5-15 min, followed by 5-FU 2400 mg/m^2 continuous IV infusion over 46-48 h (given with oxaliplatin 85 mg/m^2 and folinic acid 400 mg/m^2 infused over 2 h). Zolbetuximab 800 mg/m^2 loading dose then 600 mg/m^2, each a minimum 2-h IV infusion, on Days 1 and 22 of each cycle except Cycle 1, where it was given on Day 3 so that 5-FU PK could be sampled in its absence.",
+    notes = "Baseline clinical and demographic characteristics are not tabulated in this paper; it cites the previously published ILUSTRO Cohort 2 report (reference 4) for them, which was not available on disk at extraction time. Analysis dataset: of the original 206 non-BQL postdose 5-FU concentrations (108 without zolbetuximab, 98 with zolbetuximab), 12 non-BQL postdose concentrations, 2 non-BQL predose concentrations and 35 BQL postdose concentrations were excluded during base model development for implausible PK profiles or dosing records. PK sampling: predose and 0.5, 1, 2, 5, 24 and 48 h after the start of dosing in Cycles 1 (chemotherapy alone) and 2 (chemotherapy plus zolbetuximab). Assay: validated LC-MS/MS, LLOQ 5.5 ng/mL. Estimation in NONMEM 7.5.0; condition number of the final model 2.32."
   )
 
   ini({

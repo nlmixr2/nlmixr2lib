@@ -10,8 +10,8 @@ Takama_2007_darbepoetin <- function() {
   )
   vignette <- "Takama_2007_darbepoetin"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -19,45 +19,45 @@ Takama_2007_darbepoetin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "darbepoetin", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "darbepoetin", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "darbepoetin", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at study entry",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at study entry",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Takama 2007 Table 1 patient characteristics: median 54.7 kg (range 35.5-132.0). Reference value 54 kg (population median; covariate-deviation centre used in Methods equation 'CL = theta_CL * [1 + theta_CL_WT * (WT - 54)]'). Linear-deviation effect on both clearance (theta_CL_WT = 0.0195 kg^-1) and central volume (theta_V1_WT = 0.0163 kg^-1).",
-      source_name        = "WT"
+      notes = "Takama 2007 Table 1 patient characteristics: median 54.7 kg (range 35.5-132.0). Reference value 54 kg (population median; covariate-deviation centre used in Methods equation 'CL = theta_CL * [1 + theta_CL_WT * (WT - 54)]'). Linear-deviation effect on both clearance (theta_CL_WT = 0.0195 kg^-1) and central volume (theta_V1_WT = 0.0163 kg^-1).",
+      source_name = "WT"
     ),
     PERIT_DIAL = list(
-      description        = "Peritoneal-dialysis modality indicator (1 = PD, 0 = HD)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Peritoneal-dialysis modality indicator (1 = PD, 0 = HD)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (intermittent haemodialysis, HD)",
-      notes              = "Takama 2007 Methods and Table 4: dichotomous covariate DIA with DIA = 0 for HD and DIA = 1 for PD (63 HD / 68 PD subjects). Enters the structural model as an additive deviation term on central volume: V1 = theta_V1 * [1 + theta_V1_WT * (WT - 54) + theta_V1_DIA * DIA], with theta_V1_DIA = 0.170 so V1 in PD subjects is 17% higher than in HD subjects at the reference 54 kg weight. The paper attributes the V1 difference to higher extracellular body fluid in PD than post-HD intracorporeal fluid (Discussion, citing reference [22] of Takama 2007).",
-      source_name        = "DIA"
+      notes = "Takama 2007 Methods and Table 4: dichotomous covariate DIA with DIA = 0 for HD and DIA = 1 for PD (63 HD / 68 PD subjects). Enters the structural model as an additive deviation term on central volume: V1 = theta_V1 * [1 + theta_V1_WT * (WT - 54) + theta_V1_DIA * DIA], with theta_V1_DIA = 0.170 so V1 in PD subjects is 17% higher than in HD subjects at the reference 54 kg weight. The paper attributes the V1 difference to higher extracellular body fluid in PD than post-HD intracorporeal fluid (Discussion, citing reference [22] of Takama 2007).",
+      source_name = "DIA"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 131L,
-    n_studies        = 4L,
-    age_range        = "23-84 years",
-    age_median       = "60 years",
-    weight_range     = "35.5-132.0 kg",
-    weight_median    = "54.7 kg",
-    sex_female_pct   = 38.2,
-    race_ethnicity   = c(Japanese = 100),
-    disease_state    = "Japanese adult chronic kidney disease patients on dialysis: 63 haemodialysis (HD) and 68 peritoneal dialysis (PD). HD inclusion: chronic kidney disease undergoing HD for >=3 months with stable IV rHuEPO three times weekly for >=2 months before the study, mean baseline haemoglobin 9-12 g/dL (haematocrit 25-35%). PD inclusion: end-stage renal failure on stable PD with mean baseline haemoglobin <10 g/dL (no rHuEPO) or 9-12 g/dL (on rHuEPO). Both groups excluded major surgery within 3 months (excluding vascular access surgery) and blood transfusions within 1 month before enrolment.",
-    dose_range       = "10-90 ug intravenous, single or multiple administration every 1 or 2 weeks. HD subjects: 10-60 ug single doses with serial sampling at predose and 0.5, 1, 2, 5, 8, 12, 24, 48, 96, 168 h (90 ug dose group additionally sampled at 336 h). PD subjects: dosed every 1 or 2 weeks with sparse sampling predose in weeks 1-4 plus optional 0.5-1 h post-dose in week 2.",
-    regions          = "Japan",
+    species = "human",
+    n_subjects = 131L,
+    n_studies = 4L,
+    age_range = "23-84 years",
+    age_median = "60 years",
+    weight_range = "35.5-132.0 kg",
+    weight_median = "54.7 kg",
+    sex_female_pct = 38.2,
+    race_ethnicity = c(Japanese = 100),
+    disease_state = "Japanese adult chronic kidney disease patients on dialysis: 63 haemodialysis (HD) and 68 peritoneal dialysis (PD). HD inclusion: chronic kidney disease undergoing HD for >=3 months with stable IV rHuEPO three times weekly for >=2 months before the study, mean baseline haemoglobin 9-12 g/dL (haematocrit 25-35%). PD inclusion: end-stage renal failure on stable PD with mean baseline haemoglobin <10 g/dL (no rHuEPO) or 9-12 g/dL (on rHuEPO). Both groups excluded major surgery within 3 months (excluding vascular access surgery) and blood transfusions within 1 month before enrolment.",
+    dose_range = "10-90 ug intravenous, single or multiple administration every 1 or 2 weeks. HD subjects: 10-60 ug single doses with serial sampling at predose and 0.5, 1, 2, 5, 8, 12, 24, 48, 96, 168 h (90 ug dose group additionally sampled at 336 h). PD subjects: dosed every 1 or 2 weeks with sparse sampling predose in weeks 1-4 plus optional 0.5-1 h post-dose in week 2.",
+    regions = "Japan",
     n_concentrations = 917L,
-    renal_function   = "Anuric / dialysis-dependent (chronic dialysis cohort). Baseline serum creatinine median 10.60 mg/dL (range 3.68-16.50); serum albumin median 3.8 g/dL (range 2.1-4.8); red blood cell counts median 317 x 10^4 /uL (range 211-422); white blood cell counts median 5500 /uL (range 2400-12500); platelet cell counts median 17.7 x 10^4 /uL (range 5.1-50.1).",
-    notes            = "Four clinical studies pooled (three HD studies + one PD study). Serum darbepoetin alfa concentrations were quantified with the Quantikine in-vitro-diagnostic rHuEPO ELISA kit (R&D Systems) using a darbepoetin alfa standard curve; the assay limit of quantification was 0.078 ng/mL and inter-assay precision was within 20% for clinical samples. Baseline endogenous EPO concentration in the cohort (theta_k0) was 0.167 ng/mL (Table 4) and is retained in the model as an additive offset on the observed serum concentration. Bootstrap validation: the final model was refitted to 1000 bootstrap replicates; mean parameter estimates were close to those of the original dataset (Table 4 right panel). Initial values and a one-compartment alternative were rejected by Akaike's information criterion (Table 2)."
+    renal_function = "Anuric / dialysis-dependent (chronic dialysis cohort). Baseline serum creatinine median 10.60 mg/dL (range 3.68-16.50); serum albumin median 3.8 g/dL (range 2.1-4.8); red blood cell counts median 317 x 10^4 /uL (range 211-422); white blood cell counts median 5500 /uL (range 2400-12500); platelet cell counts median 17.7 x 10^4 /uL (range 5.1-50.1).",
+    notes = "Four clinical studies pooled (three HD studies + one PD study). Serum darbepoetin alfa concentrations were quantified with the Quantikine in-vitro-diagnostic rHuEPO ELISA kit (R&D Systems) using a darbepoetin alfa standard curve; the assay limit of quantification was 0.078 ng/mL and inter-assay precision was within 20% for clinical samples. Baseline endogenous EPO concentration in the cohort (theta_k0) was 0.167 ng/mL (Table 4) and is retained in the model as an additive offset on the observed serum concentration. Bootstrap validation: the final model was refitted to 1000 bootstrap replicates; mean parameter estimates were close to those of the original dataset (Table 4 right panel). Initial values and a one-compartment alternative were rejected by Akaike's information criterion (Table 2)."
   )
 
   ini({

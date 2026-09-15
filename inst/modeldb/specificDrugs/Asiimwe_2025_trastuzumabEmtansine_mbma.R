@@ -11,29 +11,29 @@ Asiimwe_2025_trastuzumabEmtansine_mbma <- function() {
   )
   vignette <- "Asiimwe_2025_trastuzumab_ADCs_mbma"
   units <- list(
-    time          = "day",
-    dosing        = "mg (IV infusion; typical 3.6 mg/kg q3w for HER2-positive breast cancer, infused over 90 min in Cycle 1 and 30 min in subsequent cycles)",
+    time = "day",
+    dosing = "mg (IV infusion; typical 3.6 mg/kg q3w for HER2-positive breast cancer, infused over 90 min in Cycle 1 and 30 min in subsequent cycles)",
     concentration = "ng/mL (serum concentration of the intact antibody-drug conjugate T-DM1; residual error terms and reported constant SD are in ng/mL)"
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = 14L,
-    weight_median  = "69.4 kg (median across the 14 T-DM1 Pop-PK studies; used when computing the mg-per-patient dose from a mg/kg regimen)",
-    disease_state  = "predominantly HER2-positive metastatic breast cancer; a minority of arms include HER2-positive urothelial/bladder, pancreatic/cholangiocarcinoma, and other HER2-positive solid tumors (see Asiimwe 2025 Table S1 for the 14 Pop-PK studies)",
-    dose_range     = "0.3 to 4.8 mg/kg IV; three-weekly (q3w) and weekly dosing were included for the Pop-PK fit (Cycle 1 data only; Cycle 1 approximates steady state given the ~4 day elimination half-life and 21-day cycles)",
-    regions        = "global (studies included cohorts from North America, Europe, and Japan/China; see Asiimwe 2025 Table S1)",
-    design         = "MBMA of summary-level data (mean concentrations per timepoint per study arm), weighted by the square root of each trial's sample size. Different doses within the same study were treated as separate 'studies' (Between-Treatment-Arm Variability absorbed into BSV) to match Phase I dose-escalation designs where the same patients are not randomised across arms.",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 14L,
+    weight_median = "69.4 kg (median across the 14 T-DM1 Pop-PK studies; used when computing the mg-per-patient dose from a mg/kg regimen)",
+    disease_state = "predominantly HER2-positive metastatic breast cancer; a minority of arms include HER2-positive urothelial/bladder, pancreatic/cholangiocarcinoma, and other HER2-positive solid tumors (see Asiimwe 2025 Table S1 for the 14 Pop-PK studies)",
+    dose_range = "0.3 to 4.8 mg/kg IV; three-weekly (q3w) and weekly dosing were included for the Pop-PK fit (Cycle 1 data only; Cycle 1 approximates steady state given the ~4 day elimination half-life and 21-day cycles)",
+    regions = "global (studies included cohorts from North America, Europe, and Japan/China; see Asiimwe 2025 Table S1)",
+    design = "MBMA of summary-level data (mean concentrations per timepoint per study arm), weighted by the square root of each trial's sample size. Different doses within the same study were treated as separate 'studies' (Between-Treatment-Arm Variability absorbed into BSV) to match Phase I dose-escalation designs where the same patients are not randomised across arms.",
     reference_subject = "median body weight 69.4 kg, no covariate effects modelled (weight enters only through dose = mg/kg x WT); no other covariates were tested in the primary Pop-PK model (Asiimwe 2025 Methods 2.2).",
-    notes          = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The paper also fitted a two-compartment nonlinear-clearance / target-mediated model and a payload (DM1) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here. Parameter values in the sensitivity analyses that separated BTAV from BSV (Table S5) or restricted to dose-finding studies (Table S6) were similar to the primary values, with wider precision."
+    notes = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The paper also fitted a two-compartment nonlinear-clearance / target-mediated model and a payload (DM1) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here. Parameter values in the sensitivity analyses that separated BTAV from BSV (Table S5) or restricted to dose-finding studies (Table S6) were similar to the primary values, with wider precision."
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "trastuzumabEmtansine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central = list(analyte = "trastuzumabEmtansine", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "trastuzumabEmtansine", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 

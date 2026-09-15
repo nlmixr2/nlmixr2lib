@@ -36,8 +36,8 @@ Tuffal_2023_avalglucosidase_alfa <- function() {
   vignette <- "Tuffal_2023_avalglucosidase_alfa"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -47,7 +47,7 @@ Tuffal_2023_avalglucosidase_alfa <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -56,126 +56,126 @@ Tuffal_2023_avalglucosidase_alfa <- function() {
 
   covariatesDataExcluded <- list(
     WT = list(
-      description        = "Baseline body weight. Screened as a continuous covariate on CL and V1, and separately as the scaling variable for allometric scaling of central clearance and volume (Methods, 'Population Pharmacokinetic Modeling' item 1).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight. Screened as a continuous covariate on CL and V1, and separately as the scaling variable for allometric scaling of central clearance and volume (Methods, 'Population Pharmacokinetic Modeling' item 1).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Survived backward deletion on CL IIV (removal raised OFV by more than the 10.84 criterion) but was NOT retained: the resulting model failed the covariance-step acceptance criteria (correlated parameters and/or several RSE much greater than 50%), the effect on CL IIV was not significant, and the single-covariate bootstrap qualification failed (Results, 'Population Pharmacokinetic Model'). Allometric scaling was likewise tested and not retained, so the final model contains no body-weight term at all. Reported exposure nevertheless tracks weight: median AUC0-336h was 32% lower below 50 kg and 41% higher at or above 100 kg relative to 50-100 kg (Results, 'Patient Exposure'; Supplemental Digital Content 6). Population mean weight 75.9 kg (SD 20.1), Table 1."
+      notes = "Survived backward deletion on CL IIV (removal raised OFV by more than the 10.84 criterion) but was NOT retained: the resulting model failed the covariance-step acceptance criteria (correlated parameters and/or several RSE much greater than 50%), the effect on CL IIV was not significant, and the single-covariate bootstrap qualification failed (Results, 'Population Pharmacokinetic Model'). Allometric scaling was likewise tested and not retained, so the final model contains no body-weight term at all. Reported exposure nevertheless tracks weight: median AUC0-336h was 32% lower below 50 kg and 41% higher at or above 100 kg relative to 50-100 kg (Results, 'Patient Exposure'; Supplemental Digital Content 6). Population mean weight 75.9 kg (SD 20.1), Table 1."
     ),
     AGE = list(
-      description        = "Baseline age. Screened as a continuous demographic covariate (Methods).",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age. Screened as a continuous demographic covariate (Methods).",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Population mean 46.0 years (SD 15.1), Table 1; a single patient was under 18 years."
+      notes = "Not retained. Population mean 46.0 years (SD 15.1), Table 1; a single patient was under 18 years."
     ),
     SEXF = list(
-      description        = "Sex indicator. Screened as a categorical demographic covariate (Methods).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator. Screened as a categorical demographic covariate (Methods).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Not retained. Paper reports counts rather than an indicator column: 36 of 75 female (48%), Table 1."
+      notes = "Not retained. Paper reports counts rather than an indicator column: 36 of 75 female (48%), Table 1."
     ),
     RACE_WHITE = list(
-      description        = "White / Caucasian race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "White / Caucasian race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Caucasian)",
-      notes              = "Not retained. Table 1 reports Caucasian 68 of 75 (90.7%). The paper screened ethnicity as a single categorical covariate; it is decomposed here into the canonical one-hot indicators so the screened groups are individually documented. Table 3 labels the same variable 'Phenotype'."
+      notes = "Not retained. Table 1 reports Caucasian 68 of 75 (90.7%). The paper screened ethnicity as a single categorical covariate; it is decomposed here into the canonical one-hot indicators so the screened groups are individually documented. Table 3 labels the same variable 'Phenotype'."
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Black)",
-      notes              = "Not retained. Table 1 reports Black 2 of 75 (2.67%)."
+      notes = "Not retained. Table 1 reports Black 2 of 75 (2.67%)."
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator. Part of the 'ethnicity' categorical covariate screened in the Methods.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not Asian)",
-      notes              = "Not retained. Table 1 reports Asian 3 of 75 (4.00%); a further 2 patients (2.67%) were recorded as 'Other'."
+      notes = "Not retained. Table 1 reports Asian 3 of 75 (4.00%); a further 2 patients (2.67%) were recorded as 'Other'."
     ),
     CRCL = list(
-      description        = "Baseline renal function. The paper screened renal function under two parameterisations: creatinine clearance, and glomerular filtration rate estimated by the Modification of Diet in Renal Disease (MDRD) formula (Methods).",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline renal function. The paper screened renal function under two parameterisations: creatinine clearance, and glomerular filtration rate estimated by the Modification of Diet in Renal Disease (MDRD) formula (Methods).",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Neither parameterisation was retained. Both map to the single canonical renal-function column, which covers creatinine-based estimates and measured GFR alike; the two parameterisations are recorded here rather than split across two columns because neither entered the final model. Table 3 stratifies exposure by GFR: 64 of 70 patients at or above 90 mL/min, 6 in the 60-89 range."
+      notes = "Neither parameterisation was retained. Both map to the single canonical renal-function column, which covers creatinine-based estimates and measured GFR alike; the two parameterisations are recorded here rather than split across two columns because neither entered the final model. Table 3 stratifies exposure by GFR: 64 of 70 patients at or above 90 mL/min, 6 in the 60-89 range."
     ),
     CPK = list(
-      description        = "Baseline creatine kinase. Screened as a continuous laboratory covariate (Methods).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline creatine kinase. Screened as a continuous laboratory covariate (Methods).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Baseline value used, per the Methods convention 'Unless otherwise stated, the baseline value was used as the covariate.' Paper calls this 'creatine kinase'; units are not stated."
+      notes = "Not retained. Baseline value used, per the Methods convention 'Unless otherwise stated, the baseline value was used as the covariate.' Paper calls this 'creatine kinase'; units are not stated."
     ),
     ALP = list(
-      description        = "Baseline alkaline phosphatase. Screened as a continuous laboratory covariate (Methods).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alkaline phosphatase. Screened as a continuous laboratory covariate (Methods).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Units not stated in the paper."
+      notes = "Not retained. Units not stated in the paper."
     ),
     ALT = list(
-      description        = "Baseline alanine aminotransferase. Screened as a continuous laboratory covariate (Methods).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline alanine aminotransferase. Screened as a continuous laboratory covariate (Methods).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Units not stated in the paper."
+      notes = "Not retained. Units not stated in the paper."
     ),
     AST = list(
-      description        = "Baseline aspartate aminotransferase. Screened as a continuous laboratory covariate (Methods).",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline aspartate aminotransferase. Screened as a continuous laboratory covariate (Methods).",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained, despite surviving backward deletion on CL IIV alongside body weight (removal raised OFV by more than the 10.84 criterion). Rejected for the same reasons as WT: covariance-step acceptance criteria not met, effect on CL IIV not significant, and single-covariate bootstrap qualification failed (Results, 'Population Pharmacokinetic Model'). Units not stated in the paper."
+      notes = "Not retained, despite surviving backward deletion on CL IIV alongside body weight (removal raised OFV by more than the 10.84 criterion). Rejected for the same reasons as WT: covariance-step acceptance criteria not met, effect on CL IIV not significant, and single-covariate bootstrap qualification failed (Results, 'Population Pharmacokinetic Model'). Units not stated in the paper."
     ),
     TBILI = list(
-      description        = "Baseline total bilirubin. Screened as a continuous laboratory covariate (Methods).",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total bilirubin. Screened as a continuous laboratory covariate (Methods).",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. The paper says only 'bilirubin' and states no units; total bilirubin is assumed."
+      notes = "Not retained. The paper says only 'bilirubin' and states no units; total bilirubin is assumed."
     ),
     ALB = list(
-      description        = "Baseline albumin. Screened as a continuous laboratory covariate (Methods).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline albumin. Screened as a continuous laboratory covariate (Methods).",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Units not stated in the Methods, but Table 3 stratifies exposure at a 45 g/L cut point (28 patients below, 42 at or above), which implies g/L."
+      notes = "Not retained. Units not stated in the Methods, but Table 3 stratifies exposure at a 45 g/L cut point (28 patients below, 42 at or above), which implies g/L."
     ),
     ADA_POS = list(
-      description        = "Antidrug-antibody positivity. The paper screened two of its three ADA parameterisations through this concept: a subject-level categorical covariate (ADA occurring at least once versus never during follow-up) and a longitudinal categorical covariate (positive or not at the current time).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Antidrug-antibody positivity. The paper screened two of its three ADA parameterisations through this concept: a subject-level categorical covariate (ADA occurring at least once versus never during follow-up) and a longitudinal categorical covariate (positive or not at the current time).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Neither parameterisation was retained. Both are recorded against this single canonical column: the ever-positive reading is time-fixed and the longitudinal reading is time-varying, but the column encoding is identical and neither entered the final model. See Methods, 'Population Pharmacokinetic Modeling', and Supplemental Digital Content 2 for the ADA assays."
+      notes = "Neither parameterisation was retained. Both are recorded against this single canonical column: the ever-positive reading is time-fixed and the longitudinal reading is time-varying, but the column encoding is identical and neither entered the final model. See Methods, 'Population Pharmacokinetic Modeling', and Supplemental Digital Content 2 for the ADA assays."
     ),
     ADA_TITER = list(
-      description        = "Continuous antidrug-antibody titer. The third of the paper's three ADA parameterisations (Methods).",
-      units              = "titer (reciprocal dilution; assay described in Supplemental Digital Content 2)",
-      type               = "continuous",
+      description = "Continuous antidrug-antibody titer. The third of the paper's three ADA parameterisations (Methods).",
+      units = "titer (reciprocal dilution; assay described in Supplemental Digital Content 2)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Not retained. Qualitative and semiquantitative titer assays were performed for the phase III study only; two further assays characterised the neutralising ability of ADA (enzymatic-activity inhibition and uptake inhibition). Table 3 does not stratify exposure by ADA status."
+      notes = "Not retained. Qualitative and semiquantitative titer assays were performed for the phase III study only; two further assays characterised the neutralising ability of ADA (enzymatic-activity inhibition and uptake inhibition). Table 3 does not stratify exposure by ADA status."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 75L,
-    n_studies      = 3L,
-    age_range      = "at least 3 years by protocol eligibility; the analysis population was adolescent and adult, with 1 patient under 18 years, 59 aged 18-64, and 10 aged 65 or older among the 70 who received 20 mg/kg (Table 3)",
-    age_median     = "mean 46.0 years (SD 15.1) overall; 46.0 (16.6) in phase I/II and 46.1 (14.5) in phase III (Table 1)",
-    weight_range   = "not reported as a range; exposure was stratified below 50 kg (5 patients), 50-99 kg (55), and at or above 100 kg (10) among the 70 who received 20 mg/kg (Table 3)",
-    weight_median  = "mean 75.9 kg (SD 20.1) overall; 72.0 (14.5) in phase I/II and 77.8 (22.1) in phase III (Table 1)",
+    species = "human",
+    n_subjects = 75L,
+    n_studies = 3L,
+    age_range = "at least 3 years by protocol eligibility; the analysis population was adolescent and adult, with 1 patient under 18 years, 59 aged 18-64, and 10 aged 65 or older among the 70 who received 20 mg/kg (Table 3)",
+    age_median = "mean 46.0 years (SD 15.1) overall; 46.0 (16.6) in phase I/II and 46.1 (14.5) in phase III (Table 1)",
+    weight_range = "not reported as a range; exposure was stratified below 50 kg (5 patients), 50-99 kg (55), and at or above 100 kg (10) among the 70 who received 20 mg/kg (Table 3)",
+    weight_median = "mean 75.9 kg (SD 20.1) overall; 72.0 (14.5) in phase I/II and 77.8 (22.1) in phase III (Table 1)",
     sex_female_pct = 48,
     race_ethnicity = c(Caucasian = 90.7, Black = 2.67, Asian = 4.00, Other = 2.67),
-    disease_state  = "late-onset Pompe disease (LOPD), confirmed by GAA enzyme deficiency from any tissue source, 2 confirmed pathogenic GAA variants, or both; 14 of 75 (18.7%) had been pretreated with alglucosidase alfa for at least 9 months and 61 (81.3%) were treatment-naive",
-    dose_range     = "5, 10, or 20 mg/kg IV Q2W. Each infusion was given stepwise to limit hypersensitivity reactions: 1 mg/kg/h for 30 min, 3 mg/kg/h for 30 min, 5 mg/kg/h for 30 min, then 7 mg/kg/h until the planned dose was delivered. 70 of the 75 patients received 20 mg/kg (51 from phase III plus 19 from phase I/II who started at or shifted to the top dose).",
-    regions        = "not reported; multicentre across NCT01898364, NCT02032524, and NCT02782741",
-    notes          = "Baseline demographics are in Table 1; the per-study design, dosing, and sampling schedules are in Supplemental Digital Content 1 Table 1. Data attrition: 2374 concentrations collected, 2066 above the LLOQ, 9 removed before modelling (3 predoses above LLOQ, 1 aberrant trough, 5 from a patient with truncated prior-dose information) giving 2057, then 15 conditional-weighted-residual outliers (0.7%) removed, giving the final 2042 used for fitting. Concentrations are plasma enzymatic activity, assayed fluorometrically over a validated range of 0.0125 (LLOQ) to 3.0 ug/mL. Fit in NONMEM 7.4.1 with FOCE-I. Final-model performance: mean bias -2.66% and RMSE 30.7% for IPRED, -0.433% and 38.9% for PRED; AAFE 1.36 (IPRED) and 1.72 (PRED). Bootstrap convergence 86% of 1000 runs."
+    disease_state = "late-onset Pompe disease (LOPD), confirmed by GAA enzyme deficiency from any tissue source, 2 confirmed pathogenic GAA variants, or both; 14 of 75 (18.7%) had been pretreated with alglucosidase alfa for at least 9 months and 61 (81.3%) were treatment-naive",
+    dose_range = "5, 10, or 20 mg/kg IV Q2W. Each infusion was given stepwise to limit hypersensitivity reactions: 1 mg/kg/h for 30 min, 3 mg/kg/h for 30 min, 5 mg/kg/h for 30 min, then 7 mg/kg/h until the planned dose was delivered. 70 of the 75 patients received 20 mg/kg (51 from phase III plus 19 from phase I/II who started at or shifted to the top dose).",
+    regions = "not reported; multicentre across NCT01898364, NCT02032524, and NCT02782741",
+    notes = "Baseline demographics are in Table 1; the per-study design, dosing, and sampling schedules are in Supplemental Digital Content 1 Table 1. Data attrition: 2374 concentrations collected, 2066 above the LLOQ, 9 removed before modelling (3 predoses above LLOQ, 1 aberrant trough, 5 from a patient with truncated prior-dose information) giving 2057, then 15 conditional-weighted-residual outliers (0.7%) removed, giving the final 2042 used for fitting. Concentrations are plasma enzymatic activity, assayed fluorometrically over a validated range of 0.0125 (LLOQ) to 3.0 ug/mL. Fit in NONMEM 7.4.1 with FOCE-I. Final-model performance: mean bias -2.66% and RMSE 30.7% for IPRED, -0.433% and 38.9% for PRED; AAFE 1.36 (IPRED) and 1.72 (PRED). Bootstrap convergence 86% of 1000 runs."
   )
 
   ini({

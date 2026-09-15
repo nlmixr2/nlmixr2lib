@@ -57,11 +57,11 @@ Wei_2026_cefquinome_enrofloxacin_lung_aucmic <- function() {
 
   covariateData <- list(
     AUCMIC_CEFQ = list(
-      description        = "Cefquinome PK/PD index: the cumulative area under the lung concentration-time curve over the 72 h treatment course divided by MIC(combine), the MIC of cefquinome measured in the presence of the average enrofloxacin lung concentration achieved over 72 h",
-      units              = "h",
-      type               = "continuous",
+      description = "Cefquinome PK/PD index: the cumulative area under the lung concentration-time curve over the 72 h treatment course divided by MIC(combine), the MIC of cefquinome measured in the presence of the average enrofloxacin lung concentration achieved over 72 h",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Wei 2026 tabulates this index for all six combination-therapy arms in Table 5, separately ",
         "for plasma free drug and for lung. It is carried as an already-formed ratio rather than ",
         "as an absolute exposure divided by a model `mic` parameter because the denominator is ",
@@ -74,21 +74,21 @@ Wei_2026_cefquinome_enrofloxacin_lung_aucmic <- function() {
         "Set to 0 for the untreated blank control so the sigmoid term vanishes and the predicted ",
         "72 h change reduces to e0. See the vignette Assumptions and deviations section."
       ),
-      source_name        = "AUC72h/MIC (combine) (Wei 2026 Table 5, lung block; Materials and methods, 'Analysis of antibacterial effects and fitting of PK/PD')"
+      source_name = "AUC72h/MIC (combine) (Wei 2026 Table 5, lung block; Materials and methods, 'Analysis of antibacterial effects and fitting of PK/PD')"
     )
   )
 
   population <- list(
-    species        = "chick (yellow-feathered, Guangdong Academy of Agricultural Sciences), infected with Klebsiella pneumoniae",
-    n_subjects     = 352L,
-    n_studies      = 1L,
-    age_range      = "purchased at one day old, observed for one week, challenged intratracheally at seven days old; treatment began 24 h after infection",
-    organism       = "Klebsiella quasipneumoniae subsp. similipneumoniae clinical isolate CLS2 (identified by 16S rDNA sequencing), provided by the Veterinary Pharmacology Laboratory, South China Agricultural University. MIC 2.00 ug/mL for enrofloxacin and 0.13 ug/mL (0.125) for cefquinome. Whole-genome sequencing identified 18 antibiotic-resistance genes (Table 2), including the efflux pumps acrB, mdtQ, kpnE, oqxB, smeE and tet(A), the beta-lactamase shv-209 and the porins ompA and ompK37; no quinolone-resistance-determining-region chromosomal mutations were found. Escherichia coli ATCC 25922 was the quality-control strain",
-    system         = "Intratracheal pneumonia model: 0.4 mL of a 10^8 CFU/mL CLS2 saline suspension injected into the respiratory tract. Treatment started 24 h after infection and continued for three days; lungs from eight chicks per group were harvested at 24, 48 and 72 h after the first dose, homogenised (1.0 g in 1.0 mL sterile saline) and plated by tenfold serial dilution on MacConkey agar with and without 1x MIC of ENR or CEQ. Plate-count detection limit 50 CFU/mL. Group allocation and counting were blinded by letter labels",
-    disease_state  = "experimentally induced Klebsiella pneumoniae pneumonia",
-    dose_range     = "All treatment arms received a fixed 20 mg/kg intramuscular enrofloxacin background. Single-dose combination arms gave ENR 20 mg/kg plus CEQ 2, 5 or 20 mg/kg once daily for three days; split-dose combination arms gave the same daily totals of ENR 20 mg/kg plus CEQ 4, 10 or 20 mg/kg divided into two equal doses 12 h apart for three days. Monotherapy control arms received ENR 20 mg/kg or CEQ 20 mg/kg, single or split",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "The 352 chicks are the pharmacodynamic cohort (11 groups, n = 8 per group per time point); a separate 600-chick cohort in six groups supplied the non-compartmental pharmacokinetics of Tables 3 and 4 (n = 6 per group per time point, single sample per bird by cardiac puncture after cervical dislocation). Plasma protein binding was 20.18% for enrofloxacin (from previously published data) and 13.24% for cefquinome by equilibrium dialysis, so the plasma PK of Tables 3 and 4 is reported as FREE drug. Enrofloxacin concentrations are the sum of enrofloxacin and its active metabolite ciprofloxacin. Wei 2026 fitted the same inhibitory sigmoid Emax structure independently against three PK/PD indices (Cmax/MIC, AUC72h/MIC and %T>MIC) in each of two matrices (plasma free drug and lung), and reports all six parameter sets side by side in Table 6, so all six are packaged. The paper's own model selection favours %T>MIC in plasma (R^2 = 0.953, AIC = 14.695), concluding that cefquinome behaves as a time-dependent agent when combined with enrofloxacin, and its recommended regimen is ENR 10 mg/kg plus CEQ 2.6 mg/kg intramuscularly twice daily for three days"
+    species = "chick (yellow-feathered, Guangdong Academy of Agricultural Sciences), infected with Klebsiella pneumoniae",
+    n_subjects = 352L,
+    n_studies = 1L,
+    age_range = "purchased at one day old, observed for one week, challenged intratracheally at seven days old; treatment began 24 h after infection",
+    organism = "Klebsiella quasipneumoniae subsp. similipneumoniae clinical isolate CLS2 (identified by 16S rDNA sequencing), provided by the Veterinary Pharmacology Laboratory, South China Agricultural University. MIC 2.00 ug/mL for enrofloxacin and 0.13 ug/mL (0.125) for cefquinome. Whole-genome sequencing identified 18 antibiotic-resistance genes (Table 2), including the efflux pumps acrB, mdtQ, kpnE, oqxB, smeE and tet(A), the beta-lactamase shv-209 and the porins ompA and ompK37; no quinolone-resistance-determining-region chromosomal mutations were found. Escherichia coli ATCC 25922 was the quality-control strain",
+    system = "Intratracheal pneumonia model: 0.4 mL of a 10^8 CFU/mL CLS2 saline suspension injected into the respiratory tract. Treatment started 24 h after infection and continued for three days; lungs from eight chicks per group were harvested at 24, 48 and 72 h after the first dose, homogenised (1.0 g in 1.0 mL sterile saline) and plated by tenfold serial dilution on MacConkey agar with and without 1x MIC of ENR or CEQ. Plate-count detection limit 50 CFU/mL. Group allocation and counting were blinded by letter labels",
+    disease_state = "experimentally induced Klebsiella pneumoniae pneumonia",
+    dose_range = "All treatment arms received a fixed 20 mg/kg intramuscular enrofloxacin background. Single-dose combination arms gave ENR 20 mg/kg plus CEQ 2, 5 or 20 mg/kg once daily for three days; split-dose combination arms gave the same daily totals of ENR 20 mg/kg plus CEQ 4, 10 or 20 mg/kg divided into two equal doses 12 h apart for three days. Monotherapy control arms received ENR 20 mg/kg or CEQ 20 mg/kg, single or split",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "The 352 chicks are the pharmacodynamic cohort (11 groups, n = 8 per group per time point); a separate 600-chick cohort in six groups supplied the non-compartmental pharmacokinetics of Tables 3 and 4 (n = 6 per group per time point, single sample per bird by cardiac puncture after cervical dislocation). Plasma protein binding was 20.18% for enrofloxacin (from previously published data) and 13.24% for cefquinome by equilibrium dialysis, so the plasma PK of Tables 3 and 4 is reported as FREE drug. Enrofloxacin concentrations are the sum of enrofloxacin and its active metabolite ciprofloxacin. Wei 2026 fitted the same inhibitory sigmoid Emax structure independently against three PK/PD indices (Cmax/MIC, AUC72h/MIC and %T>MIC) in each of two matrices (plasma free drug and lung), and reports all six parameter sets side by side in Table 6, so all six are packaged. The paper's own model selection favours %T>MIC in plasma (R^2 = 0.953, AIC = 14.695), concluding that cefquinome behaves as a time-dependent agent when combined with enrofloxacin, and its recommended regimen is ENR 10 mg/kg plus CEQ 2.6 mg/kg intramuscularly twice daily for three days"
   )
 
   ini({

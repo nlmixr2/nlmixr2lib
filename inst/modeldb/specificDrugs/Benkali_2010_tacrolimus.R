@@ -15,41 +15,41 @@ Benkali_2010_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 nonexpresser)",
-      notes              = "Time-fixed germline genotype determined from the rs776746 (CYP3A5 6986A>G) polymorphism by TaqMan allelic-discrimination assay. The *1 (A) allele encodes functional CYP3A5; the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Benkali 2010 cohort the genotype distribution was *1/*1 = 1, *1/*3 = 4, *3/*3 = 36 (Table I), so CYP3A5_EXPR = 1 for the 5 *1 carriers and 0 for the 36 nonexpressers. The covariate enters CL/F as `(1 + theta2)^CYP3A5_EXPR` with theta2 = 1.15 (Eq. 4 and Table II), giving expressers a CL/F approximately 2.15-fold higher than nonexpressers (close to the 2-fold value the paper reports in the Abstract / Discussion).",
-      source_name        = "cyp"
+      notes = "Time-fixed germline genotype determined from the rs776746 (CYP3A5 6986A>G) polymorphism by TaqMan allelic-discrimination assay. The *1 (A) allele encodes functional CYP3A5; the *3 (G) allele creates a cryptic splice site and yields nonfunctional protein. In the Benkali 2010 cohort the genotype distribution was *1/*1 = 1, *1/*3 = 4, *3/*3 = 36 (Table I), so CYP3A5_EXPR = 1 for the 5 *1 carriers and 0 for the 36 nonexpressers. The covariate enters CL/F as `(1 + theta2)^CYP3A5_EXPR` with theta2 = 1.15 (Eq. 4 and Table II), giving expressers a CL/F approximately 2.15-fold higher than nonexpressers (close to the 2-fold value the paper reports in the Abstract / Discussion).",
+      source_name = "cyp"
     )
   )
 
   population <- list(
-    n_subjects                = 41L,
-    n_studies                 = 1L,
-    n_observations            = 492L,
-    age_range                 = "28-77 years",
-    age_median                = "52 years",
-    weight_range              = "45-116 kg",
-    weight_median             = "68 kg",
-    sex_female_pct            = 53.7,
-    race_ethnicity            = "Not reported in source paper (single-country French cohort).",
-    disease_state             = "Stable adult renal transplant recipients more than 6 months post-transplant who were switched from twice-daily ciclosporin to once-daily extended-release tacrolimus (Advagraf). All patients received concomitant mycophenolate mofetil; concomitant prednisolone median dose 2.5 mg (range 0-10 mg).",
-    dose_range                = "Once-daily oral tacrolimus titrated to a target trough concentration of 4-8 ng/mL; the mean daily dose used in the bootstrap-VPC dose-normalisation was 4.63 mg.",
-    regions                   = "France (Toulouse / Limoges).",
-    cyp3a5_distribution       = "*1/*1 n = 1, *1/*3 n = 4, *3/*3 n = 36 (Table I); 5 expressers (CYP3A5_EXPR = 1) and 36 nonexpressers (CYP3A5_EXPR = 0).",
-    sampling_window           = "Twelve blood samples per subject within a single 24-hour dosing interval at predose, 0.33, 0.66, 1, 1.5, 2, 3, 4, 6, 9, 12, and 24 hours post-dose (Methods section, Blood Collection).",
+    n_subjects = 41L,
+    n_studies = 1L,
+    n_observations = 492L,
+    age_range = "28-77 years",
+    age_median = "52 years",
+    weight_range = "45-116 kg",
+    weight_median = "68 kg",
+    sex_female_pct = 53.7,
+    race_ethnicity = "Not reported in source paper (single-country French cohort).",
+    disease_state = "Stable adult renal transplant recipients more than 6 months post-transplant who were switched from twice-daily ciclosporin to once-daily extended-release tacrolimus (Advagraf). All patients received concomitant mycophenolate mofetil; concomitant prednisolone median dose 2.5 mg (range 0-10 mg).",
+    dose_range = "Once-daily oral tacrolimus titrated to a target trough concentration of 4-8 ng/mL; the mean daily dose used in the bootstrap-VPC dose-normalisation was 4.63 mg.",
+    regions = "France (Toulouse / Limoges).",
+    cyp3a5_distribution = "*1/*1 n = 1, *1/*3 n = 4, *3/*3 n = 36 (Table I); 5 expressers (CYP3A5_EXPR = 1) and 36 nonexpressers (CYP3A5_EXPR = 0).",
+    sampling_window = "Twelve blood samples per subject within a single 24-hour dosing interval at predose, 0.33, 0.66, 1, 1.5, 2, 3, 4, 6, 9, 12, and 24 hours post-dose (Methods section, Blood Collection).",
     baseline_demographics_other = "Median (range): haematocrit 38.5% (26.5-45.1); haemoglobin 13 g/dL (10.5-15.1); serum creatinine 113 umol/L (82-907); prednisolone dose 2.5 mg (0-10) (Table I).",
-    notes                     = "Patients were randomly partitioned into a model-building dataset (n = 29) and a validation dataset (n = 12); the final model in Table II second-major-column was re-fit to all 41 patients (492 concentration-time observations). Tacrolimus quantified in whole blood by a validated LC-MS/MS assay with a 1 ug/L lower limit of quantification."
+    notes = "Patients were randomly partitioned into a model-building dataset (n = 29) and a validation dataset (n = 12); the final model in Table II second-major-column was re-fit to all 41 patients (492 concentration-time observations). Tacrolimus quantified in whole blood by a validated LC-MS/MS assay with a 1 ug/L lower limit of quantification."
   )
 
   ini({

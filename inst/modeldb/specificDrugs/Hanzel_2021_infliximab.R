@@ -8,54 +8,54 @@ Hanzel_2021_infliximab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "infliximab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "infliximab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (time-varying)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (time-varying)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, Vc, Vp, Q with reference 70 kg per Hanzel 2021 Table 3 (final model). Time-varying weight per Table 1 (covariate-parameter relations).",
-      source_name        = "WT"
+      notes = "Power scaling on CL, Vc, Vp, Q with reference 70 kg per Hanzel 2021 Table 3 (final model). Time-varying weight per Table 1 (covariate-parameter relations).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Serum albumin (time-varying)",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin (time-varying)",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL with reference 44 g/L per Hanzel 2021 Table 3 (final model). Note unit is g/L (SI convention) -- distinct from g/dL used by some other infliximab popPK papers (e.g., Fasanmade 2009).",
-      source_name        = "ALB"
+      notes = "Power effect on CL with reference 44 g/L per Hanzel 2021 Table 3 (final model). Note unit is g/L (SI convention) -- distinct from g/dL used by some other infliximab popPK papers (e.g., Fasanmade 2009).",
+      source_name = "ALB"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody positivity (time-varying)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody positivity (time-varying)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = "Multiplicative power-of-coefficient effect on CL: CL = CL_typ * theta_ATI^ADA_POS, with theta_ATI = 1.39 per Hanzel 2021 Table 3 (final model). Source paper labels this covariate 'ATI' (antibodies to infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying per Table 1 (covariate-parameter relations).",
-      source_name        = "ATI"
+      notes = "Multiplicative power-of-coefficient effect on CL: CL = CL_typ * theta_ATI^ADA_POS, with theta_ATI = 1.39 per Hanzel 2021 Table 3 (final model). Source paper labels this covariate 'ATI' (antibodies to infliximab); renamed to canonical ADA_POS per covariate-columns.md. Time-varying per Table 1 (covariate-parameter relations).",
+      source_name = "ATI"
     )
   )
 
   population <- list(
-    n_subjects     = 175L,
-    n_studies      = 1L,
-    age_range      = "18-70 years (adults)",
-    age_median     = "36 years",
-    weight_range   = "43-118 kg",
-    weight_median  = "69 kg",
+    n_subjects = 175L,
+    n_studies = 1L,
+    age_range = "18-70 years (adults)",
+    age_median = "36 years",
+    weight_range = "43-118 kg",
+    weight_median = "69 kg",
     sex_female_pct = 54,
     race_ethnicity = "Not reported.",
-    disease_state  = "Crohn's disease (55%) or ulcerative colitis (45%); moderate-to-severe activity at baseline.",
-    dose_range     = "5 mg/kg IV induction at weeks 0 and 2 (and additional IV doses through week 22 for the part-2 IV arm), followed by subcutaneous maintenance doses of 120, 180 or 240 mg every 2 weeks (weight-based 120 mg if <=80 kg, 240 mg if >80 kg in part 2).",
-    regions        = "Single multinational CT-P13 1.6 study (NCT02883452).",
+    disease_state = "Crohn's disease (55%) or ulcerative colitis (45%); moderate-to-severe activity at baseline.",
+    dose_range = "5 mg/kg IV induction at weeks 0 and 2 (and additional IV doses through week 22 for the part-2 IV arm), followed by subcutaneous maintenance doses of 120, 180 or 240 mg every 2 weeks (weight-based 120 mg if <=80 kg, 240 mg if >80 kg in part 2).",
+    regions = "Single multinational CT-P13 1.6 study (NCT02883452).",
     immunomodulators = "84% on immunomodulators pre-treatment, 46% during treatment.",
-    corticosteroids  = "61% on corticosteroids pre-treatment, 41% during treatment.",
-    ada_incidence    = "33% developed neutralising antibodies during treatment.",
-    notes          = "Baseline demographics from Hanzel 2021 Table 2 (n = 175). 2772 PK samples used after exclusions of below-LLOQ and ADA-driven-low samples (4.4% below LLOQ before exclusions). Reference covariate values for the typical patient: WT = 70 kg, ALB = 44 g/L, ADA-negative."
+    corticosteroids = "61% on corticosteroids pre-treatment, 41% during treatment.",
+    ada_incidence = "33% developed neutralising antibodies during treatment.",
+    notes = "Baseline demographics from Hanzel 2021 Table 2 (n = 175). 2772 PK samples used after exclusions of below-LLOQ and ADA-driven-low samples (4.4% below LLOQ before exclusions). Reference covariate values for the typical patient: WT = 70 kg, ALB = 44 g/L, ADA-negative."
   )
 
   ini({

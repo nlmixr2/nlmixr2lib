@@ -40,17 +40,17 @@ Liu_2025_meropenem <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Body weight enters ONCE, through the power terms of Equations 4, 5 and 6,",
         "normalised to BWmed and encoded here as (WT/7.5)^beta. BWmed is the Table 1",
         "cohort median body weight, 7.5 kg (IQR 3.4-12.1). Table 2 gives",
@@ -79,14 +79,14 @@ Liu_2025_meropenem <- function() {
         "Assumptions and deviations section.",
         "No V2 covariate was retained; the paper prints no equation for V2."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate by the bedside Schwartz equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate by the bedside Schwartz equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Methods Equation 1: eGFR = k * H / Scr, with k = 0.33 for preterm, 0.45 for",
         "full-term and 0.41 for other paediatric patients, H the height in cm and Scr the",
         "serum creatinine in mg/dL; the result is expressed in mL/min/1.73 m2. This is a",
@@ -105,16 +105,16 @@ Liu_2025_meropenem <- function() {
         "eGFR expressed as a percentage of the age-expected level: 50% renal impairment,",
         "100% no ARC, 150% moderate ARC and 200% severe ARC."
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = paste(
+      units = "cm",
+      type = "continuous",
+      notes = paste(
         "Methods 2.2 lists height among the candidate continuous covariates screened by",
         "stepwise regression. It was not retained in the final model. It does enter the",
         "model indirectly, as an input to the Schwartz eGFR of Equation 1."
@@ -122,33 +122,33 @@ Liu_2025_meropenem <- function() {
     ),
     WBC = list(
       description = "White blood cell count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
     ),
     NEUTPCT = list(
       description = "Neutrophil percentage",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
+      units = "%",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a candidate covariate (Methods 2.2); not retained in the final model."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Methods 2.2); not retained in the final model",
         "in its own right. It enters indirectly as the denominator of the Schwartz eGFR of",
         "Equation 1. Table 1 median 22.1 umol/L (IQR 15.5-33.9)."
@@ -156,9 +156,9 @@ Liu_2025_meropenem <- function() {
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Methods 2.2); not retained in the final model.",
         "Table 1 prints 33.8 +/- 5.35 under a 'g/dL' header, but the magnitude is a g/L",
         "value; the unit label in that table is wrong (the same applies to total protein)."
@@ -166,9 +166,9 @@ Liu_2025_meropenem <- function() {
     ),
     TP = list(
       description = "Total protein",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "g/L",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Methods 2.2); not retained in the final model.",
         "Table 1 prints 56.5 +/- 10.28 under a 'g/dL' header; as for albumin the magnitude",
         "is a g/L value and the printed unit is wrong."
@@ -176,9 +176,9 @@ Liu_2025_meropenem <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "unitless",
-      type        = "categorical",
-      notes       = paste(
+      units = "unitless",
+      type = "categorical",
+      notes = paste(
         "Gender was one of the two categorical covariates screened (Methods 2.2); not",
         "retained in the final model. Table 1: 41 female (40.6%), 60 male (59.4%).",
         "Figure S2E also found no relationship between gender and PBPK prediction error."
@@ -186,9 +186,9 @@ Liu_2025_meropenem <- function() {
     ),
     PRETERM = list(
       description = "Preterm birth indicator",
-      units       = "unitless",
-      type        = "categorical",
-      notes       = paste(
+      units = "unitless",
+      type = "categorical",
+      notes = paste(
         "Preterm status was the second categorical covariate screened (Methods 2.2); not",
         "retained in the final model. Of the 29 neonates, 13 were preterm and 16 term.",
         "Preterm status does enter indirectly through the Schwartz coefficient k of",
@@ -198,16 +198,16 @@ Liu_2025_meropenem <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 101L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 101L,
+    n_studies = 2L,
     n_observations = 202L,
-    age_range      = "preterm neonates to <14 years; Table 1 median 20.3 weeks (IQR 3.2-114.6)",
-    age_median     = "20.3 weeks",
-    weight_range   = "Table 1 median 7.5 kg (IQR 3.4-12.1)",
-    weight_median  = "7.5 kg",
+    age_range = "preterm neonates to <14 years; Table 1 median 20.3 weeks (IQR 3.2-114.6)",
+    age_median = "20.3 weeks",
+    weight_range = "Table 1 median 7.5 kg (IQR 3.4-12.1)",
+    weight_median = "7.5 kg",
     sex_female_pct = 40.6,
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children in the paediatric intensive care unit.",
       "Infection-related diagnoses: sepsis or septic shock 78 (77.2%), pneumonia",
       "58 (57.4%), bacterial meningitis 32 (31.7%), intra-abdominal infection 16,",
@@ -220,13 +220,13 @@ Liu_2025_meropenem <- function() {
       "2-6 years 164.7, 6-15 years 177.9. Serum creatinine median 22.1 umol/L",
       "(IQR 15.5-33.9)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous meropenem, daily dose 22-157 mg/kg/day (mean 125.2 +/- 28.7),",
       "dosing intervals from every 24 h to every 6 h. Simulated regimens were",
       "20 mg/kg q12h or q8h given as 60 min infusions."
     ),
-    regions        = "China (Shanghai and Nanjing)",
-    notes          = paste(
+    regions = "China (Shanghai and Nanjing)",
+    notes = paste(
       "Retrospective therapeutic-drug-monitoring data collected January 2020 to",
       "December 2023 in the paediatric intensive care units of Xinhua Hospital",
       "(Shanghai Jiao Tong University School of Medicine) and the Children's Hospital",

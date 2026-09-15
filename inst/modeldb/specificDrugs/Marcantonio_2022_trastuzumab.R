@@ -27,8 +27,8 @@ Marcantonio_2022_trastuzumab <- function() {
   )
   vignette <- "Marcantonio_2022_efa"
   units <- list(
-    time          = "day",
-    dosing        = "Trastuzumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 145531.5 Da so 140 mg = 962.0 nmol.",
+    time = "day",
+    dosing = "Trastuzumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 145531.5 Da so 140 mg = 962.0 nmol.",
     concentration = "Free trastuzumab plasma concentration Cc = Ab_00_c / Vc in nM; central volume Vc = 3 L, peripheral Vp = 13 L. Target engagement = drug-bound R1 / (drug-bound R1 + free R1)."
   )
 
@@ -37,41 +37,121 @@ Marcantonio_2022_trastuzumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    R1_c    = list(analyte = "soluble HER2 (extracellular domain)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    S1_c    = list(analyte = "membrane-bound HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
+    R1_c = list(
+      analyte = "soluble HER2 (extracellular domain)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    S1_c = list(analyte = "membrane-bound HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
     Ab_00_c = list(analyte = "free trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0R_c = list(analyte = "trastuzumab bound to soluble HER2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R0_c = list(analyte = "soluble HER2 bound to trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_RR_c = list(analyte = "trastuzumab dimer (bound to two soluble HER2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0R_c = list(
+      analyte = "trastuzumab bound to soluble HER2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_R0_c = list(
+      analyte = "soluble HER2 bound to trastuzumab",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_RR_c = list(
+      analyte = "trastuzumab dimer (bound to two soluble HER2)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
     Ab_0S_c = list(analyte = "free trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_S0_c = list(analyte = "trastuzumab bound to membrane HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
-    Ab_RS_c = list(analyte = "soluble HER2 bound to trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SR_c = list(analyte = "trastuzumab bound to soluble HER2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SS_c = list(analyte = "trastuzumab dimer (bound to two soluble HER2)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    R1_p    = list(analyte = "membrane-bound HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
-    S1_p    = list(analyte = "soluble HER2 (extracellular domain)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_S0_c = list(
+      analyte = "trastuzumab bound to membrane HER2",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    Ab_RS_c = list(
+      analyte = "soluble HER2 bound to trastuzumab",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SR_c = list(
+      analyte = "trastuzumab bound to soluble HER2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SS_c = list(
+      analyte = "trastuzumab dimer (bound to two soluble HER2)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    R1_p = list(analyte = "membrane-bound HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
+    S1_p = list(
+      analyte = "soluble HER2 (extracellular domain)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
     Ab_00_p = list(analyte = "free trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_0R_p = list(analyte = "trastuzumab bound to soluble HER2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_R0_p = list(analyte = "soluble HER2 bound to trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_RR_p = list(analyte = "trastuzumab dimer (bound to two soluble HER2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0R_p = list(
+      analyte = "trastuzumab bound to soluble HER2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_R0_p = list(
+      analyte = "soluble HER2 bound to trastuzumab",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_RR_p = list(
+      analyte = "trastuzumab dimer (bound to two soluble HER2)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
     Ab_0S_p = list(analyte = "free trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_S0_p = list(analyte = "trastuzumab bound to membrane HER2", units = NA_character_, specimen = "tissue", verified = FALSE),
-    Ab_RS_p = list(analyte = "soluble HER2 bound to trastuzumab", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SR_p = list(analyte = "trastuzumab bound to soluble HER2", units = NA_character_, specimen = "plasma", verified = FALSE),
-    Ab_SS_p = list(analyte = "trastuzumab dimer (bound to two soluble HER2)", units = NA_character_, specimen = "plasma", verified = FALSE),
-    depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE)
+    Ab_S0_p = list(
+      analyte = "trastuzumab bound to membrane HER2",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    Ab_RS_p = list(
+      analyte = "soluble HER2 bound to trastuzumab",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SR_p = list(
+      analyte = "trastuzumab bound to soluble HER2",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    Ab_SS_p = list(
+      analyte = "trastuzumab dimer (bound to two soluble HER2)",
+      units = NA_character_,
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = NA_integer_,
-    n_studies      = NA_integer_,
-    disease_state  = "Adults with metastatic HER2-overexpressing breast cancer.",
-    dose_range     = "For metastatic HER2-overexpressing breast cancer: initial 4 mg/kg IV loading, then 2 mg/kg IV weekly (Herceptin USPI). Model prediction targets the weekly maintenance dose in a 70 kg patient.",
-    regions        = NA_character_,
-    notes          = "See Marcantonio 2022 anti-ligand siblings for shared bottom-up target-expression methodology. Soluble HER2 (shed) concentration is 7 nM per Baselga 2001 (patient plasma levels)."
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = NA_integer_,
+    disease_state = "Adults with metastatic HER2-overexpressing breast cancer.",
+    dose_range = "For metastatic HER2-overexpressing breast cancer: initial 4 mg/kg IV loading, then 2 mg/kg IV weekly (Herceptin USPI). Model prediction targets the weekly maintenance dose in a 70 kg patient.",
+    regions = NA_character_,
+    notes = "See Marcantonio 2022 anti-ligand siblings for shared bottom-up target-expression methodology. Soluble HER2 (shed) concentration is 7 nM per Baselga 2001 (patient plasma levels)."
   )
 
   ini({

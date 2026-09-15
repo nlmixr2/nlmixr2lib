@@ -11,17 +11,17 @@ Xu_2026_caspofungin_optimalDesign <- function() {
   # block confirms the central compartment carries the observed species:
   # IPRED = A(1) / V1.
   compartmentData <- list(
-    central     = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "caspofungin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The body-size descriptor of THIS model, in contrast to the paper's",
         "final model (Xu_2026_caspofungin.R), which uses body surface area.",
         "Enters as (WT / 70)^0.75 on CL and Q and (WT / 70)^1 on V1 and V2.",
@@ -43,14 +43,14 @@ Xu_2026_caspofungin_optimalDesign <- function() {
         "individual rather than descriptions of a study subject. Time-fixed.",
         "Must be strictly positive; it enters a power term."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AST = list(
-      description        = "Serum aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Serum aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only clinical covariate in this model, on intercompartmental",
         "clearance only, as the power term (AST / 52.5)^0.898. Estimated (RSE",
         "16%, SIR median 0.875 [0.655-1.075]), so NOT wrapped in fixed().",
@@ -74,7 +74,7 @@ Xu_2026_caspofungin_optimalDesign <- function() {
         "Must be strictly positive; it enters a power term. Studied range",
         "18.3-631 U/L in this subset."
       ),
-      source_name        = "AST"
+      source_name = "AST"
     )
   )
 
@@ -86,9 +86,9 @@ Xu_2026_caspofungin_optimalDesign <- function() {
   covariatesDataExcluded <- list(
     BSA = list(
       description = "Body surface area computed with the Mosteller formula",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "NOT used in this model, which scales on total body weight. BSA is",
         "the body-size descriptor of the paper's final model",
         "(Xu_2026_caspofungin.R), where it beat weight, lean body weight and",
@@ -101,9 +101,9 @@ Xu_2026_caspofungin_optimalDesign <- function() {
     ),
     ECMO_STATUS = list(
       description = "Extracorporeal membrane oxygenation support indicator (1 = receiving ECMO)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "NOT a covariate in this model, although 3 of the 14 patients",
         "(21.4%; Table S1) were on ECMO and the control stream's $INPUT",
         "carries no ECMO column at all. The 18.2-fold ECMO effect on the",
@@ -116,19 +116,19 @@ Xu_2026_caspofungin_optimalDesign <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 14L,
-    n_studies      = 1L,
-    age_range      = "0.330-16.0 years (Table S1)",
-    age_median     = "4.63 years (Table S1)",
-    weight_range   = "4.90-64.0 kg (Table S1)",
-    weight_median  = "15.9 kg (Table S1). Far below the 70 kg allometric standardisation, which is the conventional adult reference rather than a cohort statistic.",
-    height_median  = "97.5 cm (range 54.0-160; Table S1)",
-    bsa_median     = "0.655 m^2 (range 0.286-1.69; Table S1)",
-    bmi_median     = "18.01 kg/m^2 (range 9.82-25.64; Table S1)",
+    species = "human",
+    n_subjects = 14L,
+    n_studies = 1L,
+    age_range = "0.330-16.0 years (Table S1)",
+    age_median = "4.63 years (Table S1)",
+    weight_range = "4.90-64.0 kg (Table S1)",
+    weight_median = "15.9 kg (Table S1). Far below the 70 kg allometric standardisation, which is the conventional adult reference rather than a cohort statistic.",
+    height_median = "97.5 cm (range 54.0-160; Table S1)",
+    bsa_median = "0.655 m^2 (range 0.286-1.69; Table S1)",
+    bmi_median = "18.01 kg/m^2 (range 9.82-25.64; Table S1)",
     sex_female_pct = 64.3,
     race_ethnicity = "Chinese. Single-centre enrolment at the Children's Hospital of Fudan University, Shanghai; the source reports no further race or ethnicity breakdown.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill children in the paediatric intensive care unit treated",
       "with caspofungin, sampled intensively in the first stage of the Xu",
       "2026 study. 3 of 14 (21.4%) were on ECMO (Table S1). The subset is",
@@ -139,10 +139,10 @@ Xu_2026_caspofungin_optimalDesign <- function() {
     ),
     hepatic_function = "AST median 52.5 U/L (range 18.3-631) -- the centring value of the Q covariate effect; ALT median 17.0 U/L (range 3.51-223); total bilirubin median 26.6 umol/L (range 2.10-357); direct bilirubin median 13.1 umol/L (range 1.10-228); albumin median 36.0 g/L (range 24.7-49.9); total protein median 61.6 g/L (range 36.8-75.4) (Table S1).",
     renal_function = "Serum creatinine median 27.7 umol/L (range 14.0-223); uric acid median 177 umol/L (range 87.0-736) (Table S1).",
-    dose_range     = "Once-daily 1 h intravenous infusion on a BSA-based regimen: loading dose 70 mg/m^2 on day 1 and maintenance 50 mg/m^2 thereafter, each capped at 70 mg.",
-    regions        = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai)",
-    sampling       = "Intensive stage-1 sampling, scheduled pre-dose and 1, 2, 4, 8 (if feasible) and 16 h (if feasible) after the sixth dose -- i.e. nominal clock times of 120, 121, 122, 124, 128 and 136 h after the first dose, which is how the $DESIGN evaluation expresses them.",
-    notes          = paste(
+    dose_range = "Once-daily 1 h intravenous infusion on a BSA-based regimen: loading dose 70 mg/m^2 on day 1 and maintenance 50 mg/m^2 thereafter, each capped at 70 mg.",
+    regions = "China (single centre: Children's Hospital of Fudan University, National Children's Medical Center, Shanghai)",
+    sampling = "Intensive stage-1 sampling, scheduled pre-dose and 1, 2, 4, 8 (if feasible) and 16 h (if feasible) after the sixth dose -- i.e. nominal clock times of 120, 121, 122, 124, 128 and 136 h after the first dose, which is how the $DESIGN evaluation expresses them.",
+    notes = paste(
       "PURPOSE. This is not a base model discarded on the way to the final",
       "fit; it is a separately reported model with its own SIR-based",
       "uncertainty quantification whose job was to drive the optimal-design",

@@ -33,55 +33,55 @@ Xu_2023_busulfan <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at baseline.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at baseline.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled on both CL and Vd, referenced to the population median 1.69 m^2",
         "(Xu 2023 Table 1; range 0.92-2.14 m^2). The BSA computation formula (DuBois / Mosteller /",
         "Haycock) is not stated in the paper - record as unspecified. BSA was the single best",
         "body-size descriptor among WT, HT, BMI, IBW and AIBW in the univariate body-size screen",
         "(Xu 2023 Results, 'PopPK model')."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     ALP = list(
-      description        = "Serum alkaline phosphatase activity at baseline (liver-function marker).",
-      units              = "U/L (the paper prints IU/L; the two are used interchangeably)",
-      type               = "continuous",
+      description = "Serum alkaline phosphatase activity at baseline (liver-function marker).",
+      units = "U/L (the paper prints IU/L; the two are used interchangeably)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-scaled on Vd only, referenced to the population median 74 IU/L",
         "(Xu 2023 Table 1; range 36-253 IU/L). The estimated exponent is negative (-0.20), i.e.",
         "lower ALP gives a larger apparent volume; the authors attribute this to reduced albumin",
         "synthesis raising the free busulfan fraction (Xu 2023 Discussion)."
       ),
-      source_name        = "ALP"
+      source_name = "ALP"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 66,
-    n_studies      = 1,
-    age_range      = "6-63 years (54 adults, 12 children aged 6-17 years)",
-    age_median     = "42 years",
-    weight_range   = "25-90 kg",
-    weight_median  = "60.70 kg",
-    height_range   = "123-190 cm",
-    height_median  = "160 cm",
-    bsa_range      = "0.92-2.14 m^2",
-    bsa_median     = "1.69 m^2",
-    alp_range      = "36-253 IU/L",
-    alp_median     = "74 IU/L",
+    species = "human",
+    n_subjects = 66,
+    n_studies = 1,
+    age_range = "6-63 years (54 adults, 12 children aged 6-17 years)",
+    age_median = "42 years",
+    weight_range = "25-90 kg",
+    weight_median = "60.70 kg",
+    height_range = "123-190 cm",
+    height_median = "160 cm",
+    bsa_range = "0.92-2.14 m^2",
+    bsa_median = "1.69 m^2",
+    alp_range = "36-253 IU/L",
+    alp_median = "74 IU/L",
     sex_female_pct = 30.30,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "hematologic malignancies receiving a busulfan-based myeloablative conditioning regimen prior to allogeneic hematopoietic stem cell transplantation",
-    dose_range     = "0.8 mg/kg (adjusted ideal body weight) intravenously every 6 h as a 2-h infusion for 4 consecutive days",
-    regions        = "China (Fujian Medical University Union Hospital, Nov 2020 - Nov 2021)",
-    sampling       = "paired plasma and saliva at 0, 0.5, 2, 2.5, 3, 4 and 6 h after the start of the first dose; 406 plasma and 387 evaluable saliva samples",
-    notes          = "Xu 2023 Table 1 (demographics) and Methods 'Subjects' / 'Study design' / 'Sample collection and bio-analytical assay'."
+    disease_state = "hematologic malignancies receiving a busulfan-based myeloablative conditioning regimen prior to allogeneic hematopoietic stem cell transplantation",
+    dose_range = "0.8 mg/kg (adjusted ideal body weight) intravenously every 6 h as a 2-h infusion for 4 consecutive days",
+    regions = "China (Fujian Medical University Union Hospital, Nov 2020 - Nov 2021)",
+    sampling = "paired plasma and saliva at 0, 0.5, 2, 2.5, 3, 4 and 6 h after the start of the first dose; 406 plasma and 387 evaluable saliva samples",
+    notes = "Xu 2023 Table 1 (demographics) and Methods 'Subjects' / 'Study design' / 'Sample collection and bio-analytical assay'."
   )
 
   ini({

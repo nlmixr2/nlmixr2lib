@@ -33,90 +33,90 @@ Oniki_2018_nafld_risk <- function() {
   )
   vignette <- "Oniki_2018_BMI_NAFLD"
   units <- list(
-    time          = "year",
-    dosing        = "n/a (population NAFLD-risk prediction model; no drug input)",
+    time = "year",
+    dosing = "n/a (population NAFLD-risk prediction model; no drug input)",
     concentration = "p_nafld (probability of NAFLD, 0-1; also logit_nafld)"
   )
 
   covariateData <- list(
     BMI = list(
-      description        = "Body mass index for this subject at the time of the risk evaluation (kg/m^2). Clamped inside model() to the interval [17, 30] kg/m^2 before entering the sigmoidal logit-of-NAFLD function (the source NONMEM dataset reports the clamp via the BMI_A derived column: BMI < 17 -> 17, BMI > 30 -> 30). Time-varying with each per-subject visit in the longitudinal screening dataset.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index for this subject at the time of the risk evaluation (kg/m^2). Clamped inside model() to the interval [17, 30] kg/m^2 before entering the sigmoidal logit-of-NAFLD function (the source NONMEM dataset reports the clamp via the BMI_A derived column: BMI < 17 -> 17, BMI > 30 -> 30). Time-varying with each per-subject visit in the longitudinal screening dataset.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Centring offset: 17 kg/m^2 (the lower clamp). The sigmoidal half-saturation offset (BMI50 - 17) and the BMI-driven term (BMI - 17) both use 17 as the floor. The model is undefined for BMI < 17 because (BMI - 17) < 0 would raise to the non-integer Hill power 3.43; the in-model clamp guarantees BMI - 17 >= 0. Upper clamp at 30 reflects the source dataset's small obese-stratum prevalence (1.2% per source Discussion paragraph 5).",
-      source_name        = "BMI_A"
+      notes = "Centring offset: 17 kg/m^2 (the lower clamp). The sigmoidal half-saturation offset (BMI50 - 17) and the BMI-driven term (BMI - 17) both use 17 as the floor. The model is undefined for BMI < 17 because (BMI - 17) < 0 would raise to the non-integer Hill power 3.43; the in-model clamp guarantees BMI - 17 >= 0. Upper clamp at 30 reflects the source dataset's small obese-stratum prevalence (1.2% per source Discussion paragraph 5).",
+      source_name = "BMI_A"
     ),
     SEXF = list(
-      description        = "Sex indicator; 1 = female, 0 = male. The Oniki 2018 dataset GENDER column already encodes 0 = male / 1 = female, matching the canonical SEXF orientation without inversion.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator; 1 = female, 0 = male. The Oniki 2018 dataset GENDER column already encodes 0 = male / 1 = female, matching the canonical SEXF orientation without inversion.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Used as a logit-additive shift on logit_max (B = e_sexf_lmax when SEXF = 1, B = 0 when SEXF = 0); female subjects have a higher Emax of the logit-of-NAFLD curve than males at the same BMI and other covariates (Oniki 2018 Eq. 3 / Figure 2b).",
-      source_name        = "GENDER"
+      notes = "Used as a logit-additive shift on logit_max (B = e_sexf_lmax when SEXF = 1, B = 0 when SEXF = 0); female subjects have a higher Emax of the logit-of-NAFLD curve than males at the same BMI and other covariates (Oniki 2018 Eq. 3 / Figure 2b).",
+      source_name = "GENDER"
     ),
     PNPLA3_CG = list(
-      description        = "Indicator for the PNPLA3 rs738409 c.444C>G (I148M) C/G heterozygote genotype; 1 = subject carries the C/G genotype, 0 = subject does not carry the C/G genotype. Paired with PNPLA3_GG to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the PNPLA3 rs738409 c.444C>G (I148M) C/G heterozygote genotype; 1 = subject carries the C/G genotype, 0 = subject does not carry the C/G genotype. Paired with PNPLA3_GG to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C wild-type when PNPLA3_GG is also 0)",
-      notes              = "Derive from the source PNPLA3 three-level column (0 = C/C, 1 = C/G, 2 = G/G) as PNPLA3_CG = as.integer(PNPLA3 == 1). Used together with PNPLA3_GG as multiplicative scalars on the (BMI50 - 17) half-saturation offset (Oniki 2018 Eq. 4 / Figure 2c). The C/G factor (0.761) is closer to 1 than the G/G factor (0.592), consistent with an additive allele-dose effect on (BMI50 - 17).",
-      source_name        = "PNPLA3"
+      notes = "Derive from the source PNPLA3 three-level column (0 = C/C, 1 = C/G, 2 = G/G) as PNPLA3_CG = as.integer(PNPLA3 == 1). Used together with PNPLA3_GG as multiplicative scalars on the (BMI50 - 17) half-saturation offset (Oniki 2018 Eq. 4 / Figure 2c). The C/G factor (0.761) is closer to 1 than the G/G factor (0.592), consistent with an additive allele-dose effect on (BMI50 - 17).",
+      source_name = "PNPLA3"
     ),
     PNPLA3_GG = list(
-      description        = "Indicator for the PNPLA3 rs738409 c.444C>G (I148M) G/G homozygote genotype; 1 = subject carries the G/G genotype, 0 = subject does not carry the G/G genotype. Paired with PNPLA3_CG to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the PNPLA3 rs738409 c.444C>G (I148M) G/G homozygote genotype; 1 = subject carries the G/G genotype, 0 = subject does not carry the G/G genotype. Paired with PNPLA3_CG to encode the three-level rs738409 genotype with two binary indicators (C/C is the reference when both are 0). Time-fixed per subject (germline genotype).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (C/C wild-type when PNPLA3_CG is also 0)",
-      notes              = "Derive from the source PNPLA3 three-level column (0 = C/C, 1 = C/G, 2 = G/G) as PNPLA3_GG = as.integer(PNPLA3 == 2). See PNPLA3_CG for the joint usage and reference category.",
-      source_name        = "PNPLA3"
+      notes = "Derive from the source PNPLA3 three-level column (0 = C/C, 1 = C/G, 2 = G/G) as PNPLA3_GG = as.integer(PNPLA3 == 2). See PNPLA3_CG for the joint usage and reference category.",
+      source_name = "PNPLA3"
     ),
     HBA1C = list(
-      description        = "Glycated hemoglobin (HbA1c, %). Routine clinical lab measurement on whole blood; National Glycohemoglobin Standardization Program (NGSP) units.",
-      units              = "%",
-      type               = "continuous",
+      description = "Glycated hemoglobin (HbA1c, %). Routine clinical lab measurement on whole blood; National Glycohemoglobin Standardization Program (NGSP) units.",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used via a power form (HBA1C / 5.88)^e_hba1c_bmi50 on the (BMI50 - 17) half-saturation offset (Oniki 2018 Eq. 4 / Figure 2c). Centring value 5.88% is the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 5.80, 5.88, 5.91 is approximately 5.83-5.88).",
-      source_name        = "HbA1c"
+      notes = "Used via a power form (HBA1C / 5.88)^e_hba1c_bmi50 on the (BMI50 - 17) half-saturation offset (Oniki 2018 Eq. 4 / Figure 2c). Centring value 5.88% is the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 5.80, 5.88, 5.91 is approximately 5.83-5.88).",
+      source_name = "HbA1c"
     ),
     HDLC = list(
-      description        = "Serum high-density lipoprotein cholesterol (HDL-C, mg/dL). Routine clinical lipid-panel lab measurement.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum high-density lipoprotein cholesterol (HDL-C, mg/dL). Routine clinical lipid-panel lab measurement.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a linear-deviation effect on logit_max: (HDLC - 69.4) * e_hdlc_lmax (Oniki 2018 Eq. 3 / Figure 2b). Centring value 69.4 mg/dL is the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 69.7, 68.8, 71.2 is approximately 69.4). Lower HDLC corresponds to higher Emax of the logit (the regression coefficient e_hdlc_lmax = -0.0603 is negative).",
-      source_name        = "HDL"
+      notes = "Used as a linear-deviation effect on logit_max: (HDLC - 69.4) * e_hdlc_lmax (Oniki 2018 Eq. 3 / Figure 2b). Centring value 69.4 mg/dL is the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 69.7, 68.8, 71.2 is approximately 69.4). Lower HDLC corresponds to higher Emax of the logit (the regression coefficient e_hdlc_lmax = -0.0603 is negative).",
+      source_name = "HDL"
     ),
     LDLC = list(
-      description        = "Serum low-density lipoprotein cholesterol (LDL-C, mg/dL). Routine clinical lipid-panel lab measurement.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum low-density lipoprotein cholesterol (LDL-C, mg/dL). Routine clinical lipid-panel lab measurement.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as a linear-deviation effect on logit_max: (LDLC - 120) * e_ldlc_lmax (Oniki 2018 Eq. 3 / Figure 2b). Centring value 120 mg/dL approximates the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 125.9, 125.5, 121.0 is approximately 125 mg/dL; the source NONMEM stream centres on 120 mg/dL exactly, which is the upper bound of the optimal LDLC clinical reference range).",
-      source_name        = "LDL"
+      notes = "Used as a linear-deviation effect on logit_max: (LDLC - 120) * e_ldlc_lmax (Oniki 2018 Eq. 3 / Figure 2b). Centring value 120 mg/dL approximates the dataset baseline mean (pooled across DsbA-L genotypes per Table 1: weighted mean of 125.9, 125.5, 121.0 is approximately 125 mg/dL; the source NONMEM stream centres on 120 mg/dL exactly, which is the upper bound of the optimal LDLC clinical reference range).",
+      source_name = "LDL"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 341L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 341L,
+    n_studies = 1L,
     n_observations = "2015 NAFLD records across 342 subject-ids in the NONMEM dataset (Oniki 2018 s011 .lst NO. OF DATA RECS); 341 unique subjects after excluding those with habitual alcohol intake or hepatitis B/C virus positivity (Oniki 2018 Methods, Subjects and study protocol).",
-    age_range      = "Elderly Japanese cohort; baseline age mean 67.7 years (SD ~5.9) pooled across DsbA-L genotypes (Oniki 2018 Table 1).",
-    age_median     = NA_character_,
-    weight_range   = NA_character_,
-    weight_median  = NA_character_,
+    age_range = "Elderly Japanese cohort; baseline age mean 67.7 years (SD ~5.9) pooled across DsbA-L genotypes (Oniki 2018 Table 1).",
+    age_median = NA_character_,
+    weight_range = NA_character_,
+    weight_median = NA_character_,
     sex_female_pct = 100 * (80 + 56 + 9) / (192 + 129 + 20),
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste0(
+    disease_state = paste0(
       "General elderly Japanese cohort; baseline NAFLD prevalence ",
       "14.1-25.0% across DsbA-L genotype strata (Oniki 2018 Table 1). ",
       "Diabetes prevalence 11.5-14.7%; hypertension prevalence ",
       "40.6-45.0%; dyslipidemia prevalence 35.0-50.0%."
     ),
-    dose_range     = "n/a (no drug input; population disease-risk model)",
-    regions        = "Japan (Kumamoto)",
-    notes          = paste0(
+    dose_range = "n/a (no drug input; population disease-risk model)",
+    regions = "Japan (Kumamoto)",
+    notes = paste0(
       "Retrospective longitudinal observation, 5.5 +/- 1.1 years of ",
       "follow-up. NAFLD was diagnosed by hepatic ultrasonography ",
       "scanning per the Japanese practical guidelines (four criteria: ",

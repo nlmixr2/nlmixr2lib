@@ -8,61 +8,61 @@ Narwal_2013_sifalimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "sifalimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL, V1 (central volume), and V2 (peripheral volume) with reference weight 75 kg; exponents 0.481, 0.489, and 0.646 respectively. Narwal 2013 Table 2 / Eqs. 3-5.",
-      source_name        = "WT"
+      notes = "Power scaling on CL, V1 (central volume), and V2 (peripheral volume) with reference weight 75 kg; exponents 0.481, 0.489, and 0.646 respectively. Narwal 2013 Table 2 / Eqs. 3-5.",
+      source_name = "WT"
     ),
     BGENE21 = list(
-      description        = "Baseline type I interferon gene signature from 21 IFN-inducible genes",
-      units              = "(gene-signature score)",
-      type               = "continuous",
+      description = "Baseline type I interferon gene signature from 21 IFN-inducible genes",
+      units = "(gene-signature score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference value 32 and exponent 0.0558 (Narwal 2013 Eq. 3). Population median was 33 (range 0.63-87; Narwal 2013 Table 1).",
-      source_name        = "BGENE21"
+      notes = "Power scaling on CL with reference value 32 and exponent 0.0558 (Narwal 2013 Eq. 3). Population median was 33 (range 0.63-87; Narwal 2013 Table 1).",
+      source_name = "BGENE21"
     ),
     COHDOSE = list(
-      description        = "Randomized dose cohort, expressed in mg/kg",
-      units              = "mg/kg",
-      type               = "continuous",
+      description = "Randomized dose cohort, expressed in mg/kg",
+      units = "mg/kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL with reference value 1 mg/kg and exponent 0.0542 (Narwal 2013 Eq. 3). The MI-CP152 study fixed each subject to one of 0.3, 1, 3, or 10 mg/kg Q14D across all infusions, so this is a subject-level covariate rather than a per-dose covariate. Narwal et al. acknowledge (Discussion, p. 1024) that the apparent dose effect may be a data artifact of the escalating cohort design since single-dose data in MI-CP126 were linear across 0.3-30 mg/kg.",
-      source_name        = "DOSE"
+      notes = "Power scaling on CL with reference value 1 mg/kg and exponent 0.0542 (Narwal 2013 Eq. 3). The MI-CP152 study fixed each subject to one of 0.3, 1, 3, or 10 mg/kg Q14D across all infusions, so this is a subject-level covariate rather than a per-dose covariate. Narwal et al. acknowledge (Discussion, p. 1024) that the apparent dose effect may be a data artifact of the escalating cohort design since single-dose data in MI-CP126 were linear across 0.3-30 mg/kg.",
+      source_name = "DOSE"
     ),
     CONMED_STEROID = list(
-      description        = "Baseline systemic corticosteroid use (0 = no, 1 = yes)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline systemic corticosteroid use (0 = no, 1 = yes)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no baseline corticosteroid use)",
-      notes              = "Multiplicative effect on CL of the form (1 + 0.195 x CONMED_STEROID), giving +19.5% CL for baseline-conmed_steroid users (Narwal 2013 Eq. 3, Table 2). Corticosteroids (e.g., methylprednisolone) were used throughout the study to control disease activity.",
-      source_name        = "BSTEROID"
+      notes = "Multiplicative effect on CL of the form (1 + 0.195 x CONMED_STEROID), giving +19.5% CL for baseline-conmed_steroid users (Narwal 2013 Eq. 3, Table 2). Corticosteroids (e.g., methylprednisolone) were used throughout the study to control disease activity.",
+      source_name = "BSTEROID"
     )
   )
 
   population <- list(
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    study_id       = "MI-CP152 (NCT00482989)",
-    age_range      = "18-71 years",
-    age_median     = "43 years",
-    weight_range   = "43.1-120 kg",
-    weight_median  = "73 kg",
+    n_subjects = 120L,
+    n_studies = 1L,
+    study_id = "MI-CP152 (NCT00482989)",
+    age_range = "18-71 years",
+    age_median = "43 years",
+    weight_range = "43.1-120 kg",
+    weight_median = "73 kg",
     sex_female_pct = 95,
     race_ethnicity = "Not tabulated in the main text",
-    regions        = c("North America" = 71, "South America" = 29),
-    disease_state  = "Moderately active adult systemic lupus erythematosus (SLE)",
-    dose_range     = "0.3, 1, 3, or 10 mg/kg IV every 14 days over 30-60 min, up to 14 infusions",
+    regions = c("North America" = 71, "South America" = 29),
+    disease_state = "Moderately active adult systemic lupus erythematosus (SLE)",
+    dose_range = "0.3, 1, 3, or 10 mg/kg IV every 14 days over 30-60 min, up to 14 infusions",
     bsledai_median = "10 (range 2-34)",
     bgene21_median = "33 (range 0.63-87)",
-    notes          = "Phase Ib MI-CP152 study (Narwal 2013 Section 3.1 / Table 1). A total of 2,370 serum concentrations from 120 evaluable subjects (one 10 mg/kg subject was excluded due to very low observed concentrations). Eight subjects had BGENE4 imputed to the population median because the 4-gene signature was unavailable; BGENE21 was available for all 120."
+    notes = "Phase Ib MI-CP152 study (Narwal 2013 Section 3.1 / Table 1). A total of 2,370 serum concentrations from 120 evaluable subjects (one 10 mg/kg subject was excluded due to very low observed concentrations). Eight subjects had BGENE4 imputed to the population median because the 4-gene signature was unavailable; BGENE21 was available for all 120."
   )
 
   ini({

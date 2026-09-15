@@ -31,22 +31,32 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
   # specimen were checked against Chanu 2010 (serum C.E.R.A. by ELISA,
   # Methods "PK and PD Assessments"; blood hemoglobin, Methods "Assumptions").
   compartmentData <- list(
-    depot   = list(analyte = "methoxy polyethylene glycol-epoetin beta", units = "ug",   specimen = "administration site", verified = TRUE),
-    central = list(analyte = "methoxy polyethylene glycol-epoetin beta", units = "ug",   specimen = "serum",               verified = TRUE),
+    depot = list(
+      analyte = "methoxy polyethylene glycol-epoetin beta",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "methoxy polyethylene glycol-epoetin beta",
+      units = "ug",
+      specimen = "serum",
+      verified = TRUE
+    ),
     # hb is a CONCENTRATION state, not an amount state: the paper's PD model is
     # written directly on Hb in g/dL (Chanu 2010 Results eq for Hb'(t)), so
     # d/dt(hb) carries units (g/dL)/day. Recorded as g/dL rather than forced
     # into an amount unit that the source model never uses.
-    hb      = list(analyte = "hemoglobin",                              units = "g/dL", specimen = "whole blood",         verified = TRUE)
+    hb = list(analyte = "hemoglobin", units = "g/dL", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on clearance (exponent 0.571) and on volume",
         "of distribution (exponent 0.443); Chanu 2010 Table III 'Effect of BW",
         "on CL' / 'Effect of BW on V' with the log-linear parameterization of",
@@ -59,14 +69,14 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "instead changes typical CL by 1.1% and typical V by 0.8%. See vignette",
         "Assumptions and deviations."
       ),
-      source_name        = "BW"
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on volume of distribution (exponent 0.267);",
         "Chanu 2010 Table III 'Effect of age on V'. Reference age 60 years is",
         "not printed in the paper; it is the size-weighted mean of the three",
@@ -76,14 +86,14 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "exponent alone (1.5^0.267 = 1.114) and is independent of the reference",
         "value. See vignette Assumptions and deviations."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     CRP = list(
-      description        = "C-reactive protein (time-varying)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein (time-varying)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Normalized power effect on SC50 (exponent 0.319); Chanu 2010 Table IV",
         "'Effect of CRP on SC50'. Chanu 2010 Table I lists CRP explicitly under",
         "'Continuous covariates (time varying)', so the column may be supplied",
@@ -96,14 +106,14 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "SC50' -- is reproduced by the exponent alone (5^0.319 = 1.671) and is",
         "independent of the reference value."
       ),
-      source_name        = "CRP"
+      source_name = "CRP"
     ),
     ESAD = list(
-      description        = "Previous weekly epoetin dose at the switch to C.E.R.A.",
-      units              = "IU/week",
-      type               = "continuous",
+      description = "Previous weekly epoetin dose at the switch to C.E.R.A.",
+      units = "IU/week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chanu 2010 calls this covariate DEPO, 'previous weekly EPO dose at the",
         "start of C.E.R.A. maintenance treatment'; normalized power effect on",
         "SC50 (exponent 0.303, Table IV 'Effect of DEPO on SC50'). Reference",
@@ -121,14 +131,14 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "ESAD > 0 makes it start at HGB_BL with SESA active (the MAXIMA /",
         "PROTOS maintenance setting)."
       ),
-      source_name        = "DEPO"
+      source_name = "DEPO"
     ),
     HGB_BL = list(
-      description        = "Hemoglobin concentration at the switch from the previous ESA to C.E.R.A.",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Hemoglobin concentration at the switch from the previous ESA to C.E.R.A.",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Chanu 2010 calls this Hbsw, 'the Hb concentration at the switch from",
         "the previous ESA treatment to C.E.R.A.' (Results, Structural PD Model",
         "narrative). Used as the initial condition of the hb state and inside",
@@ -140,14 +150,14 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "lrbase), which is the pre-ESA baseline and is unobservable in the",
         "maintenance studies."
       ),
-      source_name        = "Hbsw"
+      source_name = "Hbsw"
     ),
     OCC = list(
-      description        = "Dosing / PK-sampling occasion index",
-      units              = "(index)",
-      type               = "categorical",
+      description = "Dosing / PK-sampling occasion index",
+      units = "(index)",
+      type = "categorical",
       reference_category = "1",
-      notes              = paste(
+      notes = paste(
         "Values 1, 2, 3 identify the interoccasion-variability occasion.",
         "Chanu 2010 Methods 'Interoccasion Variability Model' defines an",
         "occasion as 'each drug intake that was followed by serum C.E.R.A.",
@@ -159,21 +169,21 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "but cannot simulate the eta ~ var | occ form). Records outside those",
         "three occasions should carry OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 400L,
-    n_studies      = 3L,
-    age_range      = "18-89 years (AMICUS 18-89, MAXIMA 23-87, PROTOS 21-85; Chanu 2010 Table I)",
-    age_median     = "54 years (AMICUS), 57 years (MAXIMA), 68 years (PROTOS); pooled median not printed",
-    weight_range   = "36-131 kg (AMICUS 43-106, MAXIMA 36-131, PROTOS 43-115; Chanu 2010 Table I)",
-    weight_median  = "66 kg (AMICUS), 70 kg (MAXIMA), 70 kg (PROTOS); pooled median not printed",
+    species = "human",
+    n_subjects = 400L,
+    n_studies = 3L,
+    age_range = "18-89 years (AMICUS 18-89, MAXIMA 23-87, PROTOS 21-85; Chanu 2010 Table I)",
+    age_median = "54 years (AMICUS), 57 years (MAXIMA), 68 years (PROTOS); pooled median not printed",
+    weight_range = "36-131 kg (AMICUS 43-106, MAXIMA 36-131, PROTOS 43-115; Chanu 2010 Table I)",
+    weight_median = "66 kg (AMICUS), 70 kg (MAXIMA), 70 kg (PROTOS); pooled median not printed",
     sex_female_pct = 40.5,
     race_ethnicity = c(White = 76.5, Black = 17.8, Asian = 4.5, Other = 1.3),
-    disease_state  = paste(
+    disease_state = paste(
       "Chronic kidney disease with renal anemia, on dialysis (hemodialysis 386",
       "of 400, peritoneal dialysis 14 of 400). AMICUS (n = 135) enrolled",
       "ESA-naive patients and studied correction of anemia; MAXIMA (n = 122)",
@@ -183,7 +193,7 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
       "g/dL from baseline in AMICUS, and to hold Hb within +/- 1 g/dL of",
       "baseline and between 10 and 13 g/dL in MAXIMA and PROTOS."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "C.E.R.A. intravenously or subcutaneously, once every 2 weeks (Q2W;",
       "n = 263) or once every 4 weeks (Q4W; n = 137), with protocol-driven",
       "titration. The publication does not tabulate the administered doses;",
@@ -191,8 +201,8 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
       "19, 24 and 27 ug (the three AMICUS, ESA-naive panels) and 60, 100, 120,",
       "120, 120 and 200 ug (the six MAXIMA / PROTOS, ESA-treated panels)."
     ),
-    regions        = "Not stated; three multicenter phase III studies (AMICUS, MAXIMA, PROTOS)",
-    notes          = paste(
+    regions = "Not stated; three multicenter phase III studies (AMICUS, MAXIMA, PROTOS)",
+    notes = paste(
       "PK analysis population 400 patients with 4554 measurable serum",
       "concentrations; PD analysis population 400 patients with 10 089",
       "evaluable hemoglobin assessments (Chanu 2010 Table II). Serum C.E.R.A.",

@@ -12,37 +12,37 @@ Themans_2019_meropenem <- function() {
   vignette <- "Themans_2019_meropenem"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  ddmore_id    <- "DDMODEL00000301"
+  ddmore_id <- "DDMODEL00000301"
   replicate_of <- NULL
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Power-form effect on V1 (central) with reference 75 kg",
         "(per .mod equation TVV1 = THETA(3)*((WT/75)**THETA(4))) and on V2 (the apparent ELF",
         "compartment) with reference 75 kg (TVV2 = THETA(6)*((WT/75)**THETA(9)))."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Renal function expressed as raw, measured glomerular filtration rate (not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Renal function expressed as raw, measured glomerular filtration rate (not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed at baseline. Power-form effect on CL with reference 65 mL/min per the .mod equation",
         "TVCL = THETA(1)*((GFR/65)**THETA(2)).",
         "Deviation from canonical CRCL: the canonical register entry is BSA-normalized (mL/min/1.73 m^2);",
@@ -50,27 +50,27 @@ Themans_2019_meropenem <- function() {
         "and the GFR exponent (0.722) was estimated under that raw-mL/min parameterization.",
         "Source data column 'GFR' (or 'GFR_valAbs' in the bundle's Simulated_dataset.csv) is mapped to canonical 'CRCL' on input."
       ),
-      source_name        = "GFR"
+      source_name = "GFR"
     )
   )
 
   population <- list(
-    n_subjects     = "Not extractable from DDMORE bundle (Themans 2019 PDF not on disk).",
-    n_studies      = "Not extractable from DDMORE bundle.",
-    age_range      = "Adult (specific range not extractable from bundle; the publication is reported in the bundle as covering adults with severe pneumonia).",
-    weight_range   = "45-128 kg (range observed in DDMODEL00000301 Simulated_dataset.csv; n = 60 simulated subjects).",
-    weight_median  = "approx. 78 kg (mean of DDMODEL00000301 Simulated_dataset.csv).",
+    n_subjects = "Not extractable from DDMORE bundle (Themans 2019 PDF not on disk).",
+    n_studies = "Not extractable from DDMORE bundle.",
+    age_range = "Adult (specific range not extractable from bundle; the publication is reported in the bundle as covering adults with severe pneumonia).",
+    weight_range = "45-128 kg (range observed in DDMODEL00000301 Simulated_dataset.csv; n = 60 simulated subjects).",
+    weight_median = "approx. 78 kg (mean of DDMODEL00000301 Simulated_dataset.csv).",
     sex_female_pct = "Not extractable from DDMORE bundle.",
     race_ethnicity = "Not extractable from DDMORE bundle.",
-    disease_state  = "Adult patients with severe pneumonia (per DDMORE Model_Accomodations.text).",
-    dose_range     = paste(
+    disease_state = "Adult patients with severe pneumonia (per DDMORE Model_Accomodations.text).",
+    dose_range = paste(
       "1 g meropenem IV every 8 h at steady state in the bundle's Simulated_dataset.csv",
       "(AMT = 1 g, RATE = 2 g/h => 0.5 h infusion duration, II = 8 h, SS = 1).",
       "Clinical dosing in the indication is typically 1-2 g IV q8h."
     ),
-    crcl_range     = "19-401 mL/min (range observed in DDMODEL00000301 Simulated_dataset.csv; raw GFR, not BSA-normalized).",
-    regions        = "Not extractable from DDMORE bundle.",
-    notes          = paste(
+    crcl_range = "19-401 mL/min (range observed in DDMODEL00000301 Simulated_dataset.csv; raw GFR, not BSA-normalized).",
+    regions = "Not extractable from DDMORE bundle.",
+    notes = paste(
       "Demographics summarised from the DDMORE bundle's Simulated_dataset.csv (60 simulated subjects;",
       "WT 45-128 kg, GFR 19-401 mL/min). The Themans 2019 PDF is not on disk under the literature tree;",
       "full demographics, study design, sex / race / ethnicity, and inclusion criteria could not be cross-checked.",

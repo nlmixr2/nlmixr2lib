@@ -11,27 +11,57 @@ Landersdorfer_2018_meropenem_tobramycin_PAO1 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa PAO1 (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa PAO1 (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
-    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
-    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
-    ctob                          = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_susceptible1 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_susceptible_susceptible2 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (susceptible)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate1 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_resistant_intermediate2 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (resistant/intermediate)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Pseudomonas aeruginosa PAO1 (intermediate/resistant)",
+      units = NA_character_,
+      specimen = "bile",
+      verified = FALSE
+    ),
+    cmem = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ctob = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species          = "in vitro (Pseudomonas aeruginosa PAO1 wild-type reference strain)",
-    n_subjects       = 1L,
-    n_studies        = 1L,
-    disease_state    = "Reference wild-type P. aeruginosa (PAO1); baseline MIC meropenem 1 mg/L, MIC tobramycin 0.5 mg/L",
-    model_system     = "96-h static-concentration time-kill (SCTK) experiments; meropenem 2, 8, 16 mg/L and tobramycin 1, 4, 8 mg/L alone and in combination",
+    species = "in vitro (Pseudomonas aeruginosa PAO1 wild-type reference strain)",
+    n_subjects = 1L,
+    n_studies = 1L,
+    disease_state = "Reference wild-type P. aeruginosa (PAO1); baseline MIC meropenem 1 mg/L, MIC tobramycin 0.5 mg/L",
+    model_system = "96-h static-concentration time-kill (SCTK) experiments; meropenem 2, 8, 16 mg/L and tobramycin 1, 4, 8 mg/L alone and in combination",
     initial_inoculum = "~10^7.8 CFU/mL targeted; 10^7.72 CFU/mL estimated",
-    dose_range       = "Meropenem 2-16 mg/L static concentrations; tobramycin 1-8 mg/L static concentrations; alone and combined",
-    notes            = paste(
+    dose_range = "Meropenem 2-16 mg/L static concentrations; tobramycin 1-8 mg/L static concentrations; alone and combined",
+    notes = paste(
       "Mechanism-based model (S-ADAPT, importance sampling) co-modeled SCTK data for PAO1 and its isogenic hypermutable PAOdelta-mutS sibling.",
       "Strain-specific parameter estimates for PAO1 are reported in Table S3 column 'a'.",
       "Predicted in silico for hollow-fiber infection model (HFIM) regimens using clinically relevant CF-patient meropenem and tobramycin concentration-time profiles (simulated CL_MEM = 15.9 L/h, t1/2 = 0.8 h; CL_TOB = 4.9 L/h, t1/2 = 2.5 h).",

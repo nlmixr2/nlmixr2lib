@@ -21,68 +21,68 @@ Garcia_2025_garadacimab_hae_attack <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline total body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline total body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power exponents on CL and Q, and on Vc and Vp, both centred at 70 kg), and thereby on the hazard indirectly through garadacimab concentration. Body weight was explicitly REMOVED as a direct predictor of the ER parameters: the sampling-importance-resampling CIs identified baseline body weight as the only covariate containing the null effect for both ER parameters, and because it was correlated with exposure it was dropped (Results Section 3.5). This matches the Methods S2 control stream, where THETA(6) (weight on baseline hazard) and THETA(7) (weight on EC50) are both 0 FIX. Observed range 43.3-153 kg, median 79.2 kg.",
-      source_name        = "BLWT"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power exponents on CL and Q, and on Vc and Vp, both centred at 70 kg), and thereby on the hazard indirectly through garadacimab concentration. Body weight was explicitly REMOVED as a direct predictor of the ER parameters: the sampling-importance-resampling CIs identified baseline body weight as the only covariate containing the null effect for both ER parameters, and because it was correlated with exposure it was dropped (Results Section 3.5). This matches the Methods S2 control stream, where THETA(6) (weight on baseline hazard) and THETA(7) (weight on EC50) are both 0 FIX. Observed range 43.3-153 kg, median 79.2 kg.",
+      source_name = "BLWT"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage indicator: 1 = Japanese, 0 = non-Japanese.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage indicator: 1 = Japanese, 0 = non-Japanese.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Its direct ER effects (THETA(12) on the baseline hazard and THETA(13) on EC50) are estimated in the Methods S2 control stream but are not reported -- see covariatesDataExcluded.",
-      source_name        = "JPN"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Its direct ER effects (THETA(12) on the baseline hazard and THETA(13) on EC50) are estimated in the Methods S2 control stream but are not reported -- see covariatesDataExcluded.",
+      source_name = "JPN"
     ),
     RACE_CHINESE = list(
-      description        = "Chinese-heritage indicator: 1 = Chinese, 0 = non-Chinese.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chinese-heritage indicator: 1 = Chinese, 0 = non-Chinese.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Chinese)",
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Its direct ER effects (THETA(14), THETA(15)) are estimated in the Methods S2 control stream but are not reported -- see covariatesDataExcluded.",
-      source_name        = "CHN"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Its direct ER effects (THETA(14), THETA(15)) are estimated in the Methods S2 control stream but are not reported -- see covariatesDataExcluded.",
+      source_name = "CHN"
     ),
     DIS_HAE = list(
-      description        = "Hereditary angioedema patient indicator: 1 = patient with HAE, 0 = healthy volunteer.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hereditary angioedema patient indicator: 1 = patient with HAE, 0 = healthy volunteer.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy volunteer)",
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Every subject in the ER analysis population is by construction a patient with HAE (DIS_HAE = 1); the covariate is retained here so the embedded PK model reproduces the companion PopPK model exactly and so healthy-volunteer PK can still be simulated.",
-      source_name        = "PAT"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (multiplicative effect on CL). Every subject in the ER analysis population is by construction a patient with HAE (DIS_HAE = 1); the covariate is retained here so the embedded PK model reproduces the companion PopPK model exactly and so healthy-volunteer PK can still be simulated.",
+      source_name = "PAT"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine.",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Baseline serum creatinine.",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 0.75 mg/dL). US-convention units, not SI umol/L (Section 2.4 reference subject).",
-      source_name        = "BLCREAT"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 0.75 mg/dL). US-convention units, not SI umol/L (Section 2.4 reference subject).",
+      source_name = "BLCREAT"
     ),
     ALT = list(
-      description        = "Baseline serum alanine aminotransferase activity.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Baseline serum alanine aminotransferase activity.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 25 U/L).",
-      source_name        = "BLALT"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 25 U/L).",
+      source_name = "BLALT"
     ),
     TBILI = list(
-      description        = "Baseline total serum bilirubin.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline total serum bilirubin.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 8 umol/L). SI units (Section 2.4 reference subject).",
-      source_name        = "BLBILI"
+      notes = "Time-fixed per subject. Acts on the EMBEDDED PK model only (power effect on CL centred at 8 umol/L). SI units (Section 2.4 reference subject).",
+      source_name = "BLBILI"
     ),
     ON_TREATMENT = list(
-      description        = "On-treatment indicator: 1 = the subject is on study after the first garadacimab or placebo administration, 0 = the untreated observational run-in period.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "On-treatment indicator: 1 = the subject is on study after the first garadacimab or placebo administration, 0 = the untreated observational run-in period.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (untreated run-in period)",
-      notes              = "TIME-VARYING within a subject: it switches from 0 to 1 at the first administration. This reproduces the source's `PLAEFF = 1; IF (TAFD .GT. 0) PLAEFF = EXP(THETA(3))` switch (Methods S2 $PK block), where TAFD is time after first dose. The effect applies to placebo recipients as well as garadacimab recipients, so it is the study/placebo effect rather than a drug effect; the drug effect enters separately through concentration. Encoding it as an explicit covariate rather than via rxode2's `tafd()` keeps the untreated run-in period simulatable (rxode2 returns NA for `tafd()` before the first dose), which matters because the run-in hazard is the denominator of the relative risk the paper reports.",
-      source_name        = "TAFD > 0 (derived)"
+      notes = "TIME-VARYING within a subject: it switches from 0 to 1 at the first administration. This reproduces the source's `PLAEFF = 1; IF (TAFD .GT. 0) PLAEFF = EXP(THETA(3))` switch (Methods S2 $PK block), where TAFD is time after first dose. The effect applies to placebo recipients as well as garadacimab recipients, so it is the study/placebo effect rather than a drug effect; the drug effect enters separately through concentration. Encoding it as an explicit covariate rather than via rxode2's `tafd()` keeps the untreated run-in period simulatable (rxode2 returns NA for `tafd()` before the first dose), which matters because the run-in hazard is the denominator of the relative risk the paper reports.",
+      source_name = "TAFD > 0 (derived)"
     )
   )
 
@@ -92,69 +92,74 @@ Garcia_2025_garadacimab_hae_attack <- function() {
   # model(). See the vignette's Assumptions and deviations section.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Baseline age (years), centred at 41 years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age (years), centred at 41 years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(8)) and EC50 (THETA(9)), entering as THETA*(BLAGE - 41) (Methods S2 $PK block). Neither coefficient is reported: Table S8 tabulates only the five structural ER parameters, and Figure 3 renders conditional predictions of the monthly attack rate at fixed covariate levels rather than the coefficients themselves. Reference value 41 years (Table S10)."
+      notes = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(8)) and EC50 (THETA(9)), entering as THETA*(BLAGE - 41) (Methods S2 $PK block). Neither coefficient is reported: Table S8 tabulates only the five structural ER parameters, and Figure 3 renders conditional predictions of the monthly attack rate at fixed covariate levels rather than the coefficients themselves. Reference value 41 years (Table S10)."
     ),
     SEXF = list(
-      description        = "Female sex indicator: 1 = female, 0 = male.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator: 1 = female, 0 = male.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; the source's reference subject per Table S10)",
-      notes              = "ESTIMATED in the source's final ER model as a MALE effect on both the baseline hazard (THETA(16)) and EC50 (THETA(17)); the source column SEX codes 2 = male (Methods S2 $PK block). Neither coefficient is reported. Note the reference-category inversion relative to the canonical SEXF encoding: the source's reference subject is female (Table S10, Figure 3 caption), so a canonical SEXF term would be `theta * (1 - SEXF)`."
+      notes = "ESTIMATED in the source's final ER model as a MALE effect on both the baseline hazard (THETA(16)) and EC50 (THETA(17)); the source column SEX codes 2 = male (Methods S2 $PK block). Neither coefficient is reported. Note the reference-category inversion relative to the canonical SEXF encoding: the source's reference subject is female (Table S10, Figure 3 caption), so a canonical SEXF term would be `theta * (1 - SEXF)`."
     ),
     HAERATE_BL = list(
-      description        = "Baseline HAE attack rate during the study run-in period, centred at 0.61 attacks per week.",
-      units              = "attacks per week",
-      type               = "continuous",
+      description = "Baseline HAE attack rate during the study run-in period, centred at 0.61 attacks per week.",
+      units = "attacks per week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "SCREENED but NOT retained: THETA(10) (on the baseline hazard) and THETA(11) (on EC50) are both 0 FIX in the Methods S2 control stream. Observed range 0.13-3.11 attacks per week, median 0.61 (Results Section 3.1). Note the window difference from the canonical register entry, which is normalised per 4 weeks; the source centres on a per-week rate."
+      notes = "SCREENED but NOT retained: THETA(10) (on the baseline hazard) and THETA(11) (on EC50) are both 0 FIX in the Methods S2 control stream. Observed range 0.13-3.11 attacks per week, median 0.61 (Results Section 3.1). Note the window difference from the canonical register entry, which is normalised per 4 weeks; the source centres on a per-week rate."
     ),
     HAE_PRIOR_LTP = list(
-      description        = "Indicator that the patient had used HAE long-term prophylaxis or on-demand treatment prior to study entry.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator that the patient had used HAE long-term prophylaxis or on-demand treatment prior to study entry.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no prior HAE treatment; the source's reference subject per Table S10)",
-      notes              = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(18)) and EC50 (THETA(19)) (Methods S2 $PK block, source column HAETRT). Neither coefficient is reported. No canonical covariate column is proposed because the coefficient cannot be populated."
+      notes = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(18)) and EC50 (THETA(19)) (Methods S2 $PK block, source column HAETRT). Neither coefficient is reported. No canonical covariate column is proposed because the coefficient cannot be populated."
     ),
     HAE_SUBTYPE_FXII = list(
-      description        = "HAE subtype indicator: 1 = HAE with normal C1 inhibitor and factor XII mutation (HAE-FXII), 0 = other subtype.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "HAE subtype indicator: 1 = HAE with normal C1 inhibitor and factor XII mutation (HAE-FXII), 0 = other subtype.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HAE-C1INH-Type1/Type2; the source's reference subject per Table S10)",
-      notes              = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(20)) and EC50 (THETA(21)); the source column HAETYPE codes 4 = HAE-FXII (Methods S2 $PK block). Neither coefficient is reported. The paper notes HAE-FXII and HAE-PLG subtypes had slightly lower model-predicted efficacy than HAE-C1INH-Type1/2 but with wide prediction intervals reflecting the limited number of such patients (Results Section 3.5)."
+      notes = "ESTIMATED in the source's final ER model on both the baseline hazard (THETA(20)) and EC50 (THETA(21)); the source column HAETYPE codes 4 = HAE-FXII (Methods S2 $PK block). Neither coefficient is reported. The paper notes HAE-FXII and HAE-PLG subtypes had slightly lower model-predicted efficacy than HAE-C1INH-Type1/2 but with wide prediction intervals reflecting the limited number of such patients (Results Section 3.5)."
     ),
     CONMED_SCREENED = list(
-      description        = "Concomitant and rescue medication indicators screened on the ER parameters: analgesics, anti-inflammatories, antihistamines, antibacterials, C1 esterase inhibitor, conestat alfa, icatibant acetate, and other rescue medicines.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant and rescue medication indicators screened on the ER parameters: analgesics, anti-inflammatories, antihistamines, antibacterials, C1 esterase inhibitor, conestat alfa, icatibant acetate, and other rescue medicines.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (medication not used)",
-      notes              = "SCREENED but NOT retained: all sixteen coefficients THETA(22) through THETA(37) are 0 FIX in the Methods S2 control stream, so none of these medications modifies the baseline hazard or EC50 in the final ER model. Recorded here to preserve the provenance of the source's covariate screen."
+      notes = "SCREENED but NOT retained: all sixteen coefficients THETA(22) through THETA(37) are 0 FIX in the Methods S2 control stream, so none of these medications modifies the baseline hazard or EC50 in the final ER model. Recorded here to preserve the provenance of the source's covariate screen."
     )
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "garadacimab", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "garadacimab", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "garadacimab", units = "mg", specimen = "plasma", verified = TRUE),
-    cumhaz      = list(analyte = "Cumulative hazard of an HAE attack", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    cumhaz = list(
+      analyte = "Cumulative hazard of an HAE attack",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 177L,
-    n_studies      = 3L,
-    age_range      = "12-73 years (median 41)",
-    weight_range   = "43.3-153 kg (median 79.2)",
+    species = "human",
+    n_subjects = 177L,
+    n_studies = 3L,
+    age_range = "12-73 years (median 41)",
+    weight_range = "43.3-153 kg (median 79.2)",
     sex_female_pct = NULL,
     race_ethnicity = NULL,
-    disease_state  = "Patients with hereditary angioedema of all subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2, and HAE-nC1INH including HAE-FXII and HAE-PLG), randomized to placebo or receiving at least one dose of garadacimab.",
-    dose_range     = "Phase II subcutaneous 75, 200, or 600 mg once monthly (28 +/- 2 days); phase III subcutaneous 200 mg once monthly (30 +/- 4 days) after a loading dose of two 200 mg subcutaneous injections; plus placebo.",
-    regions        = "multinational",
-    biomarkers     = "Repeated time to investigator-confirmed HAE attack. Baseline attack rate during the run-in period ranged 0.13-3.11 attacks per week (median 0.61).",
-    notes          = "ER analysis dataset: 177 unique patients with HAE pooled from the phase II study (NCT03712228) and the two phase III studies (pivotal VANGUARD NCT04656418 and open-label extension NCT04739059); the two phase I healthy-volunteer studies are excluded by the control stream (IGNORE STUDY.EQ.1001 and STUDY.EQ.1003). One patient from the pivotal phase III study was excluded from the final ER model because of overlapping comorbidities that may have contributed to attacks or whose symptoms may have been mistaken for HAE attacks (Section 2.3; IGNORE ID==167). Reference subject for the reported structural estimates (Table S10 and the Figure 3 caption): 41 years of age, body weight 79 kg, baseline monthly attack rate 2.9, female sex, non-Chinese and non-Japanese, HAE-C1INH-Type1/2, and no prior HAE treatment."
+    disease_state = "Patients with hereditary angioedema of all subtypes (HAE-C1INH-Type1, HAE-C1INH-Type2, and HAE-nC1INH including HAE-FXII and HAE-PLG), randomized to placebo or receiving at least one dose of garadacimab.",
+    dose_range = "Phase II subcutaneous 75, 200, or 600 mg once monthly (28 +/- 2 days); phase III subcutaneous 200 mg once monthly (30 +/- 4 days) after a loading dose of two 200 mg subcutaneous injections; plus placebo.",
+    regions = "multinational",
+    biomarkers = "Repeated time to investigator-confirmed HAE attack. Baseline attack rate during the run-in period ranged 0.13-3.11 attacks per week (median 0.61).",
+    notes = "ER analysis dataset: 177 unique patients with HAE pooled from the phase II study (NCT03712228) and the two phase III studies (pivotal VANGUARD NCT04656418 and open-label extension NCT04739059); the two phase I healthy-volunteer studies are excluded by the control stream (IGNORE STUDY.EQ.1001 and STUDY.EQ.1003). One patient from the pivotal phase III study was excluded from the final ER model because of overlapping comorbidities that may have contributed to attacks or whose symptoms may have been mistaken for HAE attacks (Section 2.3; IGNORE ID==167). Reference subject for the reported structural estimates (Table S10 and the Figure 3 caption): 41 years of age, body weight 79 kg, baseline monthly attack rate 2.9, female sex, non-Chinese and non-Japanese, HAE-C1INH-Type1/2, and no prior HAE treatment."
   )
 
   ini({

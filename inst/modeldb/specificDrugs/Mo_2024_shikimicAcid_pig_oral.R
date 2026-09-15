@@ -31,20 +31,20 @@ Mo_2024_shikimicAcid_pig_oral <- function() {
   units <- list(time = "h", dosing = "ng/kg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot   = list(analyte = "shikimic acid", units = "ng", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "shikimic acid", units = "ng", specimen = "administration site", verified = TRUE),
     central = list(analyte = "shikimic acid", units = "ng", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species       = "pig (Landrace x Large White)",
-    n_subjects    = 6,
-    n_studies     = 1,
-    age_median    = "approximately 90 days",
-    sex           = "male and female",
+    species = "pig (Landrace x Large White)",
+    n_subjects = 6,
+    n_studies = 1,
+    age_median = "approximately 90 days",
+    sex = "male and female",
     disease_state = "healthy growing pigs",
-    dose_range    = "shikimic acid 50 mg/kg as a single intragastric (gavage) dose",
-    regions       = "China",
-    notes         = paste(
+    dose_range = "shikimic acid 50 mg/kg as a single intragastric (gavage) dose",
+    regions = "China",
+    notes = paste(
       "Mo 2024 Section 2.2 and Table 1: six growing pigs of comparable health",
       "status and genetic background, approximately 90 days old, allocated to a",
       "two-period two-sequence crossover (sequence A n = 3, sequence B n = 3)",

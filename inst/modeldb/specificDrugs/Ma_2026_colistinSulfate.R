@@ -22,7 +22,7 @@ Ma_2026_colistinSulfate <- function() {
     sep = " "
   )
   vignette <- "Ma_2026_colistinSulfate"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -36,15 +36,15 @@ Ma_2026_colistinSulfate <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = paste(
+      description = paste(
         "Creatinine clearance calculated with the Cockcroft-Gault equation,",
         "reported as raw mL/min and NOT normalised to 1.73 m^2 body surface",
         "area."
       ),
-      units              = "mL/min",
-      type               = "continuous",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject. Power effect on CL:",
         "CL = 1.66 * (CrCl / 94.76)^0.232 * exp(eta) per the final-model",
         "equation printed on Ma 2026 p. 7, with the exponent 0.232 also",
@@ -62,7 +62,7 @@ Ma_2026_colistinSulfate <- function() {
         "ECMO were excluded, so the model carries no information about renal",
         "replacement therapy."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     )
   )
 
@@ -75,33 +75,33 @@ Ma_2026_colistinSulfate <- function() {
   # neither their forward-inclusion dOFV nor any coefficient.
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator.",
-      units              = "unitless",
-      type               = "categorical",
+      description = "Female sex indicator.",
+      units = "unitless",
+      type = "categorical",
       reference_category = "male",
-      notes              = paste(
+      notes = paste(
         "Screened as an exponential categorical effect in the stepwise",
         "covariate model and entered the full regression model, but removed",
         "during backward elimination (Results, 'The Population",
         "Pharmacokinetic Model of Colistin Sulfate'). No point estimate is",
         "reported, so nothing is encoded."
       ),
-      source_name        = "Gender"
+      source_name = "Gender"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 51L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 51L,
+    n_studies = 1L,
     n_observations = 123L,
-    age_range      = "18 years or older (inclusion criterion); interquartile range 42.00-70.00 years",
-    age_median     = "65.00 years",
-    weight_range   = "not reported; BMI interquartile range 21.43-26.10 kg/m^2",
-    weight_median  = "not reported; BMI median 24.05 kg/m^2",
+    age_range = "18 years or older (inclusion criterion); interquartile range 42.00-70.00 years",
+    age_median = "65.00 years",
+    weight_range = "not reported; BMI interquartile range 21.43-26.10 kg/m^2",
+    weight_median = "not reported; BMI median 24.05 kg/m^2",
     sex_female_pct = 100 * 19 / 51,
     race_ethnicity = c(Asian = 100),
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill intensive-care patients with confirmed",
       "carbapenem-resistant organism (CRO) infections -- predominantly",
       "pulmonary, abdominal, central-nervous-system, bloodstream and urinary",
@@ -114,7 +114,7 @@ Ma_2026_colistinSulfate <- function() {
       "renal replacement therapy or ECMO, pregnant or lactating patients,",
       "and patients who died within 24 h of the first dose were excluded."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous colistin sulfate at the label-recommended 1 to 1.5",
       "million IU per day divided into 2 or 3 doses, with the exact regimen",
       "chosen by the attending physician. Table 1 gives a median daily dose",
@@ -123,7 +123,7 @@ Ma_2026_colistinSulfate <- function() {
       "days). The paper's Monte Carlo simulations standardise the infusion",
       "duration at 1 hour for every regimen."
     ),
-    sampling       = paste(
+    sampling = paste(
       "Sparse therapeutic drug monitoring after steady state was reached",
       "(five doses), at up to three time points per patient: peak 0.5 h",
       "after the end of the infusion, an intermediate sample 6 h after the",
@@ -136,8 +136,8 @@ Ma_2026_colistinSulfate <- function() {
       "1), observed range 12.14-246.91 mL/min (Discussion). Serum creatinine",
       "median 71.00 (46.00, 118.00) umol/L. Patients on CRRT were excluded."
     ),
-    regions        = "People's Republic of China (single centre; Second Hospital of Hebei Medical University, Shijiazhuang, Hebei).",
-    notes          = paste(
+    regions = "People's Republic of China (single centre; Second Hospital of Hebei Medical University, Shijiazhuang, Hebei).",
+    notes = paste(
       "Baseline demographics from Ma 2026 Table 1 and Results 'Basic",
       "Information of the Patient'. Retrospective single-centre cohort",
       "collected June 2021 to June 2023 (ethics approval 2020-R551). The",

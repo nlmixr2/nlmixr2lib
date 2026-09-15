@@ -22,11 +22,11 @@ Zurawska_2026_piperacillin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault estimated creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault estimated creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min -- NOT",
         "BSA-normalized and NOT weight-standardized. Zurawska 2026 Simulations",
         "cites Cockcroft-Gault (reference 21) and the covariate enters Eq. 5 as",
@@ -41,14 +41,14 @@ Zurawska_2026_piperacillin <- function() {
         "does not affect the prediction. The paper's simulations exercised the",
         "range 25-150 mL/min."
       ),
-      source_name        = "CRCL"
+      source_name = "CRCL"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "Continuous renal replacement therapy currently running",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Continuous renal replacement therapy currently running",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no CRRT running)",
-      notes              = paste(
+      notes = paste(
         "Zurawska 2026 Eqs. 5-6 indicator CRRT; 'HD and CRRT are indicator",
         "variables (either on or off)' (Covariate model). Modeled as a",
         "time-varying regressor in Monolix ('we chose to use the regressor",
@@ -56,14 +56,14 @@ Zurawska_2026_piperacillin <- function() {
         "hence the ACTIVE rather than the STATUS canonical. 15 of 35 patients",
         "(43%) required CRRT (Table 1)."
       ),
-      source_name        = "CRRT"
+      source_name = "CRRT"
     ),
     RRT_HEMODIAL_ACTIVE = list(
-      description        = "Intermittent hemodialysis session currently running",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Intermittent hemodialysis session currently running",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no hemodialysis session running)",
-      notes              = paste(
+      notes = paste(
         "Zurawska 2026 Eqs. 5 and 7 indicator HD. Time-varying regressor, so",
         "the ACTIVE rather than the STATUS canonical. Only 1 of 35 patients",
         "(3%) required intermittent HD (Table 1), which is why the intra-HD",
@@ -73,14 +73,14 @@ Zurawska_2026_piperacillin <- function() {
         "conducted in the late afternoon), HD clearance was fixed to literature",
         "values' (Population PK modeling)."
       ),
-      source_name        = "HD"
+      source_name = "HD"
     ),
     RRT_CRRT_EFFLUENT_FLOW = list(
-      description        = "Total effluent flow rate of the CRRT circuit",
-      units              = "mL/h",
-      type               = "continuous",
+      description = "Total effluent flow rate of the CRRT circuit",
+      units = "mL/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Zurawska 2026 Eq. 6 covariate FLOW, entering as the through-origin",
         "ratio (FLOW / 2 L/h), so the CRRT clearance estimate is the value at a",
         "2 L/h effluent flow -- 'Our population mean CRRT clearance estimate",
@@ -96,16 +96,16 @@ Zurawska_2026_piperacillin <- function() {
         "sensitivity analysis at 91 and 126 kg. Meaningful only while",
         "RRT_CRRT_ACTIVE = 1."
       ),
-      source_name        = "FLOW"
+      source_name = "FLOW"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a planned regressor on Vd and NOT retained. Table S1 Run 8",
         "(V scaled to WT/70) raised BICc from 2495.46 to 2500.73 and Run 9",
         "(allometric WT/70) raised it to 2499.69 with 'high RSE on all",
@@ -118,9 +118,9 @@ Zurawska_2026_piperacillin <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "year",
-      type        = "continuous",
-      notes       = paste(
+      units = "year",
+      type = "continuous",
+      notes = paste(
         "Planned covariate, screened and not retained (Covariate, regressor,",
         "and error models). Cohort 62 +/- 16 years (Table 1). No coefficient is",
         "reported anywhere in the paper."
@@ -128,18 +128,18 @@ Zurawska_2026_piperacillin <- function() {
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2",
+      type = "continuous",
+      notes = paste(
         "Planned covariate, screened and not retained. Cohort 1.9 +/- 0.3 m^2",
         "(Table 1). No coefficient is reported anywhere in the paper."
       )
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Planned categorical covariate, screened and not retained; Eq. 4 shows",
         "the fractional-change form that was evaluated. Cohort 18 female (51%)",
         "/ 17 male (49%) (Table 1). No coefficient is reported anywhere in the",
@@ -150,23 +150,23 @@ Zurawska_2026_piperacillin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte  = "piperacillin",
-      units    = "mg",
+      analyte = "piperacillin",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35,
-    n_studies      = 2,
+    species = "human",
+    n_subjects = 35,
+    n_studies = 2,
     n_observations = 162,
-    age_mean_sd    = "62 +/- 16 years",
+    age_mean_sd = "62 +/- 16 years",
     weight_mean_sd = "79.6 +/- 24.1 kg",
-    bsa_mean_sd    = "1.9 +/- 0.3 m^2",
+    bsa_mean_sd = "1.9 +/- 0.3 m^2",
     sex_female_pct = 51,
-    disease_state  = "hospital-acquired pneumonia requiring intensive care",
+    disease_state = "hospital-acquired pneumonia requiring intensive care",
     renal_function = paste(
       "Wide range. Among the 19 patients not requiring renal replacement,",
       "Cockcroft-Gault CrCL was 78 +/- 68 mL/min (range 9-229). 16 of 35 (46%)",
@@ -175,15 +175,15 @@ Zurawska_2026_piperacillin <- function() {
       "(32 +/- 7.8 mL/kg/h). Initial serum creatinine 1.7 +/- 1.1 mg/dL in",
       "non-RRT patients."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Institutional-protocol piperacillin-tazobactam dosing at the discretion",
       "of the treating team (asp.nm.org), with indication-based selection and",
       "renal dose adjustment. The model was then applied to simulated",
       "continuous-infusion regimens of 3-12 g/day of piperacillin after a 4 g",
       "loading dose."
     ),
-    regions        = "United States (single center, Chicago, Illinois)",
-    notes          = paste(
+    regions = "United States (single center, Chicago, Illinois)",
+    notes = paste(
       "Baseline demographics per Zurawska 2026 Table 1. Critically ill adults",
       "with hospital-acquired pneumonia admitted to the medical ICU at",
       "Northwestern Memorial Hospital and treated with piperacillin-tazobactam,",

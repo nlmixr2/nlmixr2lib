@@ -16,36 +16,36 @@ Hamberg_2007_warfarin_r <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "R-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "R-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "R-warfarin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Linear scale on CL_R with reference age 71 years (cohort median); Hamberg 2007 Appendix Eq 7. CL_R decreases approximately 0.98% per year of age above 71. The only structural covariate retained on CL_R; sex and weight were tested and not retained.",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Linear scale on CL_R with reference age 71 years (cohort median); Hamberg 2007 Appendix Eq 7. CL_R decreases approximately 0.98% per year of age above 71. The only structural covariate retained on CL_R; sex and weight were tested and not retained.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 150L,
-    n_studies      = 2L,
-    age_range      = "22-87 years",
-    age_median     = "71 years",
-    weight_range   = "45-120 kg",
-    weight_median  = "80 kg",
+    species = "human",
+    n_subjects = 150L,
+    n_studies = 2L,
+    age_range = "22-87 years",
+    age_median = "71 years",
+    weight_range = "45-120 kg",
+    weight_median = "80 kg",
     sex_female_pct = 34,
     race_ethnicity = "Italian (not stratified by race in source)",
-    disease_state  = "Adults on long-term warfarin anticoagulant therapy for thromboembolic prophylaxis",
-    dose_range     = "Single 10 mg racemic dose (Study I) and 6.25-78.75 mg/week maintenance (median 29.375 mg/week)",
-    regions        = "Italy (Thrombosis Center, University of Padova)",
-    n_pk_records   = "171 R-warfarin observations after single-dose + 150 after stable maintenance dosing (Study I + Study II)",
-    notes          = paste(
+    disease_state = "Adults on long-term warfarin anticoagulant therapy for thromboembolic prophylaxis",
+    dose_range = "Single 10 mg racemic dose (Study I) and 6.25-78.75 mg/week maintenance (median 29.375 mg/week)",
+    regions = "Italy (Thrombosis Center, University of Padova)",
+    n_pk_records = "171 R-warfarin observations after single-dose + 150 after stable maintenance dosing (Study I + Study II)",
+    notes = paste(
       "Pooled across Italian Studies I (n=57) and II (n=93); same patient cohort as the companion S-warfarin model.",
       "See Hamberg 2007 Table 1 for demographics; Table 3 for R-warfarin parameter estimates."
     )

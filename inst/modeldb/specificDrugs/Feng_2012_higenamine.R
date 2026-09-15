@@ -1,14 +1,14 @@
 Feng_2012_higenamine <- function() {
   description <- "Population PK/PD model for intravenous higenamine in 10 healthy Chinese subjects (Feng 2012). Two-compartment disposition with Michaelis-Menten (saturable) elimination from the central compartment, plus a direct-effect Emax sub-model for the cardiovascular-stress heart-rate response (E = E0 + Emax * Cc / (EC50 + Cc)). No demographic covariates were retained in the final model (sex, height, weight, BMI, and age were graphically screened but did not influence PK or PD)."
-  reference   <- "Feng S, Jiang J, Hu P, Zhang JY, Liu T, Zhao Q, Li BL (2012). A phase I study on pharmacokinetics and pharmacodynamics of higenamine in healthy Chinese subjects. Acta Pharmacologica Sinica 33(11):1353-1358. doi:10.1038/aps.2012.114"
-  vignette    <- "Feng_2012_higenamine"
-  units       <- list(time = "min", dosing = "ug", concentration = "ug/L")
+  reference <- "Feng S, Jiang J, Hu P, Zhang JY, Liu T, Zhao Q, Li BL (2012). A phase I study on pharmacokinetics and pharmacodynamics of higenamine in healthy Chinese subjects. Acta Pharmacologica Sinica 33(11):1353-1358. doi:10.1038/aps.2012.114"
+  vignette <- "Feng_2012_higenamine"
+  units <- list(time = "min", dosing = "ug", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "higenamine", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "higenamine", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "higenamine", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
@@ -16,61 +16,61 @@ Feng_2012_higenamine <- function() {
 
   covariatesDataExcluded <- list(
     SEXF = list(
-      description        = "Female sex indicator (1 = female)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Feng 2012 Methods (page 1355) screened sex graphically against the basic-model individual parameters; not retained in the final model. Cohort: 4 male, 6 female (Table 1).",
-      source_name        = "sex"
+      notes = "Feng 2012 Methods (page 1355) screened sex graphically against the basic-model individual parameters; not retained in the final model. Cohort: 4 male, 6 female (Table 1).",
+      source_name = "sex"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Feng 2012 Methods (page 1355) screened body weight graphically; not retained in the final model. Cohort mean (SD) 60.4 (4.2) kg, range 52.5-66 kg (Table 1).",
-      source_name        = "weight"
+      notes = "Feng 2012 Methods (page 1355) screened body weight graphically; not retained in the final model. Cohort mean (SD) 60.4 (4.2) kg, range 52.5-66 kg (Table 1).",
+      source_name = "weight"
     ),
     HT = list(
-      description        = "Body height",
-      units              = "m",
-      type               = "continuous",
+      description = "Body height",
+      units = "m",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Feng 2012 Methods (page 1355) screened height graphically; not retained in the final model. Cohort mean (SD) 1.60 (0.07) m, range 1.5-1.73 m (Table 1).",
-      source_name        = "height"
+      notes = "Feng 2012 Methods (page 1355) screened height graphically; not retained in the final model. Cohort mean (SD) 1.60 (0.07) m, range 1.5-1.73 m (Table 1).",
+      source_name = "height"
     ),
     BMI = list(
-      description        = "Body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Feng 2012 Methods (page 1355) screened BMI graphically; not retained in the final model. Cohort mean (SD) 23.3 (0.81) kg/m^2, range 22.1-24.4 (Table 1).",
-      source_name        = "BMI"
+      notes = "Feng 2012 Methods (page 1355) screened BMI graphically; not retained in the final model. Cohort mean (SD) 23.3 (0.81) kg/m^2, range 22.1-24.4 (Table 1).",
+      source_name = "BMI"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Feng 2012 Methods (page 1355) screened age graphically; not retained in the final model. Cohort mean (SD) 30.2 (6.8) years, range 22-41 years (Table 1).",
-      source_name        = "age"
+      notes = "Feng 2012 Methods (page 1355) screened age graphically; not retained in the final model. Cohort mean (SD) 30.2 (6.8) years, range 22-41 years (Table 1).",
+      source_name = "age"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 10L,
-    n_studies      = 1L,
-    age_range      = "22-41 years",
-    age_median     = "mean 30.2 (SD 6.8) years",
-    weight_range   = "52.5-66 kg",
-    weight_median  = "mean 60.4 (SD 4.2) kg",
+    species = "human",
+    n_subjects = 10L,
+    n_studies = 1L,
+    age_range = "22-41 years",
+    age_median = "mean 30.2 (SD 6.8) years",
+    weight_range = "52.5-66 kg",
+    weight_median = "mean 60.4 (SD 4.2) kg",
     sex_female_pct = 60.0,
     race_ethnicity = "Chinese (Han, single-centre cohort at Peking Union Medical College Hospital)",
-    disease_state  = "Healthy adult volunteers (clinical-laboratory, ECG, and physical-examination screen normal; resting heart rate 45-90 bpm, systolic BP <= 140 mmHg, diastolic BP <= 90 mmHg).",
-    dose_range     = "Continuous IV infusion of higenamine hydrochloride at escalating rates 0.5, 1.0, 2.0, 4.0 ug/kg/min, each rate maintained for 3 min (cumulative dose 22.5 ug/kg over 12 min).",
-    regions        = "China (Peking Union Medical College Hospital, Beijing, single centre).",
-    notes          = "Per Feng 2012 Table 1. Phase I open-label, non-controlled, single-dose, single-centre study. 4 male and 6 female (40 percent vs 60 percent). Higenamine is an active ingredient of Aconite root being developed as a pharmacologic stress-test agent; the cohort received a single IV stress-test dose with rich plasma (16 timepoints over 102 min postdose) and urinary sampling, plus 10 heart-rate measurements over 42 min postdose. Two non-related adverse events (one mild bilirubin rise, one moderate dizziness and nausea); both transient."
+    disease_state = "Healthy adult volunteers (clinical-laboratory, ECG, and physical-examination screen normal; resting heart rate 45-90 bpm, systolic BP <= 140 mmHg, diastolic BP <= 90 mmHg).",
+    dose_range = "Continuous IV infusion of higenamine hydrochloride at escalating rates 0.5, 1.0, 2.0, 4.0 ug/kg/min, each rate maintained for 3 min (cumulative dose 22.5 ug/kg over 12 min).",
+    regions = "China (Peking Union Medical College Hospital, Beijing, single centre).",
+    notes = "Per Feng 2012 Table 1. Phase I open-label, non-controlled, single-dose, single-centre study. 4 male and 6 female (40 percent vs 60 percent). Higenamine is an active ingredient of Aconite root being developed as a pharmacologic stress-test agent; the cohort received a single IV stress-test dose with rich plasma (16 timepoints over 102 min postdose) and urinary sampling, plus 10 heart-rate measurements over 42 min postdose. Two non-related adverse events (one mild bilirubin rise, one moderate dizziness and nausea); both transient."
   )
 
   ini({

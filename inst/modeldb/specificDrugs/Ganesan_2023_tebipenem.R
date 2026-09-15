@@ -32,21 +32,21 @@ Ganesan_2023_tebipenem <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tebipenem", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "tebipenem", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tebipenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tebipenem", units = "mg", specimen = "plasma", verified = FALSE),
-    urine       = list(analyte = "tebipenem", units = "mg", specimen = "urine", verified = FALSE)
+    urine = list(analyte = "tebipenem", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Baseline creatinine clearance, Cockcroft-Gault, normalized to body surface area",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline creatinine clearance, Cockcroft-Gault, normalized to body surface area",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ganesan 2023 Table 1 footnote b: calculated from baseline serum",
         "creatinine, age, sex, and body weight using the Cockcroft-Gault",
         "equation and then normalized to body surface area. Pooled median",
@@ -61,14 +61,14 @@ Ganesan_2023_tebipenem <- function() {
         "necessary to avoid bias in subjects with severe renal impairment",
         "(Ganesan 2023 Discussion)."
       ),
-      source_name        = "CLcr"
+      source_name = "CLcr"
     ),
     BSA = list(
-      description        = "Baseline body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Baseline body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Pooled median 1.86 m^2 (range 1.32-2.70; Ganesan 2023 Table 1),",
         "which is the centering value used in both Eq. 3 and Eq. 5.",
         "Enters as a linear centered slope on total CL/F,",
@@ -76,25 +76,25 @@ Ganesan_2023_tebipenem <- function() {
         "1 + 0.491 * (BSA - 1.86) (Eq. 5). Note that the slopes are per",
         "m^2 and are NOT power exponents."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     HT = list(
-      description        = "Baseline body height",
-      units              = "cm",
-      type               = "continuous",
+      description = "Baseline body height",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Pooled median 169 cm (range 110-202; Ganesan 2023 Table 1),",
         "which is the reference value in Eq. 4. Enters Vc/F as a power",
         "function (HT / 169)^2.09. Height, not weight, was the body-size",
         "descriptor retained on Vc/F."
       ),
-      source_name        = "HTCM"
+      source_name = "HTCM"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator (1 = healthy phase 1 subject, 0 = infected phase 3 patient)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator (1 = healthy phase 1 subject, 0 = infected phase 3 patient)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (infected patient with cUTI / AP). Ganesan 2023 Eq. 4-6 write",
         "the contrast as (1 - Infected); the canonical register codes the",
@@ -102,7 +102,7 @@ Ganesan_2023_tebipenem <- function() {
         "typical values lvc, lvp, and lka are the infected-patient values",
         "and DIS_HEALTHY shifts them to the healthy-subject state."
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject; healthy = the 99 phase 1 subjects",
         "(studies 101, 102, 104), infected = the 647 ADAPT-PO patients.",
         "Three multiplicative effects, all from Ganesan 2023 Table 2 and",
@@ -115,18 +115,18 @@ Ganesan_2023_tebipenem <- function() {
         "printed makes Ka 36.8% FASTER in healthy subjects; the equation",
         "is implemented here (see the vignette Errata)."
       ),
-      source_name        = "Infected (reverse-coded)"
+      source_name = "Infected (reverse-coded)"
     ),
     FED = list(
-      description        = "Fed-vs-fasted state at the dose record (1 = fed, 0 = fasted)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted state at the dose record (1 = fed, 0 = fasted)",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (fasted). Ganesan 2023 Eq. 6 uses the complementary FAST flag;",
         "FED = 1 - FAST, so the structural lka is the fasted typical value",
         "3.04 1/h and the fed state is reached via e_fed_ka."
       ),
-      notes              = paste(
+      notes = paste(
         "Only the food-effect cohorts of study 101 contribute fed",
         "records. Food slowed but did not reduce absorption: Ka is",
         "3.04 1/h fasted and 1.23 1/h fed (Ganesan 2023 Eq. 6), a 60%",
@@ -137,14 +137,14 @@ Ganesan_2023_tebipenem <- function() {
         "the fasted value is the larger one, so the Table 2 row labels are",
         "treated as transposed (see the vignette Errata)."
       ),
-      source_name        = "FAST (reverse-coded)"
+      source_name = "FAST (reverse-coded)"
     ),
     DOSE_TBPPI_MG = list(
-      description        = "Administered TBP-PI-HBr dose level for the record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered TBP-PI-HBr dose level for the record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Used only inside the study-104 absorption term of Eq. 6,",
         "1 - 0.478 * (DOSE_TBPPI_MG / 1200) * STUDY_SPR994_104, so the",
         "reference",
@@ -157,27 +157,27 @@ Ganesan_2023_tebipenem <- function() {
         "record; it is",
         "inert unless STUDY_SPR994_104 = 1."
       ),
-      source_name        = "DOSEMG"
+      source_name = "DOSEMG"
     ),
     STUDY_SPR994_104 = list(
-      description        = "Study SPR994-104 (thorough-QT crossover) cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study SPR994-104 (thorough-QT crossover) cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (studies 101, 102, and ADAPT-PO / SPR994-301)",
-      notes              = paste(
+      notes = paste(
         "Ganesan 2023 Eq. 6 flag variable S104. Gates the dose effect on",
         "Ka so that it applies only to the 24 subjects of the four-way",
         "crossover thorough-QT study (NCT04238195). Time-fixed per",
         "subject."
       ),
-      source_name        = "S104"
+      source_name = "S104"
     ),
     OCC = list(
-      description        = "Occasion index for interoccasion variability on Ka",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Occasion index for interoccasion variability on Ka",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Ganesan 2023 Table 2 reports two IOV variances on Ka, 'IOV Ka",
         "(Occ. 1)' and 'IOV Ka (Occ. 2)', both 0.201 (44.8 %CV); the",
         "second is reported without a standard error, i.e. constrained",
@@ -187,16 +187,16 @@ Ganesan_2023_tebipenem <- function() {
         "model() into the binary indicators oc1 and oc2; supply OCC = 1",
         "for single-occasion simulations."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
-      notes              = paste(
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Pooled median 60.0 years (range 18-91; Ganesan 2023 Table 1).",
         "Age on Vp/F survived forward selection and backward elimination",
         "but was removed from the final model after the SIR analysis",
@@ -207,10 +207,10 @@ Ganesan_2023_tebipenem <- function() {
       )
     ),
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
-      notes              = paste(
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Pooled median 76.0 kg (range 42.0-142; Ganesan 2023 Table 1).",
         "Screened in the covariate analysis but not retained: body size",
         "entered the final model through BSA (CL/F, Vp/F) and height",
@@ -218,10 +218,10 @@ Ganesan_2023_tebipenem <- function() {
       )
     ),
     BMI = list(
-      description        = "Baseline body mass index",
-      units              = "kg/m^2",
-      type               = "continuous",
-      notes              = paste(
+      description = "Baseline body mass index",
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Pooled median 26.3 kg/m^2 (range 15.3-57.9; Ganesan 2023",
         "Table 1). BMI on Ka survived forward selection but was removed",
         "after the SIR analysis showed the 'true' value of the",
@@ -230,10 +230,10 @@ Ganesan_2023_tebipenem <- function() {
       )
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "51.3% female overall (Ganesan 2023 Table 1). Tested but not a",
         "statistically significant predictor of interindividual",
         "variability in tebipenem PK; the small apparent difference in",
@@ -243,10 +243,10 @@ Ganesan_2023_tebipenem <- function() {
       )
     ),
     RACE_BLACK = list(
-      description        = "Black race indicator",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Black race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "2.80% of the pooled population (Ganesan 2023 Table 1). Race was",
         "tested in the covariate analysis but not retained; the study",
         "population was 95.9% White overall and 98.6% White in ADAPT-PO,",
@@ -254,10 +254,10 @@ Ganesan_2023_tebipenem <- function() {
       )
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
-      notes              = paste(
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "1.20% of the pooled population (Ganesan 2023 Table 1). Tested",
         "but not retained; see the RACE_BLACK note on the limited racial",
         "diversity of the analysis population."
@@ -266,17 +266,17 @@ Ganesan_2023_tebipenem <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 746L,
-    n_studies      = 4L,
-    age_range      = "18-91 years",
-    age_median     = "60.0 years",
-    weight_range   = "42.0-142 kg",
-    weight_median  = "76.0 kg",
-    height_range   = "110-202 cm",
-    height_median  = "169 cm",
-    bsa_range      = "1.32-2.70 m^2",
-    bsa_median     = "1.86 m^2",
+    species = "human",
+    n_subjects = 746L,
+    n_studies = 4L,
+    age_range = "18-91 years",
+    age_median = "60.0 years",
+    weight_range = "42.0-142 kg",
+    weight_median = "76.0 kg",
+    height_range = "110-202 cm",
+    height_median = "169 cm",
+    bsa_range = "1.32-2.70 m^2",
+    bsa_median = "1.86 m^2",
     sex_female_pct = 51.3,
     race_ethnicity = c(White = 95.9, Black = 2.80, Asian = 1.20, Other = 0.13),
     renal_function = paste(
@@ -286,7 +286,7 @@ Ganesan_2023_tebipenem <- function() {
       "renal disease on hemodialysis; median CLcr 42.2). ADAPT-PO",
       "enrolled patients with CLcr as low as 30 mL/min."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled: 99 healthy adults or adults with varying degrees of renal",
       "impairment from three phase 1 studies (SPR994-101 single and",
       "multiple ascending dose, SPR994-102 renal impairment, SPR994-104",
@@ -294,7 +294,7 @@ Ganesan_2023_tebipenem <- function() {
       "infection or acute pyelonephritis from the phase 3 ADAPT-PO trial",
       "(SPR994-301)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "TBP-PI-HBr immediate-release tablet, oral. Study 101: 100, 300,",
       "600, 900 mg single dose and 300 or 600 mg q8h for 14 days. Study",
       "102: 600 mg single dose. Study 104: 600 or 1200 mg single dose in",
@@ -302,7 +302,7 @@ Ganesan_2023_tebipenem <- function() {
       "300 mg q8h for baseline CLcr 30-50 mL/min/1.73 m^2."
     ),
     n_observations = "3448 plasma concentrations (1985 from ADAPT-PO patients) plus urine concentrations from 67 phase 1 subjects and 37 phase 3 patients",
-    notes          = paste(
+    notes = paste(
       "NONMEM 7.4, first-order conditional estimation with interaction.",
       "Demographics in Ganesan 2023 Table 1; study designs in supplemental",
       "Table S1; final parameter estimates and sampling-importance-",

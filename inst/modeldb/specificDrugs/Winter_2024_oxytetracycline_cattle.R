@@ -1,7 +1,7 @@
 Winter_2024_oxytetracycline_cattle <- function() {
   description <- "Preclinical (cattle). Three-compartment population pharmacokinetic model for oxytetracycline in calves and adult cattle, with two parallel first-order absorption depots for intramuscular long-acting formulations (a rapid depot with Ka1 and a slow, lag-timed depot with Ka2 sharing a single ilogit-transformed bioavailability), age (calf vs adult) as a categorical covariate on all three volumes and all three clearances, and full block interindividual variability for the absorption and disposition parameter sets; meta-analysis of 1,730 plasma concentrations from 69 cattle across eight studies, used to derive VetCAST pharmacokinetic-pharmacodynamic cutoffs (Winter 2024)."
-  reference   <- "Winter EA, Pelligand L, Toutain P-L, Lees P, Milanova A, Gehring R. Determination of pharmacokinetic-pharmacodynamic cutoff values of oxytetracycline in calves and adult cattle using population pharmacokinetic modeling. Front Microbiol. 2024;15:1498219. doi:10.3389/fmicb.2024.1498219"
-  vignette    <- "Winter_2024_oxytetracycline_cattle"
+  reference <- "Winter EA, Pelligand L, Toutain P-L, Lees P, Milanova A, Gehring R. Determination of pharmacokinetic-pharmacodynamic cutoff values of oxytetracycline in calves and adult cattle using population pharmacokinetic modeling. Front Microbiol. 2024;15:1498219. doi:10.3389/fmicb.2024.1498219"
+  vignette <- "Winter_2024_oxytetracycline_cattle"
 
   # The source model is written on a body-weight-normalised scale: volumes in
   # mL/kg, clearances in mL/(kg*h), and doses in micrograms/kg (the raw data
@@ -23,21 +23,21 @@ Winter_2024_oxytetracycline_cattle <- function() {
   # biological matrix. Verified against Winter 2024 Figure 3 (model schematic)
   # and the Phoenix control stream in Supplementary Data S1.
   compartmentData <- list(
-    depot1      = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "administration site", verified = TRUE),
-    depot2      = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "plasma", verified = TRUE),
+    depot1 = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "administration site", verified = TRUE),
+    depot2 = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "oxytetracycline", units = "ug/kg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CHILD = list(
-      description        = "Juvenile (calf) versus adult age-cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Juvenile (calf) versus adult age-cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (adult cattle)",
-      notes              = "1 = calf, 0 = adult cattle. Winter 2024 Methods section 2.2.1.2: 'Age was a categorical covariate, as not all ages were known, with calves classified as animals less than 6 months old or when the authors declared the animals to be calves'; Supplementary Table S1 restates the cutoff as < 0.5 years. Coded '0' for adults (control condition) and '1' for calves in the source data sets. Applied as an exponential categorical effect on all three volumes and all three clearances (Winter 2024 Equation 1 and Table 1 footnotes a-f). This is the only covariate retained in the final model.",
-      source_name        = "adult_calve"
+      notes = "1 = calf, 0 = adult cattle. Winter 2024 Methods section 2.2.1.2: 'Age was a categorical covariate, as not all ages were known, with calves classified as animals less than 6 months old or when the authors declared the animals to be calves'; Supplementary Table S1 restates the cutoff as < 0.5 years. Coded '0' for adults (control condition) and '1' for calves in the source data sets. Applied as an exponential categorical effect on all three volumes and all three clearances (Winter 2024 Equation 1 and Table 1 footnotes a-f). This is the only covariate retained in the final model.",
+      source_name = "adult_calve"
     )
   )
 
@@ -50,30 +50,30 @@ Winter_2024_oxytetracycline_cattle <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Cohort was 30 male / 39 female (Winter 2024 section 2.1; per-study split in Supplementary Table S1). Screened as a categorical covariate and rejected: 'Other evaluated covariates, health, sex and breed, were also tested, but did not, in any combination, improve the model' (Winter 2024 section 3.2). No point estimate is published, so no effect is carried."
+      units = "(binary)",
+      type = "binary",
+      notes = "Cohort was 30 male / 39 female (Winter 2024 section 2.1; per-study split in Supplementary Table S1). Screened as a categorical covariate and rejected: 'Other evaluated covariates, health, sex and breed, were also tested, but did not, in any combination, improve the model' (Winter 2024 section 3.2). No point estimate is published, so no effect is carried."
     ),
     DIS_INFECT_ACTIVE = list(
       description = "Active clinical infection episode indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "14 of 69 animals were infected -- 8 calves in a severe pneumonia model and 6 cows with Trueperella pyogenes metritis (Winter 2024 section 2.1; coded code_health in the source data). Screened and rejected (Winter 2024 section 3.2); the Discussion notes the health-status variability is instead absorbed into the overall between-subject variance used for the PK/PD cutoff. The Phoenix control stream in Supplementary Data S1 carries the corresponding fixef line (dcode_health = -0.0206) commented out, confirming it is not in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "14 of 69 animals were infected -- 8 calves in a severe pneumonia model and 6 cows with Trueperella pyogenes metritis (Winter 2024 section 2.1; coded code_health in the source data). Screened and rejected (Winter 2024 section 3.2); the Discussion notes the health-status variability is instead absorbed into the overall between-subject variance used for the PK/PD cutoff. The Phoenix control stream in Supplementary Data S1 carries the corresponding fixef line (dcode_health = -0.0206) commented out, confirming it is not in the final model."
     )
   )
 
   population <- list(
-    species        = "cattle (Bos taurus); the target species of this veterinary indication, not a preclinical surrogate",
-    n_subjects     = 69L,
-    n_studies      = 8L,
+    species = "cattle (Bos taurus); the target species of this veterinary indication, not a preclinical surrogate",
+    n_subjects = 69L,
+    n_studies = 8L,
     n_observations = 1730L,
-    age_range      = "0.21 - 11 years where reported; 28 calves (< 0.5 years, or declared calves by the study authors) and 41 adult cattle (Winter 2024 section 2.1 and Supplementary Table S1)",
-    weight_range   = "70.2 - 500 kg across the eight data sets (Supplementary Table S1; one data set did not report weights)",
+    age_range = "0.21 - 11 years where reported; 28 calves (< 0.5 years, or declared calves by the study authors) and 41 adult cattle (Winter 2024 section 2.1 and Supplementary Table S1)",
+    weight_range = "70.2 - 500 kg across the eight data sets (Supplementary Table S1; one data set did not report weights)",
     sex_female_pct = 56.5,
-    disease_state  = "55 healthy animals; 14 infected (8 calves in a severe experimental pneumonia model, euthanised after 48 h; 6 cows with Trueperella pyogenes metritis)",
-    dose_range     = "20 mg/kg intramuscularly (long-acting formulations, eight products) and 20 or 40 mg/kg intravenously",
-    regions        = "Three published studies (Bulgaria, United Kingdom, Ireland/United States), two unpublished academic data sets and three unpublished pharmaceutical-company data sets",
-    notes          = "Meta-analysis of eight data sets pooled by the authors. Sampling was rich (11-27 samples per animal per administration, at least 2 within the first hour and 7 within 24 h); sampling windows ran 0-48 h to 0-288 h. Twelve of 1,730 samples (0.7%) were below the limit of quantification and were discarded (Beal M1). Breed was 24 dairy / 45 beef (Friesian Holstein, Jersey, Aberdeen Angus cross, Polled Hereford and unspecified); breed, sex and health status were screened and rejected as covariates. A 'source' covariate (formulation plus analytical method, seven levels) was explored on Ka2 only, as a formulation-comparison exercise reported in Supplementary Table S4; it is NOT part of the final model and was deliberately excluded from the authors' Monte Carlo simulations so that the simulated variability reflects the diversity of EU formulations. Routes are carried in the rxode2 cmt column: 'central' for an intravenous dose; a simultaneous pair of dose records to 'depot1' and 'depot2', each carrying the full nominal dose, for an intramuscular dose (bioavailability is applied per depot by f(), exactly as the two Phoenix dosepoint() statements do). All parameters are body-weight-normalised, so amt is a per-kilogram amount in microg/kg (20 mg/kg = 20000)."
+    disease_state = "55 healthy animals; 14 infected (8 calves in a severe experimental pneumonia model, euthanised after 48 h; 6 cows with Trueperella pyogenes metritis)",
+    dose_range = "20 mg/kg intramuscularly (long-acting formulations, eight products) and 20 or 40 mg/kg intravenously",
+    regions = "Three published studies (Bulgaria, United Kingdom, Ireland/United States), two unpublished academic data sets and three unpublished pharmaceutical-company data sets",
+    notes = "Meta-analysis of eight data sets pooled by the authors. Sampling was rich (11-27 samples per animal per administration, at least 2 within the first hour and 7 within 24 h); sampling windows ran 0-48 h to 0-288 h. Twelve of 1,730 samples (0.7%) were below the limit of quantification and were discarded (Beal M1). Breed was 24 dairy / 45 beef (Friesian Holstein, Jersey, Aberdeen Angus cross, Polled Hereford and unspecified); breed, sex and health status were screened and rejected as covariates. A 'source' covariate (formulation plus analytical method, seven levels) was explored on Ka2 only, as a formulation-comparison exercise reported in Supplementary Table S4; it is NOT part of the final model and was deliberately excluded from the authors' Monte Carlo simulations so that the simulated variability reflects the diversity of EU formulations. Routes are carried in the rxode2 cmt column: 'central' for an intravenous dose; a simultaneous pair of dose records to 'depot1' and 'depot2', each carrying the full nominal dose, for an intramuscular dose (bioavailability is applied per depot by f(), exactly as the two Phoenix dosepoint() statements do). All parameters are body-weight-normalised, so amt is a per-kilogram amount in microg/kg (20 mg/kg = 20000)."
   )
 
   ini({

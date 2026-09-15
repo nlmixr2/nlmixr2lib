@@ -21,44 +21,44 @@ Shiau_2026_vancomycin <- function() {
   # appears. `peripheral1` is a mathematical distribution compartment whose
   # matrix the abstract never discusses.
   compartmentData <- list(
-    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Reference weight 28.4 kg is the normalizing constant printed in all four individual-parameter equations of Shiau 2026 Table 1, and is named in the Table 1 caption as 'weight adjusted (individual weight/28.4kg)'. The abstract's Results report a cohort median weight of 30 kg (range 3-214 kg), so 28.4 kg is close to but not identical with the reported median; the abstract does not say how it was chosen. The abstract does not state whether weight was treated as time-varying over the 3-day sampling window.",
-      source_name        = "Wt"
+      notes = "Reference weight 28.4 kg is the normalizing constant printed in all four individual-parameter equations of Shiau 2026 Table 1, and is named in the Table 1 caption as 'weight adjusted (individual weight/28.4kg)'. The abstract's Results report a cohort median weight of 30 kg (range 3-214 kg), so 28.4 kg is close to but not identical with the reported median; the abstract does not say how it was chosen. The abstract does not state whether weight was treated as time-varying over the 3-day sampling window.",
+      source_name = "Wt"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the CKiD Under-25 (U25) equation, BSA-normalized",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the CKiD Under-25 (U25) equation, BSA-normalized",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Shiau 2026 Results name the estimating equation ('glomerular function (calculated using CKiD Under 25 [U25] equation)') and Table 1's clearance equation prints the reference value 96 as (U25/96)^Theta_GFR. The abstract does NOT reproduce the U25 equation itself, so this file does not restate it; the U25 equation is a paediatric creatinine- and/or cystatin-C-based eGFR estimator published by Pierce et al. and is applied when preparing the covariate column, not inside the model. The abstract reports no cohort eGFR distribution. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; document the estimator per model because size normalizations are not interchangeable.",
-      source_name        = "U25"
+      notes = "Shiau 2026 Results name the estimating equation ('glomerular function (calculated using CKiD Under 25 [U25] equation)') and Table 1's clearance equation prints the reference value 96 as (U25/96)^Theta_GFR. The abstract does NOT reproduce the U25 equation itself, so this file does not restate it; the U25 equation is a paediatric creatinine- and/or cystatin-C-based eGFR estimator published by Pierce et al. and is applied when preparing the covariate column, not inside the model. The abstract reports no cohort eGFR distribution. Stored under canonical CRCL, which covers BSA-normalized creatinine-based GFR estimates; document the estimator per model because size normalizations are not interchangeable.",
+      source_name = "U25"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects        = 66L,
-    n_studies         = 1L,
-    age_range         = "1 month to 17 years",
-    age_median        = "10 years (range 1 month - 17 years)",
-    weight_range      = "3 - 214 kg",
-    weight_median     = "30 kg (range 3 - 214)",
-    disease_state     = "Critically ill children with multiple organ dysfunction syndrome (MODS) receiving intravenous vancomycin for suspected or documented severe gram-positive infection. MODS severity was classified with the Proulx score; the abstract reports no baseline renal-function strata.",
-    dose_range        = "Not reported. The abstract states only that 'most initial VAN dosing is guided via weight-based approaches' in this population; no dose amounts, infusion durations or dosing intervals are given.",
-    regions           = "United States (multicenter; PALISI network sites, including Children's Hospital of Philadelphia and Nationwide Children's Hospital)",
-    renal_function    = "Reference CKiD U25 eGFR 96 mL/min/1.73 m^2 is the normalizing constant in the Shiau 2026 Table 1 clearance equation. The abstract reports no cohort eGFR median or range.",
+    species = "human",
+    n_subjects = 66L,
+    n_studies = 1L,
+    age_range = "1 month to 17 years",
+    age_median = "10 years (range 1 month - 17 years)",
+    weight_range = "3 - 214 kg",
+    weight_median = "30 kg (range 3 - 214)",
+    disease_state = "Critically ill children with multiple organ dysfunction syndrome (MODS) receiving intravenous vancomycin for suspected or documented severe gram-positive infection. MODS severity was classified with the Proulx score; the abstract reports no baseline renal-function strata.",
+    dose_range = "Not reported. The abstract states only that 'most initial VAN dosing is guided via weight-based approaches' in this population; no dose amounts, infusion durations or dosing intervals are given.",
+    regions = "United States (multicenter; PALISI network sites, including Children's Hospital of Philadelphia and Nationwide Children's Hospital)",
+    renal_function = "Reference CKiD U25 eGFR 96 mL/min/1.73 m^2 is the normalizing constant in the Shiau 2026 Table 1 clearance equation. The abstract reports no cohort eGFR median or range.",
     exposure_observed = "Empirical-Bayes-estimate AUCs computed in Simulx 2024R1: median AUC0-24 454 mg*h/L (range 194-1569) and median AUC24-48 505 mg*h/L (range 8-1994).",
-    toxicity          = "7 of 66 subjects met criteria for ICU-emergent acute kidney injury (a 0.3 mg/dL or 50% rise in serum creatinine from ICU baseline). An AUC24-48 of 465.8 mg*h/L retained 100% sensitivity for AKI; sensitivity fell to 20% or below at AUC24-48 of 545.5 mg*h/L or above. In a stepwise multivariable logistic regression only the Proulx MODS score was significant (odds ratio 6.675, 95% CI 1.09-40.81, p = 0.04); AUC0-24 was not (odds ratio 0.998, 95% CI 0.99-1.00, p = 0.343).",
-    notes             = "Multicenter prospective observational PK study (AMPLE) embedded in a larger study of critically ill children with MODS (PARADIGM), conducted within the Pediatric Acute Lung Injury and Sepsis Investigators (PALISI) network. Up to 15 PK samples per child were collected by volumetric absorptive microsampling over 3 days. Parametric population PK modeling was performed in Monolix 2024R1 with covariate inclusion based on objective function and physiologic relevance; individual AUCs were computed from empirical Bayes estimates in Simulx 2024R1. Figure 1 shows censored (below-limit-of-quantification) observations, so the fit used Monolix's censored-data likelihood; the censoring limit is not reported. Demographics are from the abstract Results paragraph -- the abstract has no baseline-demographics table."
+    toxicity = "7 of 66 subjects met criteria for ICU-emergent acute kidney injury (a 0.3 mg/dL or 50% rise in serum creatinine from ICU baseline). An AUC24-48 of 465.8 mg*h/L retained 100% sensitivity for AKI; sensitivity fell to 20% or below at AUC24-48 of 545.5 mg*h/L or above. In a stepwise multivariable logistic regression only the Proulx MODS score was significant (odds ratio 6.675, 95% CI 1.09-40.81, p = 0.04); AUC0-24 was not (odds ratio 0.998, 95% CI 0.99-1.00, p = 0.343).",
+    notes = "Multicenter prospective observational PK study (AMPLE) embedded in a larger study of critically ill children with MODS (PARADIGM), conducted within the Pediatric Acute Lung Injury and Sepsis Investigators (PALISI) network. Up to 15 PK samples per child were collected by volumetric absorptive microsampling over 3 days. Parametric population PK modeling was performed in Monolix 2024R1 with covariate inclusion based on objective function and physiologic relevance; individual AUCs were computed from empirical Bayes estimates in Simulx 2024R1. Figure 1 shows censored (below-limit-of-quantification) observations, so the fit used Monolix's censored-data likelihood; the censoring limit is not reported. Demographics are from the abstract Results paragraph -- the abstract has no baseline-demographics table."
   )
 
   ini({

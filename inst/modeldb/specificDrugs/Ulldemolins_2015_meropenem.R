@@ -13,66 +13,66 @@ Ulldemolins_2015_meropenem <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight on admission",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight on admission",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ulldemolins 2015 Table 1: median 72.8 kg (range 49-126) across the 30-subject cohort. Reference value 73 kg (population median rounded) used in the power-scaling term V = theta_V * (WT/73)^theta_WT (Results, p. 5523).",
-      source_name        = "WT"
+      notes = "Ulldemolins 2015 Table 1: median 72.8 kg (range 49-126) across the 30-subject cohort. Reference value 73 kg (population median rounded) used in the power-scaling term V = theta_V * (WT/73)^theta_WT (Results, p. 5523).",
+      source_name = "WT"
     ),
     URINE_VOL_24H = list(
-      description        = "Residual diuresis: total urine volume collected over the 24 hours of the natural day of the PK study",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "Residual diuresis: total urine volume collected over the 24 hours of the natural day of the PK study",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ulldemolins 2015 Methods (p. 5521): 'the level of residual diuresis (defined as the volume of urine collected over the 24 h of the natural day of the study)'. Time-fixed per study day; collected by nursing staff. Median 137.5 mL/24h (range <10-2050) overall. Clinical cutoffs used in the paper: anuria <100, oliguria 100-500, preserved diuresis >500 mL/24h. Source-paper alias 'residual diuresis' / theta_DIUR. Used in the additive linear effect CL = theta_CL + theta_DIUR * (URINE_VOL_24H / 100) centered at the 100 mL/24h anuria cutoff.",
-      source_name        = "residual diuresis"
+      notes = "Ulldemolins 2015 Methods (p. 5521): 'the level of residual diuresis (defined as the volume of urine collected over the 24 h of the natural day of the study)'. Time-fixed per study day; collected by nursing staff. Median 137.5 mL/24h (range <10-2050) overall. Clinical cutoffs used in the paper: anuria <100, oliguria 100-500, preserved diuresis >500 mL/24h. Source-paper alias 'residual diuresis' / theta_DIUR. Used in the additive linear effect CL = theta_CL + theta_DIUR * (URINE_VOL_24H / 100) centered at the 100 mL/24h anuria cutoff.",
+      source_name = "residual diuresis"
     )
   )
 
   covariatesDataExcluded <- list(
     CRRT_INTENSITY = list(
       description = "CRRT intensity (filtrate + dialysate flow rate) / ideal body weight",
-      units       = "mL/kg/h",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Ulldemolins 2015 Results (p. 5523): 'exploratory and regression analyses on the effects of covariates on individual CL did not show any visual or statistical trend between intensity and the estimates of individual CL'. Median 34.7 mL/kg/h (range 18.7-60.1) in the cohort. Consistent with Roberts et al. who also failed to identify intensity as a meropenem CL modifier (Discussion, p. 5526)."
+      units = "mL/kg/h",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Ulldemolins 2015 Results (p. 5523): 'exploratory and regression analyses on the effects of covariates on individual CL did not show any visual or statistical trend between intensity and the estimates of individual CL'. Median 34.7 mL/kg/h (range 18.7-60.1) in the cohort. Consistent with Roberts et al. who also failed to identify intensity as a meropenem CL modifier (Discussion, p. 5526)."
     ),
     BFR = list(
       description = "Blood flow rate through the CRRT circuit",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on CL; not retained. Ulldemolins 2015 Results (p. 5523). Median 200 mL/min (range 130-250) in the cohort."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on CL; not retained. Ulldemolins 2015 Results (p. 5523). Median 200 mL/min (range 130-250) in the cohort."
     ),
     ALB = list(
       description = "Serum albumin concentration",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened on both CL and V; not retained. Ulldemolins 2015 Results (p. 5523). Median 23.4 g/L (range 12.4-38) in the cohort."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened on both CL and V; not retained. Ulldemolins 2015 Results (p. 5523). Median 23.4 g/L (range 12.4-38) in the cohort."
     ),
     AGE = list(
       description = "Age on admission",
-      units       = "year",
-      type        = "continuous",
-      notes       = "Screened on V; not retained. Ulldemolins 2015 Results (p. 5523). Median 66.5 years (range 34-85)."
+      units = "year",
+      type = "continuous",
+      notes = "Screened on V; not retained. Ulldemolins 2015 Results (p. 5523). Median 66.5 years (range 34-85)."
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 30L,
-    n_studies        = 1L,
-    age_range        = "34-85 years",
-    age_median       = "66.5 years",
-    weight_range     = "49-126 kg",
-    weight_median    = "72.8 kg",
-    sex_female_pct   = 46.7,
-    race_ethnicity   = "Not reported (multicenter Spanish ICU cohort)",
-    disease_state    = "Critically ill adults with septic shock (Surviving Sepsis Campaign criteria) and continuous renal replacement therapy. CVVHDF in 26/30 patients, CVVHF in 4/30. Median APACHE II 24 (range 5-44), median SOFA 12 (range 4-19) on the day of study. Hepatic impairment (LFTs > 2 ULN) in 6/30. Vasopressors in 28/30. Sources of infection: intra-abdominal 13, respiratory 7, bloodstream 4, urinary tract 2, CNS 2, unknown 2.",
-    dose_range       = "Meropenem IV 500 mg q6h-q12h or 1000 mg q8h-q12h or 2000 mg q8h. Administered as a 30-min bolus or a 3-h / 4-h extended infusion at the discretion of the treating physician. Median duration of therapy 10 days (range 4-28).",
-    regions          = "Spain (three centers: Hospital Parc Tauli, Sabadell; Hospital Clinic, Barcelona; Hospital Joan XXIII, Tarragona). Enrolled January 2012-May 2014.",
-    renal_function   = "All patients on CRRT. Median residual diuresis 137.5 mL/24h (range <10-2050); 14 anuric (<100), 11 oliguric (100-500), 5 with preserved diuresis (>500). Median serum creatinine 1.4 mg/dL (range 0.4-2.6). Median urea 61.7 mg/dL (range 22-168).",
+    species = "human",
+    n_subjects = 30L,
+    n_studies = 1L,
+    age_range = "34-85 years",
+    age_median = "66.5 years",
+    weight_range = "49-126 kg",
+    weight_median = "72.8 kg",
+    sex_female_pct = 46.7,
+    race_ethnicity = "Not reported (multicenter Spanish ICU cohort)",
+    disease_state = "Critically ill adults with septic shock (Surviving Sepsis Campaign criteria) and continuous renal replacement therapy. CVVHDF in 26/30 patients, CVVHF in 4/30. Median APACHE II 24 (range 5-44), median SOFA 12 (range 4-19) on the day of study. Hepatic impairment (LFTs > 2 ULN) in 6/30. Vasopressors in 28/30. Sources of infection: intra-abdominal 13, respiratory 7, bloodstream 4, urinary tract 2, CNS 2, unknown 2.",
+    dose_range = "Meropenem IV 500 mg q6h-q12h or 1000 mg q8h-q12h or 2000 mg q8h. Administered as a 30-min bolus or a 3-h / 4-h extended infusion at the discretion of the treating physician. Median duration of therapy 10 days (range 4-28).",
+    regions = "Spain (three centers: Hospital Parc Tauli, Sabadell; Hospital Clinic, Barcelona; Hospital Joan XXIII, Tarragona). Enrolled January 2012-May 2014.",
+    renal_function = "All patients on CRRT. Median residual diuresis 137.5 mL/24h (range <10-2050); 14 anuric (<100), 11 oliguric (100-500), 5 with preserved diuresis (>500). Median serum creatinine 1.4 mg/dL (range 0.4-2.6). Median urea 61.7 mg/dL (range 22-168).",
     n_concentrations = 153L,
-    notes            = "Demographics from Ulldemolins 2015 Table 1 (overall n=30 column). Model development used 24 subjects with 124 samples; external validation used 6 subjects with the remaining 29 samples. Total meropenem concentration measured by LC-MS/MS, linear over 0.4-300 mg/L. NONMEM 7.3 FOCE-INTER. Bootstrap 200 replicates (Table 3). Single-vs-multicenter design: multicenter ICU cohort, single protocol."
+    notes = "Demographics from Ulldemolins 2015 Table 1 (overall n=30 column). Model development used 24 subjects with 124 samples; external validation used 6 subjects with the remaining 29 samples. Total meropenem concentration measured by LC-MS/MS, linear over 0.4-300 mg/L. NONMEM 7.3 FOCE-INTER. Bootstrap 200 replicates (Table 3). Single-vs-multicenter design: multicenter ICU cohort, single protocol."
   )
 
   ini({

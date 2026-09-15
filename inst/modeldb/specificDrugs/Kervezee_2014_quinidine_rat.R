@@ -18,7 +18,8 @@ Kervezee_2014_quinidine_rat <- function() {
     "CL_PL-ECF, CL_ECF-PL, and CL_PL-LV, plus CSF bulk flow Q_CSF. Brain",
     "compartment volumes and Q_ECF are fixed to physiological values from",
     "Westerhout 2013 refs 38-47; plasma volume V_PL is fixed to the rat",
-    "plasma volume; peripheral volumes are estimated.")
+    "plasma volume; peripheral volumes are estimated."
+  )
   reference <- paste(
     "Kervezee L, Hartman R, van den Berg DJ, Shimizu S, Emoto-Yamamoto Y,",
     "Meijer JH, de Lange ECM. Diurnal variation in P-glycoprotein-mediated",
@@ -28,16 +29,22 @@ Kervezee_2014_quinidine_rat <- function() {
     "J, Smeets J, Danhof M, de Lange ECM. The impact of P-gp functionality",
     "on non-steady state relationships between CSF and brain extracellular",
     "fluid. J Pharmacokinet Pharmacodyn. 2013;40:327-342.",
-    "doi:10.1007/s10928-013-9314-4.")
+    "doi:10.1007/s10928-013-9314-4."
+  )
   vignette <- "Kervezee_2014_quinidine_rat"
   units <- list(
-    time          = "min",
-    dosing        = "mg",
+    time = "min",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   paper_specific_compartments <- c(
-    "brain_deep", "brain_ecf", "csf_lv", "csf_tfv", "csf_cm", "csf_sas"
+    "brain_deep",
+    "brain_ecf",
+    "csf_lv",
+    "csf_tfv",
+    "csf_cm",
+    "csf_sas"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -45,30 +52,31 @@ Kervezee_2014_quinidine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
-    brain_deep  = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
-    brain_ecf   = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
-    csf_lv      = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
-    csf_tfv     = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
-    csf_cm      = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
-    csf_sas     = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE)
+    brain_deep = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
+    brain_ecf = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
+    csf_lv = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_tfv = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_cm = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_sas = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE)
   )
 
   covariateData <- list(
     PERIOD_ACTIVE = list(
-      description        = paste(
+      description = paste(
         "Diurnal-period indicator: 1 = active period (lights-off / dark",
         "phase, ZT12-ZT24) for the nocturnally-active Wistar rat; 0 =",
         "resting period (lights-on / light phase, ZT0-ZT12). Selects the",
         "active-period vs resting-period estimates of the P-gp component",
         "of four BBB clearances (CL_DBR-PL, CL_PL-ECF, CL_ECF-PL, CL_PL-",
-        "LV) and of CSF bulk flow Q_CSF."),
-      units              = "(binary)",
-      type               = "binary",
+        "LV) and of CSF bulk flow Q_CSF."
+      ),
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (resting period; lights-on)",
-      notes              = paste(
+      notes = paste(
         "Time-fixed per animal in the source study (each rat is dosed",
         "at a single ZT). Kervezee 2014 aggregated six experimental ZT",
         "levels (ZT0, 4, 8 as resting; ZT12, 16, 20 as active) into the",
@@ -76,20 +84,21 @@ Kervezee_2014_quinidine_rat <- function() {
         "(Table I). For nocturnally-active species (rats, mice)",
         "PERIOD_ACTIVE = 1 corresponds to the dark / behaviourally-",
         "active phase; for diurnally-active species (humans) the",
-        "mapping is inverted."),
-      source_name        = "time of administration"
+        "mapping is inverted."
+      ),
+      source_name = "time of administration"
     )
   )
 
   population <- list(
-    species        = "rat (Wistar, male)",
-    n_subjects     = 55L,
-    n_studies      = 1L,
-    age_range      = "Adult; specific age not reported",
-    weight_range   = "Not reported (source paper Methods: 'Male Wistar rats (Charles River, The Netherlands)')",
+    species = "rat (Wistar, male)",
+    n_subjects = 55L,
+    n_studies = 1L,
+    age_range = "Adult; specific age not reported",
+    weight_range = "Not reported (source paper Methods: 'Male Wistar rats (Charles River, The Netherlands)')",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy male Wistar rats (Charles River, The Netherlands) housed",
       "under standard 12:12 light-dark cycle with free access to food",
       "and water. Two sub-experiments contribute to the fitted dataset:",
@@ -102,7 +111,7 @@ Kervezee_2014_quinidine_rat <- function() {
       "the retrodialysis calibration was 13 +/- 1.4% (4 mm CP probe)",
       "and 8.4 +/- 2.6% (1 mm CM probe)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "10 mg/kg i.v. infusion over 10 min at t = 0 (rate 250 uL/min/kg",
       "in 5% glucose vehicle). Pre-treatment either vehicle (5% glucose",
       "in saline, N ~= 40) or 15 mg/kg i.v. tariquidar (N ~= 15) at t =",
@@ -112,8 +121,8 @@ Kervezee_2014_quinidine_rat <- function() {
       "diurnal-period effect; they contribute to the pooled likelihood",
       "for identifiability of the passive-clearance parameters."
     ),
-    regions        = "Leiden, the Netherlands (single laboratory; DEC12088)",
-    notes          = paste(
+    regions = "Leiden, the Netherlands (single laboratory; DEC12088)",
+    notes = paste(
       "Demographics from Kervezee 2014 Materials and Methods (Animals;",
       "Drug Administration, Serial Blood Sampling, and Collection of",
       "Brain Tissue; Intracerebral Microdialysis; Supplemental Table",

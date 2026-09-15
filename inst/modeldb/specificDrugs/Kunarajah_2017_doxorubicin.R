@@ -15,8 +15,8 @@ Kunarajah_2017_doxorubicin <- function() {
   reference <- "Kunarajah K, Hennig S, Norris RLG, Lobb M, Charles BG, Pinkerton R, Moore AS. Population pharmacokinetic modelling of doxorubicin and doxorubicinol in children with cancer: is there a relationship with cardiac troponin profiles? Cancer Chemother Pharmacol. 2017;79(6):1209-1217. doi:10.1007/s00280-017-3309-6"
   vignette <- "Kunarajah_2017_doxorubicin"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/L"
   )
 
@@ -25,54 +25,54 @@ Kunarajah_2017_doxorubicin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central       = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1   = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2   = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
     central_doxol = list(analyte = "doxorubicinol", units = "mg", specimen = "plasma", verified = FALSE),
-    effect        = list(analyte = "cardiac troponin I (cTnI)", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "cardiac troponin I (cTnI)", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area at the analysed dose. Enters as a linear factor `1 + (BSA - 1.8) * 0.465` applied identically to every clearance and volume parameter (CL, V1, Q2, V2, Q3, V3, CLm, V4, Qm) in the doxorubicin-doxorubicinol popPK model.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area at the analysed dose. Enters as a linear factor `1 + (BSA - 1.8) * 0.465` applied identically to every clearance and volume parameter (CL, V1, Q2, V2, Q3, V3, CLm, V4, Qm) in the doxorubicin-doxorubicinol popPK model.",
+      units = "m^2",
+      type = "continuous",
       reference_category = "n/a -- linearised around BSA = 1.8 m^2 (the typical-adult reference used by the source NM-TRAN .ctl). The paper does not specify a BSA computation formula; in the validation vignette the Mosteller formula is used.",
-      notes              = "Time-fixed per subject in the source dataset. Children in the cohort had BSA well below 1.8 m^2, so the linear factor evaluates to less than 1 across the population (paediatric typical CL / V are smaller than the adult-reference parameter values).",
-      source_name        = "BSA"
+      notes = "Time-fixed per subject in the source dataset. Children in the cohort had BSA well below 1.8 m^2, so the linear factor evaluates to less than 1 across the population (paediatric typical CL / V are smaller than the adult-reference parameter values).",
+      source_name = "BSA"
     ),
     AGE = list(
-      description        = "Subject age at the analysed dose. Enters as an additional power factor `1 + (AGE/8.4)^0.736` on doxorubicin total clearance (CL only); does not modify any volume or doxorubicinol parameter.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at the analysed dose. Enters as an additional power factor `1 + (AGE/8.4)^0.736` on doxorubicin total clearance (CL only); does not modify any volume or doxorubicinol parameter.",
+      units = "years",
+      type = "continuous",
       reference_category = "n/a -- normalised by AGE / 8.4 (years).",
-      notes              = "The 8.4-year reference and the 0.736 exponent were carried over from the Kontny 2013 / Voller 2015 doxorubicin maturation literature (FIXED in the Kunarajah 2017 fit, .ctl THETA(9) FIX) rather than estimated from the Kunarajah 2017 cohort.",
-      source_name        = "AGE"
+      notes = "The 8.4-year reference and the 0.736 exponent were carried over from the Kontny 2013 / Voller 2015 doxorubicin maturation literature (FIXED in the Kunarajah 2017 fit, .ctl THETA(9) FIX) rather than estimated from the Kunarajah 2017 cohort.",
+      source_name = "AGE"
     ),
     PRIOR_ANTHRACYCLINE_DOSE = list(
-      description        = "Cumulative prior anthracycline dose received before the first dose analysed in the current cycle, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Enters as a linear shift `1 + 0.00308 * (PRIOR_ANTHRACYCLINE_DOSE - 90)` on the typical baseline cardiac troponin I (cTnI) before the next dose; does not modify any PK parameter.",
-      units              = "mg/m^2",
-      type               = "continuous",
+      description = "Cumulative prior anthracycline dose received before the first dose analysed in the current cycle, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Enters as a linear shift `1 + 0.00308 * (PRIOR_ANTHRACYCLINE_DOSE - 90)` on the typical baseline cardiac troponin I (cTnI) before the next dose; does not modify any PK parameter.",
+      units = "mg/m^2",
+      type = "continuous",
       reference_category = "n/a -- linearised around the cohort median 90 mg/m^2.",
-      notes              = "Time-fixed per subject for the modelled cycle (the running cumulative anthracycline dose at the first observed dose; further doses received during the modelled window are accounted for through the PK and the Emax stimulation, not through this baseline shift). Cohort range 0-225 mg/m^2 (six anthracycline-naive patients with PRIOR_ANTHRACYCLINE_DOSE = 0; eleven previously-exposed patients with median prior dose 100 mg/m^2). See `inst/references/covariate-columns.md` for the canonical entry.",
-      source_name        = "PCAMT"
+      notes = "Time-fixed per subject for the modelled cycle (the running cumulative anthracycline dose at the first observed dose; further doses received during the modelled window are accounted for through the PK and the Emax stimulation, not through this baseline shift). Cohort range 0-225 mg/m^2 (six anthracycline-naive patients with PRIOR_ANTHRACYCLINE_DOSE = 0; eleven previously-exposed patients with median prior dose 100 mg/m^2). See `inst/references/covariate-columns.md` for the canonical entry.",
+      source_name = "PCAMT"
     )
   )
 
   population <- list(
-    n_subjects     = 17,
-    n_studies      = 1,
-    age_range      = "3.42-14.67 years (median 7.50)",
-    weight_range   = "11.0-88.6 kg (Table 1)",
-    height_range   = "0.9-1.8 m (Table 1)",
+    n_subjects = 17,
+    n_studies = 1,
+    age_range = "3.42-14.67 years (median 7.50)",
+    weight_range = "11.0-88.6 kg (Table 1)",
+    height_range = "0.9-1.8 m (Table 1)",
     sex_female_pct = 29.4,
-    species        = "Human (paediatric oncology)",
-    disease_state  = "Childhood malignancies treated with doxorubicin (Hodgkin lymphoma, non-Hodgkin lymphoma, hepatoblastoma, Wilms' tumour, T-ALL, Pre-B ALL, synovial sarcoma, neuroblastoma, osteosarcoma; Table 1).",
-    dose_range     = "Single IV doxorubicin doses 25-75 mg/m^2 with infusion durations 0.25-72.5 h (Table 1; median 30 mg/m^2).",
-    regions        = "Royal Children's Hospital, Brisbane, Australia (now Lady Cilento Children's Hospital).",
+    species = "Human (paediatric oncology)",
+    disease_state = "Childhood malignancies treated with doxorubicin (Hodgkin lymphoma, non-Hodgkin lymphoma, hepatoblastoma, Wilms' tumour, T-ALL, Pre-B ALL, synovial sarcoma, neuroblastoma, osteosarcoma; Table 1).",
+    dose_range = "Single IV doxorubicin doses 25-75 mg/m^2 with infusion durations 0.25-72.5 h (Table 1; median 30 mg/m^2).",
+    regions = "Royal Children's Hospital, Brisbane, Australia (now Lady Cilento Children's Hospital).",
     prior_anthracycline_pct = 64.7,
     prior_anthracycline_dose_range = "0-225 mg/m^2 (median 100 mg/m^2 in the 11 previously-exposed patients).",
-    notes          = "19 children enrolled, 17 had blood sampled for analysis. Sampling: pre-infusion; (post-infusion) 5-10 min, 1-2 h, 2-12 h, 24-120 h (1-5 days), 168 h (7 days). 99 doxorubicin and 119 doxorubicinol concentrations and 104 cTnI measurements available for modelling. Lower limit of quantification 4.7 ng/mL for both doxorubicin and doxorubicinol; cTnI lower limit 0.04 ug/L (= 99th percentile of the assay reference range)."
+    notes = "19 children enrolled, 17 had blood sampled for analysis. Sampling: pre-infusion; (post-infusion) 5-10 min, 1-2 h, 2-12 h, 24-120 h (1-5 days), 168 h (7 days). 99 doxorubicin and 119 doxorubicinol concentrations and 104 cTnI measurements available for modelling. Lower limit of quantification 4.7 ng/mL for both doxorubicin and doxorubicinol; cTnI lower limit 0.04 ug/L (= 99th percentile of the assay reference range)."
   )
 
   ini({

@@ -11,8 +11,8 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
   )
   vignette <- "Wagh_2021_spectinamide_1810_mouse"
   units <- list(
-    time          = "h",
-    dosing        = "mg/kg (per-kg dosing; PK volumes and clearances are also per-kg)",
+    time = "h",
+    dosing = "mg/kg (per-kg dosing; PK volumes and clearances are also per-kg)",
     concentration = "mg/L for plasma Cc and PAE compartment; log10(CFU/lung) for the bacterial PD observation"
   )
 
@@ -21,36 +21,41 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot = list(
+      analyte = "spectinamide 1810",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "not applicable", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    bacteria    = list(analyte = "Mycobacterium tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE)
+    effect = list(analyte = "not applicable", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bacteria = list(analyte = "Mycobacterium tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list(
     STUDY_WAGH_2 = list(
-      description        = "Binary indicator that the mouse cohort is study 2 of Wagh 2021 (versus the reference study 1 cohort).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator that the mouse cohort is study 2 of Wagh 2021 (versus the reference study 1 cohort).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (study 1: 7.08 log CFU initial-treatment bacterial load, RUV1 = 0.284 log10 CFU)",
-      notes              = "Drives the multiplicative study-2 effect on K_kill_max (1.15-fold higher killing). Wagh 2021 Table 3: study-specific coefficient for K_kill_max = 1.15 (RSE 4.0%). Subject-level (time-fixed); set once from the trial identifier on each subject record. See vignette Assumptions and deviations for the per-study residual-error treatment.",
-      source_name        = "STUDY (Wagh 2021 Tables 4-5: study 1 vs study 2)"
+      notes = "Drives the multiplicative study-2 effect on K_kill_max (1.15-fold higher killing). Wagh 2021 Table 3: study-specific coefficient for K_kill_max = 1.15 (RSE 4.0%). Subject-level (time-fixed); set once from the trial identifier on each subject record. See vignette Assumptions and deviations for the per-study residual-error treatment.",
+      source_name = "STUDY (Wagh 2021 Tables 4-5: study 1 vs study 2)"
     )
   )
 
   population <- list(
-    species        = "mouse (BALB/c, female)",
-    n_subjects     = 376L,
-    n_studies      = 2L,
-    age_range      = "8 weeks at study start (acclimatized 72 h prior to dosing)",
-    weight_range   = "18-22 g body weight (Wagh 2021 Methods)",
+    species = "mouse (BALB/c, female)",
+    n_subjects = 376L,
+    n_studies = 2L,
+    age_range = "8 weeks at study start (acclimatized 72 h prior to dosing)",
+    weight_range = "18-22 g body weight (Wagh 2021 Methods)",
     sex_female_pct = 100,
     race_ethnicity = NA_character_,
-    disease_state  = "Females BALB/c mice chronically infected with Mycobacterium tuberculosis (ATCC 35801 / TMC 107 / Erdman; MIC of spectinamide 1810 = 1.6 mg/L) via low-dose aerosol exposure (~100 CFU/lung deposition); treatment initiated at day 34 post-infection. Healthy uninfected controls (n=84) provided dense-sampling PK that seeded the Bayesian priors in the infected-animal sparse-sampling fit. The current model is the final integrated PK/PD model in the infected animals.",
-    dose_range     = "Spectinamide 1810 subcutaneous, 20-800 mg/kg per dose, weekly totals 20-4000 mg/kg, frequencies QW / BIW / TIW / QD / BID. 29 dose-group combinations across studies 1 and 2 (Wagh 2021 Tables 4 and 5).",
-    regions        = "USA (Univ. of Tennessee Health Science Center for healthy-animal PK; Colorado State University BSL-3 for infected efficacy / PK)",
-    notes          = paste(
+    disease_state = "Females BALB/c mice chronically infected with Mycobacterium tuberculosis (ATCC 35801 / TMC 107 / Erdman; MIC of spectinamide 1810 = 1.6 mg/L) via low-dose aerosol exposure (~100 CFU/lung deposition); treatment initiated at day 34 post-infection. Healthy uninfected controls (n=84) provided dense-sampling PK that seeded the Bayesian priors in the infected-animal sparse-sampling fit. The current model is the final integrated PK/PD model in the infected animals.",
+    dose_range = "Spectinamide 1810 subcutaneous, 20-800 mg/kg per dose, weekly totals 20-4000 mg/kg, frequencies QW / BIW / TIW / QD / BID. 29 dose-group combinations across studies 1 and 2 (Wagh 2021 Tables 4 and 5).",
+    regions = "USA (Univ. of Tennessee Health Science Center for healthy-animal PK; Colorado State University BSL-3 for infected efficacy / PK)",
+    notes = paste(
       "Total infected mice n = 196 (147 with evaluable PK + log CFU in study 1 +",
       "49 from study 2). 84 healthy mice provided PK only. The integrated final",
       "popPK model used Bayesian priors from the healthy-animal fit (via the",

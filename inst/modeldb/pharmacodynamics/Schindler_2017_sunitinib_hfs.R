@@ -33,7 +33,12 @@ Schindler_2017_sunitinib_hfs <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    svegfr3 = list(analyte = "soluble vascular endothelial growth factor receptor 3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
+    svegfr3 = list(
+      analyte = "soluble vascular endothelial growth factor receptor 3 (sVEGFR-3)",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
     pscore0 = list(analyte = "HFS grade 0", units = "mg", specimen = "not applicable", verified = FALSE),
     pscore1 = list(analyte = "HFS grade 1", units = "mg", specimen = "not applicable", verified = FALSE),
     pscore2 = list(analyte = "HFS grade 2", units = "mg", specimen = "not applicable", verified = FALSE),
@@ -42,61 +47,61 @@ Schindler_2017_sunitinib_hfs <- function() {
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles of a 4-weeks-on / 2-weeks-off schedule or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered sunitinib daily dose (mg) carried as a time-varying data column. Set to 0 during off-cycles of a 4-weeks-on / 2-weeks-off schedule or for placebo subjects so the derived AUC = DOSE / CLI becomes 0.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule, matching the standard GIST regimen. Time-varying by design.",
-      source_name        = "DOSE"
+      notes = "For typical-cohort vignette simulations the value is held at 50 mg during on-cycles of a 4/2 schedule, matching the standard GIST regimen. Time-varying by design.",
+      source_name = "DOSE"
     ),
     CLI = list(
-      description        = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit.",
-      units              = "L/h",
-      type               = "continuous",
+      description = "Individual posthoc total plasma clearance (L/h) of sunitinib from the paper's upstream 2-compartment popPK fit.",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject, time-fixed input. Required. Vignette virtual cohort uses the Hansson 2013a typical value of 32.819 L/h.",
-      source_name        = "CL"
+      notes = "Per-subject, time-fixed input. Required. Vignette virtual cohort uses the Hansson 2013a typical value of 32.819 L/h.",
+      source_name = "CL"
     ),
     BAS_SVEGFR3 = list(
-      description        = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Individual posthoc baseline sVEGFR-3 (pg/mL) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject, time-fixed input. Required. Used as the initial condition for the in-model svegfr3 state and as the denominator in the driver sVEGFR3rel(t) = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3. Hansson 2013a typical value 63,900 pg/mL.",
-      source_name        = "BAS3"
+      notes = "Per-subject, time-fixed input. Required. Used as the initial condition for the in-model svegfr3 state and as the denominator in the driver sVEGFR3rel(t) = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3. Hansson 2013a typical value 63,900 pg/mL.",
+      source_name = "BAS3"
     ),
     MRT_SVEGFR3 = list(
-      description        = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
-      units              = "h",
-      type               = "continuous",
+      description = "Individual posthoc mean residence time of sVEGFR-3 (h) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject, time-fixed input. Used as kout3 = 1 / MRT_SVEGFR3 inside model(). Hansson 2013a typical value 401 h.",
-      source_name        = "MRT3"
+      notes = "Per-subject, time-fixed input. Used as kout3 = 1 / MRT_SVEGFR3 inside model(). Hansson 2013a typical value 401 h.",
+      source_name = "MRT3"
     ),
     EC50_SVEGFR3 = list(
-      description        = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
-      units              = "mg*h/L",
-      type               = "continuous",
+      description = "Individual posthoc EC50 of the simple-Imax drug effect on sVEGFR-3 (mg*h/L AUC) from the upstream Hansson 2013a biomarker indirect-response PD fit (DDMODEL00000197).",
+      units = "mg*h/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-subject, time-fixed input. Appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc). Hansson 2013a typical IC50 is 1.0 mg*h/L.",
-      source_name        = "EC53"
+      notes = "Per-subject, time-fixed input. Appears in the drug-effect term eff3 = auc / (EC50_SVEGFR3 + auc). Hansson 2013a typical IC50 is 1.0 mg*h/L.",
+      source_name = "EC53"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 251L,
-    n_studies      = 3L,
+    species = "human",
+    n_subjects = 251L,
+    n_studies = 3L,
     n_observations = 39294L,
-    age_range      = "adults with GIST",
-    weight_range   = "not reported in Schindler 2017; upstream Hansson 2013 pooled three sunitinib studies",
+    age_range = "adults with GIST",
+    weight_range = "not reported in Schindler 2017; upstream Hansson 2013 pooled three sunitinib studies",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = "Imatinib-resistant gastrointestinal stromal tumours (GIST) treated with sunitinib.",
-    dose_range     = "sunitinib 25-75 mg PO QD (typical 50 mg on 4-weeks-on / 2-weeks-off).",
-    regions        = "multinational (three pooled clinical trials).",
-    biomarkers     = "NCI-CTCAE HFS grade (v3.0), collected daily; grades 0-3 (grade 4 was never observed). Median follow-up 147 days (range 10-540). About 74% of patients had HFS grade = 0 for the entire study period.",
-    notes          = "Same 251-patient subset (drawn from the broader Hansson 2013 303-patient GIST cohort) that carries HFS observations. See Hansson_2013_sunitinib_hfs for the companion DTMM form fit to the same endpoint. The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted; see Hansson_2013a_sunitinib for the source popPD."
+    disease_state = "Imatinib-resistant gastrointestinal stromal tumours (GIST) treated with sunitinib.",
+    dose_range = "sunitinib 25-75 mg PO QD (typical 50 mg on 4-weeks-on / 2-weeks-off).",
+    regions = "multinational (three pooled clinical trials).",
+    biomarkers = "NCI-CTCAE HFS grade (v3.0), collected daily; grades 0-3 (grade 4 was never observed). Median follow-up 147 days (range 10-540). About 74% of patients had HFS grade = 0 for the entire study period.",
+    notes = "Same 251-patient subset (drawn from the broader Hansson 2013 303-patient GIST cohort) that carries HFS observations. See Hansson_2013_sunitinib_hfs for the companion DTMM form fit to the same endpoint. The upstream sVEGFR-3 biomarker dynamics are consumed as data covariates (BAS_SVEGFR3 + MRT_SVEGFR3 + EC50_SVEGFR3) rather than re-fitted; see Hansson_2013a_sunitinib for the source popPD."
   )
 
   ini({

@@ -9,7 +9,7 @@ Fan_2024_sirolimus <- function() {
     sep = " "
   )
   vignette <- "Fan_2024_sirolimus"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Fan 2024 Methods 2.2: whole blood
@@ -17,84 +17,84 @@ Fan_2024_sirolimus <- function() {
   # matrix is whole blood rather than plasma (the paper's prose uses
   # "plasma" loosely in places; the sampling description is unambiguous).
   compartmentData <- list(
-    depot   = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "sirolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The only covariate retained in the Fan 2024 final model. Enters as a power function normalized to the 16 kg cohort median body weight (BWmedian), with separately estimated exponents on each parameter: CL/F = 4.06 * (WT/16)^1.23 (Equation 22) and V/F = 155 * (WT/16)^1.62 (Equation 23). Both exponents were estimated rather than fixed at the theoretical allometric 0.75 / 1 values; the paper's Model I (simple exponential, Equations 6-7) achieved a lower objective function value than the fixed-exponent Model II (Equations 8-9) and three maturation-model alternatives (Supplementary Table S4). Age was screened but excluded because of collinearity with body weight (r = 0.86). Studied range 3.3-65 kg.",
-      source_name        = "BW"
+      notes = "The only covariate retained in the Fan 2024 final model. Enters as a power function normalized to the 16 kg cohort median body weight (BWmedian), with separately estimated exponents on each parameter: CL/F = 4.06 * (WT/16)^1.23 (Equation 22) and V/F = 155 * (WT/16)^1.62 (Equation 23). Both exponents were estimated rather than fixed at the theoretical allometric 0.75 / 1 values; the paper's Model I (simple exponential, Equations 6-7) achieved a lower objective function value than the fixed-exponent Model II (Equations 8-9) and three maturation-model alternatives (Supplementary Table S4). Age was screened but excluded because of collinearity with body weight (r = 0.86). Studied range 3.3-65 kg.",
+      source_name = "BW"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Subject age at baseline",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the size / maturation model series (Fan 2024 Methods 2.3.2, Models III and V) but not retained: body weight and age were strongly correlated (r = 0.86), so age was dropped to avoid collinearity and parameter-estimation instability (Discussion). Studied range 0.08-12 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the size / maturation model series (Fan 2024 Methods 2.3.2, Models III and V) but not retained: body weight and age were strongly correlated (r = 0.86), so age was dropped to avoid collinearity and parameter-estimation instability (Discussion). Studied range 0.08-12 years."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Reported in the demographic table (24 male / 25 female) but not screened as a covariate on CL/F in the final model."
+      units = "(binary)",
+      type = "binary",
+      notes = "Reported in the demographic table (24 male / 25 female) but not screened as a covariate on CL/F in the final model."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened during stepwise forward inclusion / backward exclusion but not significant on CL/F (Fan 2024 Results 3.2; Supplementary Table S4)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened during stepwise forward inclusion / backward exclusion but not significant on CL/F (Fan 2024 Results 3.2; Supplementary Table S4)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a marker of hepatic function but not significant on CL/F. The Discussion attributes this to an insufficient number of patients with liver impairment in the retrospective cohort."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a marker of hepatic function but not significant on CL/F. The Discussion attributes this to an insufficient number of patients with liver impairment in the retrospective cohort."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a marker of hepatic function but not significant on CL/F (Fan 2024 Results 3.2)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a marker of hepatic function but not significant on CL/F (Fan 2024 Results 3.2)."
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = "Screened because sirolimus distributes predominantly into red blood cells, but not significant on CL/F. The Discussion attributes this to blood-cell indices fluctuating only within normal ranges in this cohort."
+      units = "%",
+      type = "continuous",
+      notes = "Screened because sirolimus distributes predominantly into red blood cells, but not significant on CL/F. The Discussion attributes this to blood-cell indices fluctuating only within normal ranges in this cohort."
     ),
     HGB = list(
       description = "Hemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened alongside the other red-cell indices but not significant on CL/F."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened alongside the other red-cell indices but not significant on CL/F."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 49L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 49L,
+    n_studies = 1L,
     n_observations = 134L,
-    age_range      = "0.08-12 years",
-    age_median     = "3.5 years",
-    weight_range   = "3.3-65 kg",
-    weight_median  = "16 kg",
+    age_range = "0.08-12 years",
+    age_median = "3.5 years",
+    weight_range = "3.3-65 kg",
+    weight_median = "16 kg",
     sex_female_pct = 51.0,
     race_ethnicity = "Chinese (single-centre cohort in Nanjing, China); not reported by subgroup.",
-    disease_state  = "Children with vascular anomalies (including tufted angioma, kaposiform hemangioendothelioma, and lymphatic and venous malformations) receiving oral sirolimus.",
-    dose_range     = "0.018-0.152 mg/kg/day oral sirolimus; the common initial regimen was 0.08 mg/kg/day given at a dosing interval of either 12 or 24 h.",
-    regions        = "China (single centre: Children's Hospital of Nanjing Medical University).",
-    assay          = "Enzyme multiplied immunoassay technique (EMIT 2000, Siemens) on whole blood, calibration range 3.5-30 ng/mL; quality-control deviations over the collection period ranged from -13.2 to 14.8 percent.",
-    sampling       = "All 134 observations are steady-state trough concentrations drawn 30 min before the next maintenance dose, at least 7 days after starting sirolimus. No absorption-phase or peak samples were collected, which is why Ka was not estimable and V/F carries no inter-individual variability.",
-    target_range   = "Trough concentration target of 5-15 ng/mL used for the Monte Carlo dose-optimization simulations.",
-    notes          = "Retrospective TDM cohort collected between July 2017 and April 2022 (Fan 2024 Table 1). Exclusion criteria were concentrations beyond the assay detection limit and ongoing serious infections or multiple organ injuries. Sex: 24 male / 25 female. Genotyping for CYP3A4, CYP3A5, mTOR, ABCB1, ABCC2, CYP3A7, POR, IL10, IL18, SUMO4, NR1I2 and TCF7L2 variants was performed and screened, but no single nucleotide polymorphism was retained in the final model."
+    disease_state = "Children with vascular anomalies (including tufted angioma, kaposiform hemangioendothelioma, and lymphatic and venous malformations) receiving oral sirolimus.",
+    dose_range = "0.018-0.152 mg/kg/day oral sirolimus; the common initial regimen was 0.08 mg/kg/day given at a dosing interval of either 12 or 24 h.",
+    regions = "China (single centre: Children's Hospital of Nanjing Medical University).",
+    assay = "Enzyme multiplied immunoassay technique (EMIT 2000, Siemens) on whole blood, calibration range 3.5-30 ng/mL; quality-control deviations over the collection period ranged from -13.2 to 14.8 percent.",
+    sampling = "All 134 observations are steady-state trough concentrations drawn 30 min before the next maintenance dose, at least 7 days after starting sirolimus. No absorption-phase or peak samples were collected, which is why Ka was not estimable and V/F carries no inter-individual variability.",
+    target_range = "Trough concentration target of 5-15 ng/mL used for the Monte Carlo dose-optimization simulations.",
+    notes = "Retrospective TDM cohort collected between July 2017 and April 2022 (Fan 2024 Table 1). Exclusion criteria were concentrations beyond the assay detection limit and ongoing serious infections or multiple organ injuries. Sex: 24 male / 25 female. Genotyping for CYP3A4, CYP3A5, mTOR, ABCB1, ABCC2, CYP3A7, POR, IL10, IL18, SUMO4, NR1I2 and TCF7L2 variants was performed and screened, but no single nucleotide polymorphism was retained in the final model."
   )
 
   ini({

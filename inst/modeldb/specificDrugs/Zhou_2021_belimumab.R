@@ -8,78 +8,78 @@ Zhou_2021_belimumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass (Janmahasatian formula)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass (Janmahasatian formula)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL and V1 with reference 40.69 kg (Zhou 2021 Table 2). Computed per Janmahasatian et al. Clin Pharmacokinet 2005;44:1051-1065 from height, weight, and sex.",
-      source_name        = "FFM"
+      notes = "Power-form effect on CL and V1 with reference 40.69 kg (Zhou 2021 Table 2). Computed per Janmahasatian et al. Clin Pharmacokinet 2005;44:1051-1065 from height, weight, and sex.",
+      source_name = "FFM"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BALB (baseline albumin). Power-form effect on CL with reference 40 g/L (Zhou 2021 Table 2).",
-      source_name        = "BALB"
+      notes = "Source column BALB (baseline albumin). Power-form effect on CL with reference 40 g/L (Zhou 2021 Table 2).",
+      source_name = "BALB"
     ),
     IGG = list(
-      description        = "Baseline serum immunoglobulin G",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum immunoglobulin G",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column BIGG (baseline IgG). Power-form effect on CL with reference 14.8 g/L (Zhou 2021 Table 2).",
-      source_name        = "BIGG"
+      notes = "Source column BIGG (baseline IgG). Power-form effect on CL with reference 14.8 g/L (Zhou 2021 Table 2).",
+      source_name = "BIGG"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Saturable maturation effect on V1: factor AGE/(AGE+1.58). Approaches 1 in adults, ~0.79 in 6-year-olds (Zhou 2021 Table 2).",
-      source_name        = "AGE"
+      notes = "Saturable maturation effect on V1: factor AGE/(AGE+1.58). Approaches 1 in adults, ~0.79 in 6-year-olds (Zhou 2021 Table 2).",
+      source_name = "AGE"
     ),
     RACE_ASIAN_NORTHEAST = list(
-      description        = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "North East Asian race indicator (Chinese, Japanese, or Korean heritage)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-North East Asian)",
-      notes              = "Multiplicative effect on V1 (factor 1.07) when RACE_ASIAN_NORTHEAST = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d). Renamed from canonical RACE_NEAS to RACE_ASIAN_NORTHEAST on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out 'Northeast' rather than the opaque NEAS abbreviation).",
-      source_name        = "RAC4"
+      notes = "Multiplicative effect on V1 (factor 1.07) when RACE_ASIAN_NORTHEAST = 1. Source column RAC4 (Zhou 2021 Table 2 footnote d). Renamed from canonical RACE_NEAS to RACE_ASIAN_NORTHEAST on 2026-06-19 per the canonical-register standardization audit (operator decision: spell out 'Northeast' rather than the opaque NEAS abbreviation).",
+      source_name = "RAC4"
     ),
     STUDY_LBSL = list(
-      description        = "Indicator for early-phase belimumab studies LBSL01 or LBSL02",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for early-phase belimumab studies LBSL01 or LBSL02",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any other belimumab study in the pooled analysis)",
-      notes              = "Multiplicative effects on CL (factor 1.63) and V1 (factor 1.26) when STUDY_LBSL = 1. Source column INDR (Zhou 2021 Table 2 footnote: INDR=1 for LBSL01/LBSL02, 0 otherwise). The two early studies used a different ELISA assay than the later electrochemiluminescence-based assay.",
-      source_name        = "INDR"
+      notes = "Multiplicative effects on CL (factor 1.63) and V1 (factor 1.26) when STUDY_LBSL = 1. Source column INDR (Zhou 2021 Table 2 footnote: INDR=1 for LBSL01/LBSL02, 0 otherwise). The two early studies used a different ELISA assay than the later electrochemiluminescence-based assay.",
+      source_name = "INDR"
     )
   )
 
   population <- list(
-    n_subjects     = 1783,
-    n_studies      = 9,
+    n_subjects = 1783,
+    n_studies = 9,
     n_observations = 9650,
-    age_range      = "6-80 years",
-    age_median     = "38 years (adults); 14 years (pediatric)",
-    weight_range   = "17-165.4 kg",
-    weight_median  = "65.7 kg (adults); 52.5 kg (pediatric)",
+    age_range = "6-80 years",
+    age_median = "38 years (adults); 14 years (pediatric)",
+    weight_range = "17-165.4 kg",
+    weight_median = "65.7 kg (adults); 52.5 kg (pediatric)",
     sex_female_pct = 93.1,
     race_ethnicity = "North East Asian 13.2% (235/1783); other 86.8% (1548/1783).",
-    disease_state  = "Systemic lupus erythematosus (SLE), plus a small contribution from non-Chinese healthy volunteers in the early-phase studies.",
-    dose_range     = "IV 1-10 mg/kg every 4 weeks (final-model adult/pediatric regimen: 10 mg/kg Q4W).",
-    regions        = "Multinational pooled analysis combining Chinese and non-Chinese cohorts.",
-    pediatric_n    = 53,
-    adult_n        = 1730,
-    studies        = "BEL114055 (PLUTO; NCT01649765), LBSL01 (NCT00657007), LBSL02 (NCT00071487), BEL113750 (BLISS-NEA; NCT01345253), BEL116119 (NCT01516450), BEL110751 (BLISS-76; NCT00410384), BEL110752 (BLISS-52; NCT00424476), 200909 (NCT02880852), BEL114448 (NCT01583530).",
-    notes          = "Zhou 2021 Table 1 baseline demographics. Median (min, max) FFM 41.08 (24.32; 87.93) kg in adults and 34.45 (12.56; 57.16) kg in pediatric; median serum IgG 14.7 g/L (adults) / 14.5 g/L (pediatric); median albumin 40 g/L (adults) / 43 g/L (pediatric)."
+    disease_state = "Systemic lupus erythematosus (SLE), plus a small contribution from non-Chinese healthy volunteers in the early-phase studies.",
+    dose_range = "IV 1-10 mg/kg every 4 weeks (final-model adult/pediatric regimen: 10 mg/kg Q4W).",
+    regions = "Multinational pooled analysis combining Chinese and non-Chinese cohorts.",
+    pediatric_n = 53,
+    adult_n = 1730,
+    studies = "BEL114055 (PLUTO; NCT01649765), LBSL01 (NCT00657007), LBSL02 (NCT00071487), BEL113750 (BLISS-NEA; NCT01345253), BEL116119 (NCT01516450), BEL110751 (BLISS-76; NCT00410384), BEL110752 (BLISS-52; NCT00424476), 200909 (NCT02880852), BEL114448 (NCT01583530).",
+    notes = "Zhou 2021 Table 1 baseline demographics. Median (min, max) FFM 41.08 (24.32; 87.93) kg in adults and 34.45 (12.56; 57.16) kg in pediatric; median serum IgG 14.7 g/L (adults) / 14.5 g/L (pediatric); median albumin 40 g/L (adults) / 43 g/L (pediatric)."
   )
 
   ini({

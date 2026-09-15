@@ -20,9 +20,9 @@ Jeong_2025_imc002 <- function() {
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   compartmentData <- list(
-    central     = list(analyte = "IMC-002", units = "umol", specimen = "plasma", verified = TRUE),
-    target      = list(analyte = "CD47", units = "umol/L", specimen = "plasma", verified = TRUE),
-    complex     = list(analyte = "IMC-002-CD47 complex", units = "umol/L", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "IMC-002", units = "umol", specimen = "plasma", verified = TRUE),
+    target = list(analyte = "CD47", units = "umol/L", specimen = "plasma", verified = TRUE),
+    complex = list(analyte = "IMC-002-CD47 complex", units = "umol/L", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "IMC-002", units = "umol", specimen = "plasma", verified = TRUE)
   )
 
@@ -34,39 +34,39 @@ Jeong_2025_imc002 <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2)."
     ),
     SEXF = list(
-      description        = "Female sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2). Reported in Table 1 as male/female counts (8/4)."
+      notes = "Screened by stepwise covariate modelling on the PK parameters; not retained in the final model (Jeong 2025 sec. 2.2 and 3.2). Reported in Table 1 as male/female counts (8/4)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 12,
-    n_studies      = 1,
-    study_id       = "NCT05276310 (phase Ia open-label dose escalation, single centre)",
-    age_mean       = "58.8 years (SD 8.0)",
-    weight_mean    = "64.5 kg (SD 10.2)",
+    species = "human",
+    n_subjects = 12,
+    n_studies = 1,
+    study_id = "NCT05276310 (phase Ia open-label dose escalation, single centre)",
+    age_mean = "58.8 years (SD 8.0)",
+    weight_mean = "64.5 kg (SD 10.2)",
     sex_female_pct = 33.3,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Adults with advanced solid tumours who had failed standard therapy: hepatocellular carcinoma (9), breast cancer (2), gallbladder cancer (1)",
-    dose_range     = "5, 10, 20 or 30 mg/kg IMC-002 as a 3 h intravenous infusion every 2 weeks; 3 patients per dose level",
-    regions        = "Republic of Korea",
+    disease_state = "Adults with advanced solid tumours who had failed standard therapy: hepatocellular carcinoma (9), breast cancer (2), gallbladder cancer (1)",
+    dose_range = "5, 10, 20 or 30 mg/kg IMC-002 as a 3 h intravenous infusion every 2 weeks; 3 patients per dose level",
+    regions = "Republic of Korea",
     n_observations = 213,
-    notes          = paste(
+    notes = paste(
       "Demographics from Jeong 2025 Table 1; the per-cohort sampling schedule is Table S1.",
       "Dosing is prescribed in mg/kg but the model is parameterised in molar units, so a",
       "molecular weight is needed to convert. IMC-002 is a fully human IgG4 monoclonal",

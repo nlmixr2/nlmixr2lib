@@ -40,7 +40,7 @@ Han_2025_fluoxetine <- function() {
     sep = " "
   )
   vignette <- "Han_2025_fluoxetine"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amount units follow the mg dosing unit declared
@@ -51,18 +51,18 @@ Han_2025_fluoxetine <- function() {
   # analytes (Table 4) and doses in mg/day (Table 1), which fixes the
   # amount unit of each state.
   compartmentData <- list(
-    depot            = list(analyte = "fluoxetine",    units = "mg", specimen = "administration site", verified = TRUE),
-    central          = list(analyte = "fluoxetine",    units = "mg", specimen = "plasma",              verified = TRUE),
-    central_norfluox = list(analyte = "norfluoxetine", units = "mg", specimen = "plasma",              verified = TRUE)
+    depot = list(analyte = "fluoxetine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "fluoxetine", units = "mg", specimen = "plasma", verified = TRUE),
+    central_norfluox = list(analyte = "norfluoxetine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. Han 2025's own reference category is FEMALE: the Table 4 footnote gives CL/F,males = CL/F,females x (1 + 0.165) with Females = 0 and Males = 1, so the printed CL/F = 2.91 L/h is the female typical value.",
-      notes              = paste(
+      notes = paste(
         "Han 2025 encodes sex as a male-indicator (Table 4 footnote 1:",
         "'Females = 0; Males = 1') with female as the reference category.",
         "To store the covariate under the canonical SEXF (1 = female,",
@@ -78,16 +78,16 @@ Han_2025_fluoxetine <- function() {
         "fluoxetine clearance only -- no sex effect was retained on the",
         "fluoxetine volume or on either norfluoxetine parameter."
       ),
-      source_name        = "Sex (1 = male, 0 = female)"
+      source_name = "Sex (1 = male, 0 = female)"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Sect. 2.5: 'Candidate",
         "covariates were derived from patients' demographic data,",
         "including body weight, sex, and other clinically relevant",
@@ -102,9 +102,9 @@ Han_2025_fluoxetine <- function() {
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Collected for every subject and used to stratify the cohort",
         "into pediatric (< 18 years) and adult (>= 18 years) groups",
         "(Sect. 3.3), but not retained as a covariate in the final",
@@ -120,17 +120,17 @@ Han_2025_fluoxetine <- function() {
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 198L,
-    n_observations   = 482L,
-    n_studies        = 1L,
-    age_range        = "12-56 years (median 17; Table 1)",
-    age_median       = "17 years",
-    weight_range     = "35.9-115 kg (median 59; Table 1)",
-    weight_median    = "59 kg",
-    sex_female_pct   = 73.7,
-    race_ethnicity   = c(Asian = 100),
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 198L,
+    n_observations = 482L,
+    n_studies = 1L,
+    age_range = "12-56 years (median 17; Table 1)",
+    age_median = "17 years",
+    weight_range = "35.9-115 kg (median 59; Table 1)",
+    weight_median = "59 kg",
+    sex_female_pct = 73.7,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste(
       "Chinese psychiatric inpatients and outpatients treated with",
       "fluoxetine (predominantly depression; fluoxetine is first-line for",
       "major depressive disorder in adults and adolescents). Retrospective",
@@ -139,15 +139,15 @@ Han_2025_fluoxetine <- function() {
       "Subjects were required to have complete dosing histories,",
       "demographic data, and TDM records."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "20-60 mg once daily (Table 1 'External dataset' row). Note the",
       "paper is internally inconsistent about the upper bound: Sect. 3.3",
       "states 'The daily dosage in this cohort ranged from 20 to 40 mg',",
       "while Table 1 and the Discussion both give 20-60 mg/day with a",
       "median of 40 mg/day."
     ),
-    regions          = "China (Changsha, Hunan Province)",
-    age_strata       = paste(
+    regions = "China (Changsha, Hunan Province)",
+    age_strata = paste(
       "Pediatric (< 18 years) n = 102, median age 15 (range 12-17),",
       "median weight 55 kg (range 35.9-96); adult (>= 18 years) n = 92,",
       "median age 21 (range 18-56), median weight 59 kg (range",
@@ -155,13 +155,13 @@ Han_2025_fluoxetine <- function() {
       "198 subjects reported for the whole cohort; the paper does not",
       "reconcile the difference."
     ),
-    sampling         = paste(
+    sampling = paste(
       "Trough-only: 'All plasma samples were collected at steady state,",
       "prior to the next scheduled dose' (Sect. 2.3); Table 1 records",
       "'All concentration was trough concentration'. This is why Ka",
       "could not be estimated and was fixed."
     ),
-    notes            = paste(
+    notes = paste(
       "241 fluoxetine and 241 norfluoxetine plasma concentrations (482",
       "observations total) from 198 subjects. Assay: validated LC-MS/MS",
       "(HPLC-MS/MS) with a lower limit of quantification of 1 ng/mL.",

@@ -8,42 +8,42 @@ Farrell_2012_farletuzumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "farletuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "farletuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "farletuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed (baseline) body weight used with power scaling on CL and Vc. Reference weight 66.2 kg is the overall median body weight in the analysis cohort (Farrell 2012 Table 1).",
-      source_name        = "WT"
+      notes = "Time-fixed (baseline) body weight used with power scaling on CL and Vc. Reference weight 66.2 kg is the overall median body weight in the analysis cohort (Farrell 2012 Table 1).",
+      source_name = "WT"
     ),
     STUDY_FARLETUZUMAB_PHASE2 = list(
-      description        = "Indicator for the Phase II study (MORAb-003-002) of the Farrell 2012 pooled analysis",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the Phase II study (MORAb-003-002) of the Farrell 2012 pooled analysis",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Phase I study, MORAb-003-001)",
-      notes              = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier. Renamed from generic canonical PHASE2 to paper-specific STUDY_FARLETUZUMAB_PHASE2 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE2 token collided with Valenzuela 2025's PHASE1 canonical that picks the opposite reference category).",
-      source_name        = "STUDY"
+      notes = "Switches the residual-error model between the Phase I proportional-only and the Phase II combined additive + proportional error reported in Farrell 2012 Table 3. Derived from the trial identifier. Renamed from generic canonical PHASE2 to paper-specific STUDY_FARLETUZUMAB_PHASE2 on 2026-06-19 per the canonical-register standardization audit (operator decision: the generic PHASE2 token collided with Valenzuela 2025's PHASE1 canonical that picks the opposite reference category).",
+      source_name = "STUDY"
     )
   )
 
   population <- list(
-    n_subjects     = 79,
-    n_studies      = 2,
-    age_range      = "31-81 years",
-    age_median     = "61 years",
-    weight_range   = "44.5-118.2 kg",
-    weight_median  = "66.2 kg",
+    n_subjects = 79,
+    n_studies = 2,
+    age_range = "31-81 years",
+    age_median = "61 years",
+    weight_range = "44.5-118.2 kg",
+    weight_median = "66.2 kg",
     sex_female_pct = 100,
     race_ethnicity = c(Caucasian = 77, Asian = 8, Hispanic = 6, Other = 6, Black = 3),
-    disease_state  = "Advanced epithelial ovarian, fallopian tube, or primary peritoneal cancer (Phase I relapsed after standard chemotherapy; Phase II relapsed platinum-sensitive).",
-    dose_range     = "12.5-400 mg/m^2 weekly IV infusion",
-    regions        = "Not reported in detail",
-    notes          = "Demographics from Farrell 2012 Table 1. Two studies pooled (Phase I MORAb-003-001: 25 patients, 722 samples at doses 12.5-400 mg/m^2; Phase II MORAb-003-002: 54 patients, 1,750 samples predominantly at 100 mg/m^2). Final model development excluded 169 samples at 12.5 and 25 mg/m^2 doses due to apparent low-dose nonlinearity; all 79 patients contribute baseline demographics."
+    disease_state = "Advanced epithelial ovarian, fallopian tube, or primary peritoneal cancer (Phase I relapsed after standard chemotherapy; Phase II relapsed platinum-sensitive).",
+    dose_range = "12.5-400 mg/m^2 weekly IV infusion",
+    regions = "Not reported in detail",
+    notes = "Demographics from Farrell 2012 Table 1. Two studies pooled (Phase I MORAb-003-001: 25 patients, 722 samples at doses 12.5-400 mg/m^2; Phase II MORAb-003-002: 54 patients, 1,750 samples predominantly at 100 mg/m^2). Final model development excluded 169 samples at 12.5 and 25 mg/m^2 doses due to apparent low-dose nonlinearity; all 79 patients contribute baseline demographics."
   )
 
   ini({

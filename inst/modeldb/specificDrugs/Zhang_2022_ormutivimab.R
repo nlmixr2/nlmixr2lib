@@ -6,30 +6,30 @@ Zhang_2022_ormutivimab <- function() {
 
   covariateData <- list(
     DRUG_ORMU = list(
-      description        = "Indicator for Ormutivimab administration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for Ormutivimab administration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (HRIG, plasma-derived human rabies immunoglobulin comparator; also used for placebo + vaccine subjects who received no passive antibody)",
-      notes              = "Time-fixed per subject. 1 = subject received Ormutivimab (rHRIG, the recombinant human anti-rabies IgG drug). 0 = subject received plasma-derived HRIG. Modifies the typical-value emax and ET50 of the time-dependent vaccine-induced RVNA emax model. Zhang 2022 Eq. 11 (Results section 3.4): emax = Emax_HRIG + 0.143 for rHRIG; ET50 = ET50_HRIG - 3.8 for rHRIG. The paper reports only this binary contrast; placebo + vaccine subjects (no passive antibody) inherit the HRIG-arm typical emax/ET50 because their fitted-time-emax curve captures vaccine response alone and the binary covariate is structured as a shift from the HRIG baseline.",
-      source_name        = "antibody type"
+      notes = "Time-fixed per subject. 1 = subject received Ormutivimab (rHRIG, the recombinant human anti-rabies IgG drug). 0 = subject received plasma-derived HRIG. Modifies the typical-value emax and ET50 of the time-dependent vaccine-induced RVNA emax model. Zhang 2022 Eq. 11 (Results section 3.4): emax = Emax_HRIG + 0.143 for rHRIG; ET50 = ET50_HRIG - 3.8 for rHRIG. The paper reports only this binary contrast; placebo + vaccine subjects (no passive antibody) inherit the HRIG-arm typical emax/ET50 because their fitted-time-emax curve captures vaccine response alone and the binary covariate is structured as a shift from the HRIG baseline.",
+      source_name = "antibody type"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 240L,
-    n_studies        = 1L,
-    age_range        = "18 - 55 years; phase IIb mean (SD) 39.7 (8.1) years",
-    age_median       = "39.7 years (mean)",
-    weight_range     = "phase IIb mean (SD) 64.7 (11.2) kg",
-    weight_median    = "64.7 kg (mean)",
-    sex_female_pct   = 55.0,
-    race_ethnicity   = c(Chinese = 100),
-    disease_state    = "Healthy adults without prior rabies exposure or rabies immunization.",
-    dose_range       = "Single IM injection on Day 0 of Ormutivimab 20 or 40 IU/kg, or HRIG 20 IU/kg, or placebo, all in combination with Vero-cell rabies vaccine on Days 0, 3, 7, 14, 28 (Essen regimen).",
-    regions          = "China (Chinese CDC sites in Beijing-Chaoyang and Shanxi).",
+    species = "human",
+    n_subjects = 240L,
+    n_studies = 1L,
+    age_range = "18 - 55 years; phase IIb mean (SD) 39.7 (8.1) years",
+    age_median = "39.7 years (mean)",
+    weight_range = "phase IIb mean (SD) 64.7 (11.2) kg",
+    weight_median = "64.7 kg (mean)",
+    sex_female_pct = 55.0,
+    race_ethnicity = c(Chinese = 100),
+    disease_state = "Healthy adults without prior rabies exposure or rabies immunization.",
+    dose_range = "Single IM injection on Day 0 of Ormutivimab 20 or 40 IU/kg, or HRIG 20 IU/kg, or placebo, all in combination with Vero-cell rabies vaccine on Days 0, 3, 7, 14, 28 (Essen regimen).",
+    regions = "China (Chinese CDC sites in Beijing-Chaoyang and Shanxi).",
     n_subjects_total = 300L,
-    notes            = "Final-model parameters were estimated on the phase IIb cohort (n = 240; four arms of ~60 subjects each: placebo+vaccine, HRIG 20 IU/kg + vaccine, Ormutivimab 20 IU/kg + vaccine, Ormutivimab 40 IU/kg + vaccine; demographics per Zhang 2022 Table 2). The phase IIa cohort (n = 60; passive-antibody only, no vaccine) was used to develop the upstream two-compartment passive-antibody PK model that is NOT included in this nlmixr2lib model file (parameter values were not published; see vignette Errata). ClinicalTrials.gov NCT02559921."
+    notes = "Final-model parameters were estimated on the phase IIb cohort (n = 240; four arms of ~60 subjects each: placebo+vaccine, HRIG 20 IU/kg + vaccine, Ormutivimab 20 IU/kg + vaccine, Ormutivimab 40 IU/kg + vaccine; demographics per Zhang 2022 Table 2). The phase IIa cohort (n = 60; passive-antibody only, no vaccine) was used to develop the upstream two-compartment passive-antibody PK model that is NOT included in this nlmixr2lib model file (parameter values were not published; see vignette Errata). ClinicalTrials.gov NCT02559921."
   )
 
   ini({

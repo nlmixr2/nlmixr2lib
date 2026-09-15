@@ -1,55 +1,55 @@
 Djebli_2017_alirocumab <- function() {
   description <- "(Djebli 2017 writes the drug's linear catabolic clearance as CLL; it is stored here under the canonical name `lcl`.) Quasi-steady-state target-mediated drug disposition (TMDD-QSS) population PK model for alirocumab and total PCSK9 in healthy adults and adults with hypercholesterolemia (Djebli 2017, final model on expanded data set n=2870). Two-compartment disposition with first-order SC absorption (lag time and bioavailability), linear catabolic clearance from central, and PCSK9 binding / complex internalization described by QSS algebra; allometric weight scaling on CLL, Q, and Vc plus a statin-coadministration effect on CLL."
-  reference   <- "Djebli N, Martinez JM, Lohan L, Khier S, Brunet A, Hurbin F, Fabre D. Target-Mediated Drug Disposition Population Pharmacokinetics Model of Alirocumab in Healthy Volunteers and Patients: Pooled Analysis of Randomized Phase I/II/III Studies. Clin Pharmacokinet. 2017;56(10):1155-1171. doi:10.1007/s40262-016-0505-1"
-  vignette    <- "Djebli_2017_alirocumab"
-  units       <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  reference <- "Djebli N, Martinez JM, Lohan L, Khier S, Brunet A, Hurbin F, Fabre D. Target-Mediated Drug Disposition Population Pharmacokinetics Model of Alirocumab in Healthy Volunteers and Patients: Pooled Analysis of Randomized Phase I/II/III Studies. Clin Pharmacokinet. 2017;56(10):1155-1171. doi:10.1007/s40262-016-0505-1"
+  vignette <- "Djebli_2017_alirocumab"
+  units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "alirocumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "PCSK9", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "alirocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "alirocumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PCSK9", units = "mg", specimen = "plasma", verified = FALSE),
     total_target = list(analyte = "PCSK9", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling P_i = TVP * (WT/WT_med)^EXP with EXP = 0.75 for linear clearance CL and Q and EXP = 1 for Vc (Djebli 2017 Sect. 3.6, n=2870 expanded model). Reference body weight 85 kg is the mean baseline weight reported in Table 3 for the expanded data set; the paper labels the reference as WT_med (median) but only reports the mean, so the mean is used here as the closest reported summary.",
-      source_name        = "WT"
+      notes = "Allometric scaling P_i = TVP * (WT/WT_med)^EXP with EXP = 0.75 for linear clearance CL and Q and EXP = 1 for Vc (Djebli 2017 Sect. 3.6, n=2870 expanded model). Reference body weight 85 kg is the mean baseline weight reported in Table 3 for the expanded data set; the paper labels the reference as WT_med (median) but only reports the mean, so the mean is used here as the closest reported summary.",
+      source_name = "WT"
     ),
     CONMED_STATIN = list(
-      description        = "Concomitant statin (HMG-CoA reductase inhibitor) coadministration",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant statin (HMG-CoA reductase inhibitor) coadministration",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no statin coadministration)",
-      notes              = "Multiplicative effect on the linear clearance CL: CLL = TVCLL * COV1^STATIN with COV1 = 1.27 (Djebli 2017 Table 4 expanded-model column and Sect. 3.6 equation). STATIN = 1 captures coadministration of any statin (rosuvastatin, atorvastatin, or simvastatin at any reported dose; low- and high-dose pooled). The covariate replaces the disease-state (DISST) effect on Vc retained in the smaller n=527 model because of strong collinearity between disease state and statin therapy in the n=527 cohort (Djebli 2017 Sect. 4).",
-      source_name        = "CONMED_STATIN"
+      notes = "Multiplicative effect on the linear clearance CL: CLL = TVCLL * COV1^STATIN with COV1 = 1.27 (Djebli 2017 Table 4 expanded-model column and Sect. 3.6 equation). STATIN = 1 captures coadministration of any statin (rosuvastatin, atorvastatin, or simvastatin at any reported dose; low- and high-dose pooled). The covariate replaces the disease-state (DISST) effect on Vc retained in the smaller n=527 model because of strong collinearity between disease state and statin therapy in the n=527 cohort (Djebli 2017 Sect. 4).",
+      source_name = "CONMED_STATIN"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 2870L,
-    n_observations   = 19595L,
-    n_studies        = 13L,
-    phases           = "Phase I, II, and III",
-    age_mean         = "58.2 years (SD 11.7)",
-    weight_mean      = "85.0 kg (SD 18.4)",
-    bmi_mean         = "29.5 kg/m^2 (SD 5.40)",
-    sex_female_pct   = 37.9,
-    race_ethnicity   = c(Caucasian = 87.2, Black = 4.77, Asian = 5.02, Other = 3.03),
-    disease_state    = "Pooled healthy adults (5.23%) and adults with hypercholesterolemia (94.77%); 28.5% familial hypercholesterolemia and 71.5% non-FH. Most patients on background lipid-lowering therapy (any statin 92.8%, ezetimibe 16.2%, fibrate 4.81%).",
-    dose_range       = "Subcutaneous regimens 50-300 mg Q2W or Q4W (phase II/III) and 75 or 150 mg Q2W (ODYSSEY phase III). One phase-I study (NCT01026597) administered single intravenous doses of 0.3, 1, 3, 6, or 12 mg/kg.",
-    regions          = "Multi-regional pool of 13 Sanofi/Regeneron trials including Japanese cohorts (NCT01448317 phase I, NCT01812707 phase II) and the ODYSSEY phase III programme (MONO, COMBO II, FH I, LONG TERM).",
-    pcsk9_baseline   = "Mean baseline total PCSK9 = 9.14 nM (SD 6.84) in the expanded data set (Djebli 2017 Table 3).",
-    notes            = "Baseline characteristics from Djebli 2017 Table 3 expanded-data-set column. The pooled dependent variable in the original NONMEM model combined total alirocumab and total PCSK9 concentrations on a common nM scale; the same propSd and addSd are applied to both outputs in this implementation."
+    species = "human",
+    n_subjects = 2870L,
+    n_observations = 19595L,
+    n_studies = 13L,
+    phases = "Phase I, II, and III",
+    age_mean = "58.2 years (SD 11.7)",
+    weight_mean = "85.0 kg (SD 18.4)",
+    bmi_mean = "29.5 kg/m^2 (SD 5.40)",
+    sex_female_pct = 37.9,
+    race_ethnicity = c(Caucasian = 87.2, Black = 4.77, Asian = 5.02, Other = 3.03),
+    disease_state = "Pooled healthy adults (5.23%) and adults with hypercholesterolemia (94.77%); 28.5% familial hypercholesterolemia and 71.5% non-FH. Most patients on background lipid-lowering therapy (any statin 92.8%, ezetimibe 16.2%, fibrate 4.81%).",
+    dose_range = "Subcutaneous regimens 50-300 mg Q2W or Q4W (phase II/III) and 75 or 150 mg Q2W (ODYSSEY phase III). One phase-I study (NCT01026597) administered single intravenous doses of 0.3, 1, 3, 6, or 12 mg/kg.",
+    regions = "Multi-regional pool of 13 Sanofi/Regeneron trials including Japanese cohorts (NCT01448317 phase I, NCT01812707 phase II) and the ODYSSEY phase III programme (MONO, COMBO II, FH I, LONG TERM).",
+    pcsk9_baseline = "Mean baseline total PCSK9 = 9.14 nM (SD 6.84) in the expanded data set (Djebli 2017 Table 3).",
+    notes = "Baseline characteristics from Djebli 2017 Table 3 expanded-data-set column. The pooled dependent variable in the original NONMEM model combined total alirocumab and total PCSK9 concentrations on a common nM scale; the same propSd and addSd are applied to both outputs in this implementation."
   )
 
   ini({

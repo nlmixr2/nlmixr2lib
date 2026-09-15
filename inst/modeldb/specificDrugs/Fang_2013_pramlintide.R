@@ -118,24 +118,34 @@ Fang_2013_pramlintide <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "pramlintide", units = "pmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "pramlintide",
+      units = "pmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "pramlintide", units = "pmol",
-      specimen = "plasma", verified = TRUE
+      analyte = "pramlintide",
+      units = "pmol",
+      specimen = "plasma",
+      verified = TRUE
     ),
     intestine = list(
-      analyte = "glucose", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "glucose",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     glucose = list(
-      analyte = "glucose", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "glucose",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     ),
     glucose_per = list(
-      analyte = "glucose", units = "mg",
-      specimen = "tissue", verified = TRUE
+      analyte = "glucose",
+      units = "mg",
+      specimen = "tissue",
+      verified = TRUE
     )
   )
 

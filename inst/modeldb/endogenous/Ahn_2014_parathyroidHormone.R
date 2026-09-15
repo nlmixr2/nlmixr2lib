@@ -1,10 +1,10 @@
 Ahn_2014_parathyroidHormone <- function() {
   description <- "Semi-mechanistic indirect-response PD model of parathyroid hormone (PTH) suppression after oral calcium intake in healthy adults; absorbed but unobserved ionized calcium inhibits PTH secretion via an Emax (fixed to 1) negative-feedback term, with a parallel homeostatic indirect-response model for observed plasma ionized calcium."
-  reference   <- "Ahn JE, Jeon S, Lee J, Han S, Yim DS. Modeling of the Parathyroid Hormone Response after Calcium Intake in Healthy Subjects. Korean J Physiol Pharmacol. 2014 Jun;18(3):217-223. doi:10.4196/kjpp.2014.18.3.217"
-  vignette    <- "Ahn_2014_parathyroidHormone"
-  units       <- list(
-    time          = "h",
-    dosing        = "unit (normalized: depot at t=0 set to 1 for the thermal-water reference per Ahn 2014 p. 218)",
+  reference <- "Ahn JE, Jeon S, Lee J, Han S, Yim DS. Modeling of the Parathyroid Hormone Response after Calcium Intake in Healthy Subjects. Korean J Physiol Pharmacol. 2014 Jun;18(3):217-223. doi:10.4196/kjpp.2014.18.3.217"
+  vignette <- "Ahn_2014_parathyroidHormone"
+  units <- list(
+    time = "h",
+    dosing = "unit (normalized: depot at t=0 set to 1 for the thermal-water reference per Ahn 2014 p. 218)",
     concentration = "mmol/L (ionized Ca, observation Cc) and pg/mL (PTH, observation PTH)"
   )
 
@@ -13,37 +13,37 @@ Ahn_2014_parathyroidHormone <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "calcium", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "calcium", units = NA_character_, specimen = "administration site", verified = FALSE),
     ca_unobs = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
-    ca       = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
-    pth      = list(analyte = "parathyroid hormone", units = NA_character_, specimen = "plasma", verified = FALSE)
+    ca = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pth = list(analyte = "parathyroid hormone", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_CACO3 = list(
-      description        = "1 = calcium carbonate tablet (500 mg CaCO3 = 200 mg elemental Ca x 2 tablets, with 240 mL normal saline or 340 mL purified water); 0 = Geumjin thermal spring water (240 mL containing 400 mg elemental calcium followed by 100 mL purified water, the Ahn 2014 reference arm).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "1 = calcium carbonate tablet (500 mg CaCO3 = 200 mg elemental Ca x 2 tablets, with 240 mL normal saline or 340 mL purified water); 0 = Geumjin thermal spring water (240 mL containing 400 mg elemental calcium followed by 100 mL purified water, the Ahn 2014 reference arm).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Geumjin thermal spring water; bioavailability anchor F = 1).",
-      notes              = "Per-subject (treatment-arm) categorical indicator. The two CaCO3 arms in Ahn 2014 Methods (CaCO3 + saline and CaCO3 + water) were combined into a single CaCO3 treatment per the paper's Methods (p. 218): 'the 12 subjects that received calcium carbonate tablets were combined and treated as one treatment'. Encoded as a multiplicative effect on depot bioavailability per Ahn 2014 Results (Table 2 'Relative F1' = 1.98, 95% CI 1.06-2.90).",
-      source_name        = "treatment (paper-narrative categorical: thermal spring water vs calcium carbonate)"
+      notes = "Per-subject (treatment-arm) categorical indicator. The two CaCO3 arms in Ahn 2014 Methods (CaCO3 + saline and CaCO3 + water) were combined into a single CaCO3 treatment per the paper's Methods (p. 218): 'the 12 subjects that received calcium carbonate tablets were combined and treated as one treatment'. Encoded as a multiplicative effect on depot bioavailability per Ahn 2014 Results (Table 2 'Relative F1' = 1.98, 95% CI 1.06-2.90).",
+      source_name = "treatment (paper-narrative categorical: thermal spring water vs calcium carbonate)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 24,
-    n_studies      = 1,
-    age_range      = "21-39 years",
-    age_median     = "26 years",
-    weight_range   = "55.1-79.3 kg",
-    weight_median  = "68.5 kg (mean reported)",
+    species = "human",
+    n_subjects = 24,
+    n_studies = 1,
+    age_range = "21-39 years",
+    age_median = "26 years",
+    weight_range = "55.1-79.3 kg",
+    weight_median = "68.5 kg (mean reported)",
     sex_female_pct = 8.33,
     race_ethnicity = c(Korean = 100),
-    disease_state  = "Healthy adults",
-    dose_range     = "400 mg elemental calcium / day (240 mL Geumjin thermal spring water, n=12) or 500 mg calcium carbonate / day (two 200-mg calcium tablets with 240 mL normal saline or 340 mL purified water, n=12; the two CaCO3 sub-arms were pooled in the analysis per Methods p. 218). Days 1 and 7 received the full morning dose; Days 2-6 split the daily dose into twice-daily administrations.",
-    regions        = "Korea (Seoul St. Mary's Hospital, The Catholic University of Korea)",
-    notes          = "Randomized parallel clinical trial of Geumjin thermal spring water vs CaCO3 tablets (2:1:1 ratio across the three treatment arms; pooled to thermal water vs CaCO3 in the final analysis). 24 subjects produced 423 PTH and 423 ionized Ca observations across the 8-hour post-dose sampling window (0, 0.5, 1, 1.5, 2, 3, 4, 6, 8 hours) on Days 1 and 7 (Ahn 2014 Methods p. 218 and Results p. 219). Inclusion criteria required baseline 25(OH) vitamin D3 within 4.8-52.8 ng/mL and baseline calcium within 8.0-10.0 mg/dL; weight within +/- 20% of ideal body weight calculated as (height_cm - 100) * 0.9. Lifestyle covariates (smoking 7/17, alcohol 14/10, caffeine 14/10) were reported in Table 1 but not tested as model covariates -- only treatment formulation was tested (Methods p. 218)."
+    disease_state = "Healthy adults",
+    dose_range = "400 mg elemental calcium / day (240 mL Geumjin thermal spring water, n=12) or 500 mg calcium carbonate / day (two 200-mg calcium tablets with 240 mL normal saline or 340 mL purified water, n=12; the two CaCO3 sub-arms were pooled in the analysis per Methods p. 218). Days 1 and 7 received the full morning dose; Days 2-6 split the daily dose into twice-daily administrations.",
+    regions = "Korea (Seoul St. Mary's Hospital, The Catholic University of Korea)",
+    notes = "Randomized parallel clinical trial of Geumjin thermal spring water vs CaCO3 tablets (2:1:1 ratio across the three treatment arms; pooled to thermal water vs CaCO3 in the final analysis). 24 subjects produced 423 PTH and 423 ionized Ca observations across the 8-hour post-dose sampling window (0, 0.5, 1, 1.5, 2, 3, 4, 6, 8 hours) on Days 1 and 7 (Ahn 2014 Methods p. 218 and Results p. 219). Inclusion criteria required baseline 25(OH) vitamin D3 within 4.8-52.8 ng/mL and baseline calcium within 8.0-10.0 mg/dL; weight within +/- 20% of ideal body weight calculated as (height_cm - 100) * 0.9. Lifestyle covariates (smoking 7/17, alcohol 14/10, caffeine 14/10) were reported in Table 1 but not tested as model covariates -- only treatment formulation was tested (Methods p. 218)."
   )
 
   ini({

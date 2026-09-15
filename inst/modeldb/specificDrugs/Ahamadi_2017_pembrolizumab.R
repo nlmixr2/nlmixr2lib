@@ -8,93 +8,93 @@ Ahamadi_2017_pembrolizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric power scaling on shared CL/Q (exponent 0.595) and on shared Vc/Vp (exponent 0.489) with reference 76.8 kg (Ahamadi 2017 Table 3 footnote a/b equations: (WGT/76.8)^alpha). Reference weight is not listed in Table 2 demographics; the value 76.8 kg comes from the denominator in the footnote model equations.",
-      source_name        = "WT"
+      notes = "Allometric power scaling on shared CL/Q (exponent 0.595) and on shared Vc/Vp (exponent 0.489) with reference 76.8 kg (Ahamadi 2017 Table 3 footnote a/b equations: (WGT/76.8)^alpha). Reference weight is not listed in Table 2 demographics; the value 76.8 kg comes from the denominator in the footnote model equations.",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL (exponent -0.907) and on Vc (exponent -0.208) with reference 39.6 g/L (Ahamadi 2017 Table 3 footnote a/b: (ALB/39.6)^theta). The cohort median in Table 2 is 40 g/L.",
-      source_name        = "ALB"
+      notes = "Power scaling on CL (exponent -0.907) and on Vc (exponent -0.208) with reference 39.6 g/L (Ahamadi 2017 Table 3 footnote a/b: (ALB/39.6)^theta). The cohort median in Table 2 is 40 g/L.",
+      source_name = "ALB"
     ),
     TUM_SLD = list(
-      description        = "Baseline tumor burden (sum of longest diameters of target lesions per RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline tumor burden (sum of longest diameters of target lesions per RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL (exponent 0.0872) with reference 89.6 mm (Ahamadi 2017 Table 3 footnote a: (BSLD/89.6)^theta). Source paper labels this 'baseline tumor burden (sum of longest dimensions of target lesions)' (BSLD), which maps to the canonical RECIST 1.1 sum-of-longest-diameters metric (TUM_SLD). The cohort median in Table 2 is 86 mm with 11.2% missing data imputed to median.",
-      source_name        = "BSLD"
+      notes = "Power scaling on CL (exponent 0.0872) with reference 89.6 mm (Ahamadi 2017 Table 3 footnote a: (BSLD/89.6)^theta). Source paper labels this 'baseline tumor burden (sum of longest dimensions of target lesions)' (BSLD), which maps to the canonical RECIST 1.1 sum-of-longest-diameters metric (TUM_SLD). The cohort median in Table 2 is 86 mm with 11.2% missing data imputed to median.",
+      source_name = "BSLD"
     ),
     CRCL = list(
-      description        = "Baseline estimated glomerular filtration rate",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on CL (exponent 0.135) with reference 88.47 mL/min/1.73 m^2 (Ahamadi 2017 Table 3 footnote a: (eGFR/88.47)^theta). Source column name is eGFR; stored under the canonical CRCL. The cohort median in Table 2 is 88.7 mL/min/1.73 m^2.",
-      source_name        = "eGFR"
+      notes = "Power scaling on CL (exponent 0.135) with reference 88.47 mL/min/1.73 m^2 (Ahamadi 2017 Table 3 footnote a: (eGFR/88.47)^theta). Source column name is eGFR; stored under the canonical CRCL. The cohort median in Table 2 is 88.7 mL/min/1.73 m^2.",
+      source_name = "eGFR"
     ),
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = "Proportional change on CL ((1 - 0.152) for female) and on Vc ((1 - 0.134) for female) per Ahamadi 2017 Table 3 footnote a/b. The paper's reference category is male, matching the canonical SEXF = 0 (male) convention.",
-      source_name        = "SEX"
+      notes = "Proportional change on CL ((1 - 0.152) for female) and on Vc ((1 - 0.134) for female) per Ahamadi 2017 Table 3 footnote a/b. The paper's reference category is male, matching the canonical SEXF = 0 (male) convention.",
+      source_name = "SEX"
     ),
     TUMTP_NSCLC = list(
-      description        = "Non-small cell lung cancer tumor-type indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Non-small cell lung cancer tumor-type indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (melanoma or other tumor type; melanoma is the implicit reference)",
-      notes              = "Proportional change on CL ((1 + 0.145) for NSCLC) per Ahamadi 2017 Table 3 footnote a. Cancer type was tested as a three-level categorical (melanoma 73.7%, NSCLC 25.3%, other 1.01%); only NSCLC vs melanoma was retained in the final model, with the 'other' category pooled into the melanoma reference. Decompose the source TUMTP column into TUMTP_NSCLC = as.integer(TUMTP == 'NSCLC').",
-      source_name        = "TUMTP"
+      notes = "Proportional change on CL ((1 + 0.145) for NSCLC) per Ahamadi 2017 Table 3 footnote a. Cancer type was tested as a three-level categorical (melanoma 73.7%, NSCLC 25.3%, other 1.01%); only NSCLC vs melanoma was retained in the final model, with the 'other' category pooled into the melanoma reference. Decompose the source TUMTP column into TUMTP_NSCLC = as.integer(TUMTP == 'NSCLC').",
+      source_name = "TUMTP"
     ),
     ECOG_GE1 = list(
-      description        = "Eastern Cooperative Oncology Group performance-status indicator (>= 1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eastern Cooperative Oncology Group performance-status indicator (>= 1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ECOG-PS = 0, asymptomatic)",
-      notes              = "Proportional change on CL ((1 - 0.0739) for ECOG-PS >= 1) per Ahamadi 2017 Table 3 row (Baseline ECOG-PS on CL = -0.0739). The Discussion confirms this direction: 'Relative to ECOG-PS 1, ECOG-PS 0 was associated with a 7.3% increase in clearance'. Table 3 footnote a prints (1 + 0.0739) for ECOG = 1, which is inconsistent with both the Table 3 sign and the Discussion narrative; treated as a typo in the footnote. ECOG-PS observed values were 0 (57.4%) and 1 (42.4%) with 0.2% missing imputed to mode.",
-      source_name        = "ECOG"
+      notes = "Proportional change on CL ((1 - 0.0739) for ECOG-PS >= 1) per Ahamadi 2017 Table 3 row (Baseline ECOG-PS on CL = -0.0739). The Discussion confirms this direction: 'Relative to ECOG-PS 1, ECOG-PS 0 was associated with a 7.3% increase in clearance'. Table 3 footnote a prints (1 + 0.0739) for ECOG = 1, which is inconsistent with both the Table 3 sign and the Discussion narrative; treated as a typo in the footnote. ECOG-PS observed values were 0 (57.4%) and 1 (42.4%) with 0.2% missing imputed to mode.",
+      source_name = "ECOG"
     ),
     PRIOR_IPI = list(
-      description        = "Prior ipilimumab treatment indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prior ipilimumab treatment indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ipilimumab-naive; 'missing' is pooled into the reference)",
-      notes              = "Proportional change on CL ((1 + 0.140) for IPI-treated) and on Vc ((1 + 0.0736) for IPI-treated) per Ahamadi 2017 Table 3 footnote a/b. Source paper tested IPI status as a three-level categorical (naive 39.1%, treated 34.5%, missing 26.4%) and explicitly kept 'missing' as a separate category in the development dataset; the published Table 3 reports only the naive-vs-treated coefficient. For the packaged model the 'missing' subjects are treated like naive (PRIOR_IPI = 0), so the canonical column carries only the naive/treated contrast that the model coefficient describes.",
-      source_name        = "IPI"
+      notes = "Proportional change on CL ((1 + 0.140) for IPI-treated) and on Vc ((1 + 0.0736) for IPI-treated) per Ahamadi 2017 Table 3 footnote a/b. Source paper tested IPI status as a three-level categorical (naive 39.1%, treated 34.5%, missing 26.4%) and explicitly kept 'missing' as a separate category in the development dataset; the published Table 3 reports only the naive-vs-treated coefficient. For the packaged model the 'missing' subjects are treated like naive (PRIOR_IPI = 0), so the canonical column carries only the naive/treated contrast that the model coefficient describes.",
+      source_name = "IPI"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 2188L,
-    n_studies       = 3L,
-    age_range       = "15-94 years",
-    age_median      = "62 years",
-    weight_range    = "not reported in Table 2 demographics; reference 76.8 kg used in the model equation",
-    weight_median   = "not reported in Table 2 (only the equation denominator 76.8 kg is published)",
-    sex_female_pct  = 40.9,
-    race_ethnicity  = "not tabulated by category in the paper (race was tested as a covariate and not retained)",
-    disease_state   = "Advanced / metastatic solid tumors (melanoma 73.7%, NSCLC 25.3%, other cancer type 1.01%)",
-    dose_range      = "1-10 mg/kg IV infusion Q2W or Q3W (2 mg/kg Q3W is the approved regimen; 10 mg/kg Q3W and 10 mg/kg Q2W were the most populated cohorts)",
-    regions         = "Multinational pooled KEYNOTE-001 (NCT01295827), KEYNOTE-002 (NCT01704287), KEYNOTE-006 (NCT01866319)",
+    species = "human",
+    n_subjects = 2188L,
+    n_studies = 3L,
+    age_range = "15-94 years",
+    age_median = "62 years",
+    weight_range = "not reported in Table 2 demographics; reference 76.8 kg used in the model equation",
+    weight_median = "not reported in Table 2 (only the equation denominator 76.8 kg is published)",
+    sex_female_pct = 40.9,
+    race_ethnicity = "not tabulated by category in the paper (race was tested as a covariate and not retained)",
+    disease_state = "Advanced / metastatic solid tumors (melanoma 73.7%, NSCLC 25.3%, other cancer type 1.01%)",
+    dose_range = "1-10 mg/kg IV infusion Q2W or Q3W (2 mg/kg Q3W is the approved regimen; 10 mg/kg Q3W and 10 mg/kg Q2W were the most populated cohorts)",
+    regions = "Multinational pooled KEYNOTE-001 (NCT01295827), KEYNOTE-002 (NCT01704287), KEYNOTE-006 (NCT01866319)",
     ecog_distribution = "ECOG 0 (asymptomatic) 57.4%, ECOG 1 (symptomatic) 42.4%, missing 0.2%",
-    renal_function  = "Baseline eGFR 25.4-403.0 mL/min/1.73 m^2 (median 88.7); 1.2% missing imputed to median",
-    notes           = "Baseline demographics per Ahamadi 2017 Table 2 (N = 2,188). KEYNOTE-001 contributed 1,223 patients, KEYNOTE-002 contributed 421 patients, and KEYNOTE-006 contributed 551 patients. Total observations: 12,171 (Table 1 sum). Continuous covariate medians: age 62 y, baseline tumor burden 86 mm, eGFR 88.7 mL/min/1.73 m^2, bilirubin 8.55 umol/L, AST 21 IU/L, albumin 40 g/L. Prior ipilimumab status: IPI-naive 39.1%, IPI-treated 34.5%, missing 26.4% (kept as a separate category during covariate selection per Methods). Coadministered systemic glucocorticoids: yes 14.9%, no 85.1%."
+    renal_function = "Baseline eGFR 25.4-403.0 mL/min/1.73 m^2 (median 88.7); 1.2% missing imputed to median",
+    notes = "Baseline demographics per Ahamadi 2017 Table 2 (N = 2,188). KEYNOTE-001 contributed 1,223 patients, KEYNOTE-002 contributed 421 patients, and KEYNOTE-006 contributed 551 patients. Total observations: 12,171 (Table 1 sum). Continuous covariate medians: age 62 y, baseline tumor burden 86 mm, eGFR 88.7 mL/min/1.73 m^2, bilirubin 8.55 umol/L, AST 21 IU/L, albumin 40 g/L. Prior ipilimumab status: IPI-naive 39.1%, IPI-treated 34.5%, missing 26.4% (kept as a separate category during covariate selection per Methods). Coadministered systemic glucocorticoids: yes 14.9%, no 85.1%."
   )
 
   ini({

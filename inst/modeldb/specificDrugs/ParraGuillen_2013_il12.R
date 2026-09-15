@@ -21,32 +21,36 @@ ParraGuillen_2013_il12 <- function() {
   )
   vignette <- "ParraGuillen_2013_tumor_immunotherapy"
   paper_specific_compartments <- c("vac", "tran", "svac", "reg", "tumor_size")
-  units <- list(time = "day", dosing = "(arbitrary unit, set to 1 at plasmid injection)", concentration = "(K-PD, no PK)")
+  units <- list(
+    time = "day",
+    dosing = "(arbitrary unit, set to 1 at plasmid injection)",
+    concentration = "(K-PD, no PK)"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    vac        = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
-    tran       = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
-    svac       = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vac = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tran = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    svac = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
     tumor_size = list(analyte = "tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    reg        = list(analyte = "IL-12", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    reg = list(analyte = "IL-12", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     MIX_VAC_RELAPSE = list(
-      description        = paste(
+      description = paste(
         "Per-subject binary mixture-model class indicator (carried from the",
         "CyaA-E7 fit). 1 = relapser subpopulation (transient inhibitory",
         "signal, k2 = k1); 0 = responder / cure subpopulation (permanent",
         "inhibitory signal, k2 = 0 FIX). Time-fixed per subject."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (responder / cure subpopulation)",
-      notes              = paste(
+      notes = paste(
         "Latent-class assignment from the NONMEM $MIXTURE block (Parra-Guillen",
         "2013 Methods Data Evaluation bullet (e); Discussion p. 803). The",
         "mixture probability P(1) = 0.844 FIX was carried over from the",
@@ -56,31 +60,31 @@ ParraGuillen_2013_il12 <- function() {
         "(cure) or 1 (relapser); for population simulation draw",
         "MIX_VAC_RELAPSE ~ Bernoulli(0.156) per subject."
       ),
-      source_name        = "MIXTURE (NONMEM $MIXTURE assignment; component 2 = relapser)"
+      source_name = "MIXTURE (NONMEM $MIXTURE assignment; component 2 = relapser)"
     )
   )
 
   population <- list(
-    species        = "mouse (female C57BL/6, 5 weeks old; subcutaneous MC38 tumor)",
-    n_subjects     = 33L,
-    n_studies      = 1L,
-    age_range      = "5 weeks at tumor cell inoculation",
-    weight_range   = NA_character_,
+    species = "mouse (female C57BL/6, 5 weeks old; subcutaneous MC38 tumor)",
+    n_subjects = 33L,
+    n_studies = 1L,
+    age_range = "5 weeks at tumor cell inoculation",
+    weight_range = NA_character_,
     sex_female_pct = 100,
-    disease_state  = paste(
+    disease_state = paste(
       "Subcutaneous MC38 tumor model (5 x 10^5 cells subcutaneously injected",
       "on day 0; MC38 = murine colon adenocarcinoma). Tumor size measured as",
       "the mean of two perpendicular diameters; limit of quantification 2 mm",
       "(treated as censored M3 likelihood)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single hydrodynamic injection of 10 ug of plasmid encoding murine",
       "IL-12 on day 23 after tumor cell inoculation (n = 21). PBS control",
       "group n = 12. Hydrodynamic injection delivers the plasmid to",
       "hepatocytes where the cytokine is expressed and released systemically."
     ),
-    regions        = "Preclinical (Medina-Echeverz 2014 dataset; CIMA, Pamplona, Spain)",
-    notes          = paste(
+    regions = "Preclinical (Medina-Echeverz 2014 dataset; CIMA, Pamplona, Spain)",
+    notes = paste(
       "Cohort from Medina-Echeverz et al. (2014, cited as reference 25 of",
       "Parra-Guillen 2013). Tumor-size data were log-transformed before",
       "fitting; BQL observations (<= 2 mm) treated as censored. Parameters",

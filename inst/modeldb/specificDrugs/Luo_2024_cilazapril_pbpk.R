@@ -28,7 +28,7 @@ Luo_2024_cilazapril_pbpk <- function() {
     sep = " "
   )
   vignette <- "Luo_2024_CES1_cirrhosis"
-  units    <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
   # Segment-resolved gut-WALL states. The gut LUMEN segments use the
   # canonical stomach / duodenum / jejunum / ileum names; the tissue (wall)
@@ -37,16 +37,25 @@ Luo_2024_cilazapril_pbpk <- function() {
   # PBPK to ratify a canonical trio. portal_vein follows
   # vandenBerg_2021_uprifosbuvir_pbpk.R.
   paper_specific_compartments <- c(
-    "wall_duodenum", "wall_jejunum", "wall_ileum", "portal_vein", "wall_duodenum_cilat", "wall_jejunum_cilat", "wall_ileum_cilat", "portal_vein_cilat", "liver_cilat", "kidney_cilat"
+    "wall_duodenum",
+    "wall_jejunum",
+    "wall_ileum",
+    "portal_vein",
+    "wall_duodenum_cilat",
+    "wall_jejunum_cilat",
+    "wall_ileum_cilat",
+    "portal_vein_cilat",
+    "liver_cilat",
+    "kidney_cilat"
   )
 
   covariateData <- list(
     HEPIMP_MILD = list(
-      description        = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Mild hepatic impairment indicator (1 = Child-Pugh class A).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MOD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MILD = 1",
         "selects the Child-Pugh A column of Luo 2024 Table 1. The three",
         "HEPIMP_* indicators are mutually exclusive; all three 0 selects the",
@@ -55,72 +64,72 @@ Luo_2024_cilazapril_pbpk <- function() {
         "reduced to 81% of normal, so the CP-A effect is driven by liver",
         "volume, blood-flow redistribution, GFR, albumin and GI transit."
       ),
-      source_name        = "Child-Pugh A"
+      source_name = "Child-Pugh A"
     ),
     HEPIMP_MOD = list(
-      description        = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Moderate hepatic impairment indicator (1 = Child-Pugh class B).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_SEV are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_MOD = 1",
         "selects the Child-Pugh B column of Luo 2024 Table 1 (hepatic CES1",
         "content 1.715 mg/g liver = 70% of healthy; functional liver volume",
         "65% of normal)."
       ),
-      source_name        = "Child-Pugh B"
+      source_name = "Child-Pugh B"
     ),
     HEPIMP_SEV = list(
-      description        = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Severe hepatic impairment indicator (1 = Child-Pugh class C).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (healthy hepatic function when HEPIMP_MILD and HEPIMP_MOD are also 0)",
-      notes              = paste(
+      notes = paste(
         "Classification scheme is Child-Pugh, NOT NCI ODWG: HEPIMP_SEV = 1",
         "selects the Child-Pugh C column of Luo 2024 Table 1 (hepatic CES1",
         "content 0.735 mg/g liver = 30% of healthy; functional liver volume",
         "53% of normal; hepatic arterial flow raised to 1020 mL/min)."
       ),
-      source_name        = "Child-Pugh C"
+      source_name = "Child-Pugh C"
     )
   )
 
   compartmentData <- list(
-    stomach                  = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
-    duodenum                 = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
-    jejunum                  = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
-    ileum                    = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
-    wall_duodenum            = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum             = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum               = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein              = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
-    liver                    = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney                   = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
-    central                  = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1              = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
-    wall_duodenum_cilat      = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_jejunum_cilat       = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    wall_ileum_cilat         = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    portal_vein_cilat        = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    liver_cilat              = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    kidney_cilat             = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
-    central_cilat            = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_cilat        = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE)
+    stomach = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
+    duodenum = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
+    jejunum = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
+    ileum = list(analyte = "cilazapril", units = "mg", specimen = "administration site", verified = TRUE),
+    wall_duodenum = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
+    liver = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney = list(analyte = "cilazapril", units = "mg", specimen = "tissue", verified = TRUE),
+    central = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "cilazapril", units = "mg", specimen = "plasma", verified = TRUE),
+    wall_duodenum_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_jejunum_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    wall_ileum_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    portal_vein_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    liver_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "tissue", verified = TRUE),
+    central_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1_cilat = list(analyte = "cilazaprilat", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
-    n_studies      = 6L,
-    age_range      = "adults",
-    disease_state  = paste(
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 6L,
+    age_range = "adults",
+    disease_state = paste(
       "Pooled healthy volunteers and liver cirrhosis patients. Healthy:",
       "Massarella 1989 (n = 24), Williams 1990 (n = 13), Williams 1989 (n =",
       "12), Massarella 1989 food study (n = 16), Francis 1987 (n = 12), Gross",
       "1993 (n = 10). Cirrhosis: Gross 1993 Child-Pugh B (n = 9)."
     ),
-    dose_range     = "Cilazapril 1, 1.25, 2.5, 5 and 10 mg single oral doses",
-    notes          = paste(
+    dose_range = "Cilazapril 1, 1.25, 2.5, 5 and 10 mg single oral doses",
+    notes = paste(
       "Luo 2024 Table 3. Literature-digitised clinical data; the authors",
       "simulated 1000 virtual individuals per population by drawing CLint,",
       "CLint,K, fu,b, Vsys, Peff, ka, KL:P, KG:P and KK:P uniformly over",
@@ -338,4 +347,3 @@ Luo_2024_cilazapril_pbpk <- function() {
     Cc_cilat ~ prop(propSd_cilat)
   })
 }
-

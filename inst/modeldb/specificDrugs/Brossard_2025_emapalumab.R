@@ -24,69 +24,74 @@ Brossard_2025_emapalumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Allometric scaling with reference weight 70 kg; exponents fixed at 0.75 (clearances, including Q) and 1 (volumes). Table S2 labels every structural typical value 'per 70 kg', which fixes the reference.",
-      source_name        = "WT"
+      notes = "Allometric scaling with reference weight 70 kg; exponents fixed at 0.75 (clearances, including Q) and 1 (volumes). Table S2 labels every structural typical value 'per 70 kg', which fixes the reference.",
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL (both the CLL and CLNL components) and Q with exponent +0.188, and on V1 with exponent -0.104; no age effect on V2 (upstream run log, run 013). Normalised to a 25-year reference age. The reference age is NOT printed in either paper; it was recovered by back-solving the upstream four-point clearance answer key and rounded to 25 y - see the vignette Errata and the derivation note in model().",
-      source_name        = "AGE"
+      notes = "Power effect on CL (both the CLL and CLNL components) and Q with exponent +0.188, and on V1 with exponent -0.104; no age effect on V2 (upstream run log, run 013). Normalised to a 25-year reference age. The reference age is NOT printed in either paper; it was recovered by back-solving the upstream four-point clearance answer key and rounded to 25 y - see the vignette Errata and the derivation note in model().",
+      source_name = "AGE"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect with exponent +0.162 on the linear clearance CLL and on both volumes V1 and V2, normalised to 12.8 umol/L. Does NOT act on CLNL or on Q (upstream run log, runs 016-019). The reference value is not printed; the back-solve returns a total-bilirubin factor of 1.0004 for the reference patient, identifying the reference as the pooled-dataset median 12.8 umol/L reported identically for primary HLH, MAS and All in Table S1.",
-      source_name        = "TBIL"
+      notes = "Power effect with exponent +0.162 on the linear clearance CLL and on both volumes V1 and V2, normalised to 12.8 umol/L. Does NOT act on CLNL or on Q (upstream run log, runs 016-019). The reference value is not printed; the back-solve returns a total-bilirubin factor of 1.0004 for the reference patient, identifying the reference as the pooled-dataset median 12.8 umol/L reported identically for primary HLH, MAS and All in Table S1.",
+      source_name = "TBIL"
     ),
     IFNG = list(
-      description        = "Total (free plus emapalumab-bound) serum interferon-gamma concentration",
-      units              = "pg/mL",
-      type               = "continuous",
+      description = "Total (free plus emapalumab-bound) serum interferon-gamma concentration",
+      units = "pg/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying driver of the target-mediated ('non-linear') clearance component CLNL, as a power function with exponent +0.542 normalised to 1e6 pg/mL. Above roughly 1e4 pg/mL it drives target-mediated disposition; below it emapalumab clearance is effectively linear. Inert for this model's own population, because DIS_MAS = 1 zeroes CLNL outright.",
-      source_name        = "IFNG"
+      notes = "Time-varying driver of the target-mediated ('non-linear') clearance component CLNL, as a power function with exponent +0.542 normalised to 1e6 pg/mL. Above roughly 1e4 pg/mL it drives target-mediated disposition; below it emapalumab clearance is effectively linear. Inert for this model's own population, because DIS_MAS = 1 zeroes CLNL outright.",
+      source_name = "IFNG"
     ),
     DIS_MAS = list(
-      description        = "Macrophage activation syndrome (secondary HLH in Still's disease) indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Macrophage activation syndrome (secondary HLH in Still's disease) indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (primary haemophagocytic lymphohistiocytosis)",
-      notes              = "1 = MAS associated with Still's disease, 0 = primary HLH. The coefficient is fixed at -1, which sets the IFN-gamma-dependent clearance CLNL to exactly zero in MAS patients - the paper's central PK finding. This model's own population is DIS_MAS = 1 throughout; set DIS_MAS = 0 to recover the primary-HLH clearance behaviour.",
-      source_name        = "MAS"
+      notes = "1 = MAS associated with Still's disease, 0 = primary HLH. The coefficient is fixed at -1, which sets the IFN-gamma-dependent clearance CLNL to exactly zero in MAS patients - the paper's central PK finding. This model's own population is DIS_MAS = 1 throughout; set DIS_MAS = 0 to recover the primary-HLH clearance behaviour.",
+      source_name = "MAS"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "emapalumab", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "emapalumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "emapalumab", units = "mg", specimen = "serum", verified = TRUE),
-    cxcl9       = list(analyte = "CXCL9", units = "ng/L", specimen = "serum", verified = TRUE),
-    sil2ra      = list(analyte = "soluble interleukin-2 receptor alpha", units = "ng/L", specimen = "serum", verified = TRUE),
-    ferritin    = list(analyte = "ferritin", units = "ug/L", specimen = "serum", verified = TRUE)
+    cxcl9 = list(analyte = "CXCL9", units = "ng/L", specimen = "serum", verified = TRUE),
+    sil2ra = list(
+      analyte = "soluble interleukin-2 receptor alpha",
+      units = "ng/L",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    ferritin = list(analyte = "ferritin", units = "ug/L", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 14,
-    n_studies      = 1,
-    age_range      = "2.1-25.4 years",
-    age_median     = "11.5 years",
-    weight_range   = "12.0-68.8 kg",
-    weight_median  = "45.5 kg",
+    species = "human",
+    n_subjects = 14,
+    n_studies = 1,
+    age_range = "2.1-25.4 years",
+    age_median = "11.5 years",
+    weight_range = "12.0-68.8 kg",
+    weight_median = "45.5 kg",
     sex_female_pct = 71.4,
     race_ethnicity = c(White = 78.6, Asian = 14.3, Unknown = 7.1),
-    disease_state  = "macrophage activation syndrome associated with Still's disease (systemic juvenile idiopathic arthritis / adult-onset Still's disease)",
-    dose_range     = "6 mg/kg IV loading dose, then 3 mg/kg every 3 days until Day 15 and twice weekly until Day 28",
-    regions        = "North America and Europe",
-    notes          = paste(
+    disease_state = "macrophage activation syndrome associated with Still's disease (systemic juvenile idiopathic arthritis / adult-onset Still's disease)",
+    dose_range = "6 mg/kg IV loading dose, then 3 mg/kg every 3 days until Day 15 and twice weekly until Day 28",
+    regions = "North America and Europe",
+    notes = paste(
       "The PK/PD layer was estimated in the 14 MAS patients of NCT03311854.",
       "The structural PK model was developed on a pooled n = 58 dataset",
       "(44 primary HLH from NCT01818492 plus these 14 MAS patients, with",

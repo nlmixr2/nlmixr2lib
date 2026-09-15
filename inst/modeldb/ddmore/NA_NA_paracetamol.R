@@ -68,9 +68,9 @@ NA_NA_paracetamol <- function() {
   paper_specific_compartments <- c("effect_glu_prod", "effect_ins", "cumloss_apap")
 
   units <- list(
-    time          = "min",
-    dosing        = "mg",                  # paracetamol oral dose; glucose dose enters in g, see description
-    concentration = "umol/L"               # paracetamol; secondary outputs in mmol/L (glucose) and pmol/L (GLP-1, GIP), see description
+    time = "min",
+    dosing = "mg", # paracetamol oral dose; glucose dose enters in g, see description
+    concentration = "umol/L" # paracetamol; secondary outputs in mmol/L (glucose) and pmol/L (GLP-1, GIP), see description
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -78,69 +78,69 @@ NA_NA_paracetamol <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    stomach_apap    = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
-    intestine_apap  = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
-    central         = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1     = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
-    stomach_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
-    duodenum_glu    = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
-    central_glu     = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_apap = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine_apap = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_glu = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    duodenum_glu = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    central_glu = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_glu = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
     effect_glu_prod = list(analyte = "glucose", units = "mg", specimen = "not applicable", verified = FALSE),
-    effect_ins      = list(analyte = "insulin", units = "mg", specimen = "not applicable", verified = FALSE),
-    jejunum_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
-    ileum_glu       = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
-    cumloss_apap    = list(analyte = "paracetamol", units = "mg", specimen = "not applicable", verified = FALSE),
-    glp1            = list(analyte = "GLP-1", units = "mg", specimen = "plasma", verified = FALSE),
-    gip             = list(analyte = "GIP", units = "mg", specimen = "plasma", verified = FALSE)
+    effect_ins = list(analyte = "insulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    jejunum_glu = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    ileum_glu = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    cumloss_apap = list(analyte = "paracetamol", units = "mg", specimen = "not applicable", verified = FALSE),
+    glp1 = list(analyte = "GLP-1", units = "mg", specimen = "plasma", verified = FALSE),
+    gip = list(analyte = "GIP", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight, time-fixed at baseline. Used as a linear scaling factor on the central glucose volume (VG_i = THETA(9) * WT / 70). Reference weight 70 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight, time-fixed at baseline. Used as a linear scaling factor on the central glucose volume (VG_i = THETA(9) * WT / 70). Reference weight 70 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "The bundle's `Simulated_ddmoremockdata2.txt` records per-subject WT in the BW column at approximately 87.9 kg (single representative subject in the simulated dataset; the real-data fit used 16 subjects with WT not echoed in the bundle).",
-      source_name        = "BW"
+      notes = "The bundle's `Simulated_ddmoremockdata2.txt` records per-subject WT in the BW column at approximately 87.9 kg (single representative subject in the simulated dataset; the real-data fit used 16 subjects with WT not echoed in the bundle).",
+      source_name = "BW"
     ),
     DIS_DIAB = list(
-      description        = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = normal-glucose-tolerance control). Switches the glucose baseline (GSSH vs GSSD), glucose clearance (CLGH vs CLGD), insulin-dependent glucose clearance (CLGIH vs CLGID), glucose bioavailability into central (FPGH = 0.909 vs FPGD = 1 FIXED), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 DIS_DIAB).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Type-2-diabetes-mellitus indicator (1 = DIS_DIAB patient, 0 = normal-glucose-tolerance control). Switches the glucose baseline (GSSH vs GSSD), glucose clearance (CLGH vs CLGD), insulin-dependent glucose clearance (CLGIH vs CLGID), glucose bioavailability into central (FPGH = 0.909 vs FPGD = 1 FIXED), and the empirical glucose-on-production exponent (GPRG = -2.79 healthy, 0 DIS_DIAB).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "DIS_DIAB = 0 (normal-glucose-tolerance control)",
-      notes              = "Distinct from the existing `DIS_DIAB` canonical (which does not distinguish Type 1 vs Type 2) because this model is specifically a Type-2-versus-healthy stratification of OGTT response. Carried per subject (time-fixed in the bundle's simulated dataset).",
-      source_name        = "DIS_DIAB"
+      notes = "Distinct from the existing `DIS_DIAB` canonical (which does not distinguish Type 1 vs Type 2) because this model is specifically a Type-2-versus-healthy stratification of OGTT response. Carried per subject (time-fixed in the bundle's simulated dataset).",
+      source_name = "DIS_DIAB"
     ),
     INS = list(
-      description        = "Plasma insulin concentration as a time-varying regressor input. Drives the insulin-on-glucose-elimination effect compartment through a first-order delay (KIE); the conversion factor 1/6.945 turns the bundle's pmol/L scale into the uU/mL scale used inside the model.",
-      units              = "pmol/L (raw); the model internally rescales by 1/6.945 to uU/mL",
-      type               = "continuous",
+      description = "Plasma insulin concentration as a time-varying regressor input. Drives the insulin-on-glucose-elimination effect compartment through a first-order delay (KIE); the conversion factor 1/6.945 turns the bundle's pmol/L scale into the uU/mL scale used inside the model.",
+      units = "pmol/L (raw); the model internally rescales by 1/6.945 to uU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Same canonical name as `Bizzotto_2016_glucose.R`'s plasma-insulin regressor. The model uses linear interpolation between dataset rows via the `linear(INS)` declaration in `model()`. The bundle's source column is `INSU`; rename `INSU -> INS` before passing the dataset to `rxSolve`.",
-      source_name        = "INSU"
+      notes = "Same canonical name as `Bizzotto_2016_glucose.R`'s plasma-insulin regressor. The model uses linear interpolation between dataset rows via the `linear(INS)` declaration in `model()`. The bundle's source column is `INSU`; rename `INSU -> INS` before passing the dataset to `rxSolve`.",
+      source_name = "INSU"
     ),
     INS_BL = list(
-      description        = "Baseline (fasting) plasma insulin concentration, time-fixed per subject. Used to initialise the insulin-on-glucose-elimination effect compartment so the OGTT starts at the fasting state (A_0(10) = INS_BL / 6.945) and to set the typical-value baseline glucose-production rate GPRO via ISS = INS_BL / 6.945.",
-      units              = "pmol/L (raw); the model rescales by 1/6.945 to uU/mL",
-      type               = "continuous",
+      description = "Baseline (fasting) plasma insulin concentration, time-fixed per subject. Used to initialise the insulin-on-glucose-elimination effect compartment so the OGTT starts at the fasting state (A_0(10) = INS_BL / 6.945) and to set the typical-value baseline glucose-production rate GPRO via ISS = INS_BL / 6.945.",
+      units = "pmol/L (raw); the model rescales by 1/6.945 to uU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "New canonical column registered alongside this extraction (specific scope). Distinct from `INS` (time-varying regressor): `INS_BL` is the time-fixed baseline-state anchor used in initial conditions and the baseline-glucose-production calculation. Bundle source column is `BASI`; rename `BASI -> INS_BL` before passing to `rxSolve`.",
-      source_name        = "BASI"
+      notes = "New canonical column registered alongside this extraction (specific scope). Distinct from `INS` (time-varying regressor): `INS_BL` is the time-fixed baseline-state anchor used in initial conditions and the baseline-glucose-production calculation. Bundle source column is `BASI`; rename `BASI -> INS_BL` before passing to `rxSolve`.",
+      source_name = "BASI"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 16L,
-    n_studies      = 3L,
-    age_range      = NA_character_,
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 3L,
+    age_range = NA_character_,
+    weight_range = NA_character_,
     sex_female_pct = NA_real_,
-    disease_state  = "Mixed normal-glucose-tolerance and DIS_DIAB adults pooled from three studies of an OGTT challenge. Paracetamol (1500 mg / 25 mg infusion over 5 min at t = 15 min in the bundle's simulated dataset) is co-administered as a gastric-emptying tracer alongside an oral 75 g glucose load. Subject-level DIS_DIAB status is carried in the DIS_DIAB column (0/1); the simulated representative subject ships as DIS_DIAB = 0 (healthy control).",
-    dose_range     = "Paracetamol (1500 mg oral, infused as zero-order over ~5 min in the bundle's simulated dataset). Oral glucose load (~25 g into stomach compartment 5 in the bundle's simulated dataset, though clinical OGTT protocols typically use 75 g).",
-    regions        = NA_character_,
-    notes          = "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line and the three STUDY levels (1, 2, 3) referenced by the `IF(STUDY.EQ.n)` switches on APAPBL and T50 in `Executable_run126h.mod`. Demographic detail (age, sex, region, race, exact study identities) is not recoverable from the on-disk bundle; the linked publication is not on disk to consult."
+    disease_state = "Mixed normal-glucose-tolerance and DIS_DIAB adults pooled from three studies of an OGTT challenge. Paracetamol (1500 mg / 25 mg infusion over 5 min at t = 15 min in the bundle's simulated dataset) is co-administered as a gastric-emptying tracer alongside an oral 75 g glucose load. Subject-level DIS_DIAB status is carried in the DIS_DIAB column (0/1); the simulated representative subject ships as DIS_DIAB = 0 (healthy control).",
+    dose_range = "Paracetamol (1500 mg oral, infused as zero-order over ~5 min in the bundle's simulated dataset). Oral glucose load (~25 g into stomach compartment 5 in the bundle's simulated dataset, though clinical OGTT protocols typically use 75 g).",
+    regions = NA_character_,
+    notes = "Subject count and study count from the `Output_real_run126c.lst` listing's `TOT. NO. OF INDIVIDUALS: 16` line and the three STUDY levels (1, 2, 3) referenced by the `IF(STUDY.EQ.n)` switches on APAPBL and T50 in `Executable_run126h.mod`. Demographic detail (age, sex, region, race, exact study identities) is not recoverable from the on-disk bundle; the linked publication is not on disk to consult."
   )
 
   ini({

@@ -37,17 +37,17 @@ Gotz_2025_fosfomycin <- function() {
   # study design). Both states hold amounts of unchanged fosfomycin; the drug is
   # not metabolized (Introduction).
   compartmentData <- list(
-    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Estimated glomerular filtration rate calculated with the MDRD equation",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate calculated with the MDRD equation",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "BSA-NORMALIZED, creatinine-based eGFR from the four-variable MDRD equation, which",
         "Table S1 of the supplement gives as 175 * SCr^-1.154 * age^-0.203 (* 0.742 if female)",
         "(* 1.212 if black), with SCr in mg/dL and age in years. Time-varying: recalculated",
@@ -66,14 +66,14 @@ Gotz_2025_fosfomycin <- function() {
         "in the sibling model Huppe_2023_fosfomycin.R, which uses a raw, non-normalized",
         "MEASURED urinary creatinine clearance; the two are not interchangeable."
       ),
-      source_name        = "eGFR_MDRD"
+      source_name = "eGFR_MDRD"
     ),
     URINE_VOL_24H = list(
-      description        = "24-hour urine output, used as the anuria gate",
-      units              = "mL/24h",
-      type               = "continuous",
+      description = "24-hour urine output, used as the anuria gate",
+      units = "mL/24h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Gates TWO separate parts of the model, in OPPOSITE directions, and is the only",
         "covariate in this model that does so.",
         "(1) Body clearance is switched off in anuric patients: Methods, Model development,",
@@ -94,14 +94,14 @@ Gotz_2025_fosfomycin <- function() {
         "a urine VOLUME against a stated cutoff rather than tabulating a yes/no flag, and the",
         "sibling fosfomycin model encodes the identical cutoff from the identical column."
       ),
-      source_name        = "24-hour urine output"
+      source_name = "24-hour urine output"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = "Kidney-replacement-therapy-active indicator (1 while KRT is running, 0 otherwise)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Kidney-replacement-therapy-active indicator (1 while KRT is running, 0 otherwise)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no KRT running)",
-      notes              = paste(
+      notes = paste(
         "Time-varying WITHIN subject. Methods, Model development: 'CL_KRT was fixed to 0 for",
         "patients not receiving KRT or time periods between KRT sessions.' The pooled data",
         "set supports this because blood samples were available between KRT sessions",
@@ -120,14 +120,14 @@ Gotz_2025_fosfomycin <- function() {
         "treatment, PIKRT for 8 h on the second day of treatment. 33 of 45 patients (73.3%)",
         "underwent KRT - 18 PIKRT and 15 CKRT."
       ),
-      source_name        = "KRT"
+      source_name = "KRT"
     ),
     DFR = list(
-      description        = "Dialysate flow rate through the extracorporeal circuit",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Dialysate flow rate through the extracorporeal circuit",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying within subject; the single driver of the dialysis clearance arm, which",
         "enters as a power function normalised to 42 mL/min (the entire-cohort median in",
         "Table 1). Entire-cohort median (IQR) 42 (33-50) mL/min, with a very wide between-",
@@ -146,14 +146,14 @@ Gotz_2025_fosfomycin <- function() {
         "and not retained, so BFR is not a covariate of this model.",
         "Meaningful only while RRT_CRRT_ACTIVE = 1; the arm is gated off otherwise."
       ),
-      source_name        = "Q_D"
+      source_name = "Q_D"
     ),
     STUDY_GERECKE = list(
-      description        = "Study B (Gerecke 2021 PIKRT cohort) membership indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Study B (Gerecke 2021 PIKRT cohort) membership indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (any of studies A, C, D, or a new patient being simulated)",
-      notes              = paste(
+      notes = paste(
         "A hard, non-estimated 0/1 gate that zeroes the body-clearance arm, exactly as",
         "printed in Table 2 footnote b: '(x 0 if study B)'. Results, Population",
         "pharmacokinetic model: 'CL_body was fixed to 0 for study B since these patients",
@@ -171,71 +171,71 @@ Gotz_2025_fosfomycin <- function() {
         "the published fit faithfully, and it is the reason the paper also reports a reduced",
         "data set (n = 37) without study B, whose estimates Table 2 shows to be consistent."
       ),
-      source_name        = "study B"
+      source_name = "study B"
     )
   )
 
   covariatesDataExcluded <- list(
     BFR = list(
       description = "Blood flow rate through the extracorporeal circuit",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Screened on CL_KRT together with Q_D (Methods, Model development: 'we examined the effects of the dialyzate flow rate (Q_D) and Q_B on CL_KRT') and not retained; Q_D was 'the key variable for CL_KRT' (Discussion). Entire-cohort median (IQR) 100 (100-150) mL/min (Table 1). Retained by the sibling model Huppe_2023_fosfomycin.R, which uses the Michaels equation and therefore needs both flow rates."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened on CL_KRT together with Q_D (Methods, Model development: 'we examined the effects of the dialyzate flow rate (Q_D) and Q_B on CL_KRT') and not retained; Q_D was 'the key variable for CL_KRT' (Discussion). Entire-cohort median (IQR) 100 (100-150) mL/min (Table 1). Retained by the sibling model Huppe_2023_fosfomycin.R, which uses the Michaels equation and therefore needs both flow rates."
     ),
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened on all model parameters (Methods, Model development) and not retained. Entire-cohort median (IQR) 80 (70-90) kg (Table 1). Enters the model only indirectly, through the BSA used to compute eGFR_MDRD."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened on all model parameters (Methods, Model development) and not retained. Entire-cohort median (IQR) 80 (70-90) kg (Table 1). Enters the model only indirectly, through the BSA used to compute eGFR_MDRD."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 63 (57-75) years (Table 1). Enters the model only indirectly, as a term of the MDRD equation."
+      units = "years",
+      type = "continuous",
+      notes = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 63 (57-75) years (Table 1). Enters the model only indirectly, as a term of the MDRD equation."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on all model parameters and not retained. 11 of 45 patients (24%) were female (Table 1). Enters the model only indirectly, as the 0.742 female factor of the MDRD equation."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on all model parameters and not retained. 11 of 45 patients (24%) were female (Table 1). Enters the model only indirectly, as the 0.742 female factor of the MDRD equation."
     ),
     BSA = list(
       description = "Body surface area, Mosteller equation",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 1.96 (1.83-2.05) m^2 (Table 1). Used only to convert relative eGFR_MDRD to absolute eGFR_MDRD, a substitution that did not significantly improve the model (Results)."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 1.96 (1.83-2.05) m^2 (Table 1). Used only to convert relative eGFR_MDRD to absolute eGFR_MDRD, a substitution that did not significantly improve the model (Results)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened on all model parameters and not retained as a direct covariate. Entire-cohort median (IQR) 1.3 (0.94-2.1) mg/dL (Table 1). Enters the model only indirectly, as the principal term of the MDRD equation."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened on all model parameters and not retained as a direct covariate. Entire-cohort median (IQR) 1.3 (0.94-2.1) mg/dL (Table 1). Enters the model only indirectly, as the principal term of the MDRD equation."
     ),
     POTASSIUM = list(
       description = "Serum potassium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 4.3 (4-4.5) mmol/L, missing for 44.4% of patients (studies B and D), which also prevented any evaluation of hypokalemia as an adverse effect (Methods, Data analysis)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 4.3 (4-4.5) mmol/L, missing for 44.4% of patients (studies B and D), which also prevented any evaluation of hypokalemia as an adverse effect (Methods, Data analysis)."
     ),
     SODIUM = list(
       description = "Serum sodium",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 140 (140-150) mmol/L, missing for 44.4% of patients. Of clinical interest because intravenous fosfomycin is given as the disodium salt (Discussion)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened on all model parameters and not retained. Entire-cohort median (IQR) 140 (140-150) mmol/L, missing for 44.4% of patients. Of clinical interest because intravenous fosfomycin is given as the disodium salt (Discussion)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 45L,
-    n_studies      = 4L,
+    species = "human",
+    n_subjects = 45L,
+    n_studies = 4L,
     n_observations = 727L,
-    age_range      = "median (IQR) 63 (57-75) years",
-    weight_range   = "median (IQR) 80 (70-90) kg",
+    age_range = "median (IQR) 63 (57-75) years",
+    weight_range = "median (IQR) 80 (70-90) kg",
     sex_female_pct = 24,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Critically ill adults with acute kidney injury or chronic kidney disease. 33 of 45",
       "(73.3%) underwent kidney replacement therapy: 18 prolonged-intermittent KRT",
       "(studies A and B) and 15 continuous KRT (study C). Twelve patients (study D) required",
@@ -249,7 +249,7 @@ Gotz_2025_fosfomycin <- function() {
       "(number anuric in parentheses): >= 90, 7 (1); 60-89, 8 (2); 45-59, 6 (3); 30-44, 12 (1);",
       "15-29, 4 (3); < 15, 0 (0)."
     ),
-    rrt_settings   = paste(
+    rrt_settings = paste(
       "Entire cohort median (IQR) blood flow rate 100 (100-150) mL/min and dialysate flow rate",
       "42 (33-50) mL/min, differing sharply by modality (P < 0.001): study A 190 (28-190)",
       "mL/min for both, study B 250 (240-250) mL/min for both, study C 100 (100-100) mL/min",
@@ -260,14 +260,14 @@ Gotz_2025_fosfomycin <- function() {
       "polysulfone hemofilters for CVVHD of physician-determined duration (Supplement,",
       "Kidney replacement therapy modalities)."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "5 g three times daily intravenously in patients with KRT; 4 g four times daily or 6 g",
       "three times daily in patients without KRT. Infusion duration 30-60 min in studies A, B",
       "and D and 120 min in study C. The Monte Carlo simulations additionally explored 4, 5",
       "and 8 g three times daily, 8 g twice daily and 4 g four times daily."
     ),
-    regions        = "Germany (studies A, B, C), Greece (study D).",
-    notes          = paste(
+    regions = "Germany (studies A, B, C), Greece (study D).",
+    notes = paste(
       "Pooled analysis of four prospective observational studies: A = Dimski 2021",
       "(doi:10.1038/s41598-021-91423-9, n = 10, PIKRT), B = Gerecke 2021",
       "(doi:10.1093/jac/dkab357, n = 8, PIKRT), C = Huppe 2023",

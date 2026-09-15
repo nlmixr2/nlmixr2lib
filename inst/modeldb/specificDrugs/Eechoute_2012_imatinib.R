@@ -37,23 +37,23 @@ Eechoute_2012_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit1    = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit2    = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit3    = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit4    = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    transit5    = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     TUM_VOL = list(
-      description        = "Volume of liver metastases",
-      units              = "mm^3",
-      type               = "continuous",
+      description = "Volume of liver metastases",
+      units = "mm^3",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "UNIT CONVERSION IS REQUIRED AT THE CALL SITE. Yang 2025 Table 1 ",
         "abbreviation list defines the source column as 'LIVM volume of ",
         "liver metastasis (cm^3)' and prints the effect as ",
@@ -83,14 +83,14 @@ Eechoute_2012_imatinib <- function() {
         "burden. Set TUM_VOL = 0 to recover the metastasis-free typical ",
         "clearance of 9.12 L/h."
       ),
-      source_name        = "LIVM"
+      source_name = "LIVM"
     ),
     T_FIRSTDOSE = list(
-      description        = "Time elapsed since the first imatinib dose of the treatment course",
-      units              = "h",
-      type               = "continuous",
+      description = "Time elapsed since the first imatinib dose of the treatment course",
+      units = "h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Yang 2025 Table 1 abbreviation list: 'TAF time from first dose ",
         "administration (h)'. This is a treatment-duration clock that runs ",
         "monotonically across the whole record and does NOT reset at each ",
@@ -109,21 +109,21 @@ Eechoute_2012_imatinib <- function() {
         "designed to characterise. For a simulation whose first dose is at ",
         "time zero, T_FIRSTDOSE equals the model time."
       ),
-      source_name        = "TAF"
+      source_name = "TAF"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 50L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 50L,
+    n_studies = 1L,
     n_observations = "1743 imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "39-82 years",
-    disease_state  = "Adults with gastrointestinal stromal tumor (GIST)",
-    dose_range     = "Oral imatinib 400-800 mg total daily dose",
-    regions        = "Europe",
-    bioanalytical  = "LC-MS/MS; limit of quantification not reported in Yang 2025 Table 1",
-    notes          = paste0(
+    age_range = "39-82 years",
+    disease_state = "Adults with gastrointestinal stromal tumor (GIST)",
+    dose_range = "Oral imatinib 400-800 mg total daily dose",
+    regions = "Europe",
+    bioanalytical = "LC-MS/MS; limit of quantification not reported in Yang 2025 Table 1",
+    notes = paste0(
       "The longest-followed cohort among the 15 models evaluated by Yang ",
       "2025 (1743 samples from 50 patients), which is what makes the ",
       "time-since-first-dose effect estimable. Demographic detail beyond ",

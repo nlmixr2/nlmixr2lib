@@ -1,68 +1,68 @@
 Chan_2008_maraviroc <- function() {
   description <- "Two-compartment population PK meta-analysis model for oral maraviroc (CCR5 antagonist) in healthy volunteers and asymptomatic HIV-infected adults, with hepatic-extraction-ratio parameterisation of clearance, dose-dependent absorption (sigmoid-Emax F_ABS and power-function ka), food effect on both, Asian-race covariates on hepatic extraction / peripheral volume / inter-compartmental clearance, an age effect on Q, and a TAD-dependent residual error (Chan 2008)"
-  reference   <- "Chan PLS, Weatherley B, McFadyen L. A population pharmacokinetic meta-analysis of maraviroc in healthy volunteers and asymptomatic HIV-infected subjects. Br J Clin Pharmacol. 2008 Apr;65 Suppl 1:76-85. doi:10.1111/j.1365-2125.2008.03139.x"
-  vignette    <- "Chan_2008_maraviroc"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Chan PLS, Weatherley B, McFadyen L. A population pharmacokinetic meta-analysis of maraviroc in healthy volunteers and asymptomatic HIV-infected subjects. Br J Clin Pharmacol. 2008 Apr;65 Suppl 1:76-85. doi:10.1111/j.1365-2125.2008.03139.x"
+  vignette <- "Chan_2008_maraviroc"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "maraviroc", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "maraviroc", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power-form effect on CL_ic, normalised to the median age of 30 years (Chan 2008 Methods, 'Covariate testing': 'Continuous covariates, age and weight, were modelled as multiplicative effects and normalized to their median values, 30 years and 71 kg, respectively.'). Implementation form: CL_ic = CL_ic_typ * (AGE / 30)^e_age_q. At age 60 the multiplier is (60/30)^0.349 = 1.274 (CL_ic is 27.4% greater than at age 30; Chan 2008 Results, 'The population estimate of CLic').",
-      source_name        = "AGE"
+      notes = "Power-form effect on CL_ic, normalised to the median age of 30 years (Chan 2008 Methods, 'Covariate testing': 'Continuous covariates, age and weight, were modelled as multiplicative effects and normalized to their median values, 30 years and 71 kg, respectively.'). Implementation form: CL_ic = CL_ic_typ * (AGE / 30)^e_age_q. At age 60 the multiplier is (60/30)^0.349 = 1.274 (CL_ic is 27.4% greater than at age 30; Chan 2008 Results, 'The population estimate of CLic').",
+      source_name = "AGE"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (all non-Asian, including White, Black, and Other)",
-      notes              = "Multiplicative-exponential covariate on E_H, V_p, and CL_ic: PARAM_Asian = PARAM_typ * exp(theta * RACE_ASIAN). Verified by back-calculation from paper Table 5 (typical Asian CL = 47.88 L/h; F_HEP_Asian = 0.398, matching CL_H = E_H * FQ = 0.662 * exp(-0.0948) * 59.59 = 35.89 L/h and CL_total = 35.89 + 12 = 47.89 L/h). Chan 2008 Methods, 'Covariate testing': 'In the final covariate search the race effect was tested as binary (Asians vs reference of all non-Asians).' Black subjects (3.4% of the cohort) were collapsed into the non-Asian reference because the preliminary Black-vs-Whites/Others test was not statistically significant.",
-      source_name        = "ASIAN"
+      notes = "Multiplicative-exponential covariate on E_H, V_p, and CL_ic: PARAM_Asian = PARAM_typ * exp(theta * RACE_ASIAN). Verified by back-calculation from paper Table 5 (typical Asian CL = 47.88 L/h; F_HEP_Asian = 0.398, matching CL_H = E_H * FQ = 0.662 * exp(-0.0948) * 59.59 = 35.89 L/h and CL_total = 35.89 + 12 = 47.89 L/h). Chan 2008 Methods, 'Covariate testing': 'In the final covariate search the race effect was tested as binary (Asians vs reference of all non-Asians).' Black subjects (3.4% of the cohort) were collapsed into the non-Asian reference because the preliminary Black-vs-Whites/Others test was not statistically significant.",
+      source_name = "ASIAN"
     ),
     FED = list(
-      description        = "Fed-vs-fasted at-dosing indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-vs-fasted at-dosing indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = "Per-dose-event indicator. 1 = oral tablet co-administered with a high-fat meal; 0 = fully fasted overnight with meals deferred at least 4 h post-dose. Drives a factorial multiplicative effect on ka (Chan 2008 Eq 6) and a log-multiplicative-exponential effect on ABSEmax / ED50 (Eqs 7-8). Light-meal and intermediate-timing food conditions were excluded from the analysis dataset.",
-      source_name        = "FED"
+      notes = "Per-dose-event indicator. 1 = oral tablet co-administered with a high-fat meal; 0 = fully fasted overnight with meals deferred at least 4 h post-dose. Drives a factorial multiplicative effect on ka (Chan 2008 Eq 6) and a log-multiplicative-exponential effect on ABSEmax / ED50 (Eqs 7-8). Light-meal and intermediate-timing food conditions were excluded from the analysis dataset.",
+      source_name = "FED"
     ),
     DOSE = list(
-      description        = "Maraviroc tablet dose at the current dose record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Maraviroc tablet dose at the current dose record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-dose-record continuous covariate carrying the administered dose level in mg. Used by the dose-dependent sigmoid-Emax F_ABS (Chan 2008 Eq 4) and by the dose-dependent power-function ka (Eq 5). Supply DOSE at the same value as the rxode2 amt column on each dose record and carry it forward by last-observation-carried-forward (LOCF) so ka and F_ABS reflect the most recent dose during ongoing absorption.",
-      source_name        = "Dose"
+      notes = "Per-dose-record continuous covariate carrying the administered dose level in mg. Used by the dose-dependent sigmoid-Emax F_ABS (Chan 2008 Eq 4) and by the dose-dependent power-function ka (Eq 5). Supply DOSE at the same value as the rxode2 amt column on each dose record and carry it forward by last-observation-carried-forward (LOCF) so ka and F_ABS reflect the most recent dose during ongoing absorption.",
+      source_name = "Dose"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 413L,
-    n_studies      = 17L,
-    age_range      = "18-54 years (median 30)",
-    age_median     = "30 years",
-    weight_range   = "46-109 kg (median 71)",
-    weight_median  = "71 kg",
+    species = "human",
+    n_subjects = 413L,
+    n_studies = 17L,
+    age_range = "18-54 years (median 30)",
+    age_median = "30 years",
+    weight_range = "46-109 kg (median 71)",
+    weight_median = "71 kg",
     sex_female_pct = 23.2,
     race_ethnicity = c(White = 73.1, Asian = 23.0, Black = 3.4, Other = 0.5),
-    disease_state  = "Pooled healthy volunteers (n = 365, 88.4%) and asymptomatic HIV-infected subjects (n = 48, 11.6%)",
-    dose_range     = "Per-dose 25-1200 mg oral tablet; total daily doses 100-1800 mg/day; single- and multiple-dose regimens",
-    regions        = "Multi-national; Pfizer Phase 1 and 2a clinical pharmacology studies",
+    disease_state = "Pooled healthy volunteers (n = 365, 88.4%) and asymptomatic HIV-infected subjects (n = 48, 11.6%)",
+    dose_range = "Per-dose 25-1200 mg oral tablet; total daily doses 100-1800 mg/day; single- and multiple-dose regimens",
+    regions = "Multi-national; Pfizer Phase 1 and 2a clinical pharmacology studies",
     n_observations = 8951L,
-    notes          = "Meta-analysis of 17 Pfizer studies (Chan 2008 Table 1: A4001003 through A4001043). 690 concentration-time profiles; 46 (6.7%) profiles obtained under fed conditions. HIV-infected subjects contributed 929 of the 8951 plasma observations. Demographic summaries from Chan 2008 Tables 2-3."
+    notes = "Meta-analysis of 17 Pfizer studies (Chan 2008 Table 1: A4001003 through A4001043). 690 concentration-time profiles; 46 (6.7%) profiles obtained under fed conditions. HIV-infected subjects contributed 929 of the 8951 plasma observations. Demographic summaries from Chan 2008 Tables 2-3."
   )
 
   ini({

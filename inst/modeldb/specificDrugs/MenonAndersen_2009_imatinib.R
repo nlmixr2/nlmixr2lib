@@ -36,16 +36,16 @@ MenonAndersen_2009_imatinib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    central            = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
-    central_ndmima     = list(
-      analyte  = "N-desmethyl imatinib (CGP74588)",
-      units    = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
+    central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ndmima = list(
+      analyte = "N-desmethyl imatinib (CGP74588)",
+      units = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
       specimen = "plasma",
       verified = FALSE
     ),
     peripheral1_ndmima = list(
-      analyte  = "N-desmethyl imatinib (CGP74588)",
-      units    = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
+      analyte = "N-desmethyl imatinib (CGP74588)",
+      units = "mg divided by the fraction of imatinib metabolized to N-desmethyl imatinib (fm)",
       specimen = "plasma",
       verified = FALSE
     )
@@ -53,11 +53,11 @@ MenonAndersen_2009_imatinib <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Scales every disposition parameter of both analytes ",
         "allometrically, referenced to 70 kg (Yang 2025 Table 1): imatinib ",
         "CL/F x (WT/70)^0.75 and Vc/F x (WT/70)^1; metabolite CLm/fm x ",
@@ -74,21 +74,21 @@ MenonAndersen_2009_imatinib <- function() {
         "population of both adults and children, and they used body weight ",
         "scaling in their original models')."
       ),
-      source_name        = "TBW"
+      source_name = "TBW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 41L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 41L,
+    n_studies = 1L,
     n_observations = "842 imatinib and 424 N-desmethyl imatinib plasma concentrations (Yang 2025 Table 1)",
-    age_range      = "6-24 years",
-    disease_state  = "Children and young adults with Philadelphia chromosome-positive (Ph+) leukemia or solid tumors",
-    dose_range     = "Oral imatinib 260-570 mg/m^2 total daily dose",
-    regions        = "USA",
-    bioanalytical  = "HPLC; limit of quantification 1 or 10 ng/mL for imatinib and 2 ng/mL for N-desmethyl imatinib (Yang 2025 Table 1)",
-    notes          = paste0(
+    age_range = "6-24 years",
+    disease_state = "Children and young adults with Philadelphia chromosome-positive (Ph+) leukemia or solid tumors",
+    dose_range = "Oral imatinib 260-570 mg/m^2 total daily dose",
+    regions = "USA",
+    bioanalytical = "HPLC; limit of quantification 1 or 10 ng/mL for imatinib and 2 ng/mL for N-desmethyl imatinib (Yang 2025 Table 1)",
+    notes = paste0(
       "One of only two models among the 15 evaluated by Yang 2025 that was ",
       "developed on data including children (the other is ",
       "Petain_2008_imatinib.R), and the only one developed exclusively in a ",

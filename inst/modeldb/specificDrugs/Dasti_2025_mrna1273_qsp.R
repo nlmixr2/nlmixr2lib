@@ -40,8 +40,8 @@ Dasti_2025_mrna1273_qsp <- function() {
   )
   vignette <- "Dasti_2025_mrna_vaccines"
   units <- list(
-    time          = "day",
-    dosing        = "pmol (LNP-encapsulated mRNA at the injection site)",
+    time = "day",
+    dosing = "pmol (LNP-encapsulated mRNA at the injection site)",
     concentration = "ng/mL (total anti-RBD IgG in serum)"
   )
   # The vaccine dose is given into the mRNA state, not depot/central.
@@ -50,43 +50,226 @@ Dasti_2025_mrna1273_qsp <- function() {
   # suffixes index the B-cell affinity subclones of SI Table S1, not
   # arbitrary numbering.
   paper_specific_compartments <- c(
-    "mRNA", "NP_IS", "NPL_IS", "NPAg_IS", "MN_IS", "MNL_IS",
-    "MNAg_IS", "mDC_IS", "mDCL_IS", "mDCAgLon_IS", "mDCAgMon_IS", "mDCAgH_IS",
-    "mDCAgMoff_IS", "mDCAgLoff_IS", "mDCoff_IS", "pDC_IS", "pDCL_IS", "pDCAgLon_IS",
-    "pDCAgMon_IS", "pDCAgH_IS", "pDCAgMoff_IS", "pDCAgLoff_IS", "pDCoff_IS", "NPL_LN",
-    "NPAg_LN", "MNL_LN", "MNAg_LN", "mDCL_LN", "mDCAgLon_LN", "mDCAgMon_LN",
-    "mDCAgH_LN", "mDCAgMoff_LN", "mDCAgLoff_LN", "mDC_LN", "pDCL_LN", "pDCAgLon_LN",
-    "pDCAgMon_LN", "pDCAgH_LN", "pDCAgMoff_LN", "pDCAgLoff_LN", "pDC_LN", "NT",
-    "AT_N", "MT", "AT_M", "FT", "NB1", "NB2",
-    "NB3", "NB4", "NB5", "NB6", "NB7", "NB8",
-    "NB9", "NB10", "NB11", "NB12", "NB13", "NB14",
-    "NB15", "NB16", "NB17", "ABN1", "ABN2", "ABN3",
-    "ABN4", "ABN5", "ABN6", "ABN7", "ABN8", "ABN9",
-    "ABN10", "ABN11", "ABN12", "ABN13", "ABN14", "ABN15",
-    "ABN16", "ABN17", "GCB1", "GCB2", "GCB3", "GCB4",
-    "GCB5", "GCB6", "GCB7", "GCB8", "GCB9", "GCB10",
-    "GCB11", "GCB12", "GCB13", "GCB14", "GCB15", "GCB16",
-    "GCB17", "MB1", "MB2", "MB3", "MB4", "MB5",
-    "MB6", "MB7", "MB8", "MB9", "MB10", "MB11",
-    "MB12", "MB13", "MB14", "MB15", "MB16", "MB17",
-    "ABM1", "ABM2", "ABM3", "ABM4", "ABM5", "ABM6",
-    "ABM7", "ABM8", "ABM9", "ABM10", "ABM11", "ABM12",
-    "ABM13", "ABM14", "ABM15", "ABM16", "ABM17", "SP1",
-    "SP2", "SP3", "SP4", "SP5", "SP6", "SP7",
-    "SP8", "SP9", "SP10", "SP11", "SP12", "SP13",
-    "SP14", "SP15", "SP16", "SP17", "LP1", "LP2",
-    "LP3", "LP4", "LP5", "LP6", "LP7", "LP8",
-    "LP9", "LP10", "LP11", "LP12", "LP13", "LP14",
-    "LP15", "LP16", "LP17", "NP_BL", "MN_BL", "mDC_BL",
-    "pDC_BL", "SPBL1", "SPBL2", "SPBL3", "SPBL4", "SPBL5",
-    "SPBL6", "SPBL7", "SPBL8", "SPBL9", "SPBL10", "SPBL11",
-    "SPBL12", "SPBL13", "SPBL14", "SPBL15", "SPBL16", "SPBL17",
-    "LPBL1", "LPBL2", "LPBL3", "LPBL4", "LPBL5", "LPBL6",
-    "LPBL7", "LPBL8", "LPBL9", "LPBL10", "LPBL11", "LPBL12",
-    "LPBL13", "LPBL14", "LPBL15", "LPBL16", "LPBL17", "Ab1",
-    "Ab2", "Ab3", "Ab4", "Ab5", "Ab6", "Ab7",
-    "Ab8", "Ab9", "Ab10", "Ab11", "Ab12", "Ab13",
-    "Ab14", "Ab15", "Ab16", "Ab17"
+    "mRNA",
+    "NP_IS",
+    "NPL_IS",
+    "NPAg_IS",
+    "MN_IS",
+    "MNL_IS",
+    "MNAg_IS",
+    "mDC_IS",
+    "mDCL_IS",
+    "mDCAgLon_IS",
+    "mDCAgMon_IS",
+    "mDCAgH_IS",
+    "mDCAgMoff_IS",
+    "mDCAgLoff_IS",
+    "mDCoff_IS",
+    "pDC_IS",
+    "pDCL_IS",
+    "pDCAgLon_IS",
+    "pDCAgMon_IS",
+    "pDCAgH_IS",
+    "pDCAgMoff_IS",
+    "pDCAgLoff_IS",
+    "pDCoff_IS",
+    "NPL_LN",
+    "NPAg_LN",
+    "MNL_LN",
+    "MNAg_LN",
+    "mDCL_LN",
+    "mDCAgLon_LN",
+    "mDCAgMon_LN",
+    "mDCAgH_LN",
+    "mDCAgMoff_LN",
+    "mDCAgLoff_LN",
+    "mDC_LN",
+    "pDCL_LN",
+    "pDCAgLon_LN",
+    "pDCAgMon_LN",
+    "pDCAgH_LN",
+    "pDCAgMoff_LN",
+    "pDCAgLoff_LN",
+    "pDC_LN",
+    "NT",
+    "AT_N",
+    "MT",
+    "AT_M",
+    "FT",
+    "NB1",
+    "NB2",
+    "NB3",
+    "NB4",
+    "NB5",
+    "NB6",
+    "NB7",
+    "NB8",
+    "NB9",
+    "NB10",
+    "NB11",
+    "NB12",
+    "NB13",
+    "NB14",
+    "NB15",
+    "NB16",
+    "NB17",
+    "ABN1",
+    "ABN2",
+    "ABN3",
+    "ABN4",
+    "ABN5",
+    "ABN6",
+    "ABN7",
+    "ABN8",
+    "ABN9",
+    "ABN10",
+    "ABN11",
+    "ABN12",
+    "ABN13",
+    "ABN14",
+    "ABN15",
+    "ABN16",
+    "ABN17",
+    "GCB1",
+    "GCB2",
+    "GCB3",
+    "GCB4",
+    "GCB5",
+    "GCB6",
+    "GCB7",
+    "GCB8",
+    "GCB9",
+    "GCB10",
+    "GCB11",
+    "GCB12",
+    "GCB13",
+    "GCB14",
+    "GCB15",
+    "GCB16",
+    "GCB17",
+    "MB1",
+    "MB2",
+    "MB3",
+    "MB4",
+    "MB5",
+    "MB6",
+    "MB7",
+    "MB8",
+    "MB9",
+    "MB10",
+    "MB11",
+    "MB12",
+    "MB13",
+    "MB14",
+    "MB15",
+    "MB16",
+    "MB17",
+    "ABM1",
+    "ABM2",
+    "ABM3",
+    "ABM4",
+    "ABM5",
+    "ABM6",
+    "ABM7",
+    "ABM8",
+    "ABM9",
+    "ABM10",
+    "ABM11",
+    "ABM12",
+    "ABM13",
+    "ABM14",
+    "ABM15",
+    "ABM16",
+    "ABM17",
+    "SP1",
+    "SP2",
+    "SP3",
+    "SP4",
+    "SP5",
+    "SP6",
+    "SP7",
+    "SP8",
+    "SP9",
+    "SP10",
+    "SP11",
+    "SP12",
+    "SP13",
+    "SP14",
+    "SP15",
+    "SP16",
+    "SP17",
+    "LP1",
+    "LP2",
+    "LP3",
+    "LP4",
+    "LP5",
+    "LP6",
+    "LP7",
+    "LP8",
+    "LP9",
+    "LP10",
+    "LP11",
+    "LP12",
+    "LP13",
+    "LP14",
+    "LP15",
+    "LP16",
+    "LP17",
+    "NP_BL",
+    "MN_BL",
+    "mDC_BL",
+    "pDC_BL",
+    "SPBL1",
+    "SPBL2",
+    "SPBL3",
+    "SPBL4",
+    "SPBL5",
+    "SPBL6",
+    "SPBL7",
+    "SPBL8",
+    "SPBL9",
+    "SPBL10",
+    "SPBL11",
+    "SPBL12",
+    "SPBL13",
+    "SPBL14",
+    "SPBL15",
+    "SPBL16",
+    "SPBL17",
+    "LPBL1",
+    "LPBL2",
+    "LPBL3",
+    "LPBL4",
+    "LPBL5",
+    "LPBL6",
+    "LPBL7",
+    "LPBL8",
+    "LPBL9",
+    "LPBL10",
+    "LPBL11",
+    "LPBL12",
+    "LPBL13",
+    "LPBL14",
+    "LPBL15",
+    "LPBL16",
+    "LPBL17",
+    "Ab1",
+    "Ab2",
+    "Ab3",
+    "Ab4",
+    "Ab5",
+    "Ab6",
+    "Ab7",
+    "Ab8",
+    "Ab9",
+    "Ab10",
+    "Ab11",
+    "Ab12",
+    "Ab13",
+    "Ab14",
+    "Ab15",
+    "Ab16",
+    "Ab17"
   )
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Descriptions transcribed from SI Table S1;
@@ -94,236 +277,1306 @@ Dasti_2025_mrna1273_qsp <- function() {
   # (injection-site muscle, lymph node, blood) are mapped onto the
   # controlled specimen vocabulary; the analyte text carries the detail.
   compartmentData <- list(
-    mRNA         = list(analyte = "LNP-encapsulated mRNA product at the intramuscular injection site", units = "pmol", specimen = "administration site", verified = TRUE),
-    NP_IS        = list(analyte = "resident naive neutrophils at the injection site", units = "cells", specimen = "tissue", verified = TRUE),
-    NPL_IS       = list(analyte = "neutrophils that internalized the LNPs", units = "cells", specimen = "tissue", verified = TRUE),
-    NPAg_IS      = list(analyte = "neutrophils expressing the antigen protein", units = "cells", specimen = "tissue", verified = TRUE),
-    MN_IS        = list(analyte = "resident naive monocytes at the injection site", units = "cells", specimen = "tissue", verified = TRUE),
-    MNL_IS       = list(analyte = "monocytes that internalized the LNPs", units = "cells", specimen = "tissue", verified = TRUE),
-    MNAg_IS      = list(analyte = "monocytes expressing the antigen protein", units = "cells", specimen = "tissue", verified = TRUE),
-    mDC_IS       = list(analyte = "resident naive myeloid dendritic cells at the injection site", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCL_IS      = list(analyte = "myeloid dendritic cells that internalized the LNPs", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCAgLon_IS  = list(analyte = "myeloid dendritic cells with low antigen expression (binding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCAgMon_IS  = list(analyte = "myeloid dendritic cells with medium antigen expression (binding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCAgH_IS    = list(analyte = "myeloid dendritic cells with high antigen expression", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCAgMoff_IS = list(analyte = "myeloid dendritic cells with medium antigen expression (unbinding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCAgLoff_IS = list(analyte = "myeloid dendritic cells with low antigen expression (unbinding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    mDCoff_IS    = list(analyte = "mature myeloid dendritic cells with no antigen expression (unbinding-phase endpoint)", units = "cells", specimen = "tissue", verified = TRUE),
-    pDC_IS       = list(analyte = "resident naive plasmacytoid dendritic cells at the injection site", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCL_IS      = list(analyte = "plasmacytoid dendritic cells that internalized the LNPs", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCAgLon_IS  = list(analyte = "plasmacytoid dendritic cells with low antigen expression (binding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCAgMon_IS  = list(analyte = "plasmacytoid dendritic cells with medium antigen expression (binding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCAgH_IS    = list(analyte = "plasmacytoid dendritic cells with high antigen expression", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCAgMoff_IS = list(analyte = "plasmacytoid dendritic cells with medium antigen expression (unbinding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCAgLoff_IS = list(analyte = "plasmacytoid dendritic cells with low antigen expression (unbinding phase)", units = "cells", specimen = "tissue", verified = TRUE),
-    pDCoff_IS    = list(analyte = "mature plasmacytoid dendritic cells with no antigen expression (unbinding-phase endpoint)", units = "cells", specimen = "tissue", verified = TRUE),
-    NPL_LN       = list(analyte = "neutrophils that internalized the LNPs", units = "cells", specimen = "lymph", verified = TRUE),
-    NPAg_LN      = list(analyte = "neutrophils producing antigen protein from translated mRNA", units = "cells", specimen = "lymph", verified = TRUE),
-    MNL_LN       = list(analyte = "monocytes that internalized the LNPs", units = "cells", specimen = "lymph", verified = TRUE),
-    MNAg_LN      = list(analyte = "monocytes producing antigen protein from translated mRNA", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCL_LN      = list(analyte = "myeloid dendritic cells that internalized the LNPs", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCAgLon_LN  = list(analyte = "myeloid dendritic cells with low antigen expression (binding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCAgMon_LN  = list(analyte = "myeloid dendritic cells with medium antigen expression (binding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCAgH_LN    = list(analyte = "myeloid dendritic cells with high antigen expression", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCAgMoff_LN = list(analyte = "myeloid dendritic cells with medium antigen expression (unbinding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    mDCAgLoff_LN = list(analyte = "myeloid dendritic cells with low antigen expression (unbinding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    mDC_LN       = list(analyte = "mature myeloid dendritic cells with no antigen expression (unbinding-phase endpoint)", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCL_LN      = list(analyte = "plasmacytoid dendritic cells that internalized the LNPs", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCAgLon_LN  = list(analyte = "plasmacytoid dendritic cells with low antigen expression (binding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCAgMon_LN  = list(analyte = "plasmacytoid dendritic cells with medium antigen expression (binding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCAgH_LN    = list(analyte = "plasmacytoid dendritic cells with high antigen expression", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCAgMoff_LN = list(analyte = "plasmacytoid dendritic cells with medium antigen expression (unbinding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    pDCAgLoff_LN = list(analyte = "plasmacytoid dendritic cells with low antigen expression (unbinding phase)", units = "cells", specimen = "lymph", verified = TRUE),
-    pDC_LN       = list(analyte = "mature plasmacytoid dendritic cells with no antigen expression (unbinding-phase endpoint)", units = "cells", specimen = "lymph", verified = TRUE),
-    NT           = list(analyte = "naive T-helper cells", units = "cells", specimen = "lymph", verified = TRUE),
-    AT_N         = list(analyte = "activated T-helper cells derived from naive T cells", units = "cells", specimen = "lymph", verified = TRUE),
-    MT           = list(analyte = "memory T cells", units = "cells", specimen = "lymph", verified = TRUE),
-    AT_M         = list(analyte = "activated T-helper cells derived from memory T cells", units = "cells", specimen = "lymph", verified = TRUE),
-    FT           = list(analyte = "functional T cells", units = "cells", specimen = "lymph", verified = TRUE),
-    NB1          = list(analyte = "naive B cells, affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB2          = list(analyte = "naive B cells, affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB3          = list(analyte = "naive B cells, affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB4          = list(analyte = "naive B cells, affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB5          = list(analyte = "naive B cells, affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB6          = list(analyte = "naive B cells, affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB7          = list(analyte = "naive B cells, affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB8          = list(analyte = "naive B cells, affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB9          = list(analyte = "naive B cells, affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB10         = list(analyte = "naive B cells, affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB11         = list(analyte = "naive B cells, affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB12         = list(analyte = "naive B cells, affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB13         = list(analyte = "naive B cells, affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB14         = list(analyte = "naive B cells, affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB15         = list(analyte = "naive B cells, affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB16         = list(analyte = "naive B cells, affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NB17         = list(analyte = "naive B cells, affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN1         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN2         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN3         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN4         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN5         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN6         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN7         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN8         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN9         = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN10        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN11        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN12        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN13        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN14        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN15        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN16        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABN17        = list(analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB1         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB2         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB3         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB4         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB5         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB6         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB7         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB8         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB9         = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB10        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB11        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB12        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB13        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB14        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB15        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB16        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    GCB17        = list(analyte = "activated B cells that entered the germinal centre, affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB1          = list(analyte = "memory B cells, affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB2          = list(analyte = "memory B cells, affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB3          = list(analyte = "memory B cells, affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB4          = list(analyte = "memory B cells, affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB5          = list(analyte = "memory B cells, affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB6          = list(analyte = "memory B cells, affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB7          = list(analyte = "memory B cells, affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB8          = list(analyte = "memory B cells, affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB9          = list(analyte = "memory B cells, affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB10         = list(analyte = "memory B cells, affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB11         = list(analyte = "memory B cells, affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB12         = list(analyte = "memory B cells, affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB13         = list(analyte = "memory B cells, affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB14         = list(analyte = "memory B cells, affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB15         = list(analyte = "memory B cells, affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB16         = list(analyte = "memory B cells, affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    MB17         = list(analyte = "memory B cells, affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM1         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM2         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM3         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM4         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM5         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM6         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM7         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM8         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM9         = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM10        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM11        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM12        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM13        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM14        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM15        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM16        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    ABM17        = list(analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP1          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP2          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP3          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP4          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP5          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP6          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP7          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP8          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP9          = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP10         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP11         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP12         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP13         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP14         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP15         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP16         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    SP17         = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP1          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 1 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP2          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 2 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP3          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 3 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP4          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 4 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP5          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 5 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP6          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 6 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP7          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 7 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP8          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 8 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP9          = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 9 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP10         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 10 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP11         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 11 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP12         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 12 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP13         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 13 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP14         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 14 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP15         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 15 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP16         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 16 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    LP17         = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 17 of 17", units = "cells", specimen = "lymph", verified = TRUE),
-    NP_BL        = list(analyte = "naive neutrophils", units = "cells", specimen = "blood cell", verified = TRUE),
-    MN_BL        = list(analyte = "naive monocytes", units = "cells", specimen = "blood cell", verified = TRUE),
-    mDC_BL       = list(analyte = "naive myeloid dendritic cells", units = "cells", specimen = "blood cell", verified = TRUE),
-    pDC_BL       = list(analyte = "naive plasmacytoid dendritic cells", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL1        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 1 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL2        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 2 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL3        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 3 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL4        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 4 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL5        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 5 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL6        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 6 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL7        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 7 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL8        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 8 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL9        = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 9 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL10       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 10 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL11       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 11 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL12       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 12 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL13       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 13 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL14       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 14 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL15       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 15 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL16       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 16 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    SPBL17       = list(analyte = "short-lived antibody-secreting plasma cells, affinity subclone 17 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL1        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 1 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL2        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 2 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL3        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 3 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL4        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 4 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL5        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 5 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL6        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 6 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL7        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 7 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL8        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 8 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL9        = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 9 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL10       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 10 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL11       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 11 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL12       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 12 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL13       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 13 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL14       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 14 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL15       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 15 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL16       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 16 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    LPBL17       = list(analyte = "long-lived antibody-secreting plasma cells, affinity subclone 17 of 17", units = "cells", specimen = "blood cell", verified = TRUE),
-    Ab1          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 1 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab2          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 2 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab3          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 3 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab4          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 4 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab5          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 5 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab6          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 6 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab7          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 7 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab8          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 8 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab9          = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 9 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab10         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 10 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab11         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 11 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab12         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 12 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab13         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 13 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab14         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 14 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab15         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 15 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab16         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 16 of 17", units = "pmol", specimen = "serum", verified = TRUE),
-    Ab17         = list(analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 17 of 17", units = "pmol", specimen = "serum", verified = TRUE)
+    mRNA = list(
+      analyte = "LNP-encapsulated mRNA product at the intramuscular injection site",
+      units = "pmol",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    NP_IS = list(
+      analyte = "resident naive neutrophils at the injection site",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    NPL_IS = list(
+      analyte = "neutrophils that internalized the LNPs",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    NPAg_IS = list(
+      analyte = "neutrophils expressing the antigen protein",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    MN_IS = list(
+      analyte = "resident naive monocytes at the injection site",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    MNL_IS = list(
+      analyte = "monocytes that internalized the LNPs",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    MNAg_IS = list(
+      analyte = "monocytes expressing the antigen protein",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDC_IS = list(
+      analyte = "resident naive myeloid dendritic cells at the injection site",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCL_IS = list(
+      analyte = "myeloid dendritic cells that internalized the LNPs",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCAgLon_IS = list(
+      analyte = "myeloid dendritic cells with low antigen expression (binding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCAgMon_IS = list(
+      analyte = "myeloid dendritic cells with medium antigen expression (binding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCAgH_IS = list(
+      analyte = "myeloid dendritic cells with high antigen expression",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCAgMoff_IS = list(
+      analyte = "myeloid dendritic cells with medium antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCAgLoff_IS = list(
+      analyte = "myeloid dendritic cells with low antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    mDCoff_IS = list(
+      analyte = "mature myeloid dendritic cells with no antigen expression (unbinding-phase endpoint)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDC_IS = list(
+      analyte = "resident naive plasmacytoid dendritic cells at the injection site",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCL_IS = list(
+      analyte = "plasmacytoid dendritic cells that internalized the LNPs",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCAgLon_IS = list(
+      analyte = "plasmacytoid dendritic cells with low antigen expression (binding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCAgMon_IS = list(
+      analyte = "plasmacytoid dendritic cells with medium antigen expression (binding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCAgH_IS = list(
+      analyte = "plasmacytoid dendritic cells with high antigen expression",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCAgMoff_IS = list(
+      analyte = "plasmacytoid dendritic cells with medium antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCAgLoff_IS = list(
+      analyte = "plasmacytoid dendritic cells with low antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    pDCoff_IS = list(
+      analyte = "mature plasmacytoid dendritic cells with no antigen expression (unbinding-phase endpoint)",
+      units = "cells",
+      specimen = "tissue",
+      verified = TRUE
+    ),
+    NPL_LN = list(
+      analyte = "neutrophils that internalized the LNPs",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NPAg_LN = list(
+      analyte = "neutrophils producing antigen protein from translated mRNA",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MNL_LN = list(
+      analyte = "monocytes that internalized the LNPs",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MNAg_LN = list(
+      analyte = "monocytes producing antigen protein from translated mRNA",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCL_LN = list(
+      analyte = "myeloid dendritic cells that internalized the LNPs",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCAgLon_LN = list(
+      analyte = "myeloid dendritic cells with low antigen expression (binding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCAgMon_LN = list(
+      analyte = "myeloid dendritic cells with medium antigen expression (binding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCAgH_LN = list(
+      analyte = "myeloid dendritic cells with high antigen expression",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCAgMoff_LN = list(
+      analyte = "myeloid dendritic cells with medium antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDCAgLoff_LN = list(
+      analyte = "myeloid dendritic cells with low antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    mDC_LN = list(
+      analyte = "mature myeloid dendritic cells with no antigen expression (unbinding-phase endpoint)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCL_LN = list(
+      analyte = "plasmacytoid dendritic cells that internalized the LNPs",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCAgLon_LN = list(
+      analyte = "plasmacytoid dendritic cells with low antigen expression (binding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCAgMon_LN = list(
+      analyte = "plasmacytoid dendritic cells with medium antigen expression (binding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCAgH_LN = list(
+      analyte = "plasmacytoid dendritic cells with high antigen expression",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCAgMoff_LN = list(
+      analyte = "plasmacytoid dendritic cells with medium antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDCAgLoff_LN = list(
+      analyte = "plasmacytoid dendritic cells with low antigen expression (unbinding phase)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    pDC_LN = list(
+      analyte = "mature plasmacytoid dendritic cells with no antigen expression (unbinding-phase endpoint)",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NT = list(analyte = "naive T-helper cells", units = "cells", specimen = "lymph", verified = TRUE),
+    AT_N = list(
+      analyte = "activated T-helper cells derived from naive T cells",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MT = list(analyte = "memory T cells", units = "cells", specimen = "lymph", verified = TRUE),
+    AT_M = list(
+      analyte = "activated T-helper cells derived from memory T cells",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    FT = list(analyte = "functional T cells", units = "cells", specimen = "lymph", verified = TRUE),
+    NB1 = list(
+      analyte = "naive B cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB2 = list(
+      analyte = "naive B cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB3 = list(
+      analyte = "naive B cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB4 = list(
+      analyte = "naive B cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB5 = list(
+      analyte = "naive B cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB6 = list(
+      analyte = "naive B cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB7 = list(
+      analyte = "naive B cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB8 = list(
+      analyte = "naive B cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB9 = list(
+      analyte = "naive B cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB10 = list(
+      analyte = "naive B cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB11 = list(
+      analyte = "naive B cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB12 = list(
+      analyte = "naive B cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB13 = list(
+      analyte = "naive B cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB14 = list(
+      analyte = "naive B cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB15 = list(
+      analyte = "naive B cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB16 = list(
+      analyte = "naive B cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NB17 = list(
+      analyte = "naive B cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN1 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN2 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN3 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN4 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN5 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN6 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN7 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN8 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN9 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN10 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN11 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN12 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN13 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN14 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN15 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN16 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABN17 = list(
+      analyte = "activated B cells derived from naive B cells (SI Table S1 ANB), affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB1 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB2 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB3 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB4 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB5 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB6 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB7 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB8 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB9 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB10 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB11 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB12 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB13 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB14 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB15 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB16 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    GCB17 = list(
+      analyte = "activated B cells that entered the germinal centre, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB1 = list(
+      analyte = "memory B cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB2 = list(
+      analyte = "memory B cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB3 = list(
+      analyte = "memory B cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB4 = list(
+      analyte = "memory B cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB5 = list(
+      analyte = "memory B cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB6 = list(
+      analyte = "memory B cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB7 = list(
+      analyte = "memory B cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB8 = list(
+      analyte = "memory B cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB9 = list(
+      analyte = "memory B cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB10 = list(
+      analyte = "memory B cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB11 = list(
+      analyte = "memory B cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB12 = list(
+      analyte = "memory B cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB13 = list(
+      analyte = "memory B cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB14 = list(
+      analyte = "memory B cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB15 = list(
+      analyte = "memory B cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB16 = list(
+      analyte = "memory B cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    MB17 = list(
+      analyte = "memory B cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM1 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM2 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM3 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM4 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM5 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM6 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM7 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM8 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM9 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM10 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM11 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM12 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM13 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM14 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM15 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM16 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    ABM17 = list(
+      analyte = "activated B cells derived from memory B cells (SI Table S1 AMB), affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP1 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP2 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP3 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP4 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP5 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP6 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP7 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP8 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP9 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP10 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP11 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP12 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP13 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP14 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP15 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP16 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    SP17 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP1 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP2 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP3 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP4 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP5 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP6 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP7 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP8 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP9 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP10 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP11 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP12 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP13 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP14 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP15 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP16 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    LP17 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "lymph",
+      verified = TRUE
+    ),
+    NP_BL = list(analyte = "naive neutrophils", units = "cells", specimen = "blood cell", verified = TRUE),
+    MN_BL = list(analyte = "naive monocytes", units = "cells", specimen = "blood cell", verified = TRUE),
+    mDC_BL = list(analyte = "naive myeloid dendritic cells", units = "cells", specimen = "blood cell", verified = TRUE),
+    pDC_BL = list(
+      analyte = "naive plasmacytoid dendritic cells",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL1 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL2 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL3 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL4 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL5 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL6 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL7 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL8 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL9 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL10 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL11 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL12 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL13 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL14 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL15 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL16 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    SPBL17 = list(
+      analyte = "short-lived antibody-secreting plasma cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL1 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 1 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL2 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 2 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL3 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 3 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL4 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 4 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL5 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 5 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL6 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 6 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL7 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 7 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL8 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 8 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL9 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 9 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL10 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 10 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL11 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 11 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL12 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 12 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL13 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 13 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL14 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 14 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL15 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 15 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL16 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 16 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    LPBL17 = list(
+      analyte = "long-lived antibody-secreting plasma cells, affinity subclone 17 of 17",
+      units = "cells",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    Ab1 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 1 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab2 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 2 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab3 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 3 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab4 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 4 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab5 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 5 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab6 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 6 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab7 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 7 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab8 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 8 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab9 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 9 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab10 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 10 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab11 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 11 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab12 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 12 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab13 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 13 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab14 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 14 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab15 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 15 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab16 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 16 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
+    Ab17 = list(
+      analyte = "anti-spike (anti-RBD) IgG antibody in blood, affinity subclone 17 of 17",
+      units = "pmol",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
   covariateData <- list()
   population <- list(
-    species       = "human",
+    species = "human",
     disease_state = "healthy adults receiving prophylactic COVID-19 mRNA vaccination",
-    age_range     = "adults (not age-stratified)",
-    vaccine       = "Moderna mRNA-1273",
-    dose_range    = "25, 50 and 100 ug mRNA per injection, two doses 28 days apart",
-    n_subjects    = NA_integer_,
-    notes         = paste(
+    age_range = "adults (not age-stratified)",
+    vaccine = "Moderna mRNA-1273",
+    dose_range = "25, 50 and 100 ug mRNA per injection, two doses 28 days apart",
+    n_subjects = NA_integer_,
+    notes = paste(
       "Calibrated on 100 ug mRNA-1273 anti-RBD IgG data from Keshavarz 2022",
       "and validated against the 25 ug and 50 ug dose levels of the phase 1",
       "(Jochum 2022) and phase 2 (Kirste 2023) trials. mRNA-1273 encodes the",

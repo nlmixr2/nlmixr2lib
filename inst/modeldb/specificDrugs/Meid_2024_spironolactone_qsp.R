@@ -61,136 +61,174 @@ Meid_2024_spironolactone_qsp <- function() {
   #   potassium_excretion  <- potassium_excretion_rate
   #   mra_effect           <- MRA_effect
   paper_specific_compartments <- c(
-    "k_ecf", "intracellular_k",
-    "dct_luminal_k_amount", "cnt_luminal_k_amount", "ccd_luminal_k_amount",
-    "dct_cell_k_conc", "cnt_cell_k_conc", "ccd_cell_k_conc",
-    "potassium_excretion", "mra_effect"
+    "k_ecf",
+    "intracellular_k",
+    "dct_luminal_k_amount",
+    "cnt_luminal_k_amount",
+    "ccd_luminal_k_amount",
+    "dct_cell_k_conc",
+    "cnt_cell_k_conc",
+    "ccd_cell_k_conc",
+    "potassium_excretion",
+    "mra_effect"
   )
 
   units <- list(
-    time          = "min",
-    dosing        = "ug (oral spironolactone: enter a 25 mg tablet as amt = 25000. The Appendix C listing does not state its amount unit, but it is fixed by EC50_spiro = 1.8296 being on the same scale as the canrenone state: micrograms is the only scale on which the model both reproduces published canrenone exposure and produces a spironolactone effect at all -- see the DOSE UNIT note in model())",
+    time = "min",
+    dosing = "ug (oral spironolactone: enter a 25 mg tablet as amt = 25000. The Appendix C listing does not state its amount unit, but it is fixed by EC50_spiro = 1.8296 being on the same scale as the canrenone state: micrograms is the only scale on which the model both reproduces published canrenone exposure and produces a spironolactone effect at all -- see the DOSE UNIT note in model())",
     concentration = "mEq/mL (Cc is plasma potassium, exactly as Meid 2024 Appendix C sets `Cc = plasma_K`; multiply by 1000 for the clinical mmol/L scale, so the physiological normal 0.0042 mEq/mL is 4.2 mmol/L). The spironolactone and canrenone states are in ng/mL"
   )
 
   compartmentData <- list(
     depot = list(
-      analyte = "spironolactone", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "spironolactone",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "spironolactone", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "spironolactone",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "spironolactone", units = "ug",
-      specimen = "administration site", verified = TRUE
+      analyte = "spironolactone",
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "spironolactone", units = "ng/mL (the source carries this state as a CONCENTRATION -- d/dt is divided by V1_spiro)",
-      specimen = "plasma", verified = TRUE
+      analyte = "spironolactone",
+      units = "ng/mL (the source carries this state as a CONCENTRATION -- d/dt is divided by V1_spiro)",
+      specimen = "plasma",
+      verified = TRUE
     ),
     central_canrenone = list(
-      analyte = "canrenone", units = "ng/mL (concentration state; d/dt divided by V_canrenone)",
-      specimen = "plasma", verified = TRUE
+      analyte = "canrenone",
+      units = "ng/mL (concentration state; d/dt divided by V_canrenone)",
+      specimen = "plasma",
+      verified = TRUE
     ),
     peripheral1_canrenone = list(
-      analyte = "canrenone", units = "ng/mL (concentration state; d/dt divided by V2_canrenone)",
-      specimen = "plasma", verified = TRUE
+      analyte = "canrenone",
+      units = "ng/mL (concentration state; d/dt divided by V2_canrenone)",
+      specimen = "plasma",
+      verified = TRUE
     ),
     k_ecf = list(
-      analyte = "potassium", units = "mEq",
-      specimen = "plasma", verified = TRUE
+      analyte = "potassium",
+      units = "mEq",
+      specimen = "plasma",
+      verified = TRUE
     ),
     intracellular_k = list(
-      analyte = "potassium", units = "mEq",
-      specimen = "tissue", verified = TRUE
+      analyte = "potassium",
+      units = "mEq",
+      specimen = "tissue",
+      verified = TRUE
     ),
     dct_luminal_k_amount = list(
-      analyte = "potassium", units = "mEq (single-nephron distal convoluted tubule lumen)",
-      specimen = "urine", verified = TRUE
+      analyte = "potassium",
+      units = "mEq (single-nephron distal convoluted tubule lumen)",
+      specimen = "urine",
+      verified = TRUE
     ),
     cnt_luminal_k_amount = list(
-      analyte = "potassium", units = "mEq (single-nephron connecting tubule lumen)",
-      specimen = "urine", verified = TRUE
+      analyte = "potassium",
+      units = "mEq (single-nephron connecting tubule lumen)",
+      specimen = "urine",
+      verified = TRUE
     ),
     ccd_luminal_k_amount = list(
-      analyte = "potassium", units = "mEq (single-nephron cortical collecting duct lumen)",
-      specimen = "urine", verified = TRUE
+      analyte = "potassium",
+      units = "mEq (single-nephron cortical collecting duct lumen)",
+      specimen = "urine",
+      verified = TRUE
     ),
     dct_cell_k_conc = list(
-      analyte = "potassium", units = "mEq/mL (distal convoluted tubule principal-cell concentration)",
-      specimen = "tissue", verified = TRUE
+      analyte = "potassium",
+      units = "mEq/mL (distal convoluted tubule principal-cell concentration)",
+      specimen = "tissue",
+      verified = TRUE
     ),
     cnt_cell_k_conc = list(
-      analyte = "potassium", units = "mEq/mL (connecting tubule principal-cell concentration)",
-      specimen = "tissue", verified = TRUE
+      analyte = "potassium",
+      units = "mEq/mL (connecting tubule principal-cell concentration)",
+      specimen = "tissue",
+      verified = TRUE
     ),
     ccd_cell_k_conc = list(
-      analyte = "potassium", units = "mEq/mL (cortical collecting duct principal-cell concentration)",
-      specimen = "tissue", verified = TRUE
+      analyte = "potassium",
+      units = "mEq/mL (cortical collecting duct principal-cell concentration)",
+      specimen = "tissue",
+      verified = TRUE
     ),
     potassium_excretion = list(
-      analyte = "potassium", units = "mEq (cumulative whole-body urinary excretion; the source names this state potassium_excretion_rate but integrates a rate, so it holds an AMOUNT)",
-      specimen = "urine", verified = TRUE
+      analyte = "potassium",
+      units = "mEq (cumulative whole-body urinary excretion; the source names this state potassium_excretion_rate but integrates a rate, so it holds an AMOUNT)",
+      specimen = "urine",
+      verified = TRUE
     ),
     mra_effect = list(
-      analyte = "mineralocorticoid receptor", units = "fraction of receptor NOT inhibited (1 = no antagonist present)",
-      specimen = "not applicable", verified = TRUE
+      analyte = "mineralocorticoid receptor",
+      units = "fraction of receptor NOT inhibited (1 = no antagonist present)",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     SOD = list(
-      description        = "Plasma (serum) sodium concentration, used as the model's `norm_plasma_Na` -- the sodium concentration of glomerular filtrate. Meid 2024 Section 4.1.2: 'sodium plasma concentrations and GFR estimates were used as covariate information in the model'; Appendix C sets `norm_plasma_Na = actual_norm_plasma_Na`. Pilot cohort mean 139.22 (SD 3.67) mmol/L, range 133-143 (Table A2).",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Plasma (serum) sodium concentration, used as the model's `norm_plasma_Na` -- the sodium concentration of glomerular filtrate. Meid 2024 Section 4.1.2: 'sodium plasma concentrations and GFR estimates were used as covariate information in the model'; Appendix C sets `norm_plasma_Na = actual_norm_plasma_Na`. Pilot cohort mean 139.22 (SD 3.67) mmol/L, range 133-143 (Table A2).",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters as `filtered_Na = SNGFR * (SOD / 1000)`, i.e. the model divides by 1000 to reach mEq/mL. Last-observation-carried-forward was used for missing values in the source (Section 4.1.2). Physiological reference is 140 mmol/L: that is the value at which the printed Appendix C initial conditions form an exact steady state (see the derivation note on nephrons_ref in ini()).",
-      source_name        = "actual_norm_plasma_Na"
+      notes = "Enters as `filtered_Na = SNGFR * (SOD / 1000)`, i.e. the model divides by 1000 to reach mEq/mL. Last-observation-carried-forward was used for missing values in the source (Section 4.1.2). Physiological reference is 140 mmol/L: that is the value at which the printed Appendix C initial conditions form an exact steady state (see the derivation note on nephrons_ref in ini()).",
+      source_name = "actual_norm_plasma_Na"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (CKD-EPI) as reported in the electronic health record. Meid 2024 Table A2 reports eGFR (CKD-EPI) in mL/min/1.73 m^2; pilot cohort mean 72 (SD 28), range 27-103. Appendix C sets `GFR = actual_GFR` and consumes it directly as an absolute filtration rate in mL/min without BSA de-normalization.",
-      units              = "mL/min/1.73 m^2 (consumed by the model as mL/min)",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (CKD-EPI) as reported in the electronic health record. Meid 2024 Table A2 reports eGFR (CKD-EPI) in mL/min/1.73 m^2; pilot cohort mean 72 (SD 28), range 27-103. Appendix C sets `GFR = actual_GFR` and consumes it directly as an absolute filtration rate in mL/min without BSA de-normalization.",
+      units = "mL/min/1.73 m^2 (consumed by the model as mL/min)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "CRCL does two things. (1) It sets the glomerular filtration rate. (2) Per Meid 2024 Section 2 ('The associated nephron number must be adjusted proportionally if GFR is used as a covariate from patient data'), it scales the nephron count: number_of_nephrons = nephrons_ref * CRCL / gfr_ref. That proportional scaling holds single-nephron GFR constant, which is why the source found that 'changing the GFR in the model alone did not meaningfully influence potassium predictions' -- the renal-function signal reaches plasma potassium through the nephron count, not through SNGFR. Last-observation-carried-forward was used for missing values in the source.",
-      source_name        = "actual_GFR (and, via the proportional rule, actual_number_of_nephron)"
+      notes = "CRCL does two things. (1) It sets the glomerular filtration rate. (2) Per Meid 2024 Section 2 ('The associated nephron number must be adjusted proportionally if GFR is used as a covariate from patient data'), it scales the nephron count: number_of_nephrons = nephrons_ref * CRCL / gfr_ref. That proportional scaling holds single-nephron GFR constant, which is why the source found that 'changing the GFR in the model alone did not meaningfully influence potassium predictions' -- the renal-function signal reaches plasma potassium through the nephron count, not through SNGFR. Last-observation-carried-forward was used for missing values in the source.",
+      source_name = "actual_GFR (and, via the proportional rule, actual_number_of_nephron)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9L,
-    n_studies      = 1L,
-    age_range      = "56-88 years (mean 68, SD 12)",
-    weight_range   = "54-104 kg (mean 87, SD 14)",
+    species = "human",
+    n_subjects = 9L,
+    n_studies = 1L,
+    age_range = "56-88 years (mean 68, SD 12)",
+    weight_range = "54-104 kg (mean 87, SD 14)",
     sex_female_pct = 22,
     race_ethnicity = NA_character_,
-    disease_state  = "Hospitalised adults newly initiating spironolactone at a German tertiary-care hospital (Heidelberg University Hospital, 2500 beds, 17 wards), admitted 1 January - 31 March 2023. Median length of stay 10.2 days. Comorbidities (Elixhauser): congestive heart failure 67%, cardiac arrhythmias 56%, uncomplicated hypertension 44%, hypothyroidism 22%, liver disease 22%, fluid and electrolyte disorders 22%, alcohol abuse 22%, uncomplicated diabetes 11%, coagulopathy 11%. Baseline eGFR (CKD-EPI) mean 72 (SD 28) mL/min/1.73 m^2, range 27-103; baseline sodium 139.22 (SD 3.67) mmol/L; baseline potassium 4.12 (SD 0.34) mmol/L. Patients with potassium binders, potassium infusions, or incomplete spironolactone dosing schedules were excluded, as were patients with other immediate risk factors for potassium derailment (haemolytic anaemia, renal impairment, diarrhoea).",
-    dose_range     = "Oral spironolactone 25-100 mg (median 25 mg): 25 mg in 6 patients, 50 mg in 1, 50/100 mg in 1, 100 mg in 1. Four of nine also received oral potassium supplementation. Co-medication: ACE inhibitors 44%, angiotensin receptor blockers 11%, high-ceiling diuretics 56%, low-ceiling diuretics 11%.",
-    regions        = "Germany",
-    notes          = "Inter-individual variability was estimated by FOCEi non-linear mixed-effects fitting in a SEPARATE, earlier sample of 20 randomly selected patients who initiated spironolactone in hospital (10 of whom also received oral potassium supplementation) -- Meid 2024 Section 4.4. The nine patients described here are the pilot validation sample used for the Bayesian a-posteriori prediction assessment (Table 1: average fold error 1.06, absolute average fold error 1.19, percent prediction error 7.3% [95% CI 5.6; 9.0] over all nine). Only sodium and eGFR entered the model as covariates; the demographic and comorbidity fields above describe the cohort but are not model inputs."
+    disease_state = "Hospitalised adults newly initiating spironolactone at a German tertiary-care hospital (Heidelberg University Hospital, 2500 beds, 17 wards), admitted 1 January - 31 March 2023. Median length of stay 10.2 days. Comorbidities (Elixhauser): congestive heart failure 67%, cardiac arrhythmias 56%, uncomplicated hypertension 44%, hypothyroidism 22%, liver disease 22%, fluid and electrolyte disorders 22%, alcohol abuse 22%, uncomplicated diabetes 11%, coagulopathy 11%. Baseline eGFR (CKD-EPI) mean 72 (SD 28) mL/min/1.73 m^2, range 27-103; baseline sodium 139.22 (SD 3.67) mmol/L; baseline potassium 4.12 (SD 0.34) mmol/L. Patients with potassium binders, potassium infusions, or incomplete spironolactone dosing schedules were excluded, as were patients with other immediate risk factors for potassium derailment (haemolytic anaemia, renal impairment, diarrhoea).",
+    dose_range = "Oral spironolactone 25-100 mg (median 25 mg): 25 mg in 6 patients, 50 mg in 1, 50/100 mg in 1, 100 mg in 1. Four of nine also received oral potassium supplementation. Co-medication: ACE inhibitors 44%, angiotensin receptor blockers 11%, high-ceiling diuretics 56%, low-ceiling diuretics 11%.",
+    regions = "Germany",
+    notes = "Inter-individual variability was estimated by FOCEi non-linear mixed-effects fitting in a SEPARATE, earlier sample of 20 randomly selected patients who initiated spironolactone in hospital (10 of whom also received oral potassium supplementation) -- Meid 2024 Section 4.4. The nine patients described here are the pilot validation sample used for the Bayesian a-posteriori prediction assessment (Table 1: average fold error 1.06, absolute average fold error 1.19, percent prediction error 7.3% [95% CI 5.6; 9.0] over all nine). Only sodium and eGFR entered the model as covariates; the demographic and comorbidity fields above describe the cohort but are not model inputs."
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight (Table A2, mean 87 SD 14 kg). Reported to characterise the pilot cohort; no allometric or body-size scaling appears anywhere in the Appendix C model listing.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Documented-but-unused: the QSP model's extracellular fluid volume is estimated per patient rather than scaled from weight."
+      units = "kg",
+      type = "continuous",
+      notes = "Documented-but-unused: the QSP model's extracellular fluid volume is estimated per patient rather than scaled from weight."
     ),
     AGE = list(
       description = "Age (Table A2, mean 68 SD 12 years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Documented-but-unused: cohort description only; not referenced in model()."
+      units = "years",
+      type = "continuous",
+      notes = "Documented-but-unused: cohort description only; not referenced in model()."
     ),
     SEXF = list(
       description = "Sex (Table A2; 22% female).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Documented-but-unused: cohort description only; not referenced in model()."
+      units = "(binary)",
+      type = "binary",
+      notes = "Documented-but-unused: cohort description only; not referenced in model()."
     )
   )
 

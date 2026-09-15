@@ -27,14 +27,19 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   vignette <- "PiresdeMello_2018_zika_FAV_IFN_RBV"
 
   paper_specific_compartments <- c(
-    "uninfected", "infected",
-    "vi1", "vi2", "vi3", "vi4", "vi5",
+    "uninfected",
+    "infected",
+    "vi1",
+    "vi2",
+    "vi3",
+    "vi4",
+    "vi5",
     "vextra"
   )
 
   units <- list(
-    time          = "h",
-    dosing        = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
+    time = "h",
+    dosing = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
     concentration = "log10(PFU/mL) for the model observation log10_viral_load"
   )
 
@@ -44,22 +49,22 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     uninfected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    infected   = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    vi1        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi2        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi3        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi4        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vi5        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
-    vextra     = list(analyte = "virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    infected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    vi1 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi2 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi3 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi4 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi5 = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vextra = list(analyte = "virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     CONC_FAV_UM = list(
-      description        = "Static favipiravir extracellular concentration in the in vitro time-kill assay (uM)",
-      units              = "uM",
-      type               = "continuous",
+      description = "Static favipiravir extracellular concentration in the in vitro time-kill assay (uM)",
+      units = "uM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant per Pires de Mello 2018 Materials and methods",
         "(Antiviral evaluations): combination assays used a 6-by-6 checkerboard",
         "format. FAV tested at 0, 31.25, 62.5, 125, 250, and 500 uM (Figure 1A).",
@@ -71,14 +76,14 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
         "concentration (log10_viral_load), not a static exogenous-drug-concentration",
         "covariate used to drive an in vitro PD model."
       ),
-      source_name        = "C_FAV (Pires de Mello 2018 Eq 10)"
+      source_name = "C_FAV (Pires de Mello 2018 Eq 10)"
     ),
     CONC_RBV_UGML = list(
-      description        = "Static ribavirin extracellular concentration in the in vitro time-kill assay (ug/mL)",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Static ribavirin extracellular concentration in the in vitro time-kill assay (ug/mL)",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant. RBV tested at 0, 1, 10, 100, and 1,000 ug/mL",
         "(Figure 1B). Set to 0 in regimens without RBV. Drives three effects:",
         "the Hill-Imax inhibition of vi4 -> vi5 transit (Eq 11), the FAV+RBV",
@@ -86,37 +91,37 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
         "k_cytotox on uninfected and infected host cells and on the",
         "intracellular virus chain (Eq 12). Paper-specific covariate."
       ),
-      source_name        = "C_RBV (Pires de Mello 2018 Eq 11)"
+      source_name = "C_RBV (Pires de Mello 2018 Eq 11)"
     ),
     CONC_IFN_IUML = list(
-      description        = "Static interferon alpha extracellular concentration in the in vitro time-kill assay (IU/mL)",
-      units              = "IU/mL",
-      type               = "continuous",
+      description = "Static interferon alpha extracellular concentration in the in vitro time-kill assay (IU/mL)",
+      units = "IU/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-invariant. IFN tested at 0, 10, 100, 1,000, and 10,000 IU/mL",
         "(Figure 1C). Set to 0 in regimens without IFN. Drives the Hill-Imax",
         "inhibition of cellular infection (Eq 9), entering as a multiplicative",
         "factor on the second-order infection rate kinfect * INH_IFN * vextra",
         "* U. Paper-specific covariate."
       ),
-      source_name        = "C_IFN (Pires de Mello 2018 Eq 9)"
+      source_name = "C_IFN (Pires de Mello 2018 Eq 9)"
     )
   )
 
   population <- list(
-    species        = "in vitro (Vero cells)",
-    n_subjects     = NA_integer_,
-    n_studies      = 1L,
-    cell_line      = "Vero (ATCC CCL-81, American Type Culture Collection)",
-    virus_strain   = "Zika virus, 2015 human Puerto Rican strain PRVABC59 (BEI Resources)",
-    inoculum       = paste(
+    species = "in vitro (Vero cells)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    cell_line = "Vero (ATCC CCL-81, American Type Culture Collection)",
+    virus_strain = "Zika virus, 2015 human Puerto Rican strain PRVABC59 (BEI Resources)",
+    inoculum = paste(
       "Multiplicity of infection 0.01 PFU/cell on confluent Vero cell",
       "monolayers. Initial total uninfected cells = 10^6.30 ~ 1.995e6",
       "cells/mL; initial infected cells = 10^3.38 ~ 2399 cells/mL",
       "(Table 1 Log_U fixed; Log_I estimated)."
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Zika virus in vitro time-course infection experiments in Vero CCL-81",
       "cells cultured in Eagle's MEM with 5% fetal bovine serum and 1%",
       "penicillin-streptomycin at 37 C in 5% CO2. Plaque assay limit of",
@@ -125,13 +130,13 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
       "(peak viral burden). Three independent samples per regimen.",
       "Beal M3 method used in S-ADAPT to handle the BLQ samples at time zero."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Static drug concentrations (no PK dosing) as monotherapy and in all",
       "two-drug combinations of FAV, RBV, and IFN. FAV 0-500 uM; RBV",
       "0-1,000 ug/mL; IFN 0-10,000 IU/mL. Combination experiments used a",
       "6-by-6 checkerboard."
     ),
-    notes          = paste(
+    notes = paste(
       "Single experiment per drug regimen with three independent replicate",
       "samples. Between-curve CVs reported in Table 1 (e.g. 0.0841 on",
       "log10 k_infect, 0.365 on Log_I, 0.491 on IC50_RBV) reflect day-to-day",

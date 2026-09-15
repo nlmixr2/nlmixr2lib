@@ -25,12 +25,16 @@ Zhu_2023_sn38_organoid <- function() {
 
   compartmentData <- list(
     organoid_ctrl = list(
-      analyte = "none", units = "arbitrary volume unit",
-      specimen = "not applicable", verified = TRUE
+      analyte = "none",
+      units = "arbitrary volume unit",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     organoid_trt = list(
-      analyte = "none", units = "arbitrary volume unit",
-      specimen = "not applicable", verified = TRUE
+      analyte = "none",
+      units = "arbitrary volume unit",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 

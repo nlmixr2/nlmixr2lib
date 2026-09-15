@@ -8,9 +8,14 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
     central = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "stimulated kin and circadian kin_t", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    effect = list(
+      analyte = "stimulated kin and circadian kin_t",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   ini({

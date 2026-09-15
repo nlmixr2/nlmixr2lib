@@ -31,25 +31,25 @@ Gao_2012_exenatide_rat <- function() {
   vignette <- "Gao_2012_exenatide"
 
   units <- list(
-    time          = "min",
-    dosing        = "nmol",
+    time = "min",
+    dosing = "nmol",
     concentration = "nmol/L (nM); the paper converted all doses to moles using a molecular weight of 4186.6 g/mol for exendin-4"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "exenatide", units = "nmol", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "exenatide", units = "nmol", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "exenatide", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "exenatide", units = "nmol", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "exenatide", units = "nmol", specimen = "tissue", verified = TRUE),
-    complex     = list(analyte = "exenatide/GLP-1R complex", units = "nmol", specimen = "tissue", verified = TRUE)
+    complex = list(analyte = "exenatide/GLP-1R complex", units = "nmol", specimen = "tissue", verified = TRUE)
   )
 
   population <- list(
-    species      = "rat (male Sprague-Dawley)",
-    n_subjects   = 7L,
-    n_studies    = 1L,
+    species = "rat (male Sprague-Dawley)",
+    n_subjects = 7L,
+    n_studies = 1L,
     weight_range = "350-370 g",
     disease_state = "Healthy (normoglycaemic) male Sprague-Dawley rats.",
-    dose_range   = paste(
+    dose_range = paste(
       "Single intravenous bolus and single subcutaneous bolus at 0.5, 5 and",
       "50 nmol, plus continuous intravenous infusion at 0.5, 5 and 50 nmol/h.",
       "n = 4-7 per route and dose group."

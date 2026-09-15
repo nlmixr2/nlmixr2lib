@@ -38,17 +38,17 @@ Richardson_2025_ribociclib <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    central     = list(analyte = "ribociclib", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "ribociclib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ribociclib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Administered dose amount of the current dosing record",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered dose amount of the current dosing record",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters as a power model on CL, Vp and Q, normalised to a reference",
         "dose: P = TVP * (DOSE / 600)^e_dose_P. The authors' NONMEM data set",
         "carried DOSE and a separate DOSEREF column and the model term was",
@@ -63,16 +63,16 @@ Richardson_2025_ribociclib <- function() {
         "leaves the shape of the dose dependence unchanged.",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   population <- list(
-    species     = "human (synthetic data simulated from a published human popPK model)",
-    n_subjects  = 96,
-    n_studies   = 1,
-    dose_range  = "100, 200, 400 and 600 mg oral",
-    notes       = paste(
+    species = "human (synthetic data simulated from a published human popPK model)",
+    n_subjects = 96,
+    n_studies = 1,
+    dose_range = "100, 200, 400 and 600 mg oral",
+    notes = paste(
       "Synthetic data set, not a clinical cohort: 96 individuals simulated",
       "from the published ribociclib popPK model of Lu et al. (2021) with the",
       "covariate effects excluded, using sampling that mimicked the Phase 1",

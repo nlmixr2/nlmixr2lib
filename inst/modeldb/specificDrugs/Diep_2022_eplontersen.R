@@ -1,64 +1,64 @@
 Diep_2022_eplontersen <- function() {
   description <- "Two-compartment population PK and indirect-response PD model for the GalNAc3-conjugated antisense oligonucleotide eplontersen targeting transthyretin (TTR) mRNA, fit to pooled data from two phase 1 studies in healthy volunteers (Diep 2022). First-order SC absorption with site-specific typical ka (arm vs abdomen), allometric scaling on CL by lean body mass, on Vc/Q/Vp by total body weight, and an indirect-response model with eplontersen-driven inhibition of TTR production."
-  reference   <- "Diep JK, Yu RZ, Viney NJ, Schneider E, Guo S, Henry S, Monia B, Geary R, Wang Y. Population pharmacokinetic/pharmacodynamic modelling of eplontersen, an antisense oligonucleotide in development for transthyretin amyloidosis. Br J Clin Pharmacol. 2022;88(12):5389-5398. doi:10.1111/bcp.15468"
-  vignette    <- "Diep_2022_eplontersen"
-  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  reference <- "Diep JK, Yu RZ, Viney NJ, Schneider E, Guo S, Henry S, Monia B, Geary R, Wang Y. Population pharmacokinetic/pharmacodynamic modelling of eplontersen, an antisense oligonucleotide in development for transthyretin amyloidosis. Br J Clin Pharmacol. 2022;88(12):5389-5398. doi:10.1111/bcp.15468"
+  vignette <- "Diep_2022_eplontersen"
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "eplontersen", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "eplontersen", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "eplontersen", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "eplontersen", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "eplontersen", units = "mg", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "TTR production", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "TTR production", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power exponents on Vc (1.89), Q (2.53), and Vp (2.73); reference 72.1 kg = cohort median (Diep 2022 Table 1 and Eqs 2-4). The source paper labels this column BW.",
-      source_name        = "BW"
+      notes = "Time-fixed baseline. Power exponents on Vc (1.89), Q (2.53), and Vp (2.73); reference 72.1 kg = cohort median (Diep 2022 Table 1 and Eqs 2-4). The source paper labels this column BW.",
+      source_name = "BW"
     ),
     LBM = list(
-      description        = "Lean body mass (baseline)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body mass (baseline)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power exponent 1.42 on CL; reference 51.6 kg = cohort median (Diep 2022 Table 1 and Eq 1). Lean body mass (NOT lean body weight, despite both being reported in the demographics table) is the variable used in the final model.",
-      source_name        = "LBM"
+      notes = "Time-fixed baseline. Power exponent 1.42 on CL; reference 51.6 kg = cohort median (Diep 2022 Table 1 and Eq 1). Lean body mass (NOT lean body weight, despite both being reported in the demographics table) is the variable used in the final model.",
+      source_name = "LBM"
     ),
     INJSITE_ARM = list(
-      description        = "SC injection-site indicator: 1 = arm, 0 = abdomen",
-      units              = "(binary)",
-      type               = "binary",
+      description = "SC injection-site indicator: 1 = arm, 0 = abdomen",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (abdomen)",
-      notes              = "Per-dose-record covariate. Diep 2022 estimated separate typical first-order absorption rate constants for arm (ka_arm = 0.217 1/h) and abdomen (ka_ab = 0.282 1/h) with a single shared eta on log(ka). The model encodes the abdomen value as the typical-value reference (consistent with abdomen being the universal SC reference site across the popPK literature) and an additive log-shift covariate effect e_injsite_arm_ka = log(ka_arm / ka_ab) on the typical log(ka) when INJSITE_ARM = 1. In multi-dose simulations a subject can switch sites between doses, so this is per-administration rather than per-subject.",
-      source_name        = "Injection site (paper narrative; arm vs abdomen subgroup labels driving ka_arm vs ka_ab)"
+      notes = "Per-dose-record covariate. Diep 2022 estimated separate typical first-order absorption rate constants for arm (ka_arm = 0.217 1/h) and abdomen (ka_ab = 0.282 1/h) with a single shared eta on log(ka). The model encodes the abdomen value as the typical-value reference (consistent with abdomen being the universal SC reference site across the popPK literature) and an additive log-shift covariate effect e_injsite_arm_ka = log(ka_arm / ka_ab) on the typical log(ka) when INJSITE_ARM = 1. In multi-dose simulations a subject can switch sites between doses, so this is per-administration rather than per-subject.",
+      source_name = "Injection site (paper narrative; arm vs abdomen subgroup labels driving ka_arm vs ka_ab)"
     )
   )
 
   population <- list(
-    n_subjects       = 55L,
-    n_studies        = 2L,
-    age_range        = "23 - 65 years",
-    age_median       = "54 years",
-    weight_range     = "50.4 - 97.0 kg",
-    weight_median    = "72.1 kg",
-    height_range     = "146 - 189 cm",
-    bmi_range        = "18.7 - 30.7 kg/m^2",
-    lbm_range        = "22.8 - 66.3 kg",
-    sex_female_pct   = 34.5,
-    race_ethnicity   = c(Caucasian = 30.9, `Black or African American` = 18.2, Asian = 50.9),
-    disease_state    = "Healthy volunteers (no transthyretin amyloidosis); the pooled analysis included an ethnobridging cohort of Japanese descent.",
-    dose_range       = "Subcutaneous eplontersen as a single 120 mg dose, single-ascending 45/60/90 mg cohorts, or 45/60/90 mg every 4 weeks for 4 doses (days 1, 29, 57, 85). Administration alternated between arm and abdomen in multi-dose cohorts.",
-    regions          = "Phase 1 study NCT03728634 conducted in Canada (Western volunteers, dose escalation); phase 1 study NCT04302064 conducted in healthy volunteers of Japanese descent (single ascending dose).",
-    studies          = "NCT03728634 (n = 47 enrolled; 1 single-dose 120 mg cohort and 3 multi-dose 45/60/90 mg cohorts; 10:2 randomization to active:placebo) and NCT04302064 (n = 24 enrolled; 3 single-dose 45/60/90 mg cohorts in Japanese descendants; 6:2 randomization).",
-    notes            = "PK/PD analysis pooled n = 55 active-arm subjects after excluding 14 placebo subjects and 2 subjects with pre-existing antidrug antibodies (Diep 2022 Section 3.1). Final dataset: 1260 plasma eplontersen concentrations and 624 serum TTR concentrations. PK quantification used hybridization-based ECL with LLOQ 0.129 ng/mL; TTR quantification used ELISA with LLOQ 0.896 mg/dL (Section 2.1). Data below LLOQ (11.7% of PK observations) excluded per M1 method."
+    n_subjects = 55L,
+    n_studies = 2L,
+    age_range = "23 - 65 years",
+    age_median = "54 years",
+    weight_range = "50.4 - 97.0 kg",
+    weight_median = "72.1 kg",
+    height_range = "146 - 189 cm",
+    bmi_range = "18.7 - 30.7 kg/m^2",
+    lbm_range = "22.8 - 66.3 kg",
+    sex_female_pct = 34.5,
+    race_ethnicity = c(Caucasian = 30.9, `Black or African American` = 18.2, Asian = 50.9),
+    disease_state = "Healthy volunteers (no transthyretin amyloidosis); the pooled analysis included an ethnobridging cohort of Japanese descent.",
+    dose_range = "Subcutaneous eplontersen as a single 120 mg dose, single-ascending 45/60/90 mg cohorts, or 45/60/90 mg every 4 weeks for 4 doses (days 1, 29, 57, 85). Administration alternated between arm and abdomen in multi-dose cohorts.",
+    regions = "Phase 1 study NCT03728634 conducted in Canada (Western volunteers, dose escalation); phase 1 study NCT04302064 conducted in healthy volunteers of Japanese descent (single ascending dose).",
+    studies = "NCT03728634 (n = 47 enrolled; 1 single-dose 120 mg cohort and 3 multi-dose 45/60/90 mg cohorts; 10:2 randomization to active:placebo) and NCT04302064 (n = 24 enrolled; 3 single-dose 45/60/90 mg cohorts in Japanese descendants; 6:2 randomization).",
+    notes = "PK/PD analysis pooled n = 55 active-arm subjects after excluding 14 placebo subjects and 2 subjects with pre-existing antidrug antibodies (Diep 2022 Section 3.1). Final dataset: 1260 plasma eplontersen concentrations and 624 serum TTR concentrations. PK quantification used hybridization-based ECL with LLOQ 0.129 ng/mL; TTR quantification used ELISA with LLOQ 0.896 mg/dL (Section 2.1). Data below LLOQ (11.7% of PK observations) excluded per M1 method."
   )
 
   ini({

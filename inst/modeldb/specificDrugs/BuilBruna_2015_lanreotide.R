@@ -9,43 +9,48 @@ BuilBruna_2015_lanreotide <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "lanreotide Autogel/Depot", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(
+      analyte = "lanreotide Autogel/Depot",
+      units = "mg",
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "lanreotide", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear effect on apparent total serum clearance per Buil-Bruna 2015 Eq. 2: CL/F = theta_CL * [1 + theta_BW * (BW - 74)]. The reference value 74 kg is the population median (Buil-Bruna 2015 Results Sect. 3.3.3). Source column 'BW' in the paper.",
-      source_name        = "BW"
+      notes = "Linear effect on apparent total serum clearance per Buil-Bruna 2015 Eq. 2: CL/F = theta_CL * [1 + theta_BW * (BW - 74)]. The reference value 74 kg is the population median (Buil-Bruna 2015 Results Sect. 3.3.3). Source column 'BW' in the paper.",
+      source_name = "BW"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (female; reference is female because Buil-Bruna 2015 Eq. 1 sets theta_SEX = 0 for females and -0.024 for males, so the published theta_F1 = 0.994 is the female typical value)",
-      notes              = "Buil-Bruna 2015 Eq. 1: F1 = theta_F1 * (1 + theta_SEX) with theta_SEX = 0 (females), -0.024 (males). Mapped to canonical SEXF (1 = female). Implemented as F1 = exp(lfdepot + etalfdepot) * (1 + e_sexf_fdepot * (1 - SEXF)), so the published coefficient -0.024 multiplies the male indicator (1 - SEXF) and the typical value lfdepot exactly equals the female value 0.994 from Table 2. Source uses categorical SEX with female as reference (theta_SEX = 0 for females); the canonical SEXF reference category is reversed (male = 0), so the coefficient is carried on the male indicator (1 - SEXF) to preserve source fidelity.",
-      source_name        = "SEX"
+      notes = "Buil-Bruna 2015 Eq. 1: F1 = theta_F1 * (1 + theta_SEX) with theta_SEX = 0 (females), -0.024 (males). Mapped to canonical SEXF (1 = female). Implemented as F1 = exp(lfdepot + etalfdepot) * (1 + e_sexf_fdepot * (1 - SEXF)), so the published coefficient -0.024 multiplies the male indicator (1 - SEXF) and the typical value lfdepot exactly equals the female value 0.994 from Table 2. Source uses categorical SEX with female as reference (theta_SEX = 0 for females); the canonical SEXF reference category is reversed (male = 0), so the coefficient is carried on the male indicator (1 - SEXF) to preserve source fidelity.",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 290L,
-    n_observations  = 1541L,
-    n_studies       = 4L,
-    age_range       = "pooled mean 60.7 years (CV 18.2%); per-study means 58.5-63.3 years; median 62 years (Buil-Bruna 2015 Eq. 2 reference)",
-    weight_range    = "pooled mean 75.1 kg (CV 22.2%); per-study means 69.3-78.0 kg; median 74 kg (Buil-Bruna 2015 Eq. 2 reference); BW also discussed up to 89 kg in subgroup analyses",
-    sex_female_pct  = NA_real_,
-    race_ethnicity  = "Predominantly White; RACE was not formally tested as a covariate because the majority of patients were White. A 90% prediction interval was retrospectively superimposed on data from 10 Asian and 10 Black/African American patients (Buil-Bruna 2015 Fig. 5b) to confirm no apparent ethnicity effect.",
-    disease_state   = "Functioning and non-functioning gastroenteropancreatic neuroendocrine tumors (GEP-NETs). Primary tumor location distribution in the pooled dataset (Table 1): foregut 10, midgut 87, hindgut 13, other 13, unknown 121.",
-    dose_range      = "60, 90, or 120 mg lanreotide Autogel/Depot every 4 weeks (deep SC injection); Study 4 dose-titration regimens 60/90/120 mg",
-    regions         = "Pooled phase III + phase II studies: CLARINET (multi-regional), ELECT (multi-regional), Study 3 (Spain, 17 centres), Study 4 dose-titration (multi-regional)",
-    renal_function  = "Cockcroft-Gault CLCR (mL/min): normal >90, n = 130; mild 60-89, n = 100; moderate 30-59, n = 58; severe <30, n = 2 (Buil-Bruna 2015 Results Sect. 3.2)",
-    notes           = "Pooled population PK dataset of 1541 serum lanreotide concentrations from 290 GEP-NET patients across four clinical trials (Study 1 CLARINET n = 101, Study 2 ELECT n = 104, Study 3 n = 30, Study 4 dose-titration n = 71). Serum lanreotide was quantified by a validated radioimmunoassay (LLOQ 0.078 ng/mL; intra-/inter-assay CV 2.3-13.6%; accuracy >89%). Eleven samples from six patients showed anti-lanreotide antibodies at lanreotide concentrations of 4.7-8.19 ng/mL; ADA status had no PK effect (Fig. 5a)."
+    species = "human",
+    n_subjects = 290L,
+    n_observations = 1541L,
+    n_studies = 4L,
+    age_range = "pooled mean 60.7 years (CV 18.2%); per-study means 58.5-63.3 years; median 62 years (Buil-Bruna 2015 Eq. 2 reference)",
+    weight_range = "pooled mean 75.1 kg (CV 22.2%); per-study means 69.3-78.0 kg; median 74 kg (Buil-Bruna 2015 Eq. 2 reference); BW also discussed up to 89 kg in subgroup analyses",
+    sex_female_pct = NA_real_,
+    race_ethnicity = "Predominantly White; RACE was not formally tested as a covariate because the majority of patients were White. A 90% prediction interval was retrospectively superimposed on data from 10 Asian and 10 Black/African American patients (Buil-Bruna 2015 Fig. 5b) to confirm no apparent ethnicity effect.",
+    disease_state = "Functioning and non-functioning gastroenteropancreatic neuroendocrine tumors (GEP-NETs). Primary tumor location distribution in the pooled dataset (Table 1): foregut 10, midgut 87, hindgut 13, other 13, unknown 121.",
+    dose_range = "60, 90, or 120 mg lanreotide Autogel/Depot every 4 weeks (deep SC injection); Study 4 dose-titration regimens 60/90/120 mg",
+    regions = "Pooled phase III + phase II studies: CLARINET (multi-regional), ELECT (multi-regional), Study 3 (Spain, 17 centres), Study 4 dose-titration (multi-regional)",
+    renal_function = "Cockcroft-Gault CLCR (mL/min): normal >90, n = 130; mild 60-89, n = 100; moderate 30-59, n = 58; severe <30, n = 2 (Buil-Bruna 2015 Results Sect. 3.2)",
+    notes = "Pooled population PK dataset of 1541 serum lanreotide concentrations from 290 GEP-NET patients across four clinical trials (Study 1 CLARINET n = 101, Study 2 ELECT n = 104, Study 3 n = 30, Study 4 dose-titration n = 71). Serum lanreotide was quantified by a validated radioimmunoassay (LLOQ 0.078 ng/mL; intra-/inter-assay CV 2.3-13.6%; accuracy >89%). Eleven samples from six patients showed anti-lanreotide antibodies at lanreotide concentrations of 4.7-8.19 ng/mL; ADA status had no PK effect (Fig. 5a)."
   )
 
   ini({

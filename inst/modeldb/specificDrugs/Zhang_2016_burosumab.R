@@ -28,11 +28,11 @@ Zhang_2016_burosumab <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at baseline",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at baseline",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling referenced to 70 kg, with exponents fixed at 0.75",
         "on CL/F and 1 on Vc/F (Zhang 2016 Table 2). Body weight was the only",
         "covariate retained in the final PK model; Zhang 2016 Discussion notes",
@@ -40,14 +40,14 @@ Zhang_2016_burosumab <- function() {
         "body weight (Supplementary Figure S3), i.e. the mg/kg dosing plus the",
         "allometric terms together flatten the exposure-weight relationship."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DOSE_LOW = list(
-      description        = "Lowest studied burosumab dose level indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Lowest studied burosumab dose level indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (0.1, 0.3, 0.6 or 1.0 mg/kg subcutaneous burosumab)",
-      notes              = paste(
+      notes = paste(
         "1 = the dose record is the 0.05 mg/kg dose level, which in study",
         "KRN23-INT-001 is the first step of the four-step intradose escalation",
         "(0.05 -> 0.1 -> 0.3 -> 0.6 mg/kg); 0 = any of the 0.1, 0.3, 0.6 or",
@@ -63,7 +63,7 @@ Zhang_2016_burosumab <- function() {
         "acting as a target sink that is proportionally more important at low",
         "burosumab concentrations."
       ),
-      source_name        = "dose level"
+      source_name = "dose level"
     )
   )
 
@@ -75,65 +75,65 @@ Zhang_2016_burosumab <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened graphically against BSV on CL/F and Vc/F; not retained (Zhang 2016 Methods 'Population PK Methodology' and Results)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened graphically against BSV on CL/F and Vc/F; not retained (Zhang 2016 Methods 'Population PK Methodology' and Results)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened via box plots; not retained (Zhang 2016 Methods 'Population PK Methodology' and Results)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened via box plots; not retained (Zhang 2016 Methods 'Population PK Methodology' and Results)."
     ),
     RACE_BLACK = list(
       description = "African American race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. The cohort was 60/62 white with a single African American participant per multiple-dose study (Zhang 2016 Table 1), so race was not estimable."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. The cohort was 60/62 white with a single African American participant per multiple-dose study (Zhang 2016 Table 1), so race was not estimable."
     ),
     FGF23 = list(
       description = "Baseline intact fibroblast growth factor 23",
-      units       = "pg/mL",
-      type        = "continuous",
-      notes       = "Screened as an intrinsic factor on CL/F and Vc/F; not retained as a covariate, although Zhang 2016 Discussion invokes free intact FGF23 to explain the higher CL/F at 0.05 mg/kg that is instead encoded by DOSE_LOW."
+      units = "pg/mL",
+      type = "continuous",
+      notes = "Screened as an intrinsic factor on CL/F and Vc/F; not retained as a covariate, although Zhang 2016 Discussion invokes free intact FGF23 to explain the higher CL/F at 0.05 mg/kg that is instead encoded by DOSE_LOW."
     ),
     BALP = list(
       description = "Baseline bone alkaline phosphatase",
-      units       = "ug/L",
-      type        = "continuous",
-      notes       = "Screened as an intrinsic factor; not retained (Zhang 2016 Methods 'Population PK Methodology')."
+      units = "ug/L",
+      type = "continuous",
+      notes = "Screened as an intrinsic factor; not retained (Zhang 2016 Methods 'Population PK Methodology')."
     )
   )
 
   compartmentData <- list(
     depot = list(
-      analyte  = "burosumab",
-      units    = "mg",
+      analyte = "burosumab",
+      units = "mg",
       specimen = "administration site",
       verified = TRUE
     ),
     central = list(
-      analyte  = "burosumab",
-      units    = "mg",
+      analyte = "burosumab",
+      units = "mg",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 40,
-    n_studies      = 3,
-    age_range      = "25-68 years (KRN23-US-02); lower bound 20 years in KRN23-INT-001 / KRN23-INT-002 (the printed upper bound is not legible in the source PDF)",
-    age_median     = "48 +/- 11 years (KRN23-US-02, mean +/- SD); 42 +/- 14 (KRN23-INT-001); 42 +/- 15 (KRN23-INT-002)",
-    weight_range   = "48-103 kg (KRN23-US-02); 46-122 kg (KRN23-INT-001); 51-124 kg (KRN23-INT-002)",
-    weight_median  = "73 +/- 16 kg (KRN23-US-02, mean +/- SD); 70 kg median (KRN23-INT-001); 75.3 kg median (KRN23-INT-002)",
+    species = "human",
+    n_subjects = 40,
+    n_studies = 3,
+    age_range = "25-68 years (KRN23-US-02); lower bound 20 years in KRN23-INT-001 / KRN23-INT-002 (the printed upper bound is not legible in the source PDF)",
+    age_median = "48 +/- 11 years (KRN23-US-02, mean +/- SD); 42 +/- 14 (KRN23-INT-001); 42 +/- 15 (KRN23-INT-002)",
+    weight_range = "48-103 kg (KRN23-US-02); 46-122 kg (KRN23-INT-001); 51-124 kg (KRN23-INT-002)",
+    weight_median = "73 +/- 16 kg (KRN23-US-02, mean +/- SD); 70 kg median (KRN23-INT-001); 75.3 kg median (KRN23-INT-002)",
     sex_female_pct = 62.5,
     race_ethnicity = c(White = 97.5, Black = 2.5),
-    disease_state  = "X-linked hypophosphatemia (XLH) in adults; baseline serum Pi 1.6-1.9 mg/dL and TmP/GFR 1.6-1.9 mg/dL, both below the normal ranges, with median intact FGF23 above the upper limit of normal",
-    dose_range     = "0.05-1.0 mg/kg subcutaneous every 28 days; 0.1-1.0 mg/kg subcutaneous single dose",
-    regions        = "United States and international sites (NCT00830674, NCT01340482, NCT01571596)",
-    notes          = paste(
+    disease_state = "X-linked hypophosphatemia (XLH) in adults; baseline serum Pi 1.6-1.9 mg/dL and TmP/GFR 1.6-1.9 mg/dL, both below the normal ranges, with median intact FGF23 above the upper limit of normal",
+    dose_range = "0.05-1.0 mg/kg subcutaneous every 28 days; 0.1-1.0 mg/kg subcutaneous single dose",
+    regions = "United States and international sites (NCT00830674, NCT01340482, NCT01571596)",
+    notes = paste(
       "Baseline demographics and laboratory values are in Zhang 2016 Table 1.",
       "PK analysis set: 40 subjects (12 from the single-dose study KRN23-US-02",
       "plus 28 from the dose-escalation study KRN23-INT-001) contributing 1192",

@@ -11,7 +11,7 @@ Freyer_2000_etoposide <- function() {
     sep = " "
   )
   vignette <- "Freyer_2000_AVI_regimen"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -22,11 +22,11 @@ Freyer_2000_etoposide <- function() {
 
   covariateData <- list(
     CREAT = list(
-      description        = "Baseline serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear covariate effect on etoposide CL as reported in Freyer",
         "2000 Table 2 and Results Etoposide (Equation): CL = 3.34 -",
         "0.0083 * S_Cr with S_Cr in umol/L. The effect is additive on the",
@@ -38,40 +38,40 @@ Freyer_2000_etoposide <- function() {
         "linear form 3.34 - 0.0083 * S_Cr non-positive (S_Cr > ~402",
         "umol/L). Source column named S_Cr in the paper."
       ),
-      source_name        = "SCR"
+      source_name = "SCR"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 24L,
-    n_studies        = 1L,
-    n_courses        = 47L,
-    age_range        = "45-70 years",
-    age_median       = "57 years",
-    weight_range     = "54-93 kg",
-    weight_median    = "69 kg",
-    height_range     = "159-179 cm",
-    height_median    = "170 cm",
-    bsa_range        = "1.54-2.10 m^2",
-    bsa_median       = "1.79 m^2",
-    creat_range      = "44-144 umol/L",
-    creat_median     = "82 umol/L (Freyer 2000 Table 1; used as the linear-covariate recentring reference)",
-    sex_female_pct   = "not reported",
-    race_ethnicity   = "not reported (French multicentre study)",
-    disease_state    = paste(
+    species = "human",
+    n_subjects = 24L,
+    n_studies = 1L,
+    n_courses = 47L,
+    age_range = "45-70 years",
+    age_median = "57 years",
+    weight_range = "54-93 kg",
+    weight_median = "69 kg",
+    height_range = "159-179 cm",
+    height_median = "170 cm",
+    bsa_range = "1.54-2.10 m^2",
+    bsa_median = "1.79 m^2",
+    creat_range = "44-144 umol/L",
+    creat_median = "82 umol/L (Freyer 2000 Table 1; used as the linear-covariate recentring reference)",
+    sex_female_pct = "not reported",
+    race_ethnicity = "not reported (French multicentre study)",
+    disease_state = paste(
       "Small cell lung cancer (SCLC), either limited to the thorax or",
       "extensive; no severe hepatic or renal impairment (patients with",
       "ASAT/ALAT/alkaline phosphatase > 2x upper limit of normal and/or",
       "serum creatinine > 1.5x upper limit of normal were excluded from",
       "the primary therapeutic trials)."
     ),
-    dose_range       = paste(
+    dose_range = paste(
       "AVI regimen: etoposide 120 mg/m^2 IV over 30 min on days 1, 2, and",
       "3. Total etoposide dose per course = 360 mg/m^2. At the 1.79 m^2",
       "median BSA that is ~215 mg per day-1 infusion."
     ),
-    regions          = "France (Lyon Saint-Etienne Thoracic Oncology Group, GLOT; multicentre)",
+    regions = "France (Lyon Saint-Etienne Thoracic Oncology Group, GLOT; multicentre)",
     covariates_tested = paste(
       "Screened: age, sex, stage of disease, body weight, height, body",
       "surface area, serum creatinine, ASAT, ALAT, alkaline phosphatase,",
@@ -80,7 +80,7 @@ Freyer_2000_etoposide <- function() {
       "objective function on inclusion) was retained in the final model",
       "(Freyer 2000 Results Etoposide, Figure 6)."
     ),
-    notes            = paste(
+    notes = paste(
       "Baseline characteristics from Freyer 2000 Table 1. Etoposide",
       "assayed by HPLC-UV (LOQ 150 ng/mL, linear 50-10000 ng/mL, CV 3.5-",
       "10.2%). NONMEM V (FO method); extensive sampling (14 samples per",

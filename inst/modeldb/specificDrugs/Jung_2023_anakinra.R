@@ -27,23 +27,23 @@ Jung_2023_anakinra <- function() {
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   compartmentData <- list(
-    depot   = list(analyte = "anakinra", units = "nmol", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "anakinra", units = "nmol", specimen = "administration site", verified = TRUE),
     central = list(analyte = "anakinra", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 8,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 8,
+    n_studies = 1,
     sex_female_pct = 0,
     race_ethnicity = c(Asian = 100),
-    disease_state  = "Healthy adult Korean male volunteers",
-    dose_range     = "Single subcutaneous anakinra 100 mg",
-    regions        = "Republic of Korea",
+    disease_state = "Healthy adult Korean male volunteers",
+    dose_range = "Single subcutaneous anakinra 100 mg",
+    regions = "Republic of Korea",
     n_observations = 93,
-    notes          = paste(
+    notes = paste(
       "Jung 2023 Table 2 reports Model Case 5 as 8 subjects and 93 observations; Jung 2023",
       "Section 2.3 states the concentration was observed to a maximum of 48 h and that one",
       "subcutaneous amount was dosed. The anakinra cohort is the comparator arm (100 mg SC,",

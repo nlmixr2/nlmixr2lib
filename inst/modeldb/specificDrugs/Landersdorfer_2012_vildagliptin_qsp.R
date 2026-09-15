@@ -68,16 +68,23 @@ Landersdorfer_2012_vildagliptin_qsp <- function() {
   # retained because the TMDD structure accepts an i.v. vildagliptin dose (the
   # companion report's F was fixed from a model that included i.v. data).
   dosing <- c(
-    "depot", "central",
-    "glucose_gut_breakfast", "glucose_gut_lunch",
-    "glucose_gut_dinner", "glucose_gut_snack"
+    "depot",
+    "central",
+    "glucose_gut_breakfast",
+    "glucose_gut_lunch",
+    "glucose_gut_dinner",
+    "glucose_gut_snack"
   )
 
   paper_specific_compartments <- c(
     "complex_peripheral",
-    "glucose_gut_breakfast", "glucose_gut_lunch",
-    "glucose_gut_dinner", "glucose_gut_snack",
-    "glp1", "glucose", "insulin"
+    "glucose_gut_breakfast",
+    "glucose_gut_lunch",
+    "glucose_gut_dinner",
+    "glucose_gut_snack",
+    "glp1",
+    "glucose",
+    "insulin"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -87,45 +94,50 @@ Landersdorfer_2012_vildagliptin_qsp <- function() {
   # states hold CONCENTRATIONS, not amounts, exactly as the paper writes them
   # (dCglp/dt, dCglc/dt, dCins/dt).
   compartmentData <- list(
-    depot                 = list(analyte = "vildagliptin", units = "nmol", specimen = "administration site", verified = TRUE),
-    transit1              = list(analyte = "vildagliptin", units = "nmol", specimen = "administration site", verified = TRUE),
-    central               = list(analyte = "vildagliptin", units = "nmol", specimen = "plasma", verified = TRUE),
-    peripheral1           = list(analyte = "vildagliptin", units = "nmol", specimen = "tissue", verified = TRUE),
-    complex               = list(analyte = "vildagliptin-DPP-4 complex", units = "nmol", specimen = "plasma", verified = TRUE),
-    complex_peripheral    = list(analyte = "vildagliptin-DPP-4 complex", units = "nmol", specimen = "tissue", verified = TRUE),
+    depot = list(analyte = "vildagliptin", units = "nmol", specimen = "administration site", verified = TRUE),
+    transit1 = list(analyte = "vildagliptin", units = "nmol", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "vildagliptin", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "vildagliptin", units = "nmol", specimen = "tissue", verified = TRUE),
+    complex = list(analyte = "vildagliptin-DPP-4 complex", units = "nmol", specimen = "plasma", verified = TRUE),
+    complex_peripheral = list(
+      analyte = "vildagliptin-DPP-4 complex",
+      units = "nmol",
+      specimen = "tissue",
+      verified = TRUE
+    ),
     glucose_gut_breakfast = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
-    glucose_gut_lunch     = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
-    glucose_gut_dinner    = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
-    glucose_gut_snack     = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
-    glp1                  = list(analyte = "active GLP-1", units = "pmol/L", specimen = "plasma", verified = TRUE),
-    glucose               = list(analyte = "glucose", units = "mg/dL", specimen = "plasma", verified = TRUE),
-    insulin               = list(analyte = "insulin", units = "mIU/L", specimen = "plasma", verified = TRUE)
+    glucose_gut_lunch = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
+    glucose_gut_dinner = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
+    glucose_gut_snack = list(analyte = "glucose", units = "g", specimen = "administration site", verified = TRUE),
+    glp1 = list(analyte = "active GLP-1", units = "pmol/L", specimen = "plasma", verified = TRUE),
+    glucose = list(analyte = "glucose", units = "mg/dL", specimen = "plasma", verified = TRUE),
+    insulin = list(analyte = "insulin", units = "mIU/L", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 13L,
-    n_studies      = 1L,
-    age_range      = "37-64 years",
-    age_median     = "53.5 years (mean)",
-    weight_range   = "65-116 kg",
-    weight_median  = "91 kg (mean)",
-    height_range   = "148-183 cm (mean 166 cm)",
+    species = "human",
+    n_subjects = 13L,
+    n_studies = 1L,
+    age_range = "37-64 years",
+    age_median = "53.5 years (mean)",
+    weight_range = "65-116 kg",
+    weight_median = "91 kg (mean)",
+    height_range = "148-183 cm (mean 166 cm)",
     sex_female_pct = 53.8,
-    disease_state  = paste(
+    disease_state = paste(
       "Type 2 diabetes mellitus diagnosed at least 3 months before screening;",
       "washout from hypoglycaemic drugs of up to 4 weeks before dosing.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral vildagliptin 10, 25 or 100 mg twice daily for 28 days plus placebo,",
       "in a randomized, double-blind, placebo-controlled four-way crossover.",
       sep = " "
     ),
-    co_medication  = "None (hypoglycaemic drugs washed out before each period).",
-    notes          = paste(
+    co_medication = "None (hypoglycaemic drugs washed out before each period).",
+    notes = paste(
       "Demographics from the Results section, first paragraph. Twelve subjects",
       "completed all four periods; one completed only the 10 and 25 mg",
       "treatments (6 male, 7 female). Patients were confined from the evening",

@@ -5,8 +5,16 @@ Wang_2010_romiplostim <- function() {
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
 
   paper_specific_compartments <- c(
-    "plt1", "plt2", "plt3", "plt4", "plt5",
-    "plt6", "plt7", "plt8", "plt9", "plt10"
+    "plt1",
+    "plt2",
+    "plt3",
+    "plt4",
+    "plt5",
+    "plt6",
+    "plt7",
+    "plt8",
+    "plt9",
+    "plt10"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -14,55 +22,55 @@ Wang_2010_romiplostim <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
-    precursor1  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor2  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor3  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor4  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor5  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor6  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor7  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor8  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    precursor9  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor1 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor5 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor6 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor7 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor8 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor9 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
     precursor10 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
-    plt1        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt2        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt3        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt4        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt5        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt6        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt7        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt8        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt9        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
-    plt10       = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE)
+    plt1 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt2 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt3 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt4 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt5 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt6 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt7 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt8 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt9 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt10 = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Wang 2010 parameterizes PK in per-kg form (Vc reported in L/kg). Absolute central volume scales linearly: vc = exp(lvc) * WT. Dose amounts (amt column) are absolute (ug), so per-kg dosing in the source (e.g. 1 ug/kg in a 70 kg subject) translates to amt = 70 ug. No allometric exponent or further covariate effect is applied; the paper had no covariate analysis (mean-data fit, 32 healthy adults).",
-      source_name        = "WT"
+      notes = "Wang 2010 parameterizes PK in per-kg form (Vc reported in L/kg). Absolute central volume scales linearly: vc = exp(lvc) * WT. Dose amounts (amt column) are absolute (ug), so per-kg dosing in the source (e.g. 1 ug/kg in a 70 kg subject) translates to amt = 70 ug. No allometric exponent or further covariate effect is applied; the paper had no covariate analysis (mean-data fit, 32 healthy adults).",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 32L,
-    n_studies      = 1L,
-    age_range      = "18-50 years",
+    species = "human",
+    n_subjects = 32L,
+    n_studies = 1L,
+    age_range = "18-50 years",
     sex_female_pct = NA,
     race_ethnicity = "Not reported in detail; described as demographically similar across cohorts (Wang 2010 Results / Subjects).",
-    disease_state  = "Healthy non-obese volunteers (BMI < 30 kg/m^2). Eligible women surgically sterilized or postmenopausal.",
-    dose_range     = "Single dose. IV: 0.3, 1, 10 ug/kg (4 subjects per group). SC: 0.1, 0.3, 1, 2 ug/kg (4 subjects per group except 2 ug/kg SC = 8). 16 placebo subjects across groups.",
-    bmi_max        = "< 30 kg/m^2",
-    samples        = "123 quantifiable serum concentrations in 17 participants (only IV cohorts and 2 ug/kg SC; lower SC doses were below the 0.018 ng/mL ELISA LOQ); 481 platelet counts from 32 participants.",
-    regions        = "Not specified; phase I healthy-volunteer study, sponsored by Amgen.",
-    notes          = "Wang 2010 fit MEAN concentration and MEAN platelet count by dose cohort (not individual data), so the published parameter table (Table I) is a typical-value fit without IIV. Baseline platelet counts were fixed at the predose mean for each dose level (Wang 2010 Statistical Model). lrbase in this model defaults to 250 x 10^9/L (a representative healthy baseline matching the Discussion's 'baseline platelet counts of 150-450 x 10^9 cells/L'); the vignette shows how to vary it. PK sampling at 0.083, 0.25, 0.5, 1, 2, 4, 8, 12 h and 1, 1.5, 2, 4, 7, 9, 10, 11, 12, 13, 14, 16, 19 days post-dose. Platelets at predose and days 2, 3, 5, 8, 10, 11, 12, 13, 14, 15, 17, 20, 28, 42."
+    disease_state = "Healthy non-obese volunteers (BMI < 30 kg/m^2). Eligible women surgically sterilized or postmenopausal.",
+    dose_range = "Single dose. IV: 0.3, 1, 10 ug/kg (4 subjects per group). SC: 0.1, 0.3, 1, 2 ug/kg (4 subjects per group except 2 ug/kg SC = 8). 16 placebo subjects across groups.",
+    bmi_max = "< 30 kg/m^2",
+    samples = "123 quantifiable serum concentrations in 17 participants (only IV cohorts and 2 ug/kg SC; lower SC doses were below the 0.018 ng/mL ELISA LOQ); 481 platelet counts from 32 participants.",
+    regions = "Not specified; phase I healthy-volunteer study, sponsored by Amgen.",
+    notes = "Wang 2010 fit MEAN concentration and MEAN platelet count by dose cohort (not individual data), so the published parameter table (Table I) is a typical-value fit without IIV. Baseline platelet counts were fixed at the predose mean for each dose level (Wang 2010 Statistical Model). lrbase in this model defaults to 250 x 10^9/L (a representative healthy baseline matching the Discussion's 'baseline platelet counts of 150-450 x 10^9 cells/L'); the vignette shows how to vary it. PK sampling at 0.083, 0.25, 0.5, 1, 2, 4, 8, 12 h and 1, 1.5, 2, 4, 7, 9, 10, 11, 12, 13, 14, 16, 19 days post-dose. Platelets at predose and days 2, 3, 5, 8, 10, 11, 12, 13, 14, 15, 17, 20, 28, 42."
   )
 
   ini({

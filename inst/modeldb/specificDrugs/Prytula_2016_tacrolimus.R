@@ -8,65 +8,65 @@ Prytula_2016_tacrolimus <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline in Prytula 2016 model-building dataset (Table 1). Allometric power scaling with reference weight 70 kg and theory-based fixed exponents: 0.75 on CL/F and Q/F, 1 on V1/F and V2/F, and -0.25 on ka (Prytula 2016 Section 3.2.1). Study median 38.6 kg, range 15-86 kg.",
-      source_name        = "weight"
+      notes = "Time-fixed at baseline in Prytula 2016 model-building dataset (Table 1). Allometric power scaling with reference weight 70 kg and theory-based fixed exponents: 0.75 on CL/F and Q/F, 1 on V1/F and V2/F, and -0.25 on ka (Prytula 2016 Section 3.2.1). Study median 38.6 kg, range 15-86 kg.",
+      source_name = "weight"
     ),
     GGT = list(
-      description        = "Gamma-glutamyltransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Gamma-glutamyltransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Enters CL/F via the power form (GGT / 13)^e_ggt_cl with reference 13 U/L (study median). A gGT increase from 13 to 30 U/L was reported to be associated with a 16% decrease in CL/F (Prytula 2016 Section 3.2.2 / Fig. 1d). Study median 13 U/L, range 4-118 U/L (Table 1).",
-      source_name        = "gGT"
+      notes = "Time-varying. Enters CL/F via the power form (GGT / 13)^e_ggt_cl with reference 13 U/L (study median). A gGT increase from 13 to 30 U/L was reported to be associated with a 16% decrease in CL/F (Prytula 2016 Section 3.2.2 / Fig. 1d). Study median 13 U/L, range 4-118 U/L (Table 1).",
+      source_name = "gGT"
     ),
     HCT = list(
-      description        = "Haematocrit, expressed as a fraction of total blood volume (0-1)",
-      units              = "fraction",
-      type               = "continuous",
+      description = "Haematocrit, expressed as a fraction of total blood volume (0-1)",
+      units = "fraction",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Enters CL/F via the power form (HCT / 0.34)^e_hct_cl with reference 0.34 (study median). A haematocrit increase from 0.34 to 0.40 was reported to be associated with a 10% decrease in CL/F (Prytula 2016 Section 3.2.2 / Fig. 1c). Prytula 2016 reports HCT as a fraction (0-1), not as percent (0-100); the canonical-register HCT entry's units (%) are explicitly overridden here so the centring value 0.34 and the power exponent -0.59 reproduce the paper's equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model. Study median 0.34, range 0.21-0.44 (Table 1).",
-      source_name        = "Ht"
+      notes = "Time-varying. Enters CL/F via the power form (HCT / 0.34)^e_hct_cl with reference 0.34 (study median). A haematocrit increase from 0.34 to 0.40 was reported to be associated with a 10% decrease in CL/F (Prytula 2016 Section 3.2.2 / Fig. 1c). Prytula 2016 reports HCT as a fraction (0-1), not as percent (0-100); the canonical-register HCT entry's units (%) are explicitly overridden here so the centring value 0.34 and the power exponent -0.59 reproduce the paper's equation directly. To use a dataset that records HCT in percent, multiply the column by 0.01 before passing it to this model. Study median 0.34, range 0.21-0.44 (Table 1).",
+      source_name = "Ht"
     ),
     CYP3A5_EXPR = list(
-      description        = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5 expresser indicator: 1 if the patient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3), 0 if homozygous *3/*3.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5 *3/*3 nonexpresser)",
-      notes              = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). In the Prytula 2016 model-building cohort, DNA was available for 49 of 54 patients; among the 49 genotyped subjects the distribution was *1/*1 = 1 (2%), *1/*3 = 12 (24.5%), *3/*3 = 36 (73.5%) (Table 1). The source paper estimated a separate CL/F shift for the 5 ungenotyped subjects (h(CYP3A5 missing) = 0.41 with 61% SE, bootstrap 0.52 95% CI -0.08 to 1.52; Table 2), but that arm is not encoded here -- the wide CI makes the estimate statistically indistinguishable from both the carrier effect and from zero, and downstream simulation use cases have known genotype data. Users with subjects of unknown genotype should impute the most prevalent reference category (CYP3A5_EXPR = 0) and inspect the impact qualitatively; see vignette Assumptions and deviations. CL/F enters as (1 + 0.45 * CYP3A5_EXPR), so expressers have 45% higher apparent oral clearance than nonexpressers (Prytula 2016 Section 3.2.2 / Table 2 / equations on p. 1136).",
-      source_name        = "CYP3A5"
+      notes = "Time-fixed germline genotype determined from rs776746 (CYP3A5 6986A>G). In the Prytula 2016 model-building cohort, DNA was available for 49 of 54 patients; among the 49 genotyped subjects the distribution was *1/*1 = 1 (2%), *1/*3 = 12 (24.5%), *3/*3 = 36 (73.5%) (Table 1). The source paper estimated a separate CL/F shift for the 5 ungenotyped subjects (h(CYP3A5 missing) = 0.41 with 61% SE, bootstrap 0.52 95% CI -0.08 to 1.52; Table 2), but that arm is not encoded here -- the wide CI makes the estimate statistically indistinguishable from both the carrier effect and from zero, and downstream simulation use cases have known genotype data. Users with subjects of unknown genotype should impute the most prevalent reference category (CYP3A5_EXPR = 0) and inspect the impact qualitatively; see vignette Assumptions and deviations. CL/F enters as (1 + 0.45 * CYP3A5_EXPR), so expressers have 45% higher apparent oral clearance than nonexpressers (Prytula 2016 Section 3.2.2 / Table 2 / equations on p. 1136).",
+      source_name = "CYP3A5"
     )
   )
 
   population <- list(
-    species               = "human",
-    n_subjects            = 54L,
-    n_studies             = 2L,
-    n_profiles            = 120L,
-    age_range             = "3.8-18.4 years",
-    age_median            = "11.1 years",
-    weight_range          = "15-86 kg",
-    weight_median         = "38.6 kg",
-    sex_female_pct        = 48,
-    race_ethnicity        = c(Caucasian = 70, Other = 30),
-    disease_state         = "Stable paediatric renal transplant recipients at least one year after kidney transplantation (median 16.2 months, range 11.4-124 months posttransplant). All patients received twice-daily oral tacrolimus (Prograft) for at least 6 weeks at baseline and the dose had not been amended for at least 14 days. Initial immunosuppressive therapy included basiliximab (n = 37) plus corticosteroids, a calcineurin inhibitor, and an antimetabolite. Before 2009 most children started on cyclosporine and switched to tacrolimus after 3-6 months; an early-corticosteroid-withdrawal protocol was used in Rotterdam from July 2009 onward.",
-    dose_range            = "Twice-daily oral tacrolimus titrated by therapeutic drug monitoring to a posttransplant year >=1 target trough (C0) of 4-8 ug/L; the cohort median daily dose was 0.12-0.15 mg/kg/day depending on CYP3A5 genotype (Prytula 2016 Section 3.1).",
-    regions               = "Netherlands (Erasmus MC-Sophia Children's Hospital, Rotterdam, n = 45; Emma Children's Hospital, Amsterdam, n = 9).",
-    cyp3a5_distribution   = "Of 49 genotyped patients (DNA unavailable for 5): *1/*1 n = 1 (2%), *1/*3 n = 12 (24.5%), *3/*3 n = 36 (73.5%); Hardy-Weinberg equilibrium confirmed.",
-    abcb1_distribution    = "ABCB1 3435 C>T genotype (Table 1): T/C n = 32 (65.3%), C/C n = 9 (18.4%), T/T n = 8 (16.3%). ABCB1 polymorphism was tested as a covariate on CL/F but was not retained in the final model.",
-    sampling_window       = "Abbreviated 4-h profiles (Rotterdam): predose (C0) and 10, 30, 90, 120, 240 min postdose. Abbreviated 2-h profiles (Amsterdam): C0 and C120 only. AUC12 was estimated by Bayesian analysis from the abbreviated profiles using the method previously validated for paediatric tacrolimus.",
-    assay                 = "Whole-blood tacrolimus measured by LC-MS/MS (83% of samples; LLOQ 0.2 ug/L) or MEIA (remainder; LLOQ 1.0 ug/L). The assay-method covariate was tested in the model but not retained.",
-    notes                 = "Retrospective cohort study; data collected April 1993 - June 2011 across two centres. The number of profiles per child ranged from 1 to 5 (median 2); 20 children had only one profile. External validation was performed on an independent cohort of 27 children (Section 2.1, Table 1 right columns). The simulated trough scenarios (Section 3.2.4 / Fig. 4) cover doses 0.025-0.2 mg/kg twice daily across body weights 10-90 kg and CYP3A5 strata, with target trough 4-8 ug/L."
+    species = "human",
+    n_subjects = 54L,
+    n_studies = 2L,
+    n_profiles = 120L,
+    age_range = "3.8-18.4 years",
+    age_median = "11.1 years",
+    weight_range = "15-86 kg",
+    weight_median = "38.6 kg",
+    sex_female_pct = 48,
+    race_ethnicity = c(Caucasian = 70, Other = 30),
+    disease_state = "Stable paediatric renal transplant recipients at least one year after kidney transplantation (median 16.2 months, range 11.4-124 months posttransplant). All patients received twice-daily oral tacrolimus (Prograft) for at least 6 weeks at baseline and the dose had not been amended for at least 14 days. Initial immunosuppressive therapy included basiliximab (n = 37) plus corticosteroids, a calcineurin inhibitor, and an antimetabolite. Before 2009 most children started on cyclosporine and switched to tacrolimus after 3-6 months; an early-corticosteroid-withdrawal protocol was used in Rotterdam from July 2009 onward.",
+    dose_range = "Twice-daily oral tacrolimus titrated by therapeutic drug monitoring to a posttransplant year >=1 target trough (C0) of 4-8 ug/L; the cohort median daily dose was 0.12-0.15 mg/kg/day depending on CYP3A5 genotype (Prytula 2016 Section 3.1).",
+    regions = "Netherlands (Erasmus MC-Sophia Children's Hospital, Rotterdam, n = 45; Emma Children's Hospital, Amsterdam, n = 9).",
+    cyp3a5_distribution = "Of 49 genotyped patients (DNA unavailable for 5): *1/*1 n = 1 (2%), *1/*3 n = 12 (24.5%), *3/*3 n = 36 (73.5%); Hardy-Weinberg equilibrium confirmed.",
+    abcb1_distribution = "ABCB1 3435 C>T genotype (Table 1): T/C n = 32 (65.3%), C/C n = 9 (18.4%), T/T n = 8 (16.3%). ABCB1 polymorphism was tested as a covariate on CL/F but was not retained in the final model.",
+    sampling_window = "Abbreviated 4-h profiles (Rotterdam): predose (C0) and 10, 30, 90, 120, 240 min postdose. Abbreviated 2-h profiles (Amsterdam): C0 and C120 only. AUC12 was estimated by Bayesian analysis from the abbreviated profiles using the method previously validated for paediatric tacrolimus.",
+    assay = "Whole-blood tacrolimus measured by LC-MS/MS (83% of samples; LLOQ 0.2 ug/L) or MEIA (remainder; LLOQ 1.0 ug/L). The assay-method covariate was tested in the model but not retained.",
+    notes = "Retrospective cohort study; data collected April 1993 - June 2011 across two centres. The number of profiles per child ranged from 1 to 5 (median 2); 20 children had only one profile. External validation was performed on an independent cohort of 27 children (Section 2.1, Table 1 right columns). The simulated trough scenarios (Section 3.2.4 / Fig. 4) cover doses 0.025-0.2 mg/kg twice daily across body weights 10-90 kg and CYP3A5 strata, with target trough 4-8 ug/L."
   )
 
   ini({

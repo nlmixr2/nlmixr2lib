@@ -30,26 +30,26 @@ Reinecke_2018_levonorgestrel_progestinOnlyPill <- function() {
   )
   vignette <- "Reinecke_2018_levonorgestrel_contraceptives"
   units <- list(
-    time          = "h",
-    dosing        = "mg (levonorgestrel)",
+    time = "h",
+    dosing = "mg (levonorgestrel)",
     concentration = "ng/L (total and unbound LNG in serum/plasma); SHBG in nmol/L"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
+    depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "levonorgestrel", units = "mg", specimen = "serum", verified = TRUE),
-    effect      = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
-    shbg        = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
+    effect = list(analyte = "levonorgestrel", units = "nmol/L", specimen = "not applicable", verified = TRUE),
+    shbg = list(analyte = "SHBG", units = "nmol/L", specimen = "serum", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (kg). Power-function ('allometric') covariate on the absolute oral bioavailability of levonorgestrel (decreasing with weight) and on the clearance of unbound levonorgestrel (increasing with weight).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (kg). Power-function ('allometric') covariate on the absolute oral bioavailability of levonorgestrel (decreasing with weight) and on the clearance of unbound levonorgestrel (increasing with weight).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline body weight, centred on 66 kg -- the pooled",
         "intrauterine-system median that the comprehensive fit uses",
         "throughout. The comprehensive F_oral row of Supplemental Table S2 is",
@@ -65,16 +65,16 @@ Reinecke_2018_levonorgestrel_progestinOnlyPill <- function() {
         "the SHBG baseline was identified on, and applies only to, the",
         "intrauterine baseline SBL_IUS, so it is not carried here."
       ),
-      source_name        = "WGHT"
+      source_name = "WGHT"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at baseline (years). Screened as a power-function covariate on levonorgestrel clearance and on the SHBG baseline concentration.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened in the comprehensive covariate step but not retained; only",
         "body weight reached the P <= .001 forward-inclusion criterion",
         "(Results, 'Comprehensive Model'). No point estimate is reported."
@@ -83,19 +83,19 @@ Reinecke_2018_levonorgestrel_progestinOnlyPill <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 21L,
-    n_studies      = 2L,
-    studies        = c(
+    species = "human",
+    n_subjects = 21L,
+    n_studies = 2L,
+    studies = c(
       "Phase 1 study 15687 (progestin-only pill Microlut/Norgeston, 30 ug LNG once daily, dense LNG and SHBG profiles over 1 treatment cycle, 21 women)",
       "Phase 1 study 92085 (single-dose intravenous 90 ug LNG; included in every model-development step so that absolute bioavailability is estimable)"
     ),
-    age_range      = "31-45 years (median 42 years in study 15687)",
-    weight_range   = "52.5-82.9 kg (median 62.4 kg in study 15687)",
+    age_range = "31-45 years (median 42 years in study 15687)",
+    weight_range = "52.5-82.9 kg (median 62.4 kg in study 15687)",
     sex_female_pct = 100,
-    disease_state  = "Healthy premenopausal women",
-    dose_range     = "30 ug levonorgestrel orally once daily",
-    notes          = paste(
+    disease_state = "Healthy premenopausal women",
+    dose_range = "30 ug levonorgestrel orally once daily",
+    notes = paste(
       "Demographics for the progestin-only pill from Table 1. The",
       "comprehensive fit these parameters come from was estimated jointly on",
       "intravenous, oral (progestin-only pill plus supportive single-dose",

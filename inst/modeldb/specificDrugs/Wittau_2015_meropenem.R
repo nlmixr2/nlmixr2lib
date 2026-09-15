@@ -17,75 +17,75 @@ Wittau_2015_meropenem <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FFM = list(
-      description        = "Fat-free mass; derived from total body weight, height, and sex via the Janmahasatian et al. (2005) formula. Used for allometric scaling on CL, CLd, V1, and V2 with reference FFM = 53 kg.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Fat-free mass; derived from total body weight, height, and sex via the Janmahasatian et al. (2005) formula. Used for allometric scaling on CL, CLd, V1, and V2 with reference FFM = 53 kg.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Reference FFM 53 kg per Table 2 footnote b. Cohort range 52.3 - 94.0 kg; geometric mean 70.3 kg, 27.4% CV used for Monte Carlo simulations (Methods 'Monte Carlo simulations').",
-      source_name        = "FFM"
+      notes = "Time-fixed at baseline. Reference FFM 53 kg per Table 2 footnote b. Cohort range 52.3 - 94.0 kg; geometric mean 70.3 kg, 27.4% CV used for Monte Carlo simulations (Methods 'Monte Carlo simulations').",
+      source_name = "FFM"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Considered alongside FFM for allometric scaling but not retained in the final model: 'we considered FFM (15) to account for the significantly altered body composition of morbidly obese patients' (Methods 'Parameter variability model and covariate effects'). Discussion notes the cohort lacked the WT-vs-FFM contrast needed to rank them definitively; FFM was preferred on physiological grounds. Cohort range 116 - 203 kg."
+      units = "kg",
+      type = "continuous",
+      notes = "Considered alongside FFM for allometric scaling but not retained in the final model: 'we considered FFM (15) to account for the significantly altered body composition of morbidly obese patients' (Methods 'Parameter variability model and covariate effects'). Discussion notes the cohort lacked the WT-vs-FFM contrast needed to rank them definitively; FFM was preferred on physiological grounds. Cohort range 116 - 203 kg."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Recorded in Table 1 (mean 40 +/- 7.87 years, range 31 - 49) but not screened as a covariate; the paper explicitly avoided empirical covariate model building given the small sample size (n = 5)."
+      units = "years",
+      type = "continuous",
+      notes = "Recorded in Table 1 (mean 40 +/- 7.87 years, range 31 - 49) but not screened as a covariate; the paper explicitly avoided empirical covariate model building given the small sample size (n = 5)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Cohort included 3 of 5 female (Table 1) but sex was not screened as a covariate; small-sample exclusion applies."
+      units = "(binary)",
+      type = "binary",
+      notes = "Cohort included 3 of 5 female (Table 1) but sex was not screened as a covariate; small-sample exclusion applies."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Inclusion criterion (BMI >= 40) and cohort descriptor (mean 54.2, range 47.6 - 62.3 kg/m^2; Table 1) but not used as a model covariate."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Inclusion criterion (BMI >= 40) and cohort descriptor (mean 54.2, range 47.6 - 62.3 kg/m^2; Table 1) but not used as a model covariate."
     ),
     HEIGHT = list(
       description = "Standing height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Used internally to derive FFM via Janmahasatian; not used as a model covariate. Cohort mean 170 +/- 14.5 cm."
+      units = "cm",
+      type = "continuous",
+      notes = "Used internally to derive FFM via Janmahasatian; not used as a model covariate. Cohort mean 170 +/- 14.5 cm."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Inclusion criterion (CrCL > 30 mL/min) excluded severe renal insufficiency; not screened as a covariate. Serum creatinine reported in Table 1 (median 75 umol/L, range 64 - 80)."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Inclusion criterion (CrCL > 30 mL/min) excluded severe renal insufficiency; not screened as a covariate. Serum creatinine reported in Table 1 (median 75 umol/L, range 64 - 80)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 5L,
-    n_studies      = 1L,
-    age_range      = "31 - 49 years (median 39)",
-    age_median     = "39 years",
-    weight_range   = "116 - 203 kg total body weight (median 163)",
-    weight_median  = "163 kg",
-    ffm_range      = "52.3 - 94.0 kg (median 63.8); reference 53 kg for allometric scaling",
-    bmi_range      = "47.6 - 62.3 kg/m^2 (median 51.9)",
+    species = "human",
+    n_subjects = 5L,
+    n_studies = 1L,
+    age_range = "31 - 49 years (median 39)",
+    age_median = "39 years",
+    weight_range = "116 - 203 kg total body weight (median 163)",
+    weight_median = "163 kg",
+    ffm_range = "52.3 - 94.0 kg (median 63.8); reference 53 kg for allometric scaling",
+    bmi_range = "47.6 - 62.3 kg/m^2 (median 51.9)",
     sex_female_pct = 60,
-    disease_state  = "Morbidly obese (BMI >= 40), noninfected adults undergoing elective laparoscopic intraperitoneal surgery (5 sleeve gastrectomies, 1 abdominal-wall hernia repair; one excluded from analysis). Severe renal insufficiency (CrCL <= 30 mL/min), severe hepatic disease, and concurrent valproic acid were exclusion criteria.",
-    dose_range     = "1 g meropenem every 8 h as a 15-min IV infusion; PK sampled after the fourth dose (1 g q8h, IV; intraoperative + post-operative).",
-    regions        = "Germany (University of Ulm, Department of Visceral Surgery; August 2012 - January 2013).",
-    notes          = "ClinicalTrials.gov NCT01407965. Rich sampling at 0.5, 1, 2, 3, 5, and 8 h after the fourth dose in plasma, subcutaneous adipose interstitial space fluid (microdialysis), and peritoneal fluid (microdialysis). All concentrations analyzed simultaneously via population modeling in S-ADAPT (importance sampling, pmethod = 4). Demographic summary from Table 1; modelling details from Materials and Methods 'Population modeling and Monte Carlo simulations'."
+    disease_state = "Morbidly obese (BMI >= 40), noninfected adults undergoing elective laparoscopic intraperitoneal surgery (5 sleeve gastrectomies, 1 abdominal-wall hernia repair; one excluded from analysis). Severe renal insufficiency (CrCL <= 30 mL/min), severe hepatic disease, and concurrent valproic acid were exclusion criteria.",
+    dose_range = "1 g meropenem every 8 h as a 15-min IV infusion; PK sampled after the fourth dose (1 g q8h, IV; intraoperative + post-operative).",
+    regions = "Germany (University of Ulm, Department of Visceral Surgery; August 2012 - January 2013).",
+    notes = "ClinicalTrials.gov NCT01407965. Rich sampling at 0.5, 1, 2, 3, 5, and 8 h after the fourth dose in plasma, subcutaneous adipose interstitial space fluid (microdialysis), and peritoneal fluid (microdialysis). All concentrations analyzed simultaneously via population modeling in S-ADAPT (importance sampling, pmethod = 4). Demographic summary from Table 1; modelling details from Materials and Methods 'Population modeling and Monte Carlo simulations'."
   )
 
   ini({

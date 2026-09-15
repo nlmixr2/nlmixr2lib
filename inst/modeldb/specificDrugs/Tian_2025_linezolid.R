@@ -30,8 +30,8 @@ Tian_2025_linezolid <- function() {
   )
   vignette <- "Tian_2025_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
@@ -41,11 +41,11 @@ Tian_2025_linezolid <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Tian 2025 Table 1 reports a",
         "median of 12.5 kg (5th-95th percentile 5.3-45.9 kg), and the",
         "Table 3 footnote names 12.5 kg as the median weight used to",
@@ -56,14 +56,14 @@ Tian_2025_linezolid <- function() {
         "in the final model.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (Schwartz formula)",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (Schwartz formula)",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (baseline). Computed by the authors with",
         "the Schwartz formula (Methods, 'Study design'), so this is a",
         "creatinine-based, BSA-normalized estimate rather than a measured",
@@ -80,7 +80,7 @@ Tian_2025_linezolid <- function() {
         "building').",
         sep = " "
       ),
-      source_name        = "eGFR"
+      source_name = "eGFR"
     )
   )
 
@@ -94,57 +94,57 @@ Tian_2025_linezolid <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened; not retained. Table 1: 48/80 male, 32/80 female (40.0% female)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened; not retained. Table 1: 48/80 male, 32/80 female (40.0% female)."
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 3.3 years (5th-95th 0.1-12.6)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 3.3 years (5th-95th 0.1-12.6)."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 99.5 cm (5th-95th 55.1-159.8)."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 99.5 cm (5th-95th 55.1-159.8)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 26.0 U/L (5th-95th 12-117)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 26.0 U/L (5th-95th 12-117)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 15.3 U/L (5th-95th 5.4-170.0)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 15.3 U/L (5th-95th 5.4-170.0)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 34.0 g/L (5th-95th 25.5-43.5)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 34.0 g/L (5th-95th 25.5-43.5)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 6.5 umol/L (5th-95th 2.4-37.1). Abbreviated TB in the Results text and TBIL in Table 1."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 6.5 umol/L (5th-95th 2.4-37.1). Abbreviated TB in the Results text and TBIL in Table 1."
     ),
     DBIL = list(
       description = "Direct (conjugated) bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 1.7 umol/L (5th-95th 0.5-15.0). Abbreviated DB in the Results text and DBIL in Table 1."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 1.7 umol/L (5th-95th 0.5-15.0). Abbreviated DB in the Results text and DBIL in Table 1."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "umol/L",
+      type = "continuous",
+      notes = paste(
         "Screened; not retained. Table 1 median 24.0 umol/L (5th-95th",
         "9.0-48.0). Serum creatinine is the input to the Schwartz eGFR",
         "that WAS retained, so the two are strongly correlated and only",
@@ -154,19 +154,19 @@ Tian_2025_linezolid <- function() {
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened; not retained. Table 1 median 2.7 mmol/L (5th-95th 1.0-5.9)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened; not retained. Table 1 median 2.7 mmol/L (5th-95th 1.0-5.9)."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 80L,
-    n_studies      = 1L,
-    age_range      = "0-16 years by inclusion criterion; observed median 3.3 years (5th-95th 0.1-12.6)",
-    weight_range   = "median 12.5 kg (5th-95th 5.3-45.9)",
-    height_range   = "median 99.5 cm (5th-95th 55.1-159.8)",
+    species = "human",
+    n_subjects = 80L,
+    n_studies = 1L,
+    age_range = "0-16 years by inclusion criterion; observed median 3.3 years (5th-95th 0.1-12.6)",
+    weight_range = "median 12.5 kg (5th-95th 5.3-45.9)",
+    height_range = "median 99.5 cm (5th-95th 55.1-159.8)",
     sex_female_pct = 40.0,
     race_ethnicity = c(Asian = 100),
     renal_function = paste(
@@ -178,7 +178,7 @@ Tian_2025_linezolid <- function() {
       "AUC/MIC did not differ significantly between the two.",
       sep = " "
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Children with confirmed or suspected bacterial infection treated",
       "with intravenous linezolid for more than 48 h. In the 67-patient",
       "efficacy and safety subset (Table 2) the commonest presentations",
@@ -191,14 +191,14 @@ Tian_2025_linezolid <- function() {
       "the internal standard of the linezolid assay.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Intravenous linezolid (Zyvox, Pfizer) at the label standard dose:",
       "10 mg/kg q8h for children under 12 years (73/80 subjects, median",
       "10.0 mg/kg/dose, 5th-95th 9.4-10.5) and 600 mg q12h for children",
       "aged 12 years and above (7/80 subjects).",
       sep = " "
     ),
-    regions        = paste(
+    regions = paste(
       "China (six centres: Beijing Children's Hospital of Capital Medical",
       "University; Baoding Hospital of Beijing Children's Hospital;",
       "Hebei Children's Hospital; Children's Hospital of the Capital",
@@ -206,7 +206,7 @@ Tian_2025_linezolid <- function() {
       "Children's Hospital)",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective multi-centre study, March 2021 to June 2022, Chinese",
       "Clinical Trial Registry ChiCTR2200061207. 80 children contributed",
       "157 plasma linezolid concentrations (range 0.25-33.67 ug/mL),",

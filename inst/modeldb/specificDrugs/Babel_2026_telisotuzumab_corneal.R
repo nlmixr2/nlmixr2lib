@@ -35,39 +35,39 @@ Babel_2026_telisotuzumab_corneal <- function() {
   vignette <- "Babel_2026_telisotuzumab"
 
   units <- list(
-    time          = "n/a (static landmark exposure-response model; no time dimension)",
-    dosing        = "n/a (no dose events; exposure enters as the CAV covariate column)",
+    time = "n/a (static landmark exposure-response model; no time dimension)",
+    dosing = "n/a (no dose events; exposure enters as the CAV covariate column)",
     concentration = "prob_corneal_epitheliopathy_grade2 (probability of a grade 2 or worse corneal epitheliopathy event, 0-1)"
   )
 
   covariateData <- list(
     CAV = list(
-      description        = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
-      units              = "ug/mL",
-      type               = "continuous",
+      description = "Individual average serum concentration of the telisotuzumab vedotin CONJUGATE, computed up to the time of the event or up to the end of treatment if no event occurred. Supplied as data: this model has no PK layer.",
+      units = "ug/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Identical column and derivation to the companion model Babel_2026_telisotuzumab_neuropathy, on the same 284-patient exposure-safety analysis set. Babel 2026 Methods: post hoc estimates from the population PK model using actual doses received. Reproduce the column with modellib('Babel_2026_telisotuzumab'). Enters on the NATURAL-LOG scale and UNCENTRED. Babel 2026 Figure 4 shows binned quartile medians near 3.6, 5.1, 6.7 and 8.4 ug/mL, spanning to about 9.6 ug/mL.",
-      source_name        = "CavgADC"
+      notes = "Identical column and derivation to the companion model Babel_2026_telisotuzumab_neuropathy, on the same 284-patient exposure-safety analysis set. Babel 2026 Methods: post hoc estimates from the population PK model using actual doses received. Reproduce the column with modellib('Babel_2026_telisotuzumab'). Enters on the NATURAL-LOG scale and UNCENTRED. Babel 2026 Figure 4 shows binned quartile medians near 3.6, 5.1, 6.7 and 8.4 ug/mL, spanning to about 9.6 ug/mL.",
+      source_name = "CavgADC"
     )
   )
 
   covariatesDataExcluded <- list(
     LIVERMET = list(
       description = "Liver metastasis at baseline; 1 = present, 0 = absent.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Listed in Babel 2026 Table S2 as a safety covariate of interest but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
+      units = "(binary)",
+      type = "binary",
+      notes = "Listed in Babel 2026 Table S2 as a safety covariate of interest but not retained: 'No covariates were found to have a significant effect on efficacy or safety'. No point estimate exists on disk. The remaining Table S2 safety covariates (age, sex, race, ethnicity, body weight, c-Met expression level, history of peripheral neuropathy, prior therapy, number of prior systemic therapies, treatment-emergent ADA status and nAb status) were screened and dropped on the same basis."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 284L,
-    n_studies      = 2L,
+    species = "human",
+    n_subjects = 284L,
+    n_studies = 2L,
     n_observations = "284 binary event records (one per patient; landmark analysis, no repeated measures)",
-    disease_state  = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
-    dose_range     = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
-    notes          = paste0(
+    disease_state = "Advanced solid tumours, predominantly c-Met protein overexpressing non-small cell lung cancer; the phase 1 contribution is restricted to patients with NSCLC receiving monotherapy",
+    dose_range = "telisotuzumab vedotin 0.15-3.3 mg/kg every 3 weeks and 1.6-2.2 mg/kg every 2 weeks (phase 1) and 1.6 or 1.9 mg/kg every 2 weeks (LUMINOSITY)",
+    notes = paste0(
       "Baseline demographics of this analysis set are in Babel 2026 ",
       "Table S6. Babel 2026 states explicitly that 'grade >= 3 corneal ",
       "epitheliopathy events were not evaluated in the exposure-safety ",

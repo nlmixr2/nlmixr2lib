@@ -8,26 +8,26 @@ Green_2003_enoxaparin <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear size descriptor on the central volume of distribution Vc with reference 70 kg (Green 2003 Table 3 footnote: V2 reported in units of L 70 kg^-1 (WT)). Cohort weight range 41-160 kg (Table 1).",
-      source_name        = "WT"
+      notes = "Linear size descriptor on the central volume of distribution Vc with reference 70 kg (Green 2003 Table 3 footnote: V2 reported in units of L 70 kg^-1 (WT)). Cohort weight range 41-160 kg (Table 1).",
+      source_name = "WT"
     ),
     LBM = list(
-      description        = "Lean body weight (canonical column LBM; source paper uses LBW)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Lean body weight (canonical column LBM; source paper uses LBW)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Linear size descriptor on clearance CL with reference 70 kg",
         "(Green 2003 Table 3 footnote: CL reported in units of L h^-1 70 kg^-1 (LBW)).",
         "LBW computed via the James (1976) formula reproduced in the paper's Methods:",
@@ -38,77 +38,77 @@ Green_2003_enoxaparin <- function() {
         "Sex is implicit in the LBM derivation; the paper notes that LBW alone outperformed",
         "sex-only and (sex + size) covariate models on CL."
       ),
-      source_name        = "LBW"
+      source_name = "LBW"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Required to derive LBM (LBW) via the James (1976) formula reproduced in Methods, but not directly referenced inside model(). Documented here so simulators have the dependency visible."
+      units = "cm",
+      type = "continuous",
+      notes = "Required to derive LBM (LBW) via the James (1976) formula reproduced in Methods, but not directly referenced inside model(). Documented here so simulators have the dependency visible."
     ),
     SEXF = list(
-      description       = "Sex (1 = female, 0 = male)",
-      units             = "(binary)",
-      type              = "binary",
+      description = "Sex (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "Male (SEXF = 0)",
-      notes             = "Required to choose the male vs female James (1976) LBW formula. Not referenced inside model() directly; documented here so simulators have the dependency visible. Sex was screened during covariate analysis but LBW alone outperformed sex-only and (sex + size) models on CL.",
-      source_name        = "SEX"
+      notes = "Required to choose the male vs female James (1976) LBW formula. Not referenced inside model() directly; documented here so simulators have the dependency visible. Sex was screened during covariate analysis but LBW alone outperformed sex-only and (sex + size) models on CL.",
+      source_name = "SEX"
     ),
     AGE = list(
       description = "Subject age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Age was a covariate in the post-hoc binomial bruising logistic-regression model (Results, 'Logistic regression model'), not in the structural popPK model. Documented here so simulators reproducing the bruising analysis have the column declared."
+      units = "years",
+      type = "continuous",
+      notes = "Age was a covariate in the post-hoc binomial bruising logistic-regression model (Results, 'Logistic regression model'), not in the structural popPK model. Documented here so simulators reproducing the bruising analysis have the column declared."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened as a size descriptor during covariate analysis but not retained in the final popPK model (Methods, 'Population analysis')."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened as a size descriptor during covariate analysis but not retained in the final popPK model (Methods, 'Population analysis')."
     ),
     IBW = list(
       description = "Ideal body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (Devine variant: IBW = 45.4 + 0.89 * (HT - 152.4) + 4.5 if male) but not retained (Methods, 'Population analysis')."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (Devine variant: IBW = 45.4 + 0.89 * (HT - 152.4) + 4.5 if male) but not retained (Methods, 'Population analysis')."
     ),
     ABW = list(
       description = "Adjusted body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened (ABW = IBW + 0.4 * (WT - IBW)) but not retained (Methods, 'Population analysis')."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened (ABW = IBW + 0.4 * (WT - IBW)) but not retained (Methods, 'Population analysis')."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened (BSA = sqrt(HT * WT / 3600)) but not retained (Methods, 'Population analysis')."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened (BSA = sqrt(HT * WT / 3600)) but not retained (Methods, 'Population analysis')."
     ),
     CRCL = list(
       description = "Creatinine clearance",
-      units       = "mL/min",
-      type        = "continuous",
-      notes       = "Reported in Table 1 demographics. Enrollment required CrCl >= 72 mL/min (Cockcroft-Gault using LBW). Did not improve bruising-regression fit alone or with age (Results, 'Logistic regression model'); not retained in the popPK model either."
+      units = "mL/min",
+      type = "continuous",
+      notes = "Reported in Table 1 demographics. Enrollment required CrCl >= 72 mL/min (Cockcroft-Gault using LBW). Did not improve bruising-regression fit alone or with age (Results, 'Logistic regression model'); not retained in the popPK model either."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 96L,
-    n_studies      = 1L,
-    age_range      = "mean 56.3 years (SD 16.9); not reported as min-max",
-    weight_range   = "41-160 kg (mean 85.0, SD 20.5)",
-    height_range   = "mean 173 cm (SD 9.62); not reported as min-max",
-    bmi_range      = "15.0-44.9 kg/m^2 (mean 28.1, SD 6.27); enriched for obesity by design (1/3 BMI < 25, 1/3 BMI 25-29.99, 1/3 BMI > 30)",
+    species = "human",
+    n_subjects = 96L,
+    n_studies = 1L,
+    age_range = "mean 56.3 years (SD 16.9); not reported as min-max",
+    weight_range = "41-160 kg (mean 85.0, SD 20.5)",
+    height_range = "mean 173 cm (SD 9.62); not reported as min-max",
+    bmi_range = "15.0-44.9 kg/m^2 (mean 28.1, SD 6.27); enriched for obesity by design (1/3 BMI < 25, 1/3 BMI 25-29.99, 1/3 BMI > 30)",
     sex_female_pct = 26L,
     race_ethnicity = NULL,
-    disease_state  = "Mixed indications: acute coronary syndrome (33%), DVT (14%), pulmonary embolism (5%), DVT prophylaxis (48%)",
-    dose_range     = "Subcutaneous enoxaparin per normal clinical care; doses ranged from 40 mg once daily (prophylaxis) to weight-based therapeutic doses (~100 IU/kg = 1 mg/kg twice daily for ACS/DVT/PE)",
-    regions        = "Single-centre Royal Brisbane Hospital, Australia",
-    notes          = paste(
+    disease_state = "Mixed indications: acute coronary syndrome (33%), DVT (14%), pulmonary embolism (5%), DVT prophylaxis (48%)",
+    dose_range = "Subcutaneous enoxaparin per normal clinical care; doses ranged from 40 mg once daily (prophylaxis) to weight-based therapeutic doses (~100 IU/kg = 1 mg/kg twice daily for ACS/DVT/PE)",
+    regions = "Single-centre Royal Brisbane Hospital, Australia",
+    notes = paste(
       "Prospective single-centre study at the Royal Brisbane Hospital with approximately 3 anti-Xa samples per patient.",
       "Enrollment required normal hepatic enzymes (<= 2x ULN), normal bilirubin / albumin,",
       "and estimated GFR >= 72 mL/min by Cockcroft-Gault using LBW.",

@@ -33,59 +33,59 @@ Ravva_2010_varenicline_nausea <- function() {
   )
   vignette <- "Ravva_2010_varenicline_exposure_response"
   units <- list(
-    time          = "week",
-    dosing        = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
+    time = "week",
+    dosing = "n/a (exposure-response model; varenicline exposure enters as the AUC_VAREN covariate rather than as a dosing event)",
     concentration = "p_nausea (probability of a nausea event, 0-1; also logit_nausea)"
   )
 
   covariateData <- list(
     AUC_VAREN = list(
-      description        = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
-      units              = "ng*h/mL",
-      type               = "continuous",
+      description = "Individual varenicline steady-state daily exposure, AUC(0-24)ss. Ravva 2010 Methods (Pharmacokinetics): 'Individual 24-h daily exposure, measured as AUC(0-24)ss, was calculated as dose divided by CL/F_i (apparent clearance); the individual empirical Bayes estimate of apparent clearance was predicted from the final population PK model and parameters obtained from a pooled analysis in adult smokers.'",
+      units = "ng*h/mL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters the logit ADDITIVELY (not as a multiplicative factor on the intercept like the demographic covariates) -- see Ravva 2010 Equation 2. Set to 0 for placebo subjects (Ravva 2010 Figure 4a caption: 'exposure was set to zero for the placebo group'). The reference-population quit probability of 0.562 at 1 mg b.i.d. in the companion efficacy model (Ravva 2010 Figure 3b) implies a typical AUC(0-24)ss of about 186 ng*h/mL at 1 mg b.i.d. and about 93 ng*h/mL at 0.5 mg b.i.d.; those two values reproduce all four of the dose-specific nausea probabilities reported in Results. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
-      source_name        = "AUC(0-24)ss"
+      notes = "Enters the logit ADDITIVELY (not as a multiplicative factor on the intercept like the demographic covariates) -- see Ravva 2010 Equation 2. Set to 0 for placebo subjects (Ravva 2010 Figure 4a caption: 'exposure was set to zero for the placebo group'). The reference-population quit probability of 0.562 at 1 mg b.i.d. in the companion efficacy model (Ravva 2010 Figure 3b) implies a typical AUC(0-24)ss of about 186 ng*h/mL at 1 mg b.i.d. and about 93 ng*h/mL at 0.5 mg b.i.d.; those two values reproduce all four of the dose-specific nausea probabilities reported in Results. Downstream users should compute the per-subject value from the companion Ravva 2009 varenicline population PK model as total daily dose / (CL/F).",
+      source_name = "AUC(0-24)ss"
     ),
     SMOKE_TTFC_SCORE = list(
-      description        = "Fagerstrom Test for Nicotine Dependence item 1 ('How soon after you wake up do you smoke your first cigarette?') scored 0-3 as published by Ravva 2010 Methods: >60 min (0); 31-60 min (1); 6-30 min (2); within 5 min (3). Higher score = greater nicotine dependence.",
-      units              = "(ordinal score 0-3)",
-      type               = "categorical",
+      description = "Fagerstrom Test for Nicotine Dependence item 1 ('How soon after you wake up do you smoke your first cigarette?') scored 0-3 as published by Ravva 2010 Methods: >60 min (0); 31-60 min (1); 6-30 min (2); within 5 min (3). Higher score = greater nicotine dependence.",
+      units = "(ordinal score 0-3)",
+      type = "categorical",
       reference_category = "0 = first cigarette more than 60 min after waking (the model reference level; all three derived indicators are 0)",
-      notes              = "Decomposed inside model() into three 0/1 indicators, one per non-reference level, each carrying its own estimated exponent -- the source model does NOT impose a linear per-level effect. Note the deliberate distinction between the MODEL reference category (score 0, >60 min) and the REPORTING reference population (score 2, 6-30 min) used by Ravva 2010 to quote probabilities. Cohort distribution for this endpoint (Ravva 2010 Table 1, 'Nausea incidence' column): <=5 min 759; 6-30 min 989; 31-60 min 324; >60 min 166 (total 2,238). Unlike the efficacy model, the three nausea FSQ1 factors (0.894, 0.867, 0.961) are all below 1 and close together, so nicotine dependence shifts the nausea probability far less than it shifts the quit probability.",
-      source_name        = "FSQ1"
+      notes = "Decomposed inside model() into three 0/1 indicators, one per non-reference level, each carrying its own estimated exponent -- the source model does NOT impose a linear per-level effect. Note the deliberate distinction between the MODEL reference category (score 0, >60 min) and the REPORTING reference population (score 2, 6-30 min) used by Ravva 2010 to quote probabilities. Cohort distribution for this endpoint (Ravva 2010 Table 1, 'Nausea incidence' column): <=5 min 759; 6-30 min 989; 31-60 min 324; >60 min 166 (total 2,238). Unlike the efficacy model, the three nausea FSQ1 factors (0.894, 0.867, 0.961) are all below 1 and close together, so nicotine dependence shifts the nausea probability far less than it shifts the quit probability.",
+      source_name = "FSQ1"
     ),
     AGE = list(
-      description        = "Subject age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling on the baseline logit with reference 45 years, (AGE/45)^e_age_base_logit (Ravva 2010 Equation 2). Cohort mean 44 years, range 18-75 years (Ravva 2010 Table 1, 'Nausea incidence' column). The positive exponent 0.374 is the opposite sign to the efficacy model's -0.563: because the intercept is negative, a positive exponent means the nausea probability DECREASES with increasing age.",
-      source_name        = "Age"
+      notes = "Power scaling on the baseline logit with reference 45 years, (AGE/45)^e_age_base_logit (Ravva 2010 Equation 2). Cohort mean 44 years, range 18-75 years (Ravva 2010 Table 1, 'Nausea incidence' column). The positive exponent 0.374 is the opposite sign to the efficacy model's -0.563: because the intercept is negative, a positive exponent means the nausea probability DECREASES with increasing age.",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = male (the Ravva 2010 reference population is male)",
-      notes              = "Ravva 2010 Equation 2 writes this term as theta7^(1-Sex) with the effect row labelled 'Female' in Table 3 and the reference population defined as male, so the paper's 'Sex' column is 1 = male and (1 - Sex) is identically the canonical SEXF (1 = female). Encoded directly as e_sexf_base_logit^SEXF with no value transformation. Cohort 1,063 female (47%) of 2,238 (Ravva 2010 Table 1). This is the dominant tolerability covariate: the factor 0.704 on a negative intercept roughly doubles the odds of nausea in women, consistently in both arms (placebo 13.5% female vs 6.90% male, ratio 1.96; active 37.6% vs 19.0%, ratio 1.98), which Results interpret as 'women in general are more inclined that men to experience nausea as opposed to varenicline having a different effect in females'.",
-      source_name        = "Sex"
+      notes = "Ravva 2010 Equation 2 writes this term as theta7^(1-Sex) with the effect row labelled 'Female' in Table 3 and the reference population defined as male, so the paper's 'Sex' column is 1 = male and (1 - Sex) is identically the canonical SEXF (1 = female). Encoded directly as e_sexf_base_logit^SEXF with no value transformation. Cohort 1,063 female (47%) of 2,238 (Ravva 2010 Table 1). This is the dominant tolerability covariate: the factor 0.704 on a negative intercept roughly doubles the odds of nausea in women, consistently in both arms (placebo 13.5% female vs 6.90% male, ratio 1.96; active 37.6% vs 19.0%, ratio 1.98), which Results interpret as 'women in general are more inclined that men to experience nausea as opposed to varenicline having a different effect in females'.",
+      source_name = "Sex"
     ),
     RACE_BLACK = list(
-      description        = "Black / African American race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Black / African American race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the Ravva 2010 reference population is Caucasian)",
-      notes              = "Power-of-indicator form on the baseline logit: e_race_black_base_logit^RACE_BLACK (Ravva 2010 Equation 2). Cohort 234 (10%) of 2,238 (Ravva 2010 Table 1). Same canonical column as the companion Ravva_2009_varenicline.R population PK model.",
-      source_name        = "Race (Black)"
+      notes = "Power-of-indicator form on the baseline logit: e_race_black_base_logit^RACE_BLACK (Ravva 2010 Equation 2). Cohort 234 (10%) of 2,238 (Ravva 2010 Table 1). Same canonical column as the companion Ravva_2009_varenicline.R population PK model.",
+      source_name = "Race (Black)"
     ),
     RACE_OTHER = list(
-      description        = "Composite 'Other' race indicator pooling Asian, Hispanic and 'Other' races (the Ravva 2010 grouping)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Composite 'Other' race indicator pooling Asian, Hispanic and 'Other' races (the Ravva 2010 grouping)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = White (the Ravva 2010 reference population is Caucasian)",
-      notes              = "Power-of-indicator form on the baseline logit: e_race_other_base_logit^RACE_OTHER (Ravva 2010 Equation 2). Table 1 footnote a: 'Other includes asian, hispanic, and Other races.' Cohort 158 (7%) of 2,238 (Ravva 2010 Table 1). Same canonical column and same composite definition as the companion Ravva_2009_varenicline.R population PK model.",
-      source_name        = "Race (other)"
+      notes = "Power-of-indicator form on the baseline logit: e_race_other_base_logit^RACE_OTHER (Ravva 2010 Equation 2). Table 1 footnote a: 'Other includes asian, hispanic, and Other races.' Cohort 158 (7%) of 2,238 (Ravva 2010 Table 1). Same canonical column and same composite definition as the companion Ravva_2009_varenicline.R population PK model.",
+      source_name = "Race (other)"
     )
   )
 
@@ -93,37 +93,37 @@ Ravva_2010_varenicline_nausea <- function() {
   # model, so they are documentation only and are never referenced in model().
   covariatesDataExcluded <- list(
     SMOKE_CPD_SCORE = list(
-      description        = "Fagerstrom Test for Nicotine Dependence item 4 ('How many cigarettes per day do you smoke?') scored 0-3 as published by Ravva 2010 Methods: 10 or less (0); 11-20 (1); 21-30 (2); >=31 (3).",
-      units              = "(ordinal score 0-3)",
-      type               = "categorical",
+      description = "Fagerstrom Test for Nicotine Dependence item 4 ('How many cigarettes per day do you smoke?') scored 0-3 as published by Ravva 2010 Methods: 10 or less (0); 11-20 (1); 21-30 (2); >=31 (3).",
+      units = "(ordinal score 0-3)",
+      type = "categorical",
       reference_category = "0 = 10 or fewer cigarettes per day",
-      notes              = "Screened as a candidate nicotine-dependence predictor but dropped for collinearity with SMOKE_TTFC_SCORE (Ravva 2010 Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence'). Cohort distribution (Ravva 2010 Table 1, 'Nausea incidence' column): <=10 122; 11-20 1,243; 21-30 606; >30 267.",
-      source_name        = "FSQ4"
+      notes = "Screened as a candidate nicotine-dependence predictor but dropped for collinearity with SMOKE_TTFC_SCORE (Ravva 2010 Results: 'Simultaneous inclusion of the correlated predictors FSQ1, FSQ4, and CO in the model was avoided by selecting the FSQ1 variable as the most relevant predictor of nicotine dependence'). Cohort distribution (Ravva 2010 Table 1, 'Nausea incidence' column): <=10 122; 11-20 1,243; 21-30 606; >30 267.",
+      source_name = "FSQ4"
     ),
     CO_EXHALED_PPM = list(
-      description        = "Exhaled carbon monoxide concentration at baseline, a biochemical marker of recent smoking intensity",
-      units              = "ppm",
-      type               = "continuous",
+      description = "Exhaled carbon monoxide concentration at baseline, a biochemical marker of recent smoking intensity",
+      units = "ppm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Screened as a candidate baseline-smoking-status predictor but dropped for collinearity with SMOKE_TTFC_SCORE (same Results sentence as SMOKE_CPD_SCORE). Cohort mean 22 ppm, range 1-81 ppm (Ravva 2010 Table 1, 'Nausea incidence' column).",
-      source_name        = "CO"
+      notes = "Screened as a candidate baseline-smoking-status predictor but dropped for collinearity with SMOKE_TTFC_SCORE (same Results sentence as SMOKE_CPD_SCORE). Cohort mean 22 ppm, range 1-81 ppm (Ravva 2010 Table 1, 'Nausea incidence' column).",
+      source_name = "CO"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 2238L,
-    n_studies      = 4L,
-    age_range      = "18-75 years",
-    age_mean       = "44 years",
-    weight_range   = NA_character_,
+    species = "human",
+    n_subjects = 2238L,
+    n_studies = 4L,
+    age_range = "18-75 years",
+    age_mean = "44 years",
+    weight_range = NA_character_,
     sex_female_pct = 47.5,
     race_ethnicity = c(White = 83.0, Black = 10.0, Other = 7.0),
-    disease_state  = "Adult cigarette smokers motivated to stop smoking. More than 75% reported smoking the first cigarette of the day within 30 min of waking; the majority smoked at least 11 cigarettes/day and more than 40% of those smoked at least 20 cigarettes/day.",
-    dose_range     = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo and (in studies 3 and 4) a bupropion SR 150 mg b.i.d. comparator arm. Treatment lasted 12 weeks in studies 2, 3 and 4 and 52 weeks in the long-term safety study 5.",
-    regions        = "Multicenter, multinational.",
+    disease_state = "Adult cigarette smokers motivated to stop smoking. More than 75% reported smoking the first cigarette of the day within 30 min of waking; the majority smoked at least 11 cigarettes/day and more than 40% of those smoked at least 20 cigarettes/day.",
+    dose_range = "Varenicline 0.5 mg b.i.d. and 1 mg b.i.d. oral, plus placebo and (in studies 3 and 4) a bupropion SR 150 mg b.i.d. comparator arm. Treatment lasted 12 weeks in studies 2, 3 and 4 and 52 weeks in the long-term safety study 5.",
+    regions = "Multicenter, multinational.",
     smoking_marker = "Baseline exhaled carbon monoxide mean 22 ppm, range 1-81 ppm.",
-    notes          = "Pooled from studies 2, 3, 4 and 5 of the five randomized, double-blind, placebo-controlled trials summarized in Ravva 2010 Supplementary Table S1 (study 2 n = 609, study 3 n = 642, study 4 n = 641, study 5 n = 346). Baseline demographics from Ravva 2010 Table 1, 'Nausea incidence' column. Nausea was derived from treatment-emergent adverse events, defined as events beginning or intensifying on or after the first day of study medication and within 7 days of the last dose. For subjects who discontinued early, nausea incidence was reported as observed up to the point of dropout."
+    notes = "Pooled from studies 2, 3, 4 and 5 of the five randomized, double-blind, placebo-controlled trials summarized in Ravva 2010 Supplementary Table S1 (study 2 n = 609, study 3 n = 642, study 4 n = 641, study 5 n = 346). Baseline demographics from Ravva 2010 Table 1, 'Nausea incidence' column. Nausea was derived from treatment-emergent adverse events, defined as events beginning or intensifying on or after the first day of study medication and within 7 days of the last dose. For subjects who discontinued early, nausea incidence was reported as observed up to the point of dropout."
   )
 
   ini({

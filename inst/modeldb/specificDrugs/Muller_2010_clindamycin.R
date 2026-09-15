@@ -21,13 +21,13 @@ Muller_2010_clindamycin <- function() {
     sep = " "
   )
   vignette <- "Muller_2010_clindamycin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -42,76 +42,76 @@ Muller_2010_clindamycin <- function() {
   # documentation only.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Maternal age at the time of clindamycin administration.",
-      units              = "year",
-      type               = "continuous",
+      description = "Maternal age at the time of clindamycin administration.",
+      units = "year",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 36.1 years, SD 4.24, range 31.3-41.8 (n=7). Screened in the exploratory covariate analysis but not retained in the final model.",
-      source_name        = "Maternal age"
+      notes = "Cohort summary (Table 1): mean 36.1 years, SD 4.24, range 31.3-41.8 (n=7). Screened in the exploratory covariate analysis but not retained in the final model.",
+      source_name = "Maternal age"
     ),
     GA = list(
-      description        = "Gestational age at the time of clindamycin administration (close to gestational age at delivery for the 6 women in labor; identical to GA at birth for the 6 singleton-pregnancy labor cohort, ambiguous for the 1 preterm-PROM twin pregnancy where antibiotic preceded delivery).",
-      units              = "week",
-      type               = "continuous",
+      description = "Gestational age at the time of clindamycin administration (close to gestational age at delivery for the 6 women in labor; identical to GA at birth for the 6 singleton-pregnancy labor cohort, ambiguous for the 1 preterm-PROM twin pregnancy where antibiotic preceded delivery).",
+      units = "week",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 38.3 weeks, SD 3.01, range 34-42.3 (n=7). The canonical GA register entry is 'gestational age at birth'; in this study the reported value is gestational age at the antibiotic infusion, which equals GA at birth for the 6 women treated in labor.",
-      source_name        = "Gestational age"
+      notes = "Cohort summary (Table 1): mean 38.3 weeks, SD 3.01, range 34-42.3 (n=7). The canonical GA register entry is 'gestational age at birth'; in this study the reported value is gestational age at the antibiotic infusion, which equals GA at birth for the 6 women treated in labor.",
+      source_name = "Gestational age"
     ),
     BMI = list(
-      description        = "Maternal body mass index at the time of clindamycin administration.",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Maternal body mass index at the time of clindamycin administration.",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 32.1, SD 5.36, range 22.1-39.1 (n=7).",
-      source_name        = "Body mass index"
+      notes = "Cohort summary (Table 1): mean 32.1, SD 5.36, range 22.1-39.1 (n=7).",
+      source_name = "Body mass index"
     ),
     WT = list(
-      description        = "Maternal body weight at the time of clindamycin administration.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Maternal body weight at the time of clindamycin administration.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 86.1 kg, SD 14.2, range 59.5-104.8 (n=7).",
-      source_name        = "Wt"
+      notes = "Cohort summary (Table 1): mean 86.1 kg, SD 14.2, range 59.5-104.8 (n=7).",
+      source_name = "Wt"
     ),
     BODYTEMP = list(
-      description        = "Maternal oral body temperature at the time of clindamycin administration.",
-      units              = "degC",
-      type               = "continuous",
+      description = "Maternal oral body temperature at the time of clindamycin administration.",
+      units = "degC",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 36.9 degC, SD 0.23, range 36.7-37.4 (n=7).",
-      source_name        = "Temp"
+      notes = "Cohort summary (Table 1): mean 36.9 degC, SD 0.23, range 36.7-37.4 (n=7).",
+      source_name = "Temp"
     ),
     CREAT = list(
-      description        = "Maternal serum creatinine concentration at the time of clindamycin administration.",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Maternal serum creatinine concentration at the time of clindamycin administration.",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 55.9 umol/L, SD 20.3, range 38-100 (n=7).",
-      source_name        = "Creatinine concn"
+      notes = "Cohort summary (Table 1): mean 55.9 umol/L, SD 20.3, range 38-100 (n=7).",
+      source_name = "Creatinine concn"
     ),
     ALP = list(
-      description        = "Maternal serum alkaline phosphatase activity at the time of clindamycin administration.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Maternal serum alkaline phosphatase activity at the time of clindamycin administration.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 495 U/L, SD 601, range 168-1794 (n=7). The wide range reflects the physiological rise of placental ALP during late pregnancy.",
-      source_name        = "ALP"
+      notes = "Cohort summary (Table 1): mean 495 U/L, SD 601, range 168-1794 (n=7). The wide range reflects the physiological rise of placental ALP during late pregnancy.",
+      source_name = "ALP"
     ),
     AST = list(
-      description        = "Maternal serum aspartate aminotransferase activity at the time of clindamycin administration.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Maternal serum aspartate aminotransferase activity at the time of clindamycin administration.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 22.6 U/L, SD 6.78, range 15-34 (n=7).",
-      source_name        = "AST"
+      notes = "Cohort summary (Table 1): mean 22.6 U/L, SD 6.78, range 15-34 (n=7).",
+      source_name = "AST"
     ),
     ALT = list(
-      description        = "Maternal serum alanine aminotransferase activity at the time of clindamycin administration.",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Maternal serum alanine aminotransferase activity at the time of clindamycin administration.",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort summary (Table 1): mean 10.9 U/L, SD 5.27, range 5-18 (n=7).",
-      source_name        = "ALT"
+      notes = "Cohort summary (Table 1): mean 10.9 U/L, SD 5.27, range 5-18 (n=7).",
+      source_name = "ALT"
     )
   )
   # Edema (none / ankle / up-to-knee) and mode of delivery
@@ -121,13 +121,13 @@ Muller_2010_clindamycin <- function() {
   # list entries to avoid registering uncanonicalised covariate names.
 
   population <- list(
-    species         = "human",
-    n_subjects      = 7L,
-    n_studies       = 1L,
-    age_range       = "31.3-41.8 years (mean 36.1, SD 4.24)",
-    weight_range    = "59.5-104.8 kg (mean 86.1, SD 14.2)",
-    sex_female_pct  = 100,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 7L,
+    n_studies = 1L,
+    age_range = "31.3-41.8 years (mean 36.1, SD 4.24)",
+    weight_range = "59.5-104.8 kg (mean 86.1, SD 14.2)",
+    sex_female_pct = 100,
+    disease_state = paste(
       "Pregnant women in the peripartum period requiring intravenous",
       "clindamycin for either group B streptococcal disease prophylaxis",
       "(n=4), endocarditis prophylaxis (n=2), or both (n=1). Six women",
@@ -138,19 +138,19 @@ Muller_2010_clindamycin <- function() {
       "tricuspid valve surgical history (n=1), aortic dysfunction with",
       "autoimmune thrombocytopenic purpura + prior splenectomy (n=1)."
     ),
-    dose_range      = paste(
+    dose_range = paste(
       "600 mg over 20 min (12 mg/mL in 0.9% NaCl) every 6 h, or 900 mg",
       "over 30 min (9 mg/mL in 0.9% NaCl) every 8 h, intravenous infusion.",
       "Three women received additional postpartum doses. Average dose 814 mg",
       "and infusion rate 1743 mg/h were used by the authors for the VPC",
       "simulations (Figure 3 caption)."
     ),
-    ga_range        = "34-42.3 weeks (mean 38.3, SD 3.01) gestational age at antibiotic administration",
-    bmi_range       = "22.1-39.1 kg/m^2 (mean 32.1, SD 5.36)",
+    ga_range = "34-42.3 weeks (mean 38.3, SD 3.01) gestational age at antibiotic administration",
+    bmi_range = "22.1-39.1 kg/m^2 (mean 32.1, SD 5.36)",
     mode_of_delivery = "4 vaginal / 3 secondary cesarean",
-    regions         = "Medical Centre Haaglanden, The Hague, Netherlands (single-centre, Feb 2005 - Mar 2007)",
-    n_observations  = 175L,
-    notes           = paste(
+    regions = "Medical Centre Haaglanden, The Hague, Netherlands (single-centre, Feb 2005 - Mar 2007)",
+    n_observations = 175L,
+    notes = paste(
       "Maternal venous serum concentrations only; arterial and venous",
       "umbilical cord blood concentrations were collected (Table 2) but",
       "could not be incorporated into the PK model due to the limited",

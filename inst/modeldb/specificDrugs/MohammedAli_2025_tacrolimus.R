@@ -36,18 +36,18 @@ MohammedAli_2025_tacrolimus <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE),
+    depot = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE),
     peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "whole blood", verified = TRUE)
   )
 
   covariateData <- list(
     CYP3A5_EXPR = list(
-      description        = "Recipient CYP3A5 expresser status (rs776746)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Recipient CYP3A5 expresser status (rs776746)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*3/*3 nonexpresser)",
-      notes              = paste(
+      notes = paste(
         "1 = at least one functional CYP3A5*1 allele (genotype *1/*3 or *1/*1);",
         "0 = CYP3A5*3/*3. Genotyped for CYP3A5*3 G>A (rs776746) by TaqMan SNP",
         "assay (Mohammed Ali 2025 Methods section 2.4). The paper labels",
@@ -61,14 +61,14 @@ MohammedAli_2025_tacrolimus <- function() {
         "(Results section 3.2.2, delta-MOFV = -51 units when added to F).",
         sep = " "
       ),
-      source_name        = "CYP3A5 genotype"
+      source_name = "CYP3A5 genotype"
     ),
     FORM_TAC_ENVARSUS = list(
-      description        = "LCP-Tac (Envarsus, MeltDose) extended-release tacrolimus formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "LCP-Tac (Envarsus, MeltDose) extended-release tacrolimus formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IR-Tac, twice-daily immediate-release Prograf)",
-      notes              = paste(
+      notes = paste(
         "1 = record is on once-daily LCP-Tac (Envarsus, Chiesi Farmaceutici;",
         "life-cycle-pharma MeltDose melt-extrusion tablet); 0 = record is on",
         "twice-daily immediate-release IR-Tac (Prograf, Astellas). Per-occasion",
@@ -85,14 +85,14 @@ MohammedAli_2025_tacrolimus <- function() {
         "prolonged-release product and not LCP-Tac.",
         sep = " "
       ),
-      source_name        = "formulation"
+      source_name = "formulation"
     ),
     OCC = list(
-      description        = "Sampling-occasion index for inter-occasion variability on CL/F and Vc/F",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Sampling-occasion index for inter-occasion variability on CL/F and Vc/F",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Integer occasion index decomposed inside model() into",
         "mutually-exclusive binary indicators multiplexing per-occasion etas on",
         "log CL/F and log Vc/F. Mohammed Ali 2025 reports single IOV magnitudes",
@@ -109,7 +109,7 @@ MohammedAli_2025_tacrolimus <- function() {
         "carry no IOV.",
         sep = " "
       ),
-      source_name        = "occasion"
+      source_name = "occasion"
     )
   )
 
@@ -125,9 +125,9 @@ MohammedAli_2025_tacrolimus <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Total body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Tested univariately, allometrically and with other functional forms;",
         "no significant MOFV drop (p > 0.05) (Results section 3.2.2). The",
         "Discussion attributes the absence of any covariate effect other than",
@@ -139,9 +139,9 @@ MohammedAli_2025_tacrolimus <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Tested univariately as a size descriptor; no significant MOFV drop",
         "(Results section 3.2.2). Cohort: 26 kg/m^2 mean (IQR 21.5-29.3) on",
         "IR-Tac, 27 (IQR 21.5-29.3) on LCP-Tac (Table 1).",
@@ -150,9 +150,9 @@ MohammedAli_2025_tacrolimus <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Tested univariately; no significant MOFV drop (Results section",
         "3.2.2). Cohort: 58 years mean (IQR 48-68) (Table 1).",
         sep = " "
@@ -160,9 +160,9 @@ MohammedAli_2025_tacrolimus <- function() {
     ),
     HCT = list(
       description = "Hematocrit",
-      units       = "%",
-      type        = "continuous",
-      notes       = paste(
+      units = "%",
+      type = "continuous",
+      notes = paste(
         "Recorded at each sampling occasion (Methods section 2.2) and tested",
         "univariately; no significant MOFV drop (Results section 3.2.2).",
         "Cohort: 40.9% mean (IQR 37.6-44.8) on IR-Tac, 40.1% (IQR 37.1-43) on",
@@ -174,9 +174,9 @@ MohammedAli_2025_tacrolimus <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Listed among the demographic covariates tested for influence on",
         "tacrolimus pharmacokinetics (Methods section 2.6.2, 'gender'); not",
         "retained in the final model. Cohort: 8 of 30 female (27%) (Table 1).",
@@ -186,35 +186,35 @@ MohammedAli_2025_tacrolimus <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 30,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 30,
+    n_studies = 1,
     n_observations = 932,
-    age_range      = "58 years mean (IQR 48-68)",
-    weight_range   = "72 kg mean (IQR 64-80)",
+    age_range = "58 years mean (IQR 48-68)",
+    weight_range = "72 kg mean (IQR 64-80)",
     sex_female_pct = 26.7,
-    disease_state  = paste(
+    disease_state = paste(
       "stable adult renal transplant recipients at least 6 months",
       "post-transplant, on triple immunosuppression (tacrolimus +",
       "mycophenolate mofetil + prednisone), converted within-patient from",
       "twice-daily IR-Tac (Prograf) to once-daily LCP-Tac (Envarsus)",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "IR-Tac median 5 mg/day (range 3-12) in CYP3A5 expressers and 3 mg/day",
       "(range 1.5-8) in nonexpressers; LCP-Tac median 3.75 mg/day (range",
       "2-8.5) and 2 mg/day (range 1-4.75) respectively (Table 2)",
       sep = " "
     ),
-    regions        = "Spain (single centre, Hospital Universitari de Bellvitge, Barcelona)",
+    regions = "Spain (single centre, Hospital Universitari de Bellvitge, Barcelona)",
     renal_function = "eGFR (CKD-EPI) 49.6 mL/min mean (IQR 34-57) on IR-Tac; serum creatinine 141.9 umol/L mean (IQR 108-166)",
-    hematocrit     = "40.9% mean (IQR 37.6-44.8) on IR-Tac, 40.1% (IQR 37.1-43) on LCP-Tac",
-    genotypes      = paste(
+    hematocrit = "40.9% mean (IQR 37.6-44.8) on IR-Tac, 40.1% (IQR 37.1-43) on LCP-Tac",
+    genotypes = paste(
       "CYP3A5 *1/*3 9 (30%), *1/*1 1 (3%), *3/*3 20 (67%); analysed as 10",
       "CYP3A5*1 expressers and 20 nonexpressers",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Mohammed Ali 2025 Tables 1 and 2. Open-label, prospective,",
       "non-randomized, investigator-initiated single-centre trial",
       "NCT02961608 (ethics ref. PR175/18). Each patient contributed two rich",

@@ -33,52 +33,52 @@ Valke_2024_factorviii <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "A priori allometric power scaling at a 70 kg reference with exponents fixed at 0.75 for CL and Q and 1 for V1 and V2 (Valke 2024 Supplementary Methods Eq. 1: theta_popPK = theta_pk * (Bodyweight / 70)^theta_exp). Cohort mean 62 kg (SD 7), median 62 kg (range 48-73 kg; Valke 2024 Table 1). Subject-level, time-fixed in this single-occasion study.",
-      source_name        = "Bodyweight"
+      notes = "A priori allometric power scaling at a 70 kg reference with exponents fixed at 0.75 for CL and Q and 1 for V1 and V2 (Valke 2024 Supplementary Methods Eq. 1: theta_popPK = theta_pk * (Bodyweight / 70)^theta_exp). Cohort mean 62 kg (SD 7), median 62 kg (range 48-73 kg; Valke 2024 Table 1). Subject-level, time-fixed in this single-occasion study.",
+      source_name = "Bodyweight"
     ),
     ADA_POS = list(
-      description        = "FVIII inhibitor status by the Nijmegen-modified Bethesda assay (NBA): 1 = inhibitor-positive (titer >= 0.60 NBU/mL), 0 = negative. FVIII inhibitors are neutralizing alloantibodies to administered FVIII; mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "FVIII inhibitor status by the Nijmegen-modified Bethesda assay (NBA): 1 = inhibitor-positive (titer >= 0.60 NBU/mL), 0 = negative. FVIII inhibitors are neutralizing alloantibodies to administered FVIII; mapped onto the canonical ADA_POS column per the NAB-subset alias documented in inst/references/covariate-columns.md.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (NBA inhibitor negative)",
-      notes              = "Valke 2024 Table 2 and Results 3.4: the only covariate retained in the final PK model. 1 of 29 patients (3%) was NBA-positive (titer 1.1 NBU/mL). A separate, more sensitive low-titer assay (Nijmegen low-titer inhibitor assay, NLTIA, cut-off 0.04 NLTIU/mL) was positive in 7 of 29 patients (24%) but had no significant effect on CL in this cohort and is therefore not carried as a covariate here (in the earlier Bukkems 2022 model, NLTIA positivity acted on both CL and V1). Subject-level, time-fixed. The effect is encoded in the multiplicative theta^flag form of Valke 2024 Supplementary Methods Eq. 6 with theta = 1.53 (Table 2 row 'Positive NBA on CL (%) 153'); see the vignette Assumptions and deviations for why the table's percentage is read as a factor of the reference rather than as a percentage increase.",
-      source_name        = "NBA"
+      notes = "Valke 2024 Table 2 and Results 3.4: the only covariate retained in the final PK model. 1 of 29 patients (3%) was NBA-positive (titer 1.1 NBU/mL). A separate, more sensitive low-titer assay (Nijmegen low-titer inhibitor assay, NLTIA, cut-off 0.04 NLTIU/mL) was positive in 7 of 29 patients (24%) but had no significant effect on CL in this cohort and is therefore not carried as a covariate here (in the earlier Bukkems 2022 model, NLTIA positivity acted on both CL and V1). Subject-level, time-fixed. The effect is encoded in the multiplicative theta^flag form of Valke 2024 Supplementary Methods Eq. 6 with theta = 1.53 (Table 2 row 'Positive NBA on CL (%) 153'); see the vignette Assumptions and deviations for why the table's percentage is read as a factor of the reference rather than as a percentage increase.",
+      source_name = "NBA"
     ),
     ASSAY_OSA = list(
-      description        = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (1 = OSA, 0 = chromogenic substrate assay, CSA)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "One-stage activated partial thromboplastin time clotting assay (OSA) indicator (1 = OSA, 0 = chromogenic substrate assay, CSA)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CSA) per the canonical column definition; note that in THIS model the structural PK parameters are on the OSA scale, so the assay correction and the alternative residual-error magnitudes are applied to the CSA (ASSAY_OSA = 0) rows",
-      notes              = "Valke 2024 Results 3.4: every plasma sample was assayed by both methods (258 OSA + 258 CSA observations from 29 patients) and both were fitted simultaneously. 'Samples measured with CSA were 0.939 times lower compared to samples measured with OSA' (Table 2: Correction factor CSA = 0.939, RSE 2.2%), so the model's typical FVIII activity is on the OSA scale and CSA-assayed rows are multiplied by 0.939. Residual error also differs by assay (Table 2: proportional 25.0% / additive 0.854 IU/dL for OSA; proportional 21.0% / additive 4.28 IU/dL for CSA). IIV on the correction factor was tested but did not significantly improve the fit. Per-observation (per-row) indicator. Set ASSAY_OSA = 1 to simulate the one-stage-assay readout.",
-      source_name        = "Assay method"
+      notes = "Valke 2024 Results 3.4: every plasma sample was assayed by both methods (258 OSA + 258 CSA observations from 29 patients) and both were fitted simultaneously. 'Samples measured with CSA were 0.939 times lower compared to samples measured with OSA' (Table 2: Correction factor CSA = 0.939, RSE 2.2%), so the model's typical FVIII activity is on the OSA scale and CSA-assayed rows are multiplied by 0.939. Residual error also differs by assay (Table 2: proportional 25.0% / additive 0.854 IU/dL for OSA; proportional 21.0% / additive 4.28 IU/dL for CSA). IIV on the correction factor was tested but did not significantly improve the fit. Per-observation (per-row) indicator. Set ASSAY_OSA = 1 to simulate the one-stage-assay readout.",
+      source_name = "Assay method"
     )
   )
 
   compartmentData <- list(
-    central     = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "factor VIII", units = "IU", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 29L,
-    n_studies      = 1L,
-    age_range      = "19-53 years",
-    age_median     = "27 years",
-    weight_range   = "48-73 kg",
-    weight_median  = "62 kg",
+    species = "human",
+    n_subjects = 29L,
+    n_studies = 1L,
+    age_range = "19-53 years",
+    age_median = "27 years",
+    weight_range = "48-73 kg",
+    weight_median = "62 kg",
     weight_mean_sd = "62 (SD 7) kg",
     sex_female_pct = 0,
     race_ethnicity = NULL,
-    disease_state  = "Severe hemophilia A (FVIII activity level < 1 IU/dL). Median pre-bolus FVIII activity < 1 IU/dL by both assays; 8 of 29 patients had a detectable pre-bolus CSA level (1-2 IU/dL) and 4 had a detectable OSA level. Mean baseline VWF activity 117% (SD 46).",
+    disease_state = "Severe hemophilia A (FVIII activity level < 1 IU/dL). Median pre-bolus FVIII activity < 1 IU/dL by both assays; 8 of 29 patients had a detectable pre-bolus CSA level (1-2 IU/dL) and 4 had a detectable OSA level. Mean baseline VWF activity 117% (SD 46).",
     inhibitor_status = "1 of 29 (3%) positive by the Nijmegen-modified Bethesda assay (titer 1.1 NBU/mL); 7 of 29 (24%) positive by the more sensitive Nijmegen low-titer inhibitor assay (titers 0.04-0.05 NLTIU/mL). All patients were retained in the analysis.",
-    dose_range     = "Single intravenous bolus of pdVWF/FVIII concentrate (Humate-P, CSL Behring): median 1600 IU FVIII (IQR 1500-1700), i.e. 25.0 IU/kg (IQR 24.6-25.4). 72 h wash-out before dosing.",
-    regions        = "Iran (Ghaem Hospital, Mashhad University of Medical Sciences); samples analysed at Radboud University Medical Center, Nijmegen, The Netherlands.",
-    notes          = "Sub-study of the IMPALA study (Dutch Trial Register NL2808), enrolled 1 August 2011 to 20 December 2012. All patients male (hemophilia A is X-linked recessive); race / ethnicity not reported. Samples were drawn pre-bolus and at nine time points to 24 h. 258 OSA and 258 CSA FVIII activity observations entered the PK analysis; 5.2% (OSA) and 4.2% (CSA) of samples were below the assay detection limit -- mostly pre-dose -- and were excluded. The pre-bolus FVIII activity was treated as the endogenous baseline and SUBTRACTED from the observed activities during model development, so the model describes the exogenous FVIII activity increment only and carries no endogenous-baseline parameter. To anchor the terminal phase, the pre-bolus sample was additionally used as if it had been taken 72 h after dosing (the wash-out duration). Median observed FVIII half-life 10.6 h (IQR 8.3-12.9); the model's terminal half-life at 70 kg is 12.7 h. This is a replication / external-validation study of the Bukkems 2022 model (Br J Clin Pharmacol 88(6):2757-2768); the Bukkems parameter estimates reproduced in Valke 2024 Tables 2 and 3 for comparison are NOT encoded here."
+    dose_range = "Single intravenous bolus of pdVWF/FVIII concentrate (Humate-P, CSL Behring): median 1600 IU FVIII (IQR 1500-1700), i.e. 25.0 IU/kg (IQR 24.6-25.4). 72 h wash-out before dosing.",
+    regions = "Iran (Ghaem Hospital, Mashhad University of Medical Sciences); samples analysed at Radboud University Medical Center, Nijmegen, The Netherlands.",
+    notes = "Sub-study of the IMPALA study (Dutch Trial Register NL2808), enrolled 1 August 2011 to 20 December 2012. All patients male (hemophilia A is X-linked recessive); race / ethnicity not reported. Samples were drawn pre-bolus and at nine time points to 24 h. 258 OSA and 258 CSA FVIII activity observations entered the PK analysis; 5.2% (OSA) and 4.2% (CSA) of samples were below the assay detection limit -- mostly pre-dose -- and were excluded. The pre-bolus FVIII activity was treated as the endogenous baseline and SUBTRACTED from the observed activities during model development, so the model describes the exogenous FVIII activity increment only and carries no endogenous-baseline parameter. To anchor the terminal phase, the pre-bolus sample was additionally used as if it had been taken 72 h after dosing (the wash-out duration). Median observed FVIII half-life 10.6 h (IQR 8.3-12.9); the model's terminal half-life at 70 kg is 12.7 h. This is a replication / external-validation study of the Bukkems 2022 model (Br J Clin Pharmacol 88(6):2757-2768); the Bukkems parameter estimates reproduced in Valke 2024 Tables 2 and 3 for comparison are NOT encoded here."
   )
 
   ini({

@@ -37,16 +37,16 @@ Zhang_2025_fluconazole <- function() {
     # and never assigns it a biological matrix. Vcrrt = 23.5 L is a body-scale apparent volume,
     # so it is NOT the extracorporeal circuit (contrast LeuppiTaegtmeyer_2019_colistin.R, whose
     # filter/cartridge states carry litre-scale priming volumes).
-    crrt    = list(analyte = "fluconazole", units = "mg", specimen = "not applicable", verified = TRUE)
+    crrt = list(analyte = "fluconazole", units = "mg", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight, scaling the central compartment volume as (WT/70)^e_wt_vc.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight, scaling the central compartment volume as (WT/70)^e_wt_vc.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Reference weight 70 kg, taken verbatim from the supplement's $PK block",
         "(V1 = THETA(3)*(WT/70)**THETA(6)*EXP(ETA(2))) and confirmed by the Discussion",
         "(\"the body weight-to-70 kg ratio was integrated into the Vc calculation using a power",
@@ -54,19 +54,19 @@ Zhang_2025_fluconazole <- function() {
         "NOT retained on clearance.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     DIS_ARF = list(
-      description        = paste(
+      description = paste(
         "Binary acute-renal-failure indicator selecting which of the two residual body-clearance",
         "estimates applies: 1 = acute renal failure (lcl_arf, 0.41 L/h), 0 = normal renal function",
         "(lcl_nrf, 1.25 L/h).",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = paste(
+      notes = paste(
         "The supplement's $PK block selects the stratum on the urine-output category column:",
         "CL = THETA(1)*EXP(ETA(1)) by default, overridden by IF (URINE.EQ.4) CL = THETA(2)*EXP(ETA(1)).",
         "URINE == 4 is the normal-renal-function subject, so DIS_ARF = 1 - (URINE == 4). The paper",
@@ -76,18 +76,18 @@ Zhang_2025_fluconazole <- function() {
         "non-ARF subject means lcl_nrf rests on one patient's data.",
         sep = " "
       ),
-      source_name        = "URINE"
+      source_name = "URINE"
     ),
     QEFF = list(
-      description        = paste(
+      description = paste(
         "Per-record CRRT clearance of fluconazole (the paper's CLcrrt), supplied as a data column",
         "rather than estimated. Removes drug from the CRRT compartment at QEFF/vcrrt.",
         sep = " "
       ),
-      units              = "L/h",
-      type               = "continuous",
+      units = "L/h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Computed per patient from CRRT mode and circuit flows (Supplementary Material Section 1):",
         "CVVH, CL_CRRT = Q_uf * S_c; CVVHD, CL_CRRT = Q_d * S_d; CVVHDF,",
         "CL_CRRT = (Q_uf + Q_d) * S_d, where Q_uf is the ultrafiltration flow rate (L/h), Q_d the",
@@ -101,18 +101,18 @@ Zhang_2025_fluconazole <- function() {
         "(Table 1). Carries no IIV: it is measured circuit hardware, not an estimated parameter.",
         sep = " "
       ),
-      source_name        = "CLCRRT"
+      source_name = "CLCRRT"
     ),
     RRT_CRRT_ACTIVE = list(
-      description        = paste(
+      description = paste(
         "Time-varying gate for whether the continuous renal replacement therapy circuit is running.",
         "1 while running, 0 while interrupted or in a subject not on CRRT.",
         sep = " "
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CRRT not running)",
-      notes              = paste(
+      notes = paste(
         "Reproduces the supplement's $PK gate IF (CRRTYN.EQ.0) CL_crrt = 0 /",
         "IF (CRRTYN.EQ.1) CL_crrt = CLCRRT verbatim, so removal via the CRRT compartment ceases",
         "when the circuit stops and total clearance reduces to body clearance alone. Every subject",
@@ -121,7 +121,7 @@ Zhang_2025_fluconazole <- function() {
         "and for the intermittent-session scenarios the companion Shiny application supports.",
         sep = " "
       ),
-      source_name        = "CRRTYN"
+      source_name = "CRRTYN"
     )
   )
 
@@ -134,9 +134,9 @@ Zhang_2025_fluconazole <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at the time of the modelled CRRT treatment.",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and not retained. Cohort median 59.5 years, range",
         "32-82 years (Table 1, Overall); note the Results 3.1 text instead states a median of",
         "72 years, which disagrees with Table 1. Source column AGE.",
@@ -145,9 +145,9 @@ Zhang_2025_fluconazole <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as a categorical covariate and not retained. Cohort 9 male / 7 female",
         "(Table 1, Overall). Source column GENDER; the paper does not state its coding, so the",
         "direction of the SEXF transformation could not be confirmed -- immaterial here because",
@@ -157,9 +157,9 @@ Zhang_2025_fluconazole <- function() {
     ),
     MEMBRANE_AREA = list(
       description = "Surface area of the CRRT filter membrane.",
-      units       = "m^2 (assumed; the paper does not state the unit)",
-      type        = "continuous",
-      notes       = paste(
+      units = "m^2 (assumed; the paper does not state the unit)",
+      type = "continuous",
+      notes = paste(
         "Screened as a continuous covariate and not retained; no values are tabulated. Source",
         "column MEMAREA. NOT a canonical register name: no entry in",
         "inst/references/covariate-columns.md covers dialyser membrane surface area, and none was",
@@ -171,9 +171,9 @@ Zhang_2025_fluconazole <- function() {
     ),
     MEMBRANE_TYPE = list(
       description = "CRRT filter membrane material / type.",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened as a categorical covariate and not retained; the categories are not enumerated.",
         "Source column MRMTYPE. NOT a canonical register name, for the same reason given under",
         "MEMBRANE_AREA.",
@@ -183,30 +183,30 @@ Zhang_2025_fluconazole <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 16L,
-    n_studies       = 6L,
-    n_observations  = 297L,
-    age_range       = "32-82 years",
-    age_median      = "59.5 years",
-    weight_range    = "48-272 kg",
-    weight_median   = "77 kg",
-    sex_female_pct  = 43.75,
-    race_ethnicity  = NULL,
-    disease_state   = paste(
+    species = "human",
+    n_subjects = 16L,
+    n_studies = 6L,
+    n_observations = 297L,
+    age_range = "32-82 years",
+    age_median = "59.5 years",
+    weight_range = "48-272 kg",
+    weight_median = "77 kg",
+    sex_female_pct = 43.75,
+    race_ethnicity = NULL,
+    disease_state = paste(
       "Critically ill adults receiving continuous renal replacement therapy. 15 of 16 had acute",
       "renal failure (seven anuric, seven oliguric); the remaining subject was a liver-transplant",
       "recipient with normal renal function.",
       sep = " "
     ),
-    dose_range      = "50-1200 mg fluconazole IV, infused over 0.5-6 h",
-    regions         = "not reported",
-    renal_function  = paste(
+    dose_range = "50-1200 mg fluconazole IV, infused over 0.5-6 h",
+    regions = "not reported",
+    renal_function = paste(
       "Acute renal failure in 15 of 16 subjects, all on CRRT. The single normal-renal-function",
       "subject is the sole source of information for lcl_nrf.",
       sep = " "
     ),
-    crrt_modality   = paste(
+    crrt_modality = paste(
       "CVVH / CVVHD / CVVHDF counts of 13 / 1 / 14 in the Table 1 Overall row. These sum to 28",
       "across 16 patients, so they enumerate treatment periods rather than patients (Valtonen 1997",
       "and Muhl 2000 each studied both CVVH and CVVHDF).",
@@ -217,7 +217,7 @@ Zhang_2025_fluconazole <- function() {
       "coefficient Sc/Sd median 0.67 overall, per-study medians 0.49-0.87 (Table 1).",
       sep = " "
     ),
-    notes           = paste(
+    notes = paste(
       "Demographics are from Table 1. The dataset is not original patient-level data: 297 plasma",
       "concentration points were digitised with WebPlotDigitizer 4.3 from published",
       "concentration-time figures in six papers (Wolter 1994, Valtonen 1997, Muhl 2000,",

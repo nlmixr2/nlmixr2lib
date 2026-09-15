@@ -16,49 +16,49 @@ Zhao_2010_mycophenolic_acid <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight at the pharmacokinetic occasion (time-varying across the M1 and M6 PK days).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight at the pharmacokinetic occasion (time-varying across the M1 and M6 PK days).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort medians 23.6 kg at M1 and 23.3 kg at M6 (Table 1); the model uses the pooled-cohort median 23.5 kg as the reference weight per Results 'The median body weight ... in the population were 23.5 kg'. Enters CL/F as a power term with exponent q2 = 0.753.",
-      source_name        = "weight"
+      notes = "Cohort medians 23.6 kg at M1 and 23.3 kg at M6 (Table 1); the model uses the pooled-cohort median 23.5 kg as the reference weight per Results 'The median body weight ... in the population were 23.5 kg'. Enters CL/F as a power term with exponent q2 = 0.753.",
+      source_name = "weight"
     ),
     ALB = list(
-      description        = "Serum albumin concentration measured on the pharmacokinetic day.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration measured on the pharmacokinetic day.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Cohort means 36.0 g/L (M1) and 39.6 g/L (M6), Table 1; the model uses the pooled-cohort median 38.6 g/L as the reference per Results 'The median ... albumin in the population were ... 38.6 g l-1'. Enters CL/F in the unusual linear-in-ratio form [1 - q3 * (ALB/38.6)] with q3 = 0.570 -- this is NOT the typical power form (ALB/ref)^exponent. At ALB = 38.6 the factor evaluates to (1 - 0.570) = 0.430 so that the typical-CL anchor q1 = 22.5 L/h yields CL = 9.675 L/h at the cohort medians, matching the abstract value 9.7 L/h. Higher albumin reduces CL/F (biologically sensible: more bound MPA).",
-      source_name        = "albumin"
+      notes = "Cohort means 36.0 g/L (M1) and 39.6 g/L (M6), Table 1; the model uses the pooled-cohort median 38.6 g/L as the reference per Results 'The median ... albumin in the population were ... 38.6 g l-1'. Enters CL/F in the unusual linear-in-ratio form [1 - q3 * (ALB/38.6)] with q3 = 0.570 -- this is NOT the typical power form (ALB/ref)^exponent. At ALB = 38.6 the factor evaluates to (1 - 0.570) = 0.430 so that the typical-CL anchor q1 = 22.5 L/h yields CL = 9.675 L/h at the cohort medians, matching the abstract value 9.7 L/h. Higher albumin reduces CL/F (biologically sensible: more bound MPA).",
+      source_name = "albumin"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23L,
-    n_profiles     = 41L,
+    species = "human",
+    n_subjects = 23L,
+    n_profiles = 41L,
     n_observations = 285L,
-    n_studies      = 1L,
-    age_range      = "2.9-14.9 years (mean 7.4 +/- 3.9 years)",
-    age_median     = "5.4 years (M6 occasion); 5.2 years (M1 occasion)",
-    weight_range   = "14.0-83.2 kg (mean 29.9 +/- 18.0 kg)",
-    weight_median  = "23.5 kg (pooled cohort median; M1 23.6 kg, M6 23.3 kg)",
+    n_studies = 1L,
+    age_range = "2.9-14.9 years (mean 7.4 +/- 3.9 years)",
+    age_median = "5.4 years (M6 occasion); 5.2 years (M1 occasion)",
+    weight_range = "14.0-83.2 kg (mean 29.9 +/- 18.0 kg)",
+    weight_median = "23.5 kg (pooled cohort median; M1 23.6 kg, M6 23.3 kg)",
     sex_female_pct = 21.7,
     race_ethnicity = "Not reported in source paper.",
-    disease_state  = "Pediatric patients with steroid-dependent idiopathic nephrotic syndrome (INS) who had relapsed despite cyclophosphamide therapy. All patients were on background prednisone at the PK day (mean 47 mg per 2 days at M1, 13 mg per 2 days at M6).",
-    dose_range     = "MMF 1200 mg/m^2/day given orally BID; per-dose amounts 300-1000 mg MMF (mean 563 mg M1, 540 mg M6).",
-    regions        = "Six pediatric nephrology centres in France (Paris Robert-Debre, Paris Trousseau, Nancy, Toulouse, Rouen, Marseille).",
-    sampling_window= "Two PK occasions per patient (M1 ~ day 30, M6 ~ day 180); samples at pre-dose, 0.5, 1, 2, 4, 8, 12 h post-dose. 41 profiles from 23 patients (18 had both M1 and M6; 3 had M1 only; 2 had M6 only).",
-    albumin_range  = "26.5-45.5 g/L (M1); 25.6-44.0 g/L (M6)",
-    crcl_range     = "All patients had Schwartz-formula creatinine clearance > 25 mL/min (range 87.6-249.5 mL/min); renal function did not influence MPA CL/F in this cohort.",
-    notes          = "Covariates screened but not retained in the final model: age, height, body surface area, sex, creatinine clearance, urine protein, haemoglobin, cholesterol, alkaline phosphatase, ASAT, ALAT, prednisone dose, time after start of therapy. BSA, age, haemoglobin, and alkaline phosphatase showed initial correlation with CL/F in graphical screening (Maitre method) but did not survive forward + backward covariate selection (forward P < 0.05, backward P < 0.01); only WT and ALB were retained. Body weight on CL/F was kept in preference to body surface area (delta-OFV -23.6 forward, +14.5 backward vs -19.6 forward for BSA which dropped out in the backward step). Patient baseline characteristics from Table 1; final-model parameters from Table 3; covariate selection from Table 2."
+    disease_state = "Pediatric patients with steroid-dependent idiopathic nephrotic syndrome (INS) who had relapsed despite cyclophosphamide therapy. All patients were on background prednisone at the PK day (mean 47 mg per 2 days at M1, 13 mg per 2 days at M6).",
+    dose_range = "MMF 1200 mg/m^2/day given orally BID; per-dose amounts 300-1000 mg MMF (mean 563 mg M1, 540 mg M6).",
+    regions = "Six pediatric nephrology centres in France (Paris Robert-Debre, Paris Trousseau, Nancy, Toulouse, Rouen, Marseille).",
+    sampling_window = "Two PK occasions per patient (M1 ~ day 30, M6 ~ day 180); samples at pre-dose, 0.5, 1, 2, 4, 8, 12 h post-dose. 41 profiles from 23 patients (18 had both M1 and M6; 3 had M1 only; 2 had M6 only).",
+    albumin_range = "26.5-45.5 g/L (M1); 25.6-44.0 g/L (M6)",
+    crcl_range = "All patients had Schwartz-formula creatinine clearance > 25 mL/min (range 87.6-249.5 mL/min); renal function did not influence MPA CL/F in this cohort.",
+    notes = "Covariates screened but not retained in the final model: age, height, body surface area, sex, creatinine clearance, urine protein, haemoglobin, cholesterol, alkaline phosphatase, ASAT, ALAT, prednisone dose, time after start of therapy. BSA, age, haemoglobin, and alkaline phosphatase showed initial correlation with CL/F in graphical screening (Maitre method) but did not survive forward + backward covariate selection (forward P < 0.05, backward P < 0.01); only WT and ALB were retained. Body weight on CL/F was kept in preference to body surface area (delta-OFV -23.6 forward, +14.5 backward vs -19.6 forward for BSA which dropped out in the backward step). Patient baseline characteristics from Table 1; final-model parameters from Table 3; covariate selection from Table 2."
   )
 
   ini({

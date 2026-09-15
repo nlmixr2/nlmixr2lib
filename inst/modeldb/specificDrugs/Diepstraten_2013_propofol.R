@@ -10,47 +10,47 @@ Diepstraten_2013_propofol <- function() {
     sep = " "
   )
   vignette <- "Diepstraten_2013_propofol"
-  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight (baseline).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight (baseline).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used as both an allometric scaler on CL with estimated exponent z = 0.77 (reference 70 kg) and a linear scaler on Q3 with exponent fixed at 1 (reference 70 kg) per Diepstraten 2013 Eq. 1 and Table 2 footnote c. Source range 37-184 kg pooled across the five studies (Table 1).",
-      source_name        = "TBW"
+      notes = "Used as both an allometric scaler on CL with estimated exponent z = 0.77 (reference 70 kg) and a linear scaler on Q3 with exponent fixed at 1 (reference 70 kg) per Diepstraten 2013 Eq. 1 and Table 2 footnote c. Source range 37-184 kg pooled across the five studies (Table 1).",
+      source_name = "TBW"
     ),
     AGE = list(
-      description        = "Subject age in years.",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age in years.",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters clearance through a bilinear factor centered at the cohort-median age of 41 years (Diepstraten 2013 Eq. 1 / Eq. 5). Slope below 41 y is b = 0.0103 per year (positive); slope above 41 y is c = -0.00539 per year (negative). At age = 41 y the factor equals 1. Source range 9-79 years.",
-      source_name        = "AGE"
+      notes = "Enters clearance through a bilinear factor centered at the cohort-median age of 41 years (Diepstraten 2013 Eq. 1 / Eq. 5). Slope below 41 y is b = 0.0103 per year (positive); slope above 41 y is c = -0.00539 per year (negative). At age = 41 y the factor equals 1. Source range 9-79 years.",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 94L,
-    n_studies      = 5L,
-    age_range      = "9-79 years (pooled; cohort median 41 years)",
-    weight_range   = "37-184 kg (total body weight; pooled mean 94 kg, SD 35)",
+    species = "human",
+    n_subjects = 94L,
+    n_studies = 5L,
+    age_range = "9-79 years (pooled; cohort median 41 years)",
+    weight_range = "37-184 kg (total body weight; pooled mean 94 kg, SD 35)",
     sex_female_pct = 68,
-    disease_state  = "Morbidly obese and nonobese adults, adolescents, and children. Adult cohorts: 20 morbidly obese patients scheduled for bariatric surgery and 40 nonobese patients (24 elective general-surgery patients receiving an induction bolus and 20 ICU patients receiving 2-5 days of continuous sedation). Pediatric / adolescent cohorts: 20 morbidly obese adolescents scheduled for bariatric surgery and 14 nonobese adolescents undergoing scoliosis surgery.",
-    dose_range     = "Adults: induction bolus 200 or 350 mg or 2.5 mg/kg, followed by maintenance infusion (initially 10 mg/kg/h titrated to Bispectral Index 40-60) or 2-5 days of ICU sedation by Ramsay scale. Adolescents/children: induction bolus (4 mg/kg in nonobese, dosing-weight calculation per Servin in obese) followed by maintenance infusion 2-10 mg/kg/h.",
-    regions        = "Pooled meta-analysis spanning Netherlands and USA (St. Antonius Hospital Nieuwegein; Erasmus Medical Centre Rotterdam; Cincinnati Children's Hospital Medical Center; Leiden / Amsterdam Center for Drug Research).",
-    notes          = "1,652 propofol whole-blood concentration measurements pooled across the five source studies (references 6, 7, 30, 31, 32 in Diepstraten 2013). Demographics in Table 1; gender 30 M / 64 F across all cohorts. Concentrations were log-transformed prior to NONMEM VI ADVAN11 / TRANS4 fitting (Methods, Pharmacokinetic model)."
+    disease_state = "Morbidly obese and nonobese adults, adolescents, and children. Adult cohorts: 20 morbidly obese patients scheduled for bariatric surgery and 40 nonobese patients (24 elective general-surgery patients receiving an induction bolus and 20 ICU patients receiving 2-5 days of continuous sedation). Pediatric / adolescent cohorts: 20 morbidly obese adolescents scheduled for bariatric surgery and 14 nonobese adolescents undergoing scoliosis surgery.",
+    dose_range = "Adults: induction bolus 200 or 350 mg or 2.5 mg/kg, followed by maintenance infusion (initially 10 mg/kg/h titrated to Bispectral Index 40-60) or 2-5 days of ICU sedation by Ramsay scale. Adolescents/children: induction bolus (4 mg/kg in nonobese, dosing-weight calculation per Servin in obese) followed by maintenance infusion 2-10 mg/kg/h.",
+    regions = "Pooled meta-analysis spanning Netherlands and USA (St. Antonius Hospital Nieuwegein; Erasmus Medical Centre Rotterdam; Cincinnati Children's Hospital Medical Center; Leiden / Amsterdam Center for Drug Research).",
+    notes = "1,652 propofol whole-blood concentration measurements pooled across the five source studies (references 6, 7, 30, 31, 32 in Diepstraten 2013). Demographics in Table 1; gender 30 M / 64 F across all cohorts. Concentrations were log-transformed prior to NONMEM VI ADVAN11 / TRANS4 fitting (Methods, Pharmacokinetic model)."
   )
 
   ini({

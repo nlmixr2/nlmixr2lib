@@ -8,17 +8,17 @@ Hu_2023_voriconazole <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal metabolizer, CYP2C19*1/*1; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-      notes              = paste(
+      notes = paste(
         "Hu 2023 Table 2 reports the covariate as a multiplicative fraction on clearance",
         "('IM on CL' = 0.582), i.e. CL_IM = 7.35 * 0.582 = 4.28 L/h, with the normal",
         "metabolizer (NM) phenotype as the paper's own reference category -- no",
@@ -29,14 +29,14 @@ Hu_2023_voriconazole <- function() {
         "observed in the cohort, so no ultrarapid-metabolizer stratum exists and the",
         "NM reference is unambiguous."
       ),
-      source_name        = "CYP2C19 phenotype (IM)"
+      source_name = "CYP2C19 phenotype (IM)"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal metabolizer, CYP2C19*1/*1; the implicit reference when both CYP2C19_IM and CYP2C19_PM are 0)",
-      notes              = paste(
+      notes = paste(
         "Companion to CYP2C19_IM. Hu 2023 Table 2 reports 'PM on CL' = 0.381, i.e.",
         "CL_PM = 7.35 * 0.381 = 2.80 L/h. PM genotypes pooled by Hu 2023 were",
         "CYP2C19*2/*2, *2/*3 and *3/*3. 11 of 91 subjects (12.1%) were PM.",
@@ -44,7 +44,7 @@ Hu_2023_voriconazole <- function() {
         "monotone decrease in observed dose-normalized trough concentration across",
         "the three phenotypes (Hu 2023 Fig 1A and Results, 'CYP2C19 phenotypes')."
       ),
-      source_name        = "CYP2C19 phenotype (PM)"
+      source_name = "CYP2C19 phenotype (PM)"
     )
   )
 
@@ -54,9 +54,9 @@ Hu_2023_voriconazole <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened as a candidate covariate (Hu 2023 Methods, 'Covariate model') but not",
         "retained in the final model, so CL and Vc are absolute (not weight-scaled)",
         "values. Cohort median 31.0 kg (range 9.5-85.0), Hu 2023 Table 1. Weight still",
@@ -66,57 +66,57 @@ Hu_2023_voriconazole <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened but not retained (Hu 2023 Methods, 'Covariate model'). Cohort median 10 years, range 2-14 (Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened but not retained (Hu 2023 Methods, 'Covariate model'). Cohort median 10 years, range 2-14 (Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained (Hu 2023 Methods, 'Covariate model'). 33 of 91 subjects (36.3%) were female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained (Hu 2023 Methods, 'Covariate model'). 33 of 91 subjects (36.3%) were female (Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function indicator but not retained. Cohort median 35.20 g/L, range 20.30-49.00 (Hu 2023 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened as a liver-function indicator but not retained. Cohort median 35.20 g/L, range 20.30-49.00 (Hu 2023 Table 1)."
     ),
     TBILI = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function indicator but not retained. Cohort median 8.25 umol/L, range 2.10-105.20 (Hu 2023 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a liver-function indicator but not retained. Cohort median 8.25 umol/L, range 2.10-105.20 (Hu 2023 Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function indicator but not retained. Cohort median 31.70 U/L, range 4.60-346.40 (Hu 2023 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a liver-function indicator but not retained. Cohort median 31.70 U/L, range 4.60-346.40 (Hu 2023 Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened as a liver-function indicator but not retained. Cohort median 31.05 U/L, range 3.70-255.90 (Hu 2023 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened as a liver-function indicator but not retained. Cohort median 31.05 U/L, range 3.70-255.90 (Hu 2023 Table 1)."
     ),
     CREAT = list(
       description = "Serum creatinine",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened as a kidney-function indicator but not retained. Cohort median 48.00 umol/L, range 27.00-252.00 (Hu 2023 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as a kidney-function indicator but not retained. Cohort median 48.00 umol/L, range 27.00-252.00 (Hu 2023 Table 1)."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as a kidney-function indicator but not retained. Cohort median 3.36 mmol/L, range 0.98-11.72 (Hu 2023 Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as a kidney-function indicator but not retained. Cohort median 3.36 mmol/L, range 0.98-11.72 (Hu 2023 Table 1)."
     ),
     CONMED_PPI = list(
       description = "Concomitant proton-pump-inhibitor therapy indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as 'combination therapy' but not retained (Hu 2023 Methods,",
         "'Covariate model'). 55 of 91 subjects (60.4%) received a PPI: omeprazole",
         "(n = 15), pantoprazole (n = 34), lansoprazole (n = 6) (Hu 2023 Table 1",
@@ -127,9 +127,9 @@ Hu_2023_voriconazole <- function() {
     ),
     CONMED_STEROID = list(
       description = "Concomitant systemic glucocorticoid therapy indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened as 'combination therapy' but not retained. 44 of 91 subjects (48.4%)",
         "received a glucocorticoid: methylprednisolone (n = 17), dexamethasone",
         "(n = 17), prednisone (n = 10) (Hu 2023 Table 1 footnote b). Hu 2023 pooled",
@@ -139,19 +139,19 @@ Hu_2023_voriconazole <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 91L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 91L,
+    n_studies = 1L,
     n_observations = 210L,
-    age_range      = "2-14 years",
-    age_median     = "10 years",
-    age_strata     = c(UnderSix_pct = 23.1, SixToTwelve_pct = 35.2, OverTwelve_pct = 41.8),
-    weight_range   = "9.5-85.0 kg",
-    weight_median  = "31.0 kg",
+    age_range = "2-14 years",
+    age_median = "10 years",
+    age_strata = c(UnderSix_pct = 23.1, SixToTwelve_pct = 35.2, OverTwelve_pct = 41.8),
+    weight_range = "9.5-85.0 kg",
+    weight_median = "31.0 kg",
     sex_female_pct = 36.3,
     race_ethnicity = c(Chinese = 100),
     cyp2c19_phenotype = c(NM_pct = 40.7, IM_pct = 47.3, PM_pct = 12.1, UM_pct = 0.0),
-    disease_state  = paste(
+    disease_state = paste(
       "Paediatric patients (14 years of age or younger) with malignant haematological",
       "disease and invasive fungal infection treated with voriconazole. Acute",
       "lymphoblastic leukaemia 57.1%, acute myeloid leukaemia 14.3%, lymphoma 12.1%,",
@@ -160,7 +160,7 @@ Hu_2023_voriconazole <- function() {
       "common site of infection (60.4%). Treatment indication was therapeutic in 17.6%,",
       "empirical in 53.8% and prophylactic in 28.6%."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Voriconazole dosed per the manufacturer's paediatric labelling: intravenous",
       "loading 9 mg/kg and maintenance 8 mg/kg twice daily; oral maintenance 9 mg/kg",
       "twice daily with no oral loading dose. Most patients received no loading dose",
@@ -170,8 +170,8 @@ Hu_2023_voriconazole <- function() {
       "intravenous switched to oral 6.6%, oral switched to intravenous 3.3%. Median",
       "duration of voriconazole use 15 days (range 3-148)."
     ),
-    regions        = "Single centre: department of paediatric haematology, Xiangya Hospital, Central South University, Changsha, Hunan, China.",
-    notes          = paste(
+    regions = "Single centre: department of paediatric haematology, Xiangya Hospital, Central South University, Changsha, Hunan, China.",
+    notes = paste(
       "Retrospective observational study of medical records collected 1 January 2018 to",
       "31 December 2021. 210 steady-state trough concentrations from 91 children; median",
       "1 measurement per patient (range 1-21 per Table 1; the Results text states range",

@@ -35,60 +35,60 @@ Bertrand_2011_S33138 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "S33138", units = "nmol", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "S33138", units = "nmol", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "S33138", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "S33138", units = "nmol", specimen = "plasma", verified = FALSE),
     central_s35424 = list(analyte = "S35424", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     DOSE = list(
-      description        = "Current administered dose level of S33138 in mg per dose record. Used as a continuous covariate driving the linear dose effects on the bioavailability f (Bertrand 2011 Eq. 1) and the parent presystemic fraction Fp (Eq. 2). Reference dose 10 mg; observed levels 5, 10, and 20 mg.",
-      units              = "mg",
-      type               = "continuous",
+      description = "Current administered dose level of S33138 in mg per dose record. Used as a continuous covariate driving the linear dose effects on the bioavailability f (Bertrand 2011 Eq. 1) and the parent presystemic fraction Fp (Eq. 2). Reference dose 10 mg; observed levels 5, 10, and 20 mg.",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Per-record (occasion) dose level supplied as a covariate column alongside the AMT event for the same dose. The current implementation expects DOSE = 5, 10, or 20 (mg) at every record so that the linear dose-effect terms (DOSE - 10) evaluate correctly. The DOSE covariate intentionally uses mg (paper-native unit for the dose-effect coefficient values reported in Table IV) even though the dosing AMT itself is in nmol (molar unit matching the molar concentrations); the user supplies DOSE in mg per-record and converts the mg dose to nmol for the AMT event externally (1 mg S33138 = 1e6 / 319.4 = 3130.87 nmol).",
-      source_name        = "Dose"
+      notes = "Per-record (occasion) dose level supplied as a covariate column alongside the AMT event for the same dose. The current implementation expects DOSE = 5, 10, or 20 (mg) at every record so that the linear dose-effect terms (DOSE - 10) evaluate correctly. The DOSE covariate intentionally uses mg (paper-native unit for the dose-effect coefficient values reported in Table IV) even though the dosing AMT itself is in nmol (molar unit matching the molar concentrations); the user supplies DOSE in mg per-record and converts the mg dose to nmol for the AMT event externally (1 mg S33138 = 1e6 / 319.4 = 3130.87 nmol).",
+      source_name = "Dose"
     ),
     CYP2D6_PM = list(
-      description        = "Indicator for the CYP2D6 poor-metabolizer phenotype (1 = CYP2D6 PM, defined by carriers of two non-functional alleles among CYP2D6 *3, *4, *6, *7, *8; 0 = CYP2D6 extensive metabolizer, intermediate metabolizer, or ultrarapid metabolizer). Time-fixed per subject (germline genotype-derived phenotype).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the CYP2D6 poor-metabolizer phenotype (1 = CYP2D6 PM, defined by carriers of two non-functional alleles among CYP2D6 *3, *4, *6, *7, *8; 0 = CYP2D6 extensive metabolizer, intermediate metabolizer, or ultrarapid metabolizer). Time-fixed per subject (germline genotype-derived phenotype).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2D6 extensive, intermediate, or ultrarapid metabolizer)",
-      notes              = "Bertrand 2011 'Concentration Measurements and Genetic Polymorphisms': '12 patients were classified as CYP2D6 PM' among 99 subjects with available CYP2D6 genotyping. CYP2D6 PM carries a 34% decrease in the metabolite elimination clearance CLmo (Eq. 3 of the source paper; Table IV with-genetic-covariate column: beta_CLmo,CYP2D6 = -0.42 on log L/h, p = 0.015 by permutation Wald test).",
-      source_name        = "CYP2D6 phenotype (PM vs EM)"
+      notes = "Bertrand 2011 'Concentration Measurements and Genetic Polymorphisms': '12 patients were classified as CYP2D6 PM' among 99 subjects with available CYP2D6 genotyping. CYP2D6 PM carries a 34% decrease in the metabolite elimination clearance CLmo (Eq. 3 of the source paper; Table IV with-genetic-covariate column: beta_CLmo,CYP2D6 = -0.42 on log L/h, p = 0.015 by permutation Wald test).",
+      source_name = "CYP2D6 phenotype (PM vs EM)"
     )
   )
 
   covariatesDataExcluded <- list(
     CYP2C19_PM = list(
-      description        = "Indicator for the CYP2C19 poor-metabolizer phenotype (1 = CYP2C19 PM by *2 / *3 allele genotyping; 0 = non-PM). Time-fixed per subject.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for the CYP2C19 poor-metabolizer phenotype (1 = CYP2C19 PM by *2 / *3 allele genotyping; 0 = non-PM). Time-fixed per subject.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 non-PM)",
-      notes              = "Bertrand 2011 Results 'Covariate Model': 'No effect of the CYP2C19 polymorphisms was found, probably due to the small number of PM' (only 2 of 99 genotyped patients were CYP2C19 PM). Screened during forward selection on CLpo (the expected CYP2C19-related elimination route) but not retained in the final model. Recorded here for completeness so a downstream user knows the covariate was tested and rejected.",
-      source_name        = "CYP2C19 phenotype (PM vs EM)"
+      notes = "Bertrand 2011 Results 'Covariate Model': 'No effect of the CYP2C19 polymorphisms was found, probably due to the small number of PM' (only 2 of 99 genotyped patients were CYP2C19 PM). Screened during forward selection on CLpo (the expected CYP2C19-related elimination route) but not retained in the final model. Recorded here for completeness so a downstream user knows the covariate was tested and rejected.",
+      source_name = "CYP2C19 phenotype (PM vs EM)"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 99L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 99L,
+    n_studies = 1L,
     n_observations = "626 S33138 + 626 S35424 plasma concentrations from W4 and W8 occasions in the genotyped cohort (Results 'Data'); 8 of 1252 measured were below the limit of quantification and discarded.",
-    age_range      = "22-64 years",
-    age_median     = "40 years (mean across the N = 101 phase II cohort; Results 'Data')",
-    weight_range   = "43.6-120.0 kg",
-    weight_median  = "69.0 kg (mean across the N = 101 phase II cohort)",
+    age_range = "22-64 years",
+    age_median = "40 years (mean across the N = 101 phase II cohort; Results 'Data')",
+    weight_range = "43.6-120.0 kg",
+    weight_median = "69.0 kg (mean across the N = 101 phase II cohort)",
     sex_female_pct = 46.5,
     race_ethnicity = "Not separately reported in the source paper; the CYP2D6 PM frequency (12 / 99 ~ 12%) is consistent with a European-ancestry cohort (5-10% PM frequency cited in the paper Discussion).",
-    disease_state  = "Adults with schizophrenia enrolled in a randomized double-blind multicentre Phase II trial comparing oral S33138 against risperidone (gold-standard comparator).",
-    dose_range     = "Once-daily oral S33138 at 5 mg (n = 35), 10 mg (n = 31), or 20 mg (n = 35) for 8 weeks. Phase II patients only; the risperidone arm is excluded from the joint PK modeling cohort.",
-    regions        = "International (multicentre Phase II trial; specific countries not separately reported).",
-    sampling_window= "Two PK occasions per patient: W4 (week 4 of treatment) and W8 (week 8 of treatment). At each occasion, blood samples were collected pre-dose and at 1, 3, and 6 h post-dose, with exact administration and sampling times recorded. Assumes steady state at each occasion with a 24 h dosing interval.",
+    disease_state = "Adults with schizophrenia enrolled in a randomized double-blind multicentre Phase II trial comparing oral S33138 against risperidone (gold-standard comparator).",
+    dose_range = "Once-daily oral S33138 at 5 mg (n = 35), 10 mg (n = 31), or 20 mg (n = 35) for 8 weeks. Phase II patients only; the risperidone arm is excluded from the joint PK modeling cohort.",
+    regions = "International (multicentre Phase II trial; specific countries not separately reported).",
+    sampling_window = "Two PK occasions per patient: W4 (week 4 of treatment) and W8 (week 8 of treatment). At each occasion, blood samples were collected pre-dose and at 1, 3, and 6 h post-dose, with exact administration and sampling times recorded. Assumes steady state at each occasion with a 24 h dosing interval.",
     cyp2d6_distribution = "12 / 99 (12.1%) CYP2D6 PM: 4 of the 5 mg cohort, 6 of the 10 mg cohort, 2 of the 20 mg cohort.",
     cyp2c19_distribution = "2 / 99 (2.0%) CYP2C19 PM: 1 in the 5 mg cohort, 1 in the 20 mg cohort.",
     external_validation = "Phase I randomized double-blind tolerance study in 23 healthy men receiving 10, 20, or 30 mg S33138 once daily for 14 days; 203 PK observations for parent and metabolite, sampled at pre-dose and 0.33, 0.66, 1, 1.5, 2, 3, 4, 8, and 12 h post-dose at steady state. Reported in the source paper as the external evaluation cohort; the final model adequately predicted central tendency but underestimated variability in healthy volunteers (paper Discussion).",
-    notes          = "Plasma concentrations measured by LC/MS-MS with LOQ 0.56 nmol/L for parent and 0.44 nmol/L for metabolite. The microdose-study volume ratio Vm / Vp was 2.4 [0.5 - 6] (paper Discussion); the final model adopts Vm = Vp for identifiability. The within-subject variance on CLpo (gamma_CLpo = 0.82 on log scale) is reported in Table IV but not encoded in this typical-value library model; this is documented in the vignette's Assumptions and deviations section."
+    notes = "Plasma concentrations measured by LC/MS-MS with LOQ 0.56 nmol/L for parent and 0.44 nmol/L for metabolite. The microdose-study volume ratio Vm / Vp was 2.4 [0.5 - 6] (paper Discussion); the final model adopts Vm = Vp for identifiability. The within-subject variance on CLpo (gamma_CLpo = 0.82 on log scale) is reported in Table IV but not encoded in this typical-value library model; this is documented in the vignette's Assumptions and deviations section."
   )
 
   ini({

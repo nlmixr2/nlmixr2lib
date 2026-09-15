@@ -19,20 +19,25 @@ Wang_2024_amphenmulin_killrate <- function() {
 
   compartmentData <- list(
     central = list(analyte = "amphenmulin", units = "ug", specimen = "not applicable", verified = TRUE),
-    bact    = list(analyte = "Mycoplasma gallisepticum strain S6", units = "CFU/mL", specimen = "not applicable", verified = TRUE)
+    bact = list(
+      analyte = "Mycoplasma gallisepticum strain S6",
+      units = "CFU/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   population <- list(
-    species        = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
-    n_subjects     = 3L,
-    n_studies      = 1L,
-    organism       = "Mycoplasma gallisepticum standard strain S6 (National Center for Veterinary Culture Collection, Beijing), cultured at 37 C in M. gallisepticum artificial medium base supplemented with swine serum, NADH and cysteine. Amphenmulin MIC = 0.0039 ug/mL by broth microdilution and 0.0078 ug/mL by agar dilution; MIC99 = 0.0077 ug/mL, MBC = 0.0156 ug/mL, MPC = 0.0500 ug/mL at a 10^9 CFU/mL inoculum, giving a mutant selection window of 0.0077-0.05 ug/mL",
-    system         = "Static time-kill curves in 10 mL Celine bottles (7 mL blank medium + 0.2 mL amphenmulin solution + 0.8 mL mycoplasma suspension) for the kill-rate parameters; the PK component is the separate in-vitro dynamic apparatus, a reservoir chamber of fresh drug-free medium feeding a three-necked reaction flask holding 300 mL of medium in the external compartment and a 10 mL semipermeable-membrane internal compartment carrying the culture, draining to a waste chamber under peristaltic-pump control at 1.63 mL/min",
-    disease_state  = "Not applicable (in-vitro culture); starting inoculum 10^7 CFU/mL",
-    dose_range     = "Static time-kill: 1, 2, 4, 6, 8, 16, 32 and 64 times MIC (0.0039 to 0.2496 ug/mL) plus a drug-free growth control. In-vitro dynamic apparatus: peak concentrations of 0.1, 0.2, 0.5, 0.8, 1.0 and 1.5 ug/mL every 24 h for three doses",
-    sampling       = "Static: 100 uL sampled at 0, 6, 9, 12, 24, 36 and 48 h for colony counting, lower counting limit 100 CFU/mL, each experiment repeated three times",
-    regions        = "China (South China Agricultural University, Guangzhou)",
-    notes          = "Wang 2024 Table 2 reports the sigmoid Emax kill-rate fit over seven time windows (0-24, 0-36, 0-48, 6-24, 6-36, 6-48 and 12-48 h) with R from 0.9649 to 0.9936. This model packages the 0-24 h window, which the paper identifies as the optimal fit and plots in Figure 4b; the other six parameterisations are tabulated in the vignette. The kill-rate model has no carrying-capacity term, so the drug-free control grows without bound; over the 48-72 h horizon of the source experiments this is immaterial (the control gains about 0.22 log10 CFU/mL per 24 h)."
+    species = "in vitro (Mycoplasma gallisepticum strain S6 culture)",
+    n_subjects = 3L,
+    n_studies = 1L,
+    organism = "Mycoplasma gallisepticum standard strain S6 (National Center for Veterinary Culture Collection, Beijing), cultured at 37 C in M. gallisepticum artificial medium base supplemented with swine serum, NADH and cysteine. Amphenmulin MIC = 0.0039 ug/mL by broth microdilution and 0.0078 ug/mL by agar dilution; MIC99 = 0.0077 ug/mL, MBC = 0.0156 ug/mL, MPC = 0.0500 ug/mL at a 10^9 CFU/mL inoculum, giving a mutant selection window of 0.0077-0.05 ug/mL",
+    system = "Static time-kill curves in 10 mL Celine bottles (7 mL blank medium + 0.2 mL amphenmulin solution + 0.8 mL mycoplasma suspension) for the kill-rate parameters; the PK component is the separate in-vitro dynamic apparatus, a reservoir chamber of fresh drug-free medium feeding a three-necked reaction flask holding 300 mL of medium in the external compartment and a 10 mL semipermeable-membrane internal compartment carrying the culture, draining to a waste chamber under peristaltic-pump control at 1.63 mL/min",
+    disease_state = "Not applicable (in-vitro culture); starting inoculum 10^7 CFU/mL",
+    dose_range = "Static time-kill: 1, 2, 4, 6, 8, 16, 32 and 64 times MIC (0.0039 to 0.2496 ug/mL) plus a drug-free growth control. In-vitro dynamic apparatus: peak concentrations of 0.1, 0.2, 0.5, 0.8, 1.0 and 1.5 ug/mL every 24 h for three doses",
+    sampling = "Static: 100 uL sampled at 0, 6, 9, 12, 24, 36 and 48 h for colony counting, lower counting limit 100 CFU/mL, each experiment repeated three times",
+    regions = "China (South China Agricultural University, Guangzhou)",
+    notes = "Wang 2024 Table 2 reports the sigmoid Emax kill-rate fit over seven time windows (0-24, 0-36, 0-48, 6-24, 6-36, 6-48 and 12-48 h) with R from 0.9649 to 0.9936. This model packages the 0-24 h window, which the paper identifies as the optimal fit and plots in Figure 4b; the other six parameterisations are tabulated in the vignette. The kill-rate model has no carrying-capacity term, so the drug-free control grows without bound; over the 48-72 h horizon of the source experiments this is immaterial (the control gains about 0.22 log10 CFU/mL per 24 h)."
   )
 
   ini({

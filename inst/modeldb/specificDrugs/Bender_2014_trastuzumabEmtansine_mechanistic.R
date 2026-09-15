@@ -13,28 +13,98 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    dar7_central     = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
-    dar7_peripheral1 = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
-    dar7_peripheral2 = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
-    dar6_central     = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
-    dar6_peripheral1 = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
-    dar6_peripheral2 = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
-    dar5_central     = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
-    dar5_peripheral1 = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
-    dar5_peripheral2 = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
-    dar4_central     = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
-    dar4_peripheral1 = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
-    dar4_peripheral2 = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
-    dar3_central     = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
-    dar3_peripheral1 = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
-    dar3_peripheral2 = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
-    dar2_central     = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
-    dar2_peripheral1 = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
-    dar2_peripheral2 = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
-    dar1_central     = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
-    dar1_peripheral1 = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
-    dar1_peripheral2 = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
-    dar0_central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    dar7_central = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
+    dar7_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR7",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar7_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR7",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar6_central = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
+    dar6_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR6",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar6_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR6",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar5_central = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
+    dar5_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR5",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar5_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR5",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar4_central = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
+    dar4_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR4",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar4_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR4",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar3_central = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
+    dar3_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR3",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar3_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR3",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar2_central = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
+    dar2_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR2",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar2_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR2",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar1_central = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
+    dar1_peripheral1 = list(
+      analyte = "trastuzumab emtansine DAR1",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar1_peripheral2 = list(
+      analyte = "trastuzumab emtansine DAR1",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    ),
+    dar0_central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     dar0_peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
     dar0_peripheral2 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
@@ -42,60 +112,72 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 18,
-    n_studies      = 1,
-    age_range      = "not reported",
-    weight_range   = "not reported",
+    n_subjects = 18,
+    n_studies = 1,
+    age_range = "not reported",
+    weight_range = "not reported",
     sex_female_pct = NA_real_,
-    species        = "Cynomolgus monkey (Macaca fascicularis); rat parameter set also provided",
-    disease_state  = "Healthy preclinical animals (no tumour xenograft)",
-    dose_range     = "Cynomolgus: 30 mg/kg IV single (n=4) and 10 mg/kg IV q3w x4 infusion (n=14); Rat: 0.3, 3, 20 mg/kg IV single (n=24) plus 10 mg/kg IV stability cohorts (n=10)",
-    regions        = "Preclinical (Genentech/Roche in-house studies)",
-    scope_note     = "Preclinical-only (no human PK). Companion to the simpler Bender_2014_trastuzumabEmtansine_reduced model file (Bender 2014 Table III).",
-    model_variant  = "Mechanistic DAR0-DAR7 model (Bender 2014 Table II). Each DAR species has its own three-compartment distribution sharing V1/V2/V3/CLd2/CLd3 with all other DAR species; a catenary chain of first-order deconjugation rates drives DAR_n -> DAR_(n-1).",
-    dose_products  = list(
-      note         = "Paper reports two preclinical dose products. The DAR-specific fractions below are seeded into the DAR0_central..DAR7_central compartments at t=0 when simulating. Default vignette uses DAR 3.1 (cynomolgus studies).",
+    species = "Cynomolgus monkey (Macaca fascicularis); rat parameter set also provided",
+    disease_state = "Healthy preclinical animals (no tumour xenograft)",
+    dose_range = "Cynomolgus: 30 mg/kg IV single (n=4) and 10 mg/kg IV q3w x4 infusion (n=14); Rat: 0.3, 3, 20 mg/kg IV single (n=24) plus 10 mg/kg IV stability cohorts (n=10)",
+    regions = "Preclinical (Genentech/Roche in-house studies)",
+    scope_note = "Preclinical-only (no human PK). Companion to the simpler Bender_2014_trastuzumabEmtansine_reduced model file (Bender 2014 Table III).",
+    model_variant = "Mechanistic DAR0-DAR7 model (Bender 2014 Table II). Each DAR species has its own three-compartment distribution sharing V1/V2/V3/CLd2/CLd3 with all other DAR species; a catenary chain of first-order deconjugation rates drives DAR_n -> DAR_(n-1).",
+    dose_products = list(
+      note = "Paper reports two preclinical dose products. The DAR-specific fractions below are seeded into the DAR0_central..DAR7_central compartments at t=0 when simulating. Default vignette uses DAR 3.1 (cynomolgus studies).",
       T_DM1_DAR3_1 = list(
-        DAR7 = 0.02, DAR6 = 0.05, DAR5 = 0.10, DAR4 = 0.19,
-        DAR3 = 0.26, DAR2 = 0.23, DAR1 = 0.13, DAR0 = 0.02
+        DAR7 = 0.02,
+        DAR6 = 0.05,
+        DAR5 = 0.10,
+        DAR4 = 0.19,
+        DAR3 = 0.26,
+        DAR2 = 0.23,
+        DAR1 = 0.13,
+        DAR0 = 0.02
       ),
       T_DM1_DAR1_5 = list(
-        DAR7 = 0.00, DAR6 = 0.00, DAR5 = 0.01, DAR4 = 0.04,
-        DAR3 = 0.13, DAR2 = 0.26, DAR1 = 0.35, DAR0 = 0.21
+        DAR7 = 0.00,
+        DAR6 = 0.00,
+        DAR5 = 0.01,
+        DAR4 = 0.04,
+        DAR3 = 0.13,
+        DAR2 = 0.26,
+        DAR1 = 0.35,
+        DAR0 = 0.21
       )
     ),
     species_parameters = list(
       cynomolgus = list(
-        source   = "Bender 2014 Table II, cynomolgus columns",
-        CL_TT    = "17.4 mL/day (IIV CV 24.8%)",
+        source = "Bender 2014 Table II, cynomolgus columns",
+        CL_TT = "17.4 mL/day (IIV CV 24.8%)",
         k_plasma = "0.0939 /day",
-        V1       = "148 mL (IIV CV 11.7%)",
-        CLd2     = "25.5 mL/day (no IIV)",
-        V2       = "57.2 mL (IIV CV 46.8%)",
-        CLd3     = "81.2 mL/day (no IIV)",
-        V3       = "127 mL (no IIV)",
+        V1 = "148 mL (IIV CV 11.7%)",
+        CLd2 = "25.5 mL/day (no IIV)",
+        V2 = "57.2 mL (IIV CV 46.8%)",
+        CLd3 = "81.2 mL/day (no IIV)",
+        V3 = "127 mL (no IIV)",
         k_7_to_3 = "0.341 /day (no IIV)  [shared k_7->6 = k_6->5 = k_5->4 = k_4->3 = k_3->2]",
         k_2_to_1 = "0.255 /day (no IIV)",
         k_1_to_0 = "0.0939 /day (no IIV)",
-        res_err  = "15.3% proportional"
+        res_err = "15.3% proportional"
       ),
       rat = list(
-        source   = "Bender 2014 Table II, rat columns",
-        CL_TT    = "2.42 mL/day (IIV CV 24.0%)",
+        source = "Bender 2014 Table II, rat columns",
+        CL_TT = "2.42 mL/day (IIV CV 24.0%)",
         k_plasma = "0.156 /day",
-        V1       = "11.0 mL (IIV CV 18.5%)",
-        CLd2     = "49.0 mL/day (no IIV)",
-        V2       = "3.44 mL (IIV CV 49.4%)",
-        CLd3     = "12.0 mL/day (no IIV)",
-        V3       = "16.7 mL (IIV CV 16.8%)",
+        V1 = "11.0 mL (IIV CV 18.5%)",
+        CLd2 = "49.0 mL/day (no IIV)",
+        V2 = "3.44 mL (IIV CV 49.4%)",
+        CLd3 = "12.0 mL/day (no IIV)",
+        V3 = "16.7 mL (IIV CV 16.8%)",
         k_7_to_3 = "0.543 /day (IIV CV 21.8%)",
         k_2_to_1 = "0.388 /day (no IIV)",
         k_1_to_0 = "0.114 /day (IIV CV 15.1%)",
-        res_err  = "11.1% proportional",
-        notes    = "Rat fit has additional IIV terms on V3, k_7->3, and k_1->0 not active in the cynomolgus default. To switch to rat, update ini() fixed-effect values (mL/day -> L/day and mL -> L by /1000)."
+        res_err = "11.1% proportional",
+        notes = "Rat fit has additional IIV terms on V3, k_7->3, and k_1->0 not active in the cynomolgus default. To switch to rat, update ini() fixed-effect values (mL/day -> L/day and mL -> L by /1000)."
       )
     ),
-    notes          = "NONMEM 7.2, FOCE-INTER; residual error reported as additive on log-scale (proportional in linear space). CL_TT is a fit parameter composed of CL_in_vivo (in vivo antibody clearance) and k_plasma * V1 (plasma degradation, constrained by in vitro plasma stability data). In the in vivo ODE the sum CL_in_vivo/V1 + k_plasma reduces to CL_TT/V1, so this model uses CL_TT directly; k_plasma is retained as a reported parameter because it is needed to simulate the in vitro plasma-stability experiments (set CL_in_vivo = CL_TT - k_plasma * V1 and zero the distributional clearances)."
+    notes = "NONMEM 7.2, FOCE-INTER; residual error reported as additive on log-scale (proportional in linear space). CL_TT is a fit parameter composed of CL_in_vivo (in vivo antibody clearance) and k_plasma * V1 (plasma degradation, constrained by in vitro plasma stability data). In the in vivo ODE the sum CL_in_vivo/V1 + k_plasma reduces to CL_TT/V1, so this model uses CL_TT directly; k_plasma is retained as a reported parameter because it is needed to simulate the in vitro plasma-stability experiments (set CL_in_vivo = CL_TT - k_plasma * V1 and zero the distributional clearances)."
   )
 
   ini({

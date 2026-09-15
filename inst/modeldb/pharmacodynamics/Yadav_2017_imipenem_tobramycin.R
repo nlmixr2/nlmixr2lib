@@ -10,7 +10,11 @@ Yadav_2017_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Yadav_2017_imipenem_tobramycin"
-  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/thigh (observation); mg/L (drug covariates)")
+  units <- list(
+    time = "h",
+    dosing = "mg/L (drug input concentration)",
+    concentration = "log10 CFU/thigh (observation); mg/L (drug covariates)"
+  )
 
   # Cipm / Ctob are the time-varying imipenem / tobramycin plasma
   # unbound concentrations supplied externally from a PK driver (the
@@ -33,42 +37,62 @@ Yadav_2017_imipenem_tobramycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_susceptible_resistant1  = list(analyte = "Population 1 bacteria (susceptible to imipenem and resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_susceptible_resistant2  = list(analyte = "Population 2 bacteria (susceptible to imipenem and resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant1 = list(analyte = "Population 1 bacteria (intermediate resistance to imipenem and suscept", units = NA_character_, specimen = "administration site", verified = FALSE),
-    bact_intermediate_resistant2 = list(analyte = "Population 2 bacteria (intermediate resistance to imipenem and suscept", units = NA_character_, specimen = "administration site", verified = FALSE)
+    bact_susceptible_resistant1 = list(
+      analyte = "Population 1 bacteria (susceptible to imipenem and resistant to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_susceptible_resistant2 = list(
+      analyte = "Population 2 bacteria (susceptible to imipenem and resistant to tobram",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant1 = list(
+      analyte = "Population 1 bacteria (intermediate resistance to imipenem and suscept",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    bact_intermediate_resistant2 = list(
+      analyte = "Population 2 bacteria (intermediate resistance to imipenem and suscept",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     Cipm = list(
-      description        = "Unbound imipenem plasma concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Unbound imipenem plasma concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the murine experiment delivered humanized exposure via imipenem 60 or 77 mg/kg s.c. every 2 h (total daily doses 720 or 924 mg/kg), targeting the plasma unbound concentration profiles of 4 or 5 g/day continuous infusion (with a 1 g loading dose) in critically ill patients. The driver PK is the one-compartment s.c. model of equations 1-3 with ka, ke, V/F and fu from the murine imipenem PK reference (Katsube 2008) -- numerical PK parameter values not reported in the present paper on disk. Preclinical experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vivo murine PD model).",
-      source_name        = "Imipenem concentration (paper Methods, Eqs 1-3; Fig. 1 legend)"
+      notes = "Time-varying covariate supplied externally; the murine experiment delivered humanized exposure via imipenem 60 or 77 mg/kg s.c. every 2 h (total daily doses 720 or 924 mg/kg), targeting the plasma unbound concentration profiles of 4 or 5 g/day continuous infusion (with a 1 g loading dose) in critically ill patients. The driver PK is the one-compartment s.c. model of equations 1-3 with ka, ke, V/F and fu from the murine imipenem PK reference (Katsube 2008) -- numerical PK parameter values not reported in the present paper on disk. Preclinical experimental input -- not in inst/references/covariate-columns.md (the canonical register is for human pop-PK covariates and does not apply to this in-vivo murine PD model).",
+      source_name = "Imipenem concentration (paper Methods, Eqs 1-3; Fig. 1 legend)"
     ),
     Ctob = list(
-      description        = "Unbound tobramycin plasma concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Unbound tobramycin plasma concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying covariate supplied externally; the murine experiment delivered humanized exposure via tobramycin s.c. fractionated doses (33.3 percent at 0 h; 16.65 percent at 4, 8, and 12 h; 8.37 percent at 16 and 20 h; total daily 73 mg/kg) targeting the plasma unbound profile of 7 mg/kg q24h as a 0.5 h infusion in humans. The driver PK is the one-compartment s.c. model of equations 1-3 with ka, ke, V/F and fu from the murine tobramycin PK reference (Moffie 1993) -- numerical PK parameter values not reported in the present paper on disk. Preclinical experimental input -- not in inst/references/covariate-columns.md.",
-      source_name        = "Tobramycin concentration (paper Methods, Eqs 1-3; Fig. 1 legend)"
+      notes = "Time-varying covariate supplied externally; the murine experiment delivered humanized exposure via tobramycin s.c. fractionated doses (33.3 percent at 0 h; 16.65 percent at 4, 8, and 12 h; 8.37 percent at 16 and 20 h; total daily 73 mg/kg) targeting the plasma unbound profile of 7 mg/kg q24h as a 0.5 h infusion in humans. The driver PK is the one-compartment s.c. model of equations 1-3 with ka, ke, V/F and fu from the murine tobramycin PK reference (Moffie 1993) -- numerical PK parameter values not reported in the present paper on disk. Preclinical experimental input -- not in inst/references/covariate-columns.md.",
+      source_name = "Tobramycin concentration (paper Methods, Eqs 1-3; Fig. 1 legend)"
     )
   )
 
   population <- list(
-    species             = "mouse (Swiss, 7-week-old males, 25-30 g; neutropenic via cyclophosphamide 150 mg/kg i.p. 4 days pre-infection plus 100 mg/kg 1 day pre-infection)",
-    n_subjects          = NA_integer_,
-    n_studies           = 2L,
-    organism            = "Pseudomonas aeruginosa FADDI-PA088 (carbapenem- and aminoglycoside-resistant clinical isolate; MIC imipenem 16 mg/L, MIC tobramycin 32 mg/L)",
-    system              = "Neutropenic murine thigh infection model; two mice (four thighs) per dose-regimen and time-point combination; viable counts on antibiotic-free and antibiotic-containing (3x MIC) CAMHA agar at 2, 6, and 24 h post-treatment-initiation",
-    inoculum            = "approximately 10^5 CFU/thigh (50 uL of 2x10^6 CFU/mL bacterial suspension injected into each posterior thigh muscle under isoflurane anaesthesia 2 h before treatment start)",
-    mic_values          = c(imipenem = "16 mg/L", tobramycin = "32 mg/L"),
-    duration            = "24 h (sampling at 0, 2, 6, and 24 h post-treatment-initiation)",
-    regimens            = "Untreated control; tobramycin monotherapy (humanized 7 mg/kg q24h 0.5-h infusion); imipenem monotherapy at humanized 4 or 5 g/day continuous infusion with a 1 g loading dose (60 or 77 mg/kg s.c. every 2 h in mice); imipenem + tobramycin combinations using the same humanized regimens",
-    notes               = "Experiment 1 mimicked imipenem 4 g/day plus tobramycin (Log CFU0 4.93); experiment 2 mimicked imipenem 5 g/day plus tobramycin (Log CFU0 4.78). The packaged ini() uses experiment 1's Log CFU0 = 4.93 as the default; switch to 4.78 to reproduce experiment 2. The MBM was fit in S-ADAPT using importance sampling (pmethod = 4); the coefficient of correlation for observed versus population-fitted log10 viable counts was at least 0.98. Random effects (eta) are NOT estimated in the source -- the paper reports population mean parameter estimates with relative standard errors only (between-curves variability was fixed to a final small CV), so the packaged model contains no etas and is intended for typical-value simulation only. See Yadav 2017 Methods (page 8 = e01268-17 p. 8) and Table 1."
+    species = "mouse (Swiss, 7-week-old males, 25-30 g; neutropenic via cyclophosphamide 150 mg/kg i.p. 4 days pre-infection plus 100 mg/kg 1 day pre-infection)",
+    n_subjects = NA_integer_,
+    n_studies = 2L,
+    organism = "Pseudomonas aeruginosa FADDI-PA088 (carbapenem- and aminoglycoside-resistant clinical isolate; MIC imipenem 16 mg/L, MIC tobramycin 32 mg/L)",
+    system = "Neutropenic murine thigh infection model; two mice (four thighs) per dose-regimen and time-point combination; viable counts on antibiotic-free and antibiotic-containing (3x MIC) CAMHA agar at 2, 6, and 24 h post-treatment-initiation",
+    inoculum = "approximately 10^5 CFU/thigh (50 uL of 2x10^6 CFU/mL bacterial suspension injected into each posterior thigh muscle under isoflurane anaesthesia 2 h before treatment start)",
+    mic_values = c(imipenem = "16 mg/L", tobramycin = "32 mg/L"),
+    duration = "24 h (sampling at 0, 2, 6, and 24 h post-treatment-initiation)",
+    regimens = "Untreated control; tobramycin monotherapy (humanized 7 mg/kg q24h 0.5-h infusion); imipenem monotherapy at humanized 4 or 5 g/day continuous infusion with a 1 g loading dose (60 or 77 mg/kg s.c. every 2 h in mice); imipenem + tobramycin combinations using the same humanized regimens",
+    notes = "Experiment 1 mimicked imipenem 4 g/day plus tobramycin (Log CFU0 4.93); experiment 2 mimicked imipenem 5 g/day plus tobramycin (Log CFU0 4.78). The packaged ini() uses experiment 1's Log CFU0 = 4.93 as the default; switch to 4.78 to reproduce experiment 2. The MBM was fit in S-ADAPT using importance sampling (pmethod = 4); the coefficient of correlation for observed versus population-fitted log10 viable counts was at least 0.98. Random effects (eta) are NOT estimated in the source -- the paper reports population mean parameter estimates with relative standard errors only (between-curves variability was fixed to a final small CV), so the packaged model contains no etas and is intended for typical-value simulation only. See Yadav 2017 Methods (page 8 = e01268-17 p. 8) and Table 1."
   )
 
   ini({

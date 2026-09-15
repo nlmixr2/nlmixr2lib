@@ -22,7 +22,7 @@ Li_2025_amikacin <- function() {
     sep = " "
   )
   vignette <- "Li_2025_amikacin"
-  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE -- amikacin was quantified in SERUM by
@@ -34,11 +34,11 @@ Li_2025_amikacin <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Allometric scaling on CL (exponent 0.75) and on V",
         "(exponent 1), both standardised to an adult body mass of 70 kg",
         "(Li 2025 Eq. 2 and its legend: 'Weight_standard is 70 kg for adults;",
@@ -46,14 +46,14 @@ Li_2025_amikacin <- function() {
         "Cohort weight at amikacin administration: median 1.36 kg",
         "(range 0.80-4.00 kg), Li 2025 Table 1."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     PAGE = list(
-      description        = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
-      units              = "months",
-      type               = "continuous",
+      description = "Postmenstrual age (gestational age in weeks / 4.35 + postnatal age in months)",
+      units = "months",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Time-varying. Drives two separate terms on CL: (a) the linear",
         "maturation factor F_PMA = 1 + SLPCL * (PMA - 40) (Li 2025 Eq. 3),",
         "and (b) the age dependence of the creatinine production rate",
@@ -65,14 +65,14 @@ Li_2025_amikacin <- function() {
         "Cohort PMA: median 32.1 weeks (range 29.1-39.1), Li 2025 Table 1",
         "(equivalently PAGE median 7.38 months, range 6.69-8.99)."
       ),
-      source_name        = "PMA (weeks)"
+      source_name = "PMA (weeks)"
     ),
     CREAT = list(
-      description        = "Serum creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Serum creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline serum creatinine at the start of amikacin therapy",
         "(Li 2025 Methods: 'to assess renal function by using the baseline",
         "Scr at the beginning of amikacin administration'), measured by the",
@@ -85,7 +85,7 @@ Li_2025_amikacin <- function() {
         "umol/L (Li 2025 Table 1); Monte Carlo simulation strata spanned",
         "15-22, 23-36 and 37-60 umol/L (Li 2025 Table 5)."
       ),
-      source_name        = "Scr"
+      source_name = "Scr"
     )
   )
 
@@ -98,75 +98,75 @@ Li_2025_amikacin <- function() {
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'gender' in the SCM; not retained. Cohort 13/23 (56.52%) male (Li 2025 Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'gender' in the SCM; not retained. Cohort 13/23 (56.52%) male (Li 2025 Table 1)."
     ),
     GA = list(
       description = "Gestational age at birth",
-      units       = "weeks",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 28.90 +/- 2.53 weeks (Li 2025 Table 1). PMA (PAGE) was retained instead."
+      units = "weeks",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 28.90 +/- 2.53 weeks (Li 2025 Table 1). PMA (PAGE) was retained instead."
     ),
     PNA = list(
       description = "Postnatal age",
-      units       = "months",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 29.56 +/- 13.53 days (Li 2025 Table 1)."
+      units = "months",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 29.56 +/- 13.53 days (Li 2025 Table 1)."
     ),
     WT_BIRTH = list(
       description = "Birth weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort median 1.10 kg (range 0.70-4.30) (Li 2025 Table 1)."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort median 1.10 kg (range 0.70-4.30) (Li 2025 Table 1)."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 29.00 +/- 3.79 g/L (Li 2025 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 29.00 +/- 3.79 g/L (Li 2025 Table 1)."
     ),
     ALT = list(
       description = "Alanine aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort median 7 U/L (range 4-410) (Li 2025 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort median 7 U/L (range 4-410) (Li 2025 Table 1)."
     ),
     AST = list(
       description = "Aspartate aminotransferase",
-      units       = "U/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort median 21 U/L (range 10-920) (Li 2025 Table 1)."
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort median 21 U/L (range 10-920) (Li 2025 Table 1)."
     ),
     TBIL = list(
       description = "Total bilirubin",
-      units       = "umol/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 80.59 +/- 54.79 umol/L (Li 2025 Table 1)."
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 80.59 +/- 54.79 umol/L (Li 2025 Table 1)."
     ),
     BUN = list(
       description = "Blood urea nitrogen",
-      units       = "mmol/L",
-      type        = "continuous",
-      notes       = "Screened as 'urea nitrogen' in the SCM; not retained. Cohort mean 5.31 +/- 3.47 mmol/L (Li 2025 Table 1)."
+      units = "mmol/L",
+      type = "continuous",
+      notes = "Screened as 'urea nitrogen' in the SCM; not retained. Cohort mean 5.31 +/- 3.47 mmol/L (Li 2025 Table 1)."
     ),
     HGB = list(
       description = "Haemoglobin",
-      units       = "g/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 121.04 +/- 19.58 g/L (Li 2025 Table 1)."
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 121.04 +/- 19.58 g/L (Li 2025 Table 1)."
     ),
     PLT = list(
       description = "Platelet count",
-      units       = "10^9/L",
-      type        = "continuous",
-      notes       = "Screened in the SCM; not retained. Cohort mean 127.00 +/- 91.92 10^9/L (Li 2025 Table 1)."
+      units = "10^9/L",
+      type = "continuous",
+      notes = "Screened in the SCM; not retained. Cohort mean 127.00 +/- 91.92 10^9/L (Li 2025 Table 1)."
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate (Schwartz equation)",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = paste(
         "Screened as 'GFR' in the SCM; not retained. Li 2025 Eq. 1 computes",
         "eGFR = K * L / SCR with K = 0.33 (premature infants under 1 year),",
         "L = body length (cm) and SCR in mg/dL. eGFR was used to define acute",
@@ -177,43 +177,43 @@ Li_2025_amikacin <- function() {
     ),
     APGAR1 = list(
       description = "Apgar score at 1 minute",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened as 'apgar score' in the SCM; not retained. Cohort median 7 (range 0-10) (Li 2025 Table 1)."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened as 'apgar score' in the SCM; not retained. Cohort median 7 (range 0-10) (Li 2025 Table 1)."
     ),
     APGAR5 = list(
       description = "Apgar score at 5 minutes",
-      units       = "(score)",
-      type        = "continuous",
-      notes       = "Screened as 'apgar score' in the SCM; not retained. Cohort median 8 (range 5-10) (Li 2025 Table 1)."
+      units = "(score)",
+      type = "continuous",
+      notes = "Screened as 'apgar score' in the SCM; not retained. Cohort median 8 (range 5-10) (Li 2025 Table 1)."
     ),
     CONMED_IBUPROFEN = list(
       description = "Concomitant ibuprofen administration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened as 'co-administration of ibuprofen' in the SCM; not retained. No counts reported."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as 'co-administration of ibuprofen' in the SCM; not retained. No counts reported."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 23,
-    n_studies      = 1,
+    species = "human",
+    n_subjects = 23,
+    n_studies = 1,
     n_observations = 54,
-    age_range      = "Postmenstrual age 29.1-39.1 weeks (median 32.1); postnatal age 29.56 +/- 13.53 days; gestational age 28.90 +/- 2.53 weeks",
-    weight_range   = "0.80-4.00 kg at amikacin administration (median 1.36); 0.92-4.01 kg at the time of sampling (median 1.48)",
+    age_range = "Postmenstrual age 29.1-39.1 weeks (median 32.1); postnatal age 29.56 +/- 13.53 days; gestational age 28.90 +/- 2.53 weeks",
+    weight_range = "0.80-4.00 kg at amikacin administration (median 1.36); 0.92-4.01 kg at the time of sampling (median 1.48)",
     sex_female_pct = 43.5,
     race_ethnicity = "Chinese (not otherwise stratified)",
-    disease_state  = "Premature infants (gestational age < 37 weeks) in neonatal intensive care with carbapenem-resistant-organism nosocomial pneumonia; 82.6% also had bloodstream infection and 34.8% suppurative meningitis",
-    dose_range     = "10.34-19.70 mg/kg/day (median 14.32), most commonly 15 mg/kg/day split as 7.5 mg/kg every 12 h by 0.5-h IV infusion; median 12 days of therapy",
-    regions        = "China (two neonatal intensive care units in Suzhou, Jiangsu: the Affiliated Suzhou Hospital of Nanjing Medical University and the Children's Hospital of Soochow University)",
-    ga_range       = "28.90 +/- 2.53 weeks (all < 37 weeks by inclusion criteria)",
-    pma_range      = "29.1-39.1 weeks postmenstrual age (median 32.1)",
-    pna_range      = "29.56 +/- 13.53 days postnatal age",
-    birth_weight   = "0.70-4.30 kg (median 1.10)",
+    disease_state = "Premature infants (gestational age < 37 weeks) in neonatal intensive care with carbapenem-resistant-organism nosocomial pneumonia; 82.6% also had bloodstream infection and 34.8% suppurative meningitis",
+    dose_range = "10.34-19.70 mg/kg/day (median 14.32), most commonly 15 mg/kg/day split as 7.5 mg/kg every 12 h by 0.5-h IV infusion; median 12 days of therapy",
+    regions = "China (two neonatal intensive care units in Suzhou, Jiangsu: the Affiliated Suzhou Hospital of Nanjing Medical University and the Children's Hospital of Soochow University)",
+    ga_range = "28.90 +/- 2.53 weeks (all < 37 weeks by inclusion criteria)",
+    pma_range = "29.1-39.1 weeks postmenstrual age (median 32.1)",
+    pna_range = "29.56 +/- 13.53 days postnatal age",
+    birth_weight = "0.70-4.30 kg (median 1.10)",
     renal_function = "Serum creatinine 31.72 +/- 11.06 umol/L; Schwartz eGFR 43.49 +/- 3.58 mL/min/1.73m^2; 3 of 23 developed acute kidney injury on days 5-7 of therapy",
-    co_medication  = "Vancomycin 43.5%, meropenem 34.8%, piperacillin-tazobactam 21.7%, other 21.7% (all intravenous, given separately from amikacin)",
-    notes          = paste(
+    co_medication = "Vancomycin 43.5%, meropenem 34.8%, piperacillin-tazobactam 21.7%, other 21.7% (all intravenous, given separately from amikacin)",
+    notes = paste(
       "Two-centre retrospective therapeutic-drug-monitoring study; clinical",
       "and demographic records collected January 2021 - December 2022.",
       "54 amikacin serum concentrations from 23 premature infants. Samples",

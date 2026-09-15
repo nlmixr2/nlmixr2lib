@@ -9,32 +9,32 @@ Decker_2026_baricitinib <- function() {
     sep = " "
   )
   vignette <- "Decker_2026_baricitinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight (weight at study entry, WTE in the source paper).",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight (weight at study entry, WTE in the source paper).",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at the study-entry value (Table S1 footnote a, 'at study entry'). The allometric reference weight is 74 kg (Table 1 footnotes b-e), which is carried over from the adult analysis and is NOT a statistic of this pediatric cohort (whose mean weight is 46.6 kg). Cohort mean 46.6 kg, range 12.0-104 kg (Table S1); 78% of patients weighed >=30 kg. Simulations in the paper spanned 10-120 kg.",
-      source_name        = "WTE"
+      notes = "Time-fixed at the study-entry value (Table S1 footnote a, 'at study entry'). The allometric reference weight is 74 kg (Table 1 footnotes b-e), which is carried over from the adult analysis and is NOT a statistic of this pediatric cohort (whose mean weight is 46.6 kg). Cohort mean 46.6 kg, range 12.0-104 kg (Table S1); 78% of patients weighed >=30 kg. Simulations in the paper spanned 10-120 kg.",
+      source_name = "WTE"
     ),
     CRCL_BASE = list(
-      description        = "Baseline estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized and time-fixed per subject.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Baseline estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized and time-fixed per subject.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Enters CLr/F as the ratio (CRCL_BASE / 93); 93 mL/min/1.73 m^2 is the median eGFR of the previous adult population PK analysis and is the reference at which the reported CLr/F typical value of 7.9 L/h applies (Table 1 footnote f). Estimated with the bedside Schwartz equation (Methods, 'PK Model Development'), a creatinine-based pediatric eGFR already expressed per 1.73 m^2. Cohort mean 109 mL/min/1.73 m^2, range 54.3-196 (Table S1); by weight group the mean is 125 for <30 kg and 105 for >=30 kg.",
-      source_name        = "baseline eGFR"
+      notes = "Enters CLr/F as the ratio (CRCL_BASE / 93); 93 mL/min/1.73 m^2 is the median eGFR of the previous adult population PK analysis and is the reference at which the reported CLr/F typical value of 7.9 L/h applies (Table 1 footnote f). Estimated with the bedside Schwartz equation (Methods, 'PK Model Development'), a creatinine-based pediatric eGFR already expressed per 1.73 m^2. Cohort mean 109 mL/min/1.73 m^2, range 54.3-196 (Table S1); by weight group the mean is 125 for <30 kg and 105 for >=30 kg.",
+      source_name = "baseline eGFR"
     ),
     CRCL = list(
-      description        = "Time-varying estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized.",
-      units              = "mL/min/1.73 m^2",
-      type               = "continuous",
+      description = "Time-varying estimated glomerular filtration rate (bedside Schwartz equation), BSA-normalized.",
+      units = "mL/min/1.73 m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Used only through the within-subject deviation (CRCL - CRCL_BASE), which is the 'change in eGFR from baseline' (deltaeGFR) term of Table 1 footnote f -- the Wahlby 2004 baseline/difference (BCOV/DCOV) decomposition of a time-varying covariate. Set CRCL = CRCL_BASE to switch the time-varying arm off; the model then reduces to baseline-eGFR-only scaling. The source paper does not tabulate the distribution of on-treatment eGFR changes.",
-      source_name        = "eGFR"
+      notes = "Used only through the within-subject deviation (CRCL - CRCL_BASE), which is the 'change in eGFR from baseline' (deltaeGFR) term of Table 1 footnote f -- the Wahlby 2004 baseline/difference (BCOV/DCOV) decomposition of a time-varying covariate. Set CRCL = CRCL_BASE to switch the time-varying arm off; the model then reduces to baseline-eGFR-only scaling. The source paper does not tabulate the distribution of on-treatment eGFR changes.",
+      source_name = "eGFR"
     )
   )
 
@@ -48,37 +48,37 @@ Decker_2026_baricitinib <- function() {
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at study entry.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened as the only continuous covariate and not retained. The Discussion states explicitly that age was not a significant covariate after the effect of weight was accounted for; Figure S6 shows the high age-weight correlation. Cohort mean 12.0 years, range 2.00-17.9 (Table S1); 72% of patients were 10 to <18 years."
+      units = "years",
+      type = "continuous",
+      notes = "Screened as the only continuous covariate and not retained. The Discussion states explicitly that age was not a significant covariate after the effect of weight was accounted for; Figure S6 shows the high age-weight correlation. Cohort mean 12.0 years, range 2.00-17.9 (Table S1); 72% of patients were 10 to <18 years."
     ),
     SEXF = list(
       description = "Female sex indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes       = "Screened as 'gender' in the stepwise covariate model and not retained. Cohort: 197 of 392 female (50%), 195 male (Table S1)."
+      notes = "Screened as 'gender' in the stepwise covariate model and not retained. Cohort: 197 of 392 female (50%), 195 male (Table S1)."
     ),
     RACE_WHITE = list(
       description = "White race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-White",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 287 of 392 White (73%) (Table S1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 287 of 392 White (73%) (Table S1)."
     ),
     RACE_ASIAN = list(
       description = "Asian race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Asian",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 76 of 392 Asian (19%) (Table S1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 76 of 392 Asian (19%) (Table S1)."
     ),
     RACE_BLACK = list(
       description = "Black race indicator.",
-      units       = "(binary)",
-      type        = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "non-Black",
-      notes       = "Screened as part of the categorical 'race' covariate and not retained. 11 of 392 Black (3%) (Table S1)."
+      notes = "Screened as part of the categorical 'race' covariate and not retained. 11 of 392 Black (3%) (Table S1)."
     )
   )
 
@@ -89,27 +89,27 @@ Decker_2026_baricitinib <- function() {
   # are recorded here in prose rather than as covariatesDataExcluded entries.
 
   compartmentData <- list(
-    central     = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE),
+    central = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "baricitinib", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 393L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 393L,
+    n_studies = 1L,
     n_observations = 2035L,
-    age_range      = "2.00-17.9 years (enrolment criterion 2 to <18 years)",
-    age_mean       = "12.0 years",
-    weight_range   = "12.0-104 kg",
-    weight_mean    = "46.6 kg",
+    age_range = "2.00-17.9 years (enrolment criterion 2 to <18 years)",
+    age_mean = "12.0 years",
+    weight_range = "12.0-104 kg",
+    weight_mean = "46.6 kg",
     sex_female_pct = 50.3,
     race_ethnicity = c(White = 73.2, Asian = 19.4, Black = 2.8, `Native American` = 2.0, Multiple = 0.3, Missing = 2.3),
-    disease_state  = "Moderate-to-severe atopic dermatitis (validated Investigator Global Assessment for Atopic Dermatitis score >=3, Eczema Area and Severity Index >=16, body surface area involvement >=10%) with inadequate response to moderate or higher potency topical corticosteroids and inadequate response or intolerance to topical calcineurin inhibitors, or inadequate response to systemic treatment.",
+    disease_state = "Moderate-to-severe atopic dermatitis (validated Investigator Global Assessment for Atopic Dermatitis score >=3, Eczema Area and Severity Index >=16, body surface area involvement >=10%) with inadequate response to moderate or higher potency topical corticosteroids and inadequate response or intolerance to topical calcineurin inhibitors, or inadequate response to systemic treatment.",
     renal_function = "Baseline eGFR (bedside Schwartz) mean 109 mL/min/1.73 m^2, range 54.3-196; by weight group, mean 125 for <30 kg and 105 for >=30 kg. Screening eGFR was required to exceed 60 mL/min/1.73 m^2.",
-    dose_range     = "Oral baricitinib once daily. Open-label PK lead-in used age-based high doses (4 mg QD for 10 to <18 years, 2 mg QD for 2 to <10 years). The 16-week double-blind period randomised 1:1:1:1 to placebo or low/medium/high dose, which in absolute terms was 1, 2 or 4 mg QD for ages 10 to <18 years and 0.5, 1 or 2 mg QD for ages 2 to <10 years. The model-based simulations evaluated 10-120 kg and supported the approved weight-based posology of 2 mg QD for 10 to <30 kg and 4 mg QD for >=30 kg.",
-    study          = "BREEZE-AD-PEDS (NCT03952559), a multicentre phase 3 randomized, double-blind, placebo-controlled trial with an open-label PK lead-in period. Concentration data from both the lead-in and the double-blind treatment periods were pooled for the population PK analysis.",
-    regions        = "Multicentre international.",
-    notes          = "The population PK dataset held 2035 concentrations from 393 participants; one participant was later excluded from the reported demographics because of an erroneous screening weight, so Table S1 summarises 392. Lead-in samples were collected as dried whole blood on a Mitra VAMS microsampling device and converted to plasma equivalents with a study-specific blood/plasma ratio of 1.32 (Figure S7, 15 concordance pairs from 15 participants; 214 whole-blood samples from 33 participants converted), then pooled with the plasma samples. Assay LLOQ 0.200 ng/mL, ULOQ 200 ng/mL. Estimation used NONMEM 7.5.0 with PsN 4.7.0; parameter estimates from the previous adult atopic-dermatitis analysis were used as priors. A cluster of implausible concentrations attributed to mis-recorded dose times was retained in the final analysis after a sensitivity refit showed minimal parameter impact (Discussion). The exposure-response analysis for vIGA-AD 0/1 at week 16 was a descriptive exposure-quartile summary in 514 patients; it reports no fitted parameters and is therefore not encoded in this model."
+    dose_range = "Oral baricitinib once daily. Open-label PK lead-in used age-based high doses (4 mg QD for 10 to <18 years, 2 mg QD for 2 to <10 years). The 16-week double-blind period randomised 1:1:1:1 to placebo or low/medium/high dose, which in absolute terms was 1, 2 or 4 mg QD for ages 10 to <18 years and 0.5, 1 or 2 mg QD for ages 2 to <10 years. The model-based simulations evaluated 10-120 kg and supported the approved weight-based posology of 2 mg QD for 10 to <30 kg and 4 mg QD for >=30 kg.",
+    study = "BREEZE-AD-PEDS (NCT03952559), a multicentre phase 3 randomized, double-blind, placebo-controlled trial with an open-label PK lead-in period. Concentration data from both the lead-in and the double-blind treatment periods were pooled for the population PK analysis.",
+    regions = "Multicentre international.",
+    notes = "The population PK dataset held 2035 concentrations from 393 participants; one participant was later excluded from the reported demographics because of an erroneous screening weight, so Table S1 summarises 392. Lead-in samples were collected as dried whole blood on a Mitra VAMS microsampling device and converted to plasma equivalents with a study-specific blood/plasma ratio of 1.32 (Figure S7, 15 concordance pairs from 15 participants; 214 whole-blood samples from 33 participants converted), then pooled with the plasma samples. Assay LLOQ 0.200 ng/mL, ULOQ 200 ng/mL. Estimation used NONMEM 7.5.0 with PsN 4.7.0; parameter estimates from the previous adult atopic-dermatitis analysis were used as priors. A cluster of implausible concentrations attributed to mis-recorded dose times was retained in the final analysis after a sensitivity refit showed minimal parameter impact (Discussion). The exposure-response analysis for vIGA-AD 0/1 at week 16 was a descriptive exposure-quartile summary in 514 patients; it reports no fitted parameters and is therefore not encoded in this model."
   )
 
   ini({

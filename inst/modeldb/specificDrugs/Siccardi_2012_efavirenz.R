@@ -24,8 +24,8 @@ Siccardi_2012_efavirenz <- function() {
   )
   vignette <- "Siccardi_2012_efavirenz"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
@@ -38,11 +38,11 @@ Siccardi_2012_efavirenz <- function() {
 
   covariateData <- list(
     SNP_CYP2B6_RS3745274_T_COUNT = list(
-      description        = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
-      units              = "(count, 0/1/2 alleles per subject)",
-      type               = "continuous",
+      description = "Count of CYP2B6 c.516G>T (rs3745274, p.Q172H) T-alleles per subject (0/1/2). 0 = GG homozygous wild-type, 1 = GT heterozygous, 2 = TT homozygous variant.",
+      units = "(count, 0/1/2 alleles per subject)",
+      type = "continuous",
       reference_category = "0 (516GG homozygous wild-type)",
-      notes              = paste(
+      notes = paste(
         "Time-invariant germline genotype; the only covariate retained in the",
         "final population PK model (Siccardi 2012 Results, 'Population PK",
         "model': CL/F was significantly (P < 0.001) correlated with CYP2B6",
@@ -60,16 +60,16 @@ Siccardi_2012_efavirenz <- function() {
         "subjects 516TT, therefore 106 subjects 516GG.",
         sep = " "
       ),
-      source_name        = "CYP2B6 516 G>T genotype"
+      source_name = "CYP2B6 516 G>T genotype"
     )
   )
 
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained. Siccardi 2012 Results, 'Population PK",
         "model': weight was one of five covariates entered into the stepwise",
         "backward elimination and 'no demographic covariates were",
@@ -79,9 +79,9 @@ Siccardi_2012_efavirenz <- function() {
     ),
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened but not retained (same backward-elimination step as WT).",
         "Median 41 years (IQR 22-67 years).",
         sep = " "
@@ -89,9 +89,9 @@ Siccardi_2012_efavirenz <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained (reported as 'gender'). 110 of 157",
         "subjects (70%) were men, so SEXF = 1 in 30% of the cohort.",
         sep = " "
@@ -99,9 +99,9 @@ Siccardi_2012_efavirenz <- function() {
     ),
     RACE_BLACK = list(
       description = "Black-race indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but not retained (reported as 'ethnicity'). Siccardi 2012",
         "does not tabulate the ethnic composition of the population PK",
         "cohort; the IVIVE arm was run in a North European Caucasian virtual",
@@ -113,10 +113,10 @@ Siccardi_2012_efavirenz <- function() {
   )
 
   compartmentData <- list(
-    depot    = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = TRUE),
-    central  = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = TRUE),
     auc_8_16 = list(analyte = "efavirenz", units = NA_character_, specimen = "not applicable", verified = TRUE),
-    t_8_16   = list(analyte = "efavirenz", units = NA_character_, specimen = "not applicable", verified = TRUE)
+    t_8_16 = list(analyte = "efavirenz", units = NA_character_, specimen = "not applicable", verified = TRUE)
   )
 
   # Bookkeeping accumulators that reconstruct the PD driver C8-16h -- the
@@ -128,30 +128,30 @@ Siccardi_2012_efavirenz <- function() {
   paper_specific_compartments <- c("auc_8_16", "t_8_16")
 
   population <- list(
-    species        = "human",
-    n_subjects     = 157L,
-    n_studies      = 2L,
-    age_range      = "IQR 22-67 years (population PK cohort)",
-    age_median     = "41 years (population PK cohort)",
-    weight_range   = "IQR 49-98 kg (population PK cohort)",
-    weight_median  = "70.5 kg (population PK cohort)",
+    species = "human",
+    n_subjects = 157L,
+    n_studies = 2L,
+    age_range = "IQR 22-67 years (population PK cohort)",
+    age_median = "41 years (population PK cohort)",
+    weight_range = "IQR 49-98 kg (population PK cohort)",
+    weight_median = "70.5 kg (population PK cohort)",
     sex_female_pct = 30,
-    disease_state  = paste(
+    disease_state = paste(
       "HIV-1 infection on an efavirenz-based regimen combined with two",
       "nucleoside reverse-transcriptase inhibitors, at steady state, plus",
       "nine healthy volunteers. Patients on a boosted protease inhibitor or",
       "on any other drug known to interact with efavirenz were excluded.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "600 mg once daily (the observed standard regimen); 400 mg and 200 mg",
       "once daily were simulated dose reductions, not observed.",
       sep = " "
     ),
-    regions        = "United Kingdom (nine healthy volunteers, Royal Free NHS Trust, London) and Germany (148 HIV-positive patients, KompNet cohort)",
+    regions = "United Kingdom (nine healthy volunteers, Royal Free NHS Trust, London) and Germany (148 HIV-positive patients, KompNet cohort)",
     genotype_distribution = "516GG 106 (67.5%), 516GT 41 (26.1%), 516TT 10 (6.4%)",
     n_observations = "202 plasma efavirenz samples spanning 530-26,020 ng/mL; six samples per healthy volunteer and one random sample per HIV-positive patient",
-    pd_cohorts     = paste(
+    pd_cohorts = paste(
       "The two logistic exposure-response models were fitted to separate",
       "cohorts drawn from Csajka 2003 and Marzolini 2001, not to the",
       "population PK cohort above. Viral suppression: 93 patients (14 with",
@@ -163,7 +163,7 @@ Siccardi_2012_efavirenz <- function() {
       "inhibitors zidovudine, stavudine and didanosine.",
       sep = " "
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics are in Siccardi 2012 Results, 'Population PK",
       "model' (PK cohort) and 'PD of dose reduction' (the two PD cohorts).",
       "The paper's companion IVIVE arm simulated 500 virtual North European",

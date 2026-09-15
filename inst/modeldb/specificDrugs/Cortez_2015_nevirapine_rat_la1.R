@@ -16,34 +16,36 @@ Cortez_2015_nevirapine_rat_la1 <- function() {
     "0.75 on clearances) referenced to the 0.33 kg mean study weight, which",
     "is what makes the companion human projection",
     "(Cortez_2015_nevirapine_human_la1) possible.",
-    sep = " ")
+    sep = " "
+  )
   reference <- paste(
     "Cortez JM Jr, Quintero R, Moss JA, Beliveau M, Smith TJ, Baum MM.",
     "Pharmacokinetics of injectable, long-acting nevirapine for HIV",
     "prophylaxis in breastfeeding infants.",
     "Antimicrob Agents Chemother. 2015;59(1):59-66.",
     "doi:10.1128/AAC.03906-14.",
-    sep = " ")
+    sep = " "
+  )
   vignette <- "Cortez_2015_nevirapine"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size covariate, reference 0.33 kg (the mean weight of",
         "the n = 4 study-1 rats, Cortez 2015 Methods 'Animals' and Table 2",
         "column header). Cortez 2015 Methods 'Structural PK model buildup'",
@@ -52,27 +54,27 @@ Cortez_2015_nevirapine_rat_la1 <- function() {
         "absorption rate, 1 on volumes and 0.75 on clearances; the exponents",
         "were imposed, not estimated, so they are fixed() here."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "rat (Sprague-Dawley)",
-    n_subjects     = 4L,
-    n_studies      = 1L,
-    age_range      = "Adult (age not reported)",
-    weight_range   = "Mean 0.33 kg (individual weights not reported)",
-    weight_median  = "0.33 kg (reported as the mean)",
-    disease_state  = "Healthy",
-    dose_range     = paste(
+    species = "rat (Sprague-Dawley)",
+    n_subjects = 4L,
+    n_studies = 1L,
+    age_range = "Adult (age not reported)",
+    weight_range = "Mean 0.33 kg (individual weights not reported)",
+    weight_median = "0.33 kg (reported as the mean)",
+    disease_state = "Healthy",
+    dose_range = paste(
       "Single 60 mg subcutaneous injection of NVP LA-1 suspended in 1 mL",
       "saline through a 14-gauge needle. Cortez 2015 Methods 'Population PK",
       "data set construction' assumes 75% of the nominal dose was actually",
       "delivered because of injection inefficiencies, so the modelled dose",
       "is 45 mg (135 mg/kg)."
     ),
-    regions        = "United States (Charles River Laboratories, Shrewsbury, MA)",
-    notes          = paste(
+    regions = "United States (Charles River Laboratories, Shrewsbury, MA)",
+    notes = paste(
       "Study 1 (JNN00006, March 2006). Serial jugular-vein sampling on days",
       "1 (1 and 6 h post-dose), 2, 3, 4, 6, 10, 14 and 28. Plasma nevirapine",
       "by LC-MS/MS (API 5000, APCI+, m/z 267.1 -> 226.1; glyburide internal",

@@ -29,18 +29,20 @@ LaporteAmargos_2026_piperacillin <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "piperacillin", units = "mg",
-      specimen = "plasma", verified = TRUE
+      analyte = "piperacillin",
+      units = "mg",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance estimated with the Cockcroft-Gault equation",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance estimated with the Cockcroft-Gault equation",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "RAW Cockcroft-Gault creatinine clearance in mL/min, NOT",
         "body-surface-area normalized. The canonical CRCL column carries",
         "mL/min/1.73 m^2 by default; this model uses the raw",
@@ -69,14 +71,14 @@ LaporteAmargos_2026_piperacillin <- function() {
         "so the model does not describe moderate-to-severe renal",
         "impairment."
       ),
-      source_name        = "CrCL"
+      source_name = "CrCL"
     ),
     OCC = list(
-      description        = "Integer-valued sampling-occasion indicator for the between-occasion variability on clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer-valued sampling-occasion indicator for the between-occasion variability on clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Laporte-Amargos 2026 Methods ('Antibiotic dosing, data collection,",
         "and blood sampling') states that plasma samples were collected",
         "during the first 5 days of treatment on THREE occasions, and",
@@ -93,72 +95,72 @@ LaporteAmargos_2026_piperacillin <- function() {
         "1..3 carries no between-occasion variability. For a",
         "single-occasion simulation pass OCC = 1."
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age at inclusion",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Screened in the forward-inclusion / backward-elimination covariate search (Laporte-Amargos 2026 Methods; supplement 'Supplementary material on Methods') but not retained. Cohort mean 55.4 years (SD 10.2, Table 1)."
+      units = "years",
+      type = "continuous",
+      notes = "Screened in the forward-inclusion / backward-elimination covariate search (Laporte-Amargos 2026 Methods; supplement 'Supplementary material on Methods') but not retained. Cohort mean 55.4 years (SD 10.2, Table 1)."
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened but not retained. 21 of 44 patients (47.7%) were male (Table 1), i.e. 52.3% female."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened but not retained. 21 of 44 patients (47.7%) were male (Table 1), i.e. 52.3% female."
     ),
     HT = list(
       description = "Body height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort mean 165.6 cm (SD 10.8, Table 1). Height enters the model only indirectly, through the Cockcroft-Gault CrCL that was retained."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort mean 165.6 cm (SD 10.8, Table 1). Height enters the model only indirectly, through the Cockcroft-Gault CrCL that was retained."
     ),
     WT = list(
       description = "Body weight at admission",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Screened but not retained; the model carries NO allometric size term. Cohort median 70 kg (interquartile interval 62.4-77.6, Table 1). Weight enters only indirectly through the Cockcroft-Gault CrCL."
+      units = "kg",
+      type = "continuous",
+      notes = "Screened but not retained; the model carries NO allometric size term. Cohort median 70 kg (interquartile interval 62.4-77.6, Table 1). Weight enters only indirectly through the Cockcroft-Gault CrCL."
     ),
     ALB = list(
       description = "Serum albumin",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort mean 3.4 g/dL (SD 0.4, Table 1). The paper's Limitations note that unbound concentrations were derived with an assumed 30% protein binding, considered reasonable because albumin was within the physiological range."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort mean 3.4 g/dL (SD 0.4, Table 1). The paper's Limitations note that unbound concentrations were derived with an assumed 30% protein binding, considered reasonable because albumin was within the physiological range."
     ),
     TPRO = list(
       description = "Total serum protein",
-      units       = "g/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort mean 5.6 g/dL (SD 0.5, Table 1)."
+      units = "g/dL",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort mean 5.6 g/dL (SD 0.5, Table 1)."
     ),
     TBILI = list(
       description = "Total plasma bilirubin",
-      units       = "mg/dL",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort median 0.62 mg/dL (interquartile interval 0.47-0.94, Table 1)."
+      units = "mg/dL",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort median 0.62 mg/dL (interquartile interval 0.47-0.94, Table 1)."
     ),
     APACHE_II = list(
       description = "Acute Physiology and Chronic Health Evaluation II score at the onset of febrile neutropenia",
-      units       = "(points)",
-      type        = "continuous",
-      notes       = "Screened but not retained. Cohort mean 18.0 (SD 3.5, Table 1). Two further baseline severity scores were screened alongside it and are likewise absent from the final model: the Sepsis-Related Organ Failure Assessment score (cohort mean 5, SD 1.6) and the Multinational Association for Supportive Care in Cancer score (20 of 44 patients, 45.5%, in the high-risk stratum with a score below 21). Neither has a canonical covariate column in nlmixr2lib, so they are documented here rather than given placeholder entries."
+      units = "(points)",
+      type = "continuous",
+      notes = "Screened but not retained. Cohort mean 18.0 (SD 3.5, Table 1). Two further baseline severity scores were screened alongside it and are likewise absent from the final model: the Sepsis-Related Organ Failure Assessment score (cohort mean 5, SD 1.6) and the Multinational Association for Supportive Care in Cancer score (20 of 44 patients, 45.5%, in the high-risk stratum with a score below 21). Neither has a canonical covariate column in nlmixr2lib, so they are documented here rather than given placeholder entries."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 44L,
-    n_studies      = 1L,
-    age_range      = "Adults (>= 18 years by inclusion criterion); mean 55.4 years, SD 10.2",
-    age_median     = "Not reported; mean 55.4 years",
-    weight_range   = "62.4-77.6 kg (interquartile interval)",
-    weight_median  = "70 kg",
+    species = "human",
+    n_subjects = 44L,
+    n_studies = 1L,
+    age_range = "Adults (>= 18 years by inclusion criterion); mean 55.4 years, SD 10.2",
+    age_median = "Not reported; mean 55.4 years",
+    weight_range = "62.4-77.6 kg (interquartile interval)",
+    weight_median = "70 kg",
     sex_female_pct = 52.3,
     race_ethnicity = "Not reported.",
-    disease_state  = paste(
+    disease_state = paste(
       "Febrile neutropenia (axillary temperature >= 38.0 C with < 500",
       "neutrophils/mm^3, or < 1,000 expected to drop within 24-48 h) in",
       "adults undergoing chemotherapy for acute leukemia or hematopoietic",
@@ -175,15 +177,15 @@ LaporteAmargos_2026_piperacillin <- function() {
       "diuresis above 2,000 mL, which the authors read as augmented renal",
       "clearance."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Piperacillin-tazobactam 4 g / 0.5 g every 6 h for patients with",
       "eGFR > 40 mL/min/1.73 m^2 and every 8 h for eGFR 30-40",
       "mL/min/1.73 m^2. The first dose was always a 30 min infusion;",
       "thereafter 21 patients (47.7%) received 3 h extended infusions and",
       "23 (52.3%) continued with 30 min intermittent infusions."
     ),
-    regions        = "Spain (four university hospitals).",
-    notes          = paste(
+    regions = "Spain (four university hospitals).",
+    notes = paste(
       "Pharmacokinetic substudy of the BEATLE multicenter randomized",
       "controlled trial (extended versus short infusion of beta-lactams in",
       "hematological patients with febrile neutropenia), conducted November",

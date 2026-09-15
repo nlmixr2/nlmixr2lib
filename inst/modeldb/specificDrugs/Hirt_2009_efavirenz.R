@@ -8,89 +8,89 @@ Hirt_2009_efavirenz <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear scaling on CL/F and V/F (allometric exponent fixed at 1) with reference weight 16.4 kg (cohort median). The body-weight exponent on CL/F was estimated at 1.13 in a sensitivity analysis but the final model was fitted with the exponent fixed to 1 because dosing is given linearly in mg/kg (Hirt 2009 Discussion paragraph 3 on page 4410).",
-      source_name        = "BW"
+      notes = "Linear scaling on CL/F and V/F (allometric exponent fixed at 1) with reference weight 16.4 kg (cohort median). The body-weight exponent on CL/F was estimated at 1.13 in a sensitivity analysis but the final model was fitted with the exponent fixed to 1 because dosing is given linearly in mg/kg (Hirt 2009 Discussion paragraph 3 on page 4410).",
+      source_name = "BW"
     ),
     AGE = list(
-      description        = "Postnatal age at study entry",
-      units              = "years",
-      type               = "continuous",
+      description = "Postnatal age at study entry",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at study entry. Power covariate on CL/F centred at the cohort median 6.35 years: CL/F scales by (AGE / 6.35)^e_age_cl with e_age_cl negative. Apparent per-kg clearance therefore decreases as age increases above the median, consistent with the maturation of hepatic CYP2B6 activity declining from its early-childhood peak toward adult levels (Hirt 2009 Results paragraph 'Population pharmacokinetics' and Discussion paragraph iii on page 4410).",
-      source_name        = "age"
+      notes = "Time-fixed at study entry. Power covariate on CL/F centred at the cohort median 6.35 years: CL/F scales by (AGE / 6.35)^e_age_cl with e_age_cl negative. Apparent per-kg clearance therefore decreases as age increases above the median, consistent with the maturation of hepatic CYP2B6 activity declining from its early-childhood peak toward adult levels (Hirt 2009 Results paragraph 'Population pharmacokinetics' and Discussion paragraph iii on page 4410).",
+      source_name = "age"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
-      description        = "Body height (size)",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height (size)",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a covariate on CL/F and V/F via generalized additive modelling in the basic model but did not meet the inclusion criteria (objective-function decrease >= 6.63 and a reduction in inter-subject variability) in the upward model-building procedure (Hirt 2009 Methods 'Modeling strategy and population pharmacokinetic model').",
-      source_name        = "size"
+      notes = "Tested as a covariate on CL/F and V/F via generalized additive modelling in the basic model but did not meet the inclusion criteria (objective-function decrease >= 6.63 and a reduction in inter-subject variability) in the upward model-building procedure (Hirt 2009 Methods 'Modeling strategy and population pharmacokinetic model').",
+      source_name = "size"
     ),
     CREAT = list(
-      description        = "Basal serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Basal serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 63 umol/L, range 6.6-126.4 (Table 1).",
-      source_name        = "serum creatinine concn"
+      notes = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 63 umol/L, range 6.6-126.4 (Table 1).",
+      source_name = "serum creatinine concn"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 26 IU/L, range 7-92 (Table 1).",
-      source_name        = "alanine aminotransferase concn"
+      notes = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 26 IU/L, range 7-92 (Table 1).",
+      source_name = "alanine aminotransferase concn"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase",
-      units              = "IU/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase",
+      units = "IU/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 44 IU/L, range 12-200 (Table 1).",
-      source_name        = "aspartate aminotransferase concn"
+      notes = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 44 IU/L, range 12-200 (Table 1).",
+      source_name = "aspartate aminotransferase concn"
     ),
     TBILI = list(
-      description        = "Total bilirubin",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 6.5 umol/L, range 0-42.8 (Table 1).",
-      source_name        = "total bilirubin concn"
+      notes = "Tested as a covariate on CL/F and V/F but not retained (Hirt 2009 Methods). Median 6.5 umol/L, range 0-42.8 (Table 1).",
+      source_name = "total bilirubin concn"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 48L,
-    n_studies      = 1L,
-    n_profiles     = 200L,
-    age_range      = "2.77-14.70 years",
-    age_median     = "6.35 years",
-    weight_range   = "11-37 kg",
-    weight_median  = "16.4 kg",
+    species = "human",
+    n_subjects = 48L,
+    n_studies = 1L,
+    n_profiles = 200L,
+    age_range = "2.77-14.70 years",
+    age_median = "6.35 years",
+    weight_range = "11-37 kg",
+    weight_median = "16.4 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = c(Black = 100),
-    disease_state  = "Treatment-naive HIV-1 infection; CDC clinical category C and/or low CD4 (children <=5 years) or CD4 <=200/uL (>5 years); or category B/A/N with intermediate CD4 plus viral load >100,000 copies/mL.",
-    co_medication  = "Once-daily didanosine (ddI; 240 mg/m^2 BSA) plus lamivudine (3TC; 8 mg/kg) given alongside once-daily efavirenz (the ddI-3TC-EFV combination).",
-    dose_range     = "Once-daily oral EFV as 200 mg capsules administered by body-weight-band per pediatric label. 46 of 48 children received the label-recommended dose; cohort median dose 250 mg (14.4 mg/kg) once daily. EFV administered at 18:00.",
-    regions        = "Burkina Faso (Bobo-Dioulasso); the BURKINAME-ANRS 12103 phase II open-label trial.",
+    disease_state = "Treatment-naive HIV-1 infection; CDC clinical category C and/or low CD4 (children <=5 years) or CD4 <=200/uL (>5 years); or category B/A/N with intermediate CD4 plus viral load >100,000 copies/mL.",
+    co_medication = "Once-daily didanosine (ddI; 240 mg/m^2 BSA) plus lamivudine (3TC; 8 mg/kg) given alongside once-daily efavirenz (the ddI-3TC-EFV combination).",
+    dose_range = "Once-daily oral EFV as 200 mg capsules administered by body-weight-band per pediatric label. 46 of 48 children received the label-recommended dose; cohort median dose 250 mg (14.4 mg/kg) once daily. EFV administered at 18:00.",
+    regions = "Burkina Faso (Bobo-Dioulasso); the BURKINAME-ANRS 12103 phase II open-label trial.",
     sampling_window = "Week 2 (n = 48): pre-dose, 1 h, and 3 h post-dose. Months 2 to 5 (n = 9): pre-dose, 1, 2, 3, 6, 12, and 24 h post-dose. 200 EFV plasma concentrations total measured by HPLC-UV (LLOQ 0.5 mg/L); no observations below LLOQ.",
-    notes          = "NIH ClinicalTrials.gov NCT00122538. Eligible age range 30 months to 15 years; baseline weight >= 10 kg required. All-Black African cohort; ethnicity could not be tested as a covariate (single-stratum design). Sex distribution was not tabulated in the publication."
+    notes = "NIH ClinicalTrials.gov NCT00122538. Eligible age range 30 months to 15 years; baseline weight >= 10 kg required. All-Black African cohort; ethnicity could not be tested as a covariate (single-stratum design). Sex distribution was not tabulated in the publication."
   )
 
   ini({

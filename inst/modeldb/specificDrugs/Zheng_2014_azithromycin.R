@@ -9,16 +9,16 @@ Zheng_2014_azithromycin <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot        = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
-    central      = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1  = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2  = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
-    muscle       = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
-    muscle_deep  = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
-    adipose      = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    depot = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    muscle = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle_deep = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
     adipose_deep = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
-    pmn          = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
-    pmn_deep     = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE)
+    pmn = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE),
+    pmn_deep = list(analyte = "azithromycin", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list()
@@ -26,50 +26,50 @@ Zheng_2014_azithromycin <- function() {
   covariatesDataExcluded <- list(
     WT = list(
       description = "Body weight at baseline.",
-      units       = "kg",
-      type        = "continuous",
-      notes       = "Reported in Methods (77.68 +/- 8.56 kg) but no covariate effect was retained: 'Due to the limited number of subjects (n = 6) and the relatively homogeneous study population ... a rigorous covariate analysis was deemed meaningless for this study.'"
+      units = "kg",
+      type = "continuous",
+      notes = "Reported in Methods (77.68 +/- 8.56 kg) but no covariate effect was retained: 'Due to the limited number of subjects (n = 6) and the relatively homogeneous study population ... a rigorous covariate analysis was deemed meaningless for this study.'"
     ),
     AGE = list(
       description = "Subject age.",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Reported in Methods (29.0 +/- 9.63 years) but not screened or retained for the same reason as WT (homogeneous cohort)."
+      units = "years",
+      type = "continuous",
+      notes = "Reported in Methods (29.0 +/- 9.63 years) but not screened or retained for the same reason as WT (homogeneous cohort)."
     ),
     HT = list(
       description = "Body height.",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Reported in Methods (184.17 +/- 6.74 cm) but not screened or retained for the same reason as WT (homogeneous cohort)."
+      units = "cm",
+      type = "continuous",
+      notes = "Reported in Methods (184.17 +/- 6.74 cm) but not screened or retained for the same reason as WT (homogeneous cohort)."
     ),
     BMI = list(
       description = "Body mass index.",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Reported in Methods (22.83 +/- 1.39 kg/m^2) but not screened or retained for the same reason as WT (homogeneous cohort)."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Reported in Methods (22.83 +/- 1.39 kg/m^2) but not screened or retained for the same reason as WT (homogeneous cohort)."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Fixed at 0 for this cohort: all 6 enrolled subjects were healthy adult males. No covariate effect was screened."
+      units = "(binary)",
+      type = "binary",
+      notes = "Fixed at 0 for this cohort: all 6 enrolled subjects were healthy adult males. No covariate effect was screened."
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 6,
-    n_studies       = 1,
-    age_range       = "29.0 +/- 9.63 years (mean +/- SD)",
-    weight_range    = "77.68 +/- 8.56 kg (mean +/- SD)",
-    height_range    = "184.17 +/- 6.74 cm (mean +/- SD)",
-    bmi_range       = "22.83 +/- 1.39 kg/m^2 (mean +/- SD)",
-    sex_female_pct  = 0,
-    disease_state   = "Healthy male volunteers.",
-    dose_range      = "500 mg once daily oral for 3 days.",
-    regions         = "Austria (Medical University of Vienna).",
-    n_observations  = "Total plasma azithromycin sampled at 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 6, 8 h on days 1 and 3, and three timepoints each on days 5 and 10. White-blood-cell total concentrations sampled at 0, 2, 6, 10 h on days 1 and 3, and one timepoint each on days 5 and 10. Muscle ISF and subcutis ISF unbound concentrations sampled via microdialysis at prespecified timepoints on the same study days (Matzneller et al. 2013, ref. 4).",
-    notes           = "All demographics from Zheng 2014 Methods 'Subjects and pharmacokinetic study' (which cites Matzneller et al. 2013 for the upstream clinical microdialysis dataset). Underlying clinical study: Matzneller P, Krasniqi S, Kinzig M, Sorgel F, Huttner S, Lackner E, Muller M, Zeitlinger M. Pharmacokinetics of polymorphonuclear leukocyte and plasma concentrations of azithromycin in healthy volunteers. Antimicrob Agents Chemother. 2013;57(4):1736-42 (ref. 4)."
+    species = "human",
+    n_subjects = 6,
+    n_studies = 1,
+    age_range = "29.0 +/- 9.63 years (mean +/- SD)",
+    weight_range = "77.68 +/- 8.56 kg (mean +/- SD)",
+    height_range = "184.17 +/- 6.74 cm (mean +/- SD)",
+    bmi_range = "22.83 +/- 1.39 kg/m^2 (mean +/- SD)",
+    sex_female_pct = 0,
+    disease_state = "Healthy male volunteers.",
+    dose_range = "500 mg once daily oral for 3 days.",
+    regions = "Austria (Medical University of Vienna).",
+    n_observations = "Total plasma azithromycin sampled at 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 6, 8 h on days 1 and 3, and three timepoints each on days 5 and 10. White-blood-cell total concentrations sampled at 0, 2, 6, 10 h on days 1 and 3, and one timepoint each on days 5 and 10. Muscle ISF and subcutis ISF unbound concentrations sampled via microdialysis at prespecified timepoints on the same study days (Matzneller et al. 2013, ref. 4).",
+    notes = "All demographics from Zheng 2014 Methods 'Subjects and pharmacokinetic study' (which cites Matzneller et al. 2013 for the upstream clinical microdialysis dataset). Underlying clinical study: Matzneller P, Krasniqi S, Kinzig M, Sorgel F, Huttner S, Lackner E, Muller M, Zeitlinger M. Pharmacokinetics of polymorphonuclear leukocyte and plasma concentrations of azithromycin in healthy volunteers. Antimicrob Agents Chemother. 2013;57(4):1736-42 (ref. 4)."
   )
 
   paper_specific_compartments <- c(

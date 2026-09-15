@@ -3,8 +3,8 @@ Lee_2023_patritumab <- function() {
   reference <- "Lee M, Wang S, Byrne R, Joshi R, Abutarif M, Garimella T, Li L. Integrated Population Pharmacokinetic Analysis of Conjugated and Unconjugated Payload of Patritumab Deruxtecan in Cancer Patients. American Conference on Pharmacometrics (ACoP) 14 Poster, Oct 2023. https://metrumrg.com/wp-content/uploads/2023/11/34023850_ACoP-2023_Pop_PK_Poster_V01-20Oct2023-1.pdf"
   vignette <- "Lee_2023_patritumab"
   units <- list(
-    time          = "h",
-    dosing        = "nmol",
+    time = "h",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
@@ -13,106 +13,106 @@ Lee_2023_patritumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "anti-HER3-ac-DXd", units = "nmol", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "anti-HER3-ac-DXd", units = "nmol", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "anti-HER3-ac-DXd", units = "nmol", specimen = "plasma", verified = FALSE),
     central_dxd = list(analyte = "DXd", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Allometric power exponents applied to all clearance terms (e_wt_cl on CL_t, CL_ss, Q, CL_DXd: exponent 0.343, Lee 2023 Table 6 'CL wt') and to all volume terms (e_wt_vc on V1, V2, V1_DXd: exponent 0.475, Lee 2023 Table 6 'V wt'). A second power effect on the DXd fractional-conversion anchor Frac_ns (e_wt_fracns: exponent 0.139, Lee 2023 Table 6 'Frac ns wt'). Reference 60 kg per Lee 2023 Figure 6 caption reference subject. Population median in PPK analysis 57.4 kg; range 32.4 - 113 kg (Lee 2023 Table 2 'All data').",
-      source_name        = "Weight"
+      notes = "Time-fixed baseline value. Allometric power exponents applied to all clearance terms (e_wt_cl on CL_t, CL_ss, Q, CL_DXd: exponent 0.343, Lee 2023 Table 6 'CL wt') and to all volume terms (e_wt_vc on V1, V2, V1_DXd: exponent 0.475, Lee 2023 Table 6 'V wt'). A second power effect on the DXd fractional-conversion anchor Frac_ns (e_wt_fracns: exponent 0.139, Lee 2023 Table 6 'Frac ns wt'). Reference 60 kg per Lee 2023 Figure 6 caption reference subject. Population median in PPK analysis 57.4 kg; range 32.4 - 113 kg (Lee 2023 Table 2 'All data').",
+      source_name = "Weight"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units). Power effects on the non-specific (steady-state) clearance CL_ss (e_alb_cl_ss: exponent -0.490, Lee 2023 Table 6 'CLinf alb') and on the DXd fractional-conversion anchor Frac_ns (e_alb_fracns: exponent -0.271, Lee 2023 Table 6 'Frac ns alb'). Reference 40 g/L per Lee 2023 Figure 6 caption reference subject. Population median 39 g/L; range 17 - 49 g/L (Lee 2023 Table 2).",
-      source_name        = "Albumin"
+      notes = "Time-fixed baseline value (SI units). Power effects on the non-specific (steady-state) clearance CL_ss (e_alb_cl_ss: exponent -0.490, Lee 2023 Table 6 'CLinf alb') and on the DXd fractional-conversion anchor Frac_ns (e_alb_fracns: exponent -0.271, Lee 2023 Table 6 'Frac ns alb'). Reference 40 g/L per Lee 2023 Figure 6 caption reference subject. Population median 39 g/L; range 17 - 49 g/L (Lee 2023 Table 2).",
+      source_name = "Albumin"
     ),
     CRCL = list(
-      description        = "Estimated glomerular filtration rate (CKD-EPI)",
-      units              = "mL/min/1.73m^2",
-      type               = "continuous",
+      description = "Estimated glomerular filtration rate (CKD-EPI)",
+      units = "mL/min/1.73m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "BSA-normalised CKD-EPI estimated glomerular filtration rate (Lee 2023 Table 2 'Estimated glomular filtration (eGFR) (mL/min/1.73m^2)'). Stored under the canonical CRCL register name. Power effects on CL_ss (e_egfr_cl_ss: exponent -0.302, Lee 2023 Table 6 'CLinf egfr') and on Frac_ns (e_egfr_fracns: exponent 0.0350, Lee 2023 Table 6 'Frac ns egfr'). Reference 90 mL/min/1.73m^2 per Lee 2023 Figure 6 caption reference subject. Population median 91.6 mL/min/1.73m^2; range 31.9 - 134 mL/min/1.73m^2 (Lee 2023 Table 2).",
-      source_name        = "eGFR"
+      notes = "BSA-normalised CKD-EPI estimated glomerular filtration rate (Lee 2023 Table 2 'Estimated glomular filtration (eGFR) (mL/min/1.73m^2)'). Stored under the canonical CRCL register name. Power effects on CL_ss (e_egfr_cl_ss: exponent -0.302, Lee 2023 Table 6 'CLinf egfr') and on Frac_ns (e_egfr_fracns: exponent 0.0350, Lee 2023 Table 6 'Frac ns egfr'). Reference 90 mL/min/1.73m^2 per Lee 2023 Figure 6 caption reference subject. Population median 91.6 mL/min/1.73m^2; range 31.9 - 134 mL/min/1.73m^2 (Lee 2023 Table 2).",
+      source_name = "eGFR"
     ),
     TUMSZ = list(
-      description        = "Baseline sum of the longest diameters of target lesions (RECIST)",
-      units              = "mm",
-      type               = "continuous",
+      description = "Baseline sum of the longest diameters of target lesions (RECIST)",
+      units = "mm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value; paper reports as SLD in cm (Lee 2023 Table 2 'Baseline SLD (cm)'). Canonical unit is mm; stored as `TUMSZ_mm = SLD_cm * 10`. Power effects on CL_t (e_sld_cl_time: exponent -0.0758, Lee 2023 Table 6 'CLt sld') and on Kdes (e_sld_kdes: exponent -0.139, Lee 2023 Table 6 'Kdes sld'). Reference 60 mm (= 6 cm) per Lee 2023 Figure 6 caption reference subject. Population median 6.10 cm; range 1.00 - 31.0 cm (Lee 2023 Table 2).",
-      source_name        = "Baseline SLD"
+      notes = "Time-fixed baseline value; paper reports as SLD in cm (Lee 2023 Table 2 'Baseline SLD (cm)'). Canonical unit is mm; stored as `TUMSZ_mm = SLD_cm * 10`. Power effects on CL_t (e_sld_cl_time: exponent -0.0758, Lee 2023 Table 6 'CLt sld') and on Kdes (e_sld_kdes: exponent -0.139, Lee 2023 Table 6 'Kdes sld'). Reference 60 mm (= 6 cm) per Lee 2023 Figure 6 caption reference subject. Population median 6.10 cm; range 1.00 - 31.0 cm (Lee 2023 Table 2).",
+      source_name = "Baseline SLD"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The paper's own reference category is female (see notes).",
-      notes              = "Time-fixed. Lee 2023 Table 6 reports the male:female ratio as exp(theta) for V1 (1.18; theta26), CL_ss (1.30; theta28), and Frac_ns (0.848; theta38). To store under the canonical SEXF (1 = female, 0 = male), the male-indicator is applied as (1 - SEXF) so SEXF = 1 yields multiplier 1 (the paper's female reference) and SEXF = 0 yields the paper's male multipliers. Reference category in paper covariate forest plots (Lee 2023 Figure 6) is female.",
-      source_name        = "Sex"
+      notes = "Time-fixed. Lee 2023 Table 6 reports the male:female ratio as exp(theta) for V1 (1.18; theta26), CL_ss (1.30; theta28), and Frac_ns (0.848; theta38). To store under the canonical SEXF (1 = female, 0 = male), the male-indicator is applied as (1 - SEXF) so SEXF = 1 yields multiplier 1 (the paper's female reference) and SEXF = 0 yields the paper's male multipliers. Reference category in paper covariate forest plots (Lee 2023 Figure 6) is female.",
+      source_name = "Sex"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator, 1 = Asian, 0 = non-Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator, 1 = Asian, 0 = non-Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effects applied directly via exp(theta * RACE_ASIAN) on V1 (Asian:non-Asian = 0.927; e_asian_vc = log(0.927) = -0.0758), CL_ss (Asian:non-Asian = 1.02), and Frac_ns (Asian:non-Asian = 1.06). Reference category is non-Asian (Lee 2023 Table 6 'Race effect on ... (Asian:non-Asian)' and Figure 6 reference subject 'non-Asian female ...').",
-      source_name        = "Race"
+      notes = "Time-fixed. Multiplicative effects applied directly via exp(theta * RACE_ASIAN) on V1 (Asian:non-Asian = 0.927; e_asian_vc = log(0.927) = -0.0758), CL_ss (Asian:non-Asian = 1.02), and Frac_ns (Asian:non-Asian = 1.06). Reference category is non-Asian (Lee 2023 Table 6 'Race effect on ... (Asian:non-Asian)' and Figure 6 reference subject 'non-Asian female ...').",
+      source_name = "Race"
     ),
     ECOG_GE1 = list(
-      description        = "ECOG performance status >= 1 indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "ECOG performance status >= 1 indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effects applied via exp(theta * ECOG_GE1) on CL_ss (>0:0 = 1.04; e_ecog_cl_ss = log(1.04)) and Frac_ns (>0:0 = 1.05; e_ecog_fracns = log(1.05)). The paper distinguishes only ECOG > 0 versus ECOG = 0 (Lee 2023 Table 6 'ECOG effect ... (>0:0)'). No subjects had ECOG >= 2 in the analysis dataset (Lee 2023 Table 3).",
-      source_name        = "ECOG status"
+      notes = "Time-fixed. Multiplicative effects applied via exp(theta * ECOG_GE1) on CL_ss (>0:0 = 1.04; e_ecog_cl_ss = log(1.04)) and Frac_ns (>0:0 = 1.05; e_ecog_fracns = log(1.05)). The paper distinguishes only ECOG > 0 versus ECOG = 0 (Lee 2023 Table 6 'ECOG effect ... (>0:0)'). No subjects had ECOG >= 2 in the analysis dataset (Lee 2023 Table 3).",
+      source_name = "ECOG status"
     ),
     TUMTP_BREAST = list(
-      description        = "Breast-cancer tumor-type indicator, 1 = breast cancer, 0 = NSCLC (reference)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Breast-cancer tumor-type indicator, 1 = breast cancer, 0 = NSCLC (reference)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effects via exp(theta * TUMTP_BREAST) on CL_t (BC:NSCLC = 0.896; e_bc_cl_time = log(0.896)), CL_ss (BC:NSCLC = 0.937), and Frac_ns (BC:NSCLC = 1.04) per Lee 2023 Table 6. The analysis cohort is exactly two tumor types (BC = U31402-J101, NSCLC = U31402-U102; Lee 2023 Table 3) so the indicator captures the full tumor-type contrast. NSCLC is the reference per Figure 6 reference subject 'NSCLC patient ...'.",
-      source_name        = "Tumor type"
+      notes = "Time-fixed. Multiplicative effects via exp(theta * TUMTP_BREAST) on CL_t (BC:NSCLC = 0.896; e_bc_cl_time = log(0.896)), CL_ss (BC:NSCLC = 0.937), and Frac_ns (BC:NSCLC = 1.04) per Lee 2023 Table 6. The analysis cohort is exactly two tumor types (BC = U31402-J101, NSCLC = U31402-U102; Lee 2023 Table 3) so the indicator captures the full tumor-type contrast. NSCLC is the reference per Figure 6 reference subject 'NSCLC patient ...'.",
+      source_name = "Tumor type"
     ),
     HEPIMP = list(
-      description        = "Hepatic-impairment indicator (NCI ODWG mild or moderate vs normal)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Hepatic-impairment indicator (NCI ODWG mild or moderate vs normal)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Multiplicative effects via exp(theta * HEPIMP) on CL_ss (impaired:normal = 0.906; e_hep_cl_ss = log(0.906)) and on Frac_ns (impaired:normal = 1.09; e_hep_fracns = log(1.09)). The paper pools mild and moderate impairment into a single impaired indicator (Lee 2023 Methods: 'hepatic impairment (based on NCIODWG criteria: mild and moderate vs normal)'). No subjects had severe impairment in the analysis dataset (Lee 2023 Table 3). Reference category is normal hepatic function (Lee 2023 Figure 6 reference subject).",
-      source_name        = "Hepatic function category (NCI-ODWG)"
+      notes = "Time-fixed. Multiplicative effects via exp(theta * HEPIMP) on CL_ss (impaired:normal = 0.906; e_hep_cl_ss = log(0.906)) and on Frac_ns (impaired:normal = 1.09; e_hep_fracns = log(1.09)). The paper pools mild and moderate impairment into a single impaired indicator (Lee 2023 Methods: 'hepatic impairment (based on NCIODWG criteria: mild and moderate vs normal)'). No subjects had severe impairment in the analysis dataset (Lee 2023 Table 3). Reference category is normal hepatic function (Lee 2023 Figure 6 reference subject).",
+      source_name = "Hepatic function category (NCI-ODWG)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 401L,
-    n_studies       = 2L,
+    species = "human",
+    n_subjects = 401L,
+    n_studies = 2L,
     n_observations_ac_dxd = 6869L,
-    n_observations_dxd    = 6821L,
-    age_range       = "29 - 83 years (median 60)",
-    age_median      = "60 years",
-    weight_range    = "32.4 - 113 kg (median 57.4)",
-    weight_median   = "57.4 kg (population median; Lee 2023 Figure 6 reference subject is 60 kg)",
-    sex_female_pct  = 80.0,
-    race_ethnicity  = c(Asian = 61.1, White = 32.2, Multiple = 3.5, Black = 2.2, AI_AN = 0.5, NH_PI = 0.5),
-    disease_state   = "Advanced or metastatic solid tumors. 182 / 401 (45.4%) breast cancer (HER3-expressing, Study U31402-A-J101); 219 / 401 (54.6%) non-small-cell lung cancer (Study U31402-A-U102).",
-    dose_range      = "1.6 - 8.0 mg/kg patritumab deruxtecan IV every 3 weeks (Q3W); the Phase 1 dose-escalation NSCLC arm also enrolled an up-titration regimen (Cycle 1: 3.2 mg/kg, Cycle 2: 4.8 mg/kg, Cycle 3+: 6.4 mg/kg).",
-    regions         = "Multi-regional: U31402-A-J101 enrolled in Japan with global expansion; U31402-A-U102 enrolled globally including US/EU/Asia (Lee 2023 Methods).",
-    ecog_pct        = c(`0` = 52.1, `1` = 47.9, `2` = 0.0),
+    n_observations_dxd = 6821L,
+    age_range = "29 - 83 years (median 60)",
+    age_median = "60 years",
+    weight_range = "32.4 - 113 kg (median 57.4)",
+    weight_median = "57.4 kg (population median; Lee 2023 Figure 6 reference subject is 60 kg)",
+    sex_female_pct = 80.0,
+    race_ethnicity = c(Asian = 61.1, White = 32.2, Multiple = 3.5, Black = 2.2, AI_AN = 0.5, NH_PI = 0.5),
+    disease_state = "Advanced or metastatic solid tumors. 182 / 401 (45.4%) breast cancer (HER3-expressing, Study U31402-A-J101); 219 / 401 (54.6%) non-small-cell lung cancer (Study U31402-A-U102).",
+    dose_range = "1.6 - 8.0 mg/kg patritumab deruxtecan IV every 3 weeks (Q3W); the Phase 1 dose-escalation NSCLC arm also enrolled an up-titration regimen (Cycle 1: 3.2 mg/kg, Cycle 2: 4.8 mg/kg, Cycle 3+: 6.4 mg/kg).",
+    regions = "Multi-regional: U31402-A-J101 enrolled in Japan with global expansion; U31402-A-U102 enrolled globally including US/EU/Asia (Lee 2023 Methods).",
+    ecog_pct = c(`0` = 52.1, `1` = 47.9, `2` = 0.0),
     hepatic_function = c(Normal = 71.8, Mild = 26.7, Moderate = 0.7, Severe = 0.0, Missing = 0.7),
-    renal_function   = c(Normal = 55.1, Mild = 34.7, Moderate = 10.2, Severe = 0.0, Missing = 0.0),
+    renal_function = c(Normal = 55.1, Mild = 34.7, Moderate = 10.2, Severe = 0.0, Missing = 0.0),
     reference_subject = "Non-Asian female NSCLC patient, age 60, weight 60 kg, ECOG 0, eGFR 90 mL/min/1.73m^2, albumin 40 g/L, baseline SLD 60 mm (= 6 cm), normal hepatic function (Lee 2023 Figure 6 caption).",
-    notes           = "ACoP 14 (Oct 2023) conference poster. NONMEM v7.5 sequential fit: anti-HER3-ac-DXd base model, then integrated anti-HER3-ac-DXd + DXd base model, then anti-HER3-ac-DXd covariates, then full integrated covariate model. Full covariate model: covariate point estimates and 95% confidence intervals reported without stepwise hypothesis-testing selection. 500-replicate Monte Carlo VPCs stratified by tumor type. PK observations: 6,869 anti-HER3-ac-DXd and 6,821 DXd samples from 401 cancer subjects across studies U31402-A-J101 and U31402-A-U102. Concentrations reported in molar units (nmol/L) in the structural-parameter tables (Vmax and Km units nmol/L/h and nmol/L respectively) - dosing therefore needs a mg-to-nmol conversion through the patritumab MW (approx 150,000 g/mol) at the simulation step. Distinct from the peer-reviewed Lu 2022 (J Clin Pharmacol 2023) patritumab deruxtecan popPK model in `Lu_2022_patritumab.R`, which used a different structural form (parallel linear+M-M intact clearance with a within-cycle DAR-modulated DXd release rate) on a partly different cohort (425 subjects from studies J101 / U102 / U202)."
+    notes = "ACoP 14 (Oct 2023) conference poster. NONMEM v7.5 sequential fit: anti-HER3-ac-DXd base model, then integrated anti-HER3-ac-DXd + DXd base model, then anti-HER3-ac-DXd covariates, then full integrated covariate model. Full covariate model: covariate point estimates and 95% confidence intervals reported without stepwise hypothesis-testing selection. 500-replicate Monte Carlo VPCs stratified by tumor type. PK observations: 6,869 anti-HER3-ac-DXd and 6,821 DXd samples from 401 cancer subjects across studies U31402-A-J101 and U31402-A-U102. Concentrations reported in molar units (nmol/L) in the structural-parameter tables (Vmax and Km units nmol/L/h and nmol/L respectively) - dosing therefore needs a mg-to-nmol conversion through the patritumab MW (approx 150,000 g/mol) at the simulation step. Distinct from the peer-reviewed Lu 2022 (J Clin Pharmacol 2023) patritumab deruxtecan popPK model in `Lu_2022_patritumab.R`, which used a different structural form (parallel linear+M-M intact clearance with a within-cycle DAR-modulated DXd release rate) on a partly different cohort (425 subjects from studies J101 / U102 / U202)."
   )
 
   ini({

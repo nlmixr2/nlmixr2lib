@@ -8,69 +8,69 @@ Suleiman_2019_risankizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL, Vc, and Vp; normalized as WT/70 per Suleiman 2019 Sect. 2.3 (reference 70 kg was explicitly stated, not median).",
-      source_name        = "WT"
+      notes = "Power effect on CL, Vc, and Vp; normalized as WT/70 per Suleiman 2019 Sect. 2.3 (reference 70 kg was explicitly stated, not median).",
+      source_name = "WT"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/44 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed.",
-      source_name        = "ALB"
+      notes = "Power effect on CL; normalized as ALB/44 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed.",
+      source_name = "ALB"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as CREAT/76 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2).",
-      source_name        = "CREAT"
+      notes = "Power effect on CL; normalized as CREAT/76 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2).",
+      source_name = "CREAT"
     ),
     CRP = list(
-      description        = "Baseline high-sensitivity C-reactive protein (hs-CRP assay; baseline, time-fixed per subject)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline high-sensitivity C-reactive protein (hs-CRP assay; baseline, time-fixed per subject)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as CRP/2.8 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2; hs-CRP assay). Source column 'hs-CRP' maps to the canonical general-scope CRP covariate; the assay type (hs-CRP) is documented here rather than via a separate hsCRP canonical.",
-      source_name        = "hs-CRP"
+      notes = "Power effect on CL; normalized as CRP/2.8 per Suleiman 2019 Sect. 2.3 (median of all subjects, Table 2; hs-CRP assay). Source column 'hs-CRP' maps to the canonical general-scope CRP covariate; the assay type (hs-CRP) is documented here rather than via a separate hsCRP canonical.",
+      source_name = "hs-CRP"
     ),
     ADA_TITER = list(
-      description        = "Antidrug-antibody reciprocal-dilution titer at the matched PK sample time. Linear-titer convention: 0 = ADA negative.",
-      units              = "(reciprocal dilution; 0 = negative)",
-      type               = "continuous",
+      description = "Antidrug-antibody reciprocal-dilution titer at the matched PK sample time. Linear-titer convention: 0 = ADA negative.",
+      units = "(reciprocal dilution; 0 = negative)",
+      type = "continuous",
       reference_category = "0 (ADA negative).",
-      notes              = "Suleiman 2019 modelled ADA titer as a threshold effect on CL: CL increases by 43% once ADA_TITER >= 128; values below 128 (including 0 / negative) are reference (Sect. 3.2 and Eq. 8 with Titer_threshold = 128). The paper imputes ADA titers reported as < 1 with 0.5 for testing the continuous-power parameterization (Eq. 7), which was not retained; in this library model users may supply 0 for negative samples because only the >=128 threshold matters.",
-      source_name        = "ADA titer"
+      notes = "Suleiman 2019 modelled ADA titer as a threshold effect on CL: CL increases by 43% once ADA_TITER >= 128; values below 128 (including 0 / negative) are reference (Sect. 3.2 and Eq. 8 with Titer_threshold = 128). The paper imputes ADA titers reported as < 1 with 0.5 for testing the continuous-power parameterization (Eq. 7), which was not retained; in this library model users may supply 0 for negative samples because only the >=128 threshold matters.",
+      source_name = "ADA titer"
     )
   )
 
   population <- list(
-    n_subjects     = 1899L,
-    n_studies      = 7L,
-    n_healthy      = 67L,
-    n_psoriasis    = 1832L,
-    age_range      = "18-85 years (median 47)",
-    age_median     = "47 years",
-    weight_range   = "42.6-193 kg (median 87)",
-    weight_median  = "87 kg",
+    n_subjects = 1899L,
+    n_studies = 7L,
+    n_healthy = 67L,
+    n_psoriasis = 1832L,
+    age_range = "18-85 years (median 47)",
+    age_median = "47 years",
+    weight_range = "42.6-193 kg (median 87)",
+    weight_median = "87 kg",
     sex_female_pct = 29.4,
     race_ethnicity = "White and other 83%, Asian 17% (Table 2). Regions: USA / USA+Canada 62%, Europe 20%, Korea 6%, Japan 5%, Rest of world 4%, Taiwan 2%, China 1%.",
-    disease_state  = "Moderate-to-severe plaque psoriasis (six phase I-III studies, n=1832 patients) pooled with healthy male volunteers (one phase I study, n=67).",
-    dose_range     = "0.01-5 mg/kg IV, 200-1200 mg IV, 0.25-1 mg/kg SC, 18-300 mg SC (phase I-II); 150 mg SC at weeks 0 and 4 and every 12 weeks thereafter (phase III clinical regimen).",
-    regions        = "Global (North America, Europe, East Asia).",
-    notes          = "Baseline demographics from Suleiman 2019 Table 2. Data set: 13,123 plasma concentration measurements from 1899 subjects (after excluding BLQ samples and 12 subjects with no post-dose data). Reference covariate values (normalizers in the power-covariate terms): WT = 70 kg (explicitly stated, not median), ALB = 44 g/L (median of all subjects), CREAT = 76 umol/L (median of all subjects), CRP = 2.8 mg/L (median of all subjects, hs-CRP assay). Reference bioavailability is the phase III drug-supply formulation (F = 0.890, logit = 2.09); the phase I-II drug-supply formulation had a distinct F = 0.710 (logit = 0.896) that is not the default here because the approved clinical regimen uses the phase III drug supply. ADA-positive subjects with titer >= 128 were ~1.5% (28/1807) of all phase III ADA-evaluable subjects."
+    disease_state = "Moderate-to-severe plaque psoriasis (six phase I-III studies, n=1832 patients) pooled with healthy male volunteers (one phase I study, n=67).",
+    dose_range = "0.01-5 mg/kg IV, 200-1200 mg IV, 0.25-1 mg/kg SC, 18-300 mg SC (phase I-II); 150 mg SC at weeks 0 and 4 and every 12 weeks thereafter (phase III clinical regimen).",
+    regions = "Global (North America, Europe, East Asia).",
+    notes = "Baseline demographics from Suleiman 2019 Table 2. Data set: 13,123 plasma concentration measurements from 1899 subjects (after excluding BLQ samples and 12 subjects with no post-dose data). Reference covariate values (normalizers in the power-covariate terms): WT = 70 kg (explicitly stated, not median), ALB = 44 g/L (median of all subjects), CREAT = 76 umol/L (median of all subjects), CRP = 2.8 mg/L (median of all subjects, hs-CRP assay). Reference bioavailability is the phase III drug-supply formulation (F = 0.890, logit = 2.09); the phase I-II drug-supply formulation had a distinct F = 0.710 (logit = 0.896) that is not the default here because the approved clinical regimen uses the phase III drug supply. ADA-positive subjects with titer >= 128 were ~1.5% (28/1807) of all phase III ADA-evaluable subjects."
   )
 
   ini({

@@ -8,32 +8,32 @@ Chien_2022_imatinib <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "imatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "imatinib", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    n_subjects     = 26L,
-    n_studies      = 2L,
+    n_subjects = 26L,
+    n_studies = 2L,
     n_observations = 472L,
-    age_range      = "19.7-31.0 years",
-    age_median     = "23.0 years",
-    weight_range   = "52.0-96.0 kg",
-    weight_median  = "69.5 kg",
-    bmi_range      = "20.0-30.0 kg/m^2",
-    bmi_median     = "22.5 kg/m^2",
-    bsa_range      = "1.52-2.22 m^2",
-    bsa_median     = "1.86 m^2",
+    age_range = "19.7-31.0 years",
+    age_median = "23.0 years",
+    weight_range = "52.0-96.0 kg",
+    weight_median = "69.5 kg",
+    bmi_range = "20.0-30.0 kg/m^2",
+    bmi_median = "22.5 kg/m^2",
+    bsa_range = "1.52-2.22 m^2",
+    bsa_median = "1.86 m^2",
     sex_female_pct = 30.8,
     race_ethnicity = "Healthy Caucasian volunteers (single-ancestry cohort enrolled in Spain)",
-    disease_state  = "Healthy adult volunteers (no concurrent drugs, no organ dysfunction or inflammation, BMI 18-30 kg/m^2, all clinical labs within normal range or judged acceptable per investigators)",
-    dose_range     = "Oral imatinib 400 mg single dose",
+    disease_state = "Healthy adult volunteers (no concurrent drugs, no organ dysfunction or inflammation, BMI 18-30 kg/m^2, all clinical labs within normal range or judged acceptable per investigators)",
+    dose_range = "Oral imatinib 400 mg single dose",
     administration = "Oral (single 400 mg dose; pooled from two randomised crossover bioequivalence studies)",
-    regions        = "Spain (Hospital Universitario de La Paz, Madrid; Hospital General de Alicante)",
-    notes          = "Demographics summarised in Chien 2022 page 4 paragraph 1 (median 23.0 y, 69.5 kg, 22.5 kg/m^2, 1.86 m^2 BSA) and Supplement Table S1 (not on disk). Sex distribution 8 female / 18 male = 30.8 % female. Genotype distribution for CYP3A4, CYP3A5, CYP2C9, CYP2C19, CYP2C8, CYP2B6, CYP2D6 and ABCB1 reported in Methods 'Sampling and analysis' but not retained as covariates in the final model. Sampling: 16-19 plasma samples per volunteer between 0.5 and 72 h post-dose."
+    regions = "Spain (Hospital Universitario de La Paz, Madrid; Hospital General de Alicante)",
+    notes = "Demographics summarised in Chien 2022 page 4 paragraph 1 (median 23.0 y, 69.5 kg, 22.5 kg/m^2, 1.86 m^2 BSA) and Supplement Table S1 (not on disk). Sex distribution 8 female / 18 male = 30.8 % female. Genotype distribution for CYP3A4, CYP3A5, CYP2C9, CYP2C19, CYP2C8, CYP2B6, CYP2D6 and ABCB1 reported in Methods 'Sampling and analysis' but not retained as covariates in the final model. Sampling: 16-19 plasma samples per volunteer between 0.5 and 72 h post-dose."
   )
 
   ini({

@@ -20,21 +20,26 @@ Prohn_2021_letermovir_healthy <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   compartmentData <- list(
-    depot       = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
+    depot = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral2 = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral3 = list(analyte = "letermovir", units = "mg", specimen = "plasma", verified = TRUE),
-    enzyme      = list(analyte = "relative amount of the clearing enzyme system", units = "(fraction of baseline)", specimen = "not applicable", verified = TRUE)
+    enzyme = list(
+      analyte = "relative amount of the clearing enzyme system",
+      units = "(fraction of baseline)",
+      specimen = "not applicable",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form scaling normalised at 65.8 kg, which is the reference",
         "weight printed in the Figure 1a equations rather than a rounded",
         "standard; the cohort median was 66 kg (Table 1). Two separately",
@@ -47,14 +52,14 @@ Prohn_2021_letermovir_healthy <- function() {
         "the companion HSCT recipient (phase III) model.",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Asian, predominantly White)",
-      notes              = paste(
+      notes = paste(
         "Enters the volume of distribution as a LINEAR fractional shift, not",
         "a log-additive or power one: Figure 1a prints",
         "V(1..4) = V(1..4)base * (1 + Vdjpn) * (WT/65.8)^Vdwt with",
@@ -70,14 +75,14 @@ Prohn_2021_letermovir_healthy <- function() {
         "is an Asian-race indicator.",
         sep = " "
       ),
-      source_name        = "Vd-jpn / ASIAN"
+      source_name = "Vd-jpn / ASIAN"
     ),
     DOSE = list(
-      description        = "Administered letermovir dose per administration",
-      units              = "mg",
-      type               = "continuous",
+      description = "Administered letermovir dose per administration",
+      units = "mg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Use case (a) of the DOSE canonical: the per-subject assigned dose",
         "level entering a covariate effect on the mean transit time,",
         "normalised at 240 mg. Mean transit time INCREASES with dose, i.e.",
@@ -94,60 +99,60 @@ Prohn_2021_letermovir_healthy <- function() {
         "both are excluded. Observed dose levels were 30-960 mg.",
         sep = " "
       ),
-      source_name        = "DOSE"
+      source_name = "DOSE"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Age",
-      units       = "years",
-      type        = "continuous",
-      notes       = "Tested on clearance and volume of distribution in the stepwise covariate search and not retained (Supplementary Information, 'Healthy participant (phase I model) covariate analysis'). Median 30 years, range 18-59 (Table 1).",
+      units = "years",
+      type = "continuous",
+      notes = "Tested on clearance and volume of distribution in the stepwise covariate search and not retained (Supplementary Information, 'Healthy participant (phase I model) covariate analysis'). Median 30 years, range 18-59 (Table 1).",
       source_name = "AGE"
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Tested and not retained: 'although most of the healthy participants were female, gender was not found to have a significant covariate effect on PK, and individual parameter estimates stratified by gender were not significantly different.' 254 of 280 participants (91%) were female, because most phase I studies recruited only women following preclinical testicular toxicity in rats.",
+      units = "(binary)",
+      type = "binary",
+      notes = "Tested and not retained: 'although most of the healthy participants were female, gender was not found to have a significant covariate effect on PK, and individual parameter estimates stratified by gender were not significantly different.' 254 of 280 participants (91%) were female, because most phase I studies recruited only women following preclinical testicular toxicity in rats.",
       source_name = "SEX"
     ),
     SNP_SLCO1B1_RS4149056 = list(
       description = "OATP1B1 (SLCO1B1) rs4149056 genotype",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested and not retained. 224 participants had single nucleotide polymorphism data for OATP1B1 rs4149056 and rs2306283 and UGT1A1 rs4148323; 'these functional variants had no statistically significant effect on letermovir exposure and they were not included in the final model'. No coefficient is reported, so the effect cannot be encoded even as a fixed zero with provenance.",
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested and not retained. 224 participants had single nucleotide polymorphism data for OATP1B1 rs4149056 and rs2306283 and UGT1A1 rs4148323; 'these functional variants had no statistically significant effect on letermovir exposure and they were not included in the final model'. No coefficient is reported, so the effect cannot be encoded even as a fixed zero with provenance.",
       source_name = "OATP1B1 rs4149056"
     ),
     SNP_SLCO1B1_RS2306283 = list(
       description = "OATP1B1 (SLCO1B1) rs2306283 genotype",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested and not retained; see SNP_SLCO1B1_RS4149056. No coefficient reported.",
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested and not retained; see SNP_SLCO1B1_RS4149056. No coefficient reported.",
       source_name = "OATP1B1 rs2306283"
     ),
     SNP_UGT1A1_RS4148323 = list(
       description = "UGT1A1 rs4148323 genotype",
-      units       = "(genotype)",
-      type        = "categorical",
-      notes       = "Tested and not retained; see SNP_SLCO1B1_RS4149056. No coefficient reported.",
+      units = "(genotype)",
+      type = "categorical",
+      notes = "Tested and not retained; see SNP_SLCO1B1_RS4149056. No coefficient reported.",
       source_name = "UGT1A1 rs4148323"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 280,
-    n_studies      = 12,
-    age_range      = "median 30 years, range 18-59 (Table 1)",
-    weight_range   = "median 66 kg, range 45-99 (Table 1)",
+    species = "human",
+    n_subjects = 280,
+    n_studies = 12,
+    age_range = "median 30 years, range 18-59 (Table 1)",
+    weight_range = "median 66 kg, range 45-99 (Table 1)",
     sex_female_pct = 91,
     race_ethnicity = "Reported only as the Asian / non-Asian contrast retained in the model. The covariate was first fitted as Japanese ethnicity (n = 30) and replaced in the final model by Asian ethnicity (n = 33); the remainder are predominantly White. Counts by race are not otherwise tabulated.",
-    disease_state  = "Healthy volunteers.",
-    dose_range     = "30-960 mg, single and multiple doses, orally or intravenously",
-    regions        = "Not reported; one of the pooled phase I studies was conducted in an Asian population.",
-    notes          = paste(
+    disease_state = "Healthy volunteers.",
+    dose_range = "30-960 mg, single and multiple doses, orally or intravenously",
+    regions = "Not reported; one of the pooled phase I studies was conducted in an Asian population.",
+    notes = paste(
       "Pooled across 12 phase I studies. 9020 concentration observations,",
       "6391 (71%) after oral and 2629 (29%) after intravenous dosing, and",
       "4680 (52%) after single and 4340 (48%) after multiple dosing. 174",

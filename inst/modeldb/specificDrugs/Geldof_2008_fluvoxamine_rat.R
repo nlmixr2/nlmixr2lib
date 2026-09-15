@@ -43,8 +43,8 @@ Geldof_2008_fluvoxamine_rat <- function() {
   paper_specific_residual_sds <- c("propSd_Cecf", "propSd_Cbrain")
 
   units <- list(
-    time          = "min",
-    dosing        = "ng",
+    time = "min",
+    dosing = "ng",
     concentration = "ng/mL"
   )
 
@@ -53,7 +53,7 @@ Geldof_2008_fluvoxamine_rat <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "fluvoxamine", units = "ng", specimen = "plasma", verified = FALSE),
     brain_total = list(analyte = "fluvoxamine", units = "ng", specimen = "tissue", verified = FALSE)
@@ -62,14 +62,14 @@ Geldof_2008_fluvoxamine_rat <- function() {
   covariateData <- list()
 
   population <- list(
-    species        = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
-    n_subjects     = 61L,
-    n_studies      = 1L,
-    age_range      = "adult (specific age not reported; housed 6-10 days post-arrival under standard conditions, then 1 week post-cannulation recovery for microdialysis rats or 2 days for brain-sampling rats)",
-    weight_range   = "226-250 g body weight at the start of the experiments",
+    species = "rat (male Wistar, Charles River Wiga GmbH, Sulzfeld, Germany)",
+    n_subjects = 61L,
+    n_studies = 1L,
+    age_range = "adult (specific age not reported; housed 6-10 days post-arrival under standard conditions, then 1 week post-cannulation recovery for microdialysis rats or 2 days for brain-sampling rats)",
+    weight_range = "226-250 g body weight at the start of the experiments",
     sex_female_pct = 0,
     race_ethnicity = NA,
-    disease_state  = paste(
+    disease_state = paste(
       "Healthy rats prepared with chronic right-jugular-vein and",
       "left-femoral-artery cannulae for fluvoxamine administration and",
       "arterial blood sampling. The 26 microdialysis-study rats also",
@@ -79,15 +79,15 @@ Geldof_2008_fluvoxamine_rat <- function() {
       "rats received only the vascular cannulae and were sacrificed at",
       "predetermined times for destructive total-brain tissue assays."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Single 30 min IV infusion of fluvoxamine free base into the right",
       "jugular vein at 1, 3.7 or 7.3 mg/kg (flow rate 20 uL/min via a",
       "BAS BeeHive pump). Group sizes in the microdialysis study: 8 / 8 /",
       "10 rats at 1 / 3.7 / 7.3 mg/kg; in the brain-sampling study:",
       "19 / 0 / 16 rats at 1 / 3.7 / 7.3 mg/kg."
     ),
-    regions        = "preclinical (in-vivo rat); Leiden University, The Netherlands",
-    notes          = paste(
+    regions = "preclinical (in-vivo rat); Leiden University, The Netherlands",
+    notes = paste(
       "Inter-animal weight range is narrow (226-250 g) and the model",
       "does not estimate body weight as a covariate; doses are reported",
       "per kg but the structural plasma PK parameters are absolute (mL,",

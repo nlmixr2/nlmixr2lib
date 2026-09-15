@@ -32,7 +32,7 @@ Du_2025_repotrectinib <- function() {
     "doi:10.1002/psp4.70036"
   )
   vignette <- "Du_2025_repotrectinib"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # `ctroughHold` is a bookkeeping state, not a physiological compartment: it
   # is the rxode2 realization of the source control stream's sample-and-hold
@@ -48,26 +48,28 @@ Du_2025_repotrectinib <- function() {
   # only the bare names propSd / addSd / expSd (same pattern as
   # Ozdin_2025_dexamethasone.R and Shoji_2011_pregabalin.R).
   paper_specific_residual_sds <- c(
-    "propSdHv", "addSdHv",
-    "propSdPt", "addSdPt"
+    "propSdHv",
+    "addSdHv",
+    "propSdPt",
+    "addSdPt"
   )
 
   compartmentData <- list(
-    depot       = list(analyte = "repotrectinib", units = "mg",    specimen = "administration site", verified = TRUE),
-    central     = list(analyte = "repotrectinib", units = "mg",    specimen = "plasma",              verified = TRUE),
-    peripheral1 = list(analyte = "repotrectinib", units = "mg",    specimen = "plasma",              verified = TRUE),
+    depot = list(analyte = "repotrectinib", units = "mg", specimen = "administration site", verified = TRUE),
+    central = list(analyte = "repotrectinib", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "repotrectinib", units = "mg", specimen = "plasma", verified = TRUE),
     # Holds a CONCENTRATION (ng/mL), not an amount: it latches the value of Cc
     # at each dosing event and holds it until the next one.
-    ctroughHold = list(analyte = "repotrectinib", units = "ng/mL", specimen = "not applicable",      verified = TRUE)
+    ctroughHold = list(analyte = "repotrectinib", units = "ng/mL", specimen = "not applicable", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Baseline (time-fixed) body weight, source column WTB. Allometric",
         "power scaling about a 70 kg reference, with BOTH exponents ESTIMATED",
         "rather than fixed at the canonical 0.75 / 1 values -- this is one of",
@@ -83,14 +85,14 @@ Du_2025_repotrectinib <- function() {
         "which reproduce as (102.05/70.55)^0.477 = 1.193 and",
         "(102.05/70.55)^0.962 = 1.427."
       ),
-      source_name        = "WTB"
+      source_name = "WTB"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Source column AGE2. Enters ONLY through the maximum induction",
         "exponent cl_time_max, and only below 18 years: Du 2025 Equation (4)",
         "and supplement Data S3 write",
@@ -113,18 +115,18 @@ Du_2025_repotrectinib <- function() {
         "51.5 (Table 1), with 16 patients under 12 years and 8 adolescents",
         "aged 12 to under 18 years."
       ),
-      source_name        = "AGE2"
+      source_name = "AGE2"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-volunteer cohort indicator; 0 = patient with an advanced solid tumor",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-volunteer cohort indicator; 0 = patient with an advanced solid tumor",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (patient with an advanced or metastatic solid tumor harboring an",
         "ALK, ROS1 or NTRK1-3 rearrangement, enrolled in TRIDENT-1",
         "(NCT03093116) or CARE (NCT04094610))"
       ),
-      notes              = paste(
+      notes = paste(
         "Source column HV, same orientation (1 = healthy volunteer), so no",
         "value transformation is needed. Time-fixed per subject. THREE",
         "distinct roles in this model.",
@@ -154,14 +156,14 @@ Du_2025_repotrectinib <- function() {
         "studies, 526 patients (81.7%) across TRIDENT-1 and CARE (Methods",
         "section 2.1, Table 1)."
       ),
-      source_name        = "HV"
+      source_name = "HV"
     ),
     FED = list(
-      description        = "Fed-state indicator for the dose record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-state indicator for the dose record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not fed; the record is fasted, modified fasted, or of unknown prandial state)",
-      notes              = paste(
+      notes = paste(
         "Per dose record, NOT per subject: Du 2025 Table 1 footnote a states",
         "that subjects who switched between fasted and fed states were",
         "counted twice, so the indicator varies within subject across days.",
@@ -178,14 +180,14 @@ Du_2025_repotrectinib <- function() {
         "fed state (0.124 vs 0.0541 /h; 0.76 vs 0.52). Cohort: 96 records",
         "fed (13.4%) of 715 prandial records (Table 1)."
       ),
-      source_name        = "FED2 (level 1)"
+      source_name = "FED2 (level 1)"
     ),
     FASTED_STRICT = list(
-      description        = "Strict-versus-relaxed fasting indicator for the dose record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Strict-versus-relaxed fasting indicator for the dose record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (relaxed fast; Du 2025's 'modified fasted' level)",
-      notes              = paste(
+      notes = paste(
         "Per dose record. READ ONLY WHEN FED = 0 AND FED_MISSING = 0 -- it",
         "distinguishes the two food-free levels of the source column FED2 and",
         "is not consulted on fed or unknown-prandial-state records, where the",
@@ -207,14 +209,14 @@ Du_2025_repotrectinib <- function() {
         "Cohort: 115 records fasted (16.1%) and 71 modified fasted (9.9%) of",
         "715 prandial records (Table 1)."
       ),
-      source_name        = "FED2 (levels 0 and 2)"
+      source_name = "FED2 (levels 0 and 2)"
     ),
     FED_MISSING = list(
-      description        = "Prandial-state-not-recorded indicator for the dose record",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Prandial-state-not-recorded indicator for the dose record",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (prandial state was recorded, i.e. fasted, fed or modified fasted)",
-      notes              = paste(
+      notes = paste(
         "Per dose record. Selects the FED2 = -99 level of the source column.",
         "This is a genuine estimated NUISANCE level, not a dropped-data flag:",
         "Du 2025 Discussion states that 'the unknown food effect was also",
@@ -229,16 +231,16 @@ Du_2025_repotrectinib <- function() {
         "state showed exposures comparable to the fed state on day 1 but 25%",
         "lower steady-state Cmin than the modified fasted state."
       ),
-      source_name        = "FED2 (level -99)"
+      source_name = "FED2 (level -99)"
     )
   )
 
   covariatesDataExcluded <- list(
     FORM_CAPSULE = list(
       description = "Capsule versus oral-suspension formulation indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained. Du 2025 Methods section 2.2 enhancement",
         "(4) states that a formulation effect (capsules versus oral",
         "suspension) was assessed on ka alone, on F1 alone, and on both",
@@ -251,9 +253,9 @@ Du_2025_repotrectinib <- function() {
     ),
     RENIMP = list(
       description = "Renal impairment category (normal / mild / moderate, by eGFR)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened but NOT retained. Du 2025 Discussion reports that renal",
         "impairment was identified as a significant covariate on peripheral",
         "volume during the Stage I univariate search, but was dropped from",
@@ -267,9 +269,9 @@ Du_2025_repotrectinib <- function() {
     ),
     HEPIMP = list(
       description = "Liver dysfunction category (normal / mild / moderate)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened but NOT retained. Du 2025 Discussion reports that hepatic",
         "impairment was identified for CL or Vc during the Stage I univariate",
         "search but was not retained in the final model for the same",
@@ -282,9 +284,9 @@ Du_2025_repotrectinib <- function() {
     ),
     PRVTRT = list(
       description = "Prior tyrosine-kinase-inhibitor treatment status (naive / pretreated)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened but NOT retained. Du 2025 Discussion and Figure S7 report",
         "that TKI-naive and TKI-pretreated subjects showed similar",
         "steady-state exposures (differences below 15%). Cohort: 186 naive",
@@ -294,9 +296,9 @@ Du_2025_repotrectinib <- function() {
     ),
     GENMT = list(
       description = "Driver-mutation type (ALK / ROS1 / NTRK1 / NTRK2 / NTRK3)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened but NOT retained. Du 2025 Results section 3.4 and Figure S4",
         "report steady-state exposure differences below 20% across mutation",
         "groups. Cohort: 35 ALK, 363 ROS1, 54 NTRK1, 9 NTRK2, 65 NTRK3",
@@ -305,9 +307,9 @@ Du_2025_repotrectinib <- function() {
     ),
     RACE = list(
       description = "Race group (White / Black or African American / Asian / Other)",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened but NOT retained as a structural covariate. Du 2025 Results",
         "section 3.4 and Figure S3 report that Asian patients had higher",
         "geometric-mean steady-state exposures than White or other races, but",
@@ -323,32 +325,32 @@ Du_2025_repotrectinib <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 644L,
-    n_studies      = 8L,
+    species = "human",
+    n_subjects = 644L,
+    n_studies = 8L,
     n_observations = 9220L,
-    age_range      = "0.800-93.0 years",
-    age_median     = "51.5 years",
-    weight_range   = "5.90-169 kg",
-    weight_median  = "70.6 kg",
+    age_range = "0.800-93.0 years",
+    age_median = "51.5 years",
+    weight_range = "5.90-169 kg",
+    weight_median = "70.6 kg",
     sex_female_pct = 46.6,
     race_ethnicity = c(White = 49.5, Black = 6.7, Asian = 38.0, Other = 1.2, Unknown = 4.5),
-    disease_state  = paste(
+    disease_state = paste(
       "Advanced or metastatic solid tumors harboring ALK, ROS1 or NTRK1-3",
       "rearrangements (363 ROS1, 65 NTRK3, 54 NTRK1, 35 ALK, 9 NTRK2), plus",
       "118 healthy volunteers"
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral capsules; the approved and simulated regimen is 160 mg once daily",
       "for 14 days followed by 160 mg twice daily"
     ),
-    pediatric      = paste(
+    pediatric = paste(
       "24 pediatric patients from the CARE study (NCT04094610): 16 under 12",
       "years and 8 adolescents aged 12 to under 18 years"
     ),
     renal_function = "448 normal (69.6%), 157 mild (24.4%), 33 moderate (5.1%) by eGFR",
     hepatic_function = "582 normal (90.4%), 59 mild (9.2%), 1 moderate (0.2%)",
-    notes          = paste(
+    notes = paste(
       "Baseline demographics are Du 2025 Table 1. Eight studies: six phase 1",
       "trials in healthy volunteers plus TRIDENT-1 (NCT03093116, adults) and",
       "CARE (NCT04094610, pediatric). This is the Stage II analysis, which",

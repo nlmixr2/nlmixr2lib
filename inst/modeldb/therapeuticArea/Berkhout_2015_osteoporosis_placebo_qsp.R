@@ -40,8 +40,8 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
   )
   vignette <- "Berkhout_2015_osteoporosis_placebo"
   units <- list(
-    time          = "day (days since onset of menopause; t = 0 at menopause onset)",
-    dosing        = "n/a (placebo / disease-progression model; no drug input event)",
+    time = "day (days since onset of menopause; t = 0 at menopause onset)",
+    dosing = "n/a (placebo / disease-progression model; no drug input event)",
     concentration = paste0(
       "NTX (nmol bone collagen equivalents (bce) / mmol creatinine); ",
       "BSAP (ng/mL); BMD_LS and BMD_TH (g/cm^2); ",
@@ -56,23 +56,33 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
   compartmentData <- list(
     osteoblast = list(analyte = "active osteoblast", units = NA_character_, specimen = "tissue", verified = FALSE),
     osteoclast = list(analyte = "active osteoclast", units = NA_character_, specimen = "tissue", verified = FALSE),
-    BMD_LS     = list(analyte = "bone mineral density (lumbar spine)", units = NA_character_, specimen = "tissue", verified = FALSE),
-    BMD_TH     = list(analyte = "bone mineral density (total hip)", units = NA_character_, specimen = "tissue", verified = FALSE)
+    BMD_LS = list(
+      analyte = "bone mineral density (lumbar spine)",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    ),
+    BMD_TH = list(
+      analyte = "bone mineral density (total hip)",
+      units = NA_character_,
+      specimen = "tissue",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     BMI = list(
-      description        = paste0(
+      description = paste0(
         "Body mass index at study baseline. Enters the BMD baseline ",
         "equations as a fractional shift from the cohort median: ",
         "BMD_LS(0) = BMD_LS_0 * (1 + BMI_frac_LS * (BMI - 25.34114)) ",
         "and BMD_TH(0) = BMD_TH_0 * (1 + BMI_frac_TH * (BMI - 25.34114)). ",
         "Time-fixed per subject in the source EPIC-arm fit."
       ),
-      units              = "kg/m^2",
-      type               = "continuous",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = 25.34114,
-      notes              = paste0(
+      notes = paste0(
         "Centred (referenced) at 25.34114 kg/m^2 in the source NONMEM code ",
         "(supplement $PK block: 'BMI-25.34114'). The paper text (Methods, ",
         "'Body composition is known to induce changes in bone morphology') ",
@@ -81,10 +91,10 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
         "coded value is authoritative for the ini() coefficients ",
         "BMI_frac_LS = 0.0111 and BMI_frac_TH = 0.0154 (Table 2)."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     T_ENTRY = list(
-      description        = paste0(
+      description = paste0(
         "Subject-specific time (in days since onset of menopause) at ",
         "which the study (placebo / 500 mg calcium daily) treatment ",
         "starts -- i.e., the subject's YSM at baseline expressed on the ",
@@ -94,10 +104,10 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
         "PCa = 1 - (1 - exp(-k_Ca_onset * (t - T_ENTRY))) * exp(",
         "-k_Ca_offset * (t - T_ENTRY)) for t >= T_ENTRY."
       ),
-      units              = "day (days since menopause onset)",
-      type               = "continuous",
+      units = "day (days since menopause onset)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject. In the source NONMEM data set this is ",
         "the column 'STDA' (start-day-of-treatment), which the $PK block ",
         "aliases as STAR. Subject YSM at baseline in the EPIC study ",
@@ -112,26 +122,26 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
         "T_ENTRY register entry (per-subject study-entry time on the ",
         "model integration axis; founding example Delor 2013)."
       ),
-      source_name        = "STDA"
+      source_name = "STDA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 470L,
-    n_studies       = 1L,
-    age_range       = "45-59 years at baseline (inclusion criterion; Methods, Subject population)",
-    age_median      = "53.3 +/- 3.7 years (EPIC 2, Table 1)",
-    weight_range    = "not reported (Table 1 records BMI, not weight)",
-    weight_median   = NA_character_,
-    sex_female_pct  = 100,
-    race_ethnicity  = paste0(
+    species = "human",
+    n_subjects = 470L,
+    n_studies = 1L,
+    age_range = "45-59 years at baseline (inclusion criterion; Methods, Subject population)",
+    age_median = "53.3 +/- 3.7 years (EPIC 2, Table 1)",
+    weight_range = "not reported (Table 1 records BMI, not weight)",
+    weight_median = NA_character_,
+    sex_female_pct = 100,
+    race_ethnicity = paste0(
       "Not reported per subject in Table 1. Four study centers (two in ",
       "the United States and two in Europe); the source NONMEM $INPUT ",
       "declares a RACE column but the paper does not tabulate the racial ",
       "composition or fit a race effect."
     ),
-    disease_state   = paste0(
+    disease_state = paste0(
       "Postmenopausal women at risk of osteoporosis (EPIC study inclusion ",
       "criteria: at least 6 months past menopause at baseline, in good ",
       "general health, no laboratory evidence of confounding systemic ",
@@ -139,20 +149,20 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
       "an LS-BMD below 0.8 g/cm^2 at baseline, so the cohort is largely ",
       "non-osteoporotic at study entry."
     ),
-    dose_range      = paste0(
+    dose_range = paste0(
       "Placebo tablet + at least 500 mg calcium per day (baseline dietary ",
       "calcium plus supplements as needed). All subjects were told to ",
       "achieve at least 500 mg/day; monitored by food-frequency ",
       "questionnaire at baseline and annually (Methods)."
     ),
-    regions         = "United States (2 centers) and Europe (2 centers)",
-    ysm_range       = "0.5-27 years since menopause at baseline (mean 5.7 +/- 5.4 yr; EPIC 2, Table 1)",
-    bmi_range       = "mean 25.2 +/- 3.6 kg/m^2 (EPIC 2, Table 1)",
+    regions = "United States (2 centers) and Europe (2 centers)",
+    ysm_range = "0.5-27 years since menopause at baseline (mean 5.7 +/- 5.4 yr; EPIC 2, Table 1)",
+    bmi_range = "mean 25.2 +/- 3.6 kg/m^2 (EPIC 2, Table 1)",
     ls_bmd_baseline = "0.94 +/- 0.12 g/cm^2 (EPIC 2, Table 1)",
     th_bmd_baseline = "0.85 +/- 0.12 g/cm^2 (EPIC 2, Table 1)",
-    ntx_baseline    = "88.0 +/- 45.0 nmol bce/mmol cr (EPIC 2, Table 1)",
-    bsap_baseline   = "11.1 +/- 4.4 ng/mL (EPIC 2, Table 1)",
-    notes           = paste0(
+    ntx_baseline = "88.0 +/- 45.0 nmol bce/mmol cr (EPIC 2, Table 1)",
+    bsap_baseline = "11.1 +/- 4.4 ng/mL (EPIC 2, Table 1)",
+    notes = paste0(
       "EPIC (Early Postmenopausal Intervention Cohort) placebo arm. ",
       "Randomized double-blind alendronate-vs-placebo study; only the ",
       "n = 470 placebo arm is used here. Observations: LS-BMD and TH-BMD ",
@@ -169,7 +179,7 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
       "'proportional' residual errors in Table 2 are natural-log-scale ",
       "SDs, encoded here via 'lnorm(sd)'."
     ),
-    scope_note      = paste0(
+    scope_note = paste0(
       "The paper reports two model fits: EPIC 1 (subset of 222 women ",
       "with 1 <= YSM <= 5 yr, using the original tibolone zeroth-order ",
       "BMD equation) as a QUALIFICATION check, and EPIC 2 (all 470 women ",

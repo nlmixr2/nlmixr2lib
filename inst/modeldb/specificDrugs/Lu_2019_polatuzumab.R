@@ -3,8 +3,8 @@ Lu_2019_polatuzumab <- function() {
   reference <- "Lu D, Lu T, Gibiansky L, Li X, Li C, Agarwal P, Shemesh CS, Shi R, Dere RC, Hirata J, Miles D, Chanu P, Girish S, Jin JY. Integrated Two-Analyte Population Pharmacokinetic Model of Polatuzumab Vedotin in Patients With Non-Hodgkin Lymphoma. CPT Pharmacometrics Syst Pharmacol. 2020;9(1):48-59. doi:10.1002/psp4.12482. PMID 31749251. Asian-race effect on acMMAE V1 (-7.1%) re-quoted and assessed as not clinically meaningful in: Shi R, Lu T, Ku G, Ding H, Saito T, Gibiansky L, Agarwal P, Li X, Jin JY, Girish S, Miles D, Li C, Lu D. Asian race and origin have no clinically meaningful effects on polatuzumab vedotin pharmacokinetics in patients with relapsed/refractory B-cell non-Hodgkin lymphoma. Cancer Chemother Pharmacol. 2020;86(3):347-359. doi:10.1007/s00280-020-04119-8. PMID 32770353."
   vignette <- "Lu_2019_polatuzumab"
   units <- list(
-    time          = "h",
-    dosing        = "ug",
+    time = "h",
+    dosing = "ug",
     concentration = "ng/mL"
   )
 
@@ -13,109 +13,109 @@ Lu_2019_polatuzumab <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central          = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
-    peripheral1      = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
-    central_mmae     = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    central_mmae = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1_mmae = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Power effects on acMMAE CL_SS (exponent 0.73), on Vc/Vp/Q (shared exponent 0.50), and on FRAC_NS (exponent -0.467); reference 75 kg per Lu 2019 NONMEM control stream (BWT/75 normalization).",
-      source_name        = "BWT"
+      notes = "Time-fixed baseline value. Power effects on acMMAE CL_SS (exponent 0.73), on Vc/Vp/Q (shared exponent 0.50), and on FRAC_NS (exponent -0.467); reference 75 kg per Lu 2019 NONMEM control stream (BWT/75 normalization).",
+      source_name = "BWT"
     ),
     SEXF = list(
-      description        = "Biological sex indicator, 1 = female, 0 = male",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator, 1 = female, 0 = male",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines SEX = SEXN - 1 (SEXN = 1 female, 2 male) so the source 'SEX' indicator equals 1 for males. The canonical SEXF reverses the value coding (SEXF = 1 - source_SEX); effect-coefficient ratios therefore invert (e.g., paper reports V1_male/V1_female = 1.20, stored as e_sexf_vc = 1/1.20 = 0.8333 applied as e_sexf_vc^SEXF). See Assumptions section of the validation vignette for the full sign-and-reference-category derivation.",
-      source_name        = "SEXN"
+      notes = "Time-fixed. Lu 2019 NONMEM defines SEX = SEXN - 1 (SEXN = 1 female, 2 male) so the source 'SEX' indicator equals 1 for males. The canonical SEXF reverses the value coding (SEXF = 1 - source_SEX); effect-coefficient ratios therefore invert (e.g., paper reports V1_male/V1_female = 1.20, stored as e_sexf_vc = 1/1.20 = 0.8333 applied as e_sexf_vc^SEXF). See Assumptions section of the validation vignette for the full sign-and-reference-category derivation.",
+      source_name = "SEXN"
     ),
     LINE_1L = list(
-      description        = "First-line-therapy indicator: 1 = treatment-naive (previously untreated), 0 = relapsed/refractory (>= second line)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "First-line-therapy indicator: 1 = treatment-naive (previously untreated), 0 = relapsed/refractory (>= second line)",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines NAIVE = 1 if RRFN == 0 (treatment-naive); the canonical LINE_1L matches this coding directly (no value flip). Treatment-naive status enters as multiplicative effects on Vc, cl_exp_kdes (the rate constant of CL_TIME decay), CL_TIME (initial linear time-decaying clearance), and FRAC_NS.",
-      source_name        = "RRFN"
+      notes = "Time-fixed. Lu 2019 NONMEM defines NAIVE = 1 if RRFN == 0 (treatment-naive); the canonical LINE_1L matches this coding directly (no value flip). Treatment-naive status enters as multiplicative effects on Vc, cl_exp_kdes (the rate constant of CL_TIME decay), CL_TIME (initial linear time-decaying clearance), and FRAC_NS.",
+      source_name = "RRFN"
     ),
     RACE_ASIAN = list(
-      description        = "Asian race indicator, 1 = Asian, 0 = non-Asian",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Asian race indicator, 1 = Asian, 0 = non-Asian",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines ASIAN = 1 if RACEN == 1; the canonical RACE_ASIAN matches this coding (no value flip). Multiplicative effect on Vc only (e_asian_vc = 0.929, applied as e_asian_vc^RACE_ASIAN). Shi 2020 (PMID 32770353), an ethnicity-sensitivity assessment that re-ran the Lu 2019 popPK model on 18 Asian / 442 non-Asian B-NHL patients, re-quotes this same effect verbatim: 'In the popPK model, race (Asian vs. non-Asian) was identified as a statistically significant covariate for central volume (V1) of acMMAE, with 7.1% lower V1 in Asian patients than in non-Asian patients' and concludes the difference is not clinically meaningful (no pola dose adjustment warranted for Asian DLBCL patients).",
-      source_name        = "RACEN"
+      notes = "Time-fixed. Lu 2019 NONMEM defines ASIAN = 1 if RACEN == 1; the canonical RACE_ASIAN matches this coding (no value flip). Multiplicative effect on Vc only (e_asian_vc = 0.929, applied as e_asian_vc^RACE_ASIAN). Shi 2020 (PMID 32770353), an ethnicity-sensitivity assessment that re-ran the Lu 2019 popPK model on 18 Asian / 442 non-Asian B-NHL patients, re-quotes this same effect verbatim: 'In the popPK model, race (Asian vs. non-Asian) was identified as a statistically significant covariate for central volume (V1) of acMMAE, with 7.1% lower V1 in Asian patients than in non-Asian patients' and concludes the difference is not clinically meaningful (no pola dose adjustment warranted for Asian DLBCL patients).",
+      source_name = "RACEN"
     ),
     ALB = list(
-      description        = "Baseline serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value (SI units). Power effects on CL_SS (exponent -0.247) and FRAC_NS (exponent -0.613); reference 35 g/L per Lu 2019 NONMEM control stream (BALBUM/35 normalization).",
-      source_name        = "BALBUM"
+      notes = "Time-fixed baseline value (SI units). Power effects on CL_SS (exponent -0.247) and FRAC_NS (exponent -0.613); reference 35 g/L per Lu 2019 NONMEM control stream (BALBUM/35 normalization).",
+      source_name = "BALBUM"
     ),
     BLBCELL = list(
-      description        = "Baseline CD19+ B cell count",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline CD19+ B cell count",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. Lu 2019 reports B-cell count in 10^6 cells/L which equals cells/uL by unit conversion (10^6 / L = 1 / uL). Two distinct effects: (1) on CL_SS, applied as max(1, BLBCELL)^0.0212 (i.e., a power effect with the input floored at 1 cell/uL); (2) on CL_TIME, applied as max(1, BLBCELL/121)^0.578 (a power effect with the threshold of 121 cells/uL below which the multiplier is 1).",
-      source_name        = "BBCC"
+      notes = "Time-fixed baseline value. Lu 2019 reports B-cell count in 10^6 cells/L which equals cells/uL by unit conversion (10^6 / L = 1 / uL). Two distinct effects: (1) on CL_SS, applied as max(1, BLBCELL)^0.0212 (i.e., a power effect with the input floored at 1 cell/uL); (2) on CL_TIME, applied as max(1, BLBCELL/121)^0.578 (a power effect with the threshold of 121 cells/uL below which the multiplier is 1).",
+      source_name = "BBCC"
     ),
     TUMSZ = list(
-      description        = "Baseline tumor sum of the products of perpendicular dimensions (SPD) for the non-Hodgkin lymphoma cohort",
-      units              = "mm^2",
-      type               = "continuous",
+      description = "Baseline tumor sum of the products of perpendicular dimensions (SPD) for the non-Hodgkin lymphoma cohort",
+      units = "mm^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline value. The canonical TUMSZ entry pools SPD (NHL/cHL, mm^2) and RECIST sum-of-diameters (solid tumors, mm) onto one column; for Lu 2019 the unit is mm^2 (SPD) per the source paper's NHL methodology. Two distinct effects: (1) on CL_SS, applied as 1 + 0.0521 x (TUMSZ/5000 - 1) (linear effect normalized to 5000 mm^2 reference, equivalent to NONMEM 1 + theta31*(BTMBD/5000-1)); (2) on CL_TIME, applied as TUMSZ / (1150 + TUMSZ) (Michaelis-Menten / saturable form with 50% effect at 1150 mm^2). Sensitivity-analysis range observed: 355 mm^2 (5th percentile) to 20000 mm^2 (95th percentile).",
-      source_name        = "BTMBD"
+      notes = "Time-fixed baseline value. The canonical TUMSZ entry pools SPD (NHL/cHL, mm^2) and RECIST sum-of-diameters (solid tumors, mm) onto one column; for Lu 2019 the unit is mm^2 (SPD) per the source paper's NHL methodology. Two distinct effects: (1) on CL_SS, applied as 1 + 0.0521 x (TUMSZ/5000 - 1) (linear effect normalized to 5000 mm^2 reference, equivalent to NONMEM 1 + theta31*(BTMBD/5000-1)); (2) on CL_TIME, applied as TUMSZ / (1150 + TUMSZ) (Michaelis-Menten / saturable form with 50% effect at 1150 mm^2). Sensitivity-analysis range observed: 355 mm^2 (5th percentile) to 20000 mm^2 (95th percentile).",
+      source_name = "BTMBD"
     ),
     ECOG_GE1 = list(
-      description        = "Eastern Cooperative Oncology Group (ECOG) performance status indicator, 1 = ECOG >= 1, 0 = ECOG = 0",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Eastern Cooperative Oncology Group (ECOG) performance status indicator, 1 = ECOG >= 1, 0 = ECOG = 0",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines ECOG0 = 1 if BECOG == 0; the canonical ECOG_GE1 reverses the value coding (ECOG_GE1 = 1 - source_ECOG0) and the effect-coefficient ratio therefore inverts (paper reports FRAC_NS_ECOG=0 / FRAC_NS_ECOG>=1 = 0.905, stored as e_ecog_ge1_frac_mmae = 1/0.905 = 1.1050 applied as e_ecog_ge1_frac_mmae^ECOG_GE1). Effect on FRAC_NS only.",
-      source_name        = "BECOG"
+      notes = "Time-fixed. Lu 2019 NONMEM defines ECOG0 = 1 if BECOG == 0; the canonical ECOG_GE1 reverses the value coding (ECOG_GE1 = 1 - source_ECOG0) and the effect-coefficient ratio therefore inverts (paper reports FRAC_NS_ECOG=0 / FRAC_NS_ECOG>=1 = 0.905, stored as e_ecog_ge1_frac_mmae = 1/0.905 = 1.1050 applied as e_ecog_ge1_frac_mmae^ECOG_GE1). Effect on FRAC_NS only.",
+      source_name = "BECOG"
     ),
     HEPIMP = list(
-      description        = "Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification, 1 = mild or worse hepatic impairment (NCI ODWG group >= mild), 0 = normal hepatic function",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Baseline hepatic-impairment indicator per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) classification, 1 = mild or worse hepatic impairment (NCI ODWG group >= mild), 0 = normal hepatic function",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines HEPA = 1 if BHPTGRPN > 1.5 (i.e., NCI ODWG group >= 2 = mild or worse) AND BHPTGRPN != 9999 (the missing-value sentinel). Multiplicative effect on FRAC_NS only (e_hepimp_frac_mmae = 1.19 applied as e_hepimp_frac_mmae^HEPIMP). NCI ODWG group 1 = normal (reference); group 2 = mild; group 3 = moderate; group 4 = severe (Ramalingam et al., J Clin Oncol 2010;28:4507).",
-      source_name        = "BHPTGRPN"
+      notes = "Time-fixed. Lu 2019 NONMEM defines HEPA = 1 if BHPTGRPN > 1.5 (i.e., NCI ODWG group >= 2 = mild or worse) AND BHPTGRPN != 9999 (the missing-value sentinel). Multiplicative effect on FRAC_NS only (e_hepimp_frac_mmae = 1.19 applied as e_hepimp_frac_mmae^HEPIMP). NCI ODWG group 1 = normal (reference); group 2 = mild; group 3 = moderate; group 4 = severe (Ramalingam et al., J Clin Oncol 2010;28:4507).",
+      source_name = "BHPTGRPN"
     ),
     COMBO_RG = list(
-      description        = "Anti-CD20 combination-therapy indicator, 1 = polatuzumab vedotin co-administered with rituximab OR obinutuzumab, 0 = single-agent polatuzumab vedotin",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-CD20 combination-therapy indicator, 1 = polatuzumab vedotin co-administered with rituximab OR obinutuzumab, 0 = single-agent polatuzumab vedotin",
+      units = "(binary)",
+      type = "binary",
       reference_category = 0,
-      notes              = "Time-fixed. Lu 2019 NONMEM defines RTX = 1 if COMBO == 1, GA101 = 1 if COMBO == 2, and applies effects as theta^(RTX+GA101); since RTX and GA101 are mutually exclusive, RTX+GA101 takes values 0 or 1 and the effect collapses to a single anti-CD20-combination indicator. Multiplicative effects on CL_SS (e_combo_rg_cl = 0.844, lower CL_SS on combo), cl_exp_kdes (e_combo_rg_kdes = 0.932), and FRAC_NS (e_combo_rg_frac_mmae = 0.709). The paper distinguishes rituximab and obinutuzumab combos in Table S1 but the final model fits a single combined effect (i.e., does not detect a meaningful difference between the two).",
-      source_name        = "COMBO"
+      notes = "Time-fixed. Lu 2019 NONMEM defines RTX = 1 if COMBO == 1, GA101 = 1 if COMBO == 2, and applies effects as theta^(RTX+GA101); since RTX and GA101 are mutually exclusive, RTX+GA101 takes values 0 or 1 and the effect collapses to a single anti-CD20-combination indicator. Multiplicative effects on CL_SS (e_combo_rg_cl = 0.844, lower CL_SS on combo), cl_exp_kdes (e_combo_rg_kdes = 0.932), and FRAC_NS (e_combo_rg_frac_mmae = 0.709). The paper distinguishes rituximab and obinutuzumab combos in Table S1 but the final model fits a single combined effect (i.e., does not detect a meaningful difference between the two).",
+      source_name = "COMBO"
     )
   )
 
   population <- list(
-    n_subjects     = 460L,
-    n_studies      = 4L,
+    n_subjects = 460L,
+    n_studies = 4L,
     n_observations = "4215 acMMAE + 4194 unconjugated MMAE concentration-time pairs (Lu 2019 Results section first paragraph)",
-    age_range      = "Adults with NHL (Lu 2019 does not tabulate age in the main paper; the four constituent studies enrolled adult patients with NHL or CLL).",
-    weight_range   = "5th-95th percentile 48.7-118 kg per Lu 2019 Figure 3 sensitivity-analysis annotation; reference 75 kg used for all weight-based covariate normalizations.",
+    age_range = "Adults with NHL (Lu 2019 does not tabulate age in the main paper; the four constituent studies enrolled adult patients with NHL or CLL).",
+    weight_range = "5th-95th percentile 48.7-118 kg per Lu 2019 Figure 3 sensitivity-analysis annotation; reference 75 kg used for all weight-based covariate normalizations.",
     sex_female_pct = NA_real_,
     race_ethnicity = "Tested as Asian vs non-Asian indicator only in the final model (RACE_ASIAN); a multiplicative effect on Vc (e_asian_vc = 0.929) was retained based on diagnostic-plot evidence per Lu 2019 Methods step 4 narrative.",
-    disease_state  = "Relapsed/refractory or previously untreated B-cell non-Hodgkin lymphoma (NHL): diffuse large B-cell lymphoma (DLBCL) and follicular lymphoma (FL); a small CLL sub-cohort from study DCS4968g is also included.",
-    dose_range     = "Pola 0.1-2.4 mg/kg IV every 3 weeks (Q3W) as monotherapy or in combination with rituximab, obinutuzumab, bendamustine, cyclophosphamide, and/or doxorubicin; Q4W in the FL DLBCL+R-bendamustine cohort (study GO29365). Therapeutic dose 1.8 mg/kg Q3W. Dose was administered as a 1.5- to 4-hour infusion.",
-    regions        = "Multi-regional (the four constituent studies were global Phase I/Ib/II trials NCT01290549, NCT01691898, NCT02257567, NCT01992653).",
-    studies        = "DCS4968g (NCT01290549, Phase I/Ib single-agent and Pola+R run-in), GO27834 / ROMULUS (NCT01691898, Phase Ib/II Pola+R or Pola+G), GO29365 (NCT02257567, Phase Ib/II Pola+B+R or Pola+B+G), GO29044 (NCT01992653, Phase Ib/II Pola+R+CHP or Pola+G+CHP first-line DLBCL). See Lu 2019 Table S1.",
+    disease_state = "Relapsed/refractory or previously untreated B-cell non-Hodgkin lymphoma (NHL): diffuse large B-cell lymphoma (DLBCL) and follicular lymphoma (FL); a small CLL sub-cohort from study DCS4968g is also included.",
+    dose_range = "Pola 0.1-2.4 mg/kg IV every 3 weeks (Q3W) as monotherapy or in combination with rituximab, obinutuzumab, bendamustine, cyclophosphamide, and/or doxorubicin; Q4W in the FL DLBCL+R-bendamustine cohort (study GO29365). Therapeutic dose 1.8 mg/kg Q3W. Dose was administered as a 1.5- to 4-hour infusion.",
+    regions = "Multi-regional (the four constituent studies were global Phase I/Ib/II trials NCT01290549, NCT01691898, NCT02257567, NCT01992653).",
+    studies = "DCS4968g (NCT01290549, Phase I/Ib single-agent and Pola+R run-in), GO27834 / ROMULUS (NCT01691898, Phase Ib/II Pola+R or Pola+G), GO29365 (NCT02257567, Phase Ib/II Pola+B+R or Pola+B+G), GO29044 (NCT01992653, Phase Ib/II Pola+R+CHP or Pola+G+CHP first-line DLBCL). See Lu 2019 Table S1.",
     reference_subject = "75 kg, ALB 35 g/L, TUMSZ 5000 mm^2 SPD, B-cell 1 cell/uL (so max(1, BLBCELL) = 1), male, R/R, non-Asian, normal hepatic function, ECOG >= 1, single-agent. With these covariates COVVC = COVCL_SS = COVKDES = COVCL_TIME = COVMMAE = 1.",
-    notes          = "Population characteristics drawn from Lu 2019 main text Results, Figure 3 sensitivity-analysis annotations, and Table S1. The integrated model was developed sequentially (acMMAE base -> integrated acMMAE-MMAE base -> acMMAE covariate -> integrated covariate); the function returns the final integrated covariate model (Tables 1, 2, S3)."
+    notes = "Population characteristics drawn from Lu 2019 main text Results, Figure 3 sensitivity-analysis annotations, and Table S1. The integrated model was developed sequentially (acMMAE base -> integrated acMMAE-MMAE base -> acMMAE covariate -> integrated covariate); the function returns the final integrated covariate model (Tables 1, 2, S3)."
   )
 
   ini({

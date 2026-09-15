@@ -8,35 +8,35 @@ Eugene_2016_metoprolol <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "metoprolol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "metoprolol", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "metoprolol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     SEXF = list(
-      description        = "Biological sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Biological sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male) in the canonical column. The Eugene 2016 MONOLIX model uses female as its structural reference (see notes).",
-      notes              = "Eugene 2016 reports the typical apparent clearance with female as the structural reference (CL_Female = 59.1 L/h, Table 1) and applies the male effect as a log-additive term betaCL_Male = 0.572 on the female baseline, so CL_Male = CL_Female * exp(0.572) = 105 L/h. To store under the canonical SEXF (1 = female, 0 = male) while preserving Eugene 2016's published female-reference CL, the effect is applied in model() as exp(e_sexf_cl * (1 - SEXF)); SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields exp(0.572) ~= 1.77 (the male:female CL ratio).",
-      source_name        = "SEX"
+      notes = "Eugene 2016 reports the typical apparent clearance with female as the structural reference (CL_Female = 59.1 L/h, Table 1) and applies the male effect as a log-additive term betaCL_Male = 0.572 on the female baseline, so CL_Male = CL_Female * exp(0.572) = 105 L/h. To store under the canonical SEXF (1 = female, 0 = male) while preserving Eugene 2016's published female-reference CL, the effect is applied in model() as exp(e_sexf_cl * (1 - SEXF)); SEXF = 1 (female) yields factor 1 and SEXF = 0 (male) yields exp(0.572) ~= 1.77 (the male:female CL ratio).",
+      source_name = "SEX"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 7L,
-    n_studies      = 1L,
-    age_range      = "61-88 years (mean 75 +/- 9 years; males 65 +/- 6 years, females 83 +/- 13 years)",
-    age_median     = "not reported (means reported instead)",
-    weight_range   = "45-75 kg (mean 62 +/- 10 kg; males 65 +/- 6 kg, females 58 +/- 13 kg)",
-    weight_median  = "not reported (means reported instead)",
+    species = "human",
+    n_subjects = 7L,
+    n_studies = 1L,
+    age_range = "61-88 years (mean 75 +/- 9 years; males 65 +/- 6 years, females 83 +/- 13 years)",
+    age_median = "not reported (means reported instead)",
+    weight_range = "45-75 kg (mean 62 +/- 10 kg; males 65 +/- 6 kg, females 58 +/- 13 kg)",
+    weight_median = "not reported (means reported instead)",
     sex_female_pct = 42.9,
     race_ethnicity = c(White = 100),
-    disease_state  = "Chronically ill elderly inpatients with multiple comorbidities",
-    dose_range     = "Single 50 mg oral metoprolol tartrate tablet followed by 100 mL water after a minimum 10-h overnight fast (Eugene 2016 Methods; original cohort: Lundborg 1976).",
-    regions        = "Sweden (University of Goteborg; concentration-time data digitized from Lundborg 1976)",
-    notes          = "n = 7 of the original 10 study participants from Lundborg 1976 (3 females, 4 males) were retained for the popPK analysis. Eugene 2016 used MONOLIX 4.3.3 (SAEM-MCMC) to fit a one-compartment model with first-order absorption and a fixed lag time. Body weight was tested as a covariate but increased the AIC and reduced biological plausibility, so it was excluded from the final model (Discussion paragraph 1); sex on CL was the only significant covariate retained."
+    disease_state = "Chronically ill elderly inpatients with multiple comorbidities",
+    dose_range = "Single 50 mg oral metoprolol tartrate tablet followed by 100 mL water after a minimum 10-h overnight fast (Eugene 2016 Methods; original cohort: Lundborg 1976).",
+    regions = "Sweden (University of Goteborg; concentration-time data digitized from Lundborg 1976)",
+    notes = "n = 7 of the original 10 study participants from Lundborg 1976 (3 females, 4 males) were retained for the popPK analysis. Eugene 2016 used MONOLIX 4.3.3 (SAEM-MCMC) to fit a one-compartment model with first-order absorption and a fixed lag time. Body weight was tested as a covariate but increased the AIC and reduced biological plausibility, so it was excluded from the final model (Discussion paragraph 1); sex on CL was the only significant covariate retained."
   )
 
   ini({

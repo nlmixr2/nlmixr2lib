@@ -13,39 +13,39 @@ Ji_2017_vancomycin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLcr. Computed by the Cockcroft-Gault equation (Ji 2017 Eq 6-7) in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Enters CL as a centered linear term referenced to 80 mL/min: TVCL is multiplied by (1 + 0.00842 * (CRCL - 80)) (Ji 2017 Eq 16). Model-building median 58.02 mL/min (range 5.45-224.0; Table 1).",
-      source_name        = "CLcr"
+      notes = "Source column CLcr. Computed by the Cockcroft-Gault equation (Ji 2017 Eq 6-7) in raw mL/min (NOT BSA-normalized to mL/min/1.73 m^2). Stored under the canonical CRCL column per inst/references/covariate-columns.md (CRCL accepts raw mL/min when the source paper does not apply BSA normalization, with the per-model description recording the assay form). Enters CL as a centered linear term referenced to 80 mL/min: TVCL is multiplied by (1 + 0.00842 * (CRCL - 80)) (Ji 2017 Eq 16). Model-building median 58.02 mL/min (range 5.45-224.0; Table 1).",
+      source_name = "CLcr"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Ji 2017 Eq 16: CL is multiplied by (75/AGE)^0.08143, a power term referenced to 75 years, so typical clearance decreases as age rises above 75 (consistent with the paper's statement that vancomycin excretion declines as renal function diminishes with age). Model-building median age 78 years (range 42-95; Table 1).",
-      source_name        = "AGE"
+      notes = "Ji 2017 Eq 16: CL is multiplied by (75/AGE)^0.08143, a power term referenced to 75 years, so typical clearance decreases as age rises above 75 (consistent with the paper's statement that vancomycin excretion declines as renal function diminishes with age). Model-building median age 78 years (range 42-95; Table 1).",
+      source_name = "AGE"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 160L,
-    n_studies        = 1L,
-    age_range        = "42-95 years",
-    age_median       = "78 years",
-    weight_range     = "38-90 kg",
-    weight_median    = "65 kg",
-    sex_female_pct   = 33.75,
-    race_ethnicity   = "Chinese adults",
-    disease_state    = "Hospitalized Chinese adults receiving vancomycin for gram-positive infection; not on renal replacement therapy",
-    dose_range       = "1000 mg every 12 h intravenous infusion",
-    regions          = "China (Beijing Hospital, Beijing)",
-    renal_function   = "Cockcroft-Gault creatinine clearance median 58.02 mL/min (range 5.45-224.0); serum creatinine median 75 umol/L (range 24-893)",
+    species = "human",
+    n_subjects = 160L,
+    n_studies = 1L,
+    age_range = "42-95 years",
+    age_median = "78 years",
+    weight_range = "38-90 kg",
+    weight_median = "65 kg",
+    sex_female_pct = 33.75,
+    race_ethnicity = "Chinese adults",
+    disease_state = "Hospitalized Chinese adults receiving vancomycin for gram-positive infection; not on renal replacement therapy",
+    dose_range = "1000 mg every 12 h intravenous infusion",
+    regions = "China (Beijing Hospital, Beijing)",
+    renal_function = "Cockcroft-Gault creatinine clearance median 58.02 mL/min (range 5.45-224.0); serum creatinine median 75 umol/L (range 24-893)",
     n_concentrations = 251L,
-    notes            = "Model-building cohort demographics from Ji 2017 Table 1 (n=160; a further 58 patients were held out for external validation, total n=218). Trough (Cmin) samples were collected before the next dose; each patient contributed at least one sample (median 2, range 1-17). Vancomycin concentrations measured by TDx-FLx fluorescence polarization immunoassay (LOQ 2.0 mg/L). Estimation in NONMEM 7 (FOCEI)."
+    notes = "Model-building cohort demographics from Ji 2017 Table 1 (n=160; a further 58 patients were held out for external validation, total n=218). Trough (Cmin) samples were collected before the next dose; each patient contributed at least one sample (median 2, range 1-17). Vancomycin concentrations measured by TDx-FLx fluorescence polarization immunoassay (LOQ 2.0 mg/L). Estimation in NONMEM 7 (FOCEI)."
   )
 
   ini({

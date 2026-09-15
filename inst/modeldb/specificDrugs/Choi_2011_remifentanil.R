@@ -48,45 +48,45 @@ Choi_2011_remifentanil <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    central     = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
+    central = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
-    effect      = list(analyte = "remifentanil", units = "ug", specimen = "not applicable", verified = FALSE),
-    tolerance   = list(analyte = "remifentanil metabolite", units = "ug", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "remifentanil", units = "ug", specimen = "not applicable", verified = FALSE),
+    tolerance = list(analyte = "remifentanil metabolite", units = "ug", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Enters the structural k10 elimination rate from Kang 2007 Table 2 via the additive form k10 = theta2 - theta9 * (AGE / 100) + theta10 * BSA (Kang 2007 Methods: 'Pharmacokinetic analysis', Table 2). Choi 2011 cohort spanned ages 20-79 years (Choi 2011 Table 1; n = 28 healthy volunteers).",
-      source_name        = "AGE"
+      notes = "Time-fixed at baseline. Enters the structural k10 elimination rate from Kang 2007 Table 2 via the additive form k10 = theta2 - theta9 * (AGE / 100) + theta10 * BSA (Kang 2007 Methods: 'Pharmacokinetic analysis', Table 2). Choi 2011 cohort spanned ages 20-79 years (Choi 2011 Table 1; n = 28 healthy volunteers).",
+      source_name = "AGE"
     ),
     BSA = list(
-      description        = "Body surface area",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed at baseline. Enters the structural k10 elimination rate from Kang 2007 Table 2 via the additive form k10 = theta2 - theta9 * (AGE / 100) + theta10 * BSA. Choi 2011 Table 1 does not report BSA directly; downstream users compute BSA from height and weight (Du Bois, Mosteller, or Gehan-George; Kang 2007 Methods does not state the BSA formula either). Approximate cohort BSA derived from Choi 2011 Table 1 demographics (overall mean WT approx 60.6 kg, mean HT approx 162.4 cm) is BSA approx 1.65 m^2 via the Du Bois formula.",
-      source_name        = "BSA"
+      notes = "Time-fixed at baseline. Enters the structural k10 elimination rate from Kang 2007 Table 2 via the additive form k10 = theta2 - theta9 * (AGE / 100) + theta10 * BSA. Choi 2011 Table 1 does not report BSA directly; downstream users compute BSA from height and weight (Du Bois, Mosteller, or Gehan-George; Kang 2007 Methods does not state the BSA formula either). Approximate cohort BSA derived from Choi 2011 Table 1 demographics (overall mean WT approx 60.6 kg, mean HT approx 162.4 cm) is BSA approx 1.65 m^2 via the Du Bois formula.",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 28L,
-    n_studies        = 1L,
-    age_range        = "20-79 years",
-    age_subgroups    = "Young (<= 40 years, n = 9, M:F = 5:4, mean 27.8 +/- 5.7 y); middle-aged or elderly (> 40 years, n = 19, M:F = 9:10, mean 57.7 +/- 13.9 y).",
-    weight_range     = "Young mean 63.8 +/- 11.3 kg; middle/elderly mean 59.1 +/- 10.6 kg (Choi 2011 Table 1)",
-    height_range     = "Young mean 167.9 +/- 7.5 cm; middle/elderly mean 160.8 +/- 9.6 cm",
-    sex_female_pct   = 50,
-    disease_state    = "Healthy volunteers with no medical problems or abnormal laboratory test results.",
-    dose_range       = "Zero-order remifentanil infusion. Young volunteers were randomized to a fixed rate of 1, 2, 3, 4, 5, 6, 7, or 8 ug/kg/min for 15-20 min (total dose 5.4 +/- 2.8 mg). Middle/elderly volunteers received 3 ug/kg/min until 95% spectral edge frequency stopped changing (mean infusion duration 15.3 +/- 3.9 min; total dose 2.7 +/- 0.8 mg).",
-    regions          = "South Korea (Asan Medical Center, Seoul; healthy volunteers under IRB approval).",
-    notes            = "Choi 2011 reused the blood-concentration and raw-EEG data from Noh 2006 Anesthesiology 104:921-32 [Choi 2011 ref 2]. The PK was not re-estimated in Choi 2011; per-subject individual PK estimates from the upstream Kang 2007 BJCP 64:3-13 popPK fit [Choi 2011 ref 3] were used as input data columns IV1, IK10, IK12, IK13, IK21, IK31 in the NONMEM data files (Choi 2011 Appendix 3 control streams). EEG was recorded on parietal montage P4 (right-handed cohort); TLMC and ApEn were derived from 10 s epochs and each normalised to per-subject baseline (Choi 2011 Methods 'Electroencephalographic analysis'), so the PD effect is dimensionless with baseline E0 = 1 by construction. The total observation window was up to 240 min after discontinuation of the infusion."
+    species = "human",
+    n_subjects = 28L,
+    n_studies = 1L,
+    age_range = "20-79 years",
+    age_subgroups = "Young (<= 40 years, n = 9, M:F = 5:4, mean 27.8 +/- 5.7 y); middle-aged or elderly (> 40 years, n = 19, M:F = 9:10, mean 57.7 +/- 13.9 y).",
+    weight_range = "Young mean 63.8 +/- 11.3 kg; middle/elderly mean 59.1 +/- 10.6 kg (Choi 2011 Table 1)",
+    height_range = "Young mean 167.9 +/- 7.5 cm; middle/elderly mean 160.8 +/- 9.6 cm",
+    sex_female_pct = 50,
+    disease_state = "Healthy volunteers with no medical problems or abnormal laboratory test results.",
+    dose_range = "Zero-order remifentanil infusion. Young volunteers were randomized to a fixed rate of 1, 2, 3, 4, 5, 6, 7, or 8 ug/kg/min for 15-20 min (total dose 5.4 +/- 2.8 mg). Middle/elderly volunteers received 3 ug/kg/min until 95% spectral edge frequency stopped changing (mean infusion duration 15.3 +/- 3.9 min; total dose 2.7 +/- 0.8 mg).",
+    regions = "South Korea (Asan Medical Center, Seoul; healthy volunteers under IRB approval).",
+    notes = "Choi 2011 reused the blood-concentration and raw-EEG data from Noh 2006 Anesthesiology 104:921-32 [Choi 2011 ref 2]. The PK was not re-estimated in Choi 2011; per-subject individual PK estimates from the upstream Kang 2007 BJCP 64:3-13 popPK fit [Choi 2011 ref 3] were used as input data columns IV1, IK10, IK12, IK13, IK21, IK31 in the NONMEM data files (Choi 2011 Appendix 3 control streams). EEG was recorded on parietal montage P4 (right-handed cohort); TLMC and ApEn were derived from 10 s epochs and each normalised to per-subject baseline (Choi 2011 Methods 'Electroencephalographic analysis'), so the PD effect is dimensionless with baseline E0 = 1 by construction. The total observation window was up to 240 min after discontinuation of the infusion."
   )
 
   ini({

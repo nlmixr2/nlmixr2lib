@@ -8,44 +8,44 @@ Chatelut_1999_interferon_alfa_2b <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "interferon alfa 2b", units = "ng", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "interferon alfa 2b", units = "ng", specimen = "administration site", verified = FALSE),
     central = list(analyte = "interferon alfa 2b", units = "ng", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(
-      description        = "Chronic intermittent haemodialysis treatment-status indicator (1 = chronic haemodialysis patient; 0 = patient with normal renal function).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Chronic intermittent haemodialysis treatment-status indicator (1 = chronic haemodialysis patient; 0 = patient with normal renal function).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (normal renal function)",
-      notes              = "Chatelut 1999 Methods/Results uses the symbol DIA (1 if dialysis, 0 otherwise) as a multiplicative covariate on apparent oral clearance: CL/F = theta1 * (1 - theta2 * DIA). The 17 chronic-haemodialysis patients had been on dialysis for more than 4 years; the PK study at the first interferon-alfa-2b dose was performed 8 h after the last dialysis session, and the subsequent dialysis session never occurred before the last blood sample was taken, so for the modelled period the indicator is time-fixed at the subject level. Maps directly to the canonical RRT_HEMODIAL_STATUS covariate (paper symbol DIA).",
-      source_name        = "DIA"
+      notes = "Chatelut 1999 Methods/Results uses the symbol DIA (1 if dialysis, 0 otherwise) as a multiplicative covariate on apparent oral clearance: CL/F = theta1 * (1 - theta2 * DIA). The 17 chronic-haemodialysis patients had been on dialysis for more than 4 years; the PK study at the first interferon-alfa-2b dose was performed 8 h after the last dialysis session, and the subsequent dialysis session never occurred before the last blood sample was taken, so for the modelled period the indicator is time-fixed at the subject level. Maps directly to the canonical RRT_HEMODIAL_STATUS covariate (paper symbol DIA).",
+      source_name = "DIA"
     ),
     BSA = list(
-      description        = "Body surface area, computed by the DuBois formula from height and weight.",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area, computed by the DuBois formula from height and weight.",
+      units = "m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Chatelut 1999 Results 'Structural and covariate models' identified BSA as the covariate explaining V/F variability ('V/F was significantly correlated with the body weight, but the correlation was better with the body surface area'). The published structural form V/F = theta * BSA is a linear-proportional scaling (exponent fixed at 1, equivalent to expressing V/F in units of L/m^2). BSA was computed using the DuBois formula (paper Methods, Table 1 footnote). Baseline / time-fixed in this single-dose PK study.",
-      source_name        = "BSA"
+      notes = "Chatelut 1999 Results 'Structural and covariate models' identified BSA as the covariate explaining V/F variability ('V/F was significantly correlated with the body weight, but the correlation was better with the body surface area'). The published structural form V/F = theta * BSA is a linear-proportional scaling (exponent fixed at 1, equivalent to expressing V/F in units of L/m^2). BSA was computed using the DuBois formula (paper Methods, Table 1 footnote). Baseline / time-fixed in this single-dose PK study.",
+      source_name = "BSA"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 27L,
-    n_studies       = 1L,
-    age_range       = "25-68 years",
-    age_median      = "43 years (dialysis), 57 years (normal renal)",
-    weight_range    = "41-100 kg",
-    weight_median   = "60 kg (dialysis), 74 kg (normal renal)",
-    bsa_range       = "1.35-2.26 m^2",
-    bsa_median      = "1.69 m^2 (dialysis), 1.75 m^2 (normal renal)",
-    sex_female_pct  = 44.4,
-    disease_state   = "Chronic hepatitis C virus infection (positive HCV serology, positive HCV viraemia, chronic active hepatitis on liver biopsy). 17 patients on chronic intermittent haemodialysis (more than 4 years on dialysis); 10 patients with normal renal function (median CRCL 79 mL/min, range 48-136).",
-    dose_range      = "Single subcutaneous injection of 3,000,000 units (15,000 ng) of alpha-2b interferon (Intron A, Schering Plough) at the start of a 3-times-weekly therapy course scheduled for 1 year. Pharmacokinetic study performed at the time of the first injection. In dialysis patients, the first injection was given 8 h after the last dialysis session.",
-    regions         = "France (Toulouse).",
-    notes           = "Demographics from Chatelut 1999 Table 1. Plasma concentrations measured by human alpha-interferon ELISA (ENDOGEN; LOQ 4.1 pg/mL, LOD <3 pg/mL); samples drawn pre-dose and at 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 28, and 32 h after the SC injection. Pre-dose samples were below LOQ in all patients, confirming negligible endogenous interferon interference."
+    species = "human",
+    n_subjects = 27L,
+    n_studies = 1L,
+    age_range = "25-68 years",
+    age_median = "43 years (dialysis), 57 years (normal renal)",
+    weight_range = "41-100 kg",
+    weight_median = "60 kg (dialysis), 74 kg (normal renal)",
+    bsa_range = "1.35-2.26 m^2",
+    bsa_median = "1.69 m^2 (dialysis), 1.75 m^2 (normal renal)",
+    sex_female_pct = 44.4,
+    disease_state = "Chronic hepatitis C virus infection (positive HCV serology, positive HCV viraemia, chronic active hepatitis on liver biopsy). 17 patients on chronic intermittent haemodialysis (more than 4 years on dialysis); 10 patients with normal renal function (median CRCL 79 mL/min, range 48-136).",
+    dose_range = "Single subcutaneous injection of 3,000,000 units (15,000 ng) of alpha-2b interferon (Intron A, Schering Plough) at the start of a 3-times-weekly therapy course scheduled for 1 year. Pharmacokinetic study performed at the time of the first injection. In dialysis patients, the first injection was given 8 h after the last dialysis session.",
+    regions = "France (Toulouse).",
+    notes = "Demographics from Chatelut 1999 Table 1. Plasma concentrations measured by human alpha-interferon ELISA (ENDOGEN; LOQ 4.1 pg/mL, LOD <3 pg/mL); samples drawn pre-dose and at 1, 2, 3, 4, 6, 8, 12, 16, 20, 24, 28, and 32 h after the SC injection. Pre-dose samples were below LOQ in all patients, confirming negligible endogenous interferon interference."
   )
 
   ini({

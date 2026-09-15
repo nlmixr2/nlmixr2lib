@@ -18,57 +18,62 @@ Svensson_2013_bedaquiline <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot          = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "administration site", verified = FALSE),
-    central        = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1    = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral2    = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m2     = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2 = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1_m2 = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
-    central_m3     = list(analyte = "N,N-bis-desmethyl metabolite M3", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1_m3 = list(analyte = "N,N-bis-desmethyl metabolite M3", units = "mg", specimen = "plasma", verified = FALSE)
+    central_m3 = list(analyte = "N,N-bis-desmethyl metabolite M3", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m3 = list(
+      analyte = "N,N-bis-desmethyl metabolite M3",
+      units = "mg",
+      specimen = "plasma",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight (used for allometric scaling around 70 kg)",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight (used for allometric scaling around 70 kg)",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2, CL_M3, Q_M3) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2, V_M3, VP_M3) around a 70 kg reference adult. Svensson 2013 Methods 'Population modeling' states 'Allometric scaling of all disposition compartments with body weight as the size descriptor and fixed (0.75 for clearance and 1 for volume of distribution V) or estimated coefficients was evaluated' and Results 'Allometric scaling of disposition parameters with fixed coefficients improved the fit markedly (0.75 for clearances and 1 for volumes; estimation of the coefficients did not significantly improve the fit further)'. The reference weight is not explicitly stated in Svensson 2013, but 70 kg is the universally adopted allometric reference (Anderson and Holford 2008) and is the value used by the sibling Svensson 2014 bedaquiline DDI paper that extends this analysis; see vignette Assumptions and deviations.",
-      source_name        = "WT"
+      notes = "Time-fixed baseline body weight. Allometric scaling applied with fixed exponents 0.75 on apparent clearances (CL/F, Q1/F, Q2/F, CL_M2, Q_M2, CL_M3, Q_M3) and 1 on apparent volumes (V/F, VP1/F, VP2/F, V_M2, VP_M2, V_M3, VP_M3) around a 70 kg reference adult. Svensson 2013 Methods 'Population modeling' states 'Allometric scaling of all disposition compartments with body weight as the size descriptor and fixed (0.75 for clearance and 1 for volume of distribution V) or estimated coefficients was evaluated' and Results 'Allometric scaling of disposition parameters with fixed coefficients improved the fit markedly (0.75 for clearances and 1 for volumes; estimation of the coefficients did not significantly improve the fit further)'. The reference weight is not explicitly stated in Svensson 2013, but 70 kg is the universally adopted allometric reference (Anderson and Holford 2008) and is the value used by the sibling Svensson 2014 bedaquiline DDI paper that extends this analysis; see vignette Assumptions and deviations.",
+      source_name = "WT"
     ),
     CONMED_EFV = list(
-      description        = "Concomitant efavirenz co-administration at full CYP3A4 induction (1 = on daily 600 mg efavirenz for at least 1 week; 0 = not on efavirenz or pre-induction lag).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Concomitant efavirenz co-administration at full CYP3A4 induction (1 = on daily 600 mg efavirenz for at least 1 week; 0 = not on efavirenz or pre-induction lag).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (not on efavirenz or first <1 week of co-administration)",
-      notes              = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with efavirenz co-administration. Svensson 2013 modelled the effect of EFV on BDQ, M2, and M3 apparent clearances as an instantaneous change in CL one week after initialization of EFV treatment (Svensson 2013 Methods 'Population modeling': 'the effect was modeled as an instantaneous change in clearance (CL) and/or bioavailability (F). Several time points between day 1 and day 14 of EFV treatment were tested for this change'; Results 'The impact of induction was described as an instantaneous change in clearance 1 week after initialization of EFV treatment'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 2.07^CONMED_EFV (Svensson 2013 Table 3 'EFV EFF BDQ and M2 = 2.07'). Multiplicative factor on CL_M3: cl_eff = cl_base * 1.12^CONMED_EFV (Svensson 2013 Table 3 'EFV EFF M3 = 1.12'). For simulation, set CONMED_EFV = 1 on observation rows that fall >= 1 week after the start of 600 mg once-nightly efavirenz co-administration and 0 otherwise (no EFV, or within the pre-induction lag). The same indicator drives the multiplicative effect on M2 CL because the increase in clearance with induction was not significantly different for BDQ and M2 (Svensson 2013 Results 'The increase in clearance with induction was not significantly different for BDQ and M2 and estimated to be about 2-fold').",
-      source_name        = "EFV"
+      notes = "Subject- and time-varying indicator that the subject has reached the post-induction equilibrium with efavirenz co-administration. Svensson 2013 modelled the effect of EFV on BDQ, M2, and M3 apparent clearances as an instantaneous change in CL one week after initialization of EFV treatment (Svensson 2013 Methods 'Population modeling': 'the effect was modeled as an instantaneous change in clearance (CL) and/or bioavailability (F). Several time points between day 1 and day 14 of EFV treatment were tested for this change'; Results 'The impact of induction was described as an instantaneous change in clearance 1 week after initialization of EFV treatment'). Multiplicative factor on CL_BDQ and CL_M2: cl_eff = cl_base * 2.07^CONMED_EFV (Svensson 2013 Table 3 'EFV EFF BDQ and M2 = 2.07'). Multiplicative factor on CL_M3: cl_eff = cl_base * 1.12^CONMED_EFV (Svensson 2013 Table 3 'EFV EFF M3 = 1.12'). For simulation, set CONMED_EFV = 1 on observation rows that fall >= 1 week after the start of 600 mg once-nightly efavirenz co-administration and 0 otherwise (no EFV, or within the pre-induction lag). The same indicator drives the multiplicative effect on M2 CL because the increase in clearance with induction was not significantly different for BDQ and M2 (Svensson 2013 Results 'The increase in clearance with induction was not significantly different for BDQ and M2 and estimated to be about 2-fold').",
+      source_name = "EFV"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 35L,
-    n_studies      = 1L,
-    age_range      = "19-62 years",
-    age_median     = "44 years",
-    weight_range   = "57.3-118.8 kg",
-    weight_median  = "82.3 kg",
+    species = "human",
+    n_subjects = 35L,
+    n_studies = 1L,
+    age_range = "19-62 years",
+    age_median = "44 years",
+    weight_range = "57.3-118.8 kg",
+    weight_median = "82.3 kg",
     sex_female_pct = 8.6,
     race_ethnicity = c(
-      `White, non-Hispanic`             = 68.6,
-      `Black, non-Hispanic`             = 22.9,
-      `Hispanic (regardless of race)`   = 5.7,
-      `Asian or Pacific Islander`       = 2.9
+      `White, non-Hispanic` = 68.6,
+      `Black, non-Hispanic` = 22.9,
+      `Hispanic (regardless of race)` = 5.7,
+      `Asian or Pacific Islander` = 2.9
     ),
-    bmi_range     = "19.0-36.1 kg/m^2",
-    bmi_median    = "25.9 kg/m^2",
-    disease_state  = "Healthy adult volunteers (18-65 years) enrolled at four AIDS Clinical Trials Group (ACTG) sites with no clinical evidence of TB, negative HIV antibody test, normal standard blood tests, and normal corrected QT intervals. Women of reproductive potential were excluded.",
-    dose_range     = "Single 400 mg oral dose of bedaquiline on Day 1 (period 1, alone) after a standard 670 kcal / 33% fat breakfast. From day 15 to 42, subjects received 600 mg efavirenz fasting each evening. On Day 29 (period 2, after 2 weeks of daily EFV), a second 400 mg oral dose of bedaquiline was administered. PK sampling: predose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each dose (i.e., up to day 14 / day 43).",
-    regions        = "Four ACTG sites, United States",
-    cyp2b6_status  = c(Slow = 8.6, Intermediate = 37.1, Extensive = 54.3),
-    notes          = "Baseline demographics from Svensson 2013 Table 2. Thirty-seven healthy subjects were enrolled in ACTG study A5267; 35 completed the first PK sampling and were included in the modelling analysis (33 completed both PK sampling periods). The dataset comprises 1,152 observations each of BDQ and M2 and 560 observations of M3 (the M3 sampling subset). CYP2B6 composite 516/983 metabolizer genotype was tested as a covariate but was not significantly correlated with the magnitude of the EFV induction effect (Svensson 2013 Results). Few non-white subjects were enrolled; race was not investigated as a covariate."
+    bmi_range = "19.0-36.1 kg/m^2",
+    bmi_median = "25.9 kg/m^2",
+    disease_state = "Healthy adult volunteers (18-65 years) enrolled at four AIDS Clinical Trials Group (ACTG) sites with no clinical evidence of TB, negative HIV antibody test, normal standard blood tests, and normal corrected QT intervals. Women of reproductive potential were excluded.",
+    dose_range = "Single 400 mg oral dose of bedaquiline on Day 1 (period 1, alone) after a standard 670 kcal / 33% fat breakfast. From day 15 to 42, subjects received 600 mg efavirenz fasting each evening. On Day 29 (period 2, after 2 weeks of daily EFV), a second 400 mg oral dose of bedaquiline was administered. PK sampling: predose and at 1, 2, 3, 4, 5, 6, 8, 12, 24, 48, 72, 120, 168, 216, 264, and 336 h after each dose (i.e., up to day 14 / day 43).",
+    regions = "Four ACTG sites, United States",
+    cyp2b6_status = c(Slow = 8.6, Intermediate = 37.1, Extensive = 54.3),
+    notes = "Baseline demographics from Svensson 2013 Table 2. Thirty-seven healthy subjects were enrolled in ACTG study A5267; 35 completed the first PK sampling and were included in the modelling analysis (33 completed both PK sampling periods). The dataset comprises 1,152 observations each of BDQ and M2 and 560 observations of M3 (the M3 sampling subset). CYP2B6 composite 516/983 metabolizer genotype was tested as a covariate but was not significantly correlated with the magnitude of the EFV induction effect (Svensson 2013 Results). Few non-white subjects were enrolled; race was not investigated as a covariate."
   )
 
   ini({

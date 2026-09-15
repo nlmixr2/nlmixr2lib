@@ -18,110 +18,150 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot1      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot2      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot3      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot4      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot5      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot6      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    depot7      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot1 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot2 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot3 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot4 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot5 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot6 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    depot7 = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
     peripheral2 = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
-    auc_free    = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    t_above_mic = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE)
+    auc_free = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    t_above_mic = list(
+      analyte = "benzylpenicillin",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     STUDY_SWEDEN_IV = list(
-      description        = "Swedish IV cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 1)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Swedish IV cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 1)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (French cohort, Nationcode = 0, the reference source of dataset)",
-      notes              = "1 = one of the 4 Swedish horses that received a single IV dose of sodium BP (Olsen 2018) and no IM administration. Modifies plasma clearance only. Set to 0 for every other cohort. Mutually exclusive with the other four STUDY_* indicators; when all five are 0 the horse is French. Time-fixed per subject. The coefficient was estimated in the IV-only model (Lallemand 2023 Table 4) and then FROZEN in the full model.",
-      source_name        = "Nationcode == 1"
+      notes = "1 = one of the 4 Swedish horses that received a single IV dose of sodium BP (Olsen 2018) and no IM administration. Modifies plasma clearance only. Set to 0 for every other cohort. Mutually exclusive with the other four STUDY_* indicators; when all five are 0 the horse is French. Time-fixed per subject. The coefficient was estimated in the IV-only model (Lallemand 2023 Table 4) and then FROZEN in the full model.",
+      source_name = "Nationcode == 1"
     ),
     STUDY_SWEDEN_IM = list(
-      description        = "Swedish IM cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 11)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Swedish IM cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 11)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (French cohort, Nationcode = 0, the reference source of dataset)",
-      notes              = "1 = one of the 8 Swedish horses enrolled in the 2x2 crossover comparing four IM administrations of procaine BP against seven IM administrations of sodium BP (Olsen 2013). These horses received no IV dose, so their plasma clearance was estimated indirectly (Bayesian) in the full model rather than frozen from the IV analysis. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. A SEPARATE level from STUDY_SWEDEN_IV: Lallemand 2023 Section 2.2 explains there was no reason to assume these 8 horses shared the clearance of the 4 Swedish IV horses (243 vs 351 mL/kg/h). Time-fixed per subject.",
-      source_name        = "Nationcode == 11"
+      notes = "1 = one of the 8 Swedish horses enrolled in the 2x2 crossover comparing four IM administrations of procaine BP against seven IM administrations of sodium BP (Olsen 2013). These horses received no IV dose, so their plasma clearance was estimated indirectly (Bayesian) in the full model rather than frozen from the IV analysis. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. A SEPARATE level from STUDY_SWEDEN_IV: Lallemand 2023 Section 2.2 explains there was no reason to assume these 8 horses shared the clearance of the 4 Swedish IV horses (243 vs 351 mL/kg/h). Time-fixed per subject.",
+      source_name = "Nationcode == 11"
     ),
     STUDY_USA1 = list(
-      description        = "USA1 cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 2)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "USA1 cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 2)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (French cohort, Nationcode = 0, the reference source of dataset)",
-      notes              = "1 = one of the 7 USA1 horses (Younkin 2019) that received two IV administrations of potassium BP at a 6 h interval followed by a single IM dose of procaine BP (Norocillin) 6 h after the second IV dose. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. Only 3 sampling points were available so this dataset was not analysable by NCA, and sampling stopped 12 h after the IM dose; the resulting very slow absorption (MAT 230 h) should be treated with caution per Lallemand 2023 Discussion. Time-fixed per subject. The clearance coefficient was estimated in the IV-only model (Table 4) and then FROZEN in the full model.",
-      source_name        = "Nationcode == 2"
+      notes = "1 = one of the 7 USA1 horses (Younkin 2019) that received two IV administrations of potassium BP at a 6 h interval followed by a single IM dose of procaine BP (Norocillin) 6 h after the second IV dose. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. Only 3 sampling points were available so this dataset was not analysable by NCA, and sampling stopped 12 h after the IM dose; the resulting very slow absorption (MAT 230 h) should be treated with caution per Lallemand 2023 Discussion. Time-fixed per subject. The clearance coefficient was estimated in the IV-only model (Table 4) and then FROZEN in the full model.",
+      source_name = "Nationcode == 2"
     ),
     STUDY_USA2 = list(
-      description        = "USA2 cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 4)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "USA2 cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 4)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (French cohort, Nationcode = 0, the reference source of dataset)",
-      notes              = "1 = one of the 6 USA2 horses (Wilson 2022) that received a single IV administration of potassium BP together with gentamicin 6.6 mg/kg. IV data only; no IM administration. Modifies plasma clearance only. Time-fixed per subject. The coefficient was estimated in the IV-only model (Table 4) and then FROZEN in the full model.",
-      source_name        = "Nationcode == 4"
+      notes = "1 = one of the 6 USA2 horses (Wilson 2022) that received a single IV administration of potassium BP together with gentamicin 6.6 mg/kg. IV data only; no IM administration. Modifies plasma clearance only. Time-fixed per subject. The coefficient was estimated in the IV-only model (Table 4) and then FROZEN in the full model.",
+      source_name = "Nationcode == 4"
     ),
     STUDY_JAPAN = list(
-      description        = "Japanese cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 3)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 3)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (French cohort, Nationcode = 0, the reference source of dataset)",
-      notes              = "1 = one of the 6 Japanese horses that received a single IM dose of procaine BP (Procaine BP G sol for Animals 'KS'). No IV data were collected in Japan, so plasma clearance was estimated indirectly (Bayesian) in the full model. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. Time-fixed per subject.",
-      source_name        = "Nationcode == 3"
+      notes = "1 = one of the 6 Japanese horses that received a single IM dose of procaine BP (Procaine BP G sol for Animals 'KS'). No IV data were collected in Japan, so plasma clearance was estimated indirectly (Bayesian) in the full model. Modifies plasma clearance, the procaine BP absorption rate constant, and the procaine BP logit bioavailability. Time-fixed per subject.",
+      source_name = "Nationcode == 3"
     ),
     FORM_BP_NA_IM = list(
-      description        = "Sodium benzylpenicillin solution given by the intramuscular route (Geepenil) formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sodium benzylpenicillin solution given by the intramuscular route (Geepenil) formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes              = "1 = the observation was recorded after IM sodium BP. Lallemand 2023 estimated a SEPARATE additive residual-error standard deviation for each of the five observation blocks (Supplementary Table S7 rows stdev0-stdev4) while sharing one multiplicative CV across all blocks; this indicator selects the IM sodium BP additive SD (0.162677 ug/mL). Observation-level, not subject-level: a horse in the Swedish crossover contributes rows with this indicator set to 1 on its sodium BP occasion and to 0 on its procaine BP occasion. Mutually exclusive with the other three FORM_BP_* indicators.",
-      source_name        = "observation block CObsPeniNa in Supplementary Data 2"
+      notes = "1 = the observation was recorded after IM sodium BP. Lallemand 2023 estimated a SEPARATE additive residual-error standard deviation for each of the five observation blocks (Supplementary Table S7 rows stdev0-stdev4) while sharing one multiplicative CV across all blocks; this indicator selects the IM sodium BP additive SD (0.162677 ug/mL). Observation-level, not subject-level: a horse in the Swedish crossover contributes rows with this indicator set to 1 on its sodium BP occasion and to 0 on its procaine BP occasion. Mutually exclusive with the other three FORM_BP_* indicators.",
+      source_name = "observation block CObsPeniNa in Supplementary Data 2"
     ),
     FORM_BP_PROC = list(
-      description        = "Procaine benzylpenicillin single-ingredient IM suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Procaine benzylpenicillin single-ingredient IM suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes              = "1 = the observation was recorded after IM procaine BP from one of the four single-ingredient products (Depocilline, Penovet, Norocillin, or the Japanese 'KS' product). Selects the procaine BP additive residual SD (0.004579 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev3. Does NOT cover the procaine BP contained in the Duplocilline combination, which forms its own observation block (see FORM_BP_DUPLO). Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
-      source_name        = "observation block CObsPROC in Supplementary Data 2"
+      notes = "1 = the observation was recorded after IM procaine BP from one of the four single-ingredient products (Depocilline, Penovet, Norocillin, or the Japanese 'KS' product). Selects the procaine BP additive residual SD (0.004579 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev3. Does NOT cover the procaine BP contained in the Duplocilline combination, which forms its own observation block (see FORM_BP_DUPLO). Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      source_name = "observation block CObsPROC in Supplementary Data 2"
     ),
     FORM_BP_DUPLO = list(
-      description        = "Duplocilline (procaine benzylpenicillin + benzathine benzylpenicillin fixed combination) IM suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Duplocilline (procaine benzylpenicillin + benzathine benzylpenicillin fixed combination) IM suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes              = "1 = the observation was recorded after IM Duplocilline. Selects the Duplocilline additive residual SD (0.006537 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev2. The measured concentration is the SUM of the BP released by both prodrug components, which the model reproduces by feeding both the procaine and the benzathine depot into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
-      source_name        = "observation block CObsBenza in Supplementary Data 2"
+      notes = "1 = the observation was recorded after IM Duplocilline. Selects the Duplocilline additive residual SD (0.006537 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev2. The measured concentration is the SUM of the BP released by both prodrug components, which the model reproduces by feeding both the procaine and the benzathine depot into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      source_name = "observation block CObsBenza in Supplementary Data 2"
     ),
     FORM_BP_PENETH = list(
-      description        = "Penethamate hydriodide (Penetavet) IM suspension formulation indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Penethamate hydriodide (Penetavet) IM suspension formulation indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (IV administration of soluble sodium or potassium BP, the reference observation block)",
-      notes              = "1 = the observation was recorded after IM penethamate hydriodide. Selects the penethamate additive residual SD (0.008068 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev4. The measured concentration is the SUM of the BP released from all three injection sites, which the model reproduces by feeding the three site depots into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
-      source_name        = "observation block CObsPenethamate in Supplementary Data 2"
+      notes = "1 = the observation was recorded after IM penethamate hydriodide. Selects the penethamate additive residual SD (0.008068 ug/mL) per Lallemand 2023 Supplementary Table S7 row stdev4. The measured concentration is the SUM of the BP released from all three injection sites, which the model reproduces by feeding the three site depots into the same central compartment. Observation-level. Mutually exclusive with the other three FORM_BP_* indicators.",
+      source_name = "observation block CObsPenethamate in Supplementary Data 2"
     )
   )
 
   population <- list(
-    species        = "horse (Equus caballus); Standardbred trotters (Sweden), Thoroughbreds (Japan, USA2), Quarter Horses / Quarter Horse crosses / Paint / Thoroughbred (USA1), French Trotters, Arabian and Spanish half-bloods and a Saddlebred (France), and one mixed pony (Sweden)",
-    n_subjects     = 40L,
-    n_studies      = 5L,
-    n_profiles     = 63L,
+    species = "horse (Equus caballus); Standardbred trotters (Sweden), Thoroughbreds (Japan, USA2), Quarter Horses / Quarter Horse crosses / Paint / Thoroughbred (USA1), French Trotters, Arabian and Spanish half-bloods and a Saddlebred (France), and one mixed pony (Sweden)",
+    n_subjects = 40L,
+    n_studies = 5L,
+    n_profiles = 63L,
     n_observations = 1022L,
-    age_range      = "4-24 years (Supplementary Table S3; age not reported for 2 of the 40 horses)",
-    weight_range   = "308-592 kg (Supplementary Table S3)",
+    age_range = "4-24 years (Supplementary Table S3; age not reported for 2 of the 40 horses)",
+    weight_range = "308-592 kg (Supplementary Table S3)",
     sex_female_pct = 50,
-    sex_notes      = "20 mares/females, 15 geldings, 4 stallions/males, 1 horse with sex not reported (Supplementary Table S3)",
-    disease_state  = "healthy adult horses enrolled in experimental pharmacokinetic trials; no clinical infection",
-    dose_range     = "5.617-25.11 mg/kg expressed as benzylpenicillin base (Supplementary Table S2); the reference regimen throughout the paper is 12.36 mg/kg = 22,000 IU/kg",
-    regions        = "France, Sweden, Japan, United States (two independent US datasets, USA1 and USA2)",
-    formulations   = "IV sodium BP (France, Sweden), IV potassium BP (USA1, USA2), IM procaine BP (France Depocilline, Sweden Penovet, USA1 Norocillin, Japan 'KS'), IM procaine BP + benzathine BP (France Duplocilline), IM penethamate hydriodide (France Penetavet), IM sodium BP (Sweden Geepenil)",
-    notes          = "Meta-analysis assembled for the VetCAST clinical-breakpoint project. The French data were generated specifically for this project and the Japanese data were previously unpublished; the Swedish (Olsen 2013, 2018), USA1 (Younkin 2019) and USA2 (Wilson 2022) data had been published before. Designs were deliberately unbalanced: no IV data in Japan, IV data only in USA2, and limits of quantification differing by site (5.5 ng/mL Sweden, 10 ng/mL France and USA1, 30 ng/mL Japan, 40 ng/mL USA2). BLOQ values (<5% of measurements) were discarded. All concentrations measured by LC-MS/MS. Because the goal was a maximally generic PK/PD cutoff, NO biological covariates (body weight, age, sex, breed) were carried into the model; 'source of dataset' is the only covariate. Extent of BP plasma protein binding measured at 62.8% in Swedish horses (Olsen 2013), giving the unbound fraction of 0.4 used for the PK/PD indices."
+    sex_notes = "20 mares/females, 15 geldings, 4 stallions/males, 1 horse with sex not reported (Supplementary Table S3)",
+    disease_state = "healthy adult horses enrolled in experimental pharmacokinetic trials; no clinical infection",
+    dose_range = "5.617-25.11 mg/kg expressed as benzylpenicillin base (Supplementary Table S2); the reference regimen throughout the paper is 12.36 mg/kg = 22,000 IU/kg",
+    regions = "France, Sweden, Japan, United States (two independent US datasets, USA1 and USA2)",
+    formulations = "IV sodium BP (France, Sweden), IV potassium BP (USA1, USA2), IM procaine BP (France Depocilline, Sweden Penovet, USA1 Norocillin, Japan 'KS'), IM procaine BP + benzathine BP (France Duplocilline), IM penethamate hydriodide (France Penetavet), IM sodium BP (Sweden Geepenil)",
+    notes = "Meta-analysis assembled for the VetCAST clinical-breakpoint project. The French data were generated specifically for this project and the Japanese data were previously unpublished; the Swedish (Olsen 2013, 2018), USA1 (Younkin 2019) and USA2 (Wilson 2022) data had been published before. Designs were deliberately unbalanced: no IV data in Japan, IV data only in USA2, and limits of quantification differing by site (5.5 ng/mL Sweden, 10 ng/mL France and USA1, 30 ng/mL Japan, 40 ng/mL USA2). BLOQ values (<5% of measurements) were discarded. All concentrations measured by LC-MS/MS. Because the goal was a maximally generic PK/PD cutoff, NO biological covariates (body weight, age, sex, breed) were carried into the model; 'source of dataset' is the only covariate. Extent of BP plasma protein binding measured at 62.8% in Swedish horses (Olsen 2013), giving the unbound fraction of 0.4 used for the PK/PD indices."
   )
 
   paper_specific_compartments <- c("auc_free", "t_above_mic")

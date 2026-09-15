@@ -39,8 +39,8 @@ Hoefman_2021_asp8232 <- function() {
   )
   vignette <- "Hoefman_2021_asp8232"
   units <- list(
-    time          = "hour (time after first dose)",
-    dosing        = "n/a (PD-only; Cu supplied externally via CU_ASP8232)",
+    time = "hour (time after first dose)",
+    dosing = "n/a (PD-only; Cu supplied externally via CU_ASP8232)",
     concentration = paste0(
       "eGFR CysC (mL/min/1.73m^2); sCr (uM); AER (mg/24h); ",
       "UACR (mg/g); urine volume (L/24h); uCr (mM); Cu (nM)"
@@ -49,70 +49,70 @@ Hoefman_2021_asp8232 <- function() {
 
   covariateData <- list(
     BSA = list(
-      description        = "Body surface area (m^2).",
-      units              = "m^2",
-      type               = "continuous",
+      description = "Body surface area (m^2).",
+      units = "m^2",
+      type = "continuous",
       reference_category = "2.034 (median in the ALBUM DKD cohort)",
-      notes              = paste0(
+      notes = paste0(
         "Enters the eGFR-to-AER filtration link (Eq. 4) and modifies typical ",
         "baseline urine volume and uCr (theta_29 and theta_30 in Table 1). ",
         "Reference value 2.034 m^2 is stated in Methods as the median value ",
         "for individuals in the dataset."
       ),
-      source_name        = "BSA"
+      source_name = "BSA"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste0(
+      notes = paste0(
         "theta_28 = 0.829 gives female-vs-male typical baseline eGFR CysC ",
         "(83% of male value); theta_25 = 0.770 gives female-vs-male typical ",
         "baseline sCr and uCr (77% of male value). Effect enters ",
         "multiplicatively: TVpar_i = TVpar * theta_sex^SEXF."
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     AGE = list(
-      description        = "Age (years).",
-      units              = "years",
-      type               = "continuous",
+      description = "Age (years).",
+      units = "years",
+      type = "continuous",
       reference_category = "70 (rounded typical value; the paper does not report a centring value; typical simulated subject is 69 years old)",
-      notes              = paste0(
+      notes = paste0(
         "theta_26 = -0.595 (age effect on sCr). Encoded as ",
         "TVsCr_i = TVsCr * (AGE / 70)^theta_26 (power form; the paper does ",
         "not print an explicit reference age). The negative exponent gives ",
         "the paper-stated 'sCr decreases with age' direction."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin (g/L).",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin (g/L).",
+      units = "g/L",
+      type = "continuous",
       reference_category = "42 (typical simulated subject baseline; Methods Simulations)",
-      notes              = paste0(
+      notes = paste0(
         "theta_27 = -3.86 (baseline albumin effect on AER). Encoded as ",
         "TVAER_i = TVAER * (ALB / 42)^theta_27 (power form; the paper does ",
         "not print an explicit reference albumin). The negative exponent ",
         "gives the paper-stated 'AER decreases with increasing baseline ",
         "serum albumin' direction."
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     ON_TREATMENT = list(
-      description        = paste0(
+      description = paste0(
         "1 = subject received ASP8232 40 mg qd for 12 weeks (active arm of ",
         "the ALBUM Phase 2 study); 0 = subject received placebo. Gates the ",
         "chronic eGFR slope effect and the AER-progression-cease effect ",
         "(both are treatment-group effects that are non-zero only for ",
         "ASP8232-treated subjects)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (placebo arm)",
-      notes              = paste0(
+      notes = paste0(
         "Canonical ON_TREATMENT covariate (per-subject binary treatment-arm ",
         "indicator). In this model the active arm is ASP8232 40 mg qd oral. ",
         "Per-subject time-fixed. The exposure-driven effects on eGFR CysC ",
@@ -121,20 +121,20 @@ Hoefman_2021_asp8232 <- function() {
         "ON_TREATMENT is only used to switch on the two treatment-group ",
         "effects (chronic eGFR slope and AER progression cease)."
       ),
-      source_name        = "ON_TREATMENT"
+      source_name = "ON_TREATMENT"
     ),
     CU_ASP8232 = list(
-      description        = paste0(
+      description = paste0(
         "Time-varying unbound ASP8232 plasma concentration (Cu; nM) as ",
         "computed by the companion population TMDD PK-PD model (Snelder et ",
         "al. 2021, doi:10.1007/s10928-020-09717-w). Supplied per row of the ",
         "event table by the user; the model file itself does not embed a PK ",
         "compartment for ASP8232."
       ),
-      units              = "nM",
-      type               = "continuous",
+      units = "nM",
+      type = "continuous",
       reference_category = "0 (no drug); 125.58 nM steady-state value for 40 mg qd oral ASP8232 in a typical DKD subject (Methods Simulations)",
-      notes              = paste0(
+      notes = paste0(
         "Time-varying per record. Enters three drug-effect terms: ",
         "(a) acute eGFR decline as h4 * Cu additive on eGFR CysC ",
         "(theta_4 = 0.00218; RSE 63%); ",
@@ -146,18 +146,18 @@ Hoefman_2021_asp8232 <- function() {
         "separate multi-trial PopPK model, data on file per Discussion]. ",
         "For placebo subjects set CU_ASP8232 = 0 at every record."
       ),
-      source_name        = "Cu"
+      source_name = "Cu"
     ),
     TCLOCK = list(
-      description        = paste0(
+      description = paste0(
         "Wall-clock time of day (hours; 0-24) at each observation, used to ",
         "compute the eGFR CysC circadian rhythm (Eq. 3). Time-varying per ",
         "record."
       ),
-      units              = "hour of day",
-      type               = "continuous",
+      units = "hour of day",
+      type = "continuous",
       reference_category = "n/a (enters via a 24-hour periodic cosine function)",
-      notes              = paste0(
+      notes = paste0(
         "Circadian factor: (1 + theta_32 * cos(2*pi * (TCLOCK + 24 - ",
         "theta_33) / 24)) with theta_32 = 0.0783 (amplitude) and ",
         "theta_33 = 10.5 h (time of maximum). For a subject sampled at a ",
@@ -168,29 +168,29 @@ Hoefman_2021_asp8232 <- function() {
         "1.0783 = peak of the circadian wave). Setting TCLOCK = 10.5 - 12 ",
         "= -1.5 (or +22.5) selects the trough."
       ),
-      source_name        = "TCLOCK"
+      source_name = "TCLOCK"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 120L,
-    n_studies      = 1L,
-    age_range      = "not fully tabulated in the paper; typical simulated subject 69 years old",
-    age_median     = "not reported",
-    weight_range   = "not reported",
-    weight_median  = "not reported (BSA median 2.034 m^2 reported in Methods)",
+    species = "human",
+    n_subjects = 120L,
+    n_studies = 1L,
+    age_range = "not fully tabulated in the paper; typical simulated subject 69 years old",
+    age_median = "not reported",
+    weight_range = "not reported",
+    weight_median = "not reported (BSA median 2.034 m^2 reported in Methods)",
     sex_female_pct = NA_real_,
     race_ethnicity = NULL,
-    disease_state  = paste0(
+    disease_state = paste0(
       "Type 2 diabetes with chronic kidney disease and residual albuminuria ",
       "despite standard-of-care angiotensin-converting-enzyme inhibitor ",
       "(ACEi) or angiotensin-receptor blocker (ARB) therapy. Phase 2 ALBUM ",
       "trial (ClinicalTrials.gov NCT02358096)."
     ),
-    dose_range     = "40 mg qd oral ASP8232 for 12 weeks (or matched placebo)",
-    regions        = "not reported (multi-site parallel-group Phase 2)",
-    notes          = paste0(
+    dose_range = "40 mg qd oral ASP8232 for 12 weeks (or matched placebo)",
+    regions = "not reported (multi-site parallel-group Phase 2)",
+    notes = paste0(
       "60 ASP8232-treated + 60 placebo DKD patients. Data pooled from the ",
       "12-week ALBUM Phase 2 trial and its 24-week follow-up. Typical ",
       "simulated subject (Methods Simulations): 69-year-old male, BSA 2.034 ",

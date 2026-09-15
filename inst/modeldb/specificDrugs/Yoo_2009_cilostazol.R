@@ -14,31 +14,31 @@ Yoo_2009_cilostazol <- function() {
     "and (Vp/F, Q/F) covariances; the remaining off-diagonals are held ",
     "at zero. Residual error is combined additive plus proportional."
   )
-  reference   <- paste0(
+  reference <- paste0(
     "Yoo HD, Cho HY, Lee YB. Population pharmacokinetic analysis of ",
     "cilostazol in healthy subjects with genetic polymorphisms of ",
     "CYP3A5, CYP2C19 and ABCB1. Br J Clin Pharmacol. 2010;69(1):27-37. ",
     "doi:10.1111/j.1365-2125.2009.03558.x. Online: 2009-12-04."
   )
-  vignette    <- "Yoo_2009_cilostazol"
-  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  vignette <- "Yoo_2009_cilostazol"
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "cilostazol", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "cilostazol", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "cilostazol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "cilostazol", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "cilostazol", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CYP3A5_STAR1_HET = list(
-      description        = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*3 heterozygote indicator (one functional CYP3A5*1 allele).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP3A5*1/*1 homozygote-expresser in Yoo 2009, paired with CYP3A5_STAR1_HOM = 1; or CYP3A5*3/*3 nonexpresser when both indicators are 0).",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = CYP3A5*1/*3 ",
         "heterozygote (one *1 allele at rs776746); 0 = otherwise. Yoo ",
         "2009 cohort (Table 1, n = 104): *1/*1 6/104 (5.8%), *1/*3 ",
@@ -50,14 +50,14 @@ Yoo_2009_cilostazol <- function() {
         "(both indicators 0) strata. The *3/*3 indicator is derived ",
         "inside model() as 1 - CYP3A5_STAR1_HET - CYP3A5_STAR1_HOM."
       ),
-      source_name        = "CYP3A5*1/*3"
+      source_name = "CYP3A5*1/*3"
     ),
     CYP3A5_STAR1_HOM = list(
-      description        = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP3A5*1/*1 homozygote indicator (two functional CYP3A5*1 alleles).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "1 (CYP3A5*1/*1 homozygote-expresser is the Yoo 2009 typical-value reference for CL/F).",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype). 1 = CYP3A5*1/*1 ",
         "homozygote (two *1 alleles at rs776746); 0 = otherwise. Yoo ",
         "2009 cohort: 6/104 (5.8%). In Yoo 2009 the *1/*1 stratum is ",
@@ -66,14 +66,14 @@ Yoo_2009_cilostazol <- function() {
         "with CYP3A5_STAR1_HET; together they uniquely identify the ",
         "three-level CYP3A5 genotype."
       ),
-      source_name        = "CYP3A5*1/*1"
+      source_name = "CYP3A5*1/*1"
     ),
     CYP2C19_IM = list(
-      description        = "CYP2C19 intermediate-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 intermediate-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 extensive metabolizer, *1/*1, when paired with CYP2C19_PM = 0).",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype-derived phenotype). ",
         "1 = subject is a CYP2C19 intermediate metabolizer (one ",
         "functional and one loss-of-function allele; Yoo 2009 ",
@@ -84,30 +84,30 @@ Yoo_2009_cilostazol <- function() {
         "(reference) / IM / PM phenotype with two binary indicators ",
         "following the Zhao 2018 omeprazole precedent."
       ),
-      source_name        = "CYP2C19 IM"
+      source_name = "CYP2C19 IM"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (CYP2C19 extensive metabolizer, *1/*1, when paired with CYP2C19_IM = 0).",
-      notes              = paste0(
+      notes = paste0(
         "Time-fixed per subject (germline genotype-derived phenotype). ",
         "1 = subject is a CYP2C19 poor metabolizer (two loss-of-",
         "function alleles; Yoo 2009 definition: CYP2C19*2/*2, *2/*3 ",
         "or *3/*3); 0 = otherwise. Yoo 2009 cohort: PM 14/104 (13.5%). ",
         "Paired with CYP2C19_IM."
       ),
-      source_name        = "CYP2C19 PM"
+      source_name = "CYP2C19 PM"
     )
   )
 
   covariatesDataExcluded <- list(
     AGE = list(
       description = "Adult age (years).",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste0(
+      units = "years",
+      type = "continuous",
+      notes = paste0(
         "Tested with stepwise covariate search in PsN; not retained in ",
         "the Yoo 2009 final model (Results: 'Other covariates including ",
         "age, body weight, BSA and the ABCB1 genotype did not appear to ",
@@ -117,18 +117,18 @@ Yoo_2009_cilostazol <- function() {
     ),
     WT = list(
       description = "Body weight (kg).",
-      units       = "kg",
-      type        = "continuous",
-      notes       = paste0(
+      units = "kg",
+      type = "continuous",
+      notes = paste0(
         "Tested via stepwise covariate search; not retained. Cohort ",
         "range 44-83.5 kg, mean 65.9 +/- 7.7 (Methods 'Subjects')."
       )
     ),
     BSA = list(
       description = "Body surface area (m^2).",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = paste0(
+      units = "m^2",
+      type = "continuous",
+      notes = paste0(
         "Tested via stepwise covariate search; not retained. Cohort ",
         "range 1.420-2.017 m^2, mean 1.783 +/- 0.124 (Methods ",
         "'Subjects')."
@@ -136,9 +136,9 @@ Yoo_2009_cilostazol <- function() {
     ),
     CYP3A4_STAR1B = list(
       description = "CYP3A4*1B allele indicator (rs2740574, -392A>G).",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Genotyped but not detected in any of the 104 Yoo 2009 subjects ",
         "(Results 'Genetic analysis'); allele is rare in Asians. Not ",
         "carried as a model covariate."
@@ -146,27 +146,27 @@ Yoo_2009_cilostazol <- function() {
     ),
     ABCB1_C1236T_HET = list(
       description = "ABCB1 exon 12 C1236T heterozygote indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Tested; not retained. Yoo 2009 cohort: CC 28/104 (26.9%), CT ",
         "50/104 (48.1%), TT 26/104 (25.0%)."
       )
     ),
     ABCB1_G2677T_HET = list(
       description = "ABCB1 exon 21 G2677T/A heterozygote indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Tested; not retained. Yoo 2009 cohort: GG 32/104 (30.8%), ",
         "GT/GA 56/104 (53.9%), TT/TA/AA 16/104 (15.3%)."
       )
     ),
     ABCB1_C3435T_HET = list(
       description = "ABCB1 exon 26 C3435T heterozygote indicator.",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste0(
+      units = "(binary)",
+      type = "binary",
+      notes = paste0(
         "Tested; not retained. Yoo 2009 cohort: CC 50/104 (48.1%), CT ",
         "42/104 (40.4%), TT 12/104 (11.5%). Discussion: 'no significant ",
         "differences were observed in the cilostazol PK parameters ",
@@ -176,28 +176,28 @@ Yoo_2009_cilostazol <- function() {
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 104L,
-    n_studies       = 4L,
-    age_range       = "19-28 years (Methods 'Subjects'; mean 23.7 +/- 1.6).",
-    age_median      = "23.7 years (mean reported in Methods 'Subjects').",
-    weight_range    = "44-83.5 kg (mean 65.9 +/- 7.7).",
-    weight_median   = "65.9 kg (mean reported in Methods 'Subjects').",
-    sex_female_pct  = 0,
-    race_ethnicity  = c(Asian = 100),
-    disease_state   = paste0(
+    species = "human",
+    n_subjects = 104L,
+    n_studies = 4L,
+    age_range = "19-28 years (Methods 'Subjects'; mean 23.7 +/- 1.6).",
+    age_median = "23.7 years (mean reported in Methods 'Subjects').",
+    weight_range = "44-83.5 kg (mean 65.9 +/- 7.7).",
+    weight_median = "65.9 kg (mean reported in Methods 'Subjects').",
+    sex_female_pct = 0,
+    race_ethnicity = c(Asian = 100),
+    disease_state = paste0(
       "Healthy adult volunteers screened with physical exam, blood ",
       "chemistry, complete blood count and urinalysis; no history of ",
       "illness or drug hypersensitivity; refrained from medications, ",
       "alcohol and other drugs for at least 1 week prior to and ",
       "throughout the study (Methods 'Subjects')."
     ),
-    dose_range      = paste0(
+    dose_range = paste0(
       "Single oral dose of 50 mg (n = 52) or 100 mg (n = 52) cilostazol ",
       "(Pletaal tablet, Otsuka Pharmaceuticals) with 240 mL water after ",
       "an overnight fast (Methods 'Study design')."
     ),
-    regions         = "Korea (single-centre, Chonnam National University, Gwangju).",
+    regions = "Korea (single-centre, Chonnam National University, Gwangju).",
     sampling_design = paste0(
       "Serum samples collected pre-dose and at 1, 2, 2.5, 3, 3.5, 4, 6, ",
       "8, 12, 24 and 48 h post-dose (12 samples per subject across ",
@@ -207,7 +207,7 @@ Yoo_2009_cilostazol <- function() {
     ),
     cyp3a5_genotype = c(`*1/*1` = 5.8, `*1/*3` = 40.4, `*3/*3` = 53.8),
     cyp2c19_phenotype = c(EM = 50.0, IM = 36.5, PM = 13.5),
-    notes           = paste0(
+    notes = paste0(
       "Demographics from Yoo 2009 Methods 'Subjects' and Table 1 ",
       "(genotype frequencies). Software: NONMEM v6 level 1.1 (FOCE-I ",
       "with eta-epsilon interaction); Wings for NONMEM v614 for ",

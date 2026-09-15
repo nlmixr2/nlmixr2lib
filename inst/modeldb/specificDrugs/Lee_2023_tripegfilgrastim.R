@@ -38,11 +38,11 @@ Lee_2023_tripegfilgrastim <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "endogenous_gcsf")
 
   units <- list(
-    time          = "h",
-    dosing        = "ug (tripegfilgrastim); mg (chemotherapy KPD input)",
+    time = "h",
+    dosing = "ug (tripegfilgrastim); mg (chemotherapy KPD input)",
     concentration = "ug/L (serum G-CSF, free exogenous drug plus free endogenous G-CSF)",
-    ANC           = "cells/uL",
-    notes         = paste(
+    ANC = "cells/uL",
+    notes = paste(
       "Tripegfilgrastim dose enters compartment 'depot' in ug (the paper's",
       "weight-based doses are 30, 60, 100 and 300 ug/kg; the proposed",
       "fixed doses are 1.5, 2.5, 4 and 6 mg = 1500, 2500, 4000 and 6000",
@@ -62,24 +62,54 @@ Lee_2023_tripegfilgrastim <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot                  = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
-    central                = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
-    endogenous_gcsf        = list(analyte = "G-CSF", units = NA_character_, specimen = "serum", verified = FALSE),
-    precursor1             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor2             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor3             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    precursor4             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
-    circ                   = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "whole blood", verified = FALSE),
-    depot_kpd_chemotherapy = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "administration site", verified = FALSE)
+    depot = list(
+      analyte = "tripegfilgrastim",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
+    central = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    endogenous_gcsf = list(analyte = "G-CSF", units = NA_character_, specimen = "serum", verified = FALSE),
+    precursor1 = list(
+      analyte = "G-CSF-receptor pool",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor2 = list(
+      analyte = "G-CSF-receptor pool",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor3 = list(
+      analyte = "G-CSF-receptor pool",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor4 = list(
+      analyte = "G-CSF-receptor pool",
+      units = NA_character_,
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    circ = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    depot_kpd_chemotherapy = list(
+      analyte = "tripegfilgrastim",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form covariate on KINT (the G-CSF-receptor-mediated",
         "internalisation rate) with exponent 1.7 and reference 55.1 kg, the",
         "population-weighted mean weight of the pooled analysis set",
@@ -87,14 +117,14 @@ Lee_2023_tripegfilgrastim <- function() {
         "about 2^1.7 = 3.25-fold, which the paper describes as a three-fold",
         "increase (Discussion). Observed range 18-75 kg (Table 1)."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Age",
-      units              = "years",
-      type               = "continuous",
+      description = "Age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power-form covariate on KSC (the first-order subcutaneous",
         "absorption rate) with exponent -0.97 and reference 18.5 years, the",
         "population-weighted mean age of the pooled analysis set",
@@ -105,14 +135,14 @@ Lee_2023_tripegfilgrastim <- function() {
         "tissue thickness with age (Discussion). Observed range 6-38 years",
         "(Table 1); the paper extrapolates to ages 2-6 in its simulations."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     NEUT = list(
-      description        = "Baseline absolute neutrophil count before tripegfilgrastim treatment",
-      units              = "cells/uL",
-      type               = "continuous",
+      description = "Baseline absolute neutrophil count before tripegfilgrastim treatment",
+      units = "cells/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Exponential-form covariate on KP (the G-CSF-receptor production",
         "rate): KP_i = KP_pop * exp(0.56 * NEUT / 2106), where 2106 cells/uL",
         "is the population-weighted mean baseline ANC of the pooled analysis",
@@ -126,14 +156,14 @@ Lee_2023_tripegfilgrastim <- function() {
         "overall; 2607 (1430-5602) in healthy adults and 1274 (408-4611) in",
         "pediatric patients (Table 1)."
       ),
-      source_name        = "BSLD"
+      source_name = "BSLD"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant indicator (1 = healthy Korean adult volunteer, 0 = Korean pediatric patient with a solid tumor receiving chemotherapy)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant indicator (1 = healthy Korean adult volunteer, 0 = Korean pediatric patient with a solid tumor receiving chemotherapy)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (pediatric patient with a solid tumor on chemotherapy)",
-      notes              = paste(
+      notes = paste(
         "The paper's 'study population' covariate, retained on VD and KD",
         "(Lee 2023 Equations 4 and 5, Table 2). Reference category is the",
         "pediatric chemotherapy cohort, matching the orientation used by the",
@@ -150,46 +180,46 @@ Lee_2023_tripegfilgrastim <- function() {
         "numbers of healthy subjects and pediatric patients without adult",
         "patients')."
       ),
-      source_name        = "POP"
+      source_name = "POP"
     )
   )
 
   covariatesDataExcluded <- list(
     HT = list(
       description = "Height",
-      units       = "cm",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
+      units = "cm",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
+      units = "kg/m^2",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
     ),
     BSA = list(
       description = "Body surface area",
-      units       = "m^2",
-      type        = "continuous",
-      notes       = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
+      units = "m^2",
+      type = "continuous",
+      notes = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model."
     ),
     SEXF = list(
       description = "Sex (1 = female, 0 = male)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model. The cohort was 88.1 percent male (all 40 healthy adults were male), so the sex effect was poorly informed."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened in the stepwise covariate analysis (Lee 2023 Methods 'Covariate analysis') but not retained in the final model. The cohort was 88.1 percent male (all 40 healthy adults were male), so the sex effect was poorly informed."
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 67L,
-    n_studies      = 2L,
-    age_range      = "6-38 years overall; healthy adults 24 (20-38) years, pediatric patients 12 (6-17) years (median (min-max), Table 1)",
-    weight_range   = "18-75 kg overall; healthy adults 69.7 (60-75) kg, pediatric patients 43 (18-67) kg (median (min-max), Table 1)",
+    species = "human",
+    n_subjects = 67L,
+    n_studies = 2L,
+    age_range = "6-38 years overall; healthy adults 24 (20-38) years, pediatric patients 12 (6-17) years (median (min-max), Table 1)",
+    weight_range = "18-75 kg overall; healthy adults 69.7 (60-75) kg, pediatric patients 43 (18-67) kg (median (min-max), Table 1)",
     sex_female_pct = 11.9,
     race_ethnicity = "Korean",
-    disease_state  = paste(
+    disease_state = paste(
       "Two pooled populations: (i) 40 healthy Korean adult male volunteers",
       "receiving single subcutaneous tripegfilgrastim (8 of whom received",
       "placebo and contribute endogenous ANC profiles only); (ii) 27 Korean",
@@ -197,14 +227,14 @@ Lee_2023_tripegfilgrastim <- function() {
       "dose 24 h after the end of chemotherapy, across 16 different",
       "chemotherapy regimen combinations."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Healthy adults: single SC tripegfilgrastim 1.8, 3.6, 6 and 18 mg",
       "(equivalent to 30, 60, 100 and 300 ug/kg), plus placebo.",
       "Pediatric patients: single SC 60 or 100 ug/kg given 24 h after the",
       "end of chemotherapy."
     ),
-    regions        = "Republic of Korea (Seoul National University Hospital)",
-    notes          = paste(
+    regions = "Republic of Korea (Seoul National University Hospital)",
+    notes = paste(
       "Trial registrations NCT00959777 (healthy adults, Ahn 2013) and",
       "NCT02963389 (pediatric patients, Lee 2022). 876 tripegfilgrastim",
       "concentration samples (842 above LLOQ) and 811 ANC samples (104 from",

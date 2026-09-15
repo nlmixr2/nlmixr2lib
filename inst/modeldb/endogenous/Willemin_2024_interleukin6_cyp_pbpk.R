@@ -1,69 +1,69 @@
 Willemin_2024_interleukin6_cyp_pbpk <- function() {
   description <- "PBPK (reduced from Simcyp Simulator V21). Interleukin-6 (IL-6) disposition driving concentration- and time-dependent modulation of five hepatic cytochrome P450 activities (CYP1A2, 2C9, 2C19, 3A4, 3A5), developed to assess the drug-interaction risk created by the transient IL-6 elevation of cytokine release syndrome after teclistamab (BCMAxCD3 bispecific antibody) step-up and first treatment dosing in MajesTEC-1. Teclistamab itself is never modelled: because IL-6 is endogenous, its appearance is represented by a hand-calibrated series of six zero-order IV IL-6 infusions whose rates were adjusted to recover the observed MajesTEC-1 IL-6 profile, so the model is an IL-6 exposure driver rather than a teclistamab PK model. IL-6 is described as a one-compartment IV model (Vss 0.43 L/kg, CLiv 1 L/h) reduced from the Simcyp minimal-PBPK topology. Each CYP activity follows the Machavaram enzyme-turnover equation d(E)/dt = kdeg * (1 + (Indmax - 1) * [IL-6] / (IndC50 + [IL-6]) - E) with activity relative to an untreated baseline of 1, suppressing activity for CYP2C9, 2C19, 3A4 and 3A5 and inducing it for CYP1A2. The downstream victim-drug exposure ratios (caffeine, s-warfarin, omeprazole, midazolam, cyclosporine, simvastatin) are NOT part of this model: those used proprietary Simcyp V21 compound files whose in vivo dispositions cannot be reconstructed from the published inputs."
-  reference   <- "Willemin ME, Wang Lin SX, De Zwart L, Wu LS, Miao X, Verona R, Banerjee A, Liu B, Kobos R, Qi M, Ouellet D, Goldberg JD, Girgis S. Evaluating drug interaction potential from cytokine release syndrome using a physiologically based pharmacokinetic model: A case study of teclistamab. CPT Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129. doi:10.1002/psp4.13144. IL-6 disposition and interaction potencies from Table 1; IL-6 dosing regimens from supplement Table S3; steady-state enzyme activities from supplement Table S2; enzyme time-course targets from Table 3 and Figure 2. Enzyme-turnover equation form attributed by the paper to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268 and Machavaram KK et al. AAPS J. 2019;21:42; in vitro potencies to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J. 2016;18:767-776."
-  vignette    <- "Willemin_2024_interleukin6_cyp_pbpk"
-  units       <- list(time = "h", dosing = "mg", concentration = "pg/mL")
+  reference <- "Willemin ME, Wang Lin SX, De Zwart L, Wu LS, Miao X, Verona R, Banerjee A, Liu B, Kobos R, Qi M, Ouellet D, Goldberg JD, Girgis S. Evaluating drug interaction potential from cytokine release syndrome using a physiologically based pharmacokinetic model: A case study of teclistamab. CPT Pharmacometrics Syst Pharmacol. 2024;13(7):1117-1129. doi:10.1002/psp4.13144. IL-6 disposition and interaction potencies from Table 1; IL-6 dosing regimens from supplement Table S3; steady-state enzyme activities from supplement Table S2; enzyme time-course targets from Table 3 and Figure 2. Enzyme-turnover equation form attributed by the paper to Machavaram KK et al. Clin Pharmacol Ther. 2013;94:260-268 and Machavaram KK et al. AAPS J. 2019;21:42; in vitro potencies to Dickmann LJ et al. Drug Metab Dispos. 2011;39:1415-1422 and Jiang X et al. AAPS J. 2016;18:767-776."
+  vignette <- "Willemin_2024_interleukin6_cyp_pbpk"
+  units <- list(time = "h", dosing = "mg", concentration = "pg/mL")
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Vss is reported in L/kg (Table 1), so the one-compartment volume is the per-kg value multiplied by body weight; this is the linear (exponent 1) scaling implied by the reported unit, not a fitted allometric exponent. CLiv is reported as an absolute 1 L/h and is NOT weight-scaled. The vignette uses 70 kg, the weight at which the reduction reproduces the published IL-6 peaks.",
-      source_name        = "WT"
+      notes = "Vss is reported in L/kg (Table 1), so the one-compartment volume is the per-kg value multiplied by body weight; this is the linear (exponent 1) scaling implied by the reported unit, not a fitted allometric exponent. CLiv is reported as an absolute 1 L/h and is NOT weight-scaled. The vignette uses 70 kg, the weight at which the reduction reproduces the published IL-6 peaks.",
+      source_name = "WT"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "interleukin-6",
-      units    = "mg",
+      analyte = "interleukin-6",
+      units = "mg",
       specimen = "plasma",
       verified = TRUE
     ),
     enzyme_1a2 = list(
-      analyte  = "cytochrome P450 1A2",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 1A2",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_2c9 = list(
-      analyte  = "cytochrome P450 2C9",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 2C9",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_2c19 = list(
-      analyte  = "cytochrome P450 2C19",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 2C19",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_3a4 = list(
-      analyte  = "cytochrome P450 3A4",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 3A4",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     ),
     enzyme_3a5 = list(
-      analyte  = "cytochrome P450 3A5",
-      units    = "fraction of baseline activity",
+      analyte = "cytochrome P450 3A5",
+      units = "fraction of baseline activity",
       specimen = "tissue",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 112,
-    n_studies      = 1,
-    age_range      = "20-50 years (Simcyp healthy-volunteer simulation population)",
+    species = "human",
+    n_subjects = 112,
+    n_studies = 1,
+    age_range = "20-50 years (Simcyp healthy-volunteer simulation population)",
     sex_female_pct = 50,
-    disease_state  = "triple-class-exposed relapsed/refractory multiple myeloma with cytokine release syndrome (source of the observed IL-6 data); simulations themselves were run in a healthy-volunteer population",
-    dose_range     = "teclistamab 0.06 and 0.3 mg/kg step-up doses followed by the 1.5 mg/kg subcutaneous first treatment dose (the IL-6 source regimen); IL-6 itself is dosed as six zero-order IV infusions of 0.0001-0.0114 mg",
-    regions        = "MajesTEC-1 was a multinational phase I/II study (NCT03145181 / NCT04557098)",
-    notes          = "Observed IL-6 concentration-time data come from up to 112 of the 119 patients (of 165 treated at the recommended phase II dose) who experienced cytokine release syndrome in MajesTEC-1 and whose IL-6 Cmax occurred before any tocilizumab administration, or who received no tocilizumab in cycle 1. Two IL-6 scenarios are modelled: scenario 1 is the mean IL-6 profile (Cmax 21 pg/mL) and scenario 2 the single patient with the highest observed IL-6 Cmax (288 pg/mL). Prospective simulations used 10 trials of 75 subjects aged 20-50 years, 50 percent female; the CYP-potency verification runs used 10 trials of 12 subjects at a clamped IL-6 of 50 pg/mL. Cycle 1 (the first 1.5 mg/kg treatment dose) begins 168 h after the first step-up dose, which is the time origin for the Table 3 enzyme-activity timings."
+    disease_state = "triple-class-exposed relapsed/refractory multiple myeloma with cytokine release syndrome (source of the observed IL-6 data); simulations themselves were run in a healthy-volunteer population",
+    dose_range = "teclistamab 0.06 and 0.3 mg/kg step-up doses followed by the 1.5 mg/kg subcutaneous first treatment dose (the IL-6 source regimen); IL-6 itself is dosed as six zero-order IV infusions of 0.0001-0.0114 mg",
+    regions = "MajesTEC-1 was a multinational phase I/II study (NCT03145181 / NCT04557098)",
+    notes = "Observed IL-6 concentration-time data come from up to 112 of the 119 patients (of 165 treated at the recommended phase II dose) who experienced cytokine release syndrome in MajesTEC-1 and whose IL-6 Cmax occurred before any tocilizumab administration, or who received no tocilizumab in cycle 1. Two IL-6 scenarios are modelled: scenario 1 is the mean IL-6 profile (Cmax 21 pg/mL) and scenario 2 the single patient with the highest observed IL-6 Cmax (288 pg/mL). Prospective simulations used 10 trials of 75 subjects aged 20-50 years, 50 percent female; the CYP-potency verification runs used 10 trials of 12 subjects at a clamped IL-6 of 50 pg/mL. Cycle 1 (the first 1.5 mg/kg treatment dose) begins 168 h after the first step-up dose, which is the time origin for the Table 3 enzyme-activity timings."
   )
 
   ini({

@@ -3,8 +3,8 @@ Rymut_2023_anti_tryptase <- function() {
   reference <- "Rymut SM, Henderson LM, Poon V, Staton TL, Cai F, Sukumaran S, Rhee H, Owen R, Ramanujan S, Yoshida K. A mechanistic PK/PD model to enable dose selection of the potent anti-tryptase antibody (MTPS9579A) in patients with moderate-to-severe asthma. Clin Transl Sci. 2023;16(4):694-703. doi:10.1111/cts.13483"
   vignette <- "Rymut_2023_anti_tryptase"
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ug/mL (Cc, serum MTPS9579A); nM (TotalSerumTryptase, serum total tryptase); unitless (ActiveAirwayTryptase, fraction of baseline)"
   )
 
@@ -13,43 +13,48 @@ Rymut_2023_anti_tryptase <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot               = list(analyte = "MTPS9579A", units = "mg", specimen = "administration site", verified = FALSE),
-    central             = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1         = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
-    total_target        = list(analyte = "TotalSerumTryptase", units = "mg", specimen = "serum", verified = FALSE),
-    mab_isf             = list(analyte = "MTPS9579A", units = "mg", specimen = "brain ISF", verified = FALSE),
-    target_isf          = list(analyte = "tryptase tetramer", units = "mg", specimen = "brain ISF", verified = FALSE),
-    complex_isf         = list(analyte = "MTPS9579A-tryptase complex", units = "mg", specimen = "brain ISF", verified = FALSE),
-    monomer_isf         = list(analyte = "inactive tryptase monomer", units = "mg", specimen = "brain ISF", verified = FALSE),
-    complex_monomer_isf = list(analyte = "MTPS9579A-tryptase monomer complex", units = "mg", specimen = "brain ISF", verified = FALSE)
+    depot = list(analyte = "MTPS9579A", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "TotalSerumTryptase", units = "mg", specimen = "serum", verified = FALSE),
+    mab_isf = list(analyte = "MTPS9579A", units = "mg", specimen = "brain ISF", verified = FALSE),
+    target_isf = list(analyte = "tryptase tetramer", units = "mg", specimen = "brain ISF", verified = FALSE),
+    complex_isf = list(analyte = "MTPS9579A-tryptase complex", units = "mg", specimen = "brain ISF", verified = FALSE),
+    monomer_isf = list(analyte = "inactive tryptase monomer", units = "mg", specimen = "brain ISF", verified = FALSE),
+    complex_monomer_isf = list(
+      analyte = "MTPS9579A-tryptase monomer complex",
+      units = "mg",
+      specimen = "brain ISF",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed per subject in source analysis. Allometric power covariate on linear CL (estimated exponent 0.820) and central volume V2 (estimated exponent 0.808), normalised to a 70 kg adult (Rymut 2023 Table 1; reference weight set in the NONMEM control stream Text S1 WTTYP = 70).",
-      source_name        = "BWT"
+      notes = "Time-fixed per subject in source analysis. Allometric power covariate on linear CL (estimated exponent 0.820) and central volume V2 (estimated exponent 0.808), normalised to a 70 kg adult (Rymut 2023 Table 1; reference weight set in the NONMEM control stream Text S1 WTTYP = 70).",
+      source_name = "BWT"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 106L,
-    n_studies        = 1L,
-    study            = "Phase I single + multiple ascending dose study of MTPS9579A in healthy adults (Methods; underlying Phase 1 study referenced as ref 6 in the paper)",
-    age_range        = "Healthy adults (specific age range not tabulated in Rymut 2023 main text or supplement)",
-    weight_range     = "Single-ascending-dose (SAD) cohort 49.9-113.3 kg; multiple-ascending-dose (MAD) cohort 47.1-97.7 kg (Rymut 2023 Table 1 footnote a)",
-    weight_median    = NA_character_,
-    sex_female_pct   = NA_real_,
-    race_ethnicity   = NA_character_,
-    disease_state    = "Healthy subjects (model-building cohort, n = 106). Prospective simulations were performed for adults with moderate-to-severe asthma using a separate observational cohort (n = 15, 100% White, 26.7% female, mean age 42.7 years, baseline serum total tryptase 10 ng/mL vs 7 ng/mL healthy, baseline nasal active tryptase 4 ng/mL vs 0.4 ng/mL healthy; Table S1).",
-    dose_range       = "Single ascending dose 30-300 mg SC or 300-3600 mg IV; multiple ascending dose 150-750 mg SC or 1350-3600 mg IV once every 4 weeks (Methods)",
-    regions          = "Phase I study; geography not reported in the paper",
-    n_observations   = "835 serum PK + 937 serum total tryptase observations (Methods)",
-    notes            = "Population TMDD PK/PD model fit by SAEM in NONMEM 7.4.3 (Text S1; OFV = 7593.39; stochastic + reduced stochastic portions completed). The asthma observational cohort (n = 15) supplied the elevated baseline-tryptase constants used in prospective simulations but did not contribute parameter estimates (Methods)."
+    species = "human",
+    n_subjects = 106L,
+    n_studies = 1L,
+    study = "Phase I single + multiple ascending dose study of MTPS9579A in healthy adults (Methods; underlying Phase 1 study referenced as ref 6 in the paper)",
+    age_range = "Healthy adults (specific age range not tabulated in Rymut 2023 main text or supplement)",
+    weight_range = "Single-ascending-dose (SAD) cohort 49.9-113.3 kg; multiple-ascending-dose (MAD) cohort 47.1-97.7 kg (Rymut 2023 Table 1 footnote a)",
+    weight_median = NA_character_,
+    sex_female_pct = NA_real_,
+    race_ethnicity = NA_character_,
+    disease_state = "Healthy subjects (model-building cohort, n = 106). Prospective simulations were performed for adults with moderate-to-severe asthma using a separate observational cohort (n = 15, 100% White, 26.7% female, mean age 42.7 years, baseline serum total tryptase 10 ng/mL vs 7 ng/mL healthy, baseline nasal active tryptase 4 ng/mL vs 0.4 ng/mL healthy; Table S1).",
+    dose_range = "Single ascending dose 30-300 mg SC or 300-3600 mg IV; multiple ascending dose 150-750 mg SC or 1350-3600 mg IV once every 4 weeks (Methods)",
+    regions = "Phase I study; geography not reported in the paper",
+    n_observations = "835 serum PK + 937 serum total tryptase observations (Methods)",
+    notes = "Population TMDD PK/PD model fit by SAEM in NONMEM 7.4.3 (Text S1; OFV = 7593.39; stochastic + reduced stochastic portions completed). The asthma observational cohort (n = 15) supplied the elevated baseline-tryptase constants used in prospective simulations but did not contribute parameter estimates (Methods)."
   )
 
   ini({

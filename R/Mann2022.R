@@ -204,26 +204,46 @@ Mann2022Equilibrate <- function(model, params = NULL, duration_min = 90) {
   ev <- data.frame(
     time = seq(0, duration_min, length.out = 50L),
     evid = 0L,
-    amt  = 0,
-    cmt  = NA_character_,
+    amt = 0,
+    cmt = NA_character_,
     stringsAsFactors = FALSE
   )
   # Mann / Laffont composed chains expect L_ANT_pM and patient_type
   # covariates - default to zero antagonist, chronic patient (the
   # patient-type choice does not affect the pre-equilibration since
   # av1 = 1 with no opioid, but the column must exist).
-  if (!"L_ANT_pM"     %in% colnames(ev)) ev$L_ANT_pM     <- 0
-  if (!"patient_type" %in% colnames(ev)) ev$patient_type <- 1L
-  if (!"CAR_OPIOID"   %in% colnames(ev)) ev$CAR_OPIOID   <- 0
-  if (!"OPIOID_PATIENT_TYPE" %in% colnames(ev)) ev$OPIOID_PATIENT_TYPE <- 1L
-  if (!"Q_TOTAL_LPM"  %in% colnames(ev)) ev$Q_TOTAL_LPM  <- 4.87
+  if (!"L_ANT_pM" %in% colnames(ev)) {
+    ev$L_ANT_pM <- 0
+  }
+  if (!"patient_type" %in% colnames(ev)) {
+    ev$patient_type <- 1L
+  }
+  if (!"CAR_OPIOID" %in% colnames(ev)) {
+    ev$CAR_OPIOID <- 0
+  }
+  if (!"OPIOID_PATIENT_TYPE" %in% colnames(ev)) {
+    ev$OPIOID_PATIENT_TYPE <- 1L
+  }
+  if (!"Q_TOTAL_LPM" %in% colnames(ev)) {
+    ev$Q_TOTAL_LPM <- 4.87
+  }
 
   sim <- as.data.frame(rxode2::rxSolve(model, params = params, events = ev))
   final <- sim[nrow(sim), , drop = FALSE]
 
-  state_names <- c("palv_co2", "palv_o2", "cb_co2", "cb_o2",
-                   "ct_co2", "ct_o2", "yco2", "yo2",
-                   "dp_state", "dc_state", "alpha_h")
+  state_names <- c(
+    "palv_co2",
+    "palv_o2",
+    "cb_co2",
+    "cb_o2",
+    "ct_co2",
+    "ct_o2",
+    "yco2",
+    "yo2",
+    "dp_state",
+    "dc_state",
+    "alpha_h"
+  )
   available <- intersect(state_names, names(final))
   setNames(lapply(available, function(s) as.numeric(final[[s]])), available)
 }

@@ -9,28 +9,28 @@ Park_2001_ketoprofen <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot   = list(analyte = "ketoprofen", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ketoprofen", units = "mg", specimen = "administration site", verified = FALSE),
     central = list(analyte = "ketoprofen", units = "mg", specimen = "plasma", verified = FALSE),
-    effect  = list(analyte = "ketoprofen", units = "mg", specimen = "not applicable", verified = FALSE)
+    effect = list(analyte = "ketoprofen", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species        = "human",
-    n_subjects     = 17L,                                # Park 2001 Methods + Table 1
-    n_studies      = 1L,                                 # Single-centre study at Inje University Pusan Paik Hospital
-    age_range      = "22-63 years",                      # Park 2001 Table 1
-    age_median     = "44.2 years (mean, SD 13.3)",       # Park 2001 Table 1
-    weight_range   = "46-75 kg",                         # Park 2001 Table 1
-    weight_median  = "62.2 kg (mean, SD 8.8)",           # Park 2001 Table 1
-    sex_female_pct = 52.94,                              # Park 2001 Table 1: 8 male / 9 female
-    race_ethnicity = NULL,                               # Not reported (Korean single-centre study)
-    disease_state  = "Arthritis: 7 rheumatoid arthritis, 10 osteoarthritis; all enrolled with normal blood chemistry and urinalysis screens.",
-    dose_range     = "100 mg oral ketoprofen twice daily for at least 4 days to reach steady state.",
-    regions        = "Korea (single centre, Inje University Pusan Paik Hospital).",
+    species = "human",
+    n_subjects = 17L, # Park 2001 Methods + Table 1
+    n_studies = 1L, # Single-centre study at Inje University Pusan Paik Hospital
+    age_range = "22-63 years", # Park 2001 Table 1
+    age_median = "44.2 years (mean, SD 13.3)", # Park 2001 Table 1
+    weight_range = "46-75 kg", # Park 2001 Table 1
+    weight_median = "62.2 kg (mean, SD 8.8)", # Park 2001 Table 1
+    sex_female_pct = 52.94, # Park 2001 Table 1: 8 male / 9 female
+    race_ethnicity = NULL, # Not reported (Korean single-centre study)
+    disease_state = "Arthritis: 7 rheumatoid arthritis, 10 osteoarthritis; all enrolled with normal blood chemistry and urinalysis screens.",
+    dose_range = "100 mg oral ketoprofen twice daily for at least 4 days to reach steady state.",
+    regions = "Korea (single centre, Inje University Pusan Paik Hospital).",
     n_observations = "12 of 17 patients had full plasma sampling at 0 (pre-dose), 0.5, 1, 2, 3, 4, 5, 6, 8, and 12 h post-dose; all 17 patients had 1-4 synovial fluid samples drawn at varied steady-state times (Methods).",
-    notes          = "Plasma PK parameters (ka, kel, Vd/F, CL/F) were estimated individually with WinNONLIN from the 12 patients with full plasma sampling and reported as arithmetic mean +/- SD across individuals (Park 2001 Table 2). The synovial-fluid effect-compartment elimination rate constant keo was the only population parameter estimated with NONMEM V level 1.1 using all 17 patients' synovial concentrations (Park 2001 Table 3, Eq. 1-3). The Holford-Sheiner steady-state assumption k1e0 = keo (Methods, Fig. 1) collapses synovial influx and efflux into a single rate constant."
+    notes = "Plasma PK parameters (ka, kel, Vd/F, CL/F) were estimated individually with WinNONLIN from the 12 patients with full plasma sampling and reported as arithmetic mean +/- SD across individuals (Park 2001 Table 2). The synovial-fluid effect-compartment elimination rate constant keo was the only population parameter estimated with NONMEM V level 1.1 using all 17 patients' synovial concentrations (Park 2001 Table 3, Eq. 1-3). The Holford-Sheiner steady-state assumption k1e0 = keo (Methods, Fig. 1) collapses synovial influx and efflux into a single rate constant."
   )
 
   ini({

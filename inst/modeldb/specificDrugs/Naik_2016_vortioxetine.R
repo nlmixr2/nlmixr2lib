@@ -8,63 +8,63 @@ Naik_2016_vortioxetine <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "vortioxetine", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "vortioxetine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "vortioxetine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "vortioxetine", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "vortioxetine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect: CL/F increases by 0.18 L/h per (CRCL - 106) mL/min. Naik 2016 used a raw mL/min value (not BSA-normalized); the paper does not state the formula explicitly. Reference 106 mL/min is the population median (Table 2).",
-      source_name        = "CrCL"
+      notes = "Linear additive effect: CL/F increases by 0.18 L/h per (CRCL - 106) mL/min. Naik 2016 used a raw mL/min value (not BSA-normalized); the paper does not state the formula explicitly. Reference 106 mL/min is the population median (Table 2).",
+      source_name = "CrCL"
     ),
     HT = list(
-      description        = "Body height at baseline",
-      units              = "cm",
-      type               = "continuous",
+      description = "Body height at baseline",
+      units = "cm",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect: CL/F increases by 0.40 L/h per (HT - 167) cm. Reference 167 cm is the population median (Table 2). Height was retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV.",
-      source_name        = "HT"
+      notes = "Linear additive effect: CL/F increases by 0.40 L/h per (HT - 167) cm. Reference 167 cm is the population median (Table 2). Height was retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV.",
+      source_name = "HT"
     ),
     REGION_EUROPE = list(
-      description        = "Indicator for study site in the European Union",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for study site in the European Union",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = USA (USA is the typical-value reference; combine with REGION_ROW = 0 for USA)",
-      notes              = "Naik 2016 estimated three region-specific typical CL/F values: USA = 51 L/h (reference), EU = 39 L/h, RoW = 38 L/h. EU CL/F was about 23 percent lower than USA. Encoded here as a log-multiplicative shift e_region_europe_cl = log(39/51).",
-      source_name        = "REGION_EU"
+      notes = "Naik 2016 estimated three region-specific typical CL/F values: USA = 51 L/h (reference), EU = 39 L/h, RoW = 38 L/h. EU CL/F was about 23 percent lower than USA. Encoded here as a log-multiplicative shift e_region_europe_cl = log(39/51).",
+      source_name = "REGION_EU"
     ),
     REGION_ROW = list(
-      description        = "Indicator for study site in the Rest of World (sites in Canada, Australia, and Asia for this paper)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Indicator for study site in the Rest of World (sites in Canada, Australia, and Asia for this paper)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 = USA (USA is the typical-value reference; combine with REGION_EUROPE = 0 for USA)",
-      notes              = "Naik 2016 RoW comprised study sites in Canada, Australia, and Asia (Table 1). RoW CL/F was about 25 percent lower than USA. Encoded here as a log-multiplicative shift e_region_row_cl = log(38/51).",
-      source_name        = "REGION_RoW"
+      notes = "Naik 2016 RoW comprised study sites in Canada, Australia, and Asia (Table 1). RoW CL/F was about 25 percent lower than USA. Encoded here as a log-multiplicative shift e_region_row_cl = log(38/51).",
+      source_name = "REGION_RoW"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 3160,
-    n_studies      = 12,
-    age_range      = "18-88 years",
-    age_median     = "46 years",
-    weight_range   = "39-173 kg",
-    weight_median  = "74 kg",
-    height_range   = "137-203 cm",
-    height_median  = "167 cm",
+    species = "human",
+    n_subjects = 3160,
+    n_studies = 12,
+    age_range = "18-88 years",
+    age_median = "46 years",
+    weight_range = "39-173 kg",
+    weight_median = "74 kg",
+    height_range = "137-203 cm",
+    height_median = "167 cm",
     sex_female_pct = 67,
-    crcl_range     = "26-322 mL/min",
-    crcl_median    = "106 mL/min",
-    disease_state  = "Major depressive disorder (10 studies) or generalized anxiety disorder (2 studies)",
-    dose_range     = "1-20 mg once-daily oral",
-    regions        = "USA, European Union, and Rest of World (Canada, Australia, Asia)",
-    notes          = "Pooled Phase II/III patient PK data from 12 trials (Table 1 of Naik 2016). A total of 10498 plasma vortioxetine concentrations (excluding 8 percent LLOQ samples) from 3160 patients were used for population PK. Baseline demographics in Table 2; PK/efficacy analysis subset comprised 2537 patients with end-of-treatment MADRS data (sex 1709F : 828M, USA:non-USA = 765:1772)."
+    crcl_range = "26-322 mL/min",
+    crcl_median = "106 mL/min",
+    disease_state = "Major depressive disorder (10 studies) or generalized anxiety disorder (2 studies)",
+    dose_range = "1-20 mg once-daily oral",
+    regions = "USA, European Union, and Rest of World (Canada, Australia, Asia)",
+    notes = "Pooled Phase II/III patient PK data from 12 trials (Table 1 of Naik 2016). A total of 10498 plasma vortioxetine concentrations (excluding 8 percent LLOQ samples) from 3160 patients were used for population PK. Baseline demographics in Table 2; PK/efficacy analysis subset comprised 2537 patients with end-of-treatment MADRS data (sex 1709F : 828M, USA:non-USA = 765:1772)."
   )
 
   ini({

@@ -28,10 +28,10 @@ Othman_2013_ABT_102 <- function() {
   paper_specific_etas <- c("etabl", "etaamp", "etaps")
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "ng/mL",
-    dosing_notes  = "Oral ABT-102; FORM_SOLUTION = 1 -> solution formulation (Studies 1 and 2), = 0 -> solid-dispersion formulation (Study 3).",
+    dosing_notes = "Oral ABT-102; FORM_SOLUTION = 1 -> solution formulation (Studies 1 and 2), = 0 -> solid-dispersion formulation (Study 3).",
     concentration_notes = "ABT-102 plasma Cc; central is internally in mg with vc in L, Cc = 1000 * central / vc to express in ng/mL. Body temperature outputs BT_oral and BT_core are in degC."
   )
 
@@ -39,45 +39,45 @@ Othman_2013_ABT_102 <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot    = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
+    depot = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
     transit1 = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
-    central  = list(analyte = "ABT 102", units = "mg", specimen = "plasma", verified = FALSE)
+    central = list(analyte = "ABT 102", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     FORM_SOLUTION = list(
-      description        = "Formulation indicator for ABT-102: 1 = oral solution (Studies 1 and 2), 0 = solid-dispersion (Study 3, the bioavailability and lag-time anchor in Othman 2012 / 2013). The solid-dispersion formulation is the F = 1 reference; the oral solution has a relative bioavailability of 40% and a shorter absorption lag (0.3 h vs 0.6 h) per Othman 2013 PK/PD-model Results paragraph 1 (citing the upstream Othman 2012 popPK fit).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Formulation indicator for ABT-102: 1 = oral solution (Studies 1 and 2), 0 = solid-dispersion (Study 3, the bioavailability and lag-time anchor in Othman 2012 / 2013). The solid-dispersion formulation is the F = 1 reference; the oral solution has a relative bioavailability of 40% and a shorter absorption lag (0.3 h vs 0.6 h) per Othman 2013 PK/PD-model Results paragraph 1 (citing the upstream Othman 2012 popPK fit).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (solid-dispersion formulation; F = 1 anchor and lag = 0.6 h)",
-      notes              = "Per-subject categorical covariate fixed by study assignment. In Othman 2013 Studies 1 and 2 the oral-solution formulation was used (single-dose escalation 2-40 mg; multiple-dose 2/4/8 mg twice daily for 7 days) and Study 3 used the solid-dispersion formulation (multiple-dose 1/2/4 mg twice daily for 7 days). The two formulations differ only in absorption-lag time and relative bioavailability; no other formulation-driven differences in PK or PD were retained in the final model (Othman 2013 Discussion paragraph 2: 'No differences between the two formulations in the body temperature effect were distinguishable once the differences in exposure were accounted for'). Encoded as multiplicative log-scale effects on tlag and fdepot in model() below.",
-      source_name        = "Formulation (solid-dispersion vs oral-solution)"
+      notes = "Per-subject categorical covariate fixed by study assignment. In Othman 2013 Studies 1 and 2 the oral-solution formulation was used (single-dose escalation 2-40 mg; multiple-dose 2/4/8 mg twice daily for 7 days) and Study 3 used the solid-dispersion formulation (multiple-dose 1/2/4 mg twice daily for 7 days). The two formulations differ only in absorption-lag time and relative bioavailability; no other formulation-driven differences in PK or PD were retained in the final model (Othman 2013 Discussion paragraph 2: 'No differences between the two formulations in the body temperature effect were distinguishable once the differences in exposure were accounted for'). Encoded as multiplicative log-scale effects on tlag and fdepot in model() below.",
+      source_name = "Formulation (solid-dispersion vs oral-solution)"
     )
   )
 
   population <- list(
-    species         = "human",
-    n_subjects      = 108L,
-    n_studies       = 3L,
-    age_range       = "Adult healthy volunteers (specific range not retabulated in the PD paper)",
-    weight_range    = "Adult healthy volunteers (specific range not retabulated in the PD paper)",
-    sex_female_pct  = NULL,
-    race_ethnicity  = NULL,
-    disease_state   = "Healthy adult volunteers (no diagnosed condition; randomized 2:1 to ABT-102:placebo within each dose group in all three studies).",
-    dose_range      = paste(
+    species = "human",
+    n_subjects = 108L,
+    n_studies = 3L,
+    age_range = "Adult healthy volunteers (specific range not retabulated in the PD paper)",
+    weight_range = "Adult healthy volunteers (specific range not retabulated in the PD paper)",
+    sex_female_pct = NULL,
+    race_ethnicity = NULL,
+    disease_state = "Healthy adult volunteers (no diagnosed condition; randomized 2:1 to ABT-102:placebo within each dose group in all three studies).",
+    dose_range = paste(
       "Study 1: single dose escalation 2, 6, 18, 30, 40 mg ABT-102 oral solution (45 subjects total, 9 per dose group);",
       "Study 2: multiple twice-daily dose 2, 4, 8 mg ABT-102 oral solution for 7 days (27 subjects, 9 per dose group);",
       "Study 3: multiple twice-daily dose 1, 2, 4 mg ABT-102 solid-dispersion formulation for 7 days (36 subjects, 12 per dose group).",
       sep = " "
     ),
-    regions         = "Not specified",
-    notes           = paste(
+    regions = "Not specified",
+    notes = paste(
       "108 subjects total contributing 7493 body-temperature measurements (2696 oral thermometer in Studies 1 and 2; 4797 core ingestible-capsule in Study 3, after exclusion of 51 erroneous core values below 34 degC that coincided with ingestion of cold liquids and were treated as measurement artifacts).",
       "Demographics and disposition of the 108 subjects were not retabulated in the body-temperature PK/PD paper; readers are referred to Othman 2012 (J Clin Pharmacol 52:1028-1041) for the demographic detail.",
       "Oral body temperatures ranged from 34.3 to 38.4 degC (mean 36.5, median 36.4); core body temperatures ranged from 34.0 to 38.7 degC (median 37.2).",
       sep = " "
     ),
-    nonmem_method   = "FOCE with interaction (NONMEM VI; Icon Development Solutions, Ellicott City, MD); ADVAN6 user-defined subroutine.",
+    nonmem_method = "FOCE with interaction (NONMEM VI; Icon Development Solutions, Ellicott City, MD); ADVAN6 user-defined subroutine.",
     pd_observations_oral = 2696L,
     pd_observations_core = 4797L
   )

@@ -36,19 +36,19 @@ Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp <- function() {
   vignette <- "Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp"
 
   units <- list(
-    time          = "day",
-    dosing        = "nmol",
+    time = "day",
+    dosing = "nmol",
     concentration = "nmol/L"
   )
 
   covariateData <- list()
 
   population <- list(
-    species       = "human (in silico virtual cohort)",
-    n_subjects    = 1000L,
-    n_studies     = 1L,
+    species = "human (in silico virtual cohort)",
+    n_subjects = 1000L,
+    n_studies = 1L,
     disease_state = "advanced squamous / non-squamous non-small-cell lung cancer, first line",
-    dose_range    = paste(
+    dose_range = paste(
       "Atezolizumab 1200 mg IV on day 1 of each 21-day cycle (with 840 mg Q2W",
       "and 1680 mg Q4W evaluated as alternative regimens), carboplatin at an",
       "AUC of 6 mg/mL/min IV on day 1, and nab-paclitaxel 100 mg/m2 IV on days",

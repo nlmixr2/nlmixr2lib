@@ -18,28 +18,28 @@ Chen_2025_vancomycin <- function() {
 
   covariateData <- list(
     CRCL = list(
-      description        = "Creatinine clearance (raw, not BSA-normalized)",
-      units              = "mL/min",
-      type               = "continuous",
+      description = "Creatinine clearance (raw, not BSA-normalized)",
+      units = "mL/min",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CLCR. Chen 2025 equation 15 enters it as the power term (CLCR/93)^0.997. The reference 93 mL/min is the Table 1 cohort mean creatinine clearance (overall 93.25, SD 66.15; training set 93.28, SD 66.42; testing set 91.19, SD 41.74). Chen 2025 does not name the estimating equation or state any BSA normalization -- Methods 'Data collection' lists only 'laboratory data, including creatinine, creatinine clearance, and red blood cell count' as extracted from MIMIC-IV 2.2, where the derived creatinine-clearance field is Cockcroft-Gault in raw mL/min. Stored under the canonical CRCL column in raw mL/min, following the Alqahtani_2018_vancomycin.R, Buelga_2005_vancomycin.R and Delattre_2010_amikacin.R precedents for raw Cockcroft-Gault (see inst/references/covariate-columns.md, CRCL entry). The exponent is 0.997 (bootstrap 95% CI 0.94-1.04), i.e. statistically indistinguishable from direct proportionality, so clearance is effectively linear in creatinine clearance over the observed range.",
-      source_name        = "CLCR"
+      notes = "Source column CLCR. Chen 2025 equation 15 enters it as the power term (CLCR/93)^0.997. The reference 93 mL/min is the Table 1 cohort mean creatinine clearance (overall 93.25, SD 66.15; training set 93.28, SD 66.42; testing set 91.19, SD 41.74). Chen 2025 does not name the estimating equation or state any BSA normalization -- Methods 'Data collection' lists only 'laboratory data, including creatinine, creatinine clearance, and red blood cell count' as extracted from MIMIC-IV 2.2, where the derived creatinine-clearance field is Cockcroft-Gault in raw mL/min. Stored under the canonical CRCL column in raw mL/min, following the Alqahtani_2018_vancomycin.R, Buelga_2005_vancomycin.R and Delattre_2010_amikacin.R precedents for raw Cockcroft-Gault (see inst/references/covariate-columns.md, CRCL entry). The exponent is 0.997 (bootstrap 95% CI 0.94-1.04), i.e. statistically indistinguishable from direct proportionality, so clearance is effectively linear in creatinine clearance over the observed range.",
+      source_name = "CLCR"
     ),
     SCORE_CCI = list(
-      description        = "Charlson Comorbidity Index total score",
-      units              = "(SCORE_CCI units, weighted comorbidity count)",
-      type               = "continuous",
+      description = "Charlson Comorbidity Index total score",
+      units = "(SCORE_CCI units, weighted comorbidity count)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column CCI. Chen 2025 equation 15 enters it as exp(-0.151 * (CCI/5.62)); the whole product -0.151 * (CCI/5.62) sits in the exponent, confirmed against the publisher's typeset equation image (spectrum.00499-25.m015.jpg in the EuropePMC supplementary bundle for PMC12054080), because pdftotext flattens the superscript and makes the nesting ambiguous. The scaling constant 5.62 is the Table 1 TRAINING-set mean CCI (5.62, SD 3.10; overall cohort mean 5.63, SD 3.10; testing set 5.91, SD 2.84). Note that the term is a plain ratio and is NOT centred: at the cohort mean CCI of 5.62 the term evaluates to exp(-0.151) = 0.860, not 1, so the typical clearance of an average-comorbidity patient is 0.860 * 3.35 = 2.88 L/h rather than the 3.35 L/h that Chen 2025 Results calls 'the typical value of the CL population'. The model is encoded exactly as the equation prints; see the vignette Errata. Higher comorbidity burden lowers vancomycin clearance (coefficient -0.151, bootstrap 95% CI -0.21 to -0.09).",
-      source_name        = "CCI"
+      notes = "Source column CCI. Chen 2025 equation 15 enters it as exp(-0.151 * (CCI/5.62)); the whole product -0.151 * (CCI/5.62) sits in the exponent, confirmed against the publisher's typeset equation image (spectrum.00499-25.m015.jpg in the EuropePMC supplementary bundle for PMC12054080), because pdftotext flattens the superscript and makes the nesting ambiguous. The scaling constant 5.62 is the Table 1 TRAINING-set mean CCI (5.62, SD 3.10; overall cohort mean 5.63, SD 3.10; testing set 5.91, SD 2.84). Note that the term is a plain ratio and is NOT centred: at the cohort mean CCI of 5.62 the term evaluates to exp(-0.151) = 0.860, not 1, so the typical clearance of an average-comorbidity patient is 0.860 * 3.35 = 2.88 L/h rather than the 3.35 L/h that Chen 2025 Results calls 'the typical value of the CL population'. The model is encoded exactly as the equation prints; see the vignette Errata. Higher comorbidity burden lowers vancomycin clearance (coefficient -0.151, bootstrap 95% CI -0.21 to -0.09).",
+      source_name = "CCI"
     ),
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Source column WT, defined by Chen 2025 Results as 'patient weight in kilograms'. Chen 2025 equation 16 enters it as the power term (WT/84)^0.205 on volume of distribution. Table 1 cohort mean weight is 82.56 kg (SD 25.35; training set 82.49, SD 25.34; testing set 87.49, SD 26.05); the paper does not state where the reference 84 kg comes from, and it matches neither the reported overall mean nor either subset mean exactly -- most likely the training-set median, which Chen 2025 does not report. Used as printed. Chen 2025 Limitations note that height was missing for 61.7% of MIMIC-IV patients, so BMI could not be computed and no adjusted body weight was available for obese patients; total body weight is therefore the only size descriptor in the model. NOTE: Table S1 labels the 0.205 exponent row 'WT on CL', which contradicts equation 16 placing it on V; the equation is taken as authoritative (see vignette Errata).",
-      source_name        = "WT"
+      notes = "Source column WT, defined by Chen 2025 Results as 'patient weight in kilograms'. Chen 2025 equation 16 enters it as the power term (WT/84)^0.205 on volume of distribution. Table 1 cohort mean weight is 82.56 kg (SD 25.35; training set 82.49, SD 25.34; testing set 87.49, SD 26.05); the paper does not state where the reference 84 kg comes from, and it matches neither the reported overall mean nor either subset mean exactly -- most likely the training-set median, which Chen 2025 does not report. Used as printed. Chen 2025 Limitations note that height was missing for 61.7% of MIMIC-IV patients, so BMI could not be computed and no adjusted body weight was available for obese patients; total body weight is therefore the only size descriptor in the model. NOTE: Table S1 labels the 0.205 exponent row 'WT on CL', which contradicts equation 16 placing it on V; the equation is taken as authoritative (see vignette Errata).",
+      source_name = "WT"
     )
   )
 
@@ -58,135 +58,135 @@ Chen_2025_vancomycin <- function() {
   # and the ML models are not packaged here.
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age at ICU admission",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at ICU admission",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 65.39 years (SD 15.81). Inclusion required age over 18 years at ICU admission. Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
-      source_name        = "Age"
+      notes = "Table 1 overall mean 65.39 years (SD 15.81). Inclusion required age over 18 years at ICU admission. Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
+      source_name = "Age"
     ),
     SEXF = list(
-      description        = "Female sex indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Female sex indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "male",
-      notes              = "Table 1 reports male percentage: overall 58.81% male, so 41.19% female. Not retained in the final PPK model.",
-      source_name        = "Male"
+      notes = "Table 1 reports male percentage: overall 58.81% male, so 41.19% female. Not retained in the final PPK model.",
+      source_name = "Male"
     ),
     CREAT = list(
-      description        = "Serum creatinine",
-      units              = "mg/dL",
-      type               = "continuous",
+      description = "Serum creatinine",
+      units = "mg/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 1.36 mg/dL (SD 1.27). Not retained in the final PPK model; it enters indirectly as the input to the CLCR field that is retained.",
-      source_name        = "Creatinine"
+      notes = "Table 1 overall mean 1.36 mg/dL (SD 1.27). Not retained in the final PPK model; it enters indirectly as the input to the CLCR field that is retained.",
+      source_name = "Creatinine"
     ),
     HCT = list(
-      description        = "Hematocrit",
-      units              = "%",
-      type               = "continuous",
+      description = "Hematocrit",
+      units = "%",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 29.57% (SD 5.17). Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
-      source_name        = "Hematocrit"
+      notes = "Table 1 overall mean 29.57% (SD 5.17). Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
+      source_name = "Hematocrit"
     ),
     RBC = list(
-      description        = "Red blood cell count",
-      units              = "10^6/uL",
-      type               = "continuous",
+      description = "Red blood cell count",
+      units = "10^6/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 3.24 (SD 0.62). Not retained in the final PPK model; selected as a predictor in the random-forest ML model.",
-      source_name        = "Red blood cell"
+      notes = "Table 1 overall mean 3.24 (SD 0.62). Not retained in the final PPK model; selected as a predictor in the random-forest ML model.",
+      source_name = "Red blood cell"
     ),
     HGB = list(
-      description        = "Hemoglobin",
-      units              = "g/dL",
-      type               = "continuous",
+      description = "Hemoglobin",
+      units = "g/dL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 9.51 g/dL (SD 1.73). Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
-      source_name        = "Hemoglobin"
+      notes = "Table 1 overall mean 9.51 g/dL (SD 1.73). Not retained in the final PPK model; selected as a predictor in both the random-forest and hybrid ML models.",
+      source_name = "Hemoglobin"
     ),
     WBC = list(
-      description        = "White blood cell count",
-      units              = "10^3/uL",
-      type               = "continuous",
+      description = "White blood cell count",
+      units = "10^3/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 13.68 (SD 9.29). Not retained in the final PPK model.",
-      source_name        = "White blood cell"
+      notes = "Table 1 overall mean 13.68 (SD 9.29). Not retained in the final PPK model.",
+      source_name = "White blood cell"
     ),
     PLT = list(
-      description        = "Platelet count",
-      units              = "10^3/uL",
-      type               = "continuous",
+      description = "Platelet count",
+      units = "10^3/uL",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 215.36 (SD 117.81). Not retained in the final PPK model.",
-      source_name        = "Platelet"
+      notes = "Table 1 overall mean 215.36 (SD 117.81). Not retained in the final PPK model.",
+      source_name = "Platelet"
     ),
     LACT = list(
-      description        = "Serum lactate",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum lactate",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 2.16 mmol/L (SD 1.47). Not retained in the final PPK model.",
-      source_name        = "Lactate"
+      notes = "Table 1 overall mean 2.16 mmol/L (SD 1.47). Not retained in the final PPK model.",
+      source_name = "Lactate"
     ),
     PT = list(
-      description        = "Prothrombin time",
-      units              = "s",
-      type               = "continuous",
+      description = "Prothrombin time",
+      units = "s",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 17.47 s (SD 8.72). Not retained in the final PPK model.",
-      source_name        = "Prothrombin time"
+      notes = "Table 1 overall mean 17.47 s (SD 8.72). Not retained in the final PPK model.",
+      source_name = "Prothrombin time"
     ),
     SOFA = list(
-      description        = "Sequential Organ Failure Assessment score",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Sequential Organ Failure Assessment score",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 6.21 (SD 3.43). The only baseline variable other than hospital length of stay that differed significantly between the training and testing sets (6.22 vs 5.36, P < 0.05). Not retained in the final PPK model.",
-      source_name        = "SOFA"
+      notes = "Table 1 overall mean 6.21 (SD 3.43). The only baseline variable other than hospital length of stay that differed significantly between the training and testing sets (6.22 vs 5.36, P < 0.05). Not retained in the final PPK model.",
+      source_name = "SOFA"
     ),
     APSIII = list(
-      description        = "Acute Physiology Score III",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Acute Physiology Score III",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 51.07 (SD 19.47). Not retained in the final PPK model.",
-      source_name        = "APSIII"
+      notes = "Table 1 overall mean 51.07 (SD 19.47). Not retained in the final PPK model.",
+      source_name = "APSIII"
     ),
     SAPS_II = list(
-      description        = "Simplified Acute Physiology Score II",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Simplified Acute Physiology Score II",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 40.17 (SD 13.43); the Table 1 row label is misspelled 'SQPSII'. Not retained in the final PPK model.",
-      source_name        = "SQPSII"
+      notes = "Table 1 overall mean 40.17 (SD 13.43); the Table 1 row label is misspelled 'SQPSII'. Not retained in the final PPK model.",
+      source_name = "SQPSII"
     ),
     GCS = list(
-      description        = "Glasgow Coma Scale score",
-      units              = "(score)",
-      type               = "continuous",
+      description = "Glasgow Coma Scale score",
+      units = "(score)",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Table 1 overall mean 13.38 (SD 2.88). Not retained in the final PPK model.",
-      source_name        = "GCS"
+      notes = "Table 1 overall mean 13.38 (SD 2.88). Not retained in the final PPK model.",
+      source_name = "GCS"
     )
   )
 
   population <- list(
-    species          = "human",
-    n_subjects       = 4059L,
-    n_studies        = 1L,
-    n_sites          = 1L,
+    species = "human",
+    n_subjects = 4059L,
+    n_studies = 1L,
+    n_sites = 1L,
     n_concentrations = 11046L,
-    age_range        = "adults over 18 years at ICU admission",
-    age_mean         = "65.39 years (SD 15.81)",
-    weight_mean      = "82.56 kg (SD 25.35)",
-    sex_female_pct   = 41.19,
-    race_ethnicity   = "White 65.31%, Other 21.11%, Black 10.89%, Asian 2.69% (Table 1, overall cohort)",
-    disease_state    = "Adults admitted to intensive care and meeting the Sepsis-3 definition, receiving intravenous vancomycin, with an ICU stay longer than 24 hours and at least one vancomycin concentration measurement. Excluded: patients receiving renal replacement therapy, pregnant patients, patients with no dosing information before a concentration measurement, and patients who died within 48 hours. Mean SOFA 6.21, mean Charlson Comorbidity Index 5.63, mean APS III 51.07; ICU mortality 11.92%, in-hospital mortality 18.48%; mean ICU stay 7.17 days and mean hospital stay 15.62 days.",
-    dose_range       = "Not reported. The 24 hour vancomycin dose (DOSE24) was a predictor in the machine-learning arms of the paper, but Chen 2025 reports neither its distribution nor any protocolized regimen; dosing was routine clinical care recorded in MIMIC-IV.",
-    regions          = "United States (Beth Israel Deaconess Medical Center, Boston, via the MIMIC-IV 2.2 database)",
-    renal_function   = "Creatinine clearance mean 93.25 mL/min (SD 66.15); serum creatinine mean 1.36 mg/dL (SD 1.27). Patients on renal replacement therapy were excluded.",
-    notes            = "Retrospective analysis of routine electronic-health-record data from MIMIC-IV 2.2. Of 4,059 eligible patients, the 53 who had both a peak (1-2 h after dosing) and a trough (30 min to 1 h before the next dose) within the SAME dosing interval were held out as the testing set and the remaining 4,006 patients, contributing 11,046 concentrations, were the PPK training set; the parameter estimates packaged here come from that 4,006-patient training fit. Variables with more than 20% missing data were dropped and the remainder imputed by classification-and-regression-trees multiple imputation (R MICE package). Fit in NONMEM 7.5; covariates selected by stepwise regression; evaluated by goodness-of-fit diagnostics (Figure S1) and a bootstrap (Table S1). Chen 2025's wider purpose is a four-way comparison of AUC24 prediction between this PPK model, a Bayesian posterior using it, a random forest, and a hybrid model feeding the PPK individual CL and V into the random forest; in the 53-patient testing set the PPK model alone performed worst (MAPE 68.17%, F30 34.6%) and the Bayesian posterior best (MAPE 13.37%, F30 94.2%). Only the PPK structural model is a pharmacokinetic model and only it is packaged here."
+    age_range = "adults over 18 years at ICU admission",
+    age_mean = "65.39 years (SD 15.81)",
+    weight_mean = "82.56 kg (SD 25.35)",
+    sex_female_pct = 41.19,
+    race_ethnicity = "White 65.31%, Other 21.11%, Black 10.89%, Asian 2.69% (Table 1, overall cohort)",
+    disease_state = "Adults admitted to intensive care and meeting the Sepsis-3 definition, receiving intravenous vancomycin, with an ICU stay longer than 24 hours and at least one vancomycin concentration measurement. Excluded: patients receiving renal replacement therapy, pregnant patients, patients with no dosing information before a concentration measurement, and patients who died within 48 hours. Mean SOFA 6.21, mean Charlson Comorbidity Index 5.63, mean APS III 51.07; ICU mortality 11.92%, in-hospital mortality 18.48%; mean ICU stay 7.17 days and mean hospital stay 15.62 days.",
+    dose_range = "Not reported. The 24 hour vancomycin dose (DOSE24) was a predictor in the machine-learning arms of the paper, but Chen 2025 reports neither its distribution nor any protocolized regimen; dosing was routine clinical care recorded in MIMIC-IV.",
+    regions = "United States (Beth Israel Deaconess Medical Center, Boston, via the MIMIC-IV 2.2 database)",
+    renal_function = "Creatinine clearance mean 93.25 mL/min (SD 66.15); serum creatinine mean 1.36 mg/dL (SD 1.27). Patients on renal replacement therapy were excluded.",
+    notes = "Retrospective analysis of routine electronic-health-record data from MIMIC-IV 2.2. Of 4,059 eligible patients, the 53 who had both a peak (1-2 h after dosing) and a trough (30 min to 1 h before the next dose) within the SAME dosing interval were held out as the testing set and the remaining 4,006 patients, contributing 11,046 concentrations, were the PPK training set; the parameter estimates packaged here come from that 4,006-patient training fit. Variables with more than 20% missing data were dropped and the remainder imputed by classification-and-regression-trees multiple imputation (R MICE package). Fit in NONMEM 7.5; covariates selected by stepwise regression; evaluated by goodness-of-fit diagnostics (Figure S1) and a bootstrap (Table S1). Chen 2025's wider purpose is a four-way comparison of AUC24 prediction between this PPK model, a Bayesian posterior using it, a random forest, and a hybrid model feeding the PPK individual CL and V into the random forest; in the 53-patient testing set the PPK model alone performed worst (MAPE 68.17%, F30 34.6%) and the Bayesian posterior best (MAPE 13.37%, F30 94.2%). Only the PPK structural model is a pharmacokinetic model and only it is packaged here."
   )
 
   ini({

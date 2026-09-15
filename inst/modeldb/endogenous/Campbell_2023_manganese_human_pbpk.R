@@ -37,8 +37,8 @@ Campbell_2023_manganese_human_pbpk <- function() {
   )
   vignette <- "Campbell_2023_manganese"
   units <- list(
-    time          = "h",
-    dosing        = "ug (54Mn tracer events; bulk Mn enters as zero-order diet/inhalation covariates)",
+    time = "h",
+    dosing = "ug (54Mn tracer events; bulk Mn enters as zero-order diet/inhalation covariates)",
     concentration = "ug/L"
   )
 
@@ -49,9 +49,9 @@ Campbell_2023_manganese_human_pbpk <- function() {
   # amt * (1 - f_diet_uptake) into `gut_lumen_mn54`, mirroring the
   # supplement's XRADI / XRAGL partition of KDIETR.
   dosing <- c(
-    "venous_mn54",     # iv bolus (Mahoney and Small 1968, Mena 1967; Figures 7, 8)
-    "liver_mn54",      # labelled meal, absorbed fraction (Davidsson 1988, Figure 9)
-    "gut_lumen_mn54"   # labelled meal, unabsorbed fraction (Davidsson 1988, Figure 9)
+    "venous_mn54", # iv bolus (Mahoney and Small 1968, Mena 1967; Figures 7, 8)
+    "liver_mn54", # labelled meal, absorbed fraction (Davidsson 1988, Figure 9)
+    "gut_lumen_mn54" # labelled meal, unabsorbed fraction (Davidsson 1988, Figure 9)
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -66,271 +66,401 @@ Campbell_2023_manganese_human_pbpk <- function() {
   compartmentData <- list(
     depot_lung = list(
       analyte = "Manganese deposited on pulmonary/tracheobronchial epithelium, not yet absorbed",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     lung_vas = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     lung = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_lung = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     depot_nasal = list(
       analyte = "Manganese deposited on nasal respiratory epithelium, not yet absorbed",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     nasal_respiratory = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     depot_brain = list(
       analyte = "Manganese deposited on nasal olfactory epithelium (direct nose-to-brain route)",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     liver_vas = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     liver = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_liver = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     gut_lumen = list(
       analyte = "Manganese in the gastrointestinal lumen",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     enterocyte = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     gut_lumen_lower = list(
       analyte = "Manganese in the gastrointestinal lumen",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     a_feces = list(
       analyte = "Manganese, cumulative amount excreted in faeces",
-      units = "ug", specimen = "faeces", verified = TRUE
+      units = "ug",
+      specimen = "faeces",
+      verified = TRUE
     ),
     brain_vascular = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     brain_globus_pallidus = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_globus_pallidus = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     brain_olfactory_bulb = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_olfactory_bulb = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     brain_cerebellum = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_cerebellum = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     pituitary = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_pituitary = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bone_vas = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     bone = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_bone = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     other_vas = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     other = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_other = list(
       analyte = "Manganese, bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     arterial = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     venous = list(
       analyte = "Manganese, free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     depot_sc = list(
       analyte = "Manganese at the subcutaneous injection site",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     a_oral = list(
       analyte = "Manganese, cumulative amount ingested",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     a_inhaled = list(
       analyte = "Manganese, cumulative amount inhaled",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     depot_lung_mn54 = list(
       analyte = "Manganese-54 (radiotracer) deposited on pulmonary/tracheobronchial epithelium, not yet absorbed",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     lung_vas_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     lung_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_lung_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     nasal_respiratory_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     depot_ip_mn54 = list(
       analyte = "Manganese-54 (radiotracer) in the peritoneal space",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     ),
     liver_vas_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     liver_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_liver_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     gut_lumen_mn54 = list(
       analyte = "Manganese-54 (radiotracer) in the gastrointestinal lumen",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     enterocyte_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     gut_lumen_lower_mn54 = list(
       analyte = "Manganese-54 (radiotracer) in the gastrointestinal lumen",
-      units = "ug", specimen = "not applicable", verified = TRUE
+      units = "ug",
+      specimen = "not applicable",
+      verified = TRUE
     ),
     a_feces_mn54 = list(
       analyte = "Manganese-54 (radiotracer), cumulative amount excreted in faeces",
-      units = "ug", specimen = "faeces", verified = TRUE
+      units = "ug",
+      specimen = "faeces",
+      verified = TRUE
     ),
     brain_vascular_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     brain_globus_pallidus_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_globus_pallidus_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     brain_olfactory_bulb_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_olfactory_bulb_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     brain_cerebellum_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_brain_cerebellum_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     pituitary_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_pituitary_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bone_vas_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     bone_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_bone_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     other_vas_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     other_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     bound_other_mn54 = list(
       analyte = "Manganese-54 (radiotracer), bound to saturable tissue binding sites",
-      units = "ug", specimen = "tissue", verified = TRUE
+      units = "ug",
+      specimen = "tissue",
+      verified = TRUE
     ),
     arterial_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     venous_mn54 = list(
       analyte = "Manganese-54 (radiotracer), free (unbound)",
-      units = "ug", specimen = "whole blood", verified = TRUE
+      units = "ug",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     depot_sc_mn54 = list(
       analyte = "Manganese-54 (radiotracer) at the subcutaneous injection site",
-      units = "ug", specimen = "administration site", verified = TRUE
+      units = "ug",
+      specimen = "administration site",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species     = "human",
-    n_subjects  = NA_integer_,
-    n_studies   = 5L,
-    age_range   = "adult",
+    species = "human",
+    n_subjects = NA_integer_,
+    n_studies = 5L,
+    age_range = "adult",
     weight_median = "73 kg (male reference; Table 1 gives 60 kg for the female)",
     sex_female_pct = NA_real_,
     disease_state = "healthy volunteers",

@@ -44,11 +44,11 @@ Kamp_2023_tacrolimus <- function() {
 
   covariateData <- list(
     WT = list(
-      description        = "Total body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Total body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric scaling was included a priori on biological plausibility",
         "(Kamp 2023 Sect. 2.3.2): CL/F and Q/F scale as (WT/70)^0.75 and Vc/F",
         "and Vp/F as (WT/70)^1. Reference weight 70 kg. Cohort median 77.0 kg",
@@ -56,17 +56,17 @@ Kamp_2023_tacrolimus <- function() {
         "improved the model by 9.7 OFV points (Sect. 3.3.2).",
         sep = " "
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     MIX_LAGGED_ABS = list(
-      description        = paste(
+      description = paste(
         "Per-subject latent mixture-model class indicator for oral absorption",
         "lag (1 = lagged-absorption class, 0 = no-lag class)."
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (no-lag class)",
-      notes              = paste(
+      notes = paste(
         "Kamp 2023 fitted a NONMEM $MIX two-subpopulation model on the",
         "absorption lag time (Sect. 3.3.1; Supplementary Data S1). The lagged",
         "class carries the estimated 2.29 h lag and is the 74% MAJORITY; the",
@@ -94,14 +94,14 @@ Kamp_2023_tacrolimus <- function() {
         "subject.",
         sep = " "
       ),
-      source_name        = "MIXNUM (NONMEM $MIX class index; MIX_LAGGED_ABS = as.integer(MIXNUM == 1))"
+      source_name = "MIXNUM (NONMEM $MIX class index; MIX_LAGGED_ABS = as.integer(MIXNUM == 1))"
     ),
     OCC = list(
-      description        = "Integer occasion index for the inter-occasion variability on apparent clearance",
-      units              = "(count)",
-      type               = "categorical",
+      description = "Integer occasion index for the inter-occasion variability on apparent clearance",
+      units = "(count)",
+      type = "categorical",
       reference_category = "n/a - decomposed into mutually exclusive indicators inside model()",
-      notes              = paste(
+      notes = paste(
         "One occasion per AUC profile. Kamp 2023 Supplementary Data S1 declares",
         "five IOV slots via $ABBREVIATED REPLACE ETA(OCC_CL)=ETA(4,5,6,7,8) and",
         "$OMEGA BLOCK(1) 0.224 followed by four BLOCK(1) SAME blocks; Table 2",
@@ -110,14 +110,14 @@ Kamp_2023_tacrolimus <- function() {
         "(range 1-5; Table 1). Values outside 1-5 switch all IOV indicators off.",
         sep = " "
       ),
-      source_name        = "OCC"
+      source_name = "OCC"
     ),
     SAMPLE_CAPILLARY = list(
-      description        = "Per-observation blood sampling-matrix indicator (1 = dried blood spot / capillary finger-prick sample, 0 = venous whole blood sample)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Per-observation blood sampling-matrix indicator (1 = dried blood spot / capillary finger-prick sample, 0 = venous whole blood sample)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (venous whole blood sample)",
-      notes              = paste(
+      notes = paste(
         "Record-level indicator that switches the proportional residual-error",
         "magnitude per observation: whole blood 20.8% and dried blood spot",
         "30.7% (Kamp 2023 Table 2). Supplementary Data S1 $ERROR selects",
@@ -130,16 +130,16 @@ Kamp_2023_tacrolimus <- function() {
         "within a subject.",
         sep = " "
       ),
-      source_name        = "DBS0"
+      source_name = "DBS0"
     )
   )
 
   covariatesDataExcluded <- list(
     HCT = list(
       description = "Hematocrit",
-      units       = "L/L",
-      type        = "continuous",
-      notes       = paste(
+      units = "L/L",
+      type = "continuous",
+      notes = paste(
         "Screened on CL. Univariate analysis found a significant (p < 0.05)",
         "association (increasing hematocrit associated with decreased CL) and",
         "the stepwise covariate search retained it, but it reduced only the CL",
@@ -154,9 +154,9 @@ Kamp_2023_tacrolimus <- function() {
     ),
     CYP3A5_EXPR = list(
       description = "CYP3A5 expresser status (1 = CYP3A5*1 carrier, 0 = CYP3A5*3/*3 non-expresser)",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL. CYP3A5 expression was associated with a 62.5%",
         "increase in CL and was retained by the stepwise covariate search, but",
         "it reduced the CL inter-individual variability by only 4.4% and was",
@@ -170,9 +170,9 @@ Kamp_2023_tacrolimus <- function() {
     ),
     PRED_DOSE = list(
       description = "Concomitant oral prednisolone daily dose at the time of AUC sampling",
-      units       = "mg/day",
-      type        = "continuous",
-      notes       = paste(
+      units = "mg/day",
+      type = "continuous",
+      notes = paste(
         "Screened on CL. Univariate analysis found CL increased with",
         "increasing corticosteroid dose (p < 0.05), but the effect failed to",
         "explain the CL inter-individual variability and was not retained by",
@@ -183,9 +183,9 @@ Kamp_2023_tacrolimus <- function() {
     ),
     AGE = list(
       description = "Age at the time of AUC sampling",
-      units       = "years",
-      type        = "continuous",
-      notes       = paste(
+      units = "years",
+      type = "continuous",
+      notes = paste(
         "Screened on CL and not retained. The paper attributes the null result",
         "to the narrow age range of the cohort (all recipients aged >= 65 y at",
         "transplantation) rather than to an absence of an age effect, and names",
@@ -195,15 +195,15 @@ Kamp_2023_tacrolimus <- function() {
     ),
     SEXF = list(
       description = "Female sex indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = "Screened on CL and not retained (Kamp 2023 Sect. 2.3.2 and 3.3.2). 12 of 34 recipients (35.3%) were female (Table 1)."
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened on CL and not retained (Kamp 2023 Sect. 2.3.2 and 3.3.2). 12 of 34 recipients (35.3%) were female (Table 1)."
     ),
     CONMED_CCB = list(
       description = "Concomitant calcium-channel blocker coadministration indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Screened on CL and not retained (Kamp 2023 Sect. 2.3.2 and 3.3.2).",
         "The recorded agents were nifedipine, barnidipine, lercanidipine,",
         "diltiazem and verapamil (Sect. 2.1); 20 of 34 recipients (58.8%) used",
@@ -213,9 +213,9 @@ Kamp_2023_tacrolimus <- function() {
     ),
     DIS_DIAB = list(
       description = "Diabetes mellitus indicator",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "Collected as a proxy for delayed gastric passage and tested on the",
         "absorption lag time in an early two-compartment pilot model; no",
         "significant effect on the lag parameter was found, which is why the",
@@ -229,43 +229,53 @@ Kamp_2023_tacrolimus <- function() {
 
   compartmentData <- list(
     depot = list(
-      analyte = "tacrolimus", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tacrolimus",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit1 = list(
-      analyte = "tacrolimus", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tacrolimus",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     transit2 = list(
-      analyte = "tacrolimus", units = "mg",
-      specimen = "administration site", verified = TRUE
+      analyte = "tacrolimus",
+      units = "mg",
+      specimen = "administration site",
+      verified = TRUE
     ),
     central = list(
-      analyte = "tacrolimus", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "tacrolimus",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "tacrolimus", units = "mg",
-      specimen = "whole blood", verified = TRUE
+      analyte = "tacrolimus",
+      units = "mg",
+      specimen = "whole blood",
+      verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 34L,
-    n_studies      = 1L,
-    age_range      = ">= 65 years at transplantation",
-    age_median     = "71.5 years (IQR 68.8-73.2)",
-    weight_median  = "77.0 kg (IQR 68.1-84.5)",
+    species = "human",
+    n_subjects = 34L,
+    n_studies = 1L,
+    age_range = ">= 65 years at transplantation",
+    age_median = "71.5 years (IQR 68.8-73.2)",
+    weight_median = "77.0 kg (IQR 68.1-84.5)",
     sex_female_pct = 35.3,
-    disease_state  = "de novo kidney transplant recipients aged 65 years or older, on a tacrolimus / mycophenolate / prednisolone or tacrolimus / everolimus / prednisolone regimen after basiliximab induction",
-    dose_range     = "Meltdose tacrolimus (Envarsus) 7 mg once daily from the day of transplantation, subsequently individualised by AUC-guided therapeutic drug monitoring; median dose at AUC sampling 6.0 mg (IQR 3.25-7.0)",
-    regions        = "Netherlands (Leiden University Medical Center)",
-    genotype       = "CYP3A5*3/*3 non-expressers 26 (76.5%), CYP3A5*1/*3 6 (17.6%), CYP3A5*1/*1 2 (5.9%)",
+    disease_state = "de novo kidney transplant recipients aged 65 years or older, on a tacrolimus / mycophenolate / prednisolone or tacrolimus / everolimus / prednisolone regimen after basiliximab induction",
+    dose_range = "Meltdose tacrolimus (Envarsus) 7 mg once daily from the day of transplantation, subsequently individualised by AUC-guided therapeutic drug monitoring; median dose at AUC sampling 6.0 mg (IQR 3.25-7.0)",
+    regions = "Netherlands (Leiden University Medical Center)",
+    genotype = "CYP3A5*3/*3 non-expressers 26 (76.5%), CYP3A5*1/*3 6 (17.6%), CYP3A5*1/*1 2 (5.9%)",
     renal_function = "Serum creatinine median 132 umol/L (IQR 99-177) at AUC sampling",
-    co_medication  = "Mycophenolate mofetil 500 mg b.i.d.; prednisolone 50 mg b.i.d. tapered to 25 mg b.i.d. at day 4, 10 mg q.d. after day 4 and 5 mg q.d. after three months; calcium-channel blockers in 20 (58.8%). Patients with severe systemic infection were excluded, so no CYP inhibitors such as fluconazole were coadministered.",
+    co_medication = "Mycophenolate mofetil 500 mg b.i.d.; prednisolone 50 mg b.i.d. tapered to 25 mg b.i.d. at day 4, 10 mg q.d. after day 4 and 5 mg q.d. after three months; calcium-channel blockers in 20 (58.8%). Patients with severe systemic infection were excluded, so no CYP inhibitors such as fluconazole were coadministered.",
     n_observations = "546 tacrolimus concentrations over 87 AUC profiles (median 2 per subject, range 1-5); 37 of the AUCs (42.5%) were dried blood spot profiles obtained in 20 (58.8%) of the patients",
-    notes          = paste(
+    notes = paste(
       "Add-on pharmacokinetic study to the OPTIMIZE trial (NCT03497196) at the",
       "Leiden University Medical Center site. 36 patients were enrolled and 2",
       "excluded after their transplantation was postponed. A full whole blood",

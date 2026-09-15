@@ -34,8 +34,10 @@ Jones_2011_PF04878691_viralLoad <- function() {
   vignette <- "Jones_2011_PF04878691_HCV"
   paper_specific_compartments <- c("oas")
   paper_specific_etas <- c(
-    "etalrbase_oas", "etalkout_oas",
-    "etalimax_vl", "etalvo50_vl"
+    "etalrbase_oas",
+    "etalkout_oas",
+    "etalimax_vl",
+    "etalvo50_vl"
   )
   paper_specific_residual_sds <- c("addSd_vload")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
@@ -45,37 +47,37 @@ Jones_2011_PF04878691_viralLoad <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "PF-04878691", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "PF-04878691", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
-    oas         = list(analyte = "OAS", units = "mg", specimen = "not applicable", verified = FALSE)
+    oas = list(analyte = "OAS", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Required scaling covariate for the inherited per-kg PK parameters; see Jones_2011_PF04878691.R. Population median 79 kg (PF-04878691 healthy volunteer cohort); HCV patient cohort body-weight distribution is not tabulated in Jones 2011 -- vignette users simulate at the PF-04878691 cohort median.",
-      source_name        = "WT"
+      notes = "Required scaling covariate for the inherited per-kg PK parameters; see Jones_2011_PF04878691.R. Population median 79 kg (PF-04878691 healthy volunteer cohort); HCV patient cohort body-weight distribution is not tabulated in Jones 2011 -- vignette users simulate at the PF-04878691 cohort median.",
+      source_name = "WT"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 39L,
-    n_studies      = 2L,
-    age_range      = "21-55 years (PF-04878691 cohort); HCV cohort age not separately tabulated in Jones 2011",
-    age_median     = "34 years (PF-04878691 cohort)",
-    weight_range   = "57-97 kg (PF-04878691 cohort); HCV cohort weight not separately tabulated in Jones 2011",
-    weight_median  = "79 kg (PF-04878691 cohort)",
+    species = "human",
+    n_subjects = 39L,
+    n_studies = 2L,
+    age_range = "21-55 years (PF-04878691 cohort); HCV cohort age not separately tabulated in Jones 2011",
+    age_median = "34 years (PF-04878691 cohort)",
+    weight_range = "57-97 kg (PF-04878691 cohort); HCV cohort weight not separately tabulated in Jones 2011",
+    weight_median = "79 kg (PF-04878691 cohort)",
     sex_female_pct = NA_real_,
     race_ethnicity = "Not tabulated in Jones 2011.",
-    disease_state  = "PF-04878691 PK + OAS parameters fit on healthy adult volunteers (NCT00810758, n = 24); OAS-viral-load parameters fit on chronic-hepatitis-C patients receiving subcutaneous CPG-10101 (a TLR9 agonist, Jones 2011 reference [16], n = 39 contributing patients of 60 total HCV randomised to placebo or CPG-10101 0.25 / 1 / 4 / 10 / 20 mg twice weekly for 4 weeks or 0.5 / 0.75 mg/kg once weekly for 4 weeks).",
-    dose_range     = "PF-04878691 in healthy volunteers: 3, 6, 9 mg orally twice weekly. CPG-10101 in HCV patients: 0.25-20 mg subcutaneously twice weekly or 0.5-0.75 mg/kg once weekly (only used to fit the OAS-viral-load layer; not the PF-04878691 PK or OAS layers).",
-    regions        = "Not specified.",
-    notes          = "Chain assumes 'no PK or biomarker difference between the healthy volunteer and HCV patient populations' and 'the subsequent intracellular signalling pathways are similar after binding of both TLR7 and TLR9 agonists to their receptors; thus the magnitude of OAS and IFN response required for an antiviral effect by each of the pathways would be comparable' (Jones 2011 Discussion). These are explicit paper assumptions and were the basis for the Figure 10 simulations that recommended discontinuation of PF-04878691."
+    disease_state = "PF-04878691 PK + OAS parameters fit on healthy adult volunteers (NCT00810758, n = 24); OAS-viral-load parameters fit on chronic-hepatitis-C patients receiving subcutaneous CPG-10101 (a TLR9 agonist, Jones 2011 reference [16], n = 39 contributing patients of 60 total HCV randomised to placebo or CPG-10101 0.25 / 1 / 4 / 10 / 20 mg twice weekly for 4 weeks or 0.5 / 0.75 mg/kg once weekly for 4 weeks).",
+    dose_range = "PF-04878691 in healthy volunteers: 3, 6, 9 mg orally twice weekly. CPG-10101 in HCV patients: 0.25-20 mg subcutaneously twice weekly or 0.5-0.75 mg/kg once weekly (only used to fit the OAS-viral-load layer; not the PF-04878691 PK or OAS layers).",
+    regions = "Not specified.",
+    notes = "Chain assumes 'no PK or biomarker difference between the healthy volunteer and HCV patient populations' and 'the subsequent intracellular signalling pathways are similar after binding of both TLR7 and TLR9 agonists to their receptors; thus the magnitude of OAS and IFN response required for an antiviral effect by each of the pathways would be comparable' (Jones 2011 Discussion). These are explicit paper assumptions and were the basis for the Figure 10 simulations that recommended discontinuation of PF-04878691."
   )
 
   ini({

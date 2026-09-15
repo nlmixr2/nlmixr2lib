@@ -37,18 +37,18 @@ Takechi_2025_nemolizumab <- function() {
   vignette <- "Takechi_2025_nemolizumab"
 
   units <- list(
-    time          = "day",
-    dosing        = "mg",
+    time = "day",
+    dosing = "mg",
     concentration = "ng/mL"
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight.",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight.",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Allometric on both disposition parameters, referenced to 70 kg: ",
         "exponent 0.75 on CL/F and 1 (implicit, printed without an exponent) ",
         "on V/F. Neither exponent carries an %RSE in Table 2, so both are ",
@@ -56,14 +56,14 @@ Takechi_2025_nemolizumab <- function() {
         "(Table 1, 'All' column), which is what makes the paediatric 6-12 ",
         "year AD cohort (median 25.3-32.9 kg) informative for the allometry."
       ),
-      source_name        = "body weight (Takechi 2025 Results 'PopPK Analysis', CL/F and V/F equations)"
+      source_name = "body weight (Takechi 2025 Results 'PopPK Analysis', CL/F and V/F equations)"
     ),
     ALB = list(
-      description        = "Serum albumin concentration.",
-      units              = "g/L (SI canonical); the source calibrated the effect on g/dL and this model converts inline",
-      type               = "continuous",
+      description = "Serum albumin concentration.",
+      units = "g/L (SI canonical); the source calibrated the effect on g/dL and this model converts inline",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste0(
+      notes = paste0(
         "Power effect on CL/F with exponent -1.52 referenced to 4.5 g/dL. ",
         "Per the covariate register, ALB is supplied in SI g/L, so model() ",
         "applies the documented inline conversion alb_gdL <- ALB * 0.1 before ",
@@ -75,24 +75,24 @@ Takechi_2025_nemolizumab <- function() {
         "reference of 4.5 confirms the g/dL reading. The Table 1 header is a ",
         "publication unit-label error; the equation is correct."
       ),
-      source_name        = "ALB (Takechi 2025 Results 'PopPK Analysis', CL/F equation; Table 2 'Covariate effect of ALB')"
+      source_name = "ALB (Takechi 2025 Results 'PopPK Analysis', CL/F equation; Table 2 'Covariate effect of ALB')"
     )
   )
 
   compartmentData <- list(
-    depot   = list(analyte = "nemolizumab", units = "mg", specimen = "administration site", verified = TRUE),
+    depot = list(analyte = "nemolizumab", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "nemolizumab", units = "mg", specimen = "serum", verified = TRUE)
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 680L,
-    n_studies      = 7L,
+    species = "human",
+    n_subjects = 680L,
+    n_studies = 7L,
     n_observations = 4389L,
-    age_range      = "6-84 years",
-    age_median     = "37 years",
-    weight_range   = "16-151 kg",
-    weight_median  = "62.8 kg",
+    age_range = "6-84 years",
+    age_median = "37 years",
+    weight_range = "16-151 kg",
+    weight_median = "62.8 kg",
     sex_female_pct = 43.2,
     race_ethnicity = c(
       White = 18.4,
@@ -100,25 +100,25 @@ Takechi_2025_nemolizumab <- function() {
       Asian = 78.7,
       Other = 0.3
     ),
-    disease_state  = paste0(
+    disease_state = paste0(
       "Moderate-to-severe atopic dermatitis with moderate-to-severe pruritus ",
       "(six studies) and prurigo nodularis (one study). PN entry required a ",
       "diagnosis of more than 6 months, limb lesions, at least 20 bilateral ",
       "prurigo nodules, and inadequate response to high-potency topical ",
       "corticosteroids and oral antihistamines."
     ),
-    dose_range     = paste0(
+    dose_range = paste0(
       "Subcutaneous. Phase 1 single doses 0.003-3 mg/kg; phase 2a 0.1, 0.5 or ",
       "2 mg/kg Q4W and 2 mg/kg Q8W; phase 3 flat doses of 60 mg Q4W, 30 mg ",
       "Q4W, and 30 mg Q4W with a 60 mg loading dose (Supplementary Table S1). ",
       "Only the initial treatment phase of each study contributed data."
     ),
-    regions        = paste0(
+    regions = paste0(
       "Japan for six of the seven studies; the phase 2a study CIM003JG ",
       "(NCT01986933) was multinational and supplies all of the non-Asian ",
       "subjects in the pooled dataset."
     ),
-    notes          = paste0(
+    notes = paste0(
       "Demographics are Takechi 2025 Table 1, 'All' column (the PopPK ",
       "analysis dataset), which reports medians and ranges. The race ",
       "percentages above are derived by summing the per-study White/Black/",

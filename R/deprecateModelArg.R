@@ -19,8 +19,7 @@
   hasUi <- "ui" %in% nms
   if (hasModel) {
     if (hasUi) {
-      stop("'model' is deprecated and may not be supplied together with 'ui'; use 'ui' only",
-           call. = FALSE)
+      stop("'model' is deprecated and may not be supplied together with 'ui'; use 'ui' only", call. = FALSE)
     }
     warning("argument 'model' is deprecated; use 'ui' instead", call. = FALSE)
     assign("ui", get("model", envir = callerEnv), envir = callerEnv)

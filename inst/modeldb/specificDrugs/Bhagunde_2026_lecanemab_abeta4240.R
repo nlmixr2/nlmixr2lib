@@ -45,24 +45,32 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
 
   compartmentData <- list(
     central = list(
-      analyte = "lecanemab", units = "mg", specimen = "serum", verified = TRUE
+      analyte = "lecanemab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     peripheral1 = list(
-      analyte = "lecanemab", units = "mg", specimen = "serum", verified = TRUE
+      analyte = "lecanemab",
+      units = "mg",
+      specimen = "serum",
+      verified = TRUE
     ),
     abeta4240 = list(
-      analyte = "amyloid-beta 42/40 ratio", units = "ratio (unitless)",
-      specimen = "plasma", verified = TRUE
+      analyte = "amyloid-beta 42/40 ratio",
+      units = "ratio (unitless)",
+      specimen = "plasma",
+      verified = TRUE
     )
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Baseline body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Baseline body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Enters twice. (1) On lecanemab CL and V1 as a power term",
         "normalised to 72 kg (Majid 2024 Table 1 equations). (2) On the",
         "Abeta42/40 drug-effect SLOPE as a log-linear (exponential) term",
@@ -73,27 +81,27 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
         "and deviations section.",
         sep = " "
       ),
-      source_name        = "BW / Baseline Weight"
+      source_name = "BW / Baseline Weight"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power term on lecanemab CL normalised to 43 g/L",
         "(Majid 2024 Table 1 equation: CL = 0.0154 * (BW/72)^0.353 *",
         "(ALB/43)^-0.374 * 0.791^SEX * 1.13^ADA).",
         sep = " "
       ),
-      source_name        = "ALB"
+      source_name = "ALB"
     ),
     SEXF = list(
-      description        = "Sex",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "1 = female, 0 = male. Acts on lecanemab CL (ratio 0.791) and V1",
         "(ratio 0.868) in the Majid 2024 popPK model, and on the",
         "Abeta42/40 baseline ratio (log-linear coefficient -0.00888) in",
@@ -102,41 +110,41 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
         "transformation is required.",
         sep = " "
       ),
-      source_name        = "SEX"
+      source_name = "SEX"
     ),
     ADA_POS = list(
-      description        = "Anti-drug antibody status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Anti-drug antibody status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (ADA-negative)",
-      notes              = paste(
+      notes = paste(
         "1 = ADA-positive. Ratio 1.13 on lecanemab CL (Majid 2024",
         "Table 1). Time-varying in the source popPK analysis; may be",
         "supplied as a time-varying column.",
         sep = " "
       ),
-      source_name        = "ADA"
+      source_name = "ADA"
     ),
     RACE_JAPANESE = list(
-      description        = "Japanese-heritage race indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Japanese-heritage race indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-Japanese)",
-      notes              = paste(
+      notes = paste(
         "1 = Japanese. Acts on lecanemab V1 (ratio 0.920) and V2 (ratio",
         "0.671) in the Majid 2024 popPK model, and on the Abeta42/40",
         "baseline ratio (log-linear coefficient 0.0346) in the",
         "Bhagunde 2026 PD model.",
         sep = " "
       ),
-      source_name        = "JPN"
+      source_name = "JPN"
     ),
     AGE = list(
-      description        = "Baseline age",
-      units              = "years",
-      type               = "continuous",
+      description = "Baseline age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Log-linear (exponential) covariate on both the Abeta42/40",
         "baseline ratio and SLOPE, centred at 72 years -- the reference",
         "subject age stated in Bhagunde 2026 Section 3.2.1 ('Compared to",
@@ -145,14 +153,14 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
         "the plotted 1.21; 57 years -> 0.75 vs the plotted 0.77).",
         sep = " "
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     APOE4_CARRIER = list(
-      description        = "APOE-epsilon4 carrier status",
-      units              = "(binary)",
-      type               = "binary",
+      description = "APOE-epsilon4 carrier status",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (non-carrier)",
-      notes              = paste(
+      notes = paste(
         "1 = carries at least one APOE-epsilon4 allele (heterozygous or",
         "homozygous), 0 = non-carrier. Log-linear coefficient 0.0138 on",
         "the Abeta42/40 baseline ratio (Bhagunde 2026 Table 1). The",
@@ -161,29 +169,29 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
         "APOE4_CARRIER encoding is used rather than APOE4_COUNT.",
         sep = " "
       ),
-      source_name        = "APOE4 carrier"
+      source_name = "APOE4 carrier"
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 1994,
-    n_studies      = 2,
+    species = "human",
+    n_subjects = 1994,
+    n_studies = 2,
     n_observations = 12468,
-    disease_state  = paste(
+    disease_state = paste(
       "Early Alzheimer's disease (mild cognitive impairment due to",
       "Alzheimer's disease, or mild Alzheimer's disease dementia) with",
       "confirmed brain amyloid pathology.",
       sep = " "
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Lecanemab IV 2.5 mg/kg biweekly, 5 mg/kg monthly, 5 mg/kg",
       "biweekly, 10 mg/kg monthly, 10 mg/kg biweekly, or placebo",
       "(Bhagunde 2026 Table S1).",
       sep = " "
     ),
-    regions        = "Global (North America, Europe, Asia including Japan)",
-    notes          = paste(
+    regions = "Global (North America, Europe, Asia including Japan)",
+    notes = paste(
       "Pooled Core and open-label-extension data from the lecanemab phase",
       "2 Study 201 (856 randomised across six treatment groups, 18-month",
       "Core, 9-59 month off-treatment gap, then open-label 10 mg/kg",

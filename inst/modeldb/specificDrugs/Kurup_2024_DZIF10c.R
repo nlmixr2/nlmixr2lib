@@ -41,24 +41,24 @@ Kurup_2024_DZIF10c <- function() {
   # biological matrix. Every entry was checked against Kurup 2024 Fig. 1 and
   # supplement equations (1)-(7).
   compartmentData <- list(
-    elf_lrt     = list(analyte = "DZIF-10c", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
+    elf_lrt = list(analyte = "DZIF-10c", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
     elf_trachea = list(analyte = "DZIF-10c", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
-    elf         = list(analyte = "DZIF-10c", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
+    elf = list(analyte = "DZIF-10c", units = "mg", specimen = "epithelial lining fluid", verified = TRUE),
     # Systemic observations were serum in both clinical trials and in preclinical
     # study 1, and plasma in preclinical studies 2 and 3; the paper pooled them
     # after finding no significant Vc difference between the two matrices
     # (Discussion, "Systemic PK observations collected in the clinical trials...").
-    central     = list(analyte = "DZIF-10c", units = "mg", specimen = "serum", verified = TRUE),
+    central = list(analyte = "DZIF-10c", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "DZIF-10c", units = "mg", specimen = "tissue", verified = TRUE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Allometric size descriptor on every clearance and every volume, referenced to 70 kg",
         "(supplement eq. 11, P_ri = theta_r * (WT_i / 70 kg)^beta_s; control stream applies",
         "(WT/70)**ACL and (WT/70)**AV unconditionally). NOTE the deliberate departure from the",
@@ -68,14 +68,14 @@ Kurup_2024_DZIF10c <- function() {
         "Baseline (time-fixed) in this analysis. Macaque weights are far below 70 kg, so the",
         "macaque parameter values are extrapolations of the human-referenced typical values."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     SPECIES_MACAQUE = list(
-      description        = "Cynomolgus macaque indicator, 1 = cynomolgus macaque, 0 = human",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Cynomolgus macaque indicator, 1 = cynomolgus macaque, 0 = human",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (human)",
-      notes              = paste(
+      notes = paste(
         "Selects which of the two logit-scale inhaled-deposition parameters applies.",
         "Every other PK parameter is species independent (Results: 'The rest of the PK",
         "parameters in this selected model were species independent'), so this indicator",
@@ -84,26 +84,26 @@ Kurup_2024_DZIF10c <- function() {
         "'PHI = PHIM; IF (HUMAN.EQ.1) PHI = PHIH', a stratum switch rather than a",
         "reference-plus-offset contrast, so no effect-coefficient sign is involved."
       ),
-      source_name        = "HUMAN"
+      source_name = "HUMAN"
     )
   )
 
   population <- list(
-    species        = "human + cynomolgus macaque (Macaca fascicularis)",
-    n_subjects     = 76,
-    n_studies      = 5,
-    age_range      = "adults (clinical trials enrolled participants aged 18 years and older)",
-    weight_range   = "not reported per subject; typical values referenced to 70 kg",
+    species = "human + cynomolgus macaque (Macaca fascicularis)",
+    n_subjects = 76,
+    n_studies = 5,
+    age_range = "adults (clinical trials enrolled participants aged 18 years and older)",
+    weight_range = "not reported per subject; typical values referenced to 70 kg",
     sex_female_pct = NA_real_,
-    disease_state  = paste(
+    disease_state = paste(
       "SARS-CoV-2 infected and uninfected humans (healthy volunteers and COVID-19 patients),",
       "plus healthy and SARS-CoV-2 infected cynomolgus macaques."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Human 2.5-80 mg/kg IV (~60 min infusion) and 50-250 mg inhaled (15-20 min nebulization);",
       "macaque 50 mg/kg IV bolus, 3.6 mg/kg intratracheal, and 500 or 1000 mg inhaled."
     ),
-    notes          = paste(
+    notes = paste(
       "Analysis dataset: 640 observations from 76 subjects, 104 (16%) below the LLOQ and",
       "excluded by IGNORE(BLQ>0). Preclinical: 14 macaques, 166 concentrations (150",
       "serum/plasma, 16 ELF). Human: 62 subjects, 474 serum concentrations (44 subjects /",

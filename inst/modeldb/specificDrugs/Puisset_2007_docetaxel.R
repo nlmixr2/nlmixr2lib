@@ -18,11 +18,11 @@ Puisset_2007_docetaxel <- function() {
   vignette <- "Puisset_2007_docetaxel"
 
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L",
-    anc           = "10^9 cells/L",
-    aag           = "g/L"
+    anc = "10^9 cells/L",
+    aag = "g/L"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -30,64 +30,89 @@ Puisset_2007_docetaxel <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    circ       = list(analyte = "ANC (Circulating Neutrophil Count)", units = "mg", specimen = "whole blood", verified = FALSE),
-    precursor1 = list(analyte = "Neutrophils in transit compartment 1", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor2 = list(analyte = "Neutrophils in transit compartment 2", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor3 = list(analyte = "Neutrophils in transit compartment 3", units = "mg", specimen = "not applicable", verified = FALSE),
-    precursor4 = list(analyte = "Proliferating Neutrophil Pool", units = "mg", specimen = "not applicable", verified = FALSE)
+    circ = list(
+      analyte = "ANC (Circulating Neutrophil Count)",
+      units = "mg",
+      specimen = "whole blood",
+      verified = FALSE
+    ),
+    precursor1 = list(
+      analyte = "Neutrophils in transit compartment 1",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor2 = list(
+      analyte = "Neutrophils in transit compartment 2",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor3 = list(
+      analyte = "Neutrophils in transit compartment 3",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    ),
+    precursor4 = list(
+      analyte = "Proliferating Neutrophil Pool",
+      units = "mg",
+      specimen = "not applicable",
+      verified = FALSE
+    )
   )
 
   covariateData <- list(
     AAG = list(
-      description        = "Serum alpha-1 acid glycoprotein concentration, time-fixed at baseline.",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum alpha-1 acid glycoprotein concentration, time-fixed at baseline.",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Multiplicative power-form effect on the drug-effect slope: slope = TVSlope * (AAG / 1.29)^e_aag_slope (Puisset 2007 Table 3 final model). Reference value 1.29 g/L is the cohort mean (Table 1: All patients n=92, mean 1.29, range 0.46-2.98 g/L). Higher AAG decreases Slope (lower neutropenia sensitivity per unit total plasma docetaxel) because docetaxel is highly bound to AAG and only the unbound fraction drives the pharmacodynamic effect. Note that increased AAG simultaneously decreases docetaxel clearance, so the net effect on ANC nadir is modest (Discussion, Figure 6A). Time-fixed per subject.",
-      source_name        = "AAG"
+      notes = "Multiplicative power-form effect on the drug-effect slope: slope = TVSlope * (AAG / 1.29)^e_aag_slope (Puisset 2007 Table 3 final model). Reference value 1.29 g/L is the cohort mean (Table 1: All patients n=92, mean 1.29, range 0.46-2.98 g/L). Higher AAG decreases Slope (lower neutropenia sensitivity per unit total plasma docetaxel) because docetaxel is highly bound to AAG and only the unbound fraction drives the pharmacodynamic effect. Note that increased AAG simultaneously decreases docetaxel clearance, so the net effect on ANC nadir is modest (Discussion, Figure 6A). Time-fixed per subject.",
+      source_name = "AAG"
     ),
     PRIOR_CHEMO_LINES_GE2 = list(
-      description        = "Binary indicator: 1 = patient received at least two prior chemotherapy lines before docetaxel (3rd-line-or-later), 0 = 0 or 1 prior chemotherapy lines (1st- or 2nd-line).",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = patient received at least two prior chemotherapy lines before docetaxel (3rd-line-or-later), 0 = 0 or 1 prior chemotherapy lines (1st- or 2nd-line).",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (0 or 1 prior chemotherapy lines)",
-      notes              = "Multiplicative effect on the drug-effect slope: slope = ... * e_prior_chemo_lines_ge2_slope^PRIOR_CHEMO_LINES_GE2 with e_prior_chemo_lines_ge2_slope = 1.69 (Puisset 2007 Table 3 final model). Patients with >= 2 prior chemotherapy lines have a 69% higher Slope than less-pretreated patients, consistent with cumulative bone-marrow depletion. Source NM-TRAN column `PTT2` (Methods, page 291: 'PTT2 = 0 or = 1 if patients had less than two lines, or at least two lines of chemotherapy before docetaxel, respectively'). Cohort distribution (Table 1, All patients n=92, 0 / 1 / >=2 prior lines = 27 / 44 / 21).",
-      source_name        = "PTT2"
+      notes = "Multiplicative effect on the drug-effect slope: slope = ... * e_prior_chemo_lines_ge2_slope^PRIOR_CHEMO_LINES_GE2 with e_prior_chemo_lines_ge2_slope = 1.69 (Puisset 2007 Table 3 final model). Patients with >= 2 prior chemotherapy lines have a 69% higher Slope than less-pretreated patients, consistent with cumulative bone-marrow depletion. Source NM-TRAN column `PTT2` (Methods, page 291: 'PTT2 = 0 or = 1 if patients had less than two lines, or at least two lines of chemotherapy before docetaxel, respectively'). Cohort distribution (Table 1, All patients n=92, 0 / 1 / >=2 prior lines = 27 / 44 / 21).",
+      source_name = "PTT2"
     ),
     STUDY_TOULOUSE = list(
-      description        = "Binary indicator: 1 = patient enrolled at the Institut Claudius-Regaud (Toulouse, n=37), 0 = Hopital Cochin (Paris, n=55). Captures a between-centre analytical bias acknowledged by the authors rather than a clinical PD covariate.",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Binary indicator: 1 = patient enrolled at the Institut Claudius-Regaud (Toulouse, n=37), 0 = Hopital Cochin (Paris, n=55). Captures a between-centre analytical bias acknowledged by the authors rather than a clinical PD covariate.",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (Paris cohort)",
-      notes              = "Multiplicative effect on the drug-effect slope: slope = ... * e_study_toulouse_slope^STUDY_TOULOUSE with e_study_toulouse_slope = 1.82 (Puisset 2007 Table 3 final model). Patients enrolled in Toulouse have an 82% higher Slope than the Paris cohort, attributed by the authors (Discussion, page 293) to an HPLC-assay underestimation of plasma docetaxel in Toulouse and a coarser PK sampling schedule (4 sampling times vs 3) that biased the Bayesian individual CL estimates upward. A simultaneous +70% CEN effect appears on docetaxel CL in the same paper (Results: CL = 31.3 * (AAG/1.29)^(-0.412) * 1.7^CEN, page 293). Source NM-TRAN column `CEN` (Methods, page 291: 'CEN = 0 or = 1 if data corresponded to Paris or Toulouse, respectively'). For typical-value simulation, leave STUDY_TOULOUSE = 0 (Paris reference) since the effect is a study-level artefact, not a generalisable PD covariate.",
-      source_name        = "CEN"
+      notes = "Multiplicative effect on the drug-effect slope: slope = ... * e_study_toulouse_slope^STUDY_TOULOUSE with e_study_toulouse_slope = 1.82 (Puisset 2007 Table 3 final model). Patients enrolled in Toulouse have an 82% higher Slope than the Paris cohort, attributed by the authors (Discussion, page 293) to an HPLC-assay underestimation of plasma docetaxel in Toulouse and a coarser PK sampling schedule (4 sampling times vs 3) that biased the Bayesian individual CL estimates upward. A simultaneous +70% CEN effect appears on docetaxel CL in the same paper (Results: CL = 31.3 * (AAG/1.29)^(-0.412) * 1.7^CEN, page 293). Source NM-TRAN column `CEN` (Methods, page 291: 'CEN = 0 or = 1 if data corresponded to Paris or Toulouse, respectively'). For typical-value simulation, leave STUDY_TOULOUSE = 0 (Paris reference) since the effect is a study-level artefact, not a generalisable PD covariate.",
+      source_name = "CEN"
     ),
     CP_MGL = list(
-      description        = "Time-varying instantaneous docetaxel plasma concentration supplied per event row as the PD driver.",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Time-varying instantaneous docetaxel plasma concentration supplied per event row as the PD driver.",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Drug effect input: edrug = slope * CP_MGL with slope in 1/(mg/L) units. CP_MGL is supplied as a time-varying covariate column rather than computed from a coupled PK model, reflecting the Puisset 2007 sequential-PK-then-PD design (Methods, page 291: 'Individual-specific PK parameters were obtained by analysis of docetaxel plasma concentrations vs time using the Bayesian estimation method previously proposed by Baille et al (1997). Complete plasma docetaxel concentration vs time profiles used for the PK/PD analysis were generated from this analysis'). Population mean (range) docetaxel clearance is 40.0 (15.9-74.4) L/h and AUC is 4.1 (1.9-8.7) mg.h/L for a typical dose of 70-100 mg/m^2 IV over 1 h (Results, page 293). Set CP_MGL = 0 outside the drug-exposure window. The vignette validates the model by coupling it with the in-package modellib('Ozawa_2007_docetaxel') docetaxel PK to generate CP_MGL trajectories; users may substitute any other docetaxel popPK source.",
-      source_name        = NA_character_
+      notes = "Drug effect input: edrug = slope * CP_MGL with slope in 1/(mg/L) units. CP_MGL is supplied as a time-varying covariate column rather than computed from a coupled PK model, reflecting the Puisset 2007 sequential-PK-then-PD design (Methods, page 291: 'Individual-specific PK parameters were obtained by analysis of docetaxel plasma concentrations vs time using the Bayesian estimation method previously proposed by Baille et al (1997). Complete plasma docetaxel concentration vs time profiles used for the PK/PD analysis were generated from this analysis'). Population mean (range) docetaxel clearance is 40.0 (15.9-74.4) L/h and AUC is 4.1 (1.9-8.7) mg.h/L for a typical dose of 70-100 mg/m^2 IV over 1 h (Results, page 293). Set CP_MGL = 0 outside the drug-exposure window. The vignette validates the model by coupling it with the in-package modellib('Ozawa_2007_docetaxel') docetaxel PK to generate CP_MGL trajectories; users may substitute any other docetaxel popPK source.",
+      source_name = NA_character_
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 92L,
-    n_studies      = 2L,
-    age_range      = "46-77 years",
-    age_median     = "60.7 years (mean across the pooled cohort)",
-    weight_range   = "39-106 kg",
-    weight_median  = "70.8 kg (mean across the pooled cohort)",
+    species = "human",
+    n_subjects = 92L,
+    n_studies = 2L,
+    age_range = "46-77 years",
+    age_median = "60.7 years (mean across the pooled cohort)",
+    weight_range = "39-106 kg",
+    weight_median = "70.8 kg (mean across the pooled cohort)",
     sex_female_pct = 48.9,
     race_ethnicity = NULL,
-    disease_state  = "Adult cancer patients receiving single-agent docetaxel monochemotherapy. Primary diseases (Table 1, All patients n=92): breast 31, prostate 27, lung 15, other 19. Performance status (ECOG) distribution 0 / 1 / 2 / 3 = 13 / 61 / 16 / 2.",
-    dose_range     = "Docetaxel (Taxotere, Aventis Pharma) 70-100 mg/m^2 IV over 1 h, single-agent. Per-dose-level counts (Table 1, All patients): 70 mg/m^2 n=1; 75 mg/m^2 n=29; 85 mg/m^2 n=39; 100 mg/m^2 n=23. All patients received antiallergic and antiemetic premedication; no prophylactic G-CSF.",
-    regions        = "France (Institut Claudius-Regaud, Toulouse, n=37; Hopital Cochin, Paris, n=55)",
-    prior_chemo    = "Prior chemotherapy lines distribution (Table 1, All patients): 0 / 1 / >=2 = 27 / 44 / 21.",
-    baseline_labs  = "Baseline characteristics (Table 1, All patients): age 60.7 (46-77) y; body weight 70.8 (39-106) kg; BSA 1.77 (1.35-2.20) m^2; alpha-1 acid glycoprotein 1.29 (0.46-2.98) g/L; serum albumin 36 (16-45) g/L. Liver-function-test elevation (>1.5xULN / <=1.5xULN): AST 12 / 80; ALT 8 / 84. Toulouse vs Paris differed significantly in AAG (1.51 vs 1.13 g/L, p<0.01), liver-function elevations (p<0.01), performance-status distribution (p<0.01), and docetaxel dose distribution (p<0.001) but not in age, body weight, BSA, serum albumin, sex ratio, prior-chemotherapy distribution, or primary-disease mix.",
-    notes          = "Pooled cohort from two sequential single-centre clinical trials. Toulouse trial (n=37) correlated docetaxel CL with dexamethasone CL as a CYP3A probe (Puisset et al 2007, Cancer Chemother Pharmacol 54:265-272). Paris trial (n=55) related docetaxel toxicity to CYP3A / MDR1 / GST genetic polymorphisms (Tran et al 2006, Clin Pharmacol Ther 79:570-580). The two protocols differed in blood-sampling schedules for the PK (Toulouse: pre-dose + 0.5, 2, 6 h after end of infusion; Paris: pre-dose, end of infusion, 6 h after end of infusion) and in the docetaxel HPLC assay (interday CV: Toulouse 15.7%, Paris 6.0%). All 92 patients received weekly complete blood counts after the first cycle; no patient received prophylactic G-CSF. The PD analysis used a HYBRID NONMEM estimation method (FOCE for Circ0; FO for MTT and Slope)."
+    disease_state = "Adult cancer patients receiving single-agent docetaxel monochemotherapy. Primary diseases (Table 1, All patients n=92): breast 31, prostate 27, lung 15, other 19. Performance status (ECOG) distribution 0 / 1 / 2 / 3 = 13 / 61 / 16 / 2.",
+    dose_range = "Docetaxel (Taxotere, Aventis Pharma) 70-100 mg/m^2 IV over 1 h, single-agent. Per-dose-level counts (Table 1, All patients): 70 mg/m^2 n=1; 75 mg/m^2 n=29; 85 mg/m^2 n=39; 100 mg/m^2 n=23. All patients received antiallergic and antiemetic premedication; no prophylactic G-CSF.",
+    regions = "France (Institut Claudius-Regaud, Toulouse, n=37; Hopital Cochin, Paris, n=55)",
+    prior_chemo = "Prior chemotherapy lines distribution (Table 1, All patients): 0 / 1 / >=2 = 27 / 44 / 21.",
+    baseline_labs = "Baseline characteristics (Table 1, All patients): age 60.7 (46-77) y; body weight 70.8 (39-106) kg; BSA 1.77 (1.35-2.20) m^2; alpha-1 acid glycoprotein 1.29 (0.46-2.98) g/L; serum albumin 36 (16-45) g/L. Liver-function-test elevation (>1.5xULN / <=1.5xULN): AST 12 / 80; ALT 8 / 84. Toulouse vs Paris differed significantly in AAG (1.51 vs 1.13 g/L, p<0.01), liver-function elevations (p<0.01), performance-status distribution (p<0.01), and docetaxel dose distribution (p<0.001) but not in age, body weight, BSA, serum albumin, sex ratio, prior-chemotherapy distribution, or primary-disease mix.",
+    notes = "Pooled cohort from two sequential single-centre clinical trials. Toulouse trial (n=37) correlated docetaxel CL with dexamethasone CL as a CYP3A probe (Puisset et al 2007, Cancer Chemother Pharmacol 54:265-272). Paris trial (n=55) related docetaxel toxicity to CYP3A / MDR1 / GST genetic polymorphisms (Tran et al 2006, Clin Pharmacol Ther 79:570-580). The two protocols differed in blood-sampling schedules for the PK (Toulouse: pre-dose + 0.5, 2, 6 h after end of infusion; Paris: pre-dose, end of infusion, 6 h after end of infusion) and in the docetaxel HPLC assay (interday CV: Toulouse 15.7%, Paris 6.0%). All 92 patients received weekly complete blood counts after the first cycle; no patient received prophylactic G-CSF. The PD analysis used a HYBRID NONMEM estimation method (FOCE for Circ0; FO for MTT and Slope)."
   )
 
   ini({

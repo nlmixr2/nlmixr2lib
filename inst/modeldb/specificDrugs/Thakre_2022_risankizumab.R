@@ -8,65 +8,65 @@ Thakre_2022_risankizumab <- function() {
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "risankizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "risankizumab", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL and Vc; normalized as WT/70 per Thakre 2022 Eq. 2 and Eq. 3 (reference: 70 kg). Source column 'WTKG' renamed to canonical WT.",
-      source_name        = "WTKG"
+      notes = "Power effect on CL and Vc; normalized as WT/70 per Thakre 2022 Eq. 2 and Eq. 3 (reference: 70 kg). Source column 'WTKG' renamed to canonical WT.",
+      source_name = "WTKG"
     ),
     AGE = list(
-      description        = "Age at baseline",
-      units              = "years",
-      type               = "continuous",
+      description = "Age at baseline",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as AGE/52 per Thakre 2022 Eq. 2 (reference: 52 years).",
-      source_name        = "AGE"
+      notes = "Power effect on CL; normalized as AGE/52 per Thakre 2022 Eq. 2 (reference: 52 years).",
+      source_name = "AGE"
     ),
     ALB = list(
-      description        = "Baseline serum albumin",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Baseline serum albumin",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as ALB/45 per Thakre 2022 Eq. 2 (reference: 45 g/L). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed.",
-      source_name        = "ALB"
+      notes = "Power effect on CL; normalized as ALB/45 per Thakre 2022 Eq. 2 (reference: 45 g/L). Source uses SI units (g/L); convert g/dL to g/L by x10 if needed.",
+      source_name = "ALB"
     ),
     CREAT = list(
-      description        = "Baseline serum creatinine",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Baseline serum creatinine",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as CREAT/70.73 per Thakre 2022 Eq. 2 (reference: 70.73 umol/L, equivalent to 0.8 mg/dL). Source column 'CRE' renamed to canonical CREAT.",
-      source_name        = "CRE"
+      notes = "Power effect on CL; normalized as CREAT/70.73 per Thakre 2022 Eq. 2 (reference: 70.73 umol/L, equivalent to 0.8 mg/dL). Source column 'CRE' renamed to canonical CREAT.",
+      source_name = "CRE"
     ),
     CRP = list(
-      description        = "Baseline high-sensitivity C-reactive protein (hs-CRP assay; baseline, time-fixed per subject)",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Baseline high-sensitivity C-reactive protein (hs-CRP assay; baseline, time-fixed per subject)",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = "Power effect on CL; normalized as CRP/5.21 per Thakre 2022 Eq. 2 (reference: 5.21 mg/L). Source column 'CRPHS' (high-sensitivity CRP) maps to the canonical general-scope CRP covariate; the assay type (hs-CRP) is documented here in the covariateData entry rather than via a separate hsCRP canonical.",
-      source_name        = "CRPHS"
+      notes = "Power effect on CL; normalized as CRP/5.21 per Thakre 2022 Eq. 2 (reference: 5.21 mg/L). Source column 'CRPHS' (high-sensitivity CRP) maps to the canonical general-scope CRP covariate; the assay type (hs-CRP) is documented here in the covariateData entry rather than via a separate hsCRP canonical.",
+      source_name = "CRPHS"
     )
   )
 
   population <- list(
-    n_subjects     = 1527L,
-    n_studies      = 5L,
-    age_range      = "Adults, median reference ~52 years (range not published in main paper)",
-    weight_range   = "Reference 70 kg; PsA phase-3 populations typically 40-160 kg",
+    n_subjects = 1527L,
+    n_studies = 5L,
+    age_range = "Adults, median reference ~52 years (range not published in main paper)",
+    weight_range = "Reference 70 kg; PsA phase-3 populations typically 40-160 kg",
     sex_female_pct = NA_real_,
     race_ethnicity = "Predominantly White, as typical in global PsA phase-2/3 trials (details in source supplement).",
-    disease_state  = "Active psoriatic arthritis (PsA), pooled across one phase 1 healthy-participant study, one phase 2 dose-ranging study with open-label extension, and two pivotal phase 3 studies (KEEPsAKE 1 [NCT03675308] and KEEPsAKE 2 [NCT03671148]).",
-    dose_range     = "Risankizumab 18-300 mg SC and 0.01-5 mg/kg IV single-dose (phase 1), plus 150 mg SC at weeks 0 and 4 and every 12 weeks thereafter (phase 2/3 clinical regimen).",
-    regions        = "Global (multi-regional).",
-    notes          = "Data set: 3631 concentration measurements from 1527 individuals (study 1: n=67, studies 2/3: n=177, study 4: n=391, study 5: n=892). ADA titers on CL and WT on V2 were evaluated but did not meet retention criteria and are not in the final model. Reference covariate values (used as the normalizers in the covariate power terms): WT = 70 kg, AGE = 52 years, ALB = 45 g/L, CREAT = 70.73 umol/L, CRP = 5.21 mg/L (hs-CRP assay)."
+    disease_state = "Active psoriatic arthritis (PsA), pooled across one phase 1 healthy-participant study, one phase 2 dose-ranging study with open-label extension, and two pivotal phase 3 studies (KEEPsAKE 1 [NCT03675308] and KEEPsAKE 2 [NCT03671148]).",
+    dose_range = "Risankizumab 18-300 mg SC and 0.01-5 mg/kg IV single-dose (phase 1), plus 150 mg SC at weeks 0 and 4 and every 12 weeks thereafter (phase 2/3 clinical regimen).",
+    regions = "Global (multi-regional).",
+    notes = "Data set: 3631 concentration measurements from 1527 individuals (study 1: n=67, studies 2/3: n=177, study 4: n=391, study 5: n=892). ADA titers on CL and WT on V2 were evaluated but did not meet retention criteria and are not in the final model. Reference covariate values (used as the normalizers in the covariate power terms): WT = 70 kg, AGE = 52 years, ALB = 45 g/L, CREAT = 70.73 umol/L, CRP = 5.21 mg/L (hs-CRP assay)."
   )
 
   ini({

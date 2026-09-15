@@ -10,8 +10,8 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
   )
   vignette <- "Cheah_2016_polymyxin_Abaumannii_dynamics"
   units <- list(
-    time          = "h",
-    dosing        = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
+    time = "h",
+    dosing = "mg (polymyxin B or colistin base, IV bolus or 1-h infusion into IVM central reservoir)",
     concentration = "log10 CFU/mL (log_cfu, observed viable count on drug-free agar)"
   )
 
@@ -22,25 +22,30 @@ Cheah_2016_polymyxin_ATCC19606 <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    bact_s  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
-    bact_r  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
-    bact_d  = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
-    r_adapt = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_s = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    bact_r = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    bact_d = list(analyte = "Acinetobacter baumannii", units = NA_character_, specimen = "vitreous", verified = FALSE),
+    r_adapt = list(
+      analyte = "Acinetobacter baumannii",
+      units = NA_character_,
+      specimen = "administration site",
+      verified = FALSE
+    ),
     central = list(analyte = "polymyxin B or colistin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
 
   population <- list(
-    species         = "in vitro (Acinetobacter baumannii ATCC 19606)",
-    n_subjects      = NA_integer_,
-    n_studies       = 1L,
-    organism        = "A. baumannii ATCC 19606 (heteroresistant reference strain; polymyxin B and colistin MIC 0.5 mg/L; resistance occurs via lipid-A phosphoethanolamine modification or loss of LPS from the outer membrane)",
-    system          = "Dynamic one-compartment in vitro infection model (IVM), 80 mL central reservoir, 37 C, cation-adjusted Mueller-Hinton broth (CAMHB) circulated at 4.8 mL/h to simulate elimination half-life 11.6 h and average steady-state polymyxin concentration 3 mg/L",
-    duration        = "96 h with viable counting at 0, 0.5, 1, 2, 4, 8, 11, 13, 23, 25, 26, 28, 47, 49, 50, 52, 71, 73, 74, 76, and 96 h on drug-free and drug-containing (6.6 mg/L polymyxin B base) plates; population analysis profiles (PAPs) at 0, 23, 47, 71, and 96 h on 1.7, 3.3, and 6.6 mg/L polymyxin B agar plates",
+    species = "in vitro (Acinetobacter baumannii ATCC 19606)",
+    n_subjects = NA_integer_,
+    n_studies = 1L,
+    organism = "A. baumannii ATCC 19606 (heteroresistant reference strain; polymyxin B and colistin MIC 0.5 mg/L; resistance occurs via lipid-A phosphoethanolamine modification or loss of LPS from the outer membrane)",
+    system = "Dynamic one-compartment in vitro infection model (IVM), 80 mL central reservoir, 37 C, cation-adjusted Mueller-Hinton broth (CAMHB) circulated at 4.8 mL/h to simulate elimination half-life 11.6 h and average steady-state polymyxin concentration 3 mg/L",
+    duration = "96 h with viable counting at 0, 0.5, 1, 2, 4, 8, 11, 13, 23, 25, 26, 28, 47, 49, 50, 52, 71, 73, 74, 76, and 96 h on drug-free and drug-containing (6.6 mg/L polymyxin B base) plates; population analysis profiles (PAPs) at 0, 23, 47, 71, and 96 h on 1.7, 3.3, and 6.6 mg/L polymyxin B agar plates",
     inoculum_target = "approximately 10^6 CFU/mL (Table 1: log10 CFU_total,0 = 6.34)",
-    regimens        = "R1 (gradual rise of colistin, mimicking the Plachouras 2009 ref 8 predicted profile for a patient with no loading CMS dose; continuous infusion approximating accumulation to Css 3 mg/L), R2 (polymyxin B, 1-h infusion every 12 h, no loading dose), R3 (R2 plus a conventional loading dose to attain Css 3 mg/L rapidly), R4 (R2 plus an augmented loading dose attaining initial peak 6 mg/L)",
-    notes           = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (etas) are not included: the paper reports per-strain typical-value fits with %SE values that reflect parameter precision, not between-replicate IIV. Polymyxin B and colistin were modelled with identical structural binding/killing parameters per strain -- only the simulated PK profile (R1 vs R2-R4) differs. Heteroresistance is encoded via the constitutively-resistant subpopulation CFU_R, whose initial fraction log10 CFU_R,0 = -0.249 of the total inoculum (~0.56 CFU/mL) is reported in Table 1."
+    regimens = "R1 (gradual rise of colistin, mimicking the Plachouras 2009 ref 8 predicted profile for a patient with no loading CMS dose; continuous infusion approximating accumulation to Css 3 mg/L), R2 (polymyxin B, 1-h infusion every 12 h, no loading dose), R3 (R2 plus a conventional loading dose to attain Css 3 mg/L rapidly), R4 (R2 plus an augmented loading dose attaining initial peak 6 mg/L)",
+    notes = "In-vitro pharmacodynamic study; no human or animal subjects. Random effects (etas) are not included: the paper reports per-strain typical-value fits with %SE values that reflect parameter precision, not between-replicate IIV. Polymyxin B and colistin were modelled with identical structural binding/killing parameters per strain -- only the simulated PK profile (R1 vs R2-R4) differs. Heteroresistance is encoded via the constitutively-resistant subpopulation CFU_R, whose initial fraction log10 CFU_R,0 = -0.249 of the total inoculum (~0.56 CFU/mL) is reported in Table 1."
   )
 
   ini({

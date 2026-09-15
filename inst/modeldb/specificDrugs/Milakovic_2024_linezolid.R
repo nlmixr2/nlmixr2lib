@@ -26,8 +26,8 @@ Milakovic_2024_linezolid <- function() {
   )
   vignette <- "Milakovic_2024_linezolid"
   units <- list(
-    time          = "h",
-    dosing        = "mg",
+    time = "h",
+    dosing = "mg",
     concentration = "mg/L"
   )
 
@@ -38,198 +38,198 @@ Milakovic_2024_linezolid <- function() {
   # none of them is referenced in model().
   covariatesDataExcluded <- list(
     AGE = list(
-      description        = "Subject age at ICU admission",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age at ICU admission",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened in the automated covariate search but not retained.",
         "Median 40 years (range 30-62; IQR 30.4-59.8), Milakovic 2024",
         "Table 1."
       ),
-      source_name        = "Age"
+      source_name = "Age"
     ),
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Collected (Milakovic 2024 Methods 'Data': body weight and height",
         "were recorded) and screened but not retained. Body weight itself",
         "is not tabulated in the paper; only the derived BMI is reported in",
         "Table 1, so no cohort weight distribution can be recovered from the",
         "publication."
       ),
-      source_name        = "body weight"
+      source_name = "body weight"
     ),
     BMI = list(
-      description        = "Body mass index at ICU admission",
-      units              = "kg/m^2",
-      type               = "continuous",
+      description = "Body mass index at ICU admission",
+      units = "kg/m^2",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 27.7 kg/m^2 (range 23.5-39.2;",
         "IQR 23.7-38.28), Milakovic 2024 Table 1. This is the only body-size",
         "descriptor tabulated in the paper."
       ),
-      source_name        = "BMI"
+      source_name = "BMI"
     ),
     SEXF = list(
-      description        = "Sex indicator (1 = female, 0 = male)",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Sex indicator (1 = female, 0 = male)",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (male)",
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Milakovic 2024 Table 1 reports 5 male",
         "(55.6%) of the 9 analysed patients, i.e., 4 female (44.4%). The",
         "paper reports the male count, so SEXF = 1 - SEXM."
       ),
-      source_name        = "Male (number)"
+      source_name = "Male (number)"
     ),
     CREAT = list(
-      description        = "Plasma creatinine concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Plasma creatinine concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Reported both at ICU admission (median",
         "70 umol/L, range 53-349) and on the PK sampling day (median 55",
         "umol/L, range 34-201), Milakovic 2024 Table 1. Patients on renal",
         "replacement therapy were excluded by protocol."
       ),
-      source_name        = "Plasma creatinine concentration"
+      source_name = "Plasma creatinine concentration"
     ),
     BUN = list(
-      description        = "Serum urea concentration",
-      units              = "mmol/L",
-      type               = "continuous",
+      description = "Serum urea concentration",
+      units = "mmol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Reported as urea (not blood urea",
         "nitrogen): median 5.5 mmol/L (range 4.5-36.3) at admission and 7.2",
         "mmol/L (range 4.5-19.9) on the PK sampling day, Milakovic 2024",
         "Table 1. Urea in mmol/L converts to BUN in mg/dL by multiplying by",
         "2.80."
       ),
-      source_name        = "Urea"
+      source_name = "Urea"
     ),
     ALB = list(
-      description        = "Serum albumin concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Serum albumin concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 32 g/L (range 30-45) at admission",
         "and 38 g/L (range 30-46) on the PK sampling day, Milakovic 2024",
         "Table 1. The Discussion notes that all patients had normal albumin",
         "levels, in contrast with a published ECMO case report where",
         "hypoalbuminaemia was invoked to explain a very low linezolid trough."
       ),
-      source_name        = "Albumin"
+      source_name = "Albumin"
     ),
     TPRO = list(
-      description        = "Total serum protein concentration",
-      units              = "g/L",
-      type               = "continuous",
+      description = "Total serum protein concentration",
+      units = "g/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 60 g/L (range 53-66) at admission",
         "and 51 g/L (range 47-65) on the PK sampling day, Milakovic 2024",
         "Table 1."
       ),
-      source_name        = "Total protein"
+      source_name = "Total protein"
     ),
     TBILI = list(
-      description        = "Total serum bilirubin concentration",
-      units              = "umol/L",
-      type               = "continuous",
+      description = "Total serum bilirubin concentration",
+      units = "umol/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 9.9 umol/L (range 3.9-25.7) at",
         "admission and 37.4 umol/L (range 13.9-156.3) on the PK sampling",
         "day, Milakovic 2024 Table 1."
       ),
-      source_name        = "Bilirubin"
+      source_name = "Bilirubin"
     ),
     DDIMER = list(
-      description        = "Plasma D-dimer concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "Plasma D-dimer concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 1.1 mg/L (range 0.54-49.32),",
         "Milakovic 2024 Table 1. Reported in mg/L rather than the register's",
         "ng/mL reference unit; 1 mg/L = 1000 ng/mL."
       ),
-      source_name        = "D-dimer"
+      source_name = "D-dimer"
     ),
     CRP = list(
-      description        = "C-reactive protein concentration",
-      units              = "mg/L",
-      type               = "continuous",
+      description = "C-reactive protein concentration",
+      units = "mg/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Listed among the collected clinical variables screened as covariates",
         "(Milakovic 2024 Methods 'Data') but not tabulated in Table 1 and",
         "not retained in the final model."
       ),
-      source_name        = "C-reactive protein"
+      source_name = "C-reactive protein"
     ),
     AST = list(
-      description        = "Aspartate aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Aspartate aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Collected as part of the 'liver enzymes' panel screened as",
         "covariates (Milakovic 2024 Methods 'Data'); not tabulated in Table 1",
         "and not retained."
       ),
-      source_name        = "liver enzymes"
+      source_name = "liver enzymes"
     ),
     ALT = list(
-      description        = "Alanine aminotransferase activity",
-      units              = "U/L",
-      type               = "continuous",
+      description = "Alanine aminotransferase activity",
+      units = "U/L",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Collected as part of the 'liver enzymes' panel screened as",
         "covariates (Milakovic 2024 Methods 'Data'); not tabulated in Table 1",
         "and not retained."
       ),
-      source_name        = "liver enzymes"
+      source_name = "liver enzymes"
     ),
     SAPS_II = list(
-      description        = "Simplified Acute Physiology Score II on ICU admission day",
-      units              = "points",
-      type               = "continuous",
+      description = "Simplified Acute Physiology Score II on ICU admission day",
+      units = "points",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Median 21 points (range 13-36; IQR",
         "13.2-35.2), Milakovic 2024 Table 1."
       ),
-      source_name        = "SAPS II"
+      source_name = "SAPS II"
     ),
     URINE_FLOW = list(
-      description        = "Urine output over 24 h",
-      units              = "mL/24 h",
-      type               = "continuous",
+      description = "Urine output over 24 h",
+      units = "mL/24 h",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Collected as '24 h urine output' and screened as a covariate",
         "(Milakovic 2024 Methods 'Data'); not tabulated in Table 1 and not",
         "retained. Reported per 24 h rather than as the register's",
         "instantaneous mL/h rate."
       ),
-      source_name        = "24 h urine output"
+      source_name = "24 h urine output"
     ),
     ECMO_PUMP_SPEED = list(
-      description        = "ECMO centrifugal pump rotational speed on the PK sampling day",
-      units              = "RPM",
-      type               = "continuous",
+      description = "ECMO centrifugal pump rotational speed on the PK sampling day",
+      units = "RPM",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "The only covariate whose test statistic the paper reports:",
         "including ECMO centrifugal pump speed in the base model dropped the",
         "objective function value by only 2.04 units, short of the 3.84",
@@ -237,44 +237,44 @@ Milakovic_2024_linezolid <- function() {
         "retained (Milakovic 2024 Results). Median 3500 RPM (range 2900-4300;",
         "IQR 2920-4240), Table 1."
       ),
-      source_name        = "ECMO centrifugal pump speed"
+      source_name = "ECMO centrifugal pump speed"
     ),
     T_ECMO = list(
-      description        = "Time on ECMO support at the PK sampling day",
-      units              = "days",
-      type               = "continuous",
+      description = "Time on ECMO support at the PK sampling day",
+      units = "days",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Screened but not retained. Reported as 'ECMO duration', median 6",
         "days (range 1.75-17; IQR 1.86-16.25), Milakovic 2024 Table 1."
       ),
-      source_name        = "ECMO duration"
+      source_name = "ECMO duration"
     )
   )
 
   compartmentData <- list(
     central = list(
-      analyte  = "linezolid",
-      units    = "mg",
+      analyte = "linezolid",
+      units = "mg",
       specimen = "serum",
       verified = TRUE
     )
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 9L,
-    n_studies      = 1L,
+    species = "human",
+    n_subjects = 9L,
+    n_studies = 1L,
     n_pk_observations = 53L,
-    age_range      = "30-62 years (median 40; IQR 30.4-59.8)",
-    age_median     = "40 years",
-    weight_range   = paste(
+    age_range = "30-62 years (median 40; IQR 30.4-59.8)",
+    age_median = "40 years",
+    weight_range = paste(
       "not reported; body weight was collected but only the derived BMI is",
       "tabulated (median 27.7 kg/m^2, range 23.5-39.2)"
     ),
     sex_female_pct = 44.4,
     race_ethnicity = "not reported",
-    disease_state  = paste(
+    disease_state = paste(
       "COVID-19-associated acute respiratory distress syndrome (CARDS)",
       "requiring veno-venous extracorporeal membrane oxygenation (vv ECMO).",
       "All patients were RT-PCR-confirmed SARS-CoV-2 positive and met a lung",
@@ -285,12 +285,12 @@ Milakovic_2024_linezolid <- function() {
       "undergone therapeutic plasma exchange within 24 h or renal replacement",
       "therapy were excluded."
     ),
-    dose_range     = "600 mg linezolid intravenously as a 30-min infusion every 8 h",
-    regions        = paste(
+    dose_range = "600 mg linezolid intravenously as a 30-min infusion every 8 h",
+    regions = paste(
       "Bosnia and Herzegovina (Medical Intensive Care Unit, University",
       "Clinical Centre of the Republic of Srpska, Banja Luka)"
     ),
-    notes          = paste(
+    notes = paste(
       "Prospective, observational, single-centre PK study conducted between",
       "1 January and 31 December 2021. Eleven patients were sampled; two were",
       "excluded from the PopPK analysis (one on continuous veno-venous",

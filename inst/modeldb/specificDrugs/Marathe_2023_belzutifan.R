@@ -25,24 +25,24 @@ Marathe_2023_belzutifan <- function() {
     sep = " "
   )
   vignette <- "Marathe_2023_belzutifan"
-  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
   # NOT been checked against the source paper.
   compartmentData <- list(
-    depot       = list(analyte = "belzutifan", units = "mg", specimen = "administration site", verified = FALSE),
-    central     = list(analyte = "belzutifan", units = "mg", specimen = "plasma", verified = FALSE),
+    depot = list(analyte = "belzutifan", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "belzutifan", units = "mg", specimen = "plasma", verified = FALSE),
     peripheral1 = list(analyte = "belzutifan", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
     WT = list(
-      description        = "Body weight",
-      units              = "kg",
-      type               = "continuous",
+      description = "Body weight",
+      units = "kg",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power (allometric) scaling with reference weight 73.64 kg (the",
         "pooled-cohort median, Marathe 2023 Table S2 reports median 73.6 kg;",
         "the control stream in supplement 2 uses WT/73.64). A single",
@@ -53,14 +53,14 @@ Marathe_2023_belzutifan <- function() {
         "V3/F') and the Table 2 caption equations. Baseline (time-fixed) in",
         "the source analysis. Cohort range 42.1-165.8 kg."
       ),
-      source_name        = "WT"
+      source_name = "WT"
     ),
     AGE = list(
-      description        = "Subject age",
-      units              = "years",
-      type               = "continuous",
+      description = "Subject age",
+      units = "years",
+      type = "continuous",
       reference_category = NULL,
-      notes              = paste(
+      notes = paste(
         "Power covariate normalized as (AGE / 55), where 55 years is the",
         "pooled-cohort median age (Marathe 2023 Table S2). Applied to CL/F",
         "with exponent -0.36 and to V2/F with exponent -0.20 (Table 2).",
@@ -68,14 +68,14 @@ Marathe_2023_belzutifan <- function() {
         "19-84 years. The paper concluded the age effect is moderate and not",
         "clinically relevant (Table S4, Discussion)."
       ),
-      source_name        = "AGE"
+      source_name = "AGE"
     ),
     FED = list(
-      description        = "Fed-versus-fasted state at dosing",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Fed-versus-fasted state at dosing",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (fasted)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Linear-deviation effect on the",
         "absorption rate constant: KA = KApop * (1 + (-0.88) * FED), i.e.",
         "an 87.6% reduction in KA when dosed fed (2.40 -> 0.30 1/h; Marathe",
@@ -88,17 +88,17 @@ Marathe_2023_belzutifan <- function() {
         "interval included zero and the run terminated with rounding errors",
         "(Results, 'Final population PK model')."
       ),
-      source_name        = "FED"
+      source_name = "FED"
     ),
     FORM_BELZ_FMF = list(
-      description        = paste(
+      description = paste(
         "Belzutifan final market formulation (film-coated tablet) indicator;",
         "0 = oral compressed fit-for-purpose (FFP) tablet"
       ),
-      units              = "(binary)",
-      type               = "binary",
+      units = "(binary)",
+      type = "binary",
       reference_category = "0 (FFP oral compressed fit-for-purpose tablet)",
-      notes              = paste(
+      notes = paste(
         "Per-dose-record indicator. Linear-deviation effect on the",
         "absorption rate constant: KA = KApop * (1 + (-0.47) *",
         "FORM_BELZ_FMF), i.e. a 47.4% reduction in KA for the film-coated",
@@ -114,18 +114,18 @@ Marathe_2023_belzutifan <- function() {
         "and 0 for FFP or missing. Formulation was tested on lag time in the",
         "SCM but not retained (Table S3)."
       ),
-      source_name        = "FORM"
+      source_name = "FORM"
     ),
     UGT2B17_EM = list(
-      description        = "UGT2B17 extensive-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B17 extensive-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (UGT2B17 intermediate or poor metabolizer); paired with",
         "UGT2B17_PM = 0 the reference is the UGT2B17 intermediate-metabolizer",
         "stratum"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline UGT2B17 copy-number / deletion",
         "genotype-derived phenotype). Paired with UGT2B17_PM to encode the",
         "three-level EM / IM (reference) / PM phenotype with two binary",
@@ -142,19 +142,19 @@ Marathe_2023_belzutifan <- function() {
         "EM and IM were merged there (Results, 'Final population PK model')",
         "-- hence UGT2B17_EM has no effect on F."
       ),
-      source_name        = "UGT2B17P"
+      source_name = "UGT2B17P"
     ),
     UGT2B17_PM = list(
-      description        = "UGT2B17 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "UGT2B17 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (UGT2B17 intermediate or extensive metabolizer); for the CL/F",
         "effect, paired with UGT2B17_EM = 0 the reference is the",
         "intermediate-metabolizer stratum, whereas for the bioavailability",
         "effect the reference is the pooled intermediate + extensive stratum"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (homozygous UGT2B17 gene deletion). Two",
         "distinct effects. (1) Linear-deviation effect on CL/F:",
         "(1 + (-0.24) * UGT2B17_PM), i.e. -24.2% CL/F versus the",
@@ -169,17 +169,17 @@ Marathe_2023_belzutifan <- function() {
         "effect to reduced first-pass glucuronidation in the gut when",
         "UGT2B17 activity is absent (Discussion)."
       ),
-      source_name        = "UGT2B17P"
+      source_name = "UGT2B17P"
     ),
     CYP2C19_PM = list(
-      description        = "CYP2C19 poor-metabolizer phenotype indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "CYP2C19 poor-metabolizer phenotype indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (CYP2C19 non-poor metabolizer: the pooled intermediate,",
         "extensive, rapid, and ultrarapid strata)"
       ),
-      notes              = paste(
+      notes = paste(
         "Time-fixed per subject (germline genotype-derived phenotype).",
         "Linear-deviation effect on CL/F: (1 + (-0.36) * CYP2C19_PM), i.e.",
         "-36.0% CL/F versus the non-poor-metabolizer reference (5.63 -> 3.60",
@@ -195,17 +195,17 @@ Marathe_2023_belzutifan <- function() {
         "ultrarapid (2.5%), 11 missing (4.6%). CYP2C19 phenotype was tested",
         "on bioavailability in the SCM but not retained (Table S3)."
       ),
-      source_name        = "CYP2C19P"
+      source_name = "CYP2C19P"
     ),
     DIS_HEALTHY = list(
-      description        = "Healthy-participant cohort indicator",
-      units              = "(binary)",
-      type               = "binary",
+      description = "Healthy-participant cohort indicator",
+      units = "(binary)",
+      type = "binary",
       reference_category = paste(
         "0 (patient: the pooled advanced-RCC, other-advanced-solid-tumor,",
         "and VHL-RCC cohorts from Studies 1 and 4)"
       ),
-      notes              = paste(
+      notes = paste(
         "Stratifies the proportional residual error only; it has no effect",
         "on any structural or random-effect PK parameter. Healthy",
         "participants use propSd = 0.26 (RES HV) and patients use",
@@ -223,16 +223,16 @@ Marathe_2023_belzutifan <- function() {
         "as a covariate on CL/F and V2/F in the SCM and was NOT retained",
         "(Table S3), so no structural disease effect appears in this model."
       ),
-      source_name        = "STUDY"
+      source_name = "STUDY"
     )
   )
 
   covariatesDataExcluded <- list(
     SEXF = list(
       description = "Biological sex indicator, 1 = female, 0 = male",
-      units       = "(binary)",
-      type        = "binary",
-      notes       = paste(
+      units = "(binary)",
+      type = "binary",
+      notes = paste(
         "A sex effect on V2/F was identified by the stepwise covariate",
         "model (Table S3) but was deliberately NOT retained in the final",
         "model: the studies were unbalanced with respect to sex (the",
@@ -248,9 +248,9 @@ Marathe_2023_belzutifan <- function() {
     ),
     EGFR = list(
       description = "Estimated glomerular filtration rate",
-      units       = "mL/min/1.73m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "mL/min/1.73m^2",
+      type = "continuous",
+      notes = paste(
         "Screened on CL/F for the renal-impairment assessment and not",
         "retained (Table S3): 'No effects of renal and hepatic impairment",
         "were found in the covariate analysis based on available data.'",
@@ -264,9 +264,9 @@ Marathe_2023_belzutifan <- function() {
         "NCI Organ Dysfunction Working Group hepatic-dysfunction category",
         "(composite of aspartate aminotransferase and total bilirubin)"
       ),
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened on CL/F for the hepatic-impairment assessment and not",
         "retained (Table S3). Cohort: 226 normal (94.6%), 12 mild (5.0%), 1",
         "moderate (0.4%) (Table S2). Moderate and severe hepatic impairment",
@@ -276,9 +276,9 @@ Marathe_2023_belzutifan <- function() {
     ),
     RACE = list(
       description = "Race category",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened on CL/F and V2/F and not retained (Table S3). Cohort: 171",
         "White (71.5%), 38 Asian (15.9%), 23 Black (9.6%), 1 Pacific",
         "Islander (0.4%), 4 Multiple/Other (1.7%), 2 missing (0.8%)",
@@ -287,9 +287,9 @@ Marathe_2023_belzutifan <- function() {
     ),
     ETHNIC = list(
       description = "Hispanic or Latino ethnicity category",
-      units       = "(categorical)",
-      type        = "categorical",
-      notes       = paste(
+      units = "(categorical)",
+      type = "categorical",
+      notes = paste(
         "Screened on CL/F and V2/F and not retained (Table S3). Cohort: 202",
         "not Hispanic (84.5%), 34 Hispanic (14.2%), 3 missing (1.3%)",
         "(Table S2)."
@@ -297,9 +297,9 @@ Marathe_2023_belzutifan <- function() {
     ),
     BMI = list(
       description = "Body mass index",
-      units       = "kg/m^2",
-      type        = "continuous",
-      notes       = paste(
+      units = "kg/m^2",
+      type = "continuous",
+      notes = paste(
         "Listed among the investigated covariates (Methods, 'Covariates')",
         "but explicitly never tested: 'BMI was not tested, because it is",
         "correlated with body weight, which was already included in the base",
@@ -309,23 +309,29 @@ Marathe_2023_belzutifan <- function() {
   )
 
   population <- list(
-    species        = "human",
-    n_subjects     = 239L,
-    n_studies      = 5L,
+    species = "human",
+    n_subjects = 239L,
+    n_studies = 5L,
     n_observations = 5291L,
-    age_range      = "19-84 years (median 55)",
-    age_median     = "55 years",
-    weight_range   = "42.1-165.8 kg (median 73.6)",
-    weight_median  = "73.6 kg",
+    age_range = "19-84 years (median 55)",
+    age_median = "55 years",
+    weight_range = "42.1-165.8 kg (median 73.6)",
+    weight_median = "73.6 kg",
     sex_female_pct = 56.1,
     race_ethnicity = c(
-      White = 71.5, Black = 9.6, Asian = 15.9,
-      `Pacific Islander` = 0.4, `Multiple/Other` = 1.7, Missing = 0.8
+      White = 71.5,
+      Black = 9.6,
+      Asian = 15.9,
+      `Pacific Islander` = 0.4,
+      `Multiple/Other` = 1.7,
+      Missing = 0.8
     ),
-    ethnicity      = c(
-      `Not Hispanic` = 84.5, Hispanic = 14.2, Missing = 1.3
+    ethnicity = c(
+      `Not Hispanic` = 84.5,
+      Hispanic = 14.2,
+      Missing = 1.3
     ),
-    disease_state  = paste(
+    disease_state = paste(
       "Pooled cohort across five studies: 83 healthy participants (34.7%)",
       "from the phase I food-effect (Study 2, NCT03445169), relative-",
       "bioavailability (Study 6, PT2977-104 / MK-6482-006), and",
@@ -338,19 +344,19 @@ Marathe_2023_belzutifan <- function() {
       "80 normal, 104 mild, 52 moderate, 1 severe impairment. Hepatic",
       "function (NCI-ODWG): 226 normal, 12 mild, 1 moderate."
     ),
-    dose_range     = paste(
+    dose_range = paste(
       "Oral. Study 1 dose escalation 20, 120, 160, and 240 mg q.d. and",
       "120 mg b.i.d., expansion 120 mg q.d.; Study 2 120 mg single dose",
       "fasted and fed; Study 4 120 mg q.d.; Study 6 120 mg single dose",
       "(FFP versus FMF crossover); Study 7 40, 120, and 200 mg single dose.",
       "Recommended clinical dosage is 120 mg orally once daily."
     ),
-    regions        = paste(
+    regions = paste(
       "Not stated per study; Study 7 enrolled Japanese and White",
       "participants in a parallel-group design"
     ),
-    cohort_split   = "83 healthy participants (34.7%) + 156 patients (65.3%) = 239 total",
-    egfr_median    = "77.5 mL/min/1.73m^2 (range 19.6-171.2)",
+    cohort_split = "83 healthy participants (34.7%) + 156 patients (65.3%) = 239 total",
+    egfr_median = "77.5 mL/min/1.73m^2 (range 19.6-171.2)",
     pharmacogenetics = paste(
       "UGT2B17 phenotype: 46 poor (19.2%), 98 intermediate (41.0%), 84",
       "extensive (35.1%), 11 missing (4.6%). CYP2C19 phenotype: 19 poor",
@@ -359,7 +365,7 @@ Marathe_2023_belzutifan <- function() {
       "UGT2B17/CYP2C19 dual poor metabolizers, all from Study 7; no dual PM",
       "subjects were present in the patient studies (Studies 1 and 4)."
     ),
-    notes          = paste(
+    notes = paste(
       "Baseline demographics from Marathe 2023 Table S2 (All Studies",
       "column, N = 239). The full PK analysis dataset contained 5291",
       "measurable observations; one Study 1 patient was excluded for having",
